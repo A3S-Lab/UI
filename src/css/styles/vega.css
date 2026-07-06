@@ -528,6 +528,11 @@
     @apply bg-popover text-popover-foreground ring-foreground/10 max-w-xs gap-6 rounded-xl p-6 ring-1 duration-100 sm:max-w-lg;
   }
 
+  .alert-dialog:is([data-size='sm']) > *,
+  .alert-dialog > [data-size='sm'] {
+    @apply sm:max-w-xs;
+  }
+
   .dialog > * {
     @apply bg-popover text-popover-foreground ring-foreground/10 max-w-[calc(100%-2rem)] gap-6 rounded-xl p-6 text-sm ring-1 duration-100 sm:max-w-md;
   }

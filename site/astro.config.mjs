@@ -31,6 +31,7 @@ export default defineConfig({
       style: 'vega',
       css: false,
       bodyAttrs: {
+        class: 'antialiased',
         'hx-boost': 'true',
         'hx-target': '#content',
         'hx-select': '#content',

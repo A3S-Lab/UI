@@ -74,7 +74,7 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
   <dd>Trigger button. Basecoat uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
   <dt><code>&lt;dialog class="alert-dialog" id="&#123; DIALOG_ID &#125;"&gt;</code></dt>
   <dd>
-    Native modal dialog. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present.
+    Native modal dialog. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present. Use <code>data-size="sm"</code> for the compact upstream size.
     <dl>
       <dt><code>&lt;div&gt;</code></dt>
       <dd>
@@ -159,6 +159,27 @@ Use a destructive action button when the alert dialog confirms a destructive ope
     <footer>
       <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
       <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Delete</button>
+    </footer>
+  </div>
+</dialog>
+</Preview>
+
+### Small
+
+Use `data-size="sm"` for a compact alert dialog. The small size keeps media, title, and description stacked and centers the action buttons in a two-column footer.
+
+<Preview>
+<button type="button" onclick="document.getElementById('alert-dialog-small').showModal()" class="btn" data-variant="outline">Invite Members</button>
+<dialog id="alert-dialog-small" class="alert-dialog" data-size="sm" aria-labelledby="alert-dialog-small-title" aria-describedby="alert-dialog-small-description">
+  <div>
+    <header>
+      <figure><svg class="lucide lucide-users" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" /></svg></figure>
+      <h2 id="alert-dialog-small-title">Invite team members?</h2>
+      <p id="alert-dialog-small-description">Send an invitation link to your selected teammates.</p>
+    </header>
+    <footer>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button class="btn" onclick="this.closest('dialog').close()">Invite</button>
     </footer>
   </div>
 </dialog>

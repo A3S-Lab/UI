@@ -77,5 +77,25 @@
     > * > footer {
       @apply flex flex-col-reverse sm:flex-row sm:justify-end;
     }
+
+    &:is([data-size='sm']) > * > header,
+    > [data-size='sm'] > header {
+      @apply sm:place-items-center sm:text-center;
+    }
+
+    &:is([data-size='sm']) > * > header:has(> figure),
+    > [data-size='sm'] > header:has(> figure) {
+      @apply sm:grid-rows-[auto_auto_1fr];
+    }
+
+    &:is([data-size='sm']) > * > header:has(> figure) > :is(h2, p),
+    > [data-size='sm'] > header:has(> figure) > :is(h2, p) {
+      @apply sm:col-start-auto;
+    }
+
+    &:is([data-size='sm']) > * > footer,
+    > [data-size='sm'] > footer {
+      @apply grid grid-cols-2 sm:grid sm:grid-cols-2;
+    }
   }
 }

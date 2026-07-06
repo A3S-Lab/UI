@@ -540,6 +540,11 @@
     @apply bg-popover text-popover-foreground ring-foreground/5 dark:ring-foreground/10 max-w-xs gap-6 rounded-4xl p-6 shadow-xl ring-1 duration-100 sm:max-w-md;
   }
 
+  .alert-dialog:is([data-size='sm']) > *,
+  .alert-dialog > [data-size='sm'] {
+    @apply sm:max-w-xs;
+  }
+
   .dialog > * {
     @apply bg-popover text-popover-foreground ring-foreground/5 dark:ring-foreground/10 max-w-[calc(100%-2rem)] gap-6 rounded-4xl p-6 text-sm shadow-xl ring-1 duration-100 sm:max-w-md;
   }

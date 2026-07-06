@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## [1.0.2] - 2026-07-06
+
+### Added
+
+- Added `data-size="sm"` support to Alert Dialog for the compact upstream size.
+
+### Changed
+
+- Removed global font smoothing from Basecoat's package CSS so `antialiased` remains an application-level choice.
+
 ## [1.0.1] - 2026-06-28
 
 ### Added
