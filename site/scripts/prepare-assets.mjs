@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { access, copyFile, mkdir } from 'node:fs/promises';
+import { access, copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -16,6 +16,7 @@ const tailwindExecutable = path.join(
   process.platform === 'win32' ? 'tailwindcss.cmd' : 'tailwindcss',
 );
 const runtimeSource = path.join(projectRoot, 'dist', 'js', 'all.min.js');
+const compiledStyles = path.join(publicAssets, 'a3s-ui.css');
 
 await mkdir(publicAssets, { recursive: true });
 
@@ -33,10 +34,16 @@ await execFileAsync(
     '-i',
     path.join(siteRoot, 'styles', 'a3s-docs.css'),
     '-o',
-    path.join(publicAssets, 'a3s-ui.css'),
+    compiledStyles,
     '--minify',
   ],
   { cwd: siteRoot },
 );
+
+// Rspress registers its reset layer in the stylesheet loaded after this one.
+// Reserve that layer first so the package's component and utility layers keep
+// their intended precedence inside documentation previews.
+const styles = await readFile(compiledStyles, 'utf8');
+await writeFile(compiledStyles, `@layer rp-base;${styles}`, 'utf8');
 
 await copyFile(runtimeSource, path.join(publicAssets, 'all.min.js'));

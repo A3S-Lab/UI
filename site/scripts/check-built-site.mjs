@@ -2,7 +2,10 @@ import { access, readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const siteRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
 const outputRoot = path.join(siteRoot, 'doc_build');
 const base = '/UI/';
 
@@ -36,11 +39,25 @@ const requiredFiles = [
 const homepageExpectations = [
   {
     file: 'index.html',
-    markers: ['lang="zh"', 'A3S 产品设计系统', '让每个界面', 'v0.1.0'],
+    markers: [
+      'lang="zh"',
+      'A3S 产品设计系统',
+      '让每个界面',
+      '复制安装命令',
+      'aria-live="polite"',
+      'aria-pressed="true"',
+      'v0.1.0',
+    ],
   },
   {
     file: 'en/index.html',
-    markers: ['lang="en"', 'A3S PRODUCT DESIGN SYSTEM', 'Interfaces that feel'],
+    markers: [
+      'lang="en"',
+      'A3S PRODUCT DESIGN SYSTEM',
+      'Interfaces that feel',
+      'Copy install command',
+      'aria-live="polite"',
+    ],
   },
   {
     file: 'v0.1.0/index.html',
@@ -151,6 +168,37 @@ for (const { file, links } of switchExpectations) {
   }
 }
 
+const compiledStyles = await readFile(
+  path.join(outputRoot, 'assets', 'a3s-ui.css'),
+  'utf8',
+);
+const styleExpectations = [
+  {
+    label: 'Rspress reset layer is registered before Tailwind layers',
+    matches: compiledStyles.startsWith('@layer rp-base;'),
+  },
+  {
+    label: 'light primary action token is present',
+    matches: compiledStyles.includes('--primary:#285fd2'),
+  },
+  {
+    label: 'dark primary action token is present',
+    matches: compiledStyles.includes('--primary:#8eafff'),
+  },
+  {
+    label: 'primary button contract is present',
+    matches: compiledStyles.includes(
+      '.btn:not([data-variant]),.btn[data-variant=primary]{background-color:var(--color-primary);color:var(--color-primary-foreground)}',
+    ),
+  },
+];
+
+for (const expectation of styleExpectations) {
+  if (!expectation.matches) {
+    throw new Error(`Built CSS invariant failed: ${expectation.label}`);
+  }
+}
+
 const brokenReferences = [];
 const htmlFiles = await collectHtmlFiles(outputRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
@@ -210,5 +258,5 @@ if (brokenReferences.length > 0) {
 }
 
 console.log(
-  `Verified ${requiredFiles.length} required files and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, and references across ${htmlFiles.length} HTML pages.`,
 );

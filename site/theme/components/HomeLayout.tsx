@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  useLang,
-  useSite,
-  useVersion,
-  withBase,
-} from '@rspress/core/runtime';
+import { useLang, useSite, useVersion, withBase } from '@rspress/core/runtime';
 
 type Locale = 'zh' | 'en';
 
@@ -114,12 +109,13 @@ const homeCopy = {
       '源自 A3S Office、智能体工作区和运维控制台的可复用视觉语言，以语义化 HTML、Tailwind CSS 与轻量原生 JavaScript 控制器交付。',
     start: '开始使用',
     github: '查看 GitHub',
-    frameworkAgnostic: '框架无关',
+    copy: '复制安装命令',
+    copied: '已复制',
     componentGuides: '组件指南',
     foundationSystems: '基础系统',
     runtimeDependencies: '运行时依赖',
     liveSpecimen: '实时样例',
-    specimenMeta: 'OFFICE 工作台 / 浅色',
+    specimenMeta: '可交互 OFFICE 工作台',
     semanticHtml: '语义化 HTML',
     lightDark: '浅色 + 深色',
     responsiveRtl: '响应式 + RTL',
@@ -173,12 +169,13 @@ const homeCopy = {
       'The reusable visual language behind A3S Office, agent workspaces, and operational consoles—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers.',
     start: 'Get started',
     github: 'GitHub',
-    frameworkAgnostic: 'FRAMEWORK AGNOSTIC',
+    copy: 'Copy install command',
+    copied: 'Copied',
     componentGuides: 'Component guides',
     foundationSystems: 'Foundation systems',
     runtimeDependencies: 'Runtime dependencies',
     liveSpecimen: 'LIVE SPECIMEN',
-    specimenMeta: 'OFFICE WORKBENCH / LIGHT',
+    specimenMeta: 'INTERACTIVE OFFICE WORKBENCH',
     semanticHtml: 'Semantic HTML',
     lightDark: 'Light + dark',
     responsiveRtl: 'Responsive + RTL',
@@ -255,6 +252,15 @@ function CheckIcon() {
   );
 }
 
+function CopyIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16">
+      <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" />
+      <path d="M10.5 5.5v-2a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" />
+    </svg>
+  );
+}
+
 function WorkbenchSpecimen({ locale }: { locale: Locale }) {
   const labels = homeCopy[locale];
   const [selectedResource, setSelectedResource] = useState('presentation');
@@ -270,7 +276,10 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
   )?.label[locale];
 
   return (
-    <div className="ui-workbench" aria-label="Interactive A3S Office workbench specimen">
+    <div
+      className="ui-workbench"
+      aria-label="Interactive A3S Office workbench specimen"
+    >
       <div className="ui-workbench__titlebar">
         <span className="ui-window-controls" aria-hidden="true">
           <i />
@@ -299,20 +308,22 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
           </button>
         </aside>
         <main className="ui-workbench__main">
-          <div className="ui-workbench__ribbon" role="tablist" aria-label="Ribbon tabs">
+          <div className="ui-workbench__ribbon" aria-label="Ribbon sections">
             {ribbonTabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
-                role="tab"
-                aria-selected={activeRibbon === tab.id}
+                aria-pressed={activeRibbon === tab.id}
                 onClick={() => setActiveRibbon(tab.id)}
               >
                 {tab[locale]}
               </button>
             ))}
           </div>
-          <div className="ui-workbench__toolbar" aria-label={`${activeRibbon} tools`}>
+          <div
+            className="ui-workbench__toolbar"
+            aria-label={`${activeRibbon} tools`}
+          >
             <button type="button">
               <b>B</b>
             </button>
@@ -321,7 +332,9 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
             </button>
             <span />
             <button type="button">{locale === 'zh' ? '对齐' : 'Align'}</button>
-            <button type="button">{locale === 'zh' ? '排列' : 'Arrange'}</button>
+            <button type="button">
+              {locale === 'zh' ? '排列' : 'Arrange'}
+            </button>
             <small>
               {ribbonTabs.find((tab) => tab.id === activeRibbon)?.[locale]}{' '}
               {labels.ribbonControls}
@@ -343,12 +356,15 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                     type="button"
                     data-kind={resource.id}
                     data-selected={selectedResource === resource.id}
+                    aria-pressed={selectedResource === resource.id}
                     onClick={() => setSelectedResource(resource.id)}
                   >
                     <span>{resource.icon}</span>
                     <strong>{resource.label[locale]}</strong>
                     <small>{resource.meta[locale]}</small>
-                    {selectedResource === resource.id ? <i aria-hidden="true" /> : null}
+                    {selectedResource === resource.id ? (
+                      <i aria-hidden="true" />
+                    ) : null}
                   </button>
                 ))}
               </div>
@@ -379,10 +395,16 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
           </div>
         </main>
       </div>
-      <div className="ui-workbench__measure ui-workbench__measure--x" aria-hidden="true">
+      <div
+        className="ui-workbench__measure ui-workbench__measure--x"
+        aria-hidden="true"
+      >
         <span>8</span>
       </div>
-      <div className="ui-workbench__measure ui-workbench__measure--y" aria-hidden="true">
+      <div
+        className="ui-workbench__measure ui-workbench__measure--y"
+        aria-hidden="true"
+      >
         <span>16</span>
       </div>
     </div>
@@ -396,6 +418,7 @@ export function HomeLayout() {
   const version = useVersion();
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
+  const [copied, setCopied] = useState(false);
   const routePrefix = [
     version && version !== defaultVersion ? version : '',
     locale !== site.lang ? locale : '',
@@ -409,6 +432,17 @@ export function HomeLayout() {
   };
   const installationHref = route('/installation');
   const componentsHref = route('/components/');
+  const installCommand = 'npm install github:A3S-Lab/UI';
+  const copyInstallCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(installCommand);
+    } catch {
+      return;
+    }
+
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
 
   return (
     <main className="ui-home">
@@ -421,9 +455,7 @@ export function HomeLayout() {
             {labels.titleLead}
             <span>{labels.titleAccent}</span>
           </h1>
-          <p>
-            {labels.subtitle}
-          </p>
+          <p>{labels.subtitle}</p>
           <div className="ui-hero__actions">
             <a className="ui-action ui-action--primary" href={installationHref}>
               {labels.start} <ArrowIcon />
@@ -435,10 +467,22 @@ export function HomeLayout() {
               <GitHubIcon /> {labels.github}
             </a>
           </div>
-          <div className="ui-install-command" aria-label="npm installation command">
+          <div
+            className="ui-install-command"
+            aria-label="npm installation command"
+          >
             <span>$</span>
-            <code>npm install github:A3S-Lab/UI</code>
-            <small>{labels.frameworkAgnostic}</small>
+            <code>{installCommand}</code>
+            <button
+              type="button"
+              onClick={copyInstallCommand}
+              aria-label={copied ? labels.copied : labels.copy}
+            >
+              {copied ? <CheckIcon /> : <CopyIcon />}
+              <span aria-live="polite">
+                {copied ? labels.copied : labels.copy}
+              </span>
+            </button>
           </div>
           <dl className="ui-hero__facts">
             <div>
@@ -469,7 +513,12 @@ export function HomeLayout() {
         </div>
       </section>
 
-      <section className="ui-proof-strip" aria-label="Design system qualities">
+      <section
+        className="ui-proof-strip"
+        aria-label={
+          locale === 'zh' ? '设计系统能力' : 'Design system qualities'
+        }
+      >
         {[
           ['01', labels.semanticHtml],
           ['02', labels.lightDark],
@@ -491,9 +540,7 @@ export function HomeLayout() {
             <span className="ui-section__eyebrow">{labels.catalogEyebrow}</span>
             <h2>{labels.catalogTitle}</h2>
           </div>
-          <p>
-            {labels.catalogBody}
-          </p>
+          <p>{labels.catalogBody}</p>
         </header>
         <div className="ui-family-grid">
           {componentFamilies.map((family) => (
@@ -518,12 +565,12 @@ export function HomeLayout() {
       <section className="ui-section ui-system">
         <header className="ui-section__header">
           <div>
-            <span className="ui-section__eyebrow">{labels.foundationsEyebrow}</span>
+            <span className="ui-section__eyebrow">
+              {labels.foundationsEyebrow}
+            </span>
             <h2>{labels.foundationsTitle}</h2>
           </div>
-          <p>
-            {labels.foundationsBody}
-          </p>
+          <p>{labels.foundationsBody}</p>
         </header>
         <div className="ui-system__board">
           <div className="ui-token-colors">

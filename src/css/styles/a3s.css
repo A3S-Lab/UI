@@ -1,38 +1,38 @@
-@import "./application.css";
+@import './application.css';
 
 /* A3S foundations, extracted from the Office workbench and normalized to Basecoat tokens. */
 :root {
   color-scheme: light;
-  --background: #f7f7f8;
-  --foreground: #17181a;
+  --background: #f6f8fc;
+  --foreground: #151922;
   --card: #ffffff;
-  --card-foreground: #17181a;
+  --card-foreground: #151922;
   --popover: #ffffff;
-  --popover-foreground: #17181a;
-  --primary: #242424;
+  --popover-foreground: #151922;
+  --primary: #285fd2;
   --primary-foreground: #ffffff;
-  --secondary: #f2f3f5;
-  --secondary-foreground: #242424;
-  --muted: #f2f3f5;
-  --muted-foreground: #71757d;
-  --accent: #edf2ff;
-  --accent-foreground: #234ca4;
+  --secondary: #eef2f7;
+  --secondary-foreground: #1d2633;
+  --muted: #f0f3f7;
+  --muted-foreground: #667085;
+  --accent: #eaf1ff;
+  --accent-foreground: #214fae;
   --destructive: #d84b4f;
-  --border: #e2e4e8;
-  --input: #dfe2e7;
-  --ring: #2864e8;
+  --border: #dce2eb;
+  --input: #cbd4e2;
+  --ring: #3b72e8;
   --chart-1: #8db4ff;
   --chart-2: #2864e8;
   --chart-3: #5420bd;
   --chart-4: #14a675;
   --chart-5: #db663b;
-  --sidebar: #f4f4f6;
-  --sidebar-foreground: #242529;
+  --sidebar: #f1f4f9;
+  --sidebar-foreground: #1d2633;
   --sidebar-primary: #2864e8;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e8ebf1;
-  --sidebar-accent-foreground: #17181a;
-  --sidebar-border: #dfe1e6;
+  --sidebar-accent: #e5eaf2;
+  --sidebar-accent-foreground: #151922;
+  --sidebar-border: #d8dfe9;
   --sidebar-ring: #2864e8;
   --radius: 0.6875rem;
   --a3s-bg: var(--background);
@@ -46,7 +46,7 @@
   --a3s-line: var(--border);
   --a3s-line-strong: #d3d6dc;
   --a3s-action: var(--primary);
-  --a3s-action-hover: #111111;
+  --a3s-action-hover: #1f51b8;
   --a3s-action-ink: var(--primary-foreground);
   --a3s-blue: #2864e8;
   --a3s-purple: #5420bd;
@@ -58,48 +58,48 @@
   --a3s-radius-sm: 0.5625rem;
   --a3s-shadow: 0 24px 64px rgb(20 24 40 / 18%);
   --a3s-shadow-soft: 0 14px 36px rgb(20 24 40 / 12%);
-  --a3s-ui-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --a3s-ui-font: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
   --font-sans: var(--a3s-ui-font);
 }
 
 .dark {
   color-scheme: dark;
-  --background: #101118;
+  --background: #0b0f16;
   --foreground: #f2f3f5;
-  --card: #171820;
+  --card: #121824;
   --card-foreground: #f2f3f5;
-  --popover: #1b1c24;
+  --popover: #171e2b;
   --popover-foreground: #f2f3f5;
-  --primary: #f2f3f5;
-  --primary-foreground: #17181a;
-  --secondary: #252730;
+  --primary: #8eafff;
+  --primary-foreground: #0d1830;
+  --secondary: #1d2634;
   --secondary-foreground: #f2f3f5;
-  --muted: #1e2028;
-  --muted-foreground: #a4a8b2;
-  --accent: #232c42;
-  --accent-foreground: #a9c8ff;
+  --muted: #18212e;
+  --muted-foreground: #aab3c2;
+  --accent: #202d45;
+  --accent-foreground: #b8ceff;
   --destructive: #f27777;
-  --border: #2a2d35;
-  --input: #343741;
-  --ring: #6ca3ff;
+  --border: #293445;
+  --input: #354256;
+  --ring: #8eafff;
   --chart-1: #a9c8ff;
   --chart-2: #6ca3ff;
   --chart-3: #a883ff;
   --chart-4: #3ccf91;
   --chart-5: #f08a61;
-  --sidebar: #15161d;
+  --sidebar: #101722;
   --sidebar-foreground: #f2f3f5;
   --sidebar-primary: #6ca3ff;
   --sidebar-primary-foreground: #101118;
-  --sidebar-accent: #242630;
+  --sidebar-accent: #202a39;
   --sidebar-accent-foreground: #f2f3f5;
-  --sidebar-border: #2a2d35;
-  --sidebar-ring: #6ca3ff;
-  --a3s-panel-strong: #282b35;
-  --a3s-subtle: #8d929e;
-  --a3s-faint: #727783;
-  --a3s-line-strong: #3a3d48;
-  --a3s-action-hover: #ffffff;
+  --sidebar-border: #293445;
+  --sidebar-ring: #8eafff;
+  --a3s-panel-strong: #222d3c;
+  --a3s-subtle: #929cac;
+  --a3s-faint: #778294;
+  --a3s-line-strong: #3d4a5f;
+  --a3s-action-hover: #a9c3ff;
   --a3s-blue: #6ca3ff;
   --a3s-purple: #a883ff;
   --a3s-green: #3ccf91;
@@ -217,7 +217,6 @@
     @apply bg-input;
   }
 
-
   /* Tabs */
   .tabs {
     @apply gap-2;
@@ -236,7 +235,7 @@
   }
 
   .tabs > [role='tablist'][aria-orientation='vertical'] {
-    @apply h-fit ;
+    @apply h-fit;
   }
 
   .tabs > [role='tablist'] > [role='tab'] {
@@ -245,7 +244,7 @@
   }
 
   .tabs > [role='tablist'][aria-orientation='vertical'] > [role='tab'] {
-    @apply w-full justify-start ;
+    @apply w-full justify-start;
   }
 
   .tabs > [role='tablist'][data-variant='line'][aria-orientation='horizontal'] > [role='tab'] {
@@ -341,7 +340,6 @@
   .alert[data-variant='destructive'] > :is(h2, h3, h4, h5, h6, strong, [data-title]) {
     @apply font-medium;
   }
-
 
   .alert:has(> svg) > :is(h2, h3, h4, h5, h6, strong, [data-title]) {
     @apply col-start-2;
@@ -511,7 +509,6 @@
     @apply text-foreground;
   }
 
-
   /* Combobox */
   .combobox > input[role='combobox'] {
     @apply border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border bg-transparent py-2 ps-2.5 pe-8 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3;
@@ -595,9 +592,6 @@
     @apply bg-popover text-popover-foreground ring-foreground/10 rounded-md p-1 shadow-md ring-1 duration-100;
   }
 
-
-
-
   .select:not(select) [role='listbox'] {
     @apply scroll-py-1;
   }
@@ -626,7 +620,6 @@
   .select:not(select) [role='separator'] {
     @apply bg-border -mx-1 my-1 h-px;
   }
-
 
   /* Dialog */
   .dialog::backdrop,
@@ -960,7 +953,6 @@
     @apply translate-x-0;
   }
 
-
   /* Field */
   .fieldset {
     @apply gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3;
@@ -1047,7 +1039,7 @@
     @apply text-muted-foreground px-2;
   }
 
-  .field [role="alert"] {
+  .field [role='alert'] {
     @apply text-destructive text-sm;
   }
 
@@ -1055,7 +1047,6 @@
   .input-group {
     @apply h-9 has-[>textarea]:h-auto rounded-md border border-input shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 has-[[aria-invalid=true]]:ring-destructive/20 dark:bg-input/30 dark:has-[[aria-invalid=true]]:ring-destructive/40;
   }
-
 
   .input-group:has(> :is(input, textarea, select, [data-control]):disabled) {
     @apply opacity-50;
@@ -1148,7 +1139,6 @@
     @apply pt-2;
   }
 
-
   .input-group > :is(kbd, span > kbd, [role='group'] > kbd, header > kbd, footer > kbd) {
     @apply rounded-[calc(var(--radius)-5px)];
   }
@@ -1156,7 +1146,6 @@
   .input-group > :is(button, [role='group'] > button, header > button, footer > button) {
     @apply gap-2 text-sm shadow-none [&>svg:not([class*='size-'])]:size-3.5;
   }
-
 
   .input-group > :is(button, [role='group'] > button, header > button, footer > button):has(> svg):not(:has(> :not(svg))) {
     @apply size-6 rounded-[calc(var(--radius)-5px)] p-0;
@@ -1316,11 +1305,11 @@
     @apply gap-2;
   }
 
-  .sidebar nav [role=separator] {
+  .sidebar nav [role='separator'] {
     @apply border-sidebar-border mx-2;
   }
 
-  .sidebar nav > section > [role=group] {
+  .sidebar nav > section > [role='group'] {
     @apply p-2;
   }
 
@@ -1328,11 +1317,11 @@
     @apply text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-md px-2 text-xs font-medium focus-visible:ring-2 [&>svg]:size-4 transition-[margin,opacity] duration-200 ease-linear;
   }
 
-  .sidebar nav > section > [role=group] > ul {
+  .sidebar nav > section > [role='group'] > ul {
     @apply gap-1;
   }
 
-  .sidebar nav > section > [role=group] {
+  .sidebar nav > section > [role='group'] {
     @apply text-sm;
   }
 
@@ -1341,37 +1330,37 @@
     @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground gap-2 rounded-md p-2 text-sm focus-visible:ring-2 text-left focus-visible:outline-hidden data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>svg]:shrink-0 [&>svg]:size-4;
   }
 
-  .sidebar nav li > :is(a, button):is([aria-current=page], [data-active=true]),
-  .sidebar nav li > details > summary:is([aria-current=page], [data-active=true]) {
+  .sidebar nav li > :is(a, button):is([aria-current='page'], [data-active='true']),
+  .sidebar nav li > details > summary:is([aria-current='page'], [data-active='true']) {
     @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium;
   }
 
   .sidebar nav li > :is(a, button):not([data-variant]),
   .sidebar nav li > details > summary:not([data-variant]),
-  .sidebar nav li > :is(a, button)[data-variant=default],
-  .sidebar nav li > details > summary[data-variant=default] {
+  .sidebar nav li > :is(a, button)[data-variant='default'],
+  .sidebar nav li > details > summary[data-variant='default'] {
     @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
   }
 
-  .sidebar nav li > :is(a, button)[data-variant=outline],
-  .sidebar nav li > details > summary[data-variant=outline] {
+  .sidebar nav li > :is(a, button)[data-variant='outline'],
+  .sidebar nav li > details > summary[data-variant='outline'] {
     @apply bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
   }
 
   .sidebar nav li > :is(a, button):not([data-size]),
   .sidebar nav li > details > summary:not([data-size]),
-  .sidebar nav li > :is(a, button)[data-size=default],
-  .sidebar nav li > details > summary[data-size=default] {
+  .sidebar nav li > :is(a, button)[data-size='default'],
+  .sidebar nav li > details > summary[data-size='default'] {
     @apply h-8 text-sm;
   }
 
-  .sidebar nav li > :is(a, button)[data-size=sm],
-  .sidebar nav li > details > summary[data-size=sm] {
+  .sidebar nav li > :is(a, button)[data-size='sm'],
+  .sidebar nav li > details > summary[data-size='sm'] {
     @apply h-7 text-xs;
   }
 
-  .sidebar nav li > :is(a, button)[data-size=lg],
-  .sidebar nav li > details > summary[data-size=lg] {
+  .sidebar nav li > :is(a, button)[data-size='lg'],
+  .sidebar nav li > details > summary[data-size='lg'] {
     @apply h-12 text-sm;
   }
 
@@ -1442,7 +1431,6 @@
     @apply text-muted-foreground mt-4 text-sm;
   }
 
-
   /* Tooltip */
   [data-tooltip]::before {
     @apply bg-foreground text-background inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs has-[.kbd]:pe-1.5 [&_.kbd]:relative [&_.kbd]:isolate [&_.kbd]:z-50 [&_.kbd]:rounded-sm;
@@ -1493,5 +1481,4 @@
   :is(.field > input[type='range'], .input[type='range'])::-ms-thumb {
     @apply border-primary ring-ring/50 size-4 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden;
   }
-
 }
