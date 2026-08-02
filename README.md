@@ -1,118 +1,147 @@
-# Basecoat
+<p align="center">
+  <img src="./assets/readme/hero.svg" alt="A3S UI — one design system for every A3S surface" width="1200">
+</p>
 
-Basecoat is a Tailwind CSS, vanilla HTML/CSS/JavaScript implementation of the shadcn/ui design system. It provides shadcn-style components for any web stack without React, Radix, or framework runtime dependencies.
+<p align="center">
+  A framework-agnostic design system for agent workspaces, document tools, and operational consoles.
+</p>
 
-![screenshot](site/public/assets/images/screenshot.png)
+<p align="center">
+  <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
+  <a href="https://a3s-lab.github.io/UI/en/"><img alt="Documentation in English" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
+  <a href="https://github.com/A3S-Lab/UI/actions/workflows/pages.yml"><img alt="GitHub Pages deployment" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/UI/pages.yml?branch=main&style=flat-square&label=pages"></a>
+  <a href="./LICENSE.md"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-28a978?style=flat-square"></a>
+</p>
 
-## Features
+## One visual language, from controls to workbenches
 
-- Semantic HTML-first components.
-- Tailwind CSS v4 source files and generated CSS bundles.
-- Small vanilla JavaScript for components that need behavior.
-- Standalone style packs: Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea.
-- Compatible with shadcn/ui themes.
-- Dark mode.
-- CDN, npm, and template usage paths.
-- Nunjucks and Jinja templates.
+A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-## Documentation
+The system covers both familiar primitives and application-scale composition: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, and resizable Split Panes all share the same tokens, density, and state model.
 
-- Website: [basecoatui.com](https://basecoatui.com)
-- Installation: [basecoatui.com/installation](https://basecoatui.com/installation)
-- Customization: [basecoatui.com/customization](https://basecoatui.com/customization)
+<p align="center">
+  <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
+</p>
 
-## Install
+## Start in three steps
+
+Install directly from GitHub while the first registry release is being prepared:
 
 ```bash
-npm install basecoat-css
+npm install github:A3S-Lab/UI
 ```
 
-Use the default bundle:
+Load Tailwind and the complete A3S bundle:
 
 ```css
 @import "tailwindcss";
-@import "basecoat-css";
+@import "@a3s-lab/ui";
 ```
 
-Use a specific style bundle:
+Import the runtime only when the interface uses interactive composites:
 
-```css
-@import "tailwindcss";
-@import "basecoat-css/nova";
+```js
+import "@a3s-lab/ui/all";
 ```
 
-Use the styleless base plus a custom style file:
+Then compose the interface with semantic markup:
 
-```css
-@import "tailwindcss";
-@import "basecoat-css/base";
-@import "./style-acme.css";
+```html
+<header class="workspace-header">
+  <div data-workspace-identity>
+    <h1>Production gateway</h1>
+    <span>Configuration saved</span>
+  </div>
+  <div data-workspace-actions>
+    <button type="button" class="btn">Deploy</button>
+  </div>
+</header>
 ```
 
-## Repository Layout
+See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for split CSS imports, controller-level JavaScript imports, and server-rendered templates.
+
+## Component families
+
+| Family | Included patterns |
+| --- | --- |
+| Actions | Button and Button Group |
+| Forms | Fields, inputs, textareas, selects, checkboxes, radio groups, switches, sliders, labels, and comboboxes |
+| Navigation | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar |
+| Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
+| Feedback | Alert, Badge, Empty, Progress, Skeleton, Spinner, and Toast |
+| Data display | Accordion, Avatar, Card, Chart, Item, Kbd, and Table |
+| Application patterns | App Shell, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, and Split Pane |
+| Utilities | Scroll Area and Theme Switcher |
+
+Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
+
+## Design foundations
+
+The A3S theme is a complete design system rather than a palette layered over unrelated controls:
+
+- **Color** — blue-gray product surfaces with semantic success, warning, danger, and accent roles.
+- **Typography** — application-first hierarchy with dense labels and readable long-form documentation.
+- **Spacing** — a consistent rhythm for controls, panels, toolbars, and document canvases.
+- **Shape and elevation** — restrained radii, borders, and shadows that preserve information density.
+- **Motion** — short, purposeful transitions with reduced-motion support.
+- **Accessibility** — semantic elements, explicit ARIA state, keyboard interactions, RTL-aware layout, and light/dark themes.
+
+## Application-scale patterns
+
+The Office Workbench layer is where A3S UI differs from a primitive-only kit:
 
 ```text
-.
-├── dist/                 Generated package output
-├── scripts/              Build and generation scripts
-├── site/                 ReallySimpleDocs/Astro documentation app
-│   ├── public/           Static site assets
-│   └── src/
-│       ├── components/   RSD component overrides
-│       ├── docs/         Documentation pages and examples
-│       ├── fragments/    Site-only rendered fragments
-│       ├── pages/        Astro routes outside the docs tree
-│       └── scripts/      Site scripts
-├── src/                  Package source
-│   ├── css/
-│   ├── js/
-│   └── templates/
-└── templates/            Generated package template output
+App Shell
+├── Activity Bar
+├── Workspace Header
+├── Toolbar or Ribbon
+├── Resource Grid
+├── Settings Layout
+└── Split Pane
 ```
 
-## CSS Architecture
+These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles.
 
-Basecoat separates structure from style:
+## Documentation languages and versions
 
-- `src/css/base/base.css`: shared tokens and semantic utilities.
-- `src/css/components/*.css`: component layout, structure, accessibility selectors, and behavior hooks.
-- `src/css/styles/*.css`: style-pack visuals such as color, radius, shadow, typography, spacing, variants, and state styles.
+The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation.
 
-Generated source entrypoints are committed for transparency and package imports:
+| Version | 简体中文 | English |
+| --- | --- | --- |
+| `next` | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| `v0.1.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.1.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.1.0/en/) |
 
-- `src/css/basecoat.css`: default backward-compatible Vega bundle.
-- `src/css/basecoat-base.css`: base plus components, no style pack.
-- `src/css/basecoat-components.css`: component imports only.
-- `src/css/basecoat-<style>.css`: base plus one style pack.
-- `src/css/basecoat-<style>.cdn.css`: CDN-compatible wrapper.
+Language and version switches preserve the current page whenever that route exists in the destination tree.
 
-These entrypoints are generated by `scripts/generate-css-entrypoints.js` and by the build scripts.
+## Package entrypoints
 
-## JavaScript Lifecycle
+| Import | Purpose |
+| --- | --- |
+| `@a3s-lab/ui` | Complete default A3S CSS bundle |
+| `@a3s-lab/ui/base` | Tokens, utilities, and structural component CSS without a visual style |
+| `@a3s-lab/ui/components/{name}.css` | One component's structural CSS |
+| `@a3s-lab/ui/styles/a3s.css` | A3S visual foundation for split-import builds |
+| `@a3s-lab/ui/all` | Shared runtime plus all auto-initialized controllers except Chart |
+| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `tabs` or `split-pane` |
+| `@a3s-lab/ui/templates/*` | Nunjucks and Jinja templates for server-rendered applications |
 
-- `window.basecoat.init(name)` initializes uninitialized components for one registered component.
-- `window.basecoat.initAll()` initializes all uninitialized registered components.
-- `window.basecoat.init(name, { force: true })` and `window.basecoat.initAll({ force: true })` destroy and reinitialize matching components. Use this when a framework or navigation library restores previously initialized DOM from a cache. Force mode resets transient component state such as open menus, focus state, and active interactions.
-- `window.basecoat.refresh(element)` asks an initialized component to rescan dynamic children when it supports refresh.
-- Components use internal destroy hooks to clean up listeners when initialized roots are removed from the DOM.
+The public runtime namespace remains `window.basecoat` for compatibility with the underlying lifecycle and controller registry.
 
 ## Development
 
 ```bash
-# Install dependencies.
-npm i
-npm --prefix site i
-
-# Run the ReallySimpleDocs/Astro site.
-npm run docs:dev
-
-# Build package assets.
+npm ci
+npm ci --prefix site
 npm run build
-
-# Build the static docs site.
 npm run docs:build
 ```
 
-## License
+Run the documentation site locally with `npm run docs:dev`. The static build is written to `site/doc_build` and deployed to GitHub Pages from `main`.
 
-[MIT](LICENSE.md)
+Local browser release checks use A3S Test; they are intentionally not part of CI.
+
+## Lineage and license
+
+A3S UI builds on [Basecoat](https://github.com/hunvreus/basecoat), created by [Ronan Berder](https://github.com/hunvreus), and retains its semantic HTML interpretation of the [shadcn/ui](https://ui.shadcn.com/) visual language. The A3S theme and workbench components extend that foundation for A3S products.
+
+Released under the [MIT License](./LICENSE.md).

@@ -8,17 +8,18 @@
 - Challenge incorrect assumptions with evidence from code, docs, or upstream sources.
 
 ## Project Intent
-- Basecoat is a Tailwind CSS, vanilla HTML, CSS, and JavaScript implementation of shadcn/ui's visual language for non-React stacks.
-- Basecoat maps upstream shadcn/ui concepts onto simpler semantic markup; it is not a React, Radix, Base UI, `cn-*`, or `data-slot` DOM port.
+- A3S UI is the framework-agnostic design system for A3S products, extracted from the interaction patterns refined in A3S Office.
+- It combines inherited Basecoat primitives with application-scale patterns such as App Shell, Activity Bar, Ribbon, Settings Layout, Resource Card, and Split Pane.
+- A3S UI maps shadcn/ui concepts onto simpler semantic markup; it is not a React, Radix, Base UI, `cn-*`, or `data-slot` DOM port.
 - Prefer the browser platform: native elements, semantic HTML, CSS state selectors, and small vanilla JS only when needed.
 
 ## Source Boundaries
 - Do not hand-edit build outputs:
   - `dist/**`
   - `templates/**`
-  - `site/dist/**`
-  - `site/public/assets/js/**`
-  - `site/public/fragments/**`
+  - `site/doc_build/**`
+  - `site/docs/public/assets/a3s-ui.css`
+  - `site/docs/public/assets/all.min.js`
 - Generated source entrypoints such as `src/css/basecoat-vega.css` are committed, but must be regenerated through `scripts/generate-css-entrypoints.js` or build scripts, not manually maintained.
 
 ## Public API and Markup
@@ -67,18 +68,20 @@
   - style packs: `src/css/styles/{vega,nova,maia,lyra,mira,luma,sera,rhea}.css`
   - JS: `src/js/<component>.js` when behavior changes
   - templates: `src/templates/nunjucks/*.njk` and `src/templates/jinja/*.html.jinja` when markup changes
-  - docs: `site/src/docs/components/<component>.mdx`
+  - docs: `site/docs/next/{zh,en}/components/<component>.mdx`
 - Map upstream concepts, not implementation details. Do not port `cn-*` selectors directly.
 - Classify differences as `drift fixed`, `intentional`, or `deferred`.
 
 ## Docs
-- Docs are Basecoat API docs, not React docs.
+- Docs are A3S UI API docs, not React docs.
+- The Rspress site defaults to Simplified Chinese and mirrors every public page under English and each supported version tree.
+- Keep `site/docs/next/zh` and `site/docs/next/en` aligned when public APIs change; stable version trees represent their published contracts.
 - Update docs when supported markup, variants, states, JS behavior, templates, or macros change.
 - Prefer concrete HTML examples over abstract composition trees.
 - Do not include React-only APIs such as `asChild`.
 - Do not add "Composition" sections unless they describe stable Basecoat markup.
 - Do not add API Reference sections for native/CSS-only components unless there is a real Basecoat API.
-- Structure component docs as: title and preview, `## Usage`, optional `### HTML structure` for stable markup requirements, optional `### JavaScript API` for components with Basecoat JS methods/events/options, then `## Examples`.
+- Structure component docs as: title and live preview, `## Usage`, `### Parameters`, optional `### JavaScript API`, `## States and variants`, and `## Accessibility`.
 - Keep `Usage` focused on the minimal working snippet and important Basecoat/upstream differences; put variants, states, RTL, and richer patterns under `Examples`.
 - Keep snippets minimal and aligned with current behavior.
 - In HTML snippets, keep text-only elements on one line, such as `<p>Text</p>`; use multiline formatting when the element contains child elements or when line length would hurt readability.
@@ -88,7 +91,8 @@
 ## Validation
 - Run `npm run build` after source/package changes.
 - Run `npm run docs:build` after docs or docs asset changes.
-- Manually verify changed components in docs across light/dark mode, style packs, variants, RTL when supported, and relevant interaction states.
+- Use A3S Test locally for release interaction checks; do not add it to the GitHub Pages workflow.
+- Verify changed components across light/dark mode, localization, supported versions, responsive layouts, RTL when supported, and relevant interaction states.
 
 ## Change Management
 - Ask before removing intentional functionality or public API.

@@ -1,0 +1,134 @@
+# 骨架
+
+<Preview>
+<div class="flex items-center gap-4">
+  <div class="skeleton size-10 shrink-0 rounded-full"></div>
+  <div class="grid gap-2">
+    <div class="skeleton h-4 w-[250px]"></div>
+    <div class="skeleton h-4 w-[200px]"></div>
+  </div>
+</div>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、组件组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/skeleton.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your skeleton HTML">
+
+添加具有大小调整工具类的 `class="skeleton"` 以创建加载占位符。
+
+```html
+<div class="skeleton h-4 w-[150px]"></div>
+```
+
+  </Step>
+</Steps>
+
+## 示例
+
+### 头像
+
+<Preview>
+<div class="flex items-center gap-4">
+  <div class="skeleton size-10 shrink-0 rounded-full"></div>
+  <div class="grid gap-2">
+    <div class="skeleton h-4 w-[150px]"></div>
+    <div class="skeleton h-4 w-[100px]"></div>
+  </div>
+</div>
+</Preview>
+
+### 卡
+
+<Preview class="w-full max-w-xs">
+<div class="card w-full">
+  <header>
+    <div class="skeleton h-4 w-2/3"></div>
+    <div class="skeleton h-4 w-1/2"></div>
+  </header>
+  <section> <div class="skeleton aspect-video w-full"></div></section>
+</div>
+</Preview>
+
+### 文本
+
+<Preview class="w-full max-w-sm">
+<div class="flex flex-col gap-2">
+  <div class="skeleton h-4 w-full"></div>
+  <div class="skeleton h-4 w-full"></div>
+  <div class="skeleton h-4 w-3/4"></div>
+</div>
+</Preview>
+
+### 表格
+
+<Preview class="w-full max-w-xs">
+<div class="flex flex-col gap-7">
+  <div class="flex flex-col gap-3">
+    <div class="skeleton h-4 w-20"></div>
+    <div class="skeleton h-10 w-full"></div>
+  </div>
+  <div class="flex flex-col gap-3">
+    <div class="skeleton h-4 w-24"></div>
+    <div class="skeleton h-10 w-full"></div>
+  </div>
+  <div class="skeleton h-9 w-24"></div>
+</div>
+</Preview>
+
+### 表
+
+<Preview class="w-full max-w-sm">
+<div class="flex flex-col gap-2">
+  <div class="flex gap-4">
+    <div class="skeleton h-4 flex-1"></div>
+    <div class="skeleton h-4 w-24"></div>
+    <div class="skeleton h-4 w-20"></div>
+  </div>
+  <div class="flex gap-4">
+    <div class="skeleton h-4 flex-1"></div>
+    <div class="skeleton h-4 w-24"></div>
+    <div class="skeleton h-4 w-20"></div>
+  </div>
+  <div class="flex gap-4">
+    <div class="skeleton h-4 flex-1"></div>
+    <div class="skeleton h-4 w-24"></div>
+    <div class="skeleton h-4 w-20"></div>
+  </div>
+</div>
+</Preview>
+
+### RTL
+
+骨架块是方向中立的。当间距取决于方向时，在它们周围使用逻辑布局工具类。
+
+<Preview>
+<div dir="rtl" class="flex items-center gap-4">
+  <div class="skeleton size-10 shrink-0 rounded-full"></div>
+  <div class="grid gap-2">
+    <div class="skeleton h-4 w-[150px]"></div>
+    <div class="skeleton h-4 w-[100px]"></div>
+  </div>
+</div>
+</Preview>

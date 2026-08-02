@@ -1,0 +1,61 @@
+@layer components {
+  .settings-layout {
+    --settings-navigation-size: 14rem;
+    display: grid;
+    grid-template-columns: minmax(11rem, var(--settings-navigation-size)) minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+    align-items: start;
+  }
+
+  .settings-layout > aside {
+    position: sticky;
+    inset-block-start: var(--settings-sticky-offset, 1rem);
+    min-width: 0;
+  }
+
+  .settings-layout > aside nav,
+  .settings-layout > aside nav > :is(ul, ol) {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+    list-style: none;
+  }
+
+  .settings-layout > aside a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .settings-layout > main {
+    display: grid;
+    min-width: 0;
+    gap: var(--settings-section-gap, 1.5rem);
+  }
+
+  .settings-layout > main > section {
+    display: grid;
+    min-width: 0;
+  }
+
+  @media (max-width: 48rem) {
+    .settings-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .settings-layout > aside {
+      position: static;
+    }
+
+    .settings-layout > aside nav > :is(ul, ol) {
+      display: flex;
+      overflow-x: auto;
+    }
+
+    .settings-layout > aside li {
+      flex: none;
+    }
+  }
+}

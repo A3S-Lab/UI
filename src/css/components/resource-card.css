@@ -1,0 +1,48 @@
+@layer components {
+  .resource-grid {
+    --resource-grid-min: 12rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--resource-grid-min)), 1fr));
+    gap: var(--resource-grid-gap, 1rem);
+  }
+
+  .resource-card {
+    display: grid;
+    min-width: 0;
+    overflow: hidden;
+    text-align: start;
+  }
+
+  .resource-card > figure {
+    position: relative;
+    display: grid;
+    min-height: var(--resource-preview-height, 8.5rem);
+    margin: 0;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .resource-card > section {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .resource-card > section > :is(h2, h3, strong, p, small) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .resource-card > section > :is(h2, h3, strong) {
+    white-space: nowrap;
+  }
+
+  .resource-card[data-orientation='horizontal'] {
+    grid-template-columns: minmax(7rem, 36%) minmax(0, 1fr);
+  }
+
+  .resource-card[data-orientation='horizontal'] > figure {
+    min-height: var(--resource-preview-height, 7.5rem);
+  }
+}

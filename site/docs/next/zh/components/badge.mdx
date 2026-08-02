@@ -1,0 +1,140 @@
+# 徽章
+
+<Preview>
+<div class="flex flex-wrap gap-2">
+  <span class="badge">Badge</span>
+  <span class="badge" data-variant="secondary">Secondary</span>
+  <span class="badge" data-variant="destructive">Destructive</span>
+  <span class="badge" data-variant="outline">Outline</span>
+</div>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、任务组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/badge.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your badge HTML">
+
+将 `class="badge"` 添加到内联元素。当徽章不是默认主要变体时添加 `data-variant`。
+
+内联 SVG 图标自动按间隙间隔开。
+
+```html
+<span class="badge">Default</span>
+<span class="badge" data-variant="secondary">Secondary</span>
+<span class="badge" data-variant="destructive">Destructive</span>
+<span class="badge" data-variant="outline">Outline</span>
+<span class="badge" data-variant="ghost">Ghost</span>
+```
+
+  </Step>
+</Steps>
+
+徽章通过原生文本流支持从右到左的布局。明确翻转方向图标。
+
+## 示例
+
+### 变体
+
+使用 `data-variant` 更改徽章变体。
+
+<Preview>
+<div class="flex flex-wrap gap-2">
+  <span class="badge">Default</span>
+  <span class="badge" data-variant="secondary">Secondary</span>
+  <span class="badge" data-variant="destructive">Destructive</span>
+  <span class="badge" data-variant="outline">Outline</span>
+  <span class="badge" data-variant="ghost">Ghost</span>
+</div>
+</Preview>
+
+### 带图标
+
+在图标上使用 `data-icon="inline-start"` 或 `data-icon="inline-end"` 以实现图标感知间距。
+
+<Preview>
+<div class="flex flex-wrap gap-2">
+  <span class="badge"><svg data-icon="inline-start" class="lucide lucide-badge-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" /><path d="m9 12 2 2 4-4" /></svg>
+    Verified
+  </span>
+  <span class="badge" data-variant="secondary">
+    Bookmark
+    <svg data-icon="inline-end" class="lucide lucide-bookmark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" /></svg>
+  </span>
+</div>
+</Preview>
+
+### 带旋转器
+
+将内联加载图标与 `data-icon="inline-start"` 或 `data-icon="inline-end"` 结合使用。
+
+<Preview>
+<div class="flex flex-wrap gap-2">
+  <span class="badge" data-variant="destructive"><svg aria-label="Loading" role="status" data-icon="inline-start" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+    Deleting
+  </span>
+  <span class="badge" data-variant="secondary">
+    Generating
+    <svg aria-label="Loading" role="status" data-icon="inline-end" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+  </span>
+</div>
+</Preview>
+
+### 链接
+
+<Preview>
+<a href="#" class="badge">
+  Open Link
+  <svg data-icon="inline-end" class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+</a>
+</Preview>
+
+### 自定义颜色
+
+<Preview>
+<div class="flex flex-wrap gap-2">
+  <span class="badge bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">Blue</span>
+  <span class="badge bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Green</span>
+  <span class="badge bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">Sky</span>
+  <span class="badge bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">Purple</span>
+  <span class="badge bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300">Red</span>
+</div>
+</Preview>
+
+### RTL
+
+<Preview>
+<div dir="rtl" class="flex flex-wrap gap-2">
+  <span class="badge">شارة</span>
+  <span class="badge" data-variant="secondary">ثانوي</span>
+  <span class="badge" data-variant="destructive">مدمر</span>
+  <span class="badge" data-variant="outline">مخطط</span>
+  <span class="badge"><svg data-icon="inline-start" class="lucide lucide-badge-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" /><path d="m9 12 2 2 4-4" /></svg>
+    متحقق
+  </span>
+  <span class="badge" data-variant="secondary">
+    إشارة مرجعية
+    <svg data-icon="inline-end" class="lucide lucide-bookmark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" /></svg>
+  </span>
+</div>
+</Preview>

@@ -1,0 +1,42 @@
+@layer components {
+  .workspace-header {
+    display: flex;
+    min-width: 0;
+    min-height: var(--workspace-header-height, 3.5rem);
+    flex: none;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .workspace-header > [data-workspace-leading],
+  .workspace-header > [data-workspace-actions] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .workspace-header > [data-workspace-identity] {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+    gap: 0.125rem;
+  }
+
+  .workspace-header > [data-workspace-identity] > :is(h1, p, span, input) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workspace-header > [data-workspace-actions] {
+    margin-inline-start: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .workspace-header [data-collapse='mobile'] {
+      display: none;
+    }
+  }
+}

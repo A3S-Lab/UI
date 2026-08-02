@@ -1,0 +1,70 @@
+@layer components {
+  .activity-bar {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .activity-bar > header,
+  .activity-bar > footer {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .activity-bar > nav {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .activity-bar ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+    list-style: none;
+  }
+
+  .activity-bar li > :is(a, button) {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    gap: 0.625rem;
+    text-align: start;
+  }
+
+  .activity-bar li > :is(a, button) > svg,
+  .activity-bar li > :is(a, button) > [data-icon] {
+    flex: none;
+  }
+
+  .activity-bar li > :is(a, button) > span:not([data-icon]) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .activity-bar [data-navigation-label] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .app-shell[data-navigation='collapsed'] .activity-bar [data-navigation-label],
+  .activity-bar[data-labels='hidden'] [data-navigation-label] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}

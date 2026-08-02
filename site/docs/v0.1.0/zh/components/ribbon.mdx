@@ -1,0 +1,58 @@
+# Ribbon 功能区
+
+Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 A3S Office，并被泛化到编辑器、拓扑工具与运维工作台。
+
+<Preview>
+<div class="ribbon tabs w-full rounded-xl border border-border" data-accent="blue">
+  <div role="tablist" aria-label="文档命令">
+<button type="button" role="tab" id="ribbon-home-tab" aria-selected="true" aria-controls="ribbon-home">首页</button>
+<button type="button" role="tab" id="ribbon-insert-tab" aria-selected="false" aria-controls="ribbon-insert" tabindex="-1">插入</button>
+<button type="button" role="tab" id="ribbon-review-tab" aria-selected="false" aria-controls="ribbon-review" tabindex="-1">审阅</button>
+  </div>
+  <div role="tabpanel" id="ribbon-home" aria-labelledby="ribbon-home-tab">
+    <fieldset data-ribbon-group><legend>Clipboard</legend><div data-ribbon-controls><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Paste">▣</button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Copy">□</button></div></fieldset><fieldset data-ribbon-group><legend>Font</legend><div data-ribbon-controls><button type="button" class="btn font-bold" data-size="icon-sm" data-variant="ghost" aria-label="Bold">B</button><button type="button" class="btn italic" data-size="icon-sm" data-variant="ghost" aria-label="Italic">I</button><button type="button" class="btn underline" data-size="icon-sm" data-variant="ghost" aria-label="Underline">U</button></div></fieldset><fieldset data-ribbon-group><legend>Paragraph</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">Align</button><button type="button" class="btn" data-size="sm" data-variant="ghost">List</button></div></fieldset>
+  </div>
+  <div role="tabpanel" id="ribbon-insert" aria-labelledby="ribbon-insert-tab" hidden>
+<fieldset data-ribbon-group><legend>内容</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">表</button><button type="button" class="btn" data-size="sm" data-variant="ghost">图片</button><button type="button" class="btn" data-size="sm" data-variant="ghost">链接</button></div></fieldset>
+  </div>
+  <div role="tabpanel" id="ribbon-review" aria-labelledby="ribbon-review-tab" hidden>
+<fieldset data-ribbon-group><legend>评论</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">评论</button><button type="button" class="btn" data-size="sm" data-variant="ghost">跟踪更改</button></div></fieldset>
+  </div>
+</div>
+</Preview>
+
+## 使用
+
+加载 Tabs 控制器，并在根节点同时使用 `ribbon` 与 `tabs` 类名。
+
+```html
+<div class="ribbon tabs" data-accent="blue">
+  <div role="tablist" aria-label="Editor commands">...</div>
+  <div role="tabpanel">
+    <fieldset data-ribbon-group><legend>Clipboard</legend>...</fieldset>
+  </div>
+</div>
+```
+
+### 参数
+
+| 参数 | 可选值 | 默认 | 目的 |
+| --- | --- | --- | --- |
+| `data-accent` | `blue`、`green`、`orange`、`purple` | `blue` | 产品或文档类型的重音 |
+| `role="tablist"` | — | 必填 | 选项卡导航容器 |
+| `aria-selected` | `true`、`false` | 必填 | 活动选项卡状态 |
+| `aria-controls` / `aria-labelledby` | 元素 ID | 必填 | 关联选项卡和面板 |
+| `data-ribbon-group` | — | 必填 | 命令组布局 |
+| `data-ribbon-controls` | — | 推荐 | 将命令与组图例上方对齐 |
+
+## 状态和变体
+
+蓝色适合文档与通用工作区，绿色适合电子表格或健康状态，橙色适合演示文稿，紫色适合智能体工作流。禁用的标签页与命令使用原生 `disabled`。
+
+### JavaScript API
+
+功能区行为来自 [Tabs](/components/tabs) 控制器。`window.basecoat.refresh(ribbon)` 重新扫描动态添加的选项卡。不需要功能区特定的 JavaScript。
+
+## 可访问性
+
+使用完整的标签键盘合约。使用 `<fieldset>` 和可见或仅屏幕阅读器的 `<legend>` 对命令进行分组。如果色带变得太密，请允许水平滚动，而不是将标签缩小到可见尺寸以下。

@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Added
+
+- Added the A3S visual foundation and application-scale components for activity bars, application shells, workspace headers, toolbars, ribbons, settings layouts, resource cards, and resizable split panes.
+- Added package entrypoints for the complete A3S theme, individual component CSS, and the Split Pane controller.
+- Added a Rspress documentation site with Chinese as the default language, English localization, `next` and `v0.1.0` version switching, design foundations, grouped component APIs, and live previews.
+- Added GitHub Pages deployment for the versioned documentation site.
+
+### Changed
+
+- Rebranded the package as `@a3s-lab/ui` and made the complete A3S style bundle the default export.
+- Migrated the documentation build from Astro and ReallySimpleDocs to the same Rspress, React, and TypeScript stack used by the A3S Code website.
+- Rebuilt the repository homepage around the A3S Office Workbench design system and the live documentation catalog.
+
+### Fixed
+
+- Fixed the Rspress mobile language selector collapsing to zero height and overlapping the version selector.
+- Prevented Rspress's inactive search listener from intercepting Enter on interactive controls, and made theme controls keyboard accessible with localized labels.
+
 ## [1.0.2] - 2026-07-06
 
 ### Added

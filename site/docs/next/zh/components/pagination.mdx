@@ -1,0 +1,113 @@
+# 分页
+
+<Callout title="No dedicated component" icon="circle-alert">
+A3S UI 中没有专用的分页组件。
+</Callout>
+
+<Preview class="max-w-md">
+<nav role="navigation" aria-label="pagination" class="mx-auto flex w-full justify-center">
+  <ul class="flex flex-row items-center gap-1">
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        <span>Previous</span>
+      </a>
+    </li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">1</a></li>
+    <li><a href="#" class="btn" data-variant="outline" data-size="icon">2</a></li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">3</a></li>
+    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        <span>Next</span>
+        <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+      </a>
+    </li>
+  </ul>
+</nav>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、分页组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+分页将按钮组件CSS用于其链接和控件。
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your pagination HTML">
+
+使用A3S UI按钮类通过Tailwind实现分页相当简单：
+
+```html
+<nav role="navigation" aria-label="pagination" class="mx-auto flex w-full justify-center">
+  <ul class="flex flex-row items-center gap-1">
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        Previous
+      </a>
+    </li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">1</a></li>
+    <li><a href="#" class="btn" data-variant="outline" data-size="icon">2</a></li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">3</a></li>
+    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        Next
+        <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+      </a>
+    </li>
+  </ul>
+</nav>
+```
+
+  </Step>
+</Steps>
+
+## 示例
+
+### RTL
+
+分页使用文档方向和逻辑间距。在分页根或父级上设置 `dir="rtl"`。
+
+<Preview class="max-w-md">
+<nav dir="rtl" role="navigation" aria-label="ترقيم الصفحات" class="mx-auto flex w-full justify-center">
+  <ul class="flex flex-row items-center gap-1">
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+        <span>السابق</span>
+      </a>
+    </li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">١</a></li>
+    <li><a href="#" class="btn" data-variant="outline" data-size="icon">٢</a></li>
+    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">٣</a></li>
+    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li>
+      <a href="#" class="btn" data-variant="ghost">
+        <span>التالي</span>
+        <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+      </a>
+    </li>
+  </ul>
+</nav>
+</Preview>

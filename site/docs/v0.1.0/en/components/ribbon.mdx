@@ -1,0 +1,58 @@
+# Ribbon
+
+A Ribbon combines tab navigation with grouped application commands. The pattern is extracted from A3S Office and generalized for editors, topology tools, and operational workbenches.
+
+<Preview>
+<div class="ribbon tabs w-full rounded-xl border border-border" data-accent="blue">
+  <div role="tablist" aria-label="Document commands">
+    <button type="button" role="tab" id="ribbon-home-tab" aria-selected="true" aria-controls="ribbon-home">Home</button>
+    <button type="button" role="tab" id="ribbon-insert-tab" aria-selected="false" aria-controls="ribbon-insert" tabindex="-1">Insert</button>
+    <button type="button" role="tab" id="ribbon-review-tab" aria-selected="false" aria-controls="ribbon-review" tabindex="-1">Review</button>
+  </div>
+  <div role="tabpanel" id="ribbon-home" aria-labelledby="ribbon-home-tab">
+    <fieldset data-ribbon-group><legend>Clipboard</legend><div data-ribbon-controls><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Paste">▣</button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Copy">□</button></div></fieldset><fieldset data-ribbon-group><legend>Font</legend><div data-ribbon-controls><button type="button" class="btn font-bold" data-size="icon-sm" data-variant="ghost" aria-label="Bold">B</button><button type="button" class="btn italic" data-size="icon-sm" data-variant="ghost" aria-label="Italic">I</button><button type="button" class="btn underline" data-size="icon-sm" data-variant="ghost" aria-label="Underline">U</button></div></fieldset><fieldset data-ribbon-group><legend>Paragraph</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">Align</button><button type="button" class="btn" data-size="sm" data-variant="ghost">List</button></div></fieldset>
+  </div>
+  <div role="tabpanel" id="ribbon-insert" aria-labelledby="ribbon-insert-tab" hidden>
+    <fieldset data-ribbon-group><legend>Content</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">Table</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Image</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Link</button></div></fieldset>
+  </div>
+  <div role="tabpanel" id="ribbon-review" aria-labelledby="ribbon-review-tab" hidden>
+    <fieldset data-ribbon-group><legend>Review</legend><div data-ribbon-controls><button type="button" class="btn" data-size="sm" data-variant="ghost">Comment</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Track changes</button></div></fieldset>
+  </div>
+</div>
+</Preview>
+
+## Usage
+
+Load the Tabs controller and combine `ribbon` with `tabs`.
+
+```html
+<div class="ribbon tabs" data-accent="blue">
+  <div role="tablist" aria-label="Editor commands">...</div>
+  <div role="tabpanel">
+    <fieldset data-ribbon-group><legend>Clipboard</legend>...</fieldset>
+  </div>
+</div>
+```
+
+### Parameters
+
+| Parameter | Values | Default | Purpose |
+| --- | --- | --- | --- |
+| `data-accent` | `blue`, `green`, `orange`, `purple` | `blue` | Product or document-kind accent |
+| `role="tablist"` | — | Required | Tab navigation container |
+| `aria-selected` | `true`, `false` | Required | Active tab state |
+| `aria-controls` / `aria-labelledby` | Element IDs | Required | Associates tabs and panels |
+| `data-ribbon-group` | — | Required | Command group layout |
+| `data-ribbon-controls` | — | Recommended | Aligns commands above the group legend |
+
+## States and variants
+
+Blue suits documents and general workspaces, green suits spreadsheets or healthy operations, orange suits presentations, and purple suits agent workflows. Disabled tabs and commands use native `disabled`.
+
+### JavaScript API
+
+Ribbon behavior comes from the [Tabs](/components/tabs) controller. `window.basecoat.refresh(ribbon)` rescans dynamically added tabs. No Ribbon-specific JavaScript is required.
+
+## Accessibility
+
+Use the complete Tabs keyboard contract. Group commands with `<fieldset>` and a visible or screen-reader-only `<legend>`. If a ribbon becomes too dense, allow horizontal scrolling rather than shrinking labels below a readable size.

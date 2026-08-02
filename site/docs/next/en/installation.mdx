@@ -1,0 +1,142 @@
+# Installation
+
+A3S UI can be installed directly from GitHub today. The package builds its distributable CSS, JavaScript, and templates during installation.
+
+## Package installation
+
+<Steps>
+  <Step title="Install the package">
+
+<CodeGroup>
+```bash title="npm"
+npm install github:A3S-Lab/UI
+```
+
+```bash title="pnpm"
+pnpm add github:A3S-Lab/UI
+```
+
+```bash title="bun"
+bun add github:A3S-Lab/UI
+```
+</CodeGroup>
+
+The registry name is `@a3s-lab/ui`; use `npm install @a3s-lab/ui` after the first registry release.
+
+  </Step>
+  <Step title="Import Tailwind and A3S UI">
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui";
+```
+
+The default export includes base tokens, every component, and the A3S style pack. Load it after Tailwind so a later preflight does not reset component boundaries or controls.
+
+  </Step>
+  <Step title="Load interactive components">
+
+Most components are CSS-only. Import the complete runtime when the application uses menus, select, tabs, split panes, or other interactive composites.
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+Or import the runtime once and only the controllers you use.
+
+```js
+import "@a3s-lab/ui/basecoat";
+import "@a3s-lab/ui/tabs";
+import "@a3s-lab/ui/split-pane";
+```
+
+  </Step>
+  <Step title="Use semantic markup">
+
+```html
+<header class="workspace-header">
+  <div data-workspace-identity>
+    <h1>Production gateway</h1>
+    <span>Configuration saved</span>
+  </div>
+  <div data-workspace-actions>
+    <button type="button" class="btn">Deploy</button>
+  </div>
+</header>
+```
+
+  </Step>
+</Steps>
+
+## CSS imports
+
+| Import | Contents |
+| --- | --- |
+| `@a3s-lab/ui` | Default complete A3S bundle |
+| `@a3s-lab/ui/a3s` | Complete A3S bundle, explicit name |
+| `@a3s-lab/ui/{style}` | Complete `vega`, `nova`, `maia`, `lyra`, `mira`, `luma`, `sera`, or `rhea` bundle |
+| `@a3s-lab/ui/base` | Tokens, semantic utilities, and component structure without visual style |
+| `@a3s-lab/ui/components` | All component structure without base or visual style |
+| `@a3s-lab/ui/components/button.css` | One component's structure |
+| `@a3s-lab/ui/styles/a3s.css` | A3S visuals and foundations; combine with `base` |
+| `@a3s-lab/ui/compat` | Optional pre-1.0 Basecoat compatibility aliases |
+
+### Split imports
+
+Use split imports when application CSS already owns its dependency graph.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/app-shell.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+## JavaScript imports
+
+| Import | Controller |
+| --- | --- |
+| `@a3s-lab/ui/all` | Runtime and all auto-initialized controllers except Chart |
+| `@a3s-lab/ui/basecoat` | Shared lifecycle and registry |
+| `@a3s-lab/ui/accordion` | Accordion enhancement |
+| `@a3s-lab/ui/combobox` | Combobox |
+| `@a3s-lab/ui/command` | Command palette |
+| `@a3s-lab/ui/drawer` | Drawer |
+| `@a3s-lab/ui/dropdown-menu` | Dropdown Menu |
+| `@a3s-lab/ui/popover` | Popover |
+| `@a3s-lab/ui/range` | Range input visual state |
+| `@a3s-lab/ui/select` | Select |
+| `@a3s-lab/ui/sidebar` | Sidebar |
+| `@a3s-lab/ui/split-pane` | Resizable Split Pane |
+| `@a3s-lab/ui/tabs` | Tabs and Ribbon navigation |
+| `@a3s-lab/ui/toast` | Toast |
+| `@a3s-lab/ui/chart` | Chart helper; Chart.js remains separate |
+
+The public runtime namespace remains `window.basecoat` for compatibility. It initializes registered components on page load and observes newly inserted DOM.
+
+```js
+window.basecoat.initAll();
+window.basecoat.initAll({ force: true });
+window.basecoat.refresh(document.querySelector(".split-pane"));
+```
+
+## Server-rendered templates
+
+Optional Nunjucks and Jinja templates ship with the package.
+
+<CodeGroup>
+```bash title="Nunjucks"
+cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
+```
+
+```bash title="Jinja"
+cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
+```
+</CodeGroup>
+
+See [Templates](/templates) for macro parameters.
+
+## Icons
+
+Icons are deliberately not bundled. Documentation examples use inline Lucide-compatible SVG, but applications may use any icon system. Icon-only controls always need an accessible name.

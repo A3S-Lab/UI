@@ -1,0 +1,108 @@
+# 文本区域
+
+<Preview class="w-full max-w-xs">
+<textarea class="textarea" placeholder="Type your message here"></textarea>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、Textarea组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/textarea.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your textarea HTML">
+
+Add `class="textarea"` to a `<textarea>` element. Textareas inside a `class="field"` container also receive the same styling automatically.
+
+使用原生 HTML 属性进行：`disabled` 用于取消文本区域，`aria-invalid="true"` 用于无效状态行为样式。
+
+```html
+<textarea class="textarea" placeholder="Type your message here"></textarea>
+```
+
+  </Step>
+</Steps>
+
+文本区域通过原生浏览器方向处理支持从右到左的布局。
+
+## 示例
+
+### 现场
+
+使用带有标签和说明的 `field` 创建可访问的文本区域。
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field">
+  <label for="textarea-field">Message</label>
+  <textarea id="textarea-field" placeholder="Type your message here"></textarea>
+  <p>Write a short message.</p>
+</div>
+</Preview>
+
+### 已禁用
+
+<Preview class="w-full max-w-xs">
+<textarea class="textarea" placeholder="Type your message here" disabled></textarea>
+</Preview>
+
+### 无效
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field w-full max-w-xs">
+  <label for="textarea-invalid">Message</label>
+  <textarea class="textarea" id="textarea-invalid" placeholder="Type your message here" aria-invalid="true"></textarea>
+  <p>Message is required.</p>
+</div>
+</Preview>
+
+### 按钮
+
+<Preview class="w-full max-w-xs">
+<div class="grid w-full max-w-xs gap-3">
+  <textarea class="textarea" placeholder="Type your message here"></textarea>
+  <button type="submit" class="btn">Submit</button>
+</div>
+</Preview>
+
+### 表格
+
+<Preview class="w-full max-w-sm">
+<form class="w-full max-w-sm space-y-6">
+  <div role="group" class="field">
+    <label for="textarea-form">Bio</label>
+    <textarea id="textarea-form" placeholder="Tell us a bit about yourself"></textarea>
+    <p>You can @mention other users and organizations.</p>
+  </div>
+  <button type="submit" class="btn">Submit</button>
+</form>
+</Preview>
+
+### RTL
+
+将 `dir="rtl"` 添加到文本区域、字段或祖先。
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field w-full max-w-xs" dir="rtl">
+  <label for="textarea-rtl">التعليقات</label>
+  <textarea id="textarea-rtl" placeholder="تعليقاتك تساعدنا على التحسين..." rows="4"></textarea>
+  <p>شاركنا أفكارك حول الخدمة.</p>
+</div>
+</Preview>

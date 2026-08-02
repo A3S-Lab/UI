@@ -1,0 +1,263 @@
+# 弹出框
+
+<Preview>
+<div id="demo-popover" class="popover">
+  <button id="demo-popover-trigger" type="button" aria-expanded="false" aria-controls="demo-popover-popover" class="btn" data-variant="outline">Open popover</button>
+  <div id="demo-popover-popover" data-popover aria-hidden="true" class="w-72">
+    <header>
+      <h4>Dimensions</h4>
+      <p>Set the dimensions for the layer.</p>
+    </header>
+    <form class="grid gap-2" onsubmit="event.preventDefault()">
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-width">Width</label>
+        <input type="text" id="demo-popover-width" value="100%" class="input col-span-2 h-8" autofocus />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-max-width">Max. width</label>
+        <input type="text" id="demo-popover-max-width" value="300px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-height">Height</label>
+        <input type="text" id="demo-popover-height" value="25px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-max-height">Max. height</label>
+        <input type="text" id="demo-popover-max-height" value="none" class="input col-span-2 h-8" />
+      </div>
+    </form>
+  </div>
+</div>
+</Preview>
+
+## 用途
+
+<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#popover" }}>
+该组件为 Jinja 和 Nunjucks 提供了 `popover()` 宏。
+</Callout>
+
+A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 shadcn/ui 的门户 Base UI 实现不同，但保持标记无依赖，并与 A3S UI 现有的下拉/选择定位模型配合使用。
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、Popover组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/popover.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者复制或提供 A3S UI 运行时和 Popover 脚本。
+
+```html
+<script src="/assets/js/basecoat.min.js" defer></script>
+<script src="/assets/js/popover.min.js" defer></script>
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your popover HTML">
+
+```html
+<div id="demo-popover" class="popover">
+  <button id="demo-popover-trigger" type="button" aria-expanded="false" aria-controls="demo-popover-popover" class="btn" data-variant="outline">Open popover</button>
+  <div id="demo-popover-popover" data-popover aria-hidden="true" class="w-72">
+    <header>
+      <h4>Dimensions</h4>
+      <p>Set the dimensions for the layer.</p>
+    </header>
+    <form class="grid gap-2" onsubmit="event.preventDefault()">
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-width">Width</label>
+        <input type="text" id="demo-popover-width" value="100%" class="input col-span-2 h-8" autofocus />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-max-width">Max. width</label>
+        <input type="text" id="demo-popover-max-width" value="300px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-height">Height</label>
+        <input type="text" id="demo-popover-height" value="25px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="demo-popover-max-height">Max. height</label>
+        <input type="text" id="demo-popover-max-height" value="none" class="input col-span-2 h-8" />
+      </div>
+    </form>
+  </div>
+</div>
+```
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;div class="popover"&gt;</code></dt>
+  <dd>
+    Relative wrapper for the trigger and inline popover content.
+    <dl>
+      <dt><code>&lt;button type="button" aria-expanded="false" aria-controls="&#123; POPOVER_ID &#125;"&gt;</code></dt>
+      <dd>Trigger button. The script toggles <code>aria-expanded</code> and opens or closes the content.</dd>
+      <dt><code>&lt;div data-popover id="&#123; POPOVER_ID &#125;" aria-hidden="true"&gt;</code></dt>
+      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>.</dd>
+    </dl>
+  </dd>
+</dl>
+
+## 示例
+
+### 基本
+
+<Preview>
+<div id="popover-basic" class="popover">
+  <button id="popover-basic-trigger" type="button" aria-expanded="false" aria-controls="popover-basic-popover" class="btn" data-variant="outline">Open</button>
+  <div id="popover-basic-popover" data-popover aria-hidden="true" class="w-72">
+    <header>
+      <h4>Title</h4>
+      <p>Description text here.</p>
+    </header>
+  </div>
+</div>
+</Preview>
+
+### 对齐
+
+<Preview>
+<div class="flex flex-wrap gap-3">
+  <div id="popover-align-start" class="popover">
+    <button id="popover-align-start-trigger" type="button" aria-expanded="false" aria-controls="popover-align-start-popover" class="btn" data-variant="outline">Start</button>
+    <div id="popover-align-start-popover" data-popover aria-hidden="true" class="w-56" data-align="start">
+      <p>Aligned to start.</p>
+    </div>
+  </div>
+  <div id="popover-align-center" class="popover">
+    <button id="popover-align-center-trigger" type="button" aria-expanded="false" aria-controls="popover-align-center-popover" class="btn" data-variant="outline">Center</button>
+    <div id="popover-align-center-popover" data-popover aria-hidden="true" class="w-56" data-align="center">
+      <p>Aligned to center.</p>
+    </div>
+  </div>
+  <div id="popover-align-end" class="popover">
+    <button id="popover-align-end-trigger" type="button" aria-expanded="false" aria-controls="popover-align-end-popover" class="btn" data-variant="outline">End</button>
+    <div id="popover-align-end-popover" data-popover aria-hidden="true" class="w-56" data-align="end">
+      <p>Aligned to end.</p>
+    </div>
+  </div>
+</div>
+</Preview>
+
+### 侧面
+
+<Preview>
+<div class="flex flex-wrap gap-3">
+  <div id="popover-side-inline-start" class="popover">
+    <button id="popover-side-inline-start-trigger" type="button" aria-expanded="false" aria-controls="popover-side-inline-start-popover" class="btn" data-variant="outline">Inline start</button>
+    <div id="popover-side-inline-start-popover" data-popover aria-hidden="true" data-side="inline-start" data-align="center" class="w-40">
+      <p>Inline start side.</p>
+    </div>
+  </div>
+  <div id="popover-side-top" class="popover">
+    <button id="popover-side-top-trigger" type="button" aria-expanded="false" aria-controls="popover-side-top-popover" class="btn" data-variant="outline">Top</button>
+    <div id="popover-side-top-popover" data-popover aria-hidden="true" data-side="top" data-align="center" class="w-40">
+      <p>Top side.</p>
+    </div>
+  </div>
+  <div id="popover-side-right" class="popover">
+    <button id="popover-side-right-trigger" type="button" aria-expanded="false" aria-controls="popover-side-right-popover" class="btn" data-variant="outline">Right</button>
+    <div id="popover-side-right-popover" data-popover aria-hidden="true" data-side="right" data-align="center" class="w-40">
+      <p>Right side.</p>
+    </div>
+  </div>
+  <div id="popover-side-bottom" class="popover">
+    <button id="popover-side-bottom-trigger" type="button" aria-expanded="false" aria-controls="popover-side-bottom-popover" class="btn" data-variant="outline">Bottom</button>
+    <div id="popover-side-bottom-popover" data-popover aria-hidden="true" data-side="bottom" data-align="center" class="w-40">
+      <p>Bottom side.</p>
+    </div>
+  </div>
+  <div id="popover-side-left" class="popover">
+    <button id="popover-side-left-trigger" type="button" aria-expanded="false" aria-controls="popover-side-left-popover" class="btn" data-variant="outline">Left</button>
+    <div id="popover-side-left-popover" data-popover aria-hidden="true" data-side="left" data-align="center" class="w-40">
+      <p>Left side.</p>
+    </div>
+  </div>
+  <div id="popover-side-inline-end" class="popover">
+    <button id="popover-side-inline-end-trigger" type="button" aria-expanded="false" aria-controls="popover-side-inline-end-popover" class="btn" data-variant="outline">Inline end</button>
+    <div id="popover-side-inline-end-popover" data-popover aria-hidden="true" data-side="inline-end" data-align="center" class="w-40">
+      <p>Inline end side.</p>
+    </div>
+  </div>
+</div>
+</Preview>
+
+### 带表格
+
+<Preview>
+<div id="popover-form" class="popover">
+  <button id="popover-form-trigger" type="button" aria-expanded="false" aria-controls="popover-form-popover" class="btn" data-variant="outline">Open popover</button>
+  <div id="popover-form-popover" data-popover aria-hidden="true" class="w-72">
+    <header>
+      <h4>Dimensions</h4>
+      <p>Set the dimensions for the layer.</p>
+    </header>
+    <form class="grid gap-2" onsubmit="event.preventDefault()">
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="popover-form-width">Width</label>
+        <input type="text" id="popover-form-width" value="100%" class="input col-span-2 h-8" autofocus />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="popover-form-max-width">Max. width</label>
+        <input type="text" id="popover-form-max-width" value="300px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="popover-form-height">Height</label>
+        <input type="text" id="popover-form-height" value="25px" class="input col-span-2 h-8" />
+      </div>
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="popover-form-max-height">Max. height</label>
+        <input type="text" id="popover-form-max-height" value="none" class="input col-span-2 h-8" />
+      </div>
+    </form>
+  </div>
+</div>
+</Preview>
+
+### RTL
+
+弹出窗口对齐使用逻辑开始和结束偏移。在父级上设置 `dir="rtl"` 以翻转开始/结束对齐。
+
+<Preview>
+<div dir="rtl">
+  <div id="popover-rtl" class="popover">
+    <button id="popover-rtl-trigger" type="button" aria-expanded="false" aria-controls="popover-rtl-popover" class="btn" data-variant="outline">فتح</button>
+    <div id="popover-rtl-popover" data-popover aria-hidden="true" class="w-72" data-align="start">
+      <header>
+        <h4>العنوان</h4>
+        <p>نص الوصف هنا.</p>
+      </header>
+    </div>
+  </div>
+</div>
+</Preview>

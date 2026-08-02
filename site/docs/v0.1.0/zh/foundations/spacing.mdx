@@ -1,0 +1,40 @@
+# 间距
+
+间距系统以 4px 为基础单位。紧凑应用工具栏使用 4–12px 间距，内容与页面区域使用 16–32px 间距。
+
+<Preview>
+<div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">4px</code><span class="h-3 w-4 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-1</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">8px</code><span class="h-3 w-8 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-2</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">12px</code><span class="h-3 w-12 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-3</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">16px</code><span class="h-3 w-16 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-4</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">24px</code><span class="h-3 w-24 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-6</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">32px</code><span class="h-3 w-32 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-8</span></div>
+</div>
+</Preview>
+
+## 间距刻度
+
+| 步骤 | 值 | 典型用途 |
+| --- | ---: | --- |
+| `1` | 4px | 图标与标签之间的微间距 |
+| `2` | 8px | 相邻控件 |
+| `3` | 12px | 工具栏与字段间距 |
+| `4` | 16px | 卡片内边距与网格间距 |
+| `6` | 24px | 分区间距 |
+| `8` | 32px | 页面区域 |
+
+## 布局参数
+
+应用组件通过 CSS 变量公开连续值：
+
+| 变量 | 默认值 | 组件 |
+| --- | ---: | --- |
+| `--app-shell-navigation-size` | `15rem` | App Shell |
+| `--workspace-header-height` | `3.5rem` | Workspace Header |
+| `--settings-navigation-size` | `14rem` | Settings Layout |
+| `--resource-grid-min` | `12rem` | Resource Grid |
+| `--resource-grid-gap` | `1rem` | Resource Grid |
+| `--split-pane-min-height` | `18rem` | Split Pane |
+
+优先调整这些参数，不要覆盖组件内部网格选择器。

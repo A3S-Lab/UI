@@ -1,13 +1,15 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const styles = ['vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
+const styles = ['a3s', 'vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
 const excludedComponents = new Set(['form']);
 
 // Keep cascade stable for components whose selectors intentionally compose.
 const componentOrder = [
   'accordion',
   'alert',
+  'activity-bar',
+  'app-shell',
   'avatar',
   'badge',
   'breadcrumb',
@@ -33,17 +35,23 @@ const componentOrder = [
   'progress',
   'radio',
   'range',
+  'resource-card',
+  'ribbon',
   'select',
+  'settings-layout',
   'sidebar',
   'scrollbar',
   'skeleton',
   'switch',
+  'split-pane',
   'table',
   'tabs',
   'textarea',
   'input-group',
   'toast',
+  'toolbar',
   'tooltip',
+  'workspace-header',
 ];
 
 async function existingComponentNames(cssDir) {
@@ -96,6 +104,8 @@ export async function generateCssEntrypoints({ cssDir = path.resolve('src/css') 
   }
 
   await writeIfChanged(path.join(cssDir, 'basecoat.css'), '@import "./basecoat-vega.css";\n');
+  await writeIfChanged(path.join(cssDir, 'a3s-ui.css'), '@import "./basecoat-a3s.css";\n');
+  await writeIfChanged(path.join(cssDir, 'a3s-ui.cdn.css'), '@import "tailwindcss" source(none);\n@import "./a3s-ui.css";\n');
   await writeIfChanged(path.join(cssDir, 'basecoat.all.css'), '@import "./basecoat.css";\n');
   await writeIfChanged(path.join(cssDir, 'basecoat.cdn.css'), '@import "tailwindcss" source(none);\n@import "./basecoat.css";\n');
   await writeIfChanged(path.join(cssDir, 'basecoat-compat.css'), '@import "./compat/legacy.css";\n');

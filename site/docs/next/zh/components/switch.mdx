@@ -1,0 +1,149 @@
+# 开关
+
+<Preview>
+<div role="group" class="field" data-orientation="horizontal">
+  <input type="checkbox" id="airplane-mode" role="switch" class="input" />
+  <label for="airplane-mode">Airplane Mode</label>
+</div>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基本 CSS、Switch 组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/switch.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your switch HTML">
+
+Add `class="input"` and `role="switch"` to a native checkbox. Use a native `<label>` or `aria-label` for accessible naming.
+
+```html
+<input type="checkbox" role="switch" class="input" />
+```
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;input type="checkbox" role="switch" class="input"&gt;</code></dt>
+  <dd>The switch control. Use native checkbox state: add <code>checked</code> for an initially enabled switch, <code>disabled</code> for a disabled switch, and <code>aria-invalid="true"</code> for invalid state.</dd>
+  <dt><code>data-size="sm"</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Renders the smaller switch size.</dd>
+</dl>
+
+## 示例
+
+### 说明
+
+<Preview class="w-full max-w-sm">
+<div role="group" class="field" data-orientation="horizontal">
+  <section>
+    <label for="switch-focus-mode">Share across devices</label>
+    <p id="switch-focus-mode-description">Focus is shared across devices, and turns off when you leave the app.</p>
+  </section>
+  <input type="checkbox" id="switch-focus-mode" role="switch" class="input" aria-describedby="switch-focus-mode-description" />
+</div>
+</Preview>
+
+### 选择卡
+
+Use a wrapping `<label>` when the whole card should toggle the switch.
+
+<Preview class="w-full max-w-sm">
+<div role="group" class="grid w-full gap-3" aria-label="Focus settings">
+  <label>
+    <div role="group" class="field" data-orientation="horizontal">
+      <section>
+        <h3>Share across devices</h3>
+        <p>Focus is shared across devices, and turns off when you leave the app.</p>
+      </section>
+      <input type="checkbox" role="switch" class="input" />
+    </div>
+  </label>
+  <label>
+    <div role="group" class="field" data-orientation="horizontal">
+      <section>
+        <h3>Enable notifications</h3>
+        <p>Receive notifications when focus mode changes.</p>
+      </section>
+      <input type="checkbox" role="switch" class="input" checked />
+    </div>
+  </label>
+</div>
+</Preview>
+
+### 已禁用
+
+当周围字段应使用禁用样式时，将 `disabled` 添加到开关，将 `data-disabled="true"` 添加到字段包装器。
+
+<Preview>
+<div role="group" class="field" data-orientation="horizontal" data-disabled="true">
+  <input type="checkbox" id="switch-disabled-unchecked" role="switch" class="input" disabled />
+  <label for="switch-disabled-unchecked">Disabled</label>
+</div>
+</Preview>
+
+### 无效
+
+将 `aria-invalid="true"` 添加到交换机，并将 `data-invalid="true"` 添加到字段包装器。
+
+<Preview class="w-full max-w-sm">
+<div role="group" class="field" data-orientation="horizontal" data-invalid="true">
+  <section>
+    <label for="switch-invalid">Accept terms and conditions.</label>
+    <p>You must accept the terms and conditions to continue.</p>
+  </section>
+  <input type="checkbox" id="switch-invalid" role="switch" class="input" aria-invalid="true" />
+</div>
+</Preview>
+
+### 尺寸
+
+使用`data-size="sm"`渲染较小的开关尺寸。
+
+<Preview class="w-full max-w-[10rem]">
+<div role="group" class="grid w-full gap-4" aria-label="Switch sizes">
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="checkbox" id="switch-size-sm" role="switch" class="input" data-size="sm" />
+    <label for="switch-size-sm">Small</label>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="checkbox" id="switch-size-default" role="switch" class="input" />
+    <label for="switch-size-default">Default</label>
+  </div>
+</div>
+</Preview>
+
+## RTL
+
+切换字段布局使用文档方向。在字段或祖先上设置 `dir="rtl"`。
+
+<Preview class="w-full max-w-sm">
+<div dir="rtl" role="group" class="field" data-orientation="horizontal">
+  <section>
+    <label for="switch-rtl">المشاركة عبر الأجهزة</label>
+    <p id="switch-rtl-description">يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.</p>
+  </section>
+  <input type="checkbox" id="switch-rtl" role="switch" class="input" aria-describedby="switch-rtl-description" checked />
+</div>
+</Preview>

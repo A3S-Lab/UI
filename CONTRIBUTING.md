@@ -1,31 +1,38 @@
-# Contributing to Basecoat
+# Contributing to A3S UI
 
-- Support development by sponsoring the author: https://github.com/sponsors/hunvreus
-- Submit pull requests (PRs) against the `development` branch, not `main`.
-- For branches, we have:
-  - `main` is our production and default branch. This is what we deploy to https://basecoatui.com and publish to https://www.npmjs.com/package/basecoat-css.
-  - `development` is for staging. We will deploy it soon at https://dev.basecoatui.com.
-  - New features are worked in `feature/name-of-the-feature` branches.
-  - Issues are addressed in `issue/123-main-isse` branches.
-  - When ready, we PR against `development`, test it and then finally merge to `main`.
-- Keep changes focused: one feature or fix per PR.
-- Test locally before submitting.
-- Follow existing code style.
+A3S UI is maintained on `main`. Create a focused feature or fix branch, validate it locally, and open a pull request against `main`.
 
-## Cloudflare Workers deploys
+## Local setup
 
-Docs are built with ReallySimpleDocs/Astro and deployed as Workers Static Assets from `site/dist`.
+```bash
+npm ci
+npm ci --prefix site
+```
 
-- Local preview: `npm run workers:dev`
-- Production deploy: `npm run workers:deploy`
-- Preview version upload: `npm run workers:preview`
+## Development workflow
 
-Workers Builds settings:
+```bash
+# Build distributable CSS, JavaScript, and templates.
+npm run build
 
-- Build command: `npm run docs:build`
-- Deploy command: `npx wrangler deploy`
-- Non-production branch deploy command: `npx wrangler versions upload`
-- Production branch: `main`
-- Enable builds for non-production branches for branch preview URLs.
+# Start the Rspress documentation site.
+npm run docs:dev
 
-Thanks for helping!
+# Build and verify the static documentation site.
+npm run docs:build
+```
+
+Keep component APIs semantic and framework-agnostic. Prefer native elements and CSS state, adding vanilla JavaScript only when the browser does not provide the required behavior.
+
+When a public component changes, update both `site/docs/next/zh` and `site/docs/next/en`. Stable version trees should change only for corrections that apply to that published contract.
+
+Use A3S Test locally for interaction and release checks. Do not add A3S Test to the GitHub Pages workflow.
+
+## Pull requests
+
+- Keep one primary concern per pull request.
+- Update component previews, parameters, states, and accessibility notes with the implementation.
+- Run `npm run build` and `npm run docs:build` before submission.
+- Do not commit generated `dist`, `templates`, or `site/doc_build` output.
+
+A3S UI builds on [Basecoat](https://github.com/hunvreus/basecoat). Changes to inherited primitives should preserve that lineage and document intentional differences from upstream shadcn/ui concepts.

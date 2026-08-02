@@ -1,0 +1,400 @@
+/* Shared application-pattern visuals. Values stay semantic so every style pack remains standalone. */
+@layer components {
+  .app-shell {
+    border: 1px solid var(--border);
+    border-radius: var(--a3s-radius, var(--radius-xl));
+    background: var(--background);
+    color: var(--foreground);
+    box-shadow: var(--a3s-shadow-soft, var(--shadow-sm));
+  }
+
+  .app-shell > [data-app-navigation] {
+    border-inline-end: 1px solid var(--sidebar-border, var(--border));
+    background: var(--sidebar, var(--muted));
+  }
+
+  .app-shell > [data-app-main] {
+    background: var(--background);
+  }
+
+  .activity-bar {
+    padding: 0.75rem 0.625rem;
+    gap: 0.75rem;
+    background: var(--sidebar, var(--muted));
+    color: var(--sidebar-foreground, var(--foreground));
+  }
+
+  .activity-bar > header,
+  .activity-bar > footer {
+    min-height: 2.25rem;
+    padding-inline: 0.375rem;
+  }
+
+  .activity-bar > header {
+    font-size: 0.875rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .activity-bar > footer {
+    border-block-start: 1px solid var(--sidebar-border, var(--border));
+    padding-block-start: 0.75rem;
+  }
+
+  .activity-bar li > :is(a, button) {
+    min-height: 2.25rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--sidebar-foreground, var(--foreground));
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+  }
+
+  .activity-bar li > :is(a, button):hover {
+    background: var(--sidebar-accent, var(--accent));
+    color: var(--sidebar-accent-foreground, var(--accent-foreground));
+  }
+
+  .activity-bar li > :is(a, button):focus-visible {
+    outline: 2px solid var(--sidebar-ring, var(--ring));
+    outline-offset: 1px;
+  }
+
+  .activity-bar li > :is(a, button)[aria-current='page'],
+  .activity-bar li > :is(a, button)[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--sidebar-primary, var(--primary)) 16%, transparent);
+    background: color-mix(in srgb, var(--sidebar-primary, var(--primary)) 11%, transparent);
+    color: var(--sidebar-primary, var(--primary));
+    font-weight: 600;
+  }
+
+  .app-shell[data-navigation='collapsed'] .activity-bar {
+    padding-inline: 0.5rem;
+  }
+
+  .app-shell[data-navigation='collapsed'] .activity-bar li > :is(a, button) {
+    justify-content: center;
+    padding-inline: 0.5rem;
+  }
+
+  .workspace-header {
+    padding: 0.625rem 0.875rem;
+    border-block-end: 1px solid var(--border);
+    background: color-mix(in srgb, var(--background) 96%, transparent);
+  }
+
+  .workspace-header > [data-workspace-identity] > h1 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .workspace-header > [data-workspace-identity] > :is(p, span) {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .toolbar {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    scrollbar-width: thin;
+  }
+
+  .toolbar > hr[role='separator'] {
+    background: var(--border);
+  }
+
+  .ribbon {
+    --ribbon-accent: var(--a3s-blue, var(--primary));
+    border-block-end: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .ribbon[data-accent='green'] {
+    --ribbon-accent: var(--a3s-green, var(--chart-2));
+  }
+
+  .ribbon[data-accent='orange'] {
+    --ribbon-accent: var(--a3s-orange, var(--chart-4));
+  }
+
+  .ribbon[data-accent='purple'] {
+    --ribbon-accent: var(--a3s-purple, var(--chart-3));
+  }
+
+  .ribbon > [role='tablist'] {
+    min-height: 2.375rem;
+    padding-inline: 0.5rem;
+    gap: 0.125rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .ribbon > [role='tablist'] > [role='tab'] {
+    position: relative;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 0;
+    background: transparent;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    font-weight: 550;
+    cursor: pointer;
+  }
+
+  .ribbon > [role='tablist'] > [role='tab']::after {
+    position: absolute;
+    inset-inline: 0.625rem;
+    inset-block-end: -1px;
+    height: 2px;
+    background: transparent;
+    content: '';
+  }
+
+  .ribbon > [role='tablist'] > [role='tab']:hover {
+    background: color-mix(in srgb, var(--ribbon-accent) 7%, transparent);
+    color: var(--foreground);
+  }
+
+  .ribbon > [role='tablist'] > [role='tab']:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--ribbon-accent) 70%, white);
+    outline-offset: -3px;
+  }
+
+  .ribbon > [role='tablist'] > [role='tab'][aria-selected='true'] {
+    color: var(--ribbon-accent);
+  }
+
+  .ribbon > [role='tablist'] > [role='tab'][aria-selected='true']::after {
+    background: var(--ribbon-accent);
+  }
+
+  .ribbon > [role='tabpanel'] {
+    min-height: 5.25rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .ribbon > [role='tabpanel'] > fieldset[data-ribbon-group] {
+    min-width: 5.25rem;
+    min-height: 4.5rem;
+    padding: 0.25rem 0.625rem;
+    border-inline-end: 1px solid var(--border);
+    gap: 0.25rem;
+  }
+
+  .ribbon legend {
+    order: 2;
+    padding-block-start: 0.125rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+  }
+
+  .settings-layout {
+    gap: 2rem;
+  }
+
+  .settings-layout > aside {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+  }
+
+  .settings-layout > aside a {
+    min-height: 2.25rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: var(--radius-md);
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .settings-layout > aside a:hover {
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .settings-layout > aside a[aria-current='page'] {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    font-weight: 600;
+  }
+
+  .settings-layout > main > section {
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .settings-layout > main > section > header {
+    display: grid;
+    gap: 0.25rem;
+    padding-block-end: 1rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .settings-layout > main > section > header > :is(h2, p) {
+    margin: 0;
+  }
+
+  .settings-layout > main > section > header > h2 {
+    font-size: 1rem;
+    font-weight: 650;
+  }
+
+  .settings-layout > main > section > header > p {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+  }
+
+  .resource-card {
+    --resource-accent: var(--a3s-blue, var(--primary));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+    box-shadow: var(--shadow-xs);
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+
+  .resource-card:is(a, button) {
+    cursor: pointer;
+  }
+
+  .resource-card:is(a, button):hover {
+    border-color: color-mix(in srgb, var(--resource-accent) 35%, var(--border));
+    box-shadow: var(--a3s-shadow-soft, var(--shadow-sm));
+    transform: translateY(-2px);
+  }
+
+  .resource-card:is(a, button):focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--resource-accent) 25%, transparent);
+    outline-offset: 2px;
+  }
+
+  .resource-card[data-kind='spreadsheet'] {
+    --resource-accent: var(--a3s-green, #159469);
+  }
+
+  .resource-card[data-kind='presentation'] {
+    --resource-accent: var(--a3s-orange, #db663b);
+  }
+
+  .resource-card[data-kind='agent'] {
+    --resource-accent: var(--a3s-purple, #6d4aff);
+  }
+
+  .resource-card[data-kind='danger'] {
+    --resource-accent: var(--destructive);
+  }
+
+  .resource-card > figure {
+    border-block-end: 1px solid var(--border);
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--resource-accent) 12%, transparent), transparent 60%),
+      var(--muted);
+    color: var(--resource-accent);
+  }
+
+  .resource-card > section {
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .resource-card > section > :is(h2, h3, strong, p, small) {
+    margin: 0;
+  }
+
+  .resource-card > section > :is(h2, h3, strong) {
+    font-size: 0.875rem;
+    font-weight: 650;
+  }
+
+  .resource-card > section > :is(p, small) {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+  }
+
+  .resource-card[data-orientation='horizontal'] > figure {
+    border-block-end: 0;
+    border-inline-end: 1px solid var(--border);
+  }
+
+  .split-pane {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--background);
+  }
+
+  .split-pane > :not([role='separator']) {
+    padding: 1rem;
+  }
+
+  .split-pane > [role='separator'] {
+    background: var(--muted);
+  }
+
+  .split-pane > [role='separator']::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    border-radius: 999px;
+    background: var(--border);
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .split-pane:not([data-orientation='vertical']) > [role='separator']::after {
+    width: 2px;
+    height: 2.25rem;
+  }
+
+  .split-pane[data-orientation='vertical'] > [role='separator']::after {
+    width: 2.25rem;
+    height: 2px;
+  }
+
+  .split-pane > [role='separator']:hover,
+  .split-pane > [role='separator']:focus-visible,
+  .split-pane > [role='separator'][aria-valuenow] {
+    --split-handle-color: var(--ring);
+  }
+
+  .split-pane > [role='separator']:hover::after,
+  .split-pane > [role='separator']:focus-visible::after {
+    background: var(--split-handle-color, var(--ring));
+  }
+
+  .split-pane > [role='separator']:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  @media (max-width: 48rem) {
+    .settings-layout {
+      gap: 1rem;
+    }
+
+    .settings-layout > aside nav > :is(ul, ol) {
+      padding-block-end: 0.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .resource-card {
+      transition: none;
+    }
+  }
+}

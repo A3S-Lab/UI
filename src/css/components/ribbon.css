@@ -1,0 +1,51 @@
+@layer components {
+  .ribbon {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .ribbon > [role='tablist'] {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  .ribbon > [role='tablist'] > [role='tab'] {
+    flex: none;
+  }
+
+  .ribbon > [role='tabpanel'] {
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .ribbon > [role='tabpanel'][hidden] {
+    display: none;
+  }
+
+  .ribbon > [role='tabpanel'] > fieldset {
+    display: inline-flex;
+    min-width: max-content;
+    flex: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ribbon [data-ribbon-controls] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+
+  .ribbon legend {
+    text-align: center;
+  }
+}

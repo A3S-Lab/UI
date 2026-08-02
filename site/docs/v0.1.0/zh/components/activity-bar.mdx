@@ -1,0 +1,49 @@
+# 活动栏
+
+活动栏是 A3S 工作区使用的紧凑、持久的导航表面。它支持标签模式和仅图标模式，而无需更改语义导航。
+
+<Preview>
+<div class="h-[28rem] w-full max-w-64 overflow-hidden rounded-xl border border-border">
+  <aside class="activity-bar" aria-label="A3S工作区">
+<header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S 控制台</span></header>
+    <nav aria-label="主要导航">
+      <ul>
+<li><a href="#activity-overview" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-navigation-label>概述</span></a></li>
+<li><a href="#activity-traces"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18V6m0 6h5l3-5 4 10 4-5"/></svg><span data-navigation-label>调用链</span></a></li>
+<li><a href="#activity-topology"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="m9 11 6-4m-6 6 6 4"/></svg><span data-navigation-label>拓扑</span></a></li>
+<li><a href="#activity-settings"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg><span data-navigation-label>设置</span></a></li>
+      </ul>
+    </nav>
+<footer><span class="size-2 rounded-full bg-[var(--a3s-green)]"></span><span data-navigation-label>网关健康</span></footer>
+  </aside>
+</div>
+</Preview>
+
+## 用途
+
+```html
+<aside class="activity-bar" aria-label="Product navigation">
+  <header>...</header>
+  <nav aria-label="Primary"><ul>...</ul></nav>
+  <footer>...</footer>
+</aside>
+```
+
+### HTML 结构
+
+| 元素或参数 | 必填 | 目的 |
+| --- | --- | --- |
+| `<aside class="activity-bar">` | 是 | 组件根节点 |
+| `<nav aria-label="…">` | 是 | 具名导航地标 |
+| `<ul>` 和 `<li>` | 是 | 导航集合 |
+| `aria-current="page"` | 当前项 | 表示当前目标并应用对应样式 |
+| `data-navigation-label` | 可选 | 紧凑模式下隐藏标签 |
+| `data-labels="hidden"` | 可选 | 强制在根目录上仅显示图标 |
+
+## 状态和变体
+
+使用`data-labels="hidden"`作为独立图标支架。在[App Shell](/components/app-shell)内，`data-navigation="collapsed"`自动隐藏标签。链接支持默认、悬停、焦点可见和当前状态。按钮还支持`aria-pressed="true"`进行就地模式更改。
+
+## 可访问性
+
+折叠时将标签保留在 DOM 中。每个仅包含图标的链接或按钮仍然需要一个可访问的名称。当前页面使用 `aria-current`，而不是单独使用颜色。

@@ -1,0 +1,75 @@
+@layer components {
+  .app-shell {
+    --app-shell-navigation-size: 15rem;
+    --app-shell-navigation-collapsed-size: 4rem;
+    display: grid;
+    grid-template-columns: var(--app-shell-navigation-size) minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+    min-height: var(--app-shell-min-height, 36rem);
+    overflow: hidden;
+  }
+
+  .app-shell[data-navigation='collapsed'] {
+    grid-template-columns: var(--app-shell-navigation-collapsed-size) minmax(0, 1fr);
+  }
+
+  .app-shell[data-navigation='hidden'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell > [data-app-navigation] {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-shell[data-navigation='hidden'] > [data-app-navigation] {
+    display: none;
+  }
+
+  .app-shell > [data-app-main] {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .app-shell [data-app-content] {
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    overflow: auto;
+  }
+
+  @media (max-width: 48rem) {
+    .app-shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-shell > [data-app-navigation] {
+      position: absolute;
+      z-index: 20;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: min(var(--app-shell-navigation-size), calc(100% - 3rem));
+      transform: translateX(-105%);
+      transition: transform 180ms ease;
+    }
+
+    [dir='rtl'] .app-shell > [data-app-navigation] {
+      transform: translateX(105%);
+    }
+
+    .app-shell[data-mobile-navigation='open'] > [data-app-navigation] {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-shell > [data-app-navigation] {
+      transition: none;
+    }
+  }
+}

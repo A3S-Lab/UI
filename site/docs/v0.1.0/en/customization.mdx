@@ -1,0 +1,100 @@
+# Customization
+
+A3S UI customization has three layers: choose a style pack, override semantic tokens, and add narrowly scoped product CSS where tokens are not sufficient.
+
+## Style packs
+
+The A3S style is the default and contains the Office-derived product language.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+```
+
+Basecoat-compatible Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea styles remain available.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/maia";
+```
+
+Each complete style bundle is standalone. Load exactly one; do not import a full style and then undo it with another full style.
+
+## Theme tokens
+
+Override semantic tokens after the library import. Define light values at `:root` and dark values under `.dark`.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+
+:root {
+  --primary: #16233f;
+  --ring: #315fdb;
+  --a3s-blue: #315fdb;
+}
+
+.dark {
+  --primary: #f2f5ff;
+  --ring: #86a7ff;
+  --a3s-blue: #86a7ff;
+}
+```
+
+See [Color](/foundations/color) for the full semantic palette and [Shape and elevation](/foundations/shape-and-elevation) for radius and shadow tokens.
+
+## Layout parameters
+
+Continuous component decisions use CSS custom properties. Set them on the component instance or a product scope.
+
+```css
+.gateway-console {
+  --app-shell-navigation-size: 17rem;
+  --settings-navigation-size: 15rem;
+  --resource-grid-min: 14rem;
+}
+```
+
+Finite variants stay in `data-*` attributes so markup communicates the selected contract.
+
+```html
+<div class="app-shell" data-navigation="collapsed">...</div>
+<article class="resource-card" data-kind="agent">...</article>
+```
+
+## Fonts
+
+The A3S style uses the platform UI stack, including CJK system fonts. Override `--font-sans` or `--font-mono` if a product supplies its own font files.
+
+```css
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+```
+
+## Icons
+
+A3S UI does not bundle an icon package. Inline SVG is the most portable option for plain HTML and server-rendered templates. Product frameworks may use Lucide or another existing icon system.
+
+## Custom style packs
+
+For a complete visual system, import the styleless base and maintain a standalone style pack.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base";
+@import "./styles/acme.css";
+```
+
+Start from a source file in `src/css/styles/`, then change visual rules and tokens inside the new file. Component CSS owns structure and accessibility hooks; the style pack owns colors, radius, shadow, typography, spacing, variants, and state visuals.
+
+## Compatibility
+
+Applications migrating pre-1.0 Basecoat class aliases may load the compatibility layer after A3S UI. New code should use the documented root classes, semantic children, and attributes.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+@import "@a3s-lab/ui/compat";
+```

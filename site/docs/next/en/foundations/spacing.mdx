@@ -1,0 +1,41 @@
+# Spacing
+
+The spacing system uses a 4px base unit. Dense application chrome uses 4–12px gaps; content and page regions use 16–32px gaps.
+
+<Preview>
+<div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
+  {[1, 2, 3, 4, 6, 8].map((step) => (
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">{step * 4}px</code>
+      <span class="h-3 rounded-full bg-[var(--a3s-blue)]" style={`width:${step * 16}px`}></span>
+      <span class="text-xs text-muted-foreground">space-{step}</span>
+    </div>
+  ))}
+</div>
+</Preview>
+
+## Scale
+
+| Step | Value | Typical use |
+| --- | ---: | --- |
+| `1` | 4px | Icon-to-label micro gap |
+| `2` | 8px | Adjacent controls |
+| `3` | 12px | Toolbar and field gaps |
+| `4` | 16px | Card padding and grid gaps |
+| `6` | 24px | Section spacing |
+| `8` | 32px | Page regions |
+
+## Layout parameters
+
+Application components expose continuous values as CSS variables:
+
+| Variable | Default | Component |
+| --- | ---: | --- |
+| `--app-shell-navigation-size` | `15rem` | App Shell |
+| `--workspace-header-height` | `3.5rem` | Workspace Header |
+| `--settings-navigation-size` | `14rem` | Settings Layout |
+| `--resource-grid-min` | `12rem` | Resource Grid |
+| `--resource-grid-gap` | `1rem` | Resource Grid |
+| `--split-pane-min-height` | `18rem` | Split Pane |
+
+Use these parameters instead of overriding internal grid selectors.

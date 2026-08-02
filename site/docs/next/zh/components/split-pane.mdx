@@ -1,0 +1,53 @@
+# 分割窗格
+
+Split Pane 为编辑器、检查器、调用链详情与智能体对话创建可通过指针和键盘调整大小的区域。
+
+<Preview>
+<div class="split-pane w-full" data-value="42" style="--split-pane-min-height:22rem">
+<section><span class="badge">Trace</span><h2 class="mt-3 text-base font-semibold">POST /v1/agent/run</h2><div class="mt-4 grid gap-2"><div class="rounded-lg border border-border bg-muted p-3 text-sm"><strong>gateway.receive</strong><small class="mt-1 block text-muted-foreground">12.4 ms</small></div><div class="rounded-lg border border-border bg-muted p-3 text-sm"><strong>provider.complete</strong><small class="mt-1 block text-muted-foreground">842 ms</small></div></div></section>
+  <hr role="separator" aria-label="调整跟踪详细信息的大小" data-min="25" data-max="75" data-step="5" data-default-value="42" />
+<section><h2 class="text-base font-semibold">Span 详情</h2><dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm"><dt class="text-muted-foreground">状态</dt><dd>OK</dd><dt class="text-muted-foreground">模型</dt><dd>coding-agent</dd><dt class="text-muted-foreground">Tokens</dt><dd>12,408</dd><dt class="text-muted-foreground">耗时</dt><dd>854.6 ms</dd></dl></section>
+</div>
+</Preview>
+
+## 用途
+
+在加载运行时之前分割控制器，或使用组合的 JavaScript 包。
+
+```html
+<div class="split-pane" data-value="40">
+  <section>Primary pane</section>
+  <hr role="separator" aria-label="Resize inspector" data-min="20" data-max="80" data-step="5" />
+  <section>Secondary pane</section>
+</div>
+<script type="module">
+  import "@a3s-lab/ui/basecoat";
+  import "@a3s-lab/ui/split-pane";
+</script>
+```
+
+### 参数
+
+| 参数 | 可选值 | 默认 | 目的 |
+| --- | --- | --- | --- |
+| 根`data-orientation` | `horizontal`、`vertical` | `horizontal` | 窗格流；水平并排放置窗格 |
+| 根`data-direction` | `normal`、`reverse` | `normal` | 逆转价值增长 |
+| 根`data-value` | `0–100` | `50` | 初始主窗格百分比 |
+| 分离器 `data-min` | 数量 | `15` | 最低百分比 |
+| 分离器 `data-max` | 数量 | `85` | 最大百分比 |
+| 分离器 `data-step` | 数量 | `5` | 键盘增量 |
+| 分离器 `data-default-value` | 数量 | 初始值 | 双击重置值 |
+| `--split-pane-min-height` | CSS 长度 | `18rem` | 最小元件高度 |
+| `--split-handle-size` | CSS 长度 | `0.5rem` | 交互式分隔轨道 |
+
+### JavaScript API
+
+`window.basecoat.refresh(splitPane)` 重新读取参数。根在拖动时连续发出 `basecoat:split-input`，并在提交的指针或键盘更改后发出 `basecoat:split-change`。事件详细信息包含 `{ value, orientation }`。
+
+## 状态和变体
+
+在分隔符上设置 `aria-disabled="true"` 可禁用调整。垂直布局会切换分隔方向与键盘轴；RTL 并排布局会自动反转水平方向的值增长。
+
+## 可访问性
+
+控制器会设置分隔符方向、取值边界、当前值、百分比文本与键盘焦点。方向键按 `data-step` 调整；Home 与 End 移动到边界；双击恢复默认值。

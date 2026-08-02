@@ -1,0 +1,32 @@
+@layer components {
+  .toolbar {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+
+  .toolbar > [role='group'] {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  .toolbar > hr[role='separator'] {
+    width: 1px;
+    height: 1.5rem;
+    margin-inline: 0.25rem;
+    flex: none;
+  }
+
+  .toolbar[data-wrap='true'] {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .toolbar[data-density='compact'] > [role='group'] {
+    gap: 0;
+  }
+}

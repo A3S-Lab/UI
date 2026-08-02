@@ -1,0 +1,39 @@
+# Workspace Header
+
+A Workspace Header keeps navigation, resource identity, contextual metadata, and high-value actions aligned across editors and operational consoles.
+
+<Preview>
+<header class="workspace-header w-full rounded-xl border border-border">
+  <div data-workspace-leading><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Go back">←</button><span class="grid size-8 place-items-center rounded-lg bg-[color-mix(in_srgb,var(--a3s-blue)_12%,transparent)] font-semibold text-[var(--a3s-blue)]">GW</span></div>
+  <div data-workspace-identity><h1 contenteditable="true">Production gateway</h1><span>ACL configuration · saved 12 seconds ago</span></div>
+  <div data-workspace-actions><span class="badge" data-variant="secondary" data-collapse="mobile">Healthy</span><button type="button" class="btn" data-size="sm" data-variant="outline" data-collapse="mobile">Validate</button><button type="button" class="btn" data-size="sm">Deploy</button></div>
+</header>
+</Preview>
+
+## Usage
+
+```html
+<header class="workspace-header">
+  <div data-workspace-leading>...</div>
+  <div data-workspace-identity><h1>Resource name</h1><span>Metadata</span></div>
+  <div data-workspace-actions>...</div>
+</header>
+```
+
+### Parameters
+
+| Parameter | Required | Purpose |
+| --- | --- | --- |
+| `data-workspace-leading` | Optional | Back, menu, or resource-kind controls |
+| `data-workspace-identity` | Yes | Flexible title and metadata region |
+| `data-workspace-actions` | Optional | Right-aligned contextual actions |
+| `data-collapse="mobile"` | Optional | Hides secondary content below 640px |
+| `--workspace-header-height` | Optional | Minimum header height, default `3.5rem` |
+
+## States
+
+Represent save, validation, and health status with adjacent [Badge](/components/badge) or status text. Do not encode application state in the header class itself.
+
+## Accessibility
+
+Keep one page-level `<h1>` inside the identity region. Icon buttons need accessible names. Editable names should use a labeled input in production; `contenteditable` is used only to demonstrate live text in the preview.

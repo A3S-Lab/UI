@@ -108,7 +108,7 @@ async function build() {
 
   // Create combined component files
   console.log('Creating combined component files...');
-  const componentsToCombine = ['basecoat.js', 'accordion.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'tabs.js', 'toast.js'];
+  const componentsToCombine = ['basecoat.js', 'accordion.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'split-pane.js', 'tabs.js', 'toast.js'];
   const componentPaths = componentsToCombine.map(f => path.join(srcJsDir, f));
 
   // Create non-minified bundle
@@ -128,7 +128,9 @@ async function build() {
   // Build CSS package
   console.log('Building CSS package...');
   await ensureDir(cssDistDir);
-  const styles = ['vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
+  const styles = ['a3s', 'vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
+  await fs.copyFile(path.join(srcCssDir, 'a3s-ui.css'), path.join(cssDistDir, 'a3s-ui.css'));
+  await fs.copyFile(path.join(srcCssDir, 'a3s-ui.cdn.css'), path.join(cssDistDir, 'a3s-ui.cdn.css'));
   await fs.copyFile(path.join(srcCssDir, 'basecoat.css'), path.join(cssDistDir, 'basecoat.css'));
   await fs.copyFile(path.join(srcCssDir, 'basecoat.all.css'), path.join(cssDistDir, 'basecoat.all.css'));
   await fs.copyFile(path.join(srcCssDir, 'basecoat-base.css'), path.join(cssDistDir, 'basecoat-base.css'));
@@ -160,7 +162,7 @@ async function build() {
   console.log(`Copied template assets to ${cssTemplatesDir}`);
 
   // Create Tailwind CSS builds for the CSS package.
-  const cdnEntries = ['basecoat.cdn.css', 'basecoat-base.cdn.css', 'basecoat-compat.cdn.css', ...styles.map((style) => `basecoat-${style}.cdn.css`)];
+  const cdnEntries = ['a3s-ui.cdn.css', 'basecoat.cdn.css', 'basecoat-base.cdn.css', 'basecoat-compat.cdn.css', ...styles.map((style) => `basecoat-${style}.cdn.css`)];
   for (const entry of cdnEntries) {
     const cdnCssSrc = path.join(srcCssDir, entry);
     const baseName = path.basename(entry, '.css');

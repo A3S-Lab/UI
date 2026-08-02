@@ -1,0 +1,39 @@
+# 工作区标题栏
+
+工作区标题使导航、资源标识、上下文元数据和高价值操作在编辑器和运维控制台之间保持一致。
+
+<Preview>
+<header class="workspace-header w-full rounded-xl border border-border">
+<div data-workspace-leading><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="返回">←</button><span class="grid size-8 place-items-center rounded-lg bg-[color-mix(in_srgb,var(--a3s-blue)_12%,transparent)] font-semibold text-[var(--a3s-blue)]">GW</span></div>
+<div data-workspace-identity><h1 contenteditable="true">生产网关</h1><span>ACL 配置 · 12 秒前保存</span></div>
+<div data-workspace-actions><span class="badge" data-variant="secondary" data-collapse="mobile">健康</span><button type="button" class="btn" data-size="sm" data-variant="outline" data-collapse="mobile">验证</button><button type="button" class="btn" data-size="sm">部署</button></div>
+</header>
+</Preview>
+
+## 用途
+
+```html
+<header class="workspace-header">
+  <div data-workspace-leading>...</div>
+  <div data-workspace-identity><h1>Resource name</h1><span>Metadata</span></div>
+  <div data-workspace-actions>...</div>
+</header>
+```
+
+### 参数
+
+| 参数 | 必填 | 目的 |
+| --- | --- | --- |
+| `data-workspace-leading` | 可选 | 返回、菜单或资源类型控件 |
+| `data-workspace-identity` | 是 | 可伸缩的标题与元数据区域 |
+| `data-workspace-actions` | 可选 | 右对齐上下文操作 |
+| `data-collapse="mobile"` | 可选 | 隐藏低于 640 像素的次要内容 |
+| `--workspace-header-height` | 可选 | 最小标题栏高度，默认 `3.5rem` |
+
+## 状态
+
+使用相邻的 [Badge](/components/badge) 或状态文本表示保存、验证和运行状况。不要在标头类本身中对应用程序状态进行编码。
+
+## 可访问性
+
+将一页级 `<h1>` 保留在标识区域内。图标按钮需要可访问的名称。可编辑的名称应在生产中使用带标签的输入； `contenteditable` 仅用于在预览中演示实时文本。
