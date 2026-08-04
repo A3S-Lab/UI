@@ -1,7 +1,8 @@
 @layer components {
   .split-pane {
     --split-position: 50%;
-    --split-handle-size: 1.5rem;
+    --split-handle-size: 0.5rem;
+    --split-hit-size: 1.5rem;
     display: grid;
     width: 100%;
     min-width: 0;
@@ -36,10 +37,14 @@
   }
 
   .split-pane:not([data-orientation='vertical']) > [role='separator'] {
+    width: var(--split-hit-size);
+    justify-self: center;
     cursor: col-resize;
   }
 
   .split-pane[data-orientation='vertical'] > [role='separator'] {
+    height: var(--split-hit-size);
+    align-self: center;
     cursor: row-resize;
   }
 

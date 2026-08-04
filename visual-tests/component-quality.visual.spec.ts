@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 type PreviewQualityIssues = {
   horizontalOverflow: number;
@@ -123,6 +123,14 @@ async function waitForSettledFrames(page: Page) {
         });
       }),
   );
+}
+
+async function expectMinimumTarget(locator: Locator, minimum = 44) {
+  await locator.scrollIntoViewIfNeeded();
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeGreaterThanOrEqual(minimum);
+  expect(box!.height).toBeGreaterThanOrEqual(minimum);
 }
 
 async function inspectPreviewQuality(
@@ -348,4 +356,121 @@ test("tooltips keep readable compact text", async ({ page }) => {
       Number.parseFloat(getComputedStyle(element, "::before").fontSize),
     ),
   ).toBeGreaterThanOrEqual(11);
+});
+
+test("coarse pointers receive touch-sized component targets", async ({
+  baseURL,
+  browser,
+}) => {
+  expect(baseURL).toBeTruthy();
+  const context = await browser.newContext({
+    baseURL,
+    hasTouch: true,
+    isMobile: true,
+    reducedMotion: "reduce",
+    viewport: { width: 390, height: 844 },
+  });
+  const touchPage = await context.newPage();
+
+  try {
+    await openDocumentationPage(touchPage, "checkbox");
+    expect(
+      await touchPage.evaluate(() => matchMedia("(pointer: coarse)").matches),
+    ).toBe(true);
+    const checkbox = touchPage.locator("#terms-checkbox");
+    const checkedCheckbox = touchPage.locator("#terms-checkbox-2");
+    await expectMinimumTarget(checkbox);
+    await expectMinimumTarget(checkedCheckbox);
+    expect(
+      await checkedCheckbox.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          backgroundColor: style.backgroundColor,
+          boxShadow: style.boxShadow,
+        };
+      }),
+    ).toEqual({ backgroundColor: "rgba(0, 0, 0, 0)", boxShadow: "none" });
+
+    await openDocumentationPage(touchPage, "radio-group");
+    await expectMinimumTarget(touchPage.locator("#r1"));
+    expect(
+      await touchPage.locator("#r2").evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          backgroundColor: style.backgroundColor,
+          boxShadow: style.boxShadow,
+        };
+      }),
+    ).toEqual({ backgroundColor: "rgba(0, 0, 0, 0)", boxShadow: "none" });
+
+    await openDocumentationPage(touchPage, "switch");
+    const switchControl = touchPage.locator("#airplane-mode");
+    await expectMinimumTarget(switchControl);
+    expect(
+      await switchControl.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          backgroundColor: style.backgroundColor,
+          boxShadow: style.boxShadow,
+        };
+      }),
+    ).toEqual({ backgroundColor: "rgba(0, 0, 0, 0)", boxShadow: "none" });
+    await switchControl.check();
+    expect(
+      await switchControl.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          backgroundColor: style.backgroundColor,
+          boxShadow: style.boxShadow,
+        };
+      }),
+    ).toEqual({ backgroundColor: "rgba(0, 0, 0, 0)", boxShadow: "none" });
+
+    await openDocumentationPage(touchPage, "slider");
+    await expectMinimumTarget(
+      touchPage.locator('.a3s-preview input[type="range"]').first(),
+    );
+
+    await openDocumentationPage(touchPage, "dropdown-menu");
+    await touchPage.locator("#demo-dropdown-menu-trigger").click();
+    await expectMinimumTarget(
+      touchPage
+        .locator('#demo-dropdown-menu-popover [role="menuitem"]')
+        .first(),
+    );
+
+    await openDocumentationPage(touchPage, "ribbon");
+    await expectMinimumTarget(touchPage.locator("#ribbon-home-tab"));
+
+    await openDocumentationPage(touchPage, "status-bar");
+    const statusBar = touchPage.locator(".a3s-preview .status-bar").first();
+    await expectMinimumTarget(statusBar.locator(".btn").first());
+    expect((await statusBar.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await expect(
+      statusBar.locator('[data-status-priority="low"]').first(),
+    ).toBeHidden();
+    await expect(statusBar.getByText("Saved", { exact: true })).toBeVisible();
+    expect(
+      await statusBar.evaluate(
+        (element) => element.scrollWidth - element.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+
+    await openDocumentationPage(touchPage, "split-pane");
+    const splitPane = touchPage.locator(".a3s-preview .split-pane").first();
+    await expectMinimumTarget(splitPane.locator('[role="separator"]'));
+    expect(
+      await splitPane.evaluate((element) => {
+        const panes = element.querySelectorAll<HTMLElement>(
+          ':scope > :not([role="separator"])',
+        );
+        return (
+          panes[1].getBoundingClientRect().left -
+          panes[0].getBoundingClientRect().right
+        );
+      }),
+    ).toBeLessThanOrEqual(8.1);
+  } finally {
+    await context.close();
+  }
 });

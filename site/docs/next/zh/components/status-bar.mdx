@@ -5,8 +5,8 @@
 <Preview>
   <footer class="status-bar w-full" aria-label="文档状态">
     <div data-status-info>
-      <span>第 1 页，共 12 页</span>
-      <span>132 字</span>
+      <span data-status-priority="low">第 1 页，共 12 页</span>
+      <span data-status-priority="low">132 字</span>
       <span class="text-[var(--a3s-green)]">已保存</span>
     </div>
     <div data-status-actions>
@@ -51,7 +51,7 @@
 
 ```html
 <footer class="status-bar" aria-label="文档状态">
-  <div data-status-info><span>第 1 页，共 12 页</span><span>已保存</span></div>
+  <div data-status-info><span data-status-priority="low">第 1 页，共 12 页</span><span>已保存</span></div>
   <div data-status-actions>...</div>
 </footer>
 ```
@@ -62,11 +62,12 @@
 | --------------------- | ---- | -------------------------- |
 | `data-status-info`    | 是   | 可伸缩的资源与保存状态信息 |
 | `data-status-actions` | 否   | 视图、缩放或导航控件       |
+| `data-status-priority="low"` | 否 | 低于 `30rem` 时隐藏非必要状态项 |
 | `--status-bar-height` | 否   | 状态栏高度，默认 `1.75rem` |
 
 ## States and variants
 
-状态文案应简短且稳定。临时保存或校验状态使用语义色，视图模式控件使用 `aria-pressed`。
+状态文案应简短且稳定。为可舍弃的上下文添加 `data-status-priority="low"`，让窄屏优先保留保存状态与操作区。临时保存或校验状态使用语义色，视图模式控件使用 `aria-pressed`。
 
 ## Accessibility
 

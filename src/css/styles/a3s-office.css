@@ -415,6 +415,31 @@
     border-radius: 0.375rem;
     background: transparent;
     color: white;
+    box-shadow: none;
+  }
+
+  :is(
+      .field > input[type="checkbox"]:not([role="switch"]),
+      .input[type="checkbox"]:not([role="switch"])
+    ):is(:checked, :not(:checked)),
+  :is(
+      .field > input[type="radio"],
+      .input[type="radio"]
+    ):is(:checked, :not(:checked)),
+  :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):is(:checked, :not(:checked)),
+  html.dark
+    :is(
+      .field > input[type="checkbox"]:not([role="switch"]),
+      .input[type="checkbox"]:not([role="switch"]),
+      .field > input[type="radio"],
+      .input[type="radio"],
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):is(:checked, :not(:checked)) {
+    background-color: transparent;
   }
 
   :is(
@@ -483,6 +508,7 @@
     height: 1.5rem;
     border: 0;
     background: transparent;
+    box-shadow: none;
   }
 
   :is(.field > input[type="radio"], .input[type="radio"])::after {
@@ -525,6 +551,7 @@
     border: 0;
     border-radius: 999px;
     background: transparent;
+    box-shadow: none;
   }
 
   .field > input[type="checkbox"][role="switch"]::after,
@@ -990,11 +1017,17 @@
   @media (pointer: coarse) {
     .btn,
     .badge:is(a, button),
+    [data-tooltip]:is(a, button),
     .breadcrumb a,
     .tabs > [role="tablist"] > [role="tab"],
     .sidebar nav li > :is(a, button),
     .sidebar nav li > details > summary,
-    .field[data-orientation="horizontal"] > label {
+    .field[data-orientation="horizontal"] > label,
+    .dropdown-menu
+      :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]),
+    .select:not(select) [role="option"],
+    .combobox [role="option"],
+    .command [role="menuitem"] {
       min-height: 2.75rem;
     }
 
@@ -1011,9 +1044,49 @@
       .field > select,
       select.select,
       .select:not(select) > button,
-      .input-group
+      .input-group,
+      .input-group > :is(input, textarea, select, [data-control]),
+      .combobox-chips > input[role="combobox"],
+      .command > header input
     ) {
       min-height: 2.75rem;
+    }
+
+    .field > input[type="checkbox"]:not([role="switch"]),
+    .input[type="checkbox"]:not([role="switch"]),
+    .field > input[type="checkbox"][role="switch"],
+    .input[type="checkbox"][role="switch"],
+    .field > input[type="radio"],
+    .input[type="radio"] {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):is(:not([data-size="sm"]), [data-size="sm"]) {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    )::before {
+      inset-inline-start: 0.5625rem;
+    }
+
+    :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):dir(rtl)::before {
+      inset-inline: auto 0.5625rem;
+    }
+
+    .field > input[type="range"],
+    .input[type="range"] {
+      height: 2.75rem;
     }
   }
 

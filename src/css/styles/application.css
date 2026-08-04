@@ -344,7 +344,28 @@
   }
 
   .split-pane > [role='separator'] {
+    background: transparent;
+  }
+
+  .split-pane > [role='separator']::before {
+    position: absolute;
     background: var(--muted);
+    content: '';
+    pointer-events: none;
+  }
+
+  .split-pane:not([data-orientation='vertical']) > [role='separator']::before {
+    inset-block: 0;
+    inset-inline-start: 50%;
+    width: var(--split-handle-size);
+    transform: translateX(-50%);
+  }
+
+  .split-pane[data-orientation='vertical'] > [role='separator']::before {
+    inset-block-start: 50%;
+    inset-inline: 0;
+    height: var(--split-handle-size);
+    transform: translateY(-50%);
   }
 
   .split-pane > [role='separator']::after {
