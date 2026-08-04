@@ -60,6 +60,67 @@ async function readThemeTextContrast(page: Page) {
   });
 }
 
+async function readA3sFoundationMetrics(page: Page) {
+  return page.evaluate(() => {
+    const parseColor = (value: string) => {
+      const normalized = value.trim();
+      if (normalized.startsWith("#")) {
+        const hex = normalized.slice(1);
+        const channels = (
+          hex.length === 3
+            ? hex.split("").map((part) => `${part}${part}`)
+            : (hex.match(/../g) ?? [])
+        ).slice(0, 3);
+        return channels.map((part) => Number.parseInt(part, 16));
+      }
+
+      return (normalized.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+    };
+    const luminance = (value: string) => {
+      const [red, green, blue] = parseColor(value).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045
+          ? normalized / 12.92
+          : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    };
+    const contrast = (foreground: string, background: string) => {
+      const foregroundLuminance = luminance(foreground);
+      const backgroundLuminance = luminance(background);
+      return (
+        (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+        (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+      );
+    };
+    const root = getComputedStyle(document.documentElement);
+    const rootFontSize = Number.parseFloat(root.fontSize);
+    const pixels = (property: string) => {
+      const value = root.getPropertyValue(property).trim();
+      return value.endsWith("rem")
+        ? Number.parseFloat(value) * rootFontSize
+        : Number.parseFloat(value);
+    };
+    const backgrounds = ["--a3s-bg", "--a3s-panel"].map((property) =>
+      root.getPropertyValue(property).trim(),
+    );
+    const minimumContrast = (property: string) => {
+      const foreground = root.getPropertyValue(property).trim();
+      return Math.min(
+        ...backgrounds.map((background) => contrast(foreground, background)),
+      );
+    };
+
+    return {
+      compactFontSize: pixels("--a3s-font-size-compact"),
+      faintContrast: minimumContrast("--a3s-faint"),
+      microFontSize: pixels("--a3s-font-size-micro"),
+      mutedContrast: minimumContrast("--a3s-muted"),
+      subtleContrast: minimumContrast("--a3s-subtle"),
+    };
+  });
+}
+
 async function expectPreviewOverlayToEscapeFrame(
   page: Page,
   route: string,
@@ -138,6 +199,26 @@ test("Office-derived workbench shell", async ({ page }) => {
     "aria-selected",
     "true",
   );
+});
+
+test("A3S foundation tokens keep compact text readable in both themes", async ({
+  page,
+}) => {
+  await openDocumentationPage(page, "en/components/field.html");
+
+  for (const dark of [false, true]) {
+    await page.locator("html").evaluate((element, enabled) => {
+      element.classList.toggle("dark", enabled);
+      element.classList.toggle("rp-dark", enabled);
+    }, dark);
+
+    const metrics = await readA3sFoundationMetrics(page);
+    expect(metrics.mutedContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.subtleContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.faintContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.compactFontSize).toBeGreaterThanOrEqual(12);
+    expect(metrics.microFontSize).toBeGreaterThanOrEqual(11);
+  }
 });
 
 test("homepage keeps one document hierarchy and only working specimen controls", async ({
