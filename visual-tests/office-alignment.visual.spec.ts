@@ -12,6 +12,54 @@ async function waitForDocumentationHydration(page: Page) {
   );
 }
 
+async function waitForSettledBrowserFrames(page: Page) {
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => resolve());
+          });
+        });
+      }),
+  );
+}
+
+async function readThemeTextContrast(page: Page) {
+  return page.evaluate(() => {
+    const toRgb = (value: string) =>
+      value
+        .trim()
+        .slice(1)
+        .match(/../g)!
+        .map((part) => Number.parseInt(part, 16));
+    const luminance = (value: string) => {
+      const [red, green, blue] = toRgb(value).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045
+          ? normalized / 12.92
+          : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    };
+    const contrast = (foreground: string, background: string) => {
+      const foregroundLuminance = luminance(foreground);
+      const backgroundLuminance = luminance(background);
+      return (
+        (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+        (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+      );
+    };
+    const styles = getComputedStyle(document.documentElement);
+    const canvas = styles.getPropertyValue("--ui-canvas");
+
+    return {
+      faint: contrast(styles.getPropertyValue("--ui-faint"), canvas),
+      muted: contrast(styles.getPropertyValue("--ui-muted"), canvas),
+    };
+  });
+}
+
 async function expectPreviewOverlayToEscapeFrame(
   page: Page,
   route: string,
@@ -204,17 +252,24 @@ test("homepage theme customizer applies and persists product choices", async ({
   const html = page.locator("html");
   const customizer = page.locator("[data-a3s-customizer]");
   await expect(customizer).toBeVisible();
+  const lightContrast = await readThemeTextContrast(page);
+  expect(lightContrast.muted).toBeGreaterThanOrEqual(4.5);
+  expect(lightContrast.faint).toBeGreaterThanOrEqual(4.5);
 
   await customizer.getByRole("button", { name: "Violet" }).click();
   await customizer.getByRole("button", { name: "Rounded" }).click();
   await customizer.getByRole("button", { name: "Comfortable" }).click();
   await customizer.getByRole("button", { name: "Dark", exact: true }).click();
+  await waitForSettledBrowserFrames(page);
 
   await expect(html).toHaveClass(/\bdark\b/);
   await expect(html).toHaveClass(/\brp-dark\b/);
   await expect(html).toHaveAttribute("data-a3s-accent", "violet");
   await expect(html).toHaveAttribute("data-a3s-radius", "rounded");
   await expect(html).toHaveAttribute("data-a3s-density", "comfortable");
+  const darkContrast = await readThemeTextContrast(page);
+  expect(darkContrast.muted).toBeGreaterThanOrEqual(4.5);
+  expect(darkContrast.faint).toBeGreaterThanOrEqual(4.5);
   await expect
     .poll(() =>
       page.evaluate(() => ({
@@ -249,9 +304,7 @@ test("homepage system appearance follows OS changes in real time", async ({
   await customizer.getByRole("button", { name: "System", exact: true }).click();
   await expect
     .poll(() =>
-      page.evaluate(() =>
-        localStorage.getItem("rspress-theme-appearance"),
-      ),
+      page.evaluate(() => localStorage.getItem("rspress-theme-appearance")),
     )
     .toBe("auto");
 
@@ -260,18 +313,14 @@ test("homepage system appearance follows OS changes in real time", async ({
   await expect(html).toHaveClass(/\brp-dark\b/);
   await expect
     .poll(() =>
-      page.evaluate(() =>
-        localStorage.getItem("rspress-theme-appearance"),
-      ),
+      page.evaluate(() => localStorage.getItem("rspress-theme-appearance")),
     )
     .toBe("auto");
 
   await customizer.getByRole("button", { name: "Dark", exact: true }).click();
   await expect
     .poll(() =>
-      page.evaluate(() =>
-        localStorage.getItem("rspress-theme-appearance"),
-      ),
+      page.evaluate(() => localStorage.getItem("rspress-theme-appearance")),
     )
     .toBe("dark");
 
@@ -279,18 +328,76 @@ test("homepage system appearance follows OS changes in real time", async ({
   await expect(html).toHaveClass(/\bdark\b/);
   await expect(html).toHaveClass(/\brp-dark\b/);
 
-  await customizer
-    .getByRole("button", { name: "System", exact: true })
-    .click();
+  await customizer.getByRole("button", { name: "System", exact: true }).click();
   await expect(html).not.toHaveClass(/\bdark\b/);
   await expect(html).not.toHaveClass(/\brp-dark\b/);
   await expect
     .poll(() =>
-      page.evaluate(() =>
-        localStorage.getItem("rspress-theme-appearance"),
-      ),
+      page.evaluate(() => localStorage.getItem("rspress-theme-appearance")),
     )
     .toBe("auto");
+});
+
+test("mobile documentation shell keeps closed panels out of the focus order", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDocumentationPage(page, "en/components/button.html");
+  await waitForDocumentationHydration(page);
+
+  const sidebar = page.locator(".rp-doc-layout__sidebar");
+  const outline = page.locator(".rp-doc-layout__outline");
+  const menuButton = page.locator(".rp-sidebar-menu__left");
+  const outlineButton = page.locator(".rp-sidebar-menu__right");
+  const mobileSearch = page.locator(".rp-search-button--mobile");
+
+  await expect(sidebar).toHaveAttribute("inert", "");
+  await expect(sidebar).toHaveAttribute("aria-hidden", "true");
+  await expect(outline).toHaveAttribute("inert", "");
+  await expect(outline).toHaveAttribute("aria-hidden", "true");
+  await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+  await expect(outlineButton).toHaveAttribute("aria-expanded", "false");
+
+  await expect(mobileSearch).toHaveAttribute("role", "button");
+  await expect(mobileSearch).toHaveAttribute(
+    "aria-label",
+    "Search documentation",
+  );
+  await expect(mobileSearch).toHaveAttribute("tabindex", "0");
+  const searchBox = await mobileSearch.boundingBox();
+  expect(searchBox).not.toBeNull();
+  expect(searchBox!.width).toBeGreaterThanOrEqual(44);
+  expect(searchBox!.height).toBeGreaterThanOrEqual(44);
+
+  await menuButton.click();
+  await expect(sidebar).not.toHaveAttribute("inert", "");
+  await expect(sidebar).not.toHaveAttribute("aria-hidden", "true");
+  await expect(menuButton).toHaveAttribute("aria-expanded", "true");
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Boolean(document.activeElement?.closest(".rp-doc-layout__sidebar")),
+      ),
+    )
+    .toBe(true);
+
+  await page.keyboard.press("Escape");
+  await expect(sidebar).toHaveAttribute("inert", "");
+  await expect(sidebar).toHaveAttribute("aria-hidden", "true");
+  await expect(menuButton).toBeFocused();
+
+  await outlineButton.click();
+  await expect(outline).not.toHaveAttribute("inert", "");
+  await expect(outline).not.toHaveAttribute("aria-hidden", "true");
+  await expect(outlineButton).toHaveAttribute("aria-expanded", "true");
+  await page.keyboard.press("Escape");
+  await expect(outline).toHaveAttribute("inert", "");
+  await expect(outline).toHaveAttribute("aria-hidden", "true");
+  await expect(outlineButton).toBeFocused();
+
+  await mobileSearch.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".rp-search-panel__modal")).toBeVisible();
 });
 
 test("theme bootstrap works before Rspress hydration", async ({ page }) => {

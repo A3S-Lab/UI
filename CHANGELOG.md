@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Changed
+
+- Raised documentation metadata contrast, minimum text sizes, and primary touch-target sizes while preserving the compact A3S Office visual language.
+
+### Fixed
+
+- Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
+- Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.
+- Kept the hydrated Rspress theme context authoritative while preserving the pre-hydration A3S theme bridge.
+
 ## [0.1.0] - 2026-08-04
 
 ### Added

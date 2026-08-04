@@ -13,8 +13,8 @@
   --ui-panel: #f2f3f5;
   --ui-panel-raised: #ffffff;
   --ui-ink: #17181a;
-  --ui-muted: #71757d;
-  --ui-faint: #a1a5ad;
+  --ui-muted: #62666f;
+  --ui-faint: #6d727b;
   --ui-line: #e2e4e8;
   --ui-line-strong: #d3d6dc;
   --ui-blue: #2864e8;
@@ -37,7 +37,7 @@ html.dark {
   --ui-panel-raised: #282b35;
   --ui-ink: #f2f3f5;
   --ui-muted: #a4a8b2;
-  --ui-faint: #727783;
+  --ui-faint: #7d838f;
   --ui-line: #2a2d35;
   --ui-line-strong: #3a3d48;
   --ui-blue: #6ca3ff;
@@ -110,6 +110,13 @@ html .rp-nav {
   color: var(--ui-ink);
 }
 
+.rp-search-button--mobile:focus-visible,
+.rp-nav-hamburger:focus-visible,
+html .rp-switch-appearance:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-blue) 38%, transparent);
+  outline-offset: 2px;
+}
+
 html .rp-switch-appearance {
   width: 32px;
   height: 32px;
@@ -117,6 +124,17 @@ html .rp-switch-appearance {
   border: 1px solid var(--ui-line);
   border-radius: var(--a3s-radius-sm);
   background: var(--ui-paper);
+}
+
+@media (max-width: 768px) {
+  .rp-search-button--mobile,
+  .rp-nav-hamburger,
+  html .rp-switch-appearance {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1280px) {
@@ -222,7 +240,7 @@ html .rp-doc-layout__doc {
   background: var(--ui-panel);
   color: var(--ui-muted);
   font-family: var(--ui-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   letter-spacing: 0.065em;
   text-transform: uppercase;
@@ -306,7 +324,7 @@ html .rp-doc-layout__doc {
   justify-content: space-between;
   color: var(--ui-muted);
   font-family: var(--ui-mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.075em;
   text-transform: uppercase;
 }
@@ -327,7 +345,7 @@ html .rp-doc-layout__doc {
 
 .a3s-preview__header small {
   color: var(--ui-faint);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .a3s-preview__stage {
@@ -564,7 +582,7 @@ html .rp-doc-layout__doc {
 .ui-section__eyebrow {
   color: var(--ui-muted);
   font-family: var(--ui-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   letter-spacing: 0.13em;
 }
@@ -616,7 +634,7 @@ html .rp-doc-layout__doc {
 
 .ui-action {
   display: inline-flex;
-  min-height: var(--a3s-control-height);
+  min-height: 44px;
   padding: 0 13px;
   border: 1px solid var(--ui-line-strong);
   border-radius: var(--a3s-radius-sm);
@@ -683,7 +701,7 @@ html .rp-doc-layout__doc {
 
 .ui-install-command button {
   display: inline-flex;
-  min-height: 32px;
+  min-height: 44px;
   padding: 0 9px;
   border: 1px solid var(--ui-line);
   border-radius: 7px;
@@ -693,7 +711,7 @@ html .rp-doc-layout__doc {
   color: var(--ui-muted);
   cursor: pointer;
   font: inherit;
-  font-size: 9px;
+  font-size: 11px;
   transition: 160ms ease;
 }
 
@@ -734,7 +752,7 @@ html .rp-doc-layout__doc {
 .ui-hero__facts dd {
   margin: 5px 0 0;
   color: var(--ui-faint);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
   text-transform: uppercase;
 }
@@ -763,13 +781,13 @@ html .rp-doc-layout__doc {
   justify-content: space-between;
   color: var(--ui-muted);
   font-family: var(--ui-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.1em;
 }
 
 .ui-specimen-label small {
   color: var(--ui-faint);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .ui-workbench-frame {
@@ -792,12 +810,12 @@ html .rp-doc-layout__doc {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   color: var(--a3s-muted);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .ui-workbench-windowbar strong {
   color: var(--a3s-ink);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -945,7 +963,7 @@ html .rp-doc-layout__doc {
 .ui-office-section-heading small {
   color: var(--a3s-faint);
   font-family: var(--ui-mono);
-  font-size: 7px;
+  font-size: 10px;
   letter-spacing: 0.08em;
 }
 
@@ -1029,7 +1047,7 @@ html .rp-doc-layout__doc {
 .ui-office-task-pane .field > label,
 .ui-office-swatches > legend {
   color: var(--a3s-faint);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 600;
 }
 
@@ -1037,7 +1055,7 @@ html .rp-doc-layout__doc {
   height: 28px;
   padding-inline: 7px;
   border-radius: 6px;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .ui-office-swatches {
@@ -1054,8 +1072,8 @@ html .rp-doc-layout__doc {
 }
 
 .ui-office-swatches button {
-  width: 17px;
-  height: 17px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 2px solid var(--a3s-panel);
   border-radius: 50%;
@@ -1081,14 +1099,14 @@ html .rp-doc-layout__doc {
 }
 
 .ui-workbench-shell .status-bar {
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .ui-specimen-measure {
   position: absolute;
   color: var(--ui-blue-deep);
   font-family: var(--ui-mono);
-  font-size: 7px;
+  font-size: 9px;
 }
 
 .ui-specimen-measure::before,
@@ -1154,7 +1172,7 @@ html .rp-doc-layout__doc {
   justify-content: space-between;
   color: var(--ui-faint);
   font-family: var(--ui-mono);
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.1em;
 }
 
