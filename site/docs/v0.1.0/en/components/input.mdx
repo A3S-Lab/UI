@@ -1,7 +1,7 @@
 # Input
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="Email" placeholder="Email" />
 </Preview>
 
 ## Usage
@@ -35,7 +35,7 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 Use native HTML attributes for behavior: `disabled` for disabled inputs, `required` for required fields, and `aria-invalid="true"` for invalid state styling.
 
 ```html
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="Email" placeholder="Email" />
 ```
 
   </Step>
@@ -46,7 +46,7 @@ Use native HTML attributes for behavior: `disabled` for disabled inputs, `requir
 ### Basic
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="Email" placeholder="Email" />
 </Preview>
 
 ### Field
@@ -79,26 +79,26 @@ Use `field` with a label and description to create an accessible field.
 ### Disabled
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" disabled />
+<input class="input" type="email" aria-label="Email" placeholder="Email" disabled />
 </Preview>
 
 ### Invalid
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" aria-invalid="true" />
+<input class="input" type="email" aria-label="Email" placeholder="Email" aria-invalid="true" />
 </Preview>
 
 ### File
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="file" />
+<input class="input" type="file" aria-label="Upload file" />
 </Preview>
 
 ### Inline
 
 <Preview class="w-full max-w-xs">
 <div class="flex items-center gap-2">
-  <input class="input" type="search" placeholder="Search..." />
+  <input class="input" type="search" aria-label="Search" placeholder="Search..." />
   <button type="submit" class="btn">Search</button>
 </div>
 </Preview>
@@ -107,9 +107,9 @@ Use `field` with a label and description to create an accessible field.
 
 <Preview class="w-full max-w-sm">
 <div class="grid gap-4 md:grid-cols-2">
-  <input class="input" type="text" placeholder="First name" />
-  <input class="input" type="text" placeholder="Last name" />
-  <input class="input md:col-span-2" type="email" placeholder="Email" />
+  <input class="input" type="text" aria-label="First name" placeholder="First name" />
+  <input class="input" type="text" aria-label="Last name" placeholder="Last name" />
+  <input class="input md:col-span-2" type="email" aria-label="Email" placeholder="Email" />
 </div>
 </Preview>
 
@@ -140,7 +140,7 @@ Use the [Input Group](/components/input-group) patterns to add icons, text, or b
 
 <Preview class="w-full max-w-xs">
 <div class="relative">
-  <input class="input ps-9" type="search" placeholder="Search..." />
+  <input class="input ps-9" type="search" aria-label="Search" placeholder="Search..." />
   <div class="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground [&>svg]:size-4"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg>
   </div>
 </div>
@@ -152,7 +152,7 @@ Use [Button Group](/components/button-group) when an input should be grouped wit
 
 <Preview class="w-full max-w-xs">
 <div role="group" aria-label="Search" class="button-group">
-  <input class="input" type="search" placeholder="Search..." />
+  <input class="input" type="search" aria-label="Search" placeholder="Search..." />
   <button type="submit" class="btn" data-variant="outline" data-size="icon" aria-label="Search"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></button>
 </div>
 </Preview>

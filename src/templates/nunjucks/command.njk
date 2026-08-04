@@ -36,12 +36,13 @@
       autocomplete="off"
       autocorrect="off"
       spellcheck="false"
+      aria-label="{{ input_attrs['aria-label'] or 'Command search' }}"
       aria-autocomplete="list"
       role="combobox"
       aria-expanded="true"
       aria-controls="{{ id }}-menu"
       {% for key, value in input_attrs %}
-        {{ key }}="{{ value }}"
+        {% if key != 'aria-label' %}{{ key }}="{{ value }}"{% endif %}
       {% endfor %}
     >
   </header>
@@ -107,12 +108,13 @@
         autocomplete="off"
         autocorrect="off"
         spellcheck="false"
+        aria-label="{{ input_attrs['aria-label'] or 'Command search' }}"
         aria-autocomplete="list"
         role="combobox"
         aria-expanded="true"
         aria-controls="{{ id }}-menu"
         {% for key, value in input_attrs %}
-          {{ key }}="{{ value }}"
+          {% if key != 'aria-label' %}{{ key }}="{{ value }}"{% endif %}
         {% endfor %}
       >
     </header>

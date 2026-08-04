@@ -4,7 +4,8 @@
 
 ### Changed
 
-- Raised the shared A3S muted, subtle, and faint text tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened the shared focus ring.
+- Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.
+- Preserved compact desktop controls while providing 44-pixel form, button, tab, and sidebar targets for coarse pointers and intentional reduced-motion feedback.
 - Raised documentation metadata contrast, minimum text sizes, and primary touch-target sizes while preserving the compact A3S Office visual language.
 - Moved the component catalog directly after the homepage hero, collapsed the optional product preview on mobile, and replaced repeated section numbering with clearer topic labels and an editorial principles layout.
 

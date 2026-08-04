@@ -1,6 +1,7 @@
 @layer components {
   .split-pane {
     --split-position: 50%;
+    --split-handle-size: 1.5rem;
     display: grid;
     width: 100%;
     min-width: 0;
@@ -9,11 +10,11 @@
   }
 
   .split-pane:not([data-orientation='vertical']) {
-    grid-template-columns: minmax(0, var(--split-position)) var(--split-handle-size, 0.5rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, var(--split-position)) var(--split-handle-size) minmax(0, 1fr);
   }
 
   .split-pane[data-orientation='vertical'] {
-    grid-template-rows: minmax(0, var(--split-position)) var(--split-handle-size, 0.5rem) minmax(0, 1fr);
+    grid-template-rows: minmax(0, var(--split-position)) var(--split-handle-size) minmax(0, 1fr);
   }
 
   .split-pane > :not([role='separator']) {

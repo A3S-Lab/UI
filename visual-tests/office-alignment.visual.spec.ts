@@ -112,11 +112,16 @@ async function readA3sFoundationMetrics(page: Page) {
     };
 
     return {
+      blueContrast: minimumContrast("--a3s-blue"),
       compactFontSize: pixels("--a3s-font-size-compact"),
       faintContrast: minimumContrast("--a3s-faint"),
+      greenContrast: minimumContrast("--a3s-green"),
       microFontSize: pixels("--a3s-font-size-micro"),
       mutedContrast: minimumContrast("--a3s-muted"),
+      orangeContrast: minimumContrast("--a3s-orange"),
+      redContrast: minimumContrast("--a3s-red"),
       subtleContrast: minimumContrast("--a3s-subtle"),
+      warningContrast: minimumContrast("--a3s-warning"),
     };
   });
 }
@@ -216,9 +221,69 @@ test("A3S foundation tokens keep compact text readable in both themes", async ({
     expect(metrics.mutedContrast).toBeGreaterThanOrEqual(4.5);
     expect(metrics.subtleContrast).toBeGreaterThanOrEqual(4.5);
     expect(metrics.faintContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.blueContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.greenContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.orangeContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.redContrast).toBeGreaterThanOrEqual(4.5);
+    expect(metrics.warningContrast).toBeGreaterThanOrEqual(4.5);
     expect(metrics.compactFontSize).toBeGreaterThanOrEqual(12);
     expect(metrics.microFontSize).toBeGreaterThanOrEqual(11);
   }
+});
+
+test("form errors and compact choices remain perceivable and operable", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await openDocumentationPage(page, "en/components/field.html");
+
+  const invalidInput = page.locator("#invalid-email");
+  const error = page.locator("#invalid-email-error");
+  const choice = page.locator("#checkout-same-as-shipping");
+  const choiceLabel = page.locator('label[for="checkout-same-as-shipping"]');
+  await invalidInput.scrollIntoViewIfNeeded();
+  await invalidInput.focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(invalidInput).toBeFocused();
+
+  const states = await page.evaluate(() => {
+    const input = document.querySelector<HTMLElement>("#invalid-email")!;
+    const error = document.querySelector<HTMLElement>("#invalid-email-error")!;
+    const root = getComputedStyle(document.documentElement);
+    const resolveColor = (value: string) => {
+      const probe = document.createElement("span");
+      probe.style.color = value;
+      document.body.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    };
+
+    return {
+      errorColor: getComputedStyle(error).color,
+      inputBorder: getComputedStyle(input).borderColor,
+      inputShadow: getComputedStyle(input).boxShadow,
+      inputTransition: getComputedStyle(input).transition,
+      red: resolveColor(root.getPropertyValue("--a3s-red")),
+      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    };
+  });
+  expect(states.errorColor).toBe(states.red);
+  expect(states.inputBorder).toBe(states.red);
+  expect(states.inputShadow, JSON.stringify(states)).toContain(states.red);
+  expect(states.reducedMotion).toBe(true);
+  expect(states.inputTransition).toBe("none");
+
+  const [choiceBox, labelBox] = await Promise.all([
+    choice.boundingBox(),
+    choiceLabel.boundingBox(),
+  ]);
+  expect(choiceBox).not.toBeNull();
+  expect(labelBox).not.toBeNull();
+  expect(Math.max(choiceBox!.height, labelBox!.height)).toBeGreaterThanOrEqual(
+    24,
+  );
 });
 
 test("homepage keeps one document hierarchy and only working specimen controls", async ({

@@ -1,7 +1,7 @@
 # 输入
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
 </Preview>
 
 ## 用途
@@ -35,7 +35,7 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 使用原生HTML属性来实现：`disabled`用于禁止输入，`required`用于必填字段行为，`aria-invalid="true"`用于无效状态样式。
 
 ```html
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
 ```
 
   </Step>
@@ -46,7 +46,7 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 ### 基本
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
 </Preview>
 
 ### 现场
@@ -79,26 +79,26 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 ### 已禁用
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" disabled />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" disabled />
 </Preview>
 
 ### 无效
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" placeholder="Email" aria-invalid="true" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" aria-invalid="true" />
 </Preview>
 
 ### 文件
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="file" />
+<input class="input" type="file" aria-label="上传文件" />
 </Preview>
 
 ### 内联
 
 <Preview class="w-full max-w-xs">
 <div class="flex items-center gap-2">
-  <input class="input" type="search" placeholder="Search..." />
+  <input class="input" type="search" aria-label="搜索" placeholder="Search..." />
   <button type="submit" class="btn">Search</button>
 </div>
 </Preview>
@@ -107,9 +107,9 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-sm">
 <div class="grid gap-4 md:grid-cols-2">
-  <input class="input" type="text" placeholder="First name" />
-  <input class="input" type="text" placeholder="Last name" />
-  <input class="input md:col-span-2" type="email" placeholder="Email" />
+  <input class="input" type="text" aria-label="名字" placeholder="First name" />
+  <input class="input" type="text" aria-label="姓氏" placeholder="Last name" />
+  <input class="input md:col-span-2" type="email" aria-label="电子邮箱" placeholder="Email" />
 </div>
 </Preview>
 
@@ -140,7 +140,7 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-xs">
 <div class="relative">
-  <input class="input ps-9" type="search" placeholder="Search..." />
+  <input class="input ps-9" type="search" aria-label="搜索" placeholder="Search..." />
   <div class="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground [&>svg]:size-4"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg>
   </div>
 </div>
@@ -152,7 +152,7 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-xs">
 <div role="group" aria-label="Search" class="button-group">
-  <input class="input" type="search" placeholder="Search..." />
+  <input class="input" type="search" aria-label="搜索" placeholder="Search..." />
   <button type="submit" class="btn" data-variant="outline" data-size="icon" aria-label="Search"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></button>
 </div>
 </Preview>

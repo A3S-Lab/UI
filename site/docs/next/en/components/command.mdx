@@ -3,7 +3,7 @@
 <Preview class="w-full max-w-sm">
 <div id="demo-command-standalone" class="command border" aria-label="Command menu">
   <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
+    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
   </header>
   <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="No results found.">
     <div role="group" aria-labelledby="suggestions">
@@ -89,7 +89,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 ```html
 <div id="demo-command-standalone" class="command border" aria-label="Command menu">
   <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
+    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
   </header>
   <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="No results found.">
     <div role="group" aria-labelledby="suggestions">
@@ -200,7 +200,7 @@ A simple command menu in a dialog.
 <dialog id="command-basic" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
   <div class="command">
     <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-basic-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-basic-menu" />
+      <input type="text" id="command-basic-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-basic-menu" />
     </header>
     <div role="menu" id="command-basic-menu" aria-orientation="vertical" data-empty="No results found.">
       <div role="group" aria-labelledby="command-basic-suggestions">
@@ -221,7 +221,7 @@ A simple command menu in a dialog.
 <dialog id="command-shortcuts-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
   <div class="command">
     <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-shortcuts-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-shortcuts-menu" />
+      <input type="text" id="command-shortcuts-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-shortcuts-menu" />
     </header>
     <div role="menu" id="command-shortcuts-menu" aria-orientation="vertical" data-empty="No results found.">
       <div role="group" aria-labelledby="command-shortcuts-settings">
@@ -251,7 +251,7 @@ A simple command menu in a dialog.
 <dialog id="command-groups-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
   <div class="command">
     <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-groups-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-groups-menu" />
+      <input type="text" id="command-groups-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-groups-menu" />
     </header>
     <div role="menu" id="command-groups-menu" aria-orientation="vertical" data-empty="No results found.">
       <div role="group" aria-labelledby="command-groups-suggestions">
@@ -294,7 +294,7 @@ A simple command menu in a dialog.
 <dialog id="command-scrollable-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
   <div class="command">
     <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-scrollable-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-scrollable-menu" />
+      <input type="text" id="command-scrollable-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Command search" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-scrollable-menu" />
     </header>
     <div role="menu" id="command-scrollable-menu" aria-orientation="vertical" data-empty="No results found.">
       <div role="group" aria-labelledby="command-scrollable-navigation">
@@ -352,7 +352,7 @@ Add `dir="rtl"` to the command root or an ancestor.
 <div dir="rtl">
   <div id="command-rtl" class="command border" aria-label="Command menu">
     <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-rtl-input" placeholder="اكتب أمرًا أو ابحث..." autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-rtl-menu" />
+      <input type="text" id="command-rtl-input" placeholder="اكتب أمرًا أو ابحث..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="بحث الأوامر" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-rtl-menu" />
     </header>
     <div role="menu" id="command-rtl-menu" aria-orientation="vertical" data-empty="لم يتم العثور على نتائج.">
       <div role="group" aria-labelledby="command-rtl-suggestions">
