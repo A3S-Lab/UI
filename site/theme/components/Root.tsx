@@ -1,5 +1,5 @@
-import { useEffect, type ReactNode } from 'react';
-import { useLocation, useVersion } from '@rspress/core/runtime';
+import { useContext, useEffect, type ReactNode } from 'react';
+import { ThemeContext, useLocation, useVersion } from '@rspress/core/runtime';
 
 type RootProps = {
   children: ReactNode;
@@ -8,6 +8,39 @@ type RootProps = {
 export function Root({ children }: RootProps) {
   const location = useLocation();
   const currentVersion = useVersion();
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    const handleBasecoatThemeChange = (event: Event) => {
+      const mode = (event as CustomEvent<{ mode?: unknown }>).detail?.mode;
+      if ((mode === 'dark' || mode === 'light') && mode !== theme) {
+        setTheme?.(mode);
+      }
+    };
+
+    document.addEventListener(
+      'basecoat:themechange',
+      handleBasecoatThemeChange,
+    );
+    return () => {
+      document.removeEventListener(
+        'basecoat:themechange',
+        handleBasecoatThemeChange,
+      );
+    };
+  }, [setTheme, theme]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('themeMode', theme);
+    } catch {
+      // Storage can be unavailable in privacy-restricted browsing contexts.
+    }
+
+    document
+      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? '#101118' : '#f7f7f8');
+  }, [theme]);
 
   useEffect(() => {
     const syncThemeToggle = () => {

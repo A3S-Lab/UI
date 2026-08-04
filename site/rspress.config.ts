@@ -51,7 +51,7 @@ const config: UserConfig = {
     ],
   },
   head: [
-    ['meta', { name: 'theme-color', content: '#f5f6f8' }],
+    ['meta', { name: 'theme-color', content: '#f7f7f8' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'A3S UI' }],
     [

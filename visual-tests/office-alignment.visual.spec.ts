@@ -5,6 +5,47 @@ async function openDocumentationPage(page: Page, route: string) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+async function waitForDocumentationHydration(page: Page) {
+  await expect(page.locator(".rp-switch-appearance").first()).toHaveAttribute(
+    "role",
+    "button",
+  );
+}
+
+async function expectPreviewOverlayToEscapeFrame(
+  page: Page,
+  route: string,
+  triggerSelector: string,
+) {
+  await openDocumentationPage(page, route);
+
+  const preview = page.locator(".a3s-preview").first();
+  const popover = preview.locator("[data-popover]").first();
+  await page.locator(triggerSelector).first().click();
+  await expect(popover).toHaveAttribute("aria-hidden", "false");
+  await expect(preview).toHaveCSS("overflow", "visible");
+
+  const [previewBox, popoverBox] = await Promise.all([
+    preview.boundingBox(),
+    popover.boundingBox(),
+  ]);
+  expect(previewBox).not.toBeNull();
+  expect(popoverBox).not.toBeNull();
+  expect(popoverBox!.y + popoverBox!.height).toBeGreaterThan(
+    previewBox!.y + previewBox!.height,
+  );
+
+  const popoverOwnsBottomPoint = await popover.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const pointElement = document.elementFromPoint(
+      Math.min(window.innerWidth - 1, rect.left + rect.width / 2),
+      Math.min(window.innerHeight - 1, rect.bottom - 2),
+    );
+    return Boolean(pointElement && element.contains(pointElement));
+  });
+  expect(popoverOwnsBottomPoint).toBe(true);
+}
+
 test("Office-derived workbench shell", async ({ page }) => {
   await openDocumentationPage(page, "en/");
 
@@ -92,3 +133,70 @@ for (const [name, route, selector] of [
     await expect(preview).toHaveScreenshot(`${name}.png`);
   });
 }
+
+test("theme switcher updates Rspress and component previews together", async ({
+  page,
+}) => {
+  await openDocumentationPage(page, "en/components/theme-switcher.html");
+  await waitForDocumentationHydration(page);
+
+  const html = page.locator("html");
+  const previewToggle = page
+    .locator(".a3s-preview")
+    .first()
+    .getByRole("button", { name: "Toggle dark mode" });
+
+  await expect(html).not.toHaveClass(/\bdark\b/);
+  await previewToggle.click();
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveClass(/\brp-dark\b/);
+
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        basecoat: localStorage.getItem("themeMode"),
+        rspress: localStorage.getItem("rspress-theme-appearance"),
+        background: getComputedStyle(document.documentElement)
+          .getPropertyValue("--background")
+          .trim(),
+        themeColor: document
+          .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+          ?.getAttribute("content"),
+      })),
+    )
+    .toEqual({
+      basecoat: "dark",
+      rspress: "dark",
+      background: "#101118",
+      themeColor: "#101118",
+    });
+
+  await page
+    .locator(".rp-switch-appearance")
+    .first()
+    .evaluate((element: HTMLElement) => element.click());
+  await expect(html).not.toHaveClass(/\bdark\b/);
+  await expect(html).not.toHaveClass(/\brp-dark\b/);
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        basecoat: localStorage.getItem("themeMode"),
+        background: getComputedStyle(document.documentElement)
+          .getPropertyValue("--background")
+          .trim(),
+      })),
+    )
+    .toEqual({ basecoat: "light", background: "#f7f7f8" });
+});
+
+test("MDX preview popovers are not clipped by the preview frame", async ({
+  page,
+}) => {
+  for (const [route, trigger] of [
+    ["en/components/dropdown-menu.html", "#demo-dropdown-menu-trigger"],
+    ["en/components/popover.html", "#demo-popover-trigger"],
+    ["en/components/select.html", "#select-demo-trigger"],
+  ] as const) {
+    await expectPreviewOverlayToEscapeFrame(page, route, trigger);
+  }
+});

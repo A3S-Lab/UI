@@ -1,49 +1,49 @@
 :root {
-  --rp-c-brand: #275dcc;
+  --rp-c-brand: #2864e8;
   --rp-c-brand-light: #4f7ff0;
-  --rp-c-link: #275dcc;
+  --rp-c-link: #2864e8;
   --rp-nav-height: 64px;
   --rp-content-max-width: 920px;
   --ui-home-width: 1280px;
-  --ui-canvas: #f5f7fb;
+  --ui-canvas: #f7f7f8;
   --ui-paper: #ffffff;
-  --ui-panel: #f7f9fc;
+  --ui-panel: #f2f3f5;
   --ui-panel-raised: #ffffff;
-  --ui-ink: #111827;
-  --ui-muted: #5f6878;
-  --ui-faint: #8992a3;
-  --ui-line: #dde2eb;
-  --ui-line-strong: #bdc6d4;
-  --ui-blue: #4f7ff0;
-  --ui-blue-deep: #275dcc;
-  --ui-green: #28a978;
-  --ui-purple: #9a63df;
-  --ui-amber: #e4a43b;
-  --ui-red: #d84e62;
-  --ui-shadow: 0 30px 90px rgba(38, 55, 86, 0.16);
+  --ui-ink: #17181a;
+  --ui-muted: #71757d;
+  --ui-faint: #a1a5ad;
+  --ui-line: #e2e4e8;
+  --ui-line-strong: #d3d6dc;
+  --ui-blue: #2864e8;
+  --ui-blue-deep: #1f51b8;
+  --ui-green: #14a675;
+  --ui-purple: #5420bd;
+  --ui-amber: #c97816;
+  --ui-red: #d84b4f;
+  --ui-shadow: 0 24px 64px rgba(20, 24, 40, 0.18);
   --ui-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
 }
 
 html.dark {
-  --rp-c-brand: #8fb1ff;
+  --rp-c-brand: #6ca3ff;
   --rp-c-brand-light: #a8c1ff;
-  --rp-c-link: #8fb1ff;
-  --ui-canvas: #090c12;
-  --ui-paper: #10141c;
-  --ui-panel: #151a24;
-  --ui-panel-raised: #1a202c;
-  --ui-ink: #f4f6f9;
-  --ui-muted: #a8b0bf;
-  --ui-faint: #788294;
-  --ui-line: #252c38;
-  --ui-line-strong: #3d4758;
-  --ui-blue: #78a0ff;
-  --ui-blue-deep: #a4bdff;
-  --ui-green: #58c99d;
-  --ui-purple: #b58ae9;
-  --ui-amber: #e8b75e;
-  --ui-red: #e47786;
-  --ui-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+  --rp-c-link: #6ca3ff;
+  --ui-canvas: #101118;
+  --ui-paper: #171820;
+  --ui-panel: #1e2028;
+  --ui-panel-raised: #282b35;
+  --ui-ink: #f2f3f5;
+  --ui-muted: #a4a8b2;
+  --ui-faint: #727783;
+  --ui-line: #2a2d35;
+  --ui-line-strong: #3a3d48;
+  --ui-blue: #6ca3ff;
+  --ui-blue-deep: #8fb1ff;
+  --ui-green: #3ccf91;
+  --ui-purple: #a883ff;
+  --ui-amber: #eda94c;
+  --ui-red: #f27777;
+  --ui-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
 }
 
 html {
@@ -252,7 +252,8 @@ html .rp-nav {
 /* Documentation components */
 
 .a3s-preview {
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
   margin: 26px 0 34px;
   border: 1px solid var(--ui-line);
   border-radius: 12px;
@@ -260,11 +261,16 @@ html .rp-nav {
   box-shadow: 0 8px 26px rgba(26, 32, 44, 0.045);
 }
 
+.a3s-preview:has([data-popover][aria-hidden="false"]) {
+  z-index: 80;
+}
+
 .a3s-preview__header {
   display: flex;
   min-height: 42px;
   padding: 0 14px;
   border-bottom: 1px solid var(--ui-line);
+  border-radius: 11px 11px 0 0;
   background: var(--ui-panel);
   align-items: center;
   justify-content: space-between;
@@ -297,19 +303,9 @@ html .rp-nav {
 .a3s-preview__stage {
   display: grid;
   min-height: 150px;
-  padding: clamp(20px, 5vw, 48px);
-  background:
-    linear-gradient(
-      color-mix(in srgb, var(--ui-line) 38%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--ui-line) 38%, transparent) 1px,
-      transparent 1px
-    ),
-    color-mix(in srgb, var(--ui-panel) 58%, var(--ui-paper));
-  background-size: 24px 24px;
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: 0 0 11px 11px;
+  background: var(--ui-canvas);
   place-items: center;
 }
 
@@ -590,15 +586,15 @@ html .rp-nav {
 
 .ui-action {
   display: inline-flex;
-  min-height: 48px;
-  padding: 0 19px;
+  min-height: var(--a3s-control-height);
+  padding: 0 13px;
   border: 1px solid var(--ui-line-strong);
-  border-radius: 10px;
+  border-radius: var(--a3s-radius-sm);
   align-items: center;
   justify-content: center;
   gap: 9px;
-  font-size: 14px;
-  font-weight: 630;
+  font-size: var(--a3s-font-size-ui);
+  font-weight: 600;
   transition: 160ms ease;
 }
 
@@ -613,11 +609,11 @@ html .rp-nav {
   outline-offset: 3px;
 }
 
-.ui-action--primary {
-  border-color: var(--ui-blue-deep);
-  background: var(--ui-blue-deep);
-  color: #fff !important;
-  box-shadow: 0 12px 30px color-mix(in srgb, var(--ui-blue) 30%, transparent);
+.ui-home .ui-action--primary {
+  border-color: var(--a3s-action);
+  background: var(--a3s-action);
+  color: var(--a3s-action-ink);
+  box-shadow: none;
 }
 
 .ui-action--secondary {
@@ -1610,7 +1606,6 @@ html .rp-nav {
   }
 
   .a3s-preview__stage {
-    overflow-x: auto;
     padding: 20px 14px;
   }
 

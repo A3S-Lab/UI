@@ -202,12 +202,12 @@ const styleExpectations = [
     matches: compiledStyles.startsWith('@layer rp-base;'),
   },
   {
-    label: 'light primary action token is present',
-    matches: compiledStyles.includes('--primary:#285fd2'),
+    label: 'Office light primary action token is present',
+    matches: compiledStyles.includes('--primary:#242424'),
   },
   {
-    label: 'dark primary action token is present',
-    matches: compiledStyles.includes('--primary:#8eafff'),
+    label: 'Office dark primary action token is present',
+    matches: compiledStyles.includes('--primary:#f2f3f5'),
   },
   {
     label: 'primary button contract is present',

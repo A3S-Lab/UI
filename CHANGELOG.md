@@ -20,6 +20,7 @@
 - Rebuilt the repository homepage around public A3S UI components so its responsive, interactive Office Workbench specimen exercises the package contract directly.
 - Refined the A3S light and dark palettes with a clearer primary action hierarchy and more cohesive product surfaces.
 - Reworked the documentation homepage into a focused product overview with an interactive install command.
+- Re-aligned the A3S foundation and documentation surfaces with the exact neutral palette, action hierarchy, density, radii, and elevation tokens used by A3S Office.
 
 ### Fixed
 
@@ -29,6 +30,8 @@
 - Fixed Rspress reset-layer ordering and documentation prose styles overriding live component previews.
 - Fixed documentation asset compilation on Windows with Node.js 24 by invoking the Tailwind CLI through Node directly.
 - Fixed narrow-screen overflow in documentation content and improved dark-theme contrast for the homepage call to action.
+- Synchronized the documentation theme and the component theme runtime so either switcher updates Rspress, live previews, persisted state, and browser chrome immediately.
+- Allowed MDX preview popovers, selects, and dropdown menus to escape the preview frame without being clipped or painted below following documentation content.
 
 ## [1.0.2] - 2026-07-06
 
