@@ -25,10 +25,10 @@ The system covers both familiar primitives and application-scale composition: Ap
 
 ## Start in three steps
 
-Install directly from GitHub while the first registry release is being prepared:
+Install the public package from npm:
 
 ```bash
-npm install github:A3S-Lab/UI
+npm install @a3s-lab/ui
 ```
 
 Load Tailwind and the complete A3S bundle:
@@ -36,6 +36,12 @@ Load Tailwind and the complete A3S bundle:
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui";
+```
+
+Applications that do not run Tailwind can load the precompiled bundle instead:
+
+```css
+@import "@a3s-lab/ui/cdn.css";
 ```
 
 Import the runtime only when the interface uses interactive composites:

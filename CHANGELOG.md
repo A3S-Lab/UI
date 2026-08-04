@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.0] - 2026-08-04
+
 ### Added
 
 - Added the A3S visual foundation and application-scale components for activity bars, application shells, workspace headers, toolbars, ribbons, settings layouts, resource cards, and resizable split panes.
@@ -13,6 +15,7 @@
 - Added built-site regression checks for preview layer ordering, refreshed theme tokens, and homepage interaction semantics.
 - Added a persistent homepage theme customizer for appearance, accent, radius, and interface density.
 - Added component-specific A3S Test E2E scenarios for every documented component.
+- Added precompiled CSS package entrypoints for consumers that do not run Tailwind.
 
 ### Changed
 
