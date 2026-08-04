@@ -10,13 +10,16 @@
 - Added a Rspress documentation site with Chinese as the default language, English localization, `next` and `v0.1.0` version switching, design foundations, grouped component APIs, and live previews.
 - Added GitHub Pages deployment for the versioned documentation site.
 - Added Playwright visual regression coverage for the Office workbench, Ribbon, Task Pane, and Status Bar at desktop and compact breakpoints.
+- Added built-site regression checks for preview layer ordering, refreshed theme tokens, and homepage interaction semantics.
 
 ### Changed
 
 - Rebranded the package as `@a3s-lab/ui` and made the complete A3S style bundle the default export.
 - Aligned the A3S theme's tokens, control density, interaction states, overlays, data displays, and application patterns with the A3S Office visual language.
 - Migrated the documentation build from Astro and ReallySimpleDocs to the same Rspress, React, and TypeScript stack used by the A3S Code website.
-- Rebuilt the repository homepage around public A3S UI components so the Office Workbench specimen exercises the package contract directly.
+- Rebuilt the repository homepage around public A3S UI components so its responsive, interactive Office Workbench specimen exercises the package contract directly.
+- Refined the A3S light and dark palettes with a clearer primary action hierarchy and more cohesive product surfaces.
+- Reworked the documentation homepage into a focused product overview with an interactive install command.
 
 ### Fixed
 
@@ -25,6 +28,7 @@
 - Fixed collapsed App Shell layouts retaining the activity-bar column at compact breakpoints.
 - Fixed Rspress reset-layer ordering and documentation prose styles overriding live component previews.
 - Fixed documentation asset compilation on Windows with Node.js 24 by invoking the Tailwind CLI through Node directly.
+- Fixed narrow-screen overflow in documentation content and improved dark-theme contrast for the homepage call to action.
 
 ## [1.0.2] - 2026-07-06
 

@@ -109,12 +109,13 @@ const homeCopy = {
       "源自 A3S Office、智能体工作区和运维控制台的可复用视觉语言，以语义化 HTML、Tailwind CSS 与轻量原生 JavaScript 控制器交付。",
     start: "开始使用",
     github: "查看 GitHub",
-    frameworkAgnostic: "框架无关",
+    copy: "复制安装命令",
+    copied: "已复制",
     componentGuides: "组件指南",
     foundationSystems: "基础系统",
     runtimeDependencies: "运行时依赖",
     liveSpecimen: "实时样例",
-    specimenMeta: "OFFICE 工作台 / 浅色",
+    specimenMeta: "可交互 OFFICE 工作台",
     semanticHtml: "语义化 HTML",
     lightDark: "浅色 + 深色",
     responsiveRtl: "响应式 + RTL",
@@ -168,12 +169,13 @@ const homeCopy = {
       "The reusable visual language behind A3S Office, agent workspaces, and operational consoles—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers.",
     start: "Get started",
     github: "GitHub",
-    frameworkAgnostic: "FRAMEWORK AGNOSTIC",
+    copy: "Copy install command",
+    copied: "Copied",
     componentGuides: "Component guides",
     foundationSystems: "Foundation systems",
     runtimeDependencies: "Runtime dependencies",
     liveSpecimen: "LIVE SPECIMEN",
-    specimenMeta: "OFFICE WORKBENCH / LIGHT",
+    specimenMeta: "INTERACTIVE OFFICE WORKBENCH",
     semanticHtml: "Semantic HTML",
     lightDark: "Light + dark",
     responsiveRtl: "Responsive + RTL",
@@ -246,6 +248,15 @@ function CheckIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16">
       <path d="m3.2 8.4 3 3 6.6-6.8" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16">
+      <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" />
+      <path d="M10.5 5.5v-2a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" />
     </svg>
   );
 }
@@ -672,6 +683,7 @@ export function HomeLayout() {
   const version = useVersion();
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
+  const [copied, setCopied] = useState(false);
   const routePrefix = [
     version && version !== defaultVersion ? version : "",
     locale !== site.lang ? locale : "",
@@ -685,6 +697,17 @@ export function HomeLayout() {
   };
   const installationHref = route("/installation");
   const componentsHref = route("/components/");
+  const installCommand = "npm install github:A3S-Lab/UI";
+  const copyInstallCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(installCommand);
+    } catch {
+      return;
+    }
+
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
 
   return (
     <main className="ui-home">
@@ -714,8 +737,17 @@ export function HomeLayout() {
             aria-label="npm installation command"
           >
             <span>$</span>
-            <code>npm install github:A3S-Lab/UI</code>
-            <small>{labels.frameworkAgnostic}</small>
+            <code>{installCommand}</code>
+            <button
+              type="button"
+              onClick={copyInstallCommand}
+              aria-label={copied ? labels.copied : labels.copy}
+            >
+              {copied ? <CheckIcon /> : <CopyIcon />}
+              <span aria-live="polite">
+                {copied ? labels.copied : labels.copy}
+              </span>
+            </button>
           </div>
           <dl className="ui-hero__facts">
             <div>
@@ -746,7 +778,12 @@ export function HomeLayout() {
         </div>
       </section>
 
-      <section className="ui-proof-strip" aria-label="Design system qualities">
+      <section
+        className="ui-proof-strip"
+        aria-label={
+          locale === "zh" ? "设计系统能力" : "Design system qualities"
+        }
+      >
         {[
           ["01", labels.semanticHtml],
           ["02", labels.lightDark],
