@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang, useSite, useVersion, withBase } from "@rspress/core/runtime";
 import { ThemeCustomizer } from "./ThemeCustomizer";
 
@@ -10,7 +10,7 @@ type Localized = {
 };
 
 type ComponentFamily = {
-  code: string;
+  category: Localized;
   count: string;
   description: Localized;
   href: string;
@@ -19,7 +19,7 @@ type ComponentFamily = {
 
 const componentFamilies: ComponentFamily[] = [
   {
-    code: "01 / INPUT",
+    category: { zh: "输入与选择", en: "Input and selection" },
     count: "12",
     description: {
       zh: "字段、选择器、开关、滑块，以及可访问的表单组合。",
@@ -29,7 +29,7 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "表单", en: "Forms" },
   },
   {
-    code: "02 / WAYFINDING",
+    category: { zh: "定位与导航", en: "Orientation and wayfinding" },
     count: "05",
     description: {
       zh: "活动栏、面包屑、标签页、分页与产品侧边栏。",
@@ -39,7 +39,7 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "导航", en: "Navigation" },
   },
   {
-    code: "03 / LAYERS",
+    category: { zh: "分层交互", en: "Layered interaction" },
     count: "07",
     description: {
       zh: "对话框、抽屉、菜单、浮层、命令面板与上下文帮助。",
@@ -49,7 +49,7 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "浮层", en: "Overlays" },
   },
   {
-    code: "04 / SIGNALS",
+    category: { zh: "状态与反馈", en: "Status and feedback" },
     count: "07",
     description: {
       zh: "警告、徽标、进度、骨架屏、加载状态与 Toast 反馈。",
@@ -59,7 +59,7 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "反馈", en: "Feedback" },
   },
   {
-    code: "05 / CONTENT",
+    category: { zh: "结构化内容", en: "Structured content" },
     count: "07",
     description: {
       zh: "卡片、图表、表格、列表项、头像与结构化信息展示。",
@@ -69,7 +69,7 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "数据展示", en: "Data display" },
   },
   {
-    code: "06 / WORKBENCH",
+    category: { zh: "应用组合", en: "Application composition" },
     count: "10",
     description: {
       zh: "应用外壳、功能区、工具栏、分割面板与资源网格。",
@@ -112,6 +112,7 @@ const homeCopy = {
     github: "查看 GitHub",
     copy: "复制安装命令",
     copied: "已复制",
+    copyError: "复制失败，请重试",
     componentGuides: "组件指南",
     foundationSystems: "基础系统",
     runtimeDependencies: "运行时依赖",
@@ -122,13 +123,11 @@ const homeCopy = {
     responsiveRtl: "响应式 + RTL",
     accessibleStates: "可访问状态",
     templates: "Nunjucks + Jinja",
-    catalogEyebrow: "组件目录 / 52 篇指南",
     catalogTitle: "从基础控件到完整工作台。",
     catalogBody:
       "每篇指南都包含实时样例、最小标记、参数、变体、状态行为与可访问性说明。",
     guides: "篇指南",
     browseCatalog: "浏览完整组件目录",
-    foundationsEyebrow: "设计基础 / 系统令牌",
     foundationsTitle: "一套系统，覆盖每个 A3S 界面。",
     foundationsBody:
       "产品语义只定义一次，并在文档工具、Coding Agent 界面与可观测控制台之间共享。",
@@ -146,7 +145,7 @@ const homeCopy = {
         body: "清晰层级、紧凑工具栏、可预测焦点，以及能承受复杂业务的响应式布局。",
       },
     ],
-    ctaEyebrow: "开始组合",
+    principlesTitle: "支撑复杂产品的三条原则。",
     ctaTitle: "构建下一个 A3S 界面。",
     ctaBody: "安装组件包、选择设计基础，然后从任意组件指南复制语义化标记。",
     installation: "安装指南",
@@ -161,17 +160,19 @@ const homeCopy = {
     accent: "强调色",
     saved: "已保存",
     ribbonControls: "控件",
+    workbenchRegion: "交互式 A3S Office 工作台样例",
   },
   en: {
     kicker: "A3S PRODUCT DESIGN SYSTEM",
     titleLead: "Interfaces that feel",
     titleAccent: "like one product.",
     subtitle:
-      "The reusable visual language behind A3S Office, agent workspaces, and operational consoles—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers.",
+      "Reusable semantics and styling for A3S Office, agent workspaces, and operational consoles, delivered in HTML, Tailwind CSS, and vanilla JavaScript.",
     start: "Get started",
     github: "GitHub",
     copy: "Copy install command",
     copied: "Copied",
+    copyError: "Copy failed. Try again",
     componentGuides: "Component guides",
     foundationSystems: "Foundation systems",
     runtimeDependencies: "Runtime dependencies",
@@ -182,13 +183,11 @@ const homeCopy = {
     responsiveRtl: "Responsive + RTL",
     accessibleStates: "Accessible states",
     templates: "Nunjucks + Jinja",
-    catalogEyebrow: "COMPONENT CATALOG / 52 GUIDES",
     catalogTitle: "From controls to complete workspaces.",
     catalogBody:
       "Each guide includes a live specimen, minimal markup, parameters, variants, state behavior, and accessibility notes.",
     guides: "GUIDES",
     browseCatalog: "Browse the complete component catalog",
-    foundationsEyebrow: "FOUNDATIONS / SYSTEM TOKENS",
     foundationsTitle: "One system. Every A3S surface.",
     foundationsBody:
       "Product semantics are encoded once, then shared across document tools, coding-agent interfaces, and observability consoles.",
@@ -206,7 +205,7 @@ const homeCopy = {
         body: "The system is tuned for serious workspaces: clear hierarchy, compact chrome, predictable focus, and resilient responsive layouts.",
       },
     ],
-    ctaEyebrow: "START COMPOSING",
+    principlesTitle: "Three rules for resilient product work.",
     ctaTitle: "Build the next A3S interface.",
     ctaBody:
       "Install the package, choose a foundation, and copy the semantic markup from any component guide.",
@@ -222,6 +221,7 @@ const homeCopy = {
     accent: "ACCENT",
     saved: "Saved",
     ribbonControls: "controls",
+    workbenchRegion: "Interactive A3S Office workbench specimen",
   },
 } as const;
 
@@ -300,7 +300,8 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
   return (
     <div
       className="ui-workbench-frame"
-      aria-label="Interactive A3S Office workbench specimen"
+      role="region"
+      aria-label={labels.workbenchRegion}
     >
       <div className="ui-workbench-windowbar">
         <span className="ui-window-controls" aria-hidden="true">
@@ -314,7 +315,7 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
         </span>
       </div>
       <div className="app-shell ui-workbench-shell" data-navigation="collapsed">
-        <aside data-app-navigation>
+        <aside data-app-navigation aria-hidden="true">
           <div className="activity-bar" data-labels="hidden">
             <header>
               <span className="ui-office-mark">A</span>
@@ -325,24 +326,17 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
             >
               <ul>
                 <li>
-                  <button
-                    type="button"
-                    aria-pressed="true"
-                    aria-label={locale === "zh" ? "文件" : "Files"}
-                  >
+                  <span data-specimen-control data-selected="true">
                     <svg aria-hidden="true" viewBox="0 0 24 24">
                       <path d="M4 4h6l2 2h8v14H4zM8 11h8M8 15h5" />
                     </svg>
                     <span data-navigation-label>
                       {locale === "zh" ? "文件" : "Files"}
                     </span>
-                  </button>
+                  </span>
                 </li>
                 <li>
-                  <button
-                    type="button"
-                    aria-label={locale === "zh" ? "搜索" : "Search"}
-                  >
+                  <span data-specimen-control>
                     <svg aria-hidden="true" viewBox="0 0 24 24">
                       <circle cx="11" cy="11" r="6" />
                       <path d="m16 16 4 4" />
@@ -350,76 +344,62 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                     <span data-navigation-label>
                       {locale === "zh" ? "搜索" : "Search"}
                     </span>
-                  </button>
+                  </span>
                 </li>
                 <li>
-                  <button
-                    type="button"
-                    aria-label={locale === "zh" ? "智能体" : "Agents"}
-                  >
+                  <span data-specimen-control>
                     <svg aria-hidden="true" viewBox="0 0 24 24">
                       <path d="m12 3 2.1 5.9L20 11l-5.9 2.1L12 19l-2.1-5.9L4 11l5.9-2.1z" />
                     </svg>
                     <span data-navigation-label>
                       {locale === "zh" ? "智能体" : "Agents"}
                     </span>
-                  </button>
+                  </span>
                 </li>
               </ul>
             </nav>
             <footer>
-              <button
-                type="button"
-                className="btn"
-                data-size="icon-sm"
-                data-variant="ghost"
-                aria-label={locale === "zh" ? "设置" : "Settings"}
-              >
+              <span className="btn" data-size="icon-sm" data-variant="ghost">
                 <svg aria-hidden="true" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
                 </svg>
-              </button>
+              </span>
             </footer>
           </div>
         </aside>
-        <main data-app-main>
+        <div data-app-main>
           <header className="workspace-header">
             <div data-workspace-leading>
-              <button
-                type="button"
-                className="btn"
-                data-size="icon-sm"
-                data-variant="ghost"
-                aria-label={locale === "zh" ? "返回" : "Go back"}
-              >
+              <span className="btn" data-size="icon-sm" data-variant="ghost">
                 <svg aria-hidden="true" viewBox="0 0 24 24">
                   <path d="m15 18-6-6 6-6" />
                 </svg>
-              </button>
+              </span>
               <span className="ui-file-kind-mark">P</span>
             </div>
             <div data-workspace-identity>
-              <h1>{locale === "zh" ? "项目复盘" : "Project review"}</h1>
+              <strong data-workspace-title>
+                {locale === "zh" ? "项目复盘" : "Project review"}
+              </strong>
               <span>
                 {locale === "zh"
-                  ? "演示文稿 · 刚刚保存"
-                  : "Presentation · saved just now"}
+                  ? "演示文稿，刚刚保存"
+                  : "Presentation, saved just now"}
               </span>
             </div>
-            <div data-workspace-actions>
-              <button
-                type="button"
+            <div data-workspace-actions aria-hidden="true">
+              <span
                 className="btn"
                 data-size="sm"
                 data-variant="outline"
                 data-collapse="mobile"
               >
                 {locale === "zh" ? "预览" : "Preview"}
-              </button>
-              <button type="button" className="btn" data-size="sm">
+              </span>
+              <span className="btn" data-size="sm">
                 {locale === "zh" ? "导出" : "Export"}
-              </button>
+              </span>
             </div>
           </header>
           <div className="ribbon tabs" data-accent="orange">
@@ -453,56 +433,46 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
               >
                 <fieldset data-ribbon-group>
                   <legend>{locale === "zh" ? "字体" : "Font"}</legend>
-                  <div data-ribbon-controls>
-                    <button
-                      type="button"
+                  <div data-ribbon-controls aria-hidden="true">
+                    <span
                       className="btn"
                       data-size="icon-sm"
                       data-variant="ghost"
-                      aria-label={locale === "zh" ? "加粗" : "Bold"}
                     >
                       <strong>B</strong>
-                    </button>
-                    <button
-                      type="button"
+                    </span>
+                    <span
                       className="btn"
                       data-size="icon-sm"
                       data-variant="ghost"
-                      aria-label={locale === "zh" ? "斜体" : "Italic"}
                     >
                       <em>I</em>
-                    </button>
-                    <button
-                      type="button"
+                    </span>
+                    <span
                       className="btn"
                       data-size="icon-sm"
                       data-variant="ghost"
-                      aria-label={locale === "zh" ? "下划线" : "Underline"}
                     >
                       <span className="underline">U</span>
-                    </button>
+                    </span>
                   </div>
                 </fieldset>
                 <fieldset data-ribbon-group>
                   <legend>{locale === "zh" ? "段落" : "Paragraph"}</legend>
-                  <div data-ribbon-controls>
-                    <button
-                      type="button"
+                  <div data-ribbon-controls aria-hidden="true">
+                    <span
                       className="btn"
                       data-size="icon-sm"
                       data-variant="ghost"
-                      aria-label={locale === "zh" ? "对齐" : "Align"}
                     >
                       <svg aria-hidden="true" viewBox="0 0 24 24">
                         <path d="M4 6h16M4 10h11M4 14h16M4 18h9" />
                       </svg>
-                    </button>
-                    <button
-                      type="button"
+                    </span>
+                    <span
                       className="btn"
                       data-size="icon-sm"
                       data-variant="ghost"
-                      aria-label={locale === "zh" ? "列表" : "List"}
                     >
                       <svg aria-hidden="true" viewBox="0 0 24 24">
                         <path d="M8 6h12M8 12h12M8 18h12" />
@@ -510,28 +480,18 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                         <circle cx="4" cy="12" r="1" />
                         <circle cx="4" cy="18" r="1" />
                       </svg>
-                    </button>
+                    </span>
                   </div>
                 </fieldset>
                 <fieldset data-ribbon-group>
                   <legend>{tab[locale]}</legend>
-                  <div data-ribbon-controls>
-                    <button
-                      type="button"
-                      className="btn"
-                      data-size="sm"
-                      data-variant="ghost"
-                    >
+                  <div data-ribbon-controls aria-hidden="true">
+                    <span className="btn" data-size="sm" data-variant="ghost">
                       {locale === "zh" ? "图片" : "Picture"}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn"
-                      data-size="sm"
-                      data-variant="ghost"
-                    >
+                    </span>
+                    <span className="btn" data-size="sm" data-variant="ghost">
                       {locale === "zh" ? "批注" : "Comment"}
-                    </button>
+                    </span>
                   </div>
                 </fieldset>
               </div>
@@ -544,14 +504,14 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                   <small>{labels.workspace}</small>
                   <h2>{labels.continue}</h2>
                 </div>
-                <button
-                  type="button"
+                <span
                   className="btn"
                   data-size="sm"
                   data-variant="outline"
+                  aria-hidden="true"
                 >
                   {labels.newResource}&nbsp; +
-                </button>
+                </span>
               </header>
               <div className="resource-grid">
                 {resourceKinds.map((resource) => (
@@ -580,15 +540,14 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
             <aside className="task-pane ui-office-task-pane">
               <header>
                 <strong>{labels.properties}</strong>
-                <button
-                  type="button"
+                <span
                   className="btn"
                   data-size="icon-xs"
                   data-variant="ghost"
-                  aria-label={locale === "zh" ? "关闭属性" : "Close properties"}
+                  aria-hidden="true"
                 >
                   ×
-                </button>
+                </span>
               </header>
               <section>
                 <div className="field">
@@ -611,15 +570,11 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                 </div>
                 <fieldset className="ui-office-swatches">
                   <legend>{labels.accent}</legend>
-                  <div>
-                    <button
-                      type="button"
-                      aria-label="Blue"
-                      aria-pressed="true"
-                    />
-                    <button type="button" aria-label="Green" />
-                    <button type="button" aria-label="Purple" />
-                    <button type="button" aria-label="Orange" />
+                  <div aria-hidden="true">
+                    <span data-specimen-swatch data-selected="true" />
+                    <span data-specimen-swatch />
+                    <span data-specimen-swatch />
+                    <span data-specimen-swatch />
                   </div>
                 </fieldset>
               </section>
@@ -638,28 +593,26 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
             <div data-status-actions>
               <output>{locale === "zh" ? "浅色" : "Light"}</output>
               <hr role="separator" />
-              <button
-                type="button"
+              <span
                 className="btn"
                 data-size="icon-xs"
                 data-variant="ghost"
-                aria-label={locale === "zh" ? "调整布局" : "Adjust layout"}
+                aria-hidden="true"
               >
                 −
-              </button>
+              </span>
               <output>90%</output>
-              <button
-                type="button"
+              <span
                 className="btn"
                 data-size="icon-xs"
                 data-variant="ghost"
-                aria-label={locale === "zh" ? "放大" : "Zoom in"}
+                aria-hidden="true"
               >
                 +
-              </button>
+              </span>
             </div>
           </footer>
-        </main>
+        </div>
       </div>
       <div
         className="ui-specimen-measure ui-specimen-measure--x"
@@ -684,7 +637,10 @@ export function HomeLayout() {
   const version = useVersion();
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
+  const copyResetTimer = useRef<number | null>(null);
   const routePrefix = [
     version && version !== defaultVersion ? version : "",
     locale !== site.lang ? locale : "",
@@ -699,15 +655,43 @@ export function HomeLayout() {
   const installationHref = route("/installation");
   const componentsHref = route("/components/");
   const installCommand = "npm install github:A3S-Lab/UI";
+  const copyFeedback =
+    copyStatus === "copied"
+      ? labels.copied
+      : copyStatus === "error"
+        ? labels.copyError
+        : labels.copy;
+
+  useEffect(
+    () => () => {
+      if (copyResetTimer.current !== null) {
+        window.clearTimeout(copyResetTimer.current);
+      }
+    },
+    [],
+  );
+
+  const scheduleCopyReset = (delay: number) => {
+    if (copyResetTimer.current !== null) {
+      window.clearTimeout(copyResetTimer.current);
+    }
+    copyResetTimer.current = window.setTimeout(() => {
+      setCopyStatus("idle");
+      copyResetTimer.current = null;
+    }, delay);
+  };
+
   const copyInstallCommand = async () => {
     try {
       await navigator.clipboard.writeText(installCommand);
     } catch {
+      setCopyStatus("error");
+      scheduleCopyReset(4000);
       return;
     }
 
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    setCopyStatus("copied");
+    scheduleCopyReset(1800);
   };
 
   return (
@@ -742,11 +726,12 @@ export function HomeLayout() {
             <button
               type="button"
               onClick={copyInstallCommand}
-              aria-label={copied ? labels.copied : labels.copy}
+              aria-label={copyFeedback}
+              data-copy-state={copyStatus}
             >
-              {copied ? <CheckIcon /> : <CopyIcon />}
-              <span aria-live="polite">
-                {copied ? labels.copied : labels.copy}
+              {copyStatus === "copied" ? <CheckIcon /> : <CopyIcon />}
+              <span aria-live="polite" aria-atomic="true">
+                {copyFeedback}
               </span>
             </button>
           </div>
@@ -771,12 +756,33 @@ export function HomeLayout() {
             <small>{labels.specimenMeta}</small>
           </div>
           <WorkbenchSpecimen locale={locale} />
-          <div className="ui-specimen-notes" aria-hidden="true">
-            <span>04PX BASELINE</span>
-            <span>SEMANTIC STATES</span>
-            <span>KEYBOARD READY</span>
-          </div>
         </div>
+      </section>
+
+      <section className="ui-section ui-catalog">
+        <header className="ui-section__header">
+          <h2>{labels.catalogTitle}</h2>
+          <p>{labels.catalogBody}</p>
+        </header>
+        <div className="ui-family-grid">
+          {componentFamilies.map((family) => (
+            <a key={family.href} href={route(family.href)}>
+              <strong>{localeValue(family.title, locale)}</strong>
+              <p>{localeValue(family.description, locale)}</p>
+              <footer>
+                <span className="ui-family-grid__category">
+                  {localeValue(family.category, locale)}
+                </span>
+                <span className="ui-family-grid__count">
+                  {family.count} {labels.guides} <ArrowIcon />
+                </span>
+              </footer>
+            </a>
+          ))}
+        </div>
+        <a className="ui-catalog__all" href={componentsHref}>
+          {labels.browseCatalog} <ArrowIcon />
+        </a>
       </section>
 
       <ThemeCustomizer locale={locale} />
@@ -788,56 +794,22 @@ export function HomeLayout() {
         }
       >
         {[
-          ["01", labels.semanticHtml],
-          ["02", labels.lightDark],
-          ["03", labels.responsiveRtl],
-          ["04", labels.accessibleStates],
-          ["05", labels.templates],
-        ].map(([index, label]) => (
-          <div key={index}>
-            <span>{index}</span>
-            <strong>{label}</strong>
+          labels.semanticHtml,
+          labels.lightDark,
+          labels.responsiveRtl,
+          labels.accessibleStates,
+          labels.templates,
+        ].map((label) => (
+          <div key={label}>
             <CheckIcon />
+            <strong>{label}</strong>
           </div>
         ))}
       </section>
 
-      <section className="ui-section ui-catalog">
-        <header className="ui-section__header">
-          <div>
-            <span className="ui-section__eyebrow">{labels.catalogEyebrow}</span>
-            <h2>{labels.catalogTitle}</h2>
-          </div>
-          <p>{labels.catalogBody}</p>
-        </header>
-        <div className="ui-family-grid">
-          {componentFamilies.map((family) => (
-            <a key={family.code} href={route(family.href)}>
-              <span className="ui-family-grid__code">{family.code}</span>
-              <strong>{localeValue(family.title, locale)}</strong>
-              <p>{localeValue(family.description, locale)}</p>
-              <footer>
-                <span>
-                  {family.count} {labels.guides}
-                </span>
-                <ArrowIcon />
-              </footer>
-            </a>
-          ))}
-        </div>
-        <a className="ui-catalog__all" href={componentsHref}>
-          {labels.browseCatalog} <ArrowIcon />
-        </a>
-      </section>
-
       <section className="ui-section ui-system">
         <header className="ui-section__header">
-          <div>
-            <span className="ui-section__eyebrow">
-              {labels.foundationsEyebrow}
-            </span>
-            <h2>{labels.foundationsTitle}</h2>
-          </div>
+          <h2>{labels.foundationsTitle}</h2>
           <p>{labels.foundationsBody}</p>
         </header>
         <div className="ui-system__board">
@@ -849,13 +821,13 @@ export function HomeLayout() {
             <span style={{ background: "#d84e62" }}>DANGER</span>
           </div>
           <div className="ui-token-type">
-            <span>TYPE / 01</span>
+            <span>TYPE SCALE</span>
             <strong>Aa</strong>
             <p>Geist Sans</p>
-            <code>12 · 14 · 16 · 20 · 32 · 64</code>
+            <code>12 / 14 / 16 / 20 / 32 / 64</code>
           </div>
           <div className="ui-token-spacing">
-            <span>SPACE / 04PX</span>
+            <span>SPACING SCALE</span>
             {[1, 2, 3, 4, 6, 8].map((step) => (
               <i key={step} style={{ width: `${step * 18}px` }}>
                 {step * 4}
@@ -863,28 +835,31 @@ export function HomeLayout() {
             ))}
           </div>
           <div className="ui-token-shape">
-            <span>SHAPE / CONTROL</span>
+            <span>CONTROL SHAPE</span>
             <i />
             <i />
             <i />
-            <code>R06 · R10 · R14</code>
+            <code>R06 / R10 / R14</code>
           </div>
         </div>
       </section>
 
-      <section className="ui-principles">
-        {labels.principles.map((principle, index) => (
-          <article key={principle.title}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <h3>{principle.title}</h3>
-            <p>{principle.body}</p>
-          </article>
-        ))}
+      <section className="ui-principles" aria-labelledby="ui-principles-title">
+        <header>
+          <h2 id="ui-principles-title">{labels.principlesTitle}</h2>
+        </header>
+        <div className="ui-principles__list">
+          {labels.principles.map((principle) => (
+            <article key={principle.title}>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="ui-cta">
         <div>
-          <span className="ui-section__eyebrow">{labels.ctaEyebrow}</span>
           <h2>{labels.ctaTitle}</h2>
           <p>{labels.ctaBody}</p>
         </div>

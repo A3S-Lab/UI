@@ -5,12 +5,15 @@
 ### Changed
 
 - Raised documentation metadata contrast, minimum text sizes, and primary touch-target sizes while preserving the compact A3S Office visual language.
+- Moved the component catalog directly after the homepage hero, collapsed the optional product preview on mobile, and replaced repeated section numbering with clearer topic labels and an editorial principles layout.
 
 ### Fixed
 
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.
 - Kept the hydrated Rspress theme context authoritative while preserving the pre-hydration A3S theme bridge.
+- Corrected nested homepage landmarks and headings, and removed non-functional specimen controls from keyboard and assistive-technology interaction paths.
+- Added explicit, recoverable feedback when copying the installation command fails.
 
 ## [0.1.0] - 2026-08-04
 

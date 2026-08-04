@@ -49,8 +49,10 @@ const homepageExpectations = [
       'A3S 产品设计系统',
       '让每个界面',
       '复制安装命令',
-      '主题工作台 / 实时预览',
+      '从基础控件到完整工作台。',
+      '展开产品预览',
       'data-a3s-customizer',
+      'data-mobile-expanded="false"',
       'aria-live="polite"',
       'aria-pressed="true"',
       'v0.1.0',
@@ -63,7 +65,9 @@ const homepageExpectations = [
       'A3S PRODUCT DESIGN SYSTEM',
       'Interfaces that feel',
       'Copy install command',
+      'From controls to complete workspaces.',
       'Tune A3S UI to your product.',
+      'Show product preview',
       'data-a3s-customizer',
       'aria-live="polite"',
     ],
@@ -167,6 +171,8 @@ const cascadeIndex = homepageHtml.indexOf(
   `href="${base}assets/a3s-cascade.css"`,
 );
 const componentIndex = homepageHtml.indexOf(`href="${base}assets/a3s-ui.css"`);
+const catalogIndex = homepageHtml.indexOf('ui-section ui-catalog');
+const customizerIndex = homepageHtml.indexOf('ui-theme-customizer');
 
 if (
   cascadeIndex === -1 ||
@@ -175,6 +181,16 @@ if (
 ) {
   throw new Error(
     'The cascade-order stylesheet must load before the A3S component stylesheet.',
+  );
+}
+
+if (
+  catalogIndex === -1 ||
+  customizerIndex === -1 ||
+  catalogIndex > customizerIndex
+) {
+  throw new Error(
+    'The component catalog must appear before the theme customizer on the homepage.',
   );
 }
 

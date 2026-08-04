@@ -170,9 +170,7 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   flex-direction: column;
 }
 
-.ui-theme-customizer__controls > header > span,
-.ui-theme-customizer__preview-label,
-.ui-theme-product__eyebrow {
+.ui-theme-customizer__preview-label {
   color: var(--ui-muted);
   font-family: var(--ui-mono);
   font-size: 12px;
@@ -182,10 +180,10 @@ html[data-a3s-radius] .ui-workbench-windowbar {
 
 .ui-theme-customizer__controls h2 {
   max-width: 520px;
-  margin: 16px 0 12px;
+  margin: 0 0 12px;
   font-size: clamp(34px, 3.1vw, 48px);
   font-weight: 680;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   line-height: 1.08;
 }
 
@@ -233,12 +231,19 @@ html[data-a3s-radius] .ui-workbench-windowbar {
 
 .ui-theme-customizer__segments button,
 .ui-theme-customizer__reset,
+.ui-theme-customizer__preview-toggle,
 .ui-theme-customizer__swatches button,
-.ui-theme-product button {
+.ui-theme-product__actions span {
   border: 0;
   color: inherit;
-  cursor: pointer;
   font: inherit;
+}
+
+.ui-theme-customizer__segments button,
+.ui-theme-customizer__reset,
+.ui-theme-customizer__preview-toggle,
+.ui-theme-customizer__swatches button {
+  cursor: pointer;
 }
 
 .ui-theme-customizer__segments button {
@@ -290,7 +295,8 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-blue) 12%, transparent);
 }
 
-.ui-theme-customizer__reset {
+.ui-theme-customizer__reset,
+.ui-theme-customizer__preview-toggle {
   align-self: flex-start;
   min-height: 44px;
   margin-top: 26px;
@@ -302,6 +308,11 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   text-decoration: underline;
   text-decoration-color: var(--ui-line-strong);
   text-underline-offset: 4px;
+}
+
+.ui-theme-customizer__preview-toggle {
+  display: none;
+  margin-top: 8px;
 }
 
 .ui-theme-customizer button:focus-visible {
@@ -398,28 +409,44 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   gap: 7px;
 }
 
-.ui-theme-product nav button {
+.ui-theme-product nav [data-preview-nav-item] {
+  display: grid;
   width: 32px;
   height: 32px;
   border-radius: calc(var(--ui-customizer-radius, 12px) - 5px);
   background: transparent;
+  place-items: center;
   color: var(--ui-faint);
-  font-family: var(--ui-mono);
-  font-size: 10px;
 }
 
-.ui-theme-product nav button[aria-current="page"] {
+.ui-theme-product nav [data-preview-nav-item] i {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentcolor;
+  border-radius: 3px;
+}
+
+.ui-theme-product nav [data-preview-nav-item]:nth-child(2) i {
+  border-radius: 50%;
+}
+
+.ui-theme-product nav [data-preview-nav-item]:nth-child(3) i {
+  width: 14px;
+  height: 8px;
+}
+
+.ui-theme-product nav [data-preview-nav-item][data-current="true"] {
   background: color-mix(in srgb, var(--ui-blue) 14%, var(--ui-paper));
   color: var(--ui-blue);
 }
 
-.ui-theme-product main {
+.ui-theme-product [data-preview-main] {
   min-width: 0;
   padding: calc(28px + var(--a3s-density-space, 12px) / 3);
 }
 
 .ui-theme-product h3 {
-  margin: 8px 0 20px;
+  margin: 0 0 20px;
   font-size: 23px;
   font-weight: 670;
   letter-spacing: -0.04em;
@@ -430,23 +457,25 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   gap: 8px;
 }
 
-.ui-theme-product__actions button {
+.ui-theme-product__actions span {
+  display: inline-flex;
   min-height: 36px;
   padding: 0 11px;
   border: 1px solid var(--ui-line-strong);
   border-radius: var(--a3s-radius-sm);
   background: var(--ui-paper);
+  align-items: center;
   font-size: 11px;
   font-weight: 650;
 }
 
-.ui-theme-product__actions button:first-child {
+.ui-theme-product__actions span:first-child {
   border-color: var(--ui-blue);
   background: var(--ui-blue);
   color: white;
 }
 
-.ui-theme-product main > section {
+.ui-theme-product [data-preview-main] > section {
   margin-top: 30px;
   overflow: hidden;
   border: 1px solid var(--ui-line);
@@ -454,7 +483,7 @@ html[data-a3s-radius] .ui-workbench-windowbar {
   background: var(--ui-paper);
 }
 
-.ui-theme-product main > section > header {
+.ui-theme-product [data-preview-main] > section > header {
   padding: 10px 12px;
   border-bottom: 1px solid var(--ui-line);
   background: var(--ui-panel);
@@ -529,11 +558,24 @@ html[data-a3s-radius] .ui-workbench-windowbar {
     padding: 28px 14px;
   }
 
+  .ui-theme-customizer__preview-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ui-theme-customizer__preview[data-mobile-expanded="false"] {
+    display: none;
+  }
+
+  .ui-theme-customizer__preview[data-mobile-expanded="true"] {
+    display: flex;
+  }
+
   .ui-theme-product__body {
     min-height: 320px;
   }
 
-  .ui-theme-product main {
+  .ui-theme-product [data-preview-main] {
     padding: 24px 16px;
   }
 

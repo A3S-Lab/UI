@@ -140,6 +140,94 @@ test("Office-derived workbench shell", async ({ page }) => {
   );
 });
 
+test("homepage keeps one document hierarchy and only working specimen controls", async ({
+  page,
+}) => {
+  await openDocumentationPage(page, "en/");
+
+  await expect(page.locator("main")).toHaveCount(1);
+  await expect(page.locator("h1")).toHaveCount(1);
+
+  const specimen = page.locator(".ui-workbench-frame");
+  await expect(specimen).toHaveAttribute(
+    "aria-label",
+    "Interactive A3S Office workbench specimen",
+  );
+  await expect(specimen.locator("button")).toHaveCount(7);
+  await expect(specimen.getByRole("tab")).toHaveCount(4);
+  await expect(specimen.locator(".resource-card")).toHaveCount(3);
+
+  const preview = page.locator(".ui-theme-customizer__preview");
+  await expect(
+    preview.locator(
+      'button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    ),
+  ).toHaveCount(0);
+
+  expect(await page.locator(".ui-home").innerText()).not.toMatch(/[—–]/);
+});
+
+test("homepage copy failure is explicit and recoverable", async ({ page }) => {
+  await openDocumentationPage(page, "en/");
+  await waitForDocumentationHydration(page);
+  await page.evaluate(() => {
+    let attempts = 0;
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          attempts += 1;
+          if (attempts === 1) throw new Error("Clipboard unavailable");
+        },
+      },
+    });
+  });
+
+  const copyButton = page.locator(".ui-install-command button");
+  await expect(copyButton).toHaveAccessibleName("Copy install command");
+  await copyButton.click();
+  await expect(copyButton).toHaveAccessibleName("Copy failed. Try again");
+  await expect(copyButton).toHaveAttribute("data-copy-state", "error");
+
+  await copyButton.click();
+  await expect(copyButton).toHaveAccessibleName("Copied");
+  await expect(copyButton).toHaveAttribute("data-copy-state", "copied");
+});
+
+test("mobile homepage reveals the catalog before an optional product preview", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDocumentationPage(page, "en/");
+  await waitForDocumentationHydration(page);
+
+  const catalog = page.locator(".ui-catalog");
+  expect(
+    await page.evaluate(() => {
+      const catalogElement = document.querySelector(".ui-catalog");
+      const customizerElement = document.querySelector(".ui-theme-customizer");
+      return Boolean(
+        catalogElement &&
+        customizerElement &&
+        catalogElement.compareDocumentPosition(customizerElement) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    }),
+  ).toBe(true);
+
+  const preview = page.locator(".ui-theme-customizer__preview");
+  const toggle = page.locator(".ui-theme-customizer__preview-toggle");
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAccessibleName("Show product preview");
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(preview).toBeHidden();
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(toggle).toHaveAccessibleName("Hide product preview");
+  await expect(preview).toBeVisible();
+});
+
 for (const [name, route, selector] of [
   ["ribbon", "en/components/ribbon.html", ".ribbon"],
   ["task-pane", "en/components/task-pane.html", ".task-pane"],
