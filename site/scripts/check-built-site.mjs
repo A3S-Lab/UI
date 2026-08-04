@@ -174,6 +174,38 @@ if (
   );
 }
 
+const runtimeScriptMarkup = `<script src="${base}assets/all.min.js" defer></script>`;
+if (!homepageHtml.includes(runtimeScriptMarkup)) {
+  throw new Error(
+    'The A3S runtime script must use an explicit closing tag so it cannot swallow later head markup.',
+  );
+}
+
+if (
+  !homepageHtml.includes("document.addEventListener('basecoat:themechange'")
+) {
+  throw new Error('The pre-hydration documentation theme bridge is missing.');
+}
+
+const rspressBootstrapMarker =
+  "const saved = localStorage.getItem('rspress-theme-appearance')";
+const rspressBootstrapIndex = homepageHtml.indexOf(rspressBootstrapMarker);
+const rspressBootstrapOpen = homepageHtml.lastIndexOf(
+  '<script',
+  rspressBootstrapIndex,
+);
+const rspressBootstrapClose = homepageHtml.indexOf(
+  '</script>',
+  rspressBootstrapIndex,
+);
+if (
+  rspressBootstrapIndex === -1 ||
+  rspressBootstrapOpen === -1 ||
+  rspressBootstrapClose === -1
+) {
+  throw new Error('The Rspress theme bootstrap must remain executable.');
+}
+
 for (const { file, markers } of homepageExpectations) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
   for (const marker of markers) {

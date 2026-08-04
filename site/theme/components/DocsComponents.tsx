@@ -184,17 +184,44 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Preview({ children, className, class: htmlClass }: PreviewProps) {
+  const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const preview = previewRef.current;
+    const syncOverlayState = () => {
+      preview?.toggleAttribute(
+        'data-overlay-open',
+        Boolean(preview.querySelector('[data-popover][aria-hidden="false"]')),
+      );
+    };
+
+    const overlayObserver = new MutationObserver(syncOverlayState);
+    if (preview) {
+      overlayObserver.observe(preview, {
+        attributes: true,
+        attributeFilter: ['aria-hidden'],
+        subtree: true,
+      });
+    }
+
+    syncOverlayState();
     const frame = requestAnimationFrame(() => {
       if (canvasRef.current) initializeDocumentationDemos(canvasRef.current);
+      syncOverlayState();
     });
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      overlayObserver.disconnect();
+    };
   }, [children]);
 
   return (
-    <section className="a3s-preview" aria-label="Interactive component preview">
+    <section
+      ref={previewRef}
+      className="a3s-preview"
+      aria-label="Interactive component preview"
+    >
       <header className="a3s-preview__header">
         <span>
           <i aria-hidden="true" /> Live preview

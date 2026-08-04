@@ -11,6 +11,40 @@ export function Root({ children }: RootProps) {
   const { theme, setTheme } = useContext(ThemeContext);
 
   useEffect(() => {
+    const domTheme = document.documentElement.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+    let storedTheme: string | null = null;
+
+    try {
+      storedTheme = localStorage.getItem('themeMode');
+    } catch {
+      // Storage can be unavailable in privacy-restricted browsing contexts.
+    }
+
+    const reconciledTheme =
+      (storedTheme === 'dark' || storedTheme === 'light') &&
+      storedTheme === domTheme
+        ? storedTheme
+        : theme;
+
+    if (reconciledTheme !== theme) {
+      setTheme?.(reconciledTheme);
+    } else {
+      try {
+        localStorage.setItem('themeMode', theme);
+      } catch {
+        // Storage can be unavailable in privacy-restricted browsing contexts.
+      }
+    }
+
+    document
+      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      ?.setAttribute(
+        'content',
+        reconciledTheme === 'dark' ? '#101118' : '#f7f7f8',
+      );
+
     const handleBasecoatThemeChange = (event: Event) => {
       const mode = (event as CustomEvent<{ mode?: unknown }>).detail?.mode;
       if ((mode === 'dark' || mode === 'light') && mode !== theme) {
@@ -29,18 +63,6 @@ export function Root({ children }: RootProps) {
       );
     };
   }, [setTheme, theme]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('themeMode', theme);
-    } catch {
-      // Storage can be unavailable in privacy-restricted browsing contexts.
-    }
-
-    document
-      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute('content', theme === 'dark' ? '#101118' : '#f7f7f8');
-  }, [theme]);
 
   useEffect(() => {
     const syncThemeToggle = () => {
@@ -118,6 +140,13 @@ export function Root({ children }: RootProps) {
     const modalContainer = document.querySelector('#__rspress_modal_container');
     if (modalContainer) {
       themeObserver.observe(modalContainer, {
+        childList: true,
+        subtree: true,
+      });
+    }
+    const navigation = document.querySelector('.rp-nav');
+    if (navigation) {
+      themeObserver.observe(navigation, {
         childList: true,
         subtree: true,
       });

@@ -23,7 +23,14 @@ async function expectPreviewOverlayToEscapeFrame(
   const popover = preview.locator("[data-popover]").first();
   await page.locator(triggerSelector).first().click();
   await expect(popover).toHaveAttribute("aria-hidden", "false");
+  await expect(popover).toHaveCSS("opacity", "1");
+  await expect(preview).toHaveAttribute("data-overlay-open", "");
   await expect(preview).toHaveCSS("overflow", "visible");
+  await expect(preview).toHaveCSS("z-index", "100");
+  await expect(page.locator(".rp-doc-layout__doc")).toHaveCSS(
+    "overflow",
+    "visible",
+  );
 
   const [previewBox, popoverBox] = await Promise.all([
     preview.boundingBox(),
@@ -171,10 +178,10 @@ test("theme switcher updates Rspress and component previews together", async ({
       themeColor: "#101118",
     });
 
-  await page
-    .locator(".rp-switch-appearance")
-    .first()
-    .evaluate((element: HTMLElement) => element.click());
+  const visibleThemeToggle = page.locator(".rp-switch-appearance:visible");
+  await expect(visibleThemeToggle).toHaveCount(1);
+  await expect(visibleThemeToggle).toBeVisible();
+  await visibleThemeToggle.click();
   await expect(html).not.toHaveClass(/\bdark\b/);
   await expect(html).not.toHaveClass(/\brp-dark\b/);
   await expect
@@ -189,6 +196,50 @@ test("theme switcher updates Rspress and component previews together", async ({
     .toEqual({ basecoat: "light", background: "#f7f7f8" });
 });
 
+test("theme bootstrap works before Rspress hydration", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("themeMode", "dark");
+    localStorage.removeItem("rspress-theme-appearance");
+  });
+  await page.route("**/static/js/**", (route) => route.abort());
+
+  await page.goto("en/components/theme-switcher.html", {
+    waitUntil: "domcontentloaded",
+  });
+
+  const html = page.locator("html");
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveClass(/\brp-dark\b/);
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        basecoat: localStorage.getItem("themeMode"),
+        rspress: localStorage.getItem("rspress-theme-appearance"),
+        themeColor: document
+          .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+          ?.getAttribute("content"),
+      })),
+    )
+    .toEqual({ basecoat: "dark", rspress: "dark", themeColor: "#101118" });
+
+  const runtimeScript = page.locator('script[src$="/assets/all.min.js"]');
+  await expect(runtimeScript).toHaveCount(1);
+  expect(await runtimeScript.textContent()).toBe("");
+  await expect(page.locator('head link[rel="canonical"]')).toHaveCount(1);
+
+  await page.evaluate(() => window.basecoat?.theme.toggle());
+  await expect(html).not.toHaveClass(/\bdark\b/);
+  await expect(html).not.toHaveClass(/\brp-dark\b/);
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        basecoat: localStorage.getItem("themeMode"),
+        rspress: localStorage.getItem("rspress-theme-appearance"),
+      })),
+    )
+    .toEqual({ basecoat: "light", rspress: "light" });
+});
+
 test("MDX preview popovers are not clipped by the preview frame", async ({
   page,
 }) => {
@@ -196,6 +247,10 @@ test("MDX preview popovers are not clipped by the preview frame", async ({
     ["en/components/dropdown-menu.html", "#demo-dropdown-menu-trigger"],
     ["en/components/popover.html", "#demo-popover-trigger"],
     ["en/components/select.html", "#select-demo-trigger"],
+    [
+      "en/components/combobox.html",
+      "#framework-combobox > input[role=combobox]",
+    ],
   ] as const) {
     await expectPreviewOverlayToEscapeFrame(page, route, trigger);
   }

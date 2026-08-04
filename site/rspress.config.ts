@@ -1,8 +1,13 @@
+import { readFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { defineConfig, type UserConfig } from '@rspress/core';
 
 const base = process.env.DOCS_BASE ?? '/UI/';
 const siteOrigin = process.env.DOCS_ORIGIN ?? 'https://a3s-lab.github.io';
+const themeBridgeScript = readFileSync(
+  path.join(__dirname, 'theme/theme-bridge.js'),
+  'utf8',
+).replace(/<\/script/gi, '<\\/script');
 
 const config: UserConfig = {
   root: path.join(__dirname, 'docs'),
@@ -51,6 +56,7 @@ const config: UserConfig = {
     ],
   },
   head: [
+    `<script>${themeBridgeScript}</script>`,
     ['meta', { name: 'theme-color', content: '#f7f7f8' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'A3S UI' }],
@@ -64,7 +70,7 @@ const config: UserConfig = {
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-cascade.css` }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-ui.css` }],
-    ['script', { src: `${base}assets/all.min.js`, defer: 'true' }],
+    `<script src="${base}assets/all.min.js" defer></script>`,
     (route) => [
       'link',
       {

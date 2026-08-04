@@ -107,6 +107,26 @@ html .rp-nav {
   color: var(--ui-ink);
 }
 
+html .rp-switch-appearance {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border: 1px solid var(--ui-line);
+  border-radius: var(--a3s-radius-sm);
+  background: var(--ui-paper);
+}
+
+@media (min-width: 768px) and (max-width: 1280px) {
+  html .rp-nav__others {
+    display: flex;
+    gap: 0;
+  }
+
+  html .rp-nav__others > :not(.rp-switch-appearance) {
+    display: none;
+  }
+}
+
 /* Rspress 2.0.19 resolves the open mobile language grid to zero height in
    Chromium. Switch it atomically so language and version rows never overlap. */
 .rp-nav-screen-langs-group {
@@ -139,6 +159,11 @@ html .rp-nav {
   min-width: 0;
   max-width: 100%;
   color: var(--ui-ink);
+}
+
+html .rp-doc-layout__doc {
+  min-width: 0;
+  overflow: visible;
 }
 
 .rp-doc :not(:where(.rp-not-doc, .rp-not-doc *)):where(h1) {
@@ -261,8 +286,10 @@ html .rp-nav {
   box-shadow: 0 8px 26px rgba(26, 32, 44, 0.045);
 }
 
+.a3s-preview:focus-within,
+.a3s-preview[data-overlay-open],
 .a3s-preview:has([data-popover][aria-hidden="false"]) {
-  z-index: 80;
+  z-index: 100;
 }
 
 .a3s-preview__header {

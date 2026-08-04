@@ -1,0 +1,149 @@
+suite "a3s-ui-theme-and-overlays" {
+    version = 1
+
+    scenario "theme-realtime" {
+        name = "Theme changes update the documentation and previews immediately"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-theme-switcher" {
+            url = "http://127.0.0.1:4178/UI/en/components/theme-switcher.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        expect "visible-site-theme-control" {
+            visible = css(".rp-nav__others .rp-switch-appearance")
+        }
+
+        click "switch-site-to-dark" {
+            target = css(".rp-nav__others .rp-switch-appearance")
+        }
+
+        wait "dark-applied" {
+            visible = css("html.dark.rp-dark")
+        }
+
+        screenshot "dark-theme-evidence" {
+            path = "theme/dark.png"
+        }
+
+        click "switch-site-to-light" {
+            target = css(".rp-nav__others .rp-switch-appearance")
+        }
+
+        wait "light-applied" {
+            visible = css("html:not(.dark):not(.rp-dark)")
+        }
+
+        screenshot "light-theme-evidence" {
+            path = "theme/light.png"
+        }
+    }
+
+    scenario "dropdown-overlay" {
+        name = "Dropdown escapes the MDX preview frame"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-dropdown" {
+            url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        click "trigger-dropdown" {
+            target = css("#demo-dropdown-menu-trigger")
+        }
+
+        wait "overlay-ready" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        screenshot "dropdown-evidence" {
+            path = "overlays/dropdown.png"
+        }
+    }
+
+    scenario "popover-overlay" {
+        name = "Popover escapes the MDX preview frame"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-popover" {
+            url = "http://127.0.0.1:4178/UI/en/components/popover.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        click "trigger-popover" {
+            target = css("#demo-popover-trigger")
+        }
+
+        wait "overlay-ready" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        screenshot "popover-evidence" {
+            path = "overlays/popover.png"
+        }
+    }
+
+    scenario "select-overlay" {
+        name = "Select menu escapes the MDX preview frame"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-select" {
+            url = "http://127.0.0.1:4178/UI/en/components/select.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        click "trigger-select" {
+            target = css("#select-demo-trigger")
+        }
+
+        wait "overlay-ready" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        screenshot "select-evidence" {
+            path = "overlays/select.png"
+        }
+    }
+
+    scenario "combobox-overlay" {
+        name = "Combobox menu escapes the MDX preview frame"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-combobox" {
+            url = "http://127.0.0.1:4178/UI/en/components/combobox.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        click "trigger-combobox" {
+            target = css("#framework-combobox > input[role=combobox]")
+        }
+
+        wait "overlay-ready" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        screenshot "combobox-evidence" {
+            path = "overlays/combobox.png"
+        }
+    }
+}

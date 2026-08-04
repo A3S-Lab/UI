@@ -30,8 +30,8 @@
 - Fixed Rspress reset-layer ordering and documentation prose styles overriding live component previews.
 - Fixed documentation asset compilation on Windows with Node.js 24 by invoking the Tailwind CLI through Node directly.
 - Fixed narrow-screen overflow in documentation content and improved dark-theme contrast for the homepage call to action.
-- Synchronized the documentation theme and the component theme runtime so either switcher updates Rspress, live previews, persisted state, and browser chrome immediately.
-- Allowed MDX preview popovers, selects, and dropdown menus to escape the preview frame without being clipped or painted below following documentation content.
+- Made documentation theme switching pre-hydration safe, restored the Rspress bootstrap after the component runtime script, and kept a user-visible switch at common desktop widths.
+- Removed the remaining Rspress overflow ancestor and promoted open MDX preview popovers without relying solely on `:has()`, preventing selects, comboboxes, and dropdown menus from being clipped or painted below following content.
 
 ## [1.0.2] - 2026-07-06
 
