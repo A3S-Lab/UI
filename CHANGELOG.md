@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.
 - Preserved compact desktop controls while providing 44-pixel form, button, tab, and sidebar targets for coarse pointers and intentional reduced-motion feedback.
 - Raised documentation metadata contrast, minimum text sizes, and primary touch-target sizes while preserving the compact A3S Office visual language.
@@ -11,6 +12,7 @@
 
 ### Fixed
 
+- Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.
 - Kept the hydrated Rspress theme context authoritative while preserving the pre-hydration A3S theme bridge.
@@ -213,26 +215,34 @@
 To keep the previous `.form` wrapper behavior, define it in your own Tailwind CSS:
 
 ```css
-.form label { @apply label; }
-.form input { @apply input; }
-.form textarea { @apply textarea; }
-.form select { @apply select; }
+.form label {
+  @apply label;
+}
+.form input {
+  @apply input;
+}
+.form textarea {
+  @apply textarea;
+}
+.form select {
+  @apply select;
+}
 ```
 
 To keep the previous document-event command APIs, add bridge listeners in your app:
 
 ```js
-document.addEventListener('basecoat:toast', (event) => {
-  document.getElementById('toaster')?.toast(event.detail?.config || {});
+document.addEventListener("basecoat:toast", (event) => {
+  document.getElementById("toaster")?.toast(event.detail?.config || {});
 });
 
-document.addEventListener('basecoat:sidebar', (event) => {
-  const sidebar = document.getElementById(event.detail?.id || 'sidebar');
-  const action = event.detail?.action || 'toggle';
-  if (['open', 'close', 'toggle'].includes(action)) sidebar?.[action]();
+document.addEventListener("basecoat:sidebar", (event) => {
+  const sidebar = document.getElementById(event.detail?.id || "sidebar");
+  const action = event.detail?.action || "toggle";
+  if (["open", "close", "toggle"].includes(action)) sidebar?.[action]();
 });
 
-document.addEventListener('basecoat:theme', (event) => {
+document.addEventListener("basecoat:theme", (event) => {
   const mode = event.detail?.mode;
   mode ? window.basecoat.theme.set(mode) : window.basecoat.theme.toggle();
 });

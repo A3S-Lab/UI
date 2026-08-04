@@ -629,6 +629,43 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   const menuButton = page.locator(".rp-sidebar-menu__left");
   const outlineButton = page.locator(".rp-sidebar-menu__right");
   const mobileSearch = page.locator(".rp-search-button--mobile");
+  const navigationButton = page.locator(".rp-nav-hamburger:visible");
+
+  await expect(navigationButton).toHaveAccessibleName("Open navigation");
+  await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
+  await expect(navigationButton).toHaveAttribute(
+    "aria-controls",
+    "rspress-primary-navigation",
+  );
+  const navigationButtonBox = await navigationButton.boundingBox();
+  expect(navigationButtonBox).not.toBeNull();
+  expect(navigationButtonBox!.width).toBeGreaterThanOrEqual(44);
+  expect(navigationButtonBox!.height).toBeGreaterThanOrEqual(44);
+
+  await navigationButton.click();
+  const navigationPanel = page.locator(".rp-nav-screen");
+  await expect(navigationPanel).toBeVisible();
+  await expect(navigationPanel).toHaveAttribute(
+    "id",
+    "rspress-primary-navigation",
+  );
+  await expect(navigationPanel).not.toHaveAttribute("inert", "");
+  await expect(navigationPanel).not.toHaveAttribute("aria-hidden", "true");
+  await expect(navigationButton).toHaveAccessibleName("Close navigation");
+  await expect(navigationButton).toHaveAttribute("aria-expanded", "true");
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Boolean(document.activeElement?.closest(".rp-nav-screen")),
+      ),
+    )
+    .toBe(true);
+
+  await page.keyboard.press("Escape");
+  await expect(navigationPanel).toHaveCount(0);
+  await expect(navigationButton).toHaveAccessibleName("Open navigation");
+  await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
+  await expect(navigationButton).toBeFocused();
 
   await expect(sidebar).toHaveAttribute("inert", "");
   await expect(sidebar).toHaveAttribute("aria-hidden", "true");
@@ -677,6 +714,109 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   await mobileSearch.focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".rp-search-panel__modal")).toBeVisible();
+});
+
+test("component navigation exposes semantic collapsible groups", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDocumentationPage(page, "en/components/button.html");
+  await waitForDocumentationHydration(page);
+
+  await page.locator(".rp-sidebar-menu__left").click();
+  const groups = page.locator('.rp-sidebar-group[data-depth="1"]');
+  await expect(groups).toHaveCount(8);
+
+  const actions = groups.filter({ hasText: /^Actions$/ });
+  const forms = groups.filter({ hasText: /^Forms$/ });
+  const navigation = groups.filter({ hasText: /^Navigation$/ });
+  await expect(actions).toHaveAttribute("role", "button");
+  await expect(actions).toHaveAttribute("tabindex", "0");
+  await expect(actions).toHaveAttribute("aria-expanded", "true");
+  await expect(forms).toHaveAttribute("aria-expanded", "false");
+  await expect(navigation).toHaveAttribute("aria-expanded", "false");
+
+  const actionsPanelId = await actions.getAttribute("aria-controls");
+  const formsPanelId = await forms.getAttribute("aria-controls");
+  const navigationPanelId = await navigation.getAttribute("aria-controls");
+  expect(actionsPanelId).toBeTruthy();
+  expect(formsPanelId).toBeTruthy();
+  expect(navigationPanelId).toBeTruthy();
+
+  const actionsPanel = page.locator(`#${actionsPanelId}`);
+  const formsPanel = page.locator(`#${formsPanelId}`);
+  const navigationPanel = page.locator(`#${navigationPanelId}`);
+  await expect(actionsPanel).not.toHaveAttribute("inert", "");
+  await expect(actionsPanel).not.toHaveAttribute("aria-hidden", "true");
+  await expect(formsPanel).toHaveAttribute("inert", "");
+  await expect(formsPanel).toHaveAttribute("aria-hidden", "true");
+  await expect(navigationPanel).toHaveAttribute("inert", "");
+
+  await forms.focus();
+  await forms.press("Enter");
+  await expect(forms).toHaveAttribute("aria-expanded", "true");
+  await expect(formsPanel).not.toHaveAttribute("inert", "");
+  await expect(formsPanel).not.toHaveAttribute("aria-hidden", "true");
+
+  await navigation.focus();
+  await navigation.press("Space");
+  await expect(navigation).toHaveAttribute("aria-expanded", "true");
+  await expect(navigationPanel).not.toHaveAttribute("inert", "");
+  await expect(navigationPanel).not.toHaveAttribute("aria-hidden", "true");
+});
+
+test("page outline progressively discloses one heading group", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openDocumentationPage(page, "en/components/button.html");
+  await waitForDocumentationHydration(page);
+
+  const outline = page.locator(".rp-doc-layout__outline");
+  const groups = outline.locator(".a3s-outline-group");
+  await expect(groups).toHaveCount(2);
+
+  const usageToggle = groups.nth(0).locator(".a3s-outline-group__toggle");
+  const examplesToggle = groups.nth(1).locator(".a3s-outline-group__toggle");
+  await expect(usageToggle).toHaveAccessibleName("Collapse Usage section");
+  await expect(examplesToggle).toHaveAccessibleName("Expand Examples section");
+  await expect(usageToggle).toHaveAttribute("aria-expanded", "true");
+  await expect(examplesToggle).toHaveAttribute("aria-expanded", "false");
+
+  const usagePanelId = await usageToggle.getAttribute("aria-controls");
+  const examplesPanelId = await examplesToggle.getAttribute("aria-controls");
+  expect(usagePanelId).toBeTruthy();
+  expect(examplesPanelId).toBeTruthy();
+  const usagePanel = page.locator(`#${usagePanelId}`);
+  const examplesPanel = page.locator(`#${examplesPanelId}`);
+  await expect(usagePanel).not.toHaveAttribute("hidden", "");
+  await expect(usagePanel).not.toHaveAttribute("inert", "");
+  await expect(examplesPanel).toHaveAttribute("hidden", "");
+  await expect(examplesPanel).toHaveAttribute("inert", "");
+  await expect(
+    outline.locator(".a3s-outline-group__panel:not([hidden])"),
+  ).toHaveCount(1);
+
+  await examplesToggle.focus();
+  await examplesToggle.press("Enter");
+  await expect(examplesToggle).toHaveAccessibleName(
+    "Collapse Examples section",
+  );
+  await expect(examplesToggle).toHaveAttribute("aria-expanded", "true");
+  await expect(examplesPanel).not.toHaveAttribute("hidden", "");
+  await expect(examplesPanel).not.toHaveAttribute("inert", "");
+  await expect(usagePanel).toHaveAttribute("hidden", "");
+  await expect(usagePanel).toHaveAttribute("inert", "");
+  await expect(
+    outline.locator(".a3s-outline-group__panel:not([hidden])"),
+  ).toHaveCount(1);
+
+  await expect(usageToggle).toHaveAccessibleName("Expand Usage section");
+  await usageToggle.focus();
+  await usageToggle.press("Space");
+  await expect(usageToggle).toHaveAccessibleName("Collapse Usage section");
+  await expect(usagePanel).not.toHaveAttribute("hidden", "");
+  await expect(examplesPanel).toHaveAttribute("hidden", "");
 });
 
 test("theme bootstrap works before Rspress hydration", async ({ page }) => {
