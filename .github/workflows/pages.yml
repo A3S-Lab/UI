@@ -93,9 +93,11 @@ jobs:
           export AGENT_BROWSER_EXECUTABLE_PATH="$chrome"
           export AGENT_BROWSER_COLOR_SCHEME=light
 
-          node site/node_modules/@rspress/core/bin/rspress.js \
-            preview --host 127.0.0.1 --port 4178 \
-            > "$RUNNER_TEMP/a3s-ui-preview.log" 2>&1 &
+          (
+            cd site
+            exec node node_modules/@rspress/core/bin/rspress.js \
+              preview --host 127.0.0.1 --port 4178
+          ) > "$RUNNER_TEMP/a3s-ui-preview.log" 2>&1 &
           preview_pid=$!
           cleanup_preview() {
             kill "$preview_pid" 2>/dev/null || true
