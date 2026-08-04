@@ -374,6 +374,51 @@ test("mobile homepage reveals the catalog before an optional product preview", a
   await expect(preview).toBeVisible();
 });
 
+test("contained sidebar uses compositor-safe responsive motion", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDocumentationPage(page, "en/components/sidebar.html");
+
+  const demo = page.locator(".a3s-sidebar-demo").first();
+  const sidebar = demo.locator("#demo-sidebar");
+  const main = demo.locator("main");
+  const content = main.locator(":scope > div");
+  const navigation = sidebar.locator("nav");
+
+  await expect(sidebar).toHaveAttribute("aria-hidden", "true");
+  await expect(main).toHaveCSS("transition", "none");
+  expect(
+    await content.evaluate((element) =>
+      getComputedStyle(element).transitionProperty.split(", "),
+    ),
+  ).toEqual(["transform"]);
+
+  await demo.getByRole("button", { name: "Toggle sidebar" }).click();
+  await expect(sidebar).toHaveAttribute("aria-hidden", "false");
+  await expect
+    .poll(async () => {
+      const [demoBox, navigationBox, contentBox] = await Promise.all([
+        demo.boundingBox(),
+        navigation.boundingBox(),
+        content.boundingBox(),
+      ]);
+      return Boolean(
+        demoBox &&
+        navigationBox &&
+        contentBox &&
+        navigationBox.x >= demoBox.x - 1 &&
+        navigationBox.x + navigationBox.width <=
+          demoBox.x + demoBox.width + 1 &&
+        contentBox.x >= navigationBox.x + navigationBox.width,
+      );
+    })
+    .toBe(true);
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(content).toHaveCSS("transition", "none");
+});
+
 for (const [name, route, selector] of [
   ["ribbon", "en/components/ribbon.html", ".ribbon"],
   ["task-pane", "en/components/task-pane.html", ".task-pane"],
