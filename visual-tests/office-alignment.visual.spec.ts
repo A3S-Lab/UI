@@ -161,7 +161,7 @@ test("theme switcher updates Rspress and component previews together", async ({
   await expect
     .poll(() =>
       page.evaluate(() => ({
-        basecoat: localStorage.getItem("themeMode"),
+        a3s: localStorage.getItem("themeMode"),
         rspress: localStorage.getItem("rspress-theme-appearance"),
         background: getComputedStyle(document.documentElement)
           .getPropertyValue("--background")
@@ -172,7 +172,7 @@ test("theme switcher updates Rspress and component previews together", async ({
       })),
     )
     .toEqual({
-      basecoat: "dark",
+      a3s: "dark",
       rspress: "dark",
       background: "#101118",
       themeColor: "#101118",
@@ -187,13 +187,110 @@ test("theme switcher updates Rspress and component previews together", async ({
   await expect
     .poll(() =>
       page.evaluate(() => ({
-        basecoat: localStorage.getItem("themeMode"),
+        a3s: localStorage.getItem("themeMode"),
         background: getComputedStyle(document.documentElement)
           .getPropertyValue("--background")
           .trim(),
       })),
     )
-    .toEqual({ basecoat: "light", background: "#f7f7f8" });
+    .toEqual({ a3s: "light", background: "#f7f7f8" });
+});
+
+test("homepage theme customizer applies and persists product choices", async ({
+  page,
+}) => {
+  await openDocumentationPage(page, "en/");
+
+  const html = page.locator("html");
+  const customizer = page.locator("[data-a3s-customizer]");
+  await expect(customizer).toBeVisible();
+
+  await customizer.getByRole("button", { name: "Violet" }).click();
+  await customizer.getByRole("button", { name: "Rounded" }).click();
+  await customizer.getByRole("button", { name: "Comfortable" }).click();
+  await customizer.getByRole("button", { name: "Dark", exact: true }).click();
+
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveClass(/\brp-dark\b/);
+  await expect(html).toHaveAttribute("data-a3s-accent", "violet");
+  await expect(html).toHaveAttribute("data-a3s-radius", "rounded");
+  await expect(html).toHaveAttribute("data-a3s-density", "comfortable");
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        accent: localStorage.getItem("a3s-ui-accent"),
+        appearance: localStorage.getItem("rspress-theme-appearance"),
+        density: localStorage.getItem("a3s-ui-density"),
+        radius: localStorage.getItem("a3s-ui-radius"),
+      })),
+    )
+    .toEqual({
+      accent: "violet",
+      appearance: "dark",
+      density: "comfortable",
+      radius: "rounded",
+    });
+
+  await openDocumentationPage(page, "en/components/button.html");
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveAttribute("data-a3s-accent", "violet");
+  await expect(html).toHaveAttribute("data-a3s-radius", "rounded");
+  await expect(html).toHaveAttribute("data-a3s-density", "comfortable");
+});
+
+test("homepage system appearance follows OS changes in real time", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await openDocumentationPage(page, "en/");
+
+  const html = page.locator("html");
+  const customizer = page.locator("[data-a3s-customizer]");
+  await customizer.getByRole("button", { name: "System", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        localStorage.getItem("rspress-theme-appearance"),
+      ),
+    )
+    .toBe("auto");
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveClass(/\brp-dark\b/);
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        localStorage.getItem("rspress-theme-appearance"),
+      ),
+    )
+    .toBe("auto");
+
+  await customizer.getByRole("button", { name: "Dark", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        localStorage.getItem("rspress-theme-appearance"),
+      ),
+    )
+    .toBe("dark");
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(html).toHaveClass(/\bdark\b/);
+  await expect(html).toHaveClass(/\brp-dark\b/);
+
+  await customizer
+    .getByRole("button", { name: "System", exact: true })
+    .click();
+  await expect(html).not.toHaveClass(/\bdark\b/);
+  await expect(html).not.toHaveClass(/\brp-dark\b/);
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        localStorage.getItem("rspress-theme-appearance"),
+      ),
+    )
+    .toBe("auto");
 });
 
 test("theme bootstrap works before Rspress hydration", async ({ page }) => {
@@ -213,31 +310,31 @@ test("theme bootstrap works before Rspress hydration", async ({ page }) => {
   await expect
     .poll(() =>
       page.evaluate(() => ({
-        basecoat: localStorage.getItem("themeMode"),
+        a3s: localStorage.getItem("themeMode"),
         rspress: localStorage.getItem("rspress-theme-appearance"),
         themeColor: document
           .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
           ?.getAttribute("content"),
       })),
     )
-    .toEqual({ basecoat: "dark", rspress: "dark", themeColor: "#101118" });
+    .toEqual({ a3s: "dark", rspress: "dark", themeColor: "#101118" });
 
-  const runtimeScript = page.locator('script[src$="/assets/all.min.js"]');
+  const runtimeScript = page.locator('script[src$="/assets/a3s-ui.min.js"]');
   await expect(runtimeScript).toHaveCount(1);
   expect(await runtimeScript.textContent()).toBe("");
   await expect(page.locator('head link[rel="canonical"]')).toHaveCount(1);
 
-  await page.evaluate(() => window.basecoat?.theme.toggle());
+  await page.evaluate(() => window.a3sUI?.theme.toggle());
   await expect(html).not.toHaveClass(/\bdark\b/);
   await expect(html).not.toHaveClass(/\brp-dark\b/);
   await expect
     .poll(() =>
       page.evaluate(() => ({
-        basecoat: localStorage.getItem("themeMode"),
+        a3s: localStorage.getItem("themeMode"),
         rspress: localStorage.getItem("rspress-theme-appearance"),
       })),
     )
-    .toEqual({ basecoat: "light", rspress: "light" });
+    .toEqual({ a3s: "light", rspress: "light" });
 });
 
 test("MDX preview popovers are not clipped by the preview frame", async ({

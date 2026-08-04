@@ -45,7 +45,7 @@ import "@a3s-lab/ui/all";
 Or import the runtime once and only the controllers you use.
 
 ```js
-import "@a3s-lab/ui/basecoat";
+import "@a3s-lab/ui/runtime";
 import "@a3s-lab/ui/tabs";
 import "@a3s-lab/ui/split-pane";
 ```
@@ -79,7 +79,7 @@ import "@a3s-lab/ui/split-pane";
 | `@a3s-lab/ui/components` | All component structure without base or visual style |
 | `@a3s-lab/ui/components/button.css` | One component's structure |
 | `@a3s-lab/ui/styles/a3s.css` | A3S visuals and foundations; combine with `base` |
-| `@a3s-lab/ui/compat` | Optional pre-1.0 Basecoat compatibility aliases |
+| `@a3s-lab/ui/compat` | Optional legacy compatibility aliases |
 
 ### Split imports
 
@@ -98,7 +98,7 @@ Use split imports when application CSS already owns its dependency graph.
 | Import | Controller |
 | --- | --- |
 | `@a3s-lab/ui/all` | Runtime and all auto-initialized controllers except Chart |
-| `@a3s-lab/ui/basecoat` | Shared lifecycle and registry |
+| `@a3s-lab/ui/runtime` | Shared lifecycle and registry |
 | `@a3s-lab/ui/accordion` | Accordion enhancement |
 | `@a3s-lab/ui/combobox` | Combobox |
 | `@a3s-lab/ui/command` | Command palette |
@@ -113,12 +113,12 @@ Use split imports when application CSS already owns its dependency graph.
 | `@a3s-lab/ui/toast` | Toast |
 | `@a3s-lab/ui/chart` | Chart helper; Chart.js remains separate |
 
-The public runtime namespace remains `window.basecoat` for compatibility. It initializes registered components on page load and observes newly inserted DOM.
+The public runtime namespace is `window.a3sUI`. It initializes registered components on page load and observes newly inserted DOM.
 
 ```js
-window.basecoat.initAll();
-window.basecoat.initAll({ force: true });
-window.basecoat.refresh(document.querySelector(".split-pane"));
+window.a3sUI.initAll();
+window.a3sUI.initAll({ force: true });
+window.a3sUI.refresh(document.querySelector(".split-pane"));
 ```
 
 ## Server-rendered templates

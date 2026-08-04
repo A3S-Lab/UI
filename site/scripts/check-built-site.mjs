@@ -38,7 +38,7 @@ const requiredFiles = [
   'social-card.svg',
   'assets/a3s-ui.css',
   'assets/a3s-cascade.css',
-  'assets/all.min.js',
+  'assets/a3s-ui.min.js',
 ];
 
 const homepageExpectations = [
@@ -49,6 +49,8 @@ const homepageExpectations = [
       'A3S 产品设计系统',
       '让每个界面',
       '复制安装命令',
+      '主题工作台 / 实时预览',
+      'data-a3s-customizer',
       'aria-live="polite"',
       'aria-pressed="true"',
       'v0.1.0',
@@ -61,6 +63,8 @@ const homepageExpectations = [
       'A3S PRODUCT DESIGN SYSTEM',
       'Interfaces that feel',
       'Copy install command',
+      'Tune A3S UI to your product.',
+      'data-a3s-customizer',
       'aria-live="polite"',
     ],
   },
@@ -174,16 +178,14 @@ if (
   );
 }
 
-const runtimeScriptMarkup = `<script src="${base}assets/all.min.js" defer></script>`;
+const runtimeScriptMarkup = `<script src="${base}assets/a3s-ui.min.js" defer></script>`;
 if (!homepageHtml.includes(runtimeScriptMarkup)) {
   throw new Error(
     'The A3S runtime script must use an explicit closing tag so it cannot swallow later head markup.',
   );
 }
 
-if (
-  !homepageHtml.includes("document.addEventListener('basecoat:themechange'")
-) {
+if (!homepageHtml.includes("document.addEventListener('a3s:themechange'")) {
   throw new Error('The pre-hydration documentation theme bridge is missing.');
 }
 
@@ -256,11 +258,19 @@ for (const expectation of styleExpectations) {
 }
 
 const brokenReferences = [];
+const publicBrandingLeaks = [];
 const htmlFiles = await collectHtmlFiles(outputRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, 'utf8');
+  const visibleText = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  if (/basecoat/i.test(visibleText)) {
+    publicBrandingLeaks.push(path.relative(outputRoot, htmlFile));
+  }
   const htmlWithGeneratedSelfLinksOmitted = html
     .replace(
       /<li class="rp-hover-group__item rp-hover-group__item--active"[^>]*>[\s\S]*?<\/li>/g,
@@ -313,6 +323,14 @@ if (brokenReferences.length > 0) {
   );
 }
 
+if (publicBrandingLeaks.length > 0) {
+  throw new Error(
+    `Public website branding check failed:\n${publicBrandingLeaks
+      .map((file) => `  - ${file}`)
+      .join('\n')}`,
+  );
+}
+
 console.log(
-  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, public branding, and references across ${htmlFiles.length} HTML pages.`,
 );

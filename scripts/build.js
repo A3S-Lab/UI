@@ -106,6 +106,11 @@ async function build() {
     }
   }
 
+  // Publish the lifecycle registry under an A3S-owned runtime name while
+  // retaining the legacy entrypoint for existing consumers.
+  await fs.copyFile(path.join(cssJsDistDir, 'basecoat.js'), path.join(cssJsDistDir, 'runtime.js'));
+  await fs.copyFile(path.join(cssJsDistDir, 'basecoat.min.js'), path.join(cssJsDistDir, 'runtime.min.js'));
+
   // Create combined component files
   console.log('Creating combined component files...');
   const componentsToCombine = ['basecoat.js', 'accordion.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'split-pane.js', 'tabs.js', 'toast.js'];

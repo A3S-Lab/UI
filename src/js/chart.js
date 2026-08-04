@@ -525,6 +525,8 @@
       attributeFilter: ['class', 'data-style-variant'],
     });
 
+    document.addEventListener('a3s:themechange', scheduleRefresh);
+    document.addEventListener('a3s:stylechange', scheduleRefresh);
     document.addEventListener('basecoat:themechange', scheduleRefresh);
     document.addEventListener('basecoat:stylechange', scheduleRefresh);
   };

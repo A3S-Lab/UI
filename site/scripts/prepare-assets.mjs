@@ -49,4 +49,4 @@ await execFileAsync(
 const styles = await readFile(compiledStyles, 'utf8');
 await writeFile(compiledStyles, `@layer rp-base;${styles}`, 'utf8');
 
-await copyFile(runtimeSource, path.join(publicAssets, 'all.min.js'));
+await copyFile(runtimeSource, path.join(publicAssets, 'a3s-ui.min.js'));

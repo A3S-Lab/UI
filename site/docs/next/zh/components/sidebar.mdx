@@ -1,5 +1,33 @@
 # 侧边栏
 
+<Preview>
+<div class="a3s-sidebar-demo">
+  <aside id="demo-sidebar" class="sidebar" data-demo-contained data-initial-open="true">
+    <nav aria-label="侧边栏演示导航">
+      <header><strong>A3S 工作区</strong></header>
+      <section>
+        <div role="group" aria-labelledby="demo-sidebar-group">
+          <h3 id="demo-sidebar-group">工作区</h3>
+          <ul>
+            <li><a href="#" aria-current="page"><span>概览</span></a></li>
+            <li><a href="#"><span>智能体</span></a></li>
+            <li><a href="#"><span>部署</span></a></li>
+          </ul>
+        </div>
+      </section>
+    </nav>
+  </aside>
+  <main>
+    <div>
+      <span class="badge">实时预览</span>
+      <h2>限定在画布内的产品导航</h2>
+      <p>文档预览会将固定定位的产品侧边栏限制在当前画布中。</p>
+      <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-sidebar').toggle()">切换侧边栏</button>
+    </div>
+  </main>
+</div>
+</Preview>
+
 ## 用途
 
 <Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#sidebar" }}>
@@ -41,7 +69,7 @@ Sidebar uses a native `<aside>` next to your page content. A3S UI owns the fixed
 或者复制或提供A3S UI运行时和侧边栏脚本。
 
 ```html
-<script src="/assets/js/basecoat.min.js" defer></script>
+<script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/sidebar.min.js" defer></script>
 ```
 

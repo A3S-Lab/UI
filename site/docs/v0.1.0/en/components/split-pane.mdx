@@ -21,7 +21,7 @@ Load the runtime before the Split Pane controller, or use the combined JavaScrip
   <section>Secondary pane</section>
 </div>
 <script type="module">
-  import "@a3s-lab/ui/basecoat";
+  import "@a3s-lab/ui/runtime";
   import "@a3s-lab/ui/split-pane";
 </script>
 ```
@@ -42,7 +42,7 @@ Load the runtime before the Split Pane controller, or use the combined JavaScrip
 
 ### JavaScript API
 
-`window.basecoat.refresh(splitPane)` rereads parameters. The root emits `basecoat:split-input` continuously while dragging and `basecoat:split-change` after a committed pointer or keyboard change. Event detail contains `{ value, orientation }`.
+`window.a3sUI.refresh(splitPane)` rereads parameters. The root emits `a3s:split-input` continuously while dragging and `a3s:split-change` after a committed pointer or keyboard change. Event detail contains `{ value, orientation }`.
 
 ## States and variants
 

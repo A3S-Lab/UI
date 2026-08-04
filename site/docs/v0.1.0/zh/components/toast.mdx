@@ -5,17 +5,6 @@
 <Preview class="max-w-md">
 <button
   class="btn" data-variant="outline"
-  hx-trigger="click"
-  hx-select="unset"
-  hx-get="/fragments/toast/success"
-  hx-target="#toaster"
-  hx-swap="beforeend"
->Toast from backend (with HTMX)</button>
-</Preview>
-
-<Preview class="max-w-md">
-<button
-  class="btn" data-variant="outline"
   onclick="document.getElementById('toaster').toast({
     category: 'success',
     title: 'Success',
@@ -66,7 +55,7 @@
 或者复制或提供A3S UI运行时和Toast脚本。
 
 ```html
-<script src="/assets/js/basecoat.min.js" defer></script>
+<script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/toast.min.js" defer></script>
 ```
 

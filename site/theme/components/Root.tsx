@@ -44,24 +44,6 @@ export function Root({ children }: RootProps) {
         'content',
         reconciledTheme === 'dark' ? '#101118' : '#f7f7f8',
       );
-
-    const handleBasecoatThemeChange = (event: Event) => {
-      const mode = (event as CustomEvent<{ mode?: unknown }>).detail?.mode;
-      if ((mode === 'dark' || mode === 'light') && mode !== theme) {
-        setTheme?.(mode);
-      }
-    };
-
-    document.addEventListener(
-      'basecoat:themechange',
-      handleBasecoatThemeChange,
-    );
-    return () => {
-      document.removeEventListener(
-        'basecoat:themechange',
-        handleBasecoatThemeChange,
-      );
-    };
   }, [setTheme, theme]);
 
   useEffect(() => {

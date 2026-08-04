@@ -1,0 +1,71 @@
+.a3s-sidebar-demo {
+  position: relative;
+  width: 100%;
+  min-height: 22rem;
+  overflow: hidden;
+  border: 1px solid var(--a3s-line);
+  border-radius: var(--a3s-radius);
+  background: var(--a3s-bg);
+}
+
+.a3s-sidebar-demo > .sidebar[data-demo-contained] nav {
+  position: absolute;
+  width: 11rem;
+  background: var(--a3s-panel);
+}
+
+.a3s-sidebar-demo > .sidebar[data-demo-contained] + main {
+  display: grid;
+  min-height: 22rem;
+  margin-inline-start: 11rem;
+  padding: 2rem;
+  place-content: center;
+  transition: margin 150ms ease;
+}
+
+.a3s-sidebar-demo > .sidebar[data-demo-contained][aria-hidden="true"] + main {
+  margin-inline-start: 0;
+}
+
+.a3s-sidebar-demo > .sidebar[data-demo-contained] nav > header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--a3s-line);
+}
+
+.a3s-sidebar-demo > .sidebar[data-demo-contained] nav > section {
+  padding: 0.75rem;
+}
+
+.a3s-sidebar-demo > main > div {
+  display: grid;
+  max-width: 18rem;
+  justify-items: start;
+  gap: 0.75rem;
+}
+
+.a3s-sidebar-demo > main h2,
+.a3s-sidebar-demo > main p {
+  margin: 0;
+}
+
+.a3s-sidebar-demo > main h2 {
+  color: var(--a3s-ink);
+  font-size: 1rem;
+}
+
+.a3s-sidebar-demo > main p {
+  color: var(--a3s-muted);
+  font-size: var(--a3s-font-size-ui);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .a3s-sidebar-demo > .sidebar[data-demo-contained] nav {
+    width: 9rem;
+  }
+
+  .a3s-sidebar-demo > .sidebar[data-demo-contained] + main {
+    margin-inline-start: 9rem;
+    padding: 1rem;
+  }
+}

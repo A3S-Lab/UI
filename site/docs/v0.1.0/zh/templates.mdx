@@ -1,7 +1,7 @@
 # 模板
 
-<Callout title="basecoat-cli 已弃用" icon="triangle-alert">
-模板文件现在随 `@a3s-lab/ui` 一起提供。如果您之前使用 `basecoat-cli` 复制了模板，请安装 `@a3s-lab/ui` 并从 `node_modules/@a3s-lab/ui/templates` 复制文件。
+<Callout title="独立模板 CLI 已退役" icon="triangle-alert">
+模板文件现在随 `@a3s-lab/ui` 一起提供。安装 `@a3s-lab/ui`，然后从 `node_modules/@a3s-lab/ui/templates` 复制文件。
 </Callout>
 
 A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja 宏。它们生成组件文档中显示的相同语义 A3S UI 标记，同时使重复的服务器渲染标记更易于维护。
@@ -36,11 +36,11 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
     <CodeGroup>
     ```bash title="Nunjucks"
-    cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templatesbasecoat
+    cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
     ```
 
     ```bash title="Jinja"
-    cp -R node_modules/@a3s-lab/ui/templates/jinja ./templatesbasecoat
+    cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
     ```
     </CodeGroup>
 
@@ -55,7 +55,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
     <CodeGroup>
     ```jinja title="Nunjucks"
-    {% from "basecoat/select.njk" import select %}
+    {% from "a3s-ui/select.njk" import select %}
     {{ select(
       name="fruit",
       items=[
@@ -67,7 +67,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
     ```
 
     ```jinja title="Jinja"
-    {% from "basecoat/select.html.jinja" import select %}
+    {% from "a3s-ui/select.html.jinja" import select %}
     {{ select(
       name="fruit",
       items=[

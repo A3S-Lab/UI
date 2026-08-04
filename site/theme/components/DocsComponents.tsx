@@ -12,6 +12,7 @@ import {
 } from 'react';
 import {
   useLang,
+  useLocation,
   useSite,
   useVersion,
   withBase,
@@ -20,7 +21,7 @@ import Chart, { type ChartConfiguration } from 'chart.js/auto';
 
 declare global {
   interface Window {
-    basecoat?: {
+    a3sUI?: {
       initAll: (options?: { force?: boolean }) => void;
     };
   }
@@ -158,7 +159,7 @@ function initializeDocumentationDemos(root: HTMLElement) {
     synchronize();
   });
 
-  window.basecoat?.initAll();
+  window.a3sUI?.initAll();
 }
 
 function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
@@ -184,8 +185,12 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Preview({ children, className, class: htmlClass }: PreviewProps) {
+  const location = useLocation();
   const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const componentName =
+    location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
+    (/\/components\/?$/.test(location.pathname) ? 'index' : undefined);
 
   useEffect(() => {
     const preview = previewRef.current;
@@ -221,6 +226,7 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
       ref={previewRef}
       className="a3s-preview"
       aria-label="Interactive component preview"
+      data-preview-component={componentName}
     >
       <header className="a3s-preview__header">
         <span>

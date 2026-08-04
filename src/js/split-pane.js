@@ -13,7 +13,11 @@
   const getConfig = (root, separator) => {
     const minimum = numberAttribute(separator, 'min', 'aria-valuemin', 15);
     const maximum = Math.max(minimum, numberAttribute(separator, 'max', 'aria-valuemax', 85));
-    const value = clamp(numberAttribute(separator, 'value', 'aria-valuenow', 50), minimum, maximum);
+    const value = clamp(
+      numberAttribute(root, 'value', null, numberAttribute(separator, 'value', 'aria-valuenow', 50)),
+      minimum,
+      maximum,
+    );
     return {
       minimum,
       maximum,
@@ -34,7 +38,12 @@
     states.set(root, state);
 
     const emit = (name, value) => {
-      root.dispatchEvent(new CustomEvent(name, { detail: { value, orientation: state.config.vertical ? 'vertical' : 'horizontal' } }));
+      const detail = {
+        value,
+        orientation: state.config.vertical ? 'vertical' : 'horizontal',
+      };
+      root.dispatchEvent(new CustomEvent(name, { detail }));
+      root.dispatchEvent(new CustomEvent(name.replace('a3s:', 'basecoat:'), { detail }));
     };
 
     const setValue = (next, eventName) => {
@@ -65,7 +74,7 @@
       state.dragging = false;
       if (separator.hasPointerCapture?.(event.pointerId)) separator.releasePointerCapture(event.pointerId);
       delete document.documentElement.dataset.splitResizing;
-      emit('basecoat:split-change', state.config.value);
+      emit('a3s:split-change', state.config.value);
     };
 
     const handlePointerDown = (event) => {
@@ -74,12 +83,12 @@
       state.dragging = true;
       separator.setPointerCapture?.(event.pointerId);
       document.documentElement.dataset.splitResizing = state.config.vertical ? 'vertical' : 'horizontal';
-      setValue(valueFromPointer(event), 'basecoat:split-input');
+      setValue(valueFromPointer(event), 'a3s:split-input');
     };
 
     const handlePointerMove = (event) => {
       if (!state.dragging) return;
-      setValue(valueFromPointer(event), 'basecoat:split-input');
+      setValue(valueFromPointer(event), 'a3s:split-input');
     };
 
     const handleKeyDown = (event) => {
@@ -98,12 +107,12 @@
       if (next === null) return;
 
       event.preventDefault();
-      setValue(next, 'basecoat:split-change');
+      setValue(next, 'a3s:split-change');
     };
 
     const handleDoubleClick = () => {
       if (separator.getAttribute('aria-disabled') === 'true') return;
-      setValue(state.config.defaultValue, 'basecoat:split-change');
+      setValue(state.config.defaultValue, 'a3s:split-change');
     };
 
     separator.tabIndex = separator.getAttribute('aria-disabled') === 'true' ? -1 : Math.max(0, separator.tabIndex);

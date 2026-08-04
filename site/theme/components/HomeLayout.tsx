@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLang, useSite, useVersion, withBase } from "@rspress/core/runtime";
+import { ThemeCustomizer } from "./ThemeCustomizer";
 
 type Locale = "zh" | "en";
 
@@ -777,6 +778,8 @@ export function HomeLayout() {
           </div>
         </div>
       </section>
+
+      <ThemeCustomizer locale={locale} />
 
       <section
         className="ui-proof-strip"

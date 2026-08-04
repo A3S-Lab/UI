@@ -4,6 +4,10 @@
   const root = document.documentElement;
   const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
   const isMode = (value) => value === 'dark' || value === 'light';
+  const isAccent = (value) =>
+    ['blue', 'violet', 'emerald', 'amber', 'rose'].includes(value);
+  const isRadius = (value) => ['sharp', 'balanced', 'rounded'].includes(value);
+  const isDensity = (value) => ['compact', 'comfortable'].includes(value);
 
   const readStorage = (key) => {
     try {
@@ -18,6 +22,20 @@
       localStorage.setItem(key, value);
     } catch {
       // Storage can be unavailable in privacy-restricted browsing contexts.
+    }
+  };
+
+  const synchronizeRspressPreference = (value) => {
+    writeStorage('rspress-theme-appearance', value);
+    try {
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: 'rspress-theme-appearance',
+          newValue: value,
+        }),
+      );
+    } catch {
+      // The DOM theme is already applied when synthetic StorageEvent support is unavailable.
     }
   };
 
@@ -46,22 +64,44 @@
     updateThemeColor(mode);
   };
 
+  const applyCustomization = () => {
+    const accent = readStorage('a3s-ui-accent');
+    const radius = readStorage('a3s-ui-radius');
+    const density = readStorage('a3s-ui-density');
+    root.dataset.a3sAccent = isAccent(accent) ? accent : 'blue';
+    root.dataset.a3sRadius = isRadius(radius) ? radius : 'balanced';
+    root.dataset.a3sDensity = isDensity(density) ? density : 'compact';
+  };
+
   const rspressPreference = readStorage('rspress-theme-appearance');
-  const basecoatPreference = readStorage('themeMode');
+  const runtimePreference = readStorage('themeMode');
   const initialMode =
     resolveRspressMode(rspressPreference) ??
-    (isMode(basecoatPreference) ? basecoatPreference : null) ??
+    (isMode(runtimePreference) ? runtimePreference : null) ??
     (colorScheme.matches ? 'dark' : 'light');
 
+  applyCustomization();
   applyTheme(
     initialMode,
-    !resolveRspressMode(rspressPreference) && isMode(basecoatPreference),
+    !resolveRspressMode(rspressPreference) && isMode(runtimePreference),
   );
+  let activeMode = initialMode;
 
-  document.addEventListener('basecoat:themechange', (event) => {
+  document.addEventListener('a3s:themechange', (event) => {
     const mode = event.detail?.mode;
-    if (isMode(mode)) applyTheme(mode, true);
+    const preference = event.detail?.preference;
+    if (preference === 'system') {
+      synchronizeRspressPreference('auto');
+    } else if (isMode(preference)) {
+      synchronizeRspressPreference(preference);
+    }
+    if (isMode(mode)) {
+      activeMode = mode;
+      applyTheme(mode);
+    }
   });
+
+  document.addEventListener('a3s:stylechange', applyCustomization);
 
   new MutationObserver(() => {
     const mode =
@@ -69,6 +109,12 @@
         ? 'dark'
         : 'light';
     applyTheme(mode);
+    if (mode !== activeMode) {
+      activeMode = mode;
+      document.dispatchEvent(
+        new CustomEvent('a3s:themechange', { detail: { mode } }),
+      );
+    }
   }).observe(root, { attributes: true, attributeFilter: ['class'] });
 
   window.addEventListener('storage', (event) => {
@@ -80,6 +126,15 @@
     if (event.key === 'rspress-theme-appearance') {
       const mode = resolveRspressMode(event.newValue);
       if (mode) applyTheme(mode);
+      return;
+    }
+
+    if (
+      event.key === 'a3s-ui-accent' ||
+      event.key === 'a3s-ui-radius' ||
+      event.key === 'a3s-ui-density'
+    ) {
+      applyCustomization();
     }
   });
 

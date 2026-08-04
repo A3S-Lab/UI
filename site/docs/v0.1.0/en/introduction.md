@@ -7,9 +7,9 @@ It turns the strongest interaction patterns from A3S Office Playground into a re
 ## What is included?
 
 - Foundations for color, typography, spacing, shape, elevation, motion, and accessibility.
-- More than 40 Basecoat-compatible primitives for actions, forms, navigation, overlays, feedback, and data display.
+- More than 40 semantic primitives for actions, forms, navigation, overlays, feedback, and data display.
 - Office-derived application patterns: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, and Resource Workbench.
-- The A3S light and dark themes plus eight preserved Basecoat style packs.
+- The A3S light and dark themes plus eight optional visual style packs.
 - Nunjucks and Jinja templates for server-rendered applications.
 - A documentation site with live previews, parameters, variants, states, and accessibility notes.
 
@@ -23,7 +23,7 @@ It turns the strongest interaction patterns from A3S Office Playground into a re
 
 ## Lineage
 
-A3S UI is built on [Basecoat](https://github.com/hunvreus/basecoat), preserving its semantic shadcn/ui-inspired component model and MIT license. A3S adds its product theme, Office-derived patterns, grouped documentation, and workbench-focused interaction contracts.
+A3S UI packages a semantic, shadcn/ui-inspired component model with the A3S product theme, Office-derived patterns, grouped documentation, and workbench-focused interaction contracts.
 
 [Install A3S UI](/installation) or browse the [component catalog](/components/).
 

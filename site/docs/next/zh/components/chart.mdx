@@ -40,7 +40,7 @@
 
 ```html
 <script src="/assets/js/chart.umd.min.js"></script>
-<script src="/assets/js/basecoat.min.js" defer></script>
+<script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/chart.min.js" defer></script>
 ```
 
@@ -55,7 +55,7 @@
 <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    window.basecoat.chart("#visitors-chart", {
+    window.a3sUI.chart("#visitors-chart", {
       type: "bar",
       labelKey: "month",
       data: [
@@ -78,7 +78,7 @@
   </Step>
 </Steps>
 
-`basecoat.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
+`a3sUI.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
 
 图表默认为 `aspect-video`。当您需要不同的测量框时，请在父元素上使用高度、`min-h-*` 或 `aspect-*` 工具类。
 
@@ -89,7 +89,7 @@
 生成的图例默认仅显示，与 shadcn/ui 匹配。如果您需要点击切换行为，请使用 Chart.js 插件或自定义图例标记。
 
 ```js
-window.basecoat.chart("#visitors-chart", {
+window.a3sUI.chart("#visitors-chart", {
   type: "bar",
   labelKey: "month",
   data,
@@ -103,7 +103,7 @@ window.basecoat.chart("#visitors-chart", {
 `series` 将每个数据行的对象键映射到标签、颜色和任选的 Chart.js 数据集设置。
 
 ```js
-window.basecoat.chart("#revenue-chart", {
+window.a3sUI.chart("#revenue-chart", {
   type: "line",
   labelKey: "month",
   data,
@@ -133,7 +133,7 @@ window.basecoat.chart("#revenue-chart", {
 通过 `options` 和 `plugins` 提交原始 Chart.js 选项和插件。
 
 ```js
-const chart = window.basecoat.chart("#visitors-chart", {
+const chart = window.a3sUI.chart("#visitors-chart", {
   type: "bar",
   labelKey: "month",
   data,
@@ -158,7 +158,7 @@ const chart = window.basecoat.chart("#visitors-chart", {
 当简化 `data` 加 `series` 放大器不够时，通过 `chartData` 提交完整的 Chart.js 数据。
 
 ```js
-window.basecoat.chart("#custom-chart", {
+window.a3sUI.chart("#custom-chart", {
   type: "scatter",
   chartData: {
     datasets: [
@@ -176,7 +176,7 @@ window.basecoat.chart("#custom-chart", {
 })
 ```
 
-`basecoat.chart()`返回单个目标的Chart.js实例和多个目标选择器的实例集群。
+`a3sUI.chart()`返回单个目标的Chart.js实例和多个目标选择器的实例集群。
 
 ## 示例
 

@@ -11,6 +11,8 @@
 - Added GitHub Pages deployment for the versioned documentation site.
 - Added Playwright visual regression coverage for the Office workbench, Ribbon, Task Pane, and Status Bar at desktop and compact breakpoints.
 - Added built-site regression checks for preview layer ordering, refreshed theme tokens, and homepage interaction semantics.
+- Added a persistent homepage theme customizer for appearance, accent, radius, and interface density.
+- Added component-specific A3S Test E2E scenarios for every documented component.
 
 ### Changed
 
@@ -21,6 +23,8 @@
 - Refined the A3S light and dark palettes with a clearer primary action hierarchy and more cohesive product surfaces.
 - Reworked the documentation homepage into a focused product overview with an interactive install command.
 - Re-aligned the A3S foundation and documentation surfaces with the exact neutral palette, action hierarchy, density, radii, and elevation tokens used by A3S Office.
+- Exposed the public JavaScript lifecycle through `window.a3sUI` and the `@a3s-lab/ui/runtime` package entrypoint while retaining legacy compatibility internally.
+- Removed upstream branding from the public website and made documentation demos use A3S UI runtime names and local image assets.
 
 ### Fixed
 
@@ -32,6 +36,7 @@
 - Fixed narrow-screen overflow in documentation content and improved dark-theme contrast for the homepage call to action.
 - Made documentation theme switching pre-hydration safe, restored the Rspress bootstrap after the component runtime script, and kept a user-visible switch at common desktop widths.
 - Removed the remaining Rspress overflow ancestor and promoted open MDX preview popovers without relying solely on `:has()`, preventing selects, comboboxes, and dropdown menus from being clipped or painted below following content.
+- Replaced the non-executing Progress demo script, removed the inactive HTMX Toast control, added a contained Sidebar preview, and identified the current Pagination page accessibly.
 
 ## [1.0.2] - 2026-07-06
 

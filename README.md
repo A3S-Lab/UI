@@ -123,11 +123,12 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/base` | Tokens, utilities, and structural component CSS without a visual style |
 | `@a3s-lab/ui/components/{name}.css` | One component's structural CSS |
 | `@a3s-lab/ui/styles/a3s.css` | A3S visual foundation for split-import builds |
+| `@a3s-lab/ui/runtime` | Shared lifecycle and controller registry |
 | `@a3s-lab/ui/all` | Shared runtime plus all auto-initialized controllers except Chart |
 | `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `tabs` or `split-pane` |
 | `@a3s-lab/ui/templates/*` | Nunjucks and Jinja templates for server-rendered applications |
 
-The public runtime namespace remains `window.basecoat` for compatibility with the underlying lifecycle and controller registry.
+The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
 
 ## Development
 
@@ -136,11 +137,14 @@ npm ci
 npm ci --prefix site
 npm run build
 npm run docs:build
+npm run test:e2e:a3s:check
 npx playwright install chromium
 npm run test:visual
 ```
 
 Run the documentation site locally with `npm run docs:dev`. The static build is written to `site/doc_build` and deployed to GitHub Pages from `main`.
+
+Run the component-specific browser suites with `npm run test:e2e:a3s`. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
 Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation; these checks are intentionally not part of CI.
 

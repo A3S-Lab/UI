@@ -1,0 +1,136 @@
+suite "a3s-ui-feedback-and-data" {
+    version = 1
+
+    scenario "alert" {
+        name = "Alert preview exposes status feedback"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "alert-visible" { visible = css(".a3s-preview[data-preview-component=alert] .alert") }
+    }
+
+    scenario "badge" {
+        name = "Badge preview renders semantic variants"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/badge.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "destructive-badge-visible" { visible = css(".a3s-preview[data-preview-component=badge] .badge[data-variant=destructive]") }
+    }
+
+    scenario "empty" {
+        name = "Empty preview presents recovery actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/empty.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "empty-state-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty") }
+        expect "empty-action-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
+    }
+
+    scenario "progress" {
+        name = "Progress preview exposes a synchronized value"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/progress.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "progress-synchronized" { visible = css("#progress-demo[aria-valuenow='66'] > span[style*='66%']") }
+    }
+
+    scenario "skeleton" {
+        name = "Skeleton preview renders loading placeholders"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/skeleton.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "skeleton-visible" { visible = css(".a3s-preview[data-preview-component=skeleton] .skeleton") }
+    }
+
+    scenario "spinner" {
+        name = "Spinner preview exposes an accessible loading status"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/spinner.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "spinner-visible" { visible = css(".a3s-preview[data-preview-component=spinner] [role=status][aria-label=Loading]") }
+    }
+
+    scenario "toast" {
+        name = "Toast preview creates front-end feedback"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toast.html" }
+        wait "loaded" { load = "networkidle" }
+        click "create-toast" { target = role("button", "Toast from front-end") }
+        expect "toast-visible" { visible = css("#toaster .toast:not([aria-hidden=true])") }
+        screenshot "toast" { path = "components/toast.png" }
+    }
+
+    scenario "accordion" {
+        name = "Accordion preview switches the expanded disclosure"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/accordion.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-return-policy" { target = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2) > summary") }
+        expect "return-policy-open" { visible = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2)[open]") }
+    }
+
+    scenario "avatar" {
+        name = "Avatar preview uses local resilient imagery"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/avatar.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "local-avatar-visible" { visible = css(".a3s-preview[data-preview-component=avatar] .avatar img[src^='/UI/assets/images/avatar-']") }
+    }
+
+    scenario "card" {
+        name = "Card preview accepts login form input"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/card.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "enter-email" { target = css(".a3s-preview[data-preview-component=card] input[type=email]") value = "tester@example.test" }
+        expect "card-visible" { visible = css(".a3s-preview[data-preview-component=card] .card") }
+    }
+
+    scenario "chart" {
+        name = "Chart preview mounts a responsive canvas"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/chart.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "chart-visible" { visible = css(".a3s-preview[data-preview-component=chart] canvas[aria-label='bar chart preview']") }
+    }
+
+    scenario "item" {
+        name = "Item preview exposes its contextual action"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/item.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "item-visible" { visible = css(".a3s-preview[data-preview-component=item] .item[data-variant=outline]") }
+        expect "item-action-visible" { visible = css(".a3s-preview[data-preview-component=item] .item .btn") }
+    }
+
+    scenario "kbd" {
+        name = "Kbd preview renders keyboard shortcut tokens"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/kbd.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "keyboard-token-visible" { visible = css(".a3s-preview[data-preview-component=kbd] kbd.kbd") }
+    }
+
+    scenario "table" {
+        name = "Table preview renders its caption and data rows"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/table.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
+        expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table] table > caption") }
+    }
+}

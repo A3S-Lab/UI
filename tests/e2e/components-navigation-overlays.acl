@@ -1,0 +1,131 @@
+suite "a3s-ui-navigation-and-overlays" {
+    version = 1
+
+    scenario "activity-bar" {
+        name = "Activity Bar preview exposes product navigation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/activity-bar.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=activity-bar] .activity-bar nav") }
+    }
+
+    scenario "breadcrumb" {
+        name = "Breadcrumb preview provides a named navigation landmark"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/breadcrumb.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
+    }
+
+    scenario "tabs" {
+        name = "Tabs preview switches the active panel"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
+        wait "loaded" { load = "networkidle" }
+        click "activate-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
+        expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
+        expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
+    }
+
+    scenario "pagination" {
+        name = "Pagination preview identifies the current page"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/pagination.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "current-page-visible" { visible = css(".a3s-preview[data-preview-component=pagination] [aria-current=page]") }
+    }
+
+    scenario "sidebar" {
+        name = "Sidebar preview stays contained and toggles its navigation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sidebar.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
+        click "toggle-sidebar" { target = role("button", "Toggle sidebar") }
+        expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
+        screenshot "contained-sidebar" { path = "components/sidebar.png" }
+    }
+
+    scenario "alert-dialog" {
+        name = "Alert Dialog preview opens a modal confirmation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert-dialog.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-dialog" { target = role("button", "Show Dialog") }
+        expect "dialog-open" { visible = css("#demo-alert-dialog[open]") }
+        screenshot "alert-dialog" { path = "components/alert-dialog.png" }
+    }
+
+    scenario "dialog" {
+        name = "Dialog preview opens its edit profile surface"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dialog.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-dialog" { target = role("button", "Open Dialog") }
+        expect "dialog-open" { visible = css("#demo-dialog-edit-profile[open]") }
+        screenshot "dialog" { path = "components/dialog.png" }
+    }
+
+    scenario "drawer" {
+        name = "Drawer preview opens its native dialog surface"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/drawer.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-drawer" { target = role("button", "Open Drawer") }
+        expect "drawer-open" { visible = css("#demo-drawer[open]") }
+        screenshot "drawer" { path = "components/drawer.png" }
+    }
+
+    scenario "dropdown-menu" {
+        name = "Dropdown Menu preview opens above the following documentation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-menu" { target = css("#demo-dropdown-menu-trigger") }
+        expect "menu-visible" { visible = css("#demo-dropdown-menu [data-popover][aria-hidden=false]") }
+        expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-overlay-open]") }
+        screenshot "dropdown" { path = "components/dropdown-menu.png" }
+    }
+
+    scenario "popover" {
+        name = "Popover preview opens above the following documentation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/popover.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-popover" { target = css("#demo-popover-trigger") }
+        expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
+        expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
+        screenshot "popover" { path = "components/popover.png" }
+    }
+
+    scenario "command" {
+        name = "Command preview filters its menu items"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/command.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "filter-commands" { target = placeholder("Type a command or search...") value = "Calendar" }
+        expect "calendar-visible" { visible = css("#demo-command-standalone [role=menuitem][data-filter=Calendar]:not([aria-hidden=true])") }
+    }
+
+    scenario "tooltip" {
+        name = "Tooltip preview supports pointer hover"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tooltip.html" }
+        wait "loaded" { load = "networkidle" }
+        hover "show-tooltip" { target = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip]") }
+        expect "tooltip-trigger-visible" { visible = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip='Add to library']") }
+        screenshot "tooltip" { path = "components/tooltip.png" }
+    }
+}

@@ -1,5 +1,86 @@
-suite "a3s-ui-theme-and-overlays" {
+suite "a3s-ui-site-and-overlays" {
     version = 1
+
+    scenario "homepage-theme-customizer" {
+        name = "Homepage theme customizer applies and persists product choices"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-homepage" {
+            url = "http://127.0.0.1:4178/UI/en/"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        viewport "show-customizer" {
+            width = 1280
+            height = 1600
+        }
+
+        expect "customizer-visible" {
+            visible = css("[data-a3s-customizer]")
+        }
+
+        click "choose-violet" {
+            target = css("[data-theme-accent=violet]")
+        }
+
+        click "choose-rounded" {
+            target = css("[data-theme-radius=rounded]")
+        }
+
+        click "choose-comfortable" {
+            target = css("[data-theme-density=comfortable]")
+        }
+
+        click "choose-dark" {
+            target = css("[data-theme-appearance=dark]")
+        }
+
+        expect "customization-applied" {
+            visible = css("html.dark.rp-dark[data-a3s-accent=violet][data-a3s-radius=rounded][data-a3s-density=comfortable]")
+        }
+
+        screenshot "customizer-evidence" {
+            path = "theme/customizer.png"
+        }
+
+        navigate "open-component" {
+            url = "http://127.0.0.1:4178/UI/en/components/button.html"
+        }
+
+        wait "component-loaded" {
+            load = "networkidle"
+        }
+
+        expect "customization-persisted" {
+            visible = css("html.dark.rp-dark[data-a3s-accent=violet][data-a3s-radius=rounded][data-a3s-density=comfortable]")
+        }
+    }
+
+    scenario "component-catalog" {
+        name = "Component catalog exposes all documented families"
+        surface = "web"
+        timeout_ms = 45000
+
+        navigate "open-catalog" {
+            url = "http://127.0.0.1:4178/UI/en/components/index.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        expect "catalog-preview-visible" {
+            visible = css(".a3s-preview[data-preview-component=index] .card")
+        }
+
+        expect "application-family-visible" {
+            visible = css("h3#application-patterns")
+        }
+    }
 
     scenario "theme-realtime" {
         name = "Theme changes update the documentation and previews immediately"

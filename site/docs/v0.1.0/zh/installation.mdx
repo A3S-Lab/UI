@@ -45,7 +45,7 @@ import "@a3s-lab/ui/all";
 也可以只导入基础运行时与实际使用的控制器。
 
 ```js
-import "@a3s-lab/ui/basecoat";
+import "@a3s-lab/ui/runtime";
 import "@a3s-lab/ui/tabs";
 import "@a3s-lab/ui/split-pane";
 ```
@@ -79,7 +79,7 @@ import "@a3s-lab/ui/split-pane";
 | `@a3s-lab/ui/components` | 所有组件结构，不包含基础令牌与视觉风格 |
 | `@a3s-lab/ui/components/button.css` | 单个组件的结构样式 |
 | `@a3s-lab/ui/styles/a3s.css` | A3S 视觉基础；与 `base` 组合使用 |
-| `@a3s-lab/ui/compat` | 可选的 Basecoat 1.0 以前版本兼容别名 |
+| `@a3s-lab/ui/compat` | 可选的旧版本兼容别名 |
 
 ### 拆分导入
 
@@ -98,7 +98,7 @@ import "@a3s-lab/ui/split-pane";
 | 导入 | 控制器 |
 | --- | --- |
 | `@a3s-lab/ui/all` | 运行时和所有自动初始化控制器（图表除外） |
-| `@a3s-lab/ui/basecoat` | 共享生命周期与组件注册机制 |
+| `@a3s-lab/ui/runtime` | 共享生命周期与组件注册机制 |
 | `@a3s-lab/ui/accordion` | 折叠面板增强 |
 | `@a3s-lab/ui/combobox` | 组合框 |
 | `@a3s-lab/ui/command` | 命令面板 |
@@ -113,12 +113,12 @@ import "@a3s-lab/ui/split-pane";
 | `@a3s-lab/ui/toast` | Toast |
 | `@a3s-lab/ui/chart` | Chart 辅助 API；Chart.js 仍需单独安装 |
 
-为保持兼容，公共运行时命名空间仍为 `window.basecoat`。它会在页面加载时初始化已注册组件，并观察后续插入的 DOM。
+公共运行时命名空间为 `window.a3sUI`。它会在页面加载时初始化已注册组件，并观察后续插入的 DOM。
 
 ```js
-window.basecoat.initAll();
-window.basecoat.initAll({ force: true });
-window.basecoat.refresh(document.querySelector(".split-pane"));
+window.a3sUI.initAll();
+window.a3sUI.initAll({ force: true });
+window.a3sUI.refresh(document.querySelector(".split-pane"));
 ```
 
 ## 服务器渲染模板

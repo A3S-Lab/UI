@@ -1,7 +1,7 @@
 # Templates
 
-<Callout title="basecoat-cli is deprecated" icon="triangle-alert">
-Template files now ship with `@a3s-lab/ui`. If you previously copied templates with `basecoat-cli`, install `@a3s-lab/ui` instead and copy the files from `node_modules/@a3s-lab/ui/templates`.
+<Callout title="The standalone template CLI is retired" icon="triangle-alert">
+Template files now ship with `@a3s-lab/ui`. Install the package and copy the files from `node_modules/@a3s-lab/ui/templates`.
 </Callout>
 
 A3S UI ships optional Nunjucks and Jinja macros for components with larger HTML structures. They generate the same semantic A3S UI markup shown in the component docs, while keeping repeated server-rendered markup easier to maintain.
@@ -36,11 +36,11 @@ Some macro files include internal recursive helpers such as `render_select_items
 
     <CodeGroup>
     ```bash title="Nunjucks"
-    cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templatesbasecoat
+    cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
     ```
 
     ```bash title="Jinja"
-    cp -R node_modules/@a3s-lab/ui/templates/jinja ./templatesbasecoat
+    cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
     ```
     </CodeGroup>
 
@@ -55,7 +55,7 @@ Some macro files include internal recursive helpers such as `render_select_items
 
     <CodeGroup>
     ```jinja title="Nunjucks"
-    {% from "basecoat/select.njk" import select %}
+    {% from "a3s-ui/select.njk" import select %}
     {{ select(
       name="fruit",
       items=[
@@ -67,7 +67,7 @@ Some macro files include internal recursive helpers such as `render_select_items
     ```
 
     ```jinja title="Jinja"
-    {% from "basecoat/select.html.jinja" import select %}
+    {% from "a3s-ui/select.html.jinja" import select %}
     {{ select(
       name="fruit",
       items=[

@@ -47,6 +47,7 @@ const config: UserConfig = {
   ],
   markdown: {
     globalComponents: [
+      path.join(__dirname, 'theme/mdx/A3SAssetImage.tsx'),
       path.join(__dirname, 'theme/mdx/Callout.tsx'),
       path.join(__dirname, 'theme/mdx/ChartDemo.tsx'),
       path.join(__dirname, 'theme/mdx/CodeGroup.tsx'),
@@ -70,7 +71,7 @@ const config: UserConfig = {
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-cascade.css` }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-ui.css` }],
-    `<script src="${base}assets/all.min.js" defer></script>`,
+    `<script src="${base}assets/a3s-ui.min.js" defer></script>`,
     (route) => [
       'link',
       {

@@ -53,6 +53,8 @@
     "./a3s.css": "./dist/basecoat-a3s.css",
     "./basecoat": "./dist/js/basecoat.js",
     "./basecoat.min": "./dist/js/basecoat.min.js",
+    "./runtime": "./dist/js/runtime.js",
+    "./runtime.min": "./dist/js/runtime.min.js",
     "./all": "./dist/js/all.js",
     "./all.min": "./dist/js/all.min.js",
     "./accordion": "./dist/js/accordion.js",
@@ -142,6 +144,8 @@
     "docs:build": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run build && npm --prefix site run check:site",
     "docs:dev": "npm run build && npm --prefix site run dev",
     "docs:preview": "npm run docs:build && npm --prefix site run preview",
+    "test:e2e:a3s": "npm run docs:build && node ./scripts/run-a3s-e2e.mjs",
+    "test:e2e:a3s:check": "node ./scripts/run-a3s-e2e.mjs --check-only",
     "test:visual": "npm run build && playwright test --config playwright.config.ts",
     "test:visual:update": "npm run build && playwright test --config playwright.config.ts --update-snapshots"
   },

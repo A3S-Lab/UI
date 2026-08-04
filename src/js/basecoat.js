@@ -46,7 +46,7 @@
       try {
         element._destroy();
       } catch (error) {
-        console.error('Failed to destroy Basecoat component:', error);
+        console.error('Failed to destroy A3S UI component:', error);
       }
     }
 
@@ -149,12 +149,17 @@
     const dark = mode === 'dark';
     document.documentElement.classList.toggle('dark', dark);
     try { localStorage.setItem('themeMode', dark ? 'dark' : 'light'); } catch (_) {}
-    document.dispatchEvent(new CustomEvent('basecoat:themechange', { detail: { mode: dark ? 'dark' : 'light' } }));
+    const detail = {
+      mode: dark ? 'dark' : 'light',
+      preference: dark ? 'dark' : 'light',
+    };
+    document.dispatchEvent(new CustomEvent('a3s:themechange', { detail }));
+    document.dispatchEvent(new CustomEvent('basecoat:themechange', { detail }));
   };
 
   const getTheme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
-  window.basecoat = {
+  const runtime = {
     register: registerComponent,
     init: initRegisteredComponent,
     initAll: initAllRegisteredComponents,
@@ -167,6 +172,8 @@
       toggle: () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'),
     },
   };
+  window.a3sUI = runtime;
+  window.basecoat = runtime;
 
   document.addEventListener('DOMContentLoaded', () => {
     initAllComponents();

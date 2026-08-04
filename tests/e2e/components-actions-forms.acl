@@ -1,0 +1,153 @@
+suite "a3s-ui-actions-and-forms" {
+    version = 1
+
+    scenario "button" {
+        name = "Button preview exposes actionable button variants"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "button-visible" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
+    }
+
+    scenario "button-group" {
+        name = "Button Group preview renders adjacent grouped actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button-group.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "group-visible" { visible = css(".a3s-preview[data-preview-component=button-group] .btn + .btn") }
+    }
+
+    scenario "field" {
+        name = "Field preview accepts form input"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/field.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "enter-card-number" {
+            target = css(".a3s-preview[data-preview-component=field] input[type=text]")
+            value = "4242 4242 4242 4242"
+        }
+        expect "field-visible" { visible = css(".a3s-preview[data-preview-component=field] .fieldset") }
+    }
+
+    scenario "input" {
+        name = "Input preview accepts an email address"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "enter-email" { target = placeholder("Email") value = "tester@example.test" }
+        expect "input-visible" { visible = css(".a3s-preview[data-preview-component=input] input[type=email]") }
+    }
+
+    scenario "input-group" {
+        name = "Input Group preview accepts a search query"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "search" { target = placeholder("Search...") value = "agent runtime" }
+        expect "group-visible" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group") }
+    }
+
+    scenario "textarea" {
+        name = "Textarea preview accepts multiline content"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/textarea.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "enter-message" { target = placeholder("Type your message here") value = "A3S UI component review" }
+        expect "textarea-visible" { visible = css(".a3s-preview[data-preview-component=textarea] textarea") }
+    }
+
+    scenario "native-select" {
+        name = "Native Select preview changes the selected option"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/native-select.html" }
+        wait "loaded" { load = "networkidle" }
+        select "choose-banana" {
+            target = css(".a3s-preview[data-preview-component=native-select] select")
+            values = ["banana"]
+        }
+        expect "banana-selected" { visible = css(".a3s-preview[data-preview-component=native-select] select:has(option[value=banana]:checked)") }
+    }
+
+    scenario "select" {
+        name = "Select preview opens, selects, and restores its chosen option"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/select.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-list" { target = css("#select-demo-trigger") }
+        wait "list-visible" { visible = css("#select-demo [data-popover][aria-hidden=false]") }
+        click "choose-banana" { target = css("#select-demo [role=option][data-value=banana]") }
+        click "reopen-list" { target = css("#select-demo-trigger") }
+        expect "selection-visible" { visible = css("#select-demo [role=option][data-value=banana][aria-selected=true]") }
+    }
+
+    scenario "checkbox" {
+        name = "Checkbox preview toggles a labeled option"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
+        wait "loaded" { load = "networkidle" }
+        check "accept-terms" { target = label("Accept terms and conditions") }
+        expect "checked" { visible = css("#terms-checkbox:checked") }
+    }
+
+    scenario "radio-group" {
+        name = "Radio Group preview changes the selected density"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/radio-group.html" }
+        wait "loaded" { load = "networkidle" }
+        check "choose-comfortable" { target = label("Comfortable") }
+        expect "comfortable-selected" { visible = css("#r2:checked") }
+    }
+
+    scenario "switch" {
+        name = "Switch preview toggles airplane mode"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
+        wait "loaded" { load = "networkidle" }
+        check "enable-airplane-mode" { target = label("Airplane Mode") }
+        expect "switch-checked" { visible = css("#airplane-mode:checked") }
+    }
+
+    scenario "slider" {
+        name = "Slider preview supports keyboard adjustment"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
+        wait "loaded" { load = "networkidle" }
+        focus "focus-range" { target = css(".a3s-preview[data-preview-component=slider] input[type=range]") }
+        press "increase" { key = "ArrowRight" }
+        expect "slider-focused" { visible = css(".a3s-preview[data-preview-component=slider] input[type=range]:focus") }
+    }
+
+    scenario "label" {
+        name = "Label preview activates its wrapped checkbox"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/label.html" }
+        wait "loaded" { load = "networkidle" }
+        check "accept-terms" { target = label("Accept terms and conditions") }
+        expect "wrapped-control-checked" { visible = css(".a3s-preview[data-preview-component=label] input:checked") }
+    }
+
+    scenario "combobox" {
+        name = "Combobox preview opens and filters framework options"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/combobox.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "filter-frameworks" { target = placeholder("Select a framework") value = "Astro" }
+        wait "options-visible" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
+        expect "astro-visible" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
+        screenshot "filtered-combobox" { path = "components/combobox.png" }
+    }
+}

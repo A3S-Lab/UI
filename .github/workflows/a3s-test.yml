@@ -1,0 +1,121 @@
+name: A3S UI Component E2E
+
+on:
+  push:
+    branches:
+      - "validation/**"
+    paths:
+      - ".github/workflows/a3s-test.yml"
+      - "package-lock.json"
+      - "package.json"
+      - "scripts/**"
+      - "site/**"
+      - "src/**"
+      - "tests/e2e/**"
+  pull_request:
+    paths:
+      - ".github/workflows/a3s-test.yml"
+      - "package-lock.json"
+      - "package.json"
+      - "scripts/**"
+      - "site/**"
+      - "src/**"
+      - "tests/e2e/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3s-ui-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  component-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            site/package-lock.json
+
+      - name: Install package dependencies
+        run: npm ci
+
+      - name: Build component package
+        run: npm run build
+
+      - name: Install documentation dependencies
+        run: npm ci --prefix site
+
+      - name: Type-check documentation
+        run: npm run typecheck --prefix site
+
+      - name: Build and verify documentation
+        run: |
+          npm run build --prefix site
+          npm run check:site --prefix site
+
+      - name: Install A3S Test browser runtime
+        env:
+          A3S_TEST_VERSION: v0.4.4
+        run: |
+          set -euo pipefail
+          runtime="$RUNNER_TEMP/a3s-test-runtime"
+          mkdir -p "$runtime/bin" "$runtime/browser"
+          curl -fsSL --retry 3 --retry-all-errors --retry-delay 2 \
+            "https://github.com/A3S-Lab/Test/releases/download/$A3S_TEST_VERSION/install.sh" \
+            -o "$runtime/install-a3s-test.sh"
+          sh "$runtime/install-a3s-test.sh" \
+            --version "$A3S_TEST_VERSION" \
+            --install-dir "$runtime/bin" \
+            --cli-only
+          npm install \
+            --prefix "$runtime/browser" \
+            --no-save \
+            --no-package-lock \
+            agent-browser@0.26.0
+          chmod +x \
+            "$runtime/browser/node_modules/agent-browser/bin/agent-browser-linux-x64"
+          "$runtime/bin/a3s-test" capabilities \
+            --browser-driver standalone \
+            --browser-executable \
+              "$runtime/browser/node_modules/agent-browser/bin/agent-browser-linux-x64" \
+            --json
+
+      - name: Run component-specific A3S Test suites
+        run: |
+          set -euo pipefail
+          runtime="$RUNNER_TEMP/a3s-test-runtime"
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          export AGENT_BROWSER_EXECUTABLE_PATH="$chrome"
+          export AGENT_BROWSER_COLOR_SCHEME=light
+
+          node scripts/run-a3s-e2e.mjs \
+            --a3s-test "$runtime/bin/a3s-test" \
+            --browser-driver standalone \
+            --browser-executable \
+              "$runtime/browser/node_modules/agent-browser/bin/agent-browser-linux-x64" \
+            --max-parallel-scenarios 4 \
+            | tee "$RUNNER_TEMP/a3s-test-result.log"
+
+      - name: Upload A3S Test evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: a3s-test-component-evidence
+          path: |
+            .a3s-test/runs
+            ${{ runner.temp }}/a3s-test-result.log
+          if-no-files-found: ignore
+          retention-days: 7

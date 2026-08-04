@@ -1,0 +1,122 @@
+suite "a3s-ui-application-and-utilities" {
+    version = 1
+
+    scenario "app-shell" {
+        name = "App Shell preview collapses product navigation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
+        wait "loaded" { load = "networkidle" }
+        click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
+        expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
+    }
+
+    scenario "workspace-header" {
+        name = "Workspace Header preview exposes identity and actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/workspace-header.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity]") }
+        expect "actions-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions]") }
+    }
+
+    scenario "toolbar" {
+        name = "Toolbar preview toggles pressed formatting state"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
+        wait "loaded" { load = "networkidle" }
+        click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
+        expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
+    }
+
+    scenario "ribbon" {
+        name = "Ribbon preview switches command groups"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/ribbon.html" }
+        wait "loaded" { load = "networkidle" }
+        click "activate-insert" { target = css("#ribbon-insert-tab") }
+        expect "insert-active" { visible = css("#ribbon-insert-tab[aria-selected=true]") }
+        expect "insert-panel-visible" { visible = css("#ribbon-insert:not([hidden])") }
+    }
+
+    scenario "settings-layout" {
+        name = "Settings Layout preview exposes navigation and content regions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/settings-layout.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav") }
+        expect "content-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout > main") }
+    }
+
+    scenario "resource-card" {
+        name = "Resource Card preview renders typed resources"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/resource-card.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "document-resource-visible" { visible = css(".a3s-preview[data-preview-component=resource-card] .resource-card[data-kind=document]") }
+    }
+
+    scenario "split-pane" {
+        name = "Split Pane preview supports keyboard resizing"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/split-pane.html" }
+        wait "loaded" { load = "networkidle" }
+        focus "focus-separator" { target = css(".a3s-preview[data-preview-component=split-pane] [role=separator]") }
+        press "resize-right" { key = "ArrowRight" }
+        expect "value-updated" { visible = css(".a3s-preview[data-preview-component=split-pane] .split-pane[data-value='47'] [role=separator][aria-valuenow='47']") }
+    }
+
+    scenario "task-pane" {
+        name = "Task Pane preview exposes inspector fields"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-pane.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "task-pane-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane") }
+        expect "task-pane-field-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] .task-pane .field") }
+    }
+
+    scenario "status-bar" {
+        name = "Status Bar preview exposes information and actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/status-bar.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "status-info-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-info]") }
+        expect "status-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-actions]") }
+    }
+
+    scenario "scroll-area" {
+        name = "Scroll Area preview accepts scoped wheel input"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/scroll-area.html" }
+        wait "loaded" { load = "networkidle" }
+        wheel "scroll-content" {
+            target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar")
+            delta_y = 240
+        }
+        expect "scroll-area-visible" { visible = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar") }
+    }
+
+    scenario "theme-switcher" {
+        name = "Theme Switcher preview changes the entire site immediately"
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open-home" { url = "http://127.0.0.1:4178/UI/en/" }
+        wait "home-loaded" { load = "networkidle" }
+        click "force-light" { target = css("[data-theme-appearance=light]") }
+        expect "light-ready" { visible = css("html:not(.dark):not(.rp-dark)") }
+        navigate "open-component" { url = "http://127.0.0.1:4178/UI/en/components/theme-switcher.html" }
+        wait "component-loaded" { load = "networkidle" }
+        click "toggle-theme" { target = css(".a3s-preview[data-preview-component=theme-switcher] button[aria-label='Toggle dark mode']") }
+        expect "dark-applied" { visible = css("html.dark.rp-dark") }
+        screenshot "theme-switcher" { path = "components/theme-switcher.png" }
+    }
+}

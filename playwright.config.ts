@@ -3,6 +3,10 @@ import { defineConfig } from "@playwright/test";
 const externalBaseUrl = process.env.A3S_UI_VISUAL_BASE_URL;
 const baseURL = externalBaseUrl ?? "http://127.0.0.1:4176/UI/";
 const chromiumExecutablePath = process.env.A3S_UI_VISUAL_CHROMIUM_EXECUTABLE;
+const chromiumLaunchArgs =
+  chromiumExecutablePath && process.platform === "win32"
+    ? ["--do-not-de-elevate"]
+    : undefined;
 
 export default defineConfig({
   testDir: "./visual-tests",
@@ -35,7 +39,7 @@ export default defineConfig({
     colorScheme: "light",
     deviceScaleFactor: 1,
     launchOptions: chromiumExecutablePath
-      ? { executablePath: chromiumExecutablePath }
+      ? { args: chromiumLaunchArgs, executablePath: chromiumExecutablePath }
       : undefined,
     locale: "en-US",
     reducedMotion: "reduce",

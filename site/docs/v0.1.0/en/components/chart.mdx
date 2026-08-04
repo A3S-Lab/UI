@@ -40,7 +40,7 @@ Copy or serve Chart.js, the A3S UI runtime, and Chart script.
 
 ```html
 <script src="/assets/js/chart.umd.min.js"></script>
-<script src="/assets/js/basecoat.min.js" defer></script>
+<script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/chart.min.js" defer></script>
 ```
 
@@ -55,7 +55,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    window.basecoat.chart("#visitors-chart", {
+    window.a3sUI.chart("#visitors-chart", {
       type: "bar",
       labelKey: "month",
       data: [
@@ -78,7 +78,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
   </Step>
 </Steps>
 
-`basecoat.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
+`a3sUI.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
 
 Charts default to `aspect-video`. Use a height, `min-h-*`, or `aspect-*` utility on a parent element when you need a different measuring box.
 
@@ -89,7 +89,7 @@ Set `legend: true` to generate a A3S UI-styled legend after the canvas.
 The generated legend is display-only by default, matching shadcn/ui. Use a Chart.js plugin or custom legend markup if you need click-to-toggle behavior.
 
 ```js
-window.basecoat.chart("#visitors-chart", {
+window.a3sUI.chart("#visitors-chart", {
   type: "bar",
   labelKey: "month",
   data,
@@ -103,7 +103,7 @@ window.basecoat.chart("#visitors-chart", {
 `series` maps object keys from each data row to labels, colors, and optional Chart.js dataset settings.
 
 ```js
-window.basecoat.chart("#revenue-chart", {
+window.a3sUI.chart("#revenue-chart", {
   type: "line",
   labelKey: "month",
   data,
@@ -133,7 +133,7 @@ window.basecoat.chart("#revenue-chart", {
 Pass raw Chart.js options and plugins through `options` and `plugins`.
 
 ```js
-const chart = window.basecoat.chart("#visitors-chart", {
+const chart = window.a3sUI.chart("#visitors-chart", {
   type: "bar",
   labelKey: "month",
   data,
@@ -158,7 +158,7 @@ const chart = window.basecoat.chart("#visitors-chart", {
 Pass complete Chart.js data through `chartData` when the simplified `data` plus `series` mapper is not enough.
 
 ```js
-window.basecoat.chart("#custom-chart", {
+window.a3sUI.chart("#custom-chart", {
   type: "scatter",
   chartData: {
     datasets: [
@@ -176,7 +176,7 @@ window.basecoat.chart("#custom-chart", {
 })
 ```
 
-`basecoat.chart()` returns the Chart.js instance for single targets and an array of instances for multi-target selectors.
+`a3sUI.chart()` returns the Chart.js instance for single targets and an array of instances for multi-target selectors.
 
 ## Examples
 
