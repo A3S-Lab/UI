@@ -5,20 +5,26 @@
 ### Added
 
 - Added the A3S visual foundation and application-scale components for activity bars, application shells, workspace headers, toolbars, ribbons, settings layouts, resource cards, and resizable split panes.
+- Added Task Pane and Status Bar component contracts, bilingual documentation, and application-shell examples.
 - Added package entrypoints for the complete A3S theme, individual component CSS, and the Split Pane controller.
 - Added a Rspress documentation site with Chinese as the default language, English localization, `next` and `v0.1.0` version switching, design foundations, grouped component APIs, and live previews.
 - Added GitHub Pages deployment for the versioned documentation site.
+- Added Playwright visual regression coverage for the Office workbench, Ribbon, Task Pane, and Status Bar at desktop and compact breakpoints.
 
 ### Changed
 
 - Rebranded the package as `@a3s-lab/ui` and made the complete A3S style bundle the default export.
+- Aligned the A3S theme's tokens, control density, interaction states, overlays, data displays, and application patterns with the A3S Office visual language.
 - Migrated the documentation build from Astro and ReallySimpleDocs to the same Rspress, React, and TypeScript stack used by the A3S Code website.
-- Rebuilt the repository homepage around the A3S Office Workbench design system and the live documentation catalog.
+- Rebuilt the repository homepage around public A3S UI components so the Office Workbench specimen exercises the package contract directly.
 
 ### Fixed
 
 - Fixed the Rspress mobile language selector collapsing to zero height and overlapping the version selector.
 - Prevented Rspress's inactive search listener from intercepting Enter on interactive controls, and made theme controls keyboard accessible with localized labels.
+- Fixed collapsed App Shell layouts retaining the activity-bar column at compact breakpoints.
+- Fixed Rspress reset-layer ordering and documentation prose styles overriding live component previews.
+- Fixed documentation asset compilation on Windows with Node.js 24 by invoking the Tailwind CLI through Node directly.
 
 ## [1.0.2] - 2026-07-06
 

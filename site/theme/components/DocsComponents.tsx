@@ -205,7 +205,7 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
         <div
           ref={canvasRef}
           onClick={handleDocumentationDemoClick}
-          className={['a3s-preview__canvas', className, htmlClass]
+          className={['a3s-preview__canvas', 'rp-not-doc', className, htmlClass]
             .filter(Boolean)
             .join(' ')}
         >

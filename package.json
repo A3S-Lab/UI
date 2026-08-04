@@ -141,9 +141,12 @@
     "prepack": "node ./scripts/build.js",
     "docs:build": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run build && npm --prefix site run check:site",
     "docs:dev": "npm run build && npm --prefix site run dev",
-    "docs:preview": "npm run docs:build && npm --prefix site run preview"
+    "docs:preview": "npm run docs:build && npm --prefix site run preview",
+    "test:visual": "npm run build && playwright test --config playwright.config.ts",
+    "test:visual:update": "npm run build && playwright test --config playwright.config.ts --update-snapshots"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@tailwindcss/cli": "^4.1.17",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.17",

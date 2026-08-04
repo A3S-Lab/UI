@@ -1,0 +1,44 @@
+/* Status Bar */
+@layer components {
+  .status-bar {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--status-bar-height, 1.75rem);
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    overflow: hidden;
+  }
+
+  .status-bar > [data-status-info],
+  .status-bar > [data-status-actions] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  .status-bar > [data-status-info] {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .status-bar > [data-status-info] > :is(span, output) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .status-bar > [data-status-actions] {
+    flex: none;
+  }
+
+  .status-bar hr[role="separator"] {
+    width: 1px;
+    height: 0.9375rem;
+    margin: 0 0.1875rem;
+    flex: none;
+    border: 0;
+  }
+}

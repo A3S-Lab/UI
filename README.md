@@ -17,7 +17,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system covers both familiar primitives and application-scale composition: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, and resizable Split Panes all share the same tokens, density, and state model.
+The system covers both familiar primitives and application-scale composition: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, resizable Split Panes, Task Panes, and Status Bars all share the same tokens, density, and state model.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -70,7 +70,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
 | Feedback | Alert, Badge, Empty, Progress, Skeleton, Spinner, and Toast |
 | Data display | Accordion, Avatar, Card, Chart, Item, Kbd, and Table |
-| Application patterns | App Shell, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, and Split Pane |
+| Application patterns | App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
 | Utilities | Scroll Area and Theme Switcher |
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
@@ -97,7 +97,9 @@ App Shell
 ├── Toolbar or Ribbon
 ├── Resource Grid
 ├── Settings Layout
-└── Split Pane
+├── Split Pane
+│   └── Task Pane
+└── Status Bar
 ```
 
 These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles.
@@ -134,11 +136,13 @@ npm ci
 npm ci --prefix site
 npm run build
 npm run docs:build
+npx playwright install chromium
+npm run test:visual
 ```
 
 Run the documentation site locally with `npm run docs:dev`. The static build is written to `site/doc_build` and deployed to GitHub Pages from `main`.
 
-Local browser release checks use A3S Test; they are intentionally not part of CI.
+Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation; these checks are intentionally not part of CI.
 
 ## Lineage and license
 

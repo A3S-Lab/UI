@@ -1,0 +1,73 @@
+# 状态栏
+
+状态栏持续展示文档状态、视图控件与缩放信息，同时避免与工作区主操作争夺注意力。
+
+<Preview>
+  <footer class="status-bar w-full" aria-label="文档状态">
+    <div data-status-info>
+      <span>第 1 页，共 12 页</span>
+      <span>132 字</span>
+      <span class="text-[var(--a3s-green)]">已保存</span>
+    </div>
+    <div data-status-actions>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-xs"
+        data-variant="ghost"
+        aria-label="打印布局"
+        aria-pressed="true"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="16" height="20" x="4" y="2" rx="2" />
+          <path d="M8 6h8M8 10h8M8 14h5" />
+        </svg>
+      </button>
+      <hr role="separator" />
+      <output aria-label="缩放比例">90%</output>
+      <input
+        class="input w-20"
+        type="range"
+        min="50"
+        max="200"
+        value="90"
+        aria-label="缩放"
+      />
+    </div>
+  </footer>
+</Preview>
+
+## Usage
+
+```html
+<footer class="status-bar" aria-label="文档状态">
+  <div data-status-info><span>第 1 页，共 12 页</span><span>已保存</span></div>
+  <div data-status-actions>...</div>
+</footer>
+```
+
+### Parameters
+
+| 参数                  | 必填 | 用途                       |
+| --------------------- | ---- | -------------------------- |
+| `data-status-info`    | 是   | 可伸缩的资源与保存状态信息 |
+| `data-status-actions` | 否   | 视图、缩放或导航控件       |
+| `--status-bar-height` | 否   | 状态栏高度，默认 `1.75rem` |
+
+## States and variants
+
+状态文案应简短且稳定。临时保存或校验状态使用语义色，视图模式控件使用 `aria-pressed`。
+
+## Accessibility
+
+页面包含多个页脚地标时，应为状态栏提供名称。每个滑块和图标按钮都需要无障碍名称；异步保存失败应通过独立实时区域播报。

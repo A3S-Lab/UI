@@ -1,0 +1,81 @@
+# Task Pane
+
+A Task Pane hosts contextual properties, comments, navigation, and assistant workflows beside the active editor.
+
+<Preview>
+  <div class="flex h-80 w-full overflow-hidden rounded-xl border border-border bg-[var(--a3s-bg)]">
+    <main class="grid min-w-0 flex-1 place-items-center p-6 text-sm text-muted-foreground">
+      Editor canvas
+    </main>
+    <aside class="task-pane">
+      <header>
+        <h2>Page setup</h2>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-xs"
+          data-variant="ghost"
+          aria-label="Close page setup"
+        >
+          ×
+        </button>
+      </header>
+      <section>
+        <div class="field">
+          <label for="task-pane-paper">Paper size</label>
+          <select id="task-pane-paper">
+            <option>A4</option>
+            <option>Letter</option>
+          </select>
+          <p>210 × 297 mm</p>
+        </div>
+        <div class="field mt-4">
+          <label for="task-pane-margin">Margin</label>
+          <select id="task-pane-margin">
+            <option>Normal</option>
+            <option>Narrow</option>
+          </select>
+        </div>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">
+          Reset
+        </button>
+        <button type="button" class="btn" data-size="sm">
+          Apply
+        </button>
+      </footer>
+    </aside>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<aside class="task-pane">
+  <header>
+    <h2>Properties</h2>
+    ...
+  </header>
+  <section>...</section>
+  <footer>...</footer>
+</aside>
+```
+
+### Parameters
+
+| Parameter               | Required    | Purpose                             |
+| ----------------------- | ----------- | ----------------------------------- |
+| Semantic `header`       | Recommended | Title and close or overflow actions |
+| Semantic `section`      | Yes         | Scrollable pane content             |
+| Semantic `footer`       | Optional    | Persistent actions                  |
+| `--task-pane-width`     | Optional    | Pane width, default `18rem`         |
+| `--task-pane-min-width` | Optional    | Minimum pane width, default `14rem` |
+
+## States and variants
+
+The host application owns whether the pane is mounted, overlaid, or placed in a Split Pane. Keep the root contract focused on internal layout and presentation.
+
+## Accessibility
+
+Use `<aside>` when the pane is complementary to the editor and give its heading a stable accessible name. Return focus to the control that opened the pane when it closes.

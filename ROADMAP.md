@@ -9,9 +9,16 @@
 - [x] Rspress documentation with Simplified Chinese as the default, English localization, and `next` / `v0.1.0` version switching.
 - [x] GitHub Pages deployment from `main`.
 
+## Delivered on `next`
+
+- [x] Aligned A3S foundations, control density, interaction states, overlays, and application chrome with the A3S Office visual contract.
+- [x] Added independently reusable Task Pane and Status Bar contracts with localized documentation.
+- [x] Rebuilt the homepage specimen from public components instead of private look-alike styles.
+- [x] Added browser visual-regression coverage for the Office-derived workbench and application patterns.
+
 ## Next
 
 - [ ] Publish `@a3s-lab/ui` to the npm registry.
-- [ ] Promote validated Office patterns into stable, independently versioned component contracts.
-- [ ] Expand design tokens and application patterns only as A3S products adopt them.
+- [ ] Promote the validated `next` visual contract into the next stable release.
+- [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.

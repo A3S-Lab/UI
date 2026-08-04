@@ -1,0 +1,141 @@
+/* A3S foundations, extracted from the Office workbench and normalized to Basecoat tokens. */
+:root {
+  color-scheme: light;
+  --background: #f7f7f8;
+  --foreground: #17181a;
+  --card: #ffffff;
+  --card-foreground: #17181a;
+  --popover: #ffffff;
+  --popover-foreground: #17181a;
+  --primary: #242424;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f3f5;
+  --secondary-foreground: #242424;
+  --muted: #f2f3f5;
+  --muted-foreground: #71757d;
+  --accent: #edf2ff;
+  --accent-foreground: #234ca4;
+  --destructive: #d84b4f;
+  --border: #e2e4e8;
+  --input: #dfe2e7;
+  --ring: #2864e8;
+  --chart-1: #8db4ff;
+  --chart-2: #2864e8;
+  --chart-3: #5420bd;
+  --chart-4: #14a675;
+  --chart-5: #db663b;
+  --sidebar: #f4f4f6;
+  --sidebar-foreground: #242529;
+  --sidebar-primary: #2864e8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8ebf1;
+  --sidebar-accent-foreground: #17181a;
+  --sidebar-border: #dfe1e6;
+  --sidebar-ring: #2864e8;
+  --radius: 0.6875rem;
+  --a3s-bg: var(--background);
+  --a3s-panel: var(--card);
+  --a3s-panel-soft: var(--muted);
+  --a3s-panel-strong: #e9ebef;
+  --a3s-ink: var(--foreground);
+  --a3s-muted: var(--muted-foreground);
+  --a3s-subtle: #8b9098;
+  --a3s-faint: #a1a5ad;
+  --a3s-line: var(--border);
+  --a3s-line-strong: #d3d6dc;
+  --a3s-action: var(--primary);
+  --a3s-action-hover: #111111;
+  --a3s-action-ink: var(--primary-foreground);
+  --a3s-blue: #2864e8;
+  --a3s-purple: #5420bd;
+  --a3s-green: #14a675;
+  --a3s-orange: #db663b;
+  --a3s-red: var(--destructive);
+  --a3s-warning: #c97816;
+  --a3s-radius: 1rem;
+  --a3s-radius-sm: 0.5625rem;
+  --a3s-overlay-radius: 0.625rem;
+  --a3s-overlay-border: var(--a3s-line-strong);
+  --a3s-overlay-surface: color-mix(in srgb, var(--a3s-panel) 98%, transparent);
+  --a3s-shadow: 0 24px 64px rgb(20 24 40 / 18%);
+  --a3s-shadow-soft: 0 14px 36px rgb(20 24 40 / 12%);
+  --a3s-shadow-control: 0 1px 3px rgb(20 24 40 / 8%);
+  --a3s-shadow-focus: 0 0 0 2px
+    color-mix(in srgb, var(--a3s-blue) 18%, transparent);
+  --a3s-control-height: 2.25rem;
+  --a3s-control-height-sm: 1.75rem;
+  --a3s-control-height-xs: 1.5rem;
+  --a3s-control-height-lg: 2.5rem;
+  --a3s-icon-button-size: 2.125rem;
+  --a3s-workspace-header-height: 3.125rem;
+  --a3s-ribbon-tabs-height: 2.25rem;
+  --a3s-ribbon-panel-height: 4.625rem;
+  --a3s-status-height: 1.75rem;
+  --a3s-font-size-ui: 0.8125rem;
+  --a3s-font-size-compact: 0.6875rem;
+  --a3s-font-size-micro: 0.625rem;
+  --a3s-motion-fast: 120ms;
+  --a3s-motion-normal: 150ms;
+  --a3s-scrollbar-size: 0.625rem;
+  --a3s-scrollbar-track: transparent;
+  --a3s-scrollbar-thumb: color-mix(in srgb, var(--a3s-muted) 38%, transparent);
+  --a3s-scrollbar-thumb-hover: color-mix(
+    in srgb,
+    var(--a3s-muted) 58%,
+    transparent
+  );
+  --scrollbar-track: var(--a3s-scrollbar-track);
+  --scrollbar-thumb: var(--a3s-scrollbar-thumb);
+  --scrollbar-width: var(--a3s-scrollbar-size);
+  --a3s-ui-font:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-sans: var(--a3s-ui-font);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #101118;
+  --foreground: #f2f3f5;
+  --card: #171820;
+  --card-foreground: #f2f3f5;
+  --popover: #1b1c24;
+  --popover-foreground: #f2f3f5;
+  --primary: #f2f3f5;
+  --primary-foreground: #17181a;
+  --secondary: #252730;
+  --secondary-foreground: #f2f3f5;
+  --muted: #1e2028;
+  --muted-foreground: #a4a8b2;
+  --accent: #232c42;
+  --accent-foreground: #a9c8ff;
+  --destructive: #f27777;
+  --border: #2a2d35;
+  --input: #343741;
+  --ring: #6ca3ff;
+  --chart-1: #a9c8ff;
+  --chart-2: #6ca3ff;
+  --chart-3: #a883ff;
+  --chart-4: #3ccf91;
+  --chart-5: #f08a61;
+  --sidebar: #15161d;
+  --sidebar-foreground: #f2f3f5;
+  --sidebar-primary: #6ca3ff;
+  --sidebar-primary-foreground: #101118;
+  --sidebar-accent: #242630;
+  --sidebar-accent-foreground: #f2f3f5;
+  --sidebar-border: #2a2d35;
+  --sidebar-ring: #6ca3ff;
+  --a3s-panel-strong: #282b35;
+  --a3s-subtle: #8d929e;
+  --a3s-faint: #727783;
+  --a3s-line-strong: #3a3d48;
+  --a3s-action-hover: #ffffff;
+  --a3s-blue: #6ca3ff;
+  --a3s-purple: #a883ff;
+  --a3s-green: #3ccf91;
+  --a3s-orange: #f08a61;
+  --a3s-warning: #eda94c;
+  --a3s-shadow: 0 22px 70px rgb(0 0 0 / 35%);
+  --a3s-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
+}

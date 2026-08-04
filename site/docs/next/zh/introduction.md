@@ -7,8 +7,8 @@ A3S UI 是面向 A3S 产品、Coding Agent 工作区、运维控制台与文档�
 ## 包含内容
 
 - 颜色、排版、间距、形状与阴影、动效和可访问性六套设计基础。
-- 50 篇组件指南，覆盖操作、表单、导航、浮层、反馈、数据展示与实用组件。
-- 源自 Office 的应用模式：App Shell、Activity Bar、Workspace Header、Toolbar、Ribbon、Settings Layout、Resource Card、Split Pane 与 Resource Workbench。
+- 52 篇指南，覆盖操作、表单、导航、浮层、反馈、数据展示、实用组件与完整工作台模式。
+- 源自 Office 的应用模式：App Shell、Activity Bar、Workspace Header、Toolbar、Ribbon、Settings Layout、Resource Card、Split Pane、Task Pane、Status Bar 与 Resource Workbench。
 - A3S 浅色和深色主题，并保留八套 Basecoat 兼容视觉风格。
 - 面向服务端渲染应用的 Nunjucks 与 Jinja 模板。
 - 提供实时预览、参数、变体、状态和可访问性说明的版本化文档站。

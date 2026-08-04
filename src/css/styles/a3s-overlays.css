@@ -1,0 +1,203 @@
+/* A3S dialog, drawer, menu, and popover visuals. */
+@layer components {
+  /* Dialog */
+  .dialog::backdrop,
+  .alert-dialog::backdrop,
+  .command-dialog::backdrop {
+    @apply bg-black/10 backdrop-blur-xs duration-100;
+  }
+
+  .alert-dialog > * {
+    @apply bg-popover text-popover-foreground ring-foreground/10 max-w-xs gap-6 rounded-xl p-6 ring-1 duration-100 sm:max-w-lg;
+  }
+
+  .alert-dialog:is([data-size="sm"]) > *,
+  .alert-dialog > [data-size="sm"] {
+    @apply sm:max-w-xs;
+  }
+
+  .dialog > * {
+    @apply bg-popover text-popover-foreground ring-foreground/10 max-w-[calc(100%-2rem)] gap-6 rounded-xl p-6 text-sm ring-1 duration-100 sm:max-w-md;
+  }
+
+  .dialog > * > :is(button, form[method="dialog"]) {
+    @apply top-4 end-4;
+  }
+
+  .dialog > * > header {
+    @apply gap-2;
+  }
+
+  .alert-dialog > * > header {
+    @apply gap-x-6 gap-y-1.5;
+  }
+
+  .alert-dialog > * > header > figure {
+    @apply bg-muted mb-2 inline-flex size-16 items-center justify-center rounded-md [&>svg:not([class*='size-'])]:size-8;
+  }
+
+  .alert-dialog > * > footer,
+  .dialog > * > footer {
+    @apply gap-2;
+  }
+
+  .dialog > * > header > h2,
+  .dialog > * > [data-title] {
+    @apply leading-none font-medium;
+  }
+
+  .alert-dialog > * > header > h2,
+  .alert-dialog > * > [data-title] {
+    @apply text-lg font-medium;
+  }
+
+  .dialog > * > header > p,
+  .dialog > * > [data-description] {
+    @apply text-muted-foreground text-sm leading-normal [&_a]:underline [&_a]:underline-offset-3 [&_a:hover]:text-foreground;
+  }
+
+  .alert-dialog > * > header > p,
+  .alert-dialog > * > [data-description] {
+    @apply text-muted-foreground text-sm text-balance md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a:hover]:text-foreground;
+  }
+
+  /* Drawer */
+  .drawer::backdrop {
+    @apply bg-black/10 backdrop-blur-xs;
+  }
+
+  .drawer > * {
+    @apply bg-popover text-popover-foreground text-sm;
+  }
+
+  .drawer:not([data-side]) > *,
+  .drawer[data-side="bottom"] > * {
+    @apply rounded-t-xl border-t;
+  }
+
+  .drawer[data-side="top"] > * {
+    @apply rounded-b-xl border-b;
+  }
+
+  .drawer[data-side="left"] > * {
+    @apply rounded-r-xl border-r;
+  }
+
+  .drawer[data-side="right"] > * {
+    @apply rounded-l-xl border-l;
+  }
+
+  .drawer > * > header {
+    @apply gap-0.5 p-4 text-start md:gap-1.5;
+  }
+
+  .drawer:not([data-side]) > * > header,
+  .drawer[data-side="bottom"] > * > header,
+  .drawer[data-side="top"] > * > header {
+    @apply text-center;
+  }
+
+  .drawer > * > footer {
+    @apply gap-2 p-4;
+  }
+
+  .drawer > * > header > h2,
+  .drawer > * > [data-title] {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+
+  .drawer > * > header > p,
+  .drawer > * > [data-description] {
+    @apply text-muted-foreground text-sm;
+  }
+
+  /* Dropdown Menu */
+  .dropdown-menu > [data-popover] {
+    @apply bg-popover text-popover-foreground ring-foreground/10 gap-0 overflow-x-hidden overflow-y-auto rounded-md p-1 shadow-md ring-1 duration-100;
+  }
+
+  .dropdown-menu
+    :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
+    @apply gap-2 rounded-sm px-2 py-1.5 text-sm focus-visible:bg-accent focus-visible:text-accent-foreground [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .dropdown-menu
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    ).active {
+    @apply bg-muted text-foreground;
+  }
+
+  .dropdown-menu [data-variant="destructive"] {
+    @apply text-destructive;
+  }
+
+  .dropdown-menu [data-variant="destructive"]:is(:focus-visible, .active) {
+    @apply bg-destructive/10 text-destructive dark:bg-destructive/20;
+  }
+
+  .dropdown-menu [data-variant="destructive"] svg {
+    @apply text-destructive;
+  }
+
+  .dropdown-menu :is([role="menuitemcheckbox"], [role="menuitemradio"]) {
+    @apply py-1.5 pe-8 ps-2;
+  }
+
+  .dropdown-menu
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    )[data-inset],
+  .dropdown-menu [role="heading"][data-inset] {
+    @apply ps-8;
+  }
+
+  .dropdown-menu [data-indicator] {
+    @apply absolute end-2 flex items-center justify-center;
+  }
+
+  .dropdown-menu [role="heading"] {
+    @apply text-muted-foreground px-2 py-1.5 text-xs font-medium;
+  }
+
+  .dropdown-menu [role="separator"] {
+    @apply bg-border -mx-1 my-1 h-px;
+  }
+
+  .dropdown-menu :is([data-shortcut], kbd:last-child, .kbd:last-child) {
+    @apply text-muted-foreground font-sans text-xs tracking-widest;
+  }
+
+  .dropdown-menu
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    ):is(:focus-visible, .active)
+    :is([data-shortcut], kbd:last-child, .kbd:last-child) {
+    @apply text-accent-foreground;
+  }
+
+  /* Popover */
+  [data-popover] {
+    @apply bg-popover text-popover-foreground ring-foreground/10 flex flex-col gap-4 rounded-md p-4 text-sm shadow-md ring-1 duration-100;
+  }
+  .popover > [data-popover] > header,
+  .popover > [data-popover] > [data-header] {
+    @apply flex flex-col gap-1 text-sm;
+  }
+
+  .popover > [data-popover] > header > :is(h1, h2, h3, h4, h5, h6),
+  .popover > [data-popover] > :is(h1, h2, h3, h4, h5, h6, [data-title]) {
+    @apply font-medium;
+  }
+
+  .popover > [data-popover] > header > p,
+  .popover > [data-popover] > [data-description] {
+    @apply text-muted-foreground;
+  }
+}

@@ -32,10 +32,27 @@ Application components expose continuous values as CSS variables:
 | Variable | Default | Component |
 | --- | ---: | --- |
 | `--app-shell-navigation-size` | `15rem` | App Shell |
-| `--workspace-header-height` | `3.5rem` | Workspace Header |
 | `--settings-navigation-size` | `14rem` | Settings Layout |
 | `--resource-grid-min` | `12rem` | Resource Grid |
 | `--resource-grid-gap` | `1rem` | Resource Grid |
 | `--split-pane-min-height` | `18rem` | Split Pane |
+| `--task-pane-width` | `18rem` | Task Pane |
+| `--task-pane-min-width` | `14rem` | Task Pane |
 
 Use these parameters instead of overriding internal grid selectors.
+
+## Office density contract
+
+The A3S style pack applies the same compact chrome rhythm used by A3S Office. Override these semantic tokens only when the entire product needs a different density:
+
+| Token                           |    Default | Used by                             |
+| ------------------------------- | ---------: | ----------------------------------- |
+| `--a3s-control-height`          |  `2.25rem` | Standard controls and toolbars      |
+| `--a3s-control-height-sm`       |  `1.75rem` | Compact buttons and ribbon commands |
+| `--a3s-control-height-xs`       |   `1.5rem` | Micro and icon controls             |
+| `--a3s-workspace-header-height` | `3.125rem` | Workspace Header                    |
+| `--a3s-ribbon-tabs-height`      |  `2.25rem` | Ribbon tabs                         |
+| `--a3s-ribbon-panel-height`     | `4.625rem` | Ribbon command panel                |
+| `--a3s-status-height`           |  `1.75rem` | Status Bar                          |
+
+Keep the 4px baseline when changing a token and validate the complete shell at desktop and compact widths.

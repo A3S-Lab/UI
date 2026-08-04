@@ -1,0 +1,116 @@
+/* A3S combobox and select visuals. */
+@layer components {
+  /* Combobox */
+  .combobox > input[role="combobox"] {
+    @apply border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border bg-transparent py-2 ps-2.5 pe-8 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3;
+  }
+
+  .combobox > svg,
+  .combobox-trigger-icon {
+    @apply text-muted-foreground end-2.5 top-1/2 size-4 -translate-y-1/2;
+  }
+
+  .combobox [data-popover] {
+    @apply bg-popover text-popover-foreground ring-foreground/10 max-h-72 gap-0 rounded-md p-0 shadow-md ring-1 duration-100;
+  }
+
+  .combobox [role="listbox"] {
+    @apply max-h-[min(18rem,var(--available-height,18rem))] scroll-py-1 overflow-y-auto p-1;
+  }
+
+  .combobox [role="listbox"]:not(:has([data-value]:not([aria-hidden="true"]))) {
+    @apply p-0;
+  }
+
+  .combobox
+    [role="listbox"]:not(:has([data-value]:not([aria-hidden="true"])))::before {
+    @apply px-3 py-2 text-center text-sm text-muted-foreground;
+  }
+
+  .combobox [role="heading"] {
+    @apply text-muted-foreground px-2 py-1.5 text-xs;
+  }
+
+  .combobox [role="option"] {
+    @apply gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .combobox [role="option"].active,
+  .combobox [role="option"]:focus-visible {
+    @apply bg-accent text-accent-foreground [&_svg]:text-accent-foreground;
+  }
+
+  .combobox [role="group"] {
+    @apply scroll-my-1 p-1;
+  }
+
+  .combobox [role="separator"] {
+    @apply bg-border -mx-1 my-1 h-px;
+  }
+
+  .combobox-chips {
+    @apply dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-md border bg-transparent bg-clip-padding px-1.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:ring-3 has-[[aria-invalid=true]]:ring-3;
+  }
+
+  .combobox-chip {
+    @apply bg-muted text-foreground h-5.5 gap-1 rounded-sm px-1.5 text-xs font-medium has-[>.combobox-chip-remove]:pe-0;
+  }
+
+  .combobox-chip-remove {
+    @apply -ms-1 opacity-50 hover:opacity-100 [&_svg]:size-3.5;
+  }
+
+  .combobox [data-popover] > .input-group {
+    @apply m-1 mb-0 h-8 w-auto border-input/30 bg-input/30 shadow-none focus-within:border-inherit focus-within:ring-0;
+  }
+
+  .combobox [data-popover] > input[role="combobox"] {
+    @apply mb-1 w-full;
+  }
+  /* Select */
+  .select:not(select) > button {
+    @apply border-input dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border bg-transparent py-2 ps-2.5 pe-2 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .select:not(select) > button > span {
+    @apply gap-1.5;
+  }
+
+  .select:not(select) > button > svg {
+    @apply text-muted-foreground size-4;
+  }
+
+  .select:not(select) [data-popover] {
+    @apply bg-popover text-popover-foreground ring-foreground/10 rounded-md p-1 shadow-md ring-1 duration-100;
+  }
+
+  .select:not(select) [role="listbox"] {
+    @apply scroll-py-1;
+  }
+
+  .select:not(select)
+    [role="listbox"]:not(:has([data-value]:not([aria-hidden="true"])))::before {
+    @apply py-6 text-center text-sm;
+  }
+
+  .select:not(select) [role="heading"] {
+    @apply text-muted-foreground px-2 py-1.5 text-xs;
+  }
+
+  .select:not(select) [role="option"] {
+    @apply gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .select:not(select) [role="option"].active,
+  .select:not(select) [role="option"]:focus-visible {
+    @apply bg-muted text-foreground [&_svg]:text-foreground;
+  }
+
+  .select:not(select) [role="group"] {
+    @apply scroll-my-1 p-1;
+  }
+
+  .select:not(select) [role="separator"] {
+    @apply bg-border -mx-1 my-1 h-px;
+  }
+}

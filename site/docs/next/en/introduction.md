@@ -8,7 +8,7 @@ It turns the strongest interaction patterns from A3S Office Playground into a re
 
 - Foundations for color, typography, spacing, shape, elevation, motion, and accessibility.
 - More than 40 Basecoat-compatible primitives for actions, forms, navigation, overlays, feedback, and data display.
-- Office-derived application patterns: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, and Resource Workbench.
+- Office-derived application patterns: App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, Status Bar, and Resource Workbench.
 - The A3S light and dark themes plus eight preserved Basecoat style packs.
 - Nunjucks and Jinja templates for server-rendered applications.
 - A documentation site with live previews, parameters, variants, states, and accessibility notes.

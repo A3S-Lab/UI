@@ -1,12 +1,7 @@
-import { useState } from 'react';
-import {
-  useLang,
-  useSite,
-  useVersion,
-  withBase,
-} from '@rspress/core/runtime';
+import { useState } from "react";
+import { useLang, useSite, useVersion, withBase } from "@rspress/core/runtime";
 
-type Locale = 'zh' | 'en';
+type Locale = "zh" | "en";
 
 type Localized = {
   zh: string;
@@ -23,207 +18,207 @@ type ComponentFamily = {
 
 const componentFamilies: ComponentFamily[] = [
   {
-    code: '01 / INPUT',
-    count: '12',
+    code: "01 / INPUT",
+    count: "12",
     description: {
-      zh: '字段、选择器、开关、滑块，以及可访问的表单组合。',
-      en: 'Fields, selects, switches, sliders, and accessible form composition.',
+      zh: "字段、选择器、开关、滑块，以及可访问的表单组合。",
+      en: "Fields, selects, switches, sliders, and accessible form composition.",
     },
-    href: '/components/field',
-    title: { zh: '表单', en: 'Forms' },
+    href: "/components/field",
+    title: { zh: "表单", en: "Forms" },
   },
   {
-    code: '02 / WAYFINDING',
-    count: '05',
+    code: "02 / WAYFINDING",
+    count: "05",
     description: {
-      zh: '活动栏、面包屑、标签页、分页与产品侧边栏。',
-      en: 'Activity rails, breadcrumbs, tabs, pagination, and product sidebars.',
+      zh: "活动栏、面包屑、标签页、分页与产品侧边栏。",
+      en: "Activity rails, breadcrumbs, tabs, pagination, and product sidebars.",
     },
-    href: '/components/activity-bar',
-    title: { zh: '导航', en: 'Navigation' },
+    href: "/components/activity-bar",
+    title: { zh: "导航", en: "Navigation" },
   },
   {
-    code: '03 / LAYERS',
-    count: '07',
+    code: "03 / LAYERS",
+    count: "07",
     description: {
-      zh: '对话框、抽屉、菜单、浮层、命令面板与上下文帮助。',
-      en: 'Dialogs, drawers, menus, popovers, commands, and contextual help.',
+      zh: "对话框、抽屉、菜单、浮层、命令面板与上下文帮助。",
+      en: "Dialogs, drawers, menus, popovers, commands, and contextual help.",
     },
-    href: '/components/dialog',
-    title: { zh: '浮层', en: 'Overlays' },
+    href: "/components/dialog",
+    title: { zh: "浮层", en: "Overlays" },
   },
   {
-    code: '04 / SIGNALS',
-    count: '07',
+    code: "04 / SIGNALS",
+    count: "07",
     description: {
-      zh: '警告、徽标、进度、骨架屏、加载状态与 Toast 反馈。',
-      en: 'Alerts, badges, progress, skeletons, spinners, and toast feedback.',
+      zh: "警告、徽标、进度、骨架屏、加载状态与 Toast 反馈。",
+      en: "Alerts, badges, progress, skeletons, spinners, and toast feedback.",
     },
-    href: '/components/alert',
-    title: { zh: '反馈', en: 'Feedback' },
+    href: "/components/alert",
+    title: { zh: "反馈", en: "Feedback" },
   },
   {
-    code: '05 / CONTENT',
-    count: '07',
+    code: "05 / CONTENT",
+    count: "07",
     description: {
-      zh: '卡片、图表、表格、列表项、头像与结构化信息展示。',
-      en: 'Cards, charts, tables, items, avatars, and structured disclosure.',
+      zh: "卡片、图表、表格、列表项、头像与结构化信息展示。",
+      en: "Cards, charts, tables, items, avatars, and structured disclosure.",
     },
-    href: '/components/card',
-    title: { zh: '数据展示', en: 'Data display' },
+    href: "/components/card",
+    title: { zh: "数据展示", en: "Data display" },
   },
   {
-    code: '06 / WORKBENCH',
-    count: '08',
+    code: "06 / WORKBENCH",
+    count: "10",
     description: {
-      zh: '应用外壳、功能区、工具栏、分割面板与资源网格。',
-      en: 'Application shells, ribbons, toolbars, split panes, and resource grids.',
+      zh: "应用外壳、功能区、工具栏、分割面板与资源网格。",
+      en: "Application shells, ribbons, toolbars, split panes, and resource grids.",
     },
-    href: '/components/app-shell',
-    title: { zh: '应用模式', en: 'Application patterns' },
+    href: "/components/app-shell",
+    title: { zh: "应用模式", en: "Application patterns" },
   },
 ];
 
 const resourceKinds = [
   {
-    icon: 'Aa',
-    id: 'document',
-    label: { zh: '文档', en: 'Document' },
-    meta: { zh: '空白画布', en: 'Blank canvas' },
+    icon: "Aa",
+    id: "document",
+    label: { zh: "文档", en: "Document" },
+    meta: { zh: "空白画布", en: "Blank canvas" },
   },
   {
-    icon: '▦',
-    id: 'spreadsheet',
-    label: { zh: '预算模型', en: 'Budget model' },
-    meta: { zh: '12 个工作表', en: '12 sheets' },
+    icon: "▦",
+    id: "spreadsheet",
+    label: { zh: "预算模型", en: "Budget model" },
+    meta: { zh: "12 个工作表", en: "12 sheets" },
   },
   {
-    icon: '▤',
-    id: 'presentation',
-    label: { zh: '项目复盘', en: 'Project review' },
-    meta: { zh: '24 张幻灯片', en: '24 slides' },
+    icon: "▤",
+    id: "presentation",
+    label: { zh: "项目复盘", en: "Project review" },
+    meta: { zh: "24 张幻灯片", en: "24 slides" },
   },
 ] as const;
 
 const homeCopy = {
   zh: {
-    kicker: 'A3S 产品设计系统',
-    titleLead: '让每个界面',
-    titleAccent: '都像同一个产品。',
+    kicker: "A3S 产品设计系统",
+    titleLead: "让每个界面",
+    titleAccent: "都像同一个产品。",
     subtitle:
-      '源自 A3S Office、智能体工作区和运维控制台的可复用视觉语言，以语义化 HTML、Tailwind CSS 与轻量原生 JavaScript 控制器交付。',
-    start: '开始使用',
-    github: '查看 GitHub',
-    frameworkAgnostic: '框架无关',
-    componentGuides: '组件指南',
-    foundationSystems: '基础系统',
-    runtimeDependencies: '运行时依赖',
-    liveSpecimen: '实时样例',
-    specimenMeta: 'OFFICE 工作台 / 浅色',
-    semanticHtml: '语义化 HTML',
-    lightDark: '浅色 + 深色',
-    responsiveRtl: '响应式 + RTL',
-    accessibleStates: '可访问状态',
-    templates: 'Nunjucks + Jinja',
-    catalogEyebrow: '组件目录 / 50 篇指南',
-    catalogTitle: '从基础控件到完整工作台。',
+      "源自 A3S Office、智能体工作区和运维控制台的可复用视觉语言，以语义化 HTML、Tailwind CSS 与轻量原生 JavaScript 控制器交付。",
+    start: "开始使用",
+    github: "查看 GitHub",
+    frameworkAgnostic: "框架无关",
+    componentGuides: "组件指南",
+    foundationSystems: "基础系统",
+    runtimeDependencies: "运行时依赖",
+    liveSpecimen: "实时样例",
+    specimenMeta: "OFFICE 工作台 / 浅色",
+    semanticHtml: "语义化 HTML",
+    lightDark: "浅色 + 深色",
+    responsiveRtl: "响应式 + RTL",
+    accessibleStates: "可访问状态",
+    templates: "Nunjucks + Jinja",
+    catalogEyebrow: "组件目录 / 52 篇指南",
+    catalogTitle: "从基础控件到完整工作台。",
     catalogBody:
-      '每篇指南都包含实时样例、最小标记、参数、变体、状态行为与可访问性说明。',
-    guides: '篇指南',
-    browseCatalog: '浏览完整组件目录',
-    foundationsEyebrow: '设计基础 / 系统令牌',
-    foundationsTitle: '一套系统，覆盖每个 A3S 界面。',
+      "每篇指南都包含实时样例、最小标记、参数、变体、状态行为与可访问性说明。",
+    guides: "篇指南",
+    browseCatalog: "浏览完整组件目录",
+    foundationsEyebrow: "设计基础 / 系统令牌",
+    foundationsTitle: "一套系统，覆盖每个 A3S 界面。",
     foundationsBody:
-      '产品语义只定义一次，并在文档工具、Coding Agent 界面与可观测控制台之间共享。',
+      "产品语义只定义一次，并在文档工具、Coding Agent 界面与可观测控制台之间共享。",
     principles: [
       {
-        title: '平台优先',
-        body: '以原生控件和语义化地标为基础；只有平台无法提供的交互才使用 JavaScript。',
+        title: "平台优先",
+        body: "以原生控件和语义化地标为基础；只有平台无法提供的交互才使用 JavaScript。",
       },
       {
-        title: '参数，而不是分叉',
-        body: '通过 CSS 变量和明确的数据属性适配组件，不复制结构，也不牺牲可访问行为。',
+        title: "参数，而不是分叉",
+        body: "通过 CSS 变量和明确的数据属性适配组件，不复制结构，也不牺牲可访问行为。",
       },
       {
-        title: '面向生产力应用的密度',
-        body: '清晰层级、紧凑工具栏、可预测焦点，以及能承受复杂业务的响应式布局。',
+        title: "面向生产力应用的密度",
+        body: "清晰层级、紧凑工具栏、可预测焦点，以及能承受复杂业务的响应式布局。",
       },
     ],
-    ctaEyebrow: '开始组合',
-    ctaTitle: '构建下一个 A3S 界面。',
-    ctaBody: '安装组件包、选择设计基础，然后从任意组件指南复制语义化标记。',
-    installation: '安装指南',
-    explore: '探索组件',
-    workspace: '工作区 / 最近使用',
-    continue: '继续上次工作',
-    newResource: '新建资源',
-    properties: '属性',
-    resource: '资源',
-    surface: '表面',
-    canvas: '画布',
-    accent: '强调色',
-    saved: '已保存',
-    ribbonControls: '控件',
+    ctaEyebrow: "开始组合",
+    ctaTitle: "构建下一个 A3S 界面。",
+    ctaBody: "安装组件包、选择设计基础，然后从任意组件指南复制语义化标记。",
+    installation: "安装指南",
+    explore: "探索组件",
+    workspace: "工作区 / 最近使用",
+    continue: "继续上次工作",
+    newResource: "新建资源",
+    properties: "属性",
+    resource: "资源",
+    surface: "表面",
+    canvas: "画布",
+    accent: "强调色",
+    saved: "已保存",
+    ribbonControls: "控件",
   },
   en: {
-    kicker: 'A3S PRODUCT DESIGN SYSTEM',
-    titleLead: 'Interfaces that feel',
-    titleAccent: 'like one product.',
+    kicker: "A3S PRODUCT DESIGN SYSTEM",
+    titleLead: "Interfaces that feel",
+    titleAccent: "like one product.",
     subtitle:
-      'The reusable visual language behind A3S Office, agent workspaces, and operational consoles—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers.',
-    start: 'Get started',
-    github: 'GitHub',
-    frameworkAgnostic: 'FRAMEWORK AGNOSTIC',
-    componentGuides: 'Component guides',
-    foundationSystems: 'Foundation systems',
-    runtimeDependencies: 'Runtime dependencies',
-    liveSpecimen: 'LIVE SPECIMEN',
-    specimenMeta: 'OFFICE WORKBENCH / LIGHT',
-    semanticHtml: 'Semantic HTML',
-    lightDark: 'Light + dark',
-    responsiveRtl: 'Responsive + RTL',
-    accessibleStates: 'Accessible states',
-    templates: 'Nunjucks + Jinja',
-    catalogEyebrow: 'COMPONENT CATALOG / 50 GUIDES',
-    catalogTitle: 'From controls to complete workspaces.',
+      "The reusable visual language behind A3S Office, agent workspaces, and operational consoles—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers.",
+    start: "Get started",
+    github: "GitHub",
+    frameworkAgnostic: "FRAMEWORK AGNOSTIC",
+    componentGuides: "Component guides",
+    foundationSystems: "Foundation systems",
+    runtimeDependencies: "Runtime dependencies",
+    liveSpecimen: "LIVE SPECIMEN",
+    specimenMeta: "OFFICE WORKBENCH / LIGHT",
+    semanticHtml: "Semantic HTML",
+    lightDark: "Light + dark",
+    responsiveRtl: "Responsive + RTL",
+    accessibleStates: "Accessible states",
+    templates: "Nunjucks + Jinja",
+    catalogEyebrow: "COMPONENT CATALOG / 52 GUIDES",
+    catalogTitle: "From controls to complete workspaces.",
     catalogBody:
-      'Each guide includes a live specimen, minimal markup, parameters, variants, state behavior, and accessibility notes.',
-    guides: 'GUIDES',
-    browseCatalog: 'Browse the complete component catalog',
-    foundationsEyebrow: 'FOUNDATIONS / SYSTEM TOKENS',
-    foundationsTitle: 'One system. Every A3S surface.',
+      "Each guide includes a live specimen, minimal markup, parameters, variants, state behavior, and accessibility notes.",
+    guides: "GUIDES",
+    browseCatalog: "Browse the complete component catalog",
+    foundationsEyebrow: "FOUNDATIONS / SYSTEM TOKENS",
+    foundationsTitle: "One system. Every A3S surface.",
     foundationsBody:
-      'Product semantics are encoded once, then shared across document tools, coding-agent interfaces, and observability consoles.',
+      "Product semantics are encoded once, then shared across document tools, coding-agent interfaces, and observability consoles.",
     principles: [
       {
-        title: 'Platform first',
-        body: 'Native controls and semantic landmarks remain the foundation. JavaScript is reserved for behavior that the platform does not provide.',
+        title: "Platform first",
+        body: "Native controls and semantic landmarks remain the foundation. JavaScript is reserved for behavior that the platform does not provide.",
       },
       {
-        title: 'Parameters, not forks',
-        body: 'CSS variables and documented data attributes adapt components without duplicating their structure or accessibility behavior.',
+        title: "Parameters, not forks",
+        body: "CSS variables and documented data attributes adapt components without duplicating their structure or accessibility behavior.",
       },
       {
-        title: 'Application density',
-        body: 'The system is tuned for serious workspaces: clear hierarchy, compact chrome, predictable focus, and resilient responsive layouts.',
+        title: "Application density",
+        body: "The system is tuned for serious workspaces: clear hierarchy, compact chrome, predictable focus, and resilient responsive layouts.",
       },
     ],
-    ctaEyebrow: 'START COMPOSING',
-    ctaTitle: 'Build the next A3S interface.',
+    ctaEyebrow: "START COMPOSING",
+    ctaTitle: "Build the next A3S interface.",
     ctaBody:
-      'Install the package, choose a foundation, and copy the semantic markup from any component guide.',
-    installation: 'Installation',
-    explore: 'Explore components',
-    workspace: 'WORKSPACE / RECENT',
-    continue: 'Continue where you left off',
-    newResource: 'New resource',
-    properties: 'Properties',
-    resource: 'Resource',
-    surface: 'Surface',
-    canvas: 'Canvas',
-    accent: 'ACCENT',
-    saved: 'Saved',
-    ribbonControls: 'controls',
+      "Install the package, choose a foundation, and copy the semantic markup from any component guide.",
+    installation: "Installation",
+    explore: "Explore components",
+    workspace: "WORKSPACE / RECENT",
+    continue: "Continue where you left off",
+    newResource: "New resource",
+    properties: "Properties",
+    resource: "Resource",
+    surface: "Surface",
+    canvas: "Canvas",
+    accent: "ACCENT",
+    saved: "Saved",
+    ribbonControls: "controls",
   },
 } as const;
 
@@ -257,132 +252,413 @@ function CheckIcon() {
 
 function WorkbenchSpecimen({ locale }: { locale: Locale }) {
   const labels = homeCopy[locale];
-  const [selectedResource, setSelectedResource] = useState('presentation');
-  const [activeRibbon, setActiveRibbon] = useState('Insert');
+  const [selectedResource, setSelectedResource] = useState("presentation");
+  const [activeRibbon, setActiveRibbon] = useState("Insert");
   const ribbonTabs = [
-    { id: 'Home', zh: '开始', en: 'Home' },
-    { id: 'Insert', zh: '插入', en: 'Insert' },
-    { id: 'Layout', zh: '布局', en: 'Layout' },
-    { id: 'Review', zh: '审阅', en: 'Review' },
+    { id: "Home", zh: "开始", en: "Home" },
+    { id: "Insert", zh: "插入", en: "Insert" },
+    { id: "Layout", zh: "布局", en: "Layout" },
+    { id: "Review", zh: "审阅", en: "Review" },
   ] as const;
   const selectedResourceLabel = resourceKinds.find(
     (resource) => resource.id === selectedResource,
   )?.label[locale];
 
+  const moveRibbonFocus = (
+    event: import("react").KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex = index;
+    if (event.key === "ArrowRight") nextIndex = (index + 1) % ribbonTabs.length;
+    if (event.key === "ArrowLeft") {
+      nextIndex = (index - 1 + ribbonTabs.length) % ribbonTabs.length;
+    }
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = ribbonTabs.length - 1;
+    if (nextIndex === index) return;
+    event.preventDefault();
+    setActiveRibbon(ribbonTabs[nextIndex].id);
+    const tabs =
+      event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+        '[role="tab"]',
+      );
+    tabs?.[nextIndex]?.focus();
+  };
+
   return (
-    <div className="ui-workbench" aria-label="Interactive A3S Office workbench specimen">
-      <div className="ui-workbench__titlebar">
+    <div
+      className="ui-workbench-frame"
+      aria-label="Interactive A3S Office workbench specimen"
+    >
+      <div className="ui-workbench-windowbar">
         <span className="ui-window-controls" aria-hidden="true">
           <i />
           <i />
           <i />
         </span>
         <strong>A3S Office</strong>
-        <span className="ui-workbench__sync">
+        <span data-save-state>
           <i /> {labels.saved}
         </span>
       </div>
-      <div className="ui-workbench__body">
-        <aside className="ui-workbench__activity" aria-label="Workspace tools">
-          <span className="ui-workbench__brand">A</span>
-          <button type="button" className="is-active" aria-label="Files">
-            ▦
-          </button>
-          <button type="button" aria-label="Search">
-            ⌕
-          </button>
-          <button type="button" aria-label="Agents">
-            ◇
-          </button>
-          <button type="button" aria-label="Settings">
-            ⚙
-          </button>
-        </aside>
-        <main className="ui-workbench__main">
-          <div className="ui-workbench__ribbon" role="tablist" aria-label="Ribbon tabs">
-            {ribbonTabs.map((tab) => (
+      <div className="app-shell ui-workbench-shell" data-navigation="collapsed">
+        <aside data-app-navigation>
+          <div className="activity-bar" data-labels="hidden">
+            <header>
+              <span className="ui-office-mark">A</span>
+              <span data-navigation-label>A3S</span>
+            </header>
+            <nav
+              aria-label={locale === "zh" ? "工作区工具" : "Workspace tools"}
+            >
+              <ul>
+                <li>
+                  <button
+                    type="button"
+                    aria-pressed="true"
+                    aria-label={locale === "zh" ? "文件" : "Files"}
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="M4 4h6l2 2h8v14H4zM8 11h8M8 15h5" />
+                    </svg>
+                    <span data-navigation-label>
+                      {locale === "zh" ? "文件" : "Files"}
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    aria-label={locale === "zh" ? "搜索" : "Search"}
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                      <circle cx="11" cy="11" r="6" />
+                      <path d="m16 16 4 4" />
+                    </svg>
+                    <span data-navigation-label>
+                      {locale === "zh" ? "搜索" : "Search"}
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    aria-label={locale === "zh" ? "智能体" : "Agents"}
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="m12 3 2.1 5.9L20 11l-5.9 2.1L12 19l-2.1-5.9L4 11l5.9-2.1z" />
+                    </svg>
+                    <span data-navigation-label>
+                      {locale === "zh" ? "智能体" : "Agents"}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+            <footer>
               <button
-                key={tab.id}
                 type="button"
-                role="tab"
-                aria-selected={activeRibbon === tab.id}
-                onClick={() => setActiveRibbon(tab.id)}
+                className="btn"
+                data-size="icon-sm"
+                data-variant="ghost"
+                aria-label={locale === "zh" ? "设置" : "Settings"}
               >
-                {tab[locale]}
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
+                </svg>
               </button>
+            </footer>
+          </div>
+        </aside>
+        <main data-app-main>
+          <header className="workspace-header">
+            <div data-workspace-leading>
+              <button
+                type="button"
+                className="btn"
+                data-size="icon-sm"
+                data-variant="ghost"
+                aria-label={locale === "zh" ? "返回" : "Go back"}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <span className="ui-file-kind-mark">P</span>
+            </div>
+            <div data-workspace-identity>
+              <h1>{locale === "zh" ? "项目复盘" : "Project review"}</h1>
+              <span>
+                {locale === "zh"
+                  ? "演示文稿 · 刚刚保存"
+                  : "Presentation · saved just now"}
+              </span>
+            </div>
+            <div data-workspace-actions>
+              <button
+                type="button"
+                className="btn"
+                data-size="sm"
+                data-variant="outline"
+                data-collapse="mobile"
+              >
+                {locale === "zh" ? "预览" : "Preview"}
+              </button>
+              <button type="button" className="btn" data-size="sm">
+                {locale === "zh" ? "导出" : "Export"}
+              </button>
+            </div>
+          </header>
+          <div className="ribbon tabs" data-accent="orange">
+            <div
+              role="tablist"
+              aria-label={locale === "zh" ? "功能区" : "Ribbon"}
+            >
+              {ribbonTabs.map((tab, index) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  id={`ui-ribbon-${tab.id}`}
+                  aria-selected={activeRibbon === tab.id}
+                  aria-controls={`ui-ribbon-panel-${tab.id}`}
+                  tabIndex={activeRibbon === tab.id ? 0 : -1}
+                  onClick={() => setActiveRibbon(tab.id)}
+                  onKeyDown={(event) => moveRibbonFocus(event, index)}
+                >
+                  {tab[locale]}
+                </button>
+              ))}
+            </div>
+            {ribbonTabs.map((tab) => (
+              <div
+                key={`${tab.id}-panel`}
+                role="tabpanel"
+                id={`ui-ribbon-panel-${tab.id}`}
+                aria-labelledby={`ui-ribbon-${tab.id}`}
+                hidden={activeRibbon !== tab.id}
+              >
+                <fieldset data-ribbon-group>
+                  <legend>{locale === "zh" ? "字体" : "Font"}</legend>
+                  <div data-ribbon-controls>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="icon-sm"
+                      data-variant="ghost"
+                      aria-label={locale === "zh" ? "加粗" : "Bold"}
+                    >
+                      <strong>B</strong>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="icon-sm"
+                      data-variant="ghost"
+                      aria-label={locale === "zh" ? "斜体" : "Italic"}
+                    >
+                      <em>I</em>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="icon-sm"
+                      data-variant="ghost"
+                      aria-label={locale === "zh" ? "下划线" : "Underline"}
+                    >
+                      <span className="underline">U</span>
+                    </button>
+                  </div>
+                </fieldset>
+                <fieldset data-ribbon-group>
+                  <legend>{locale === "zh" ? "段落" : "Paragraph"}</legend>
+                  <div data-ribbon-controls>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="icon-sm"
+                      data-variant="ghost"
+                      aria-label={locale === "zh" ? "对齐" : "Align"}
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24">
+                        <path d="M4 6h16M4 10h11M4 14h16M4 18h9" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="icon-sm"
+                      data-variant="ghost"
+                      aria-label={locale === "zh" ? "列表" : "List"}
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24">
+                        <path d="M8 6h12M8 12h12M8 18h12" />
+                        <circle cx="4" cy="6" r="1" />
+                        <circle cx="4" cy="12" r="1" />
+                        <circle cx="4" cy="18" r="1" />
+                      </svg>
+                    </button>
+                  </div>
+                </fieldset>
+                <fieldset data-ribbon-group>
+                  <legend>{tab[locale]}</legend>
+                  <div data-ribbon-controls>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="sm"
+                      data-variant="ghost"
+                    >
+                      {locale === "zh" ? "图片" : "Picture"}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-size="sm"
+                      data-variant="ghost"
+                    >
+                      {locale === "zh" ? "批注" : "Comment"}
+                    </button>
+                  </div>
+                </fieldset>
+              </div>
             ))}
           </div>
-          <div className="ui-workbench__toolbar" aria-label={`${activeRibbon} tools`}>
-            <button type="button">
-              <b>B</b>
-            </button>
-            <button type="button">
-              <i>I</i>
-            </button>
-            <span />
-            <button type="button">{locale === 'zh' ? '对齐' : 'Align'}</button>
-            <button type="button">{locale === 'zh' ? '排列' : 'Arrange'}</button>
-            <small>
-              {ribbonTabs.find((tab) => tab.id === activeRibbon)?.[locale]}{' '}
-              {labels.ribbonControls}
-            </small>
-          </div>
-          <div className="ui-workbench__content">
-            <section>
-              <header>
+          <div data-app-content className="ui-office-workspace">
+            <section className="ui-office-resource-stage">
+              <header className="ui-office-section-heading">
                 <div>
                   <small>{labels.workspace}</small>
                   <h2>{labels.continue}</h2>
                 </div>
-                <button type="button">{labels.newResource}&nbsp; +</button>
+                <button
+                  type="button"
+                  className="btn"
+                  data-size="sm"
+                  data-variant="outline"
+                >
+                  {labels.newResource}&nbsp; +
+                </button>
               </header>
-              <div className="ui-resource-grid">
+              <div className="resource-grid">
                 {resourceKinds.map((resource) => (
                   <button
                     key={resource.id}
                     type="button"
+                    className="resource-card"
                     data-kind={resource.id}
                     data-selected={selectedResource === resource.id}
+                    aria-pressed={selectedResource === resource.id}
                     onClick={() => setSelectedResource(resource.id)}
                   >
-                    <span>{resource.icon}</span>
-                    <strong>{resource.label[locale]}</strong>
-                    <small>{resource.meta[locale]}</small>
-                    {selectedResource === resource.id ? <i aria-hidden="true" /> : null}
+                    <figure>
+                      <span className="ui-resource-preview-mark">
+                        {resource.icon}
+                      </span>
+                    </figure>
+                    <section>
+                      <strong>{resource.label[locale]}</strong>
+                      <small>{resource.meta[locale]}</small>
+                    </section>
                   </button>
                 ))}
               </div>
             </section>
-            <aside className="ui-properties" aria-label="Properties specimen">
+            <aside className="task-pane ui-office-task-pane">
               <header>
                 <strong>{labels.properties}</strong>
-                <span>•••</span>
+                <button
+                  type="button"
+                  className="btn"
+                  data-size="icon-xs"
+                  data-variant="ghost"
+                  aria-label={locale === "zh" ? "关闭属性" : "Close properties"}
+                >
+                  ×
+                </button>
               </header>
-              <label>
-                {labels.resource}
-                <span>{selectedResourceLabel}</span>
-              </label>
-              <label>
-                {labels.surface}
-                <span>{labels.canvas}</span>
-              </label>
-              <div>
-                <small>{labels.accent}</small>
-                <span className="ui-swatches">
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                </span>
-              </div>
+              <section>
+                <div className="field">
+                  <label htmlFor="ui-specimen-resource">
+                    {labels.resource}
+                  </label>
+                  <input
+                    id="ui-specimen-resource"
+                    value={selectedResourceLabel}
+                    readOnly
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="ui-specimen-surface">{labels.surface}</label>
+                  <input
+                    id="ui-specimen-surface"
+                    value={labels.canvas}
+                    readOnly
+                  />
+                </div>
+                <fieldset className="ui-office-swatches">
+                  <legend>{labels.accent}</legend>
+                  <div>
+                    <button
+                      type="button"
+                      aria-label="Blue"
+                      aria-pressed="true"
+                    />
+                    <button type="button" aria-label="Green" />
+                    <button type="button" aria-label="Purple" />
+                    <button type="button" aria-label="Orange" />
+                  </div>
+                </fieldset>
+              </section>
             </aside>
           </div>
+          <footer
+            className="status-bar"
+            aria-label={locale === "zh" ? "工作区状态" : "Workspace status"}
+          >
+            <div data-status-info>
+              <span>
+                {locale === "zh" ? "3 个最近资源" : "3 recent resources"}
+              </span>
+              <span>{labels.saved}</span>
+            </div>
+            <div data-status-actions>
+              <output>{locale === "zh" ? "浅色" : "Light"}</output>
+              <hr role="separator" />
+              <button
+                type="button"
+                className="btn"
+                data-size="icon-xs"
+                data-variant="ghost"
+                aria-label={locale === "zh" ? "调整布局" : "Adjust layout"}
+              >
+                −
+              </button>
+              <output>90%</output>
+              <button
+                type="button"
+                className="btn"
+                data-size="icon-xs"
+                data-variant="ghost"
+                aria-label={locale === "zh" ? "放大" : "Zoom in"}
+              >
+                +
+              </button>
+            </div>
+          </footer>
         </main>
       </div>
-      <div className="ui-workbench__measure ui-workbench__measure--x" aria-hidden="true">
+      <div
+        className="ui-specimen-measure ui-specimen-measure--x"
+        aria-hidden="true"
+      >
         <span>8</span>
       </div>
-      <div className="ui-workbench__measure ui-workbench__measure--y" aria-hidden="true">
+      <div
+        className="ui-specimen-measure ui-specimen-measure--y"
+        aria-hidden="true"
+      >
         <span>16</span>
       </div>
     </div>
@@ -391,24 +667,24 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
 
 export function HomeLayout() {
   const rawLang = useLang();
-  const locale: Locale = rawLang === 'zh' ? 'zh' : 'en';
+  const locale: Locale = rawLang === "zh" ? "zh" : "en";
   const labels = homeCopy[locale];
   const version = useVersion();
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const routePrefix = [
-    version && version !== defaultVersion ? version : '',
-    locale !== site.lang ? locale : '',
+    version && version !== defaultVersion ? version : "",
+    locale !== site.lang ? locale : "",
   ]
     .filter(Boolean)
-    .join('/');
+    .join("/");
   const route = (pathname: string) => {
-    const normalizedPath = pathname.replace(/^\/+/, '');
-    const parts = [routePrefix, normalizedPath].filter(Boolean).join('/');
+    const normalizedPath = pathname.replace(/^\/+/, "");
+    const parts = [routePrefix, normalizedPath].filter(Boolean).join("/");
     return withBase(`/${parts}`);
   };
-  const installationHref = route('/installation');
-  const componentsHref = route('/components/');
+  const installationHref = route("/installation");
+  const componentsHref = route("/components/");
 
   return (
     <main className="ui-home">
@@ -421,9 +697,7 @@ export function HomeLayout() {
             {labels.titleLead}
             <span>{labels.titleAccent}</span>
           </h1>
-          <p>
-            {labels.subtitle}
-          </p>
+          <p>{labels.subtitle}</p>
           <div className="ui-hero__actions">
             <a className="ui-action ui-action--primary" href={installationHref}>
               {labels.start} <ArrowIcon />
@@ -435,14 +709,17 @@ export function HomeLayout() {
               <GitHubIcon /> {labels.github}
             </a>
           </div>
-          <div className="ui-install-command" aria-label="npm installation command">
+          <div
+            className="ui-install-command"
+            aria-label="npm installation command"
+          >
             <span>$</span>
             <code>npm install github:A3S-Lab/UI</code>
             <small>{labels.frameworkAgnostic}</small>
           </div>
           <dl className="ui-hero__facts">
             <div>
-              <dt>50</dt>
+              <dt>52</dt>
               <dd>{labels.componentGuides}</dd>
             </div>
             <div>
@@ -471,11 +748,11 @@ export function HomeLayout() {
 
       <section className="ui-proof-strip" aria-label="Design system qualities">
         {[
-          ['01', labels.semanticHtml],
-          ['02', labels.lightDark],
-          ['03', labels.responsiveRtl],
-          ['04', labels.accessibleStates],
-          ['05', labels.templates],
+          ["01", labels.semanticHtml],
+          ["02", labels.lightDark],
+          ["03", labels.responsiveRtl],
+          ["04", labels.accessibleStates],
+          ["05", labels.templates],
         ].map(([index, label]) => (
           <div key={index}>
             <span>{index}</span>
@@ -491,9 +768,7 @@ export function HomeLayout() {
             <span className="ui-section__eyebrow">{labels.catalogEyebrow}</span>
             <h2>{labels.catalogTitle}</h2>
           </div>
-          <p>
-            {labels.catalogBody}
-          </p>
+          <p>{labels.catalogBody}</p>
         </header>
         <div className="ui-family-grid">
           {componentFamilies.map((family) => (
@@ -518,20 +793,20 @@ export function HomeLayout() {
       <section className="ui-section ui-system">
         <header className="ui-section__header">
           <div>
-            <span className="ui-section__eyebrow">{labels.foundationsEyebrow}</span>
+            <span className="ui-section__eyebrow">
+              {labels.foundationsEyebrow}
+            </span>
             <h2>{labels.foundationsTitle}</h2>
           </div>
-          <p>
-            {labels.foundationsBody}
-          </p>
+          <p>{labels.foundationsBody}</p>
         </header>
         <div className="ui-system__board">
           <div className="ui-token-colors">
-            <span style={{ background: '#4f7ff0' }}>ACTION</span>
-            <span style={{ background: '#28a978' }}>SUCCESS</span>
-            <span style={{ background: '#9a63df' }}>AGENT</span>
-            <span style={{ background: '#e4a43b' }}>ATTENTION</span>
-            <span style={{ background: '#d84e62' }}>DANGER</span>
+            <span style={{ background: "#4f7ff0" }}>ACTION</span>
+            <span style={{ background: "#28a978" }}>SUCCESS</span>
+            <span style={{ background: "#9a63df" }}>AGENT</span>
+            <span style={{ background: "#e4a43b" }}>ATTENTION</span>
+            <span style={{ background: "#d84e62" }}>DANGER</span>
           </div>
           <div className="ui-token-type">
             <span>TYPE / 01</span>
@@ -560,7 +835,7 @@ export function HomeLayout() {
       <section className="ui-principles">
         {labels.principles.map((principle, index) => (
           <article key={principle.title}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
+            <span>{String(index + 1).padStart(2, "0")}</span>
             <h3>{principle.title}</h3>
             <p>{principle.body}</p>
           </article>

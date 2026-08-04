@@ -1,0 +1,800 @@
+@layer components {
+  /*
+ * A3S Office visual contract.
+ *
+ * These rules map the framework-agnostic A3S UI markup to the density,
+ * hierarchy, and interaction states refined in A3S Office. The file is
+ * imported into a dedicated cascade layer by a3s.css so the other Basecoat
+ * style packs remain independent.
+ */
+
+  /* Foundation */
+  :where(
+    .btn,
+    .badge,
+    .field,
+    .input,
+    .textarea,
+    .select,
+    .tabs,
+    .card,
+    .alert,
+    .item,
+    .table,
+    .dialog,
+    .drawer,
+    [data-popover]
+  ) {
+    font-family: var(--a3s-ui-font);
+  }
+
+  :where(button, input, textarea, select) {
+    font: inherit;
+  }
+
+  :where(
+    .btn,
+    .input,
+    .textarea,
+    .field > input,
+    .field > textarea,
+    .field > select,
+    .select > button,
+    .input-group
+  ):focus-visible {
+    outline: 0;
+  }
+
+  /* Actions */
+  .btn {
+    gap: 0.5rem;
+    border-color: transparent;
+    border-radius: var(--a3s-radius-sm);
+    font-size: var(--a3s-font-size-ui);
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: none;
+    transition:
+      background-color var(--a3s-motion-normal) ease,
+      border-color var(--a3s-motion-normal) ease,
+      color var(--a3s-motion-normal) ease,
+      box-shadow var(--a3s-motion-normal) ease,
+      transform var(--a3s-motion-normal) ease;
+  }
+
+  .btn:not([data-size]),
+  .btn[data-size="default"] {
+    width: auto;
+    height: var(--a3s-control-height);
+    padding-inline: 0.8125rem;
+  }
+
+  .btn[data-size="xs"] {
+    width: auto;
+    height: var(--a3s-control-height-xs);
+    gap: 0.25rem;
+    padding-inline: 0.4375rem;
+    border-radius: 0.3125rem;
+    font-size: 0.625rem;
+  }
+
+  .btn[data-size="sm"] {
+    width: auto;
+    height: var(--a3s-control-height-sm);
+    gap: 0.375rem;
+    padding-inline: 0.5625rem;
+    border-radius: 0.4375rem;
+    font-size: var(--a3s-font-size-compact);
+  }
+
+  .btn[data-size="lg"] {
+    width: auto;
+    height: var(--a3s-control-height-lg);
+    padding-inline: 1rem;
+  }
+
+  .btn[data-size="icon"] {
+    width: var(--a3s-icon-button-size);
+    height: var(--a3s-icon-button-size);
+    padding: 0;
+  }
+
+  .btn[data-size="icon-xs"] {
+    width: var(--a3s-control-height-xs);
+    height: var(--a3s-control-height-xs);
+    padding: 0;
+    border-radius: 0.3125rem;
+  }
+
+  .btn[data-size="icon-sm"] {
+    width: var(--a3s-control-height-sm);
+    height: var(--a3s-control-height-sm);
+    padding: 0;
+    border-radius: 0.375rem;
+  }
+
+  .btn[data-size="icon-lg"] {
+    width: var(--a3s-control-height-lg);
+    height: var(--a3s-control-height-lg);
+    padding: 0;
+  }
+
+  .btn:not([data-variant]),
+  .btn[data-variant="primary"] {
+    border-color: var(--a3s-action);
+    background: var(--a3s-action);
+    color: var(--a3s-action-ink);
+  }
+
+  .btn:not([data-variant]):hover:not(:disabled),
+  .btn[data-variant="primary"]:hover:not(:disabled) {
+    border-color: var(--a3s-action-hover);
+    background: var(--a3s-action-hover);
+  }
+
+  .btn[data-variant="secondary"],
+  .btn[data-variant="outline"] {
+    border-color: var(--a3s-line-strong);
+    background: var(--a3s-panel);
+    color: var(--a3s-ink);
+    box-shadow: var(--a3s-shadow-control);
+  }
+
+  .btn[data-variant="secondary"]:hover:not(:disabled),
+  .btn[data-variant="outline"]:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--a3s-blue) 28%, var(--a3s-line));
+    background: var(--a3s-panel-soft);
+    color: var(--a3s-ink);
+  }
+
+  .btn[data-variant="ghost"] {
+    border-color: transparent;
+    background: transparent;
+    color: var(--a3s-muted);
+  }
+
+  .btn[data-variant="ghost"]:hover:not(:disabled),
+  .btn[data-variant="ghost"][aria-expanded="true"],
+  .btn[data-variant="ghost"][aria-pressed="true"] {
+    background: var(--a3s-panel-soft);
+    color: var(--a3s-ink);
+  }
+
+  .btn[data-variant="destructive"] {
+    border-color: color-mix(in srgb, var(--a3s-red) 35%, var(--a3s-line));
+    background: transparent;
+    color: var(--a3s-red);
+  }
+
+  .btn[data-variant="destructive"]:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--a3s-red) 50%, var(--a3s-line));
+    background: color-mix(in srgb, var(--a3s-red) 8%, var(--a3s-panel));
+  }
+
+  .btn[data-variant="link"] {
+    color: var(--a3s-blue);
+  }
+
+  .btn:hover:not(:disabled):not([data-size^="icon"]):not(
+      [data-variant="ghost"]
+    ):not([data-variant="link"]) {
+    transform: translateY(-1px);
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn:focus-visible {
+    border-color: var(--a3s-blue);
+    box-shadow: var(--a3s-shadow-focus);
+  }
+
+  .badge {
+    min-height: 1.25rem;
+    gap: 0.3125rem;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 999px;
+    font-size: var(--a3s-font-size-compact);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .badge:not([data-variant]),
+  .badge[data-variant="primary"] {
+    background: var(--a3s-action);
+    color: var(--a3s-action-ink);
+  }
+
+  .badge[data-variant="secondary"] {
+    background: var(--a3s-panel-strong);
+    color: var(--a3s-muted);
+  }
+
+  .badge[data-variant="outline"] {
+    border-color: var(--a3s-line-strong);
+    background: var(--a3s-panel);
+    color: var(--a3s-muted);
+  }
+
+  .badge[data-variant="destructive"] {
+    background: color-mix(in srgb, var(--a3s-red) 9%, var(--a3s-panel));
+    color: var(--a3s-red);
+  }
+
+  /* Fields and controls */
+  .fieldset,
+  .field {
+    gap: 0.375rem;
+  }
+
+  .fieldset > legend,
+  .field > label,
+  .field > section > label,
+  .label {
+    color: var(--a3s-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .fieldset legend + p,
+  .field > p,
+  .field section > p,
+  .field [role="alert"] {
+    color: var(--a3s-faint);
+    font-size: var(--a3s-font-size-compact);
+  }
+
+  .field > textarea,
+  .textarea,
+  .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .field > select,
+  select.select,
+  .select:not(select) > button {
+    height: var(--a3s-control-height);
+    border: 1px solid var(--a3s-line-strong);
+    border-radius: var(--a3s-radius-sm);
+    background: var(--a3s-panel);
+    color: var(--a3s-ink);
+    font-size: var(--a3s-font-size-ui);
+    box-shadow: none;
+    transition:
+      background-color var(--a3s-motion-normal) ease,
+      border-color var(--a3s-motion-normal) ease,
+      box-shadow var(--a3s-motion-normal) ease;
+  }
+
+  .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+    padding-inline: 0.625rem;
+  }
+
+  .field > textarea,
+  .textarea {
+    min-height: 5rem;
+    height: auto;
+    padding: 0.5625rem 0.625rem;
+    line-height: 1.5;
+  }
+
+  .field > select,
+  select.select,
+  .select:not(select) > button {
+    padding-inline: 0.625rem 2rem;
+  }
+
+  .field > textarea:hover:not(:disabled),
+  .textarea:hover:not(:disabled),
+  .field
+    > input:not([type="checkbox"]):not([type="radio"]):not(
+      [type="range"]
+    ):hover:not(:disabled),
+  .input:not([type="checkbox"]):not([type="radio"]):not(
+      [type="range"]
+    ):hover:not(:disabled),
+  .field > select:hover:not(:disabled),
+  select.select:hover:not(:disabled),
+  .select:not(select) > button:hover:not(:disabled),
+  .select:not(select) > button[aria-expanded="true"] {
+    border-color: color-mix(in srgb, var(--a3s-blue) 48%, var(--a3s-line));
+    background: var(--a3s-panel-soft);
+  }
+
+  .field > textarea:focus-visible,
+  .textarea:focus-visible,
+  .field
+    > input:not([type="checkbox"]):not([type="radio"]):not(
+      [type="range"]
+    ):focus-visible,
+  .input:not([type="checkbox"]):not([type="radio"]):not(
+      [type="range"]
+    ):focus-visible,
+  .field > select:focus-visible,
+  select.select:focus-visible,
+  .select:not(select) > button:focus-visible {
+    border-color: var(--a3s-blue);
+    box-shadow: var(--a3s-shadow-focus);
+  }
+
+  .input-group {
+    min-height: var(--a3s-control-height);
+    gap: 0.375rem;
+    padding-inline: 0.625rem;
+    border: 1px solid var(--a3s-line-strong);
+    border-radius: var(--a3s-radius-sm);
+    background: var(--a3s-panel);
+    color: var(--a3s-muted);
+    font-size: var(--a3s-font-size-ui);
+    box-shadow: none;
+    transition:
+      background-color var(--a3s-motion-normal) ease,
+      border-color var(--a3s-motion-normal) ease,
+      box-shadow var(--a3s-motion-normal) ease;
+  }
+
+  .input-group:hover {
+    border-color: color-mix(in srgb, var(--a3s-blue) 38%, var(--a3s-line));
+  }
+
+  .input-group:focus-within {
+    border-color: var(--a3s-blue);
+    box-shadow: var(--a3s-shadow-focus);
+  }
+
+  .input-group > :is(input, textarea, select, [data-control]) {
+    font-size: inherit;
+  }
+
+  .field > input[type="checkbox"]:not([role="switch"]),
+  .input[type="checkbox"]:not([role="switch"]) {
+    width: 0.9375rem;
+    height: 0.9375rem;
+    border: 1px solid var(--a3s-line-strong);
+    border-radius: 0.25rem;
+    background: var(--a3s-panel);
+    color: white;
+  }
+
+  .field > input[type="checkbox"]:not([role="switch"]):checked,
+  .input[type="checkbox"]:not([role="switch"]):checked {
+    border-color: var(--a3s-blue);
+    background: var(--a3s-blue);
+  }
+
+  .field > input[type="radio"],
+  .input[type="radio"] {
+    width: 0.9375rem;
+    height: 0.9375rem;
+    border-color: var(--a3s-line-strong);
+    background: var(--a3s-panel);
+  }
+
+  .field > input[type="radio"]:checked,
+  .input[type="radio"]:checked {
+    border-color: var(--a3s-blue);
+  }
+
+  .field > input[type="radio"]:checked::before,
+  .input[type="radio"]:checked::before {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    background: var(--a3s-blue);
+  }
+
+  .field > input[type="checkbox"][role="switch"],
+  .input[type="checkbox"][role="switch"] {
+    width: 1.875rem;
+    height: 1.125rem;
+    padding: 0.125rem;
+    border: 1px solid var(--a3s-line-strong);
+    border-radius: 999px;
+    background: var(--a3s-panel-strong);
+  }
+
+  .field > input[type="checkbox"][role="switch"]::before,
+  .input[type="checkbox"][role="switch"]::before {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: white;
+    box-shadow: 0 1px 3px rgb(20 24 40 / 18%);
+  }
+
+  .field > input[type="checkbox"][role="switch"]:checked,
+  .input[type="checkbox"][role="switch"]:checked {
+    border-color: var(--a3s-blue);
+    background: var(--a3s-blue);
+  }
+
+  .field > input[type="checkbox"][role="switch"]:checked::before,
+  .input[type="checkbox"][role="switch"]:checked::before {
+    transform: translateX(0.75rem);
+  }
+
+  .field > input[type="range"],
+  .input[type="range"] {
+    --slider-track-height: 0.25rem;
+    --slider-thumb-size: 0.875rem;
+    height: 1.25rem;
+  }
+
+  :is(
+    .field > input[type="range"],
+    .input[type="range"]
+  )::-webkit-slider-runnable-track,
+  :is(.field > input[type="range"], .input[type="range"])::-moz-range-track {
+    height: var(--slider-track-height);
+    border-radius: 999px;
+  }
+
+  :is(.field > input[type="range"], .input[type="range"])::-webkit-slider-thumb,
+  :is(.field > input[type="range"], .input[type="range"])::-moz-range-thumb {
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
+    border: 1px solid var(--a3s-blue);
+    border-radius: 999px;
+    background: white;
+    box-shadow: 0 1px 3px rgb(20 24 40 / 14%);
+  }
+
+  /* Navigation */
+  .tabs {
+    gap: 0.5rem;
+  }
+
+  .tabs > [role="tablist"] {
+    min-height: var(--a3s-control-height);
+    gap: 0.125rem;
+    padding: 0.1875rem;
+    border-radius: 0.5rem;
+    background: var(--a3s-panel-soft);
+  }
+
+  .tabs > [role="tablist"] > [role="tab"] {
+    min-height: 1.875rem;
+    gap: 0.375rem;
+    padding: 0.3125rem 0.625rem;
+    border-radius: 0.4375rem;
+    color: var(--a3s-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .tabs > [role="tablist"] > [role="tab"]:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--a3s-panel-strong) 72%, transparent);
+    color: var(--a3s-ink);
+  }
+
+  .tabs
+    > [role="tablist"]:not([data-variant="line"])
+    > [role="tab"][aria-selected="true"] {
+    border-color: var(--a3s-line);
+    background: var(--a3s-panel);
+    color: var(--a3s-ink);
+    box-shadow: var(--a3s-shadow-control);
+  }
+
+  .tabs > [role="tablist"][data-variant="line"] {
+    gap: 0;
+    padding: 0;
+    border-block-end: 1px solid var(--a3s-line);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .tabs > [role="tablist"][data-variant="line"] > [role="tab"] {
+    min-height: var(--a3s-control-height);
+    padding-inline: 0.75rem;
+    border-radius: 0;
+  }
+
+  .tabs
+    > [role="tablist"][data-variant="line"]
+    > [role="tab"][aria-selected="true"] {
+    color: var(--a3s-blue);
+    font-weight: 680;
+  }
+
+  .breadcrumb > ol {
+    gap: 0.375rem;
+    color: var(--a3s-faint);
+    font-size: var(--a3s-font-size-compact);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--a3s-ink);
+  }
+
+  .sidebar nav {
+    border-color: var(--a3s-line);
+    background: color-mix(in srgb, var(--a3s-panel-soft) 58%, var(--a3s-panel));
+    color: var(--a3s-ink);
+  }
+
+  .sidebar nav li > :is(a, button),
+  .sidebar nav li > details > summary {
+    min-height: 2.125rem;
+    border-radius: 0.4375rem;
+    font-size: 0.75rem;
+  }
+
+  /* Overlays and menus */
+  .dialog::backdrop,
+  .alert-dialog::backdrop,
+  .drawer::backdrop,
+  .command-dialog::backdrop {
+    background: rgb(17 24 39 / 32%);
+    backdrop-filter: blur(2px);
+  }
+
+  .dialog > *,
+  .alert-dialog > *,
+  .drawer > *,
+  .command-dialog > .command {
+    border: 1px solid var(--a3s-overlay-border);
+    border-radius: var(--a3s-overlay-radius);
+    background: var(--a3s-overlay-surface);
+    color: var(--a3s-ink);
+    box-shadow: var(--a3s-shadow-soft);
+    backdrop-filter: blur(18px);
+  }
+
+  .dialog > *,
+  .alert-dialog > * {
+    max-width: min(32rem, calc(100% - 2rem));
+  }
+
+  .dialog > * > header,
+  .alert-dialog > * > header {
+    gap: 0.3125rem;
+    padding: 1.125rem 1.125rem 0.875rem;
+  }
+
+  .dialog > * > section,
+  .alert-dialog > * > section {
+    padding: 0 1.125rem 1.125rem;
+  }
+
+  .dialog > * > footer,
+  .alert-dialog > * > footer {
+    gap: 0.5rem;
+    padding: 0.75rem 1.125rem;
+    border-block-start: 1px solid var(--a3s-line);
+    background: var(--a3s-panel-soft);
+  }
+
+  .dialog > * > header > :is(h2, [data-title]),
+  .alert-dialog > * > header > :is(h2, [data-title]) {
+    color: var(--a3s-ink);
+    font-size: 0.9375rem;
+    font-weight: 680;
+  }
+
+  .dialog > * > header > :is(p, [data-description]),
+  .alert-dialog > * > header > :is(p, [data-description]) {
+    color: var(--a3s-muted);
+    font-size: 0.75rem;
+  }
+
+  [data-popover],
+  .dropdown-menu [data-popover],
+  .select:not(select) [data-popover],
+  .combobox [data-popover] {
+    padding: 0.3125rem;
+    border: 1px solid var(--a3s-overlay-border);
+    border-radius: 0.5rem;
+    background: var(--a3s-overlay-surface);
+    color: var(--a3s-ink);
+    box-shadow: 0 12px 34px rgb(15 23 42 / 18%);
+    backdrop-filter: blur(18px);
+  }
+
+  .dropdown-menu
+    :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]),
+  .select:not(select) [role="option"],
+  .combobox [role="option"],
+  .command [role="menuitem"] {
+    min-height: var(--a3s-control-height-sm);
+    gap: 0.5rem;
+    padding: 0.3125rem 0.5rem;
+    border-radius: 0.3125rem;
+    color: var(--a3s-ink);
+    font-size: var(--a3s-font-size-compact);
+  }
+
+  .dropdown-menu
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    ):hover,
+  .dropdown-menu
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    ):focus-visible,
+  .select:not(select) [role="option"].active,
+  .select:not(select) [role="option"]:focus-visible,
+  .combobox [role="option"].active,
+  .combobox [role="option"]:focus-visible,
+  .command [role="menuitem"].active,
+  .command [role="menuitem"]:focus-visible {
+    background: var(--a3s-panel-soft);
+    color: var(--a3s-ink);
+  }
+
+  .dropdown-menu [role="heading"],
+  .select:not(select) [role="heading"],
+  .combobox [role="heading"],
+  .command [role="heading"] {
+    padding: 0.4375rem 0.5rem 0.25rem;
+    color: var(--a3s-faint);
+    font-size: 0.5rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .command {
+    border-radius: var(--a3s-overlay-radius);
+    background: var(--a3s-panel);
+  }
+
+  .command > header {
+    height: 2.5rem;
+    margin: 0.3125rem;
+    padding-inline: 0.625rem;
+    border: 1px solid var(--a3s-line);
+    border-radius: 0.5rem;
+    background: var(--a3s-panel-soft);
+  }
+
+  .command > header input {
+    font-size: 0.75rem;
+  }
+
+  [data-tooltip]::before {
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
+    background: var(--a3s-action);
+    color: var(--a3s-action-ink);
+    font-size: 0.625rem;
+    font-weight: 550;
+    box-shadow: 0 5px 16px rgb(20 24 40 / 16%);
+  }
+
+  /* Feedback and data display */
+  .alert {
+    gap: 0.25rem 0.625rem;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--a3s-blue) 22%, var(--a3s-line));
+    border-radius: 0.5625rem;
+    background: color-mix(in srgb, var(--a3s-blue) 6%, var(--a3s-panel));
+    color: var(--a3s-ink);
+    font-size: 0.75rem;
+  }
+
+  .alert[data-variant="destructive"] {
+    border-color: color-mix(in srgb, var(--a3s-red) 24%, var(--a3s-line));
+    background: color-mix(in srgb, var(--a3s-red) 6%, var(--a3s-panel));
+    color: var(--a3s-red);
+  }
+
+  .card {
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--a3s-line);
+    border-radius: 0.75rem;
+    background: var(--a3s-panel);
+    color: var(--a3s-ink);
+    box-shadow: 0 5px 16px rgb(25 31 45 / 3%);
+  }
+
+  .card > header {
+    gap: 0.25rem;
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .card > header > :is(h2, h3, [data-title], .card-title) {
+    font-size: 0.875rem;
+    font-weight: 680;
+  }
+
+  .card > header > :is(p, [data-description], .card-description) {
+    color: var(--a3s-muted);
+    font-size: 0.75rem;
+  }
+
+  .card > section {
+    padding: 0 1rem 1rem;
+  }
+
+  .card > footer {
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-block-start: 1px solid var(--a3s-line);
+    background: color-mix(in srgb, var(--a3s-panel-soft) 48%, var(--a3s-panel));
+  }
+
+  .empty {
+    gap: 0.75rem;
+    padding: 2.5rem 1.5rem;
+    border: 1px dashed var(--a3s-line-strong);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--a3s-panel) 72%, transparent);
+  }
+
+  .empty figure:has(> svg:only-child) {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    background: var(--a3s-panel-soft);
+    color: var(--a3s-muted);
+  }
+
+  .empty :is(h2, h3, h4) {
+    color: var(--a3s-ink);
+    font-size: 0.875rem;
+    font-weight: 680;
+  }
+
+  .empty p {
+    color: var(--a3s-muted);
+    font-size: 0.75rem;
+  }
+
+  .item {
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-color: transparent;
+    border-radius: 0.5625rem;
+    font-size: 0.75rem;
+  }
+
+  .item[data-variant="outline"] {
+    border-color: var(--a3s-line);
+    background: var(--a3s-panel);
+  }
+
+  .item:hover,
+  a.item:hover {
+    background: var(--a3s-panel-soft);
+  }
+
+  .table {
+    color: var(--a3s-ink);
+    font-size: 0.75rem;
+  }
+
+  .table th {
+    height: 2.25rem;
+    padding-inline: 0.625rem;
+    background: color-mix(in srgb, var(--a3s-panel-soft) 62%, var(--a3s-panel));
+    color: var(--a3s-muted);
+    font-size: var(--a3s-font-size-compact);
+    font-weight: 650;
+  }
+
+  .table td {
+    height: 2.5rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .table tr {
+    border-color: var(--a3s-line);
+  }
+
+  .table tbody tr:hover {
+    background: color-mix(in srgb, var(--a3s-panel-soft) 58%, transparent);
+  }
+
+  .toast-content {
+    border: 1px solid var(--a3s-overlay-border);
+    border-radius: var(--a3s-overlay-radius);
+    background: var(--a3s-overlay-surface);
+    box-shadow: var(--a3s-shadow-soft);
+  }
+}

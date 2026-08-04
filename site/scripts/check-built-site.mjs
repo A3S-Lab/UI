@@ -21,6 +21,10 @@ const requiredFiles = [
   'v0.1.0/en/components/index.html',
   'components/app-shell.html',
   'components/split-pane.html',
+  'components/status-bar.html',
+  'components/task-pane.html',
+  'en/components/status-bar.html',
+  'en/components/task-pane.html',
   'foundations/color.html',
   'patterns/resource-workbench.html',
   'llms.txt',
@@ -30,6 +34,7 @@ const requiredFiles = [
   'a3s-ui-mark.svg',
   'social-card.svg',
   'assets/a3s-ui.css',
+  'assets/a3s-cascade.css',
   'assets/all.min.js',
 ];
 
@@ -131,6 +136,24 @@ async function resolvesToBuiltFile(relativeReference) {
 
 for (const file of requiredFiles) {
   await access(path.join(outputRoot, file));
+}
+
+const homepageHtml = await readFile(path.join(outputRoot, 'index.html'), 'utf8');
+const cascadeIndex = homepageHtml.indexOf(
+  `href="${base}assets/a3s-cascade.css"`,
+);
+const componentIndex = homepageHtml.indexOf(
+  `href="${base}assets/a3s-ui.css"`,
+);
+
+if (
+  cascadeIndex === -1 ||
+  componentIndex === -1 ||
+  cascadeIndex > componentIndex
+) {
+  throw new Error(
+    'The cascade-order stylesheet must load before the A3S component stylesheet.',
+  );
 }
 
 for (const { file, markers } of homepageExpectations) {

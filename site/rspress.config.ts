@@ -62,6 +62,7 @@ const config: UserConfig = {
       },
     ],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['link', { rel: 'stylesheet', href: `${base}assets/a3s-cascade.css` }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-ui.css` }],
     ['script', { src: `${base}assets/all.min.js`, defer: 'true' }],
     (route) => [
