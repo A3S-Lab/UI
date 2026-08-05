@@ -43,7 +43,10 @@
       tabToSelect.setAttribute('tabindex', '0');
       const activePanel = document.getElementById(tabToSelect.getAttribute('aria-controls'));
       if (activePanel) activePanel.hidden = false;
-      if (focus) tabToSelect.focus();
+      if (focus) {
+        tabToSelect.focus({ preventScroll: true });
+        tabToSelect.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
     };
 
     root.select = selectTab;
@@ -67,11 +70,18 @@
       const enabledTabs = state.tabs.filter(tab => !isDisabled(tab));
       const currentIndex = enabledTabs.indexOf(currentTab);
       const orientation = state.tablist.getAttribute('aria-orientation') || 'horizontal';
+      const rtl = getComputedStyle(state.tablist).direction === 'rtl';
       if (currentIndex === -1) return;
 
       let nextTab;
-      if (event.key === 'ArrowRight' && orientation === 'horizontal') nextTab = enabledTabs[(currentIndex + 1) % enabledTabs.length];
-      if (event.key === 'ArrowLeft' && orientation === 'horizontal') nextTab = enabledTabs[(currentIndex - 1 + enabledTabs.length) % enabledTabs.length];
+      if (event.key === 'ArrowRight' && orientation === 'horizontal') {
+        const offset = rtl ? -1 : 1;
+        nextTab = enabledTabs[(currentIndex + offset + enabledTabs.length) % enabledTabs.length];
+      }
+      if (event.key === 'ArrowLeft' && orientation === 'horizontal') {
+        const offset = rtl ? 1 : -1;
+        nextTab = enabledTabs[(currentIndex + offset + enabledTabs.length) % enabledTabs.length];
+      }
       if (event.key === 'ArrowDown' && orientation === 'vertical') nextTab = enabledTabs[(currentIndex + 1) % enabledTabs.length];
       if (event.key === 'ArrowUp' && orientation === 'vertical') nextTab = enabledTabs[(currentIndex - 1 + enabledTabs.length) % enabledTabs.length];
       if (event.key === 'Home') nextTab = enabledTabs[0];

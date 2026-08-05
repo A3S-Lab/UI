@@ -177,6 +177,8 @@ A3S UI maps shadcn/ui's sidebar composition to regular navigation HTML: an `<asi
 
 Set `--sidebar-width` and `--sidebar-mobile-width` on `:root` or the sidebar root to override the default `16rem` desktop width and `18rem` mobile width.
 
+Desktop and mobile open states are tracked independently across `data-breakpoint`. Opening the mobile drawer moves focus to its first navigation control. `Escape` or a backdrop click closes it and returns focus to the control that opened it; ordinary mobile navigation closes the drawer without moving focus back to the previous page.
+
 ### JavaScript API
 
 | API | Type | Description |

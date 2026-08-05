@@ -1,11 +1,18 @@
 /* Breadcrumb */
 @layer components {
   .breadcrumb > ol {
-    @apply m-0 flex list-none flex-wrap items-center p-0 break-words;
+    @apply m-0 flex max-w-full min-w-0 list-none flex-nowrap items-center overflow-x-auto overflow-y-hidden p-0 whitespace-nowrap;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .breadcrumb > ol::-webkit-scrollbar {
+    display: none;
   }
 
   .breadcrumb li {
-    @apply inline-flex items-center;
+    @apply inline-flex flex-none items-center;
   }
 
   .breadcrumb a {

@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
 - Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
 - Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
@@ -14,6 +15,7 @@
 
 ### Fixed
 
+- Corrected RTL tab arrow order, kept long breadcrumbs and tablists inside their own scroll boundaries, and synchronized Sidebar focus, dismissal, and independent desktop/mobile state across its breakpoint.
 - Kept dropdown menus, popovers, selects, and combobox lists inside the visual viewport with shared collision flipping, logical RTL alignment, constrained available height, and live scroll/resize repositioning.
 - Contained the compact App Shell drawer inside its shell, removed its closed state from pointer and keyboard interaction, restored focus on Escape, and prevented mobile documentation typography from leaking into component previews.
 - Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.

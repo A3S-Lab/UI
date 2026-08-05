@@ -31,6 +31,7 @@ const componentOrder = [
   'kbd',
   'label',
   'native-select',
+  'pagination',
   'popover',
   'progress',
   'radio',

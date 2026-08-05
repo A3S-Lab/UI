@@ -14,12 +14,16 @@ suite "a3s-ui-navigation-and-overlays" {
     }
 
     scenario "breadcrumb" {
-        name = "Breadcrumb preview provides a named navigation landmark"
+        name = "Breadcrumb preview stays reachable as a compact navigation row"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/breadcrumb.html" }
         wait "loaded" { load = "networkidle" }
         expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type") }
+        expect "last-ancestor-reachable" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type:focus") }
+        screenshot "breadcrumb-phone" { path = "components/breadcrumb-phone.png" }
     }
 
     scenario "tabs" {
@@ -31,15 +35,25 @@ suite "a3s-ui-navigation-and-overlays" {
         click "activate-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
         expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
         expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
+        viewport "compact-rtl" { width = 390 height = 844 }
+        focus "focus-first-rtl-tab" { target = css("#tabs-rtl-tab-overview") }
+        press "move-right-in-rtl" { key = "ArrowRight" }
+        expect "rtl-last-tab-active" { visible = css("#tabs-rtl-tab-settings[aria-selected=true]:focus") }
+        expect "rtl-last-panel-visible" { visible = css("#tabs-rtl-panel-settings:not([hidden])") }
+        screenshot "tabs-compact-rtl" { path = "components/tabs-compact-rtl.png" }
     }
 
     scenario "pagination" {
-        name = "Pagination preview identifies the current page"
+        name = "Pagination preview updates its current page without compact overflow"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/pagination.html" }
         wait "loaded" { load = "networkidle" }
-        expect "current-page-visible" { visible = css(".a3s-preview[data-preview-component=pagination] [aria-current=page]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "component-visible" { visible = css(".a3s-preview[data-preview-component=pagination] nav.pagination") }
+        click "select-page-three" { target = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][data-size=icon]") }
+        expect "page-three-current" { visible = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][aria-current=page]") }
+        screenshot "pagination-phone" { path = "components/pagination-phone.png" }
     }
 
     scenario "sidebar" {
@@ -51,7 +65,14 @@ suite "a3s-ui-navigation-and-overlays" {
         expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
         click "toggle-sidebar" { target = role("button", "Toggle sidebar") }
         expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
-        screenshot "contained-sidebar" { path = "components/sidebar.png" }
+        viewport "phone" { width = 390 height = 844 }
+        click "open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
+        expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
+        expect "mobile-navigation-focused" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
+        screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
+        press "close-mobile-sidebar" { key = "Escape" }
+        expect "mobile-sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true]") }
+        expect "mobile-toggle-restored" { visible = css("#demo-sidebar + main button:focus") }
     }
 
     scenario "alert-dialog" {

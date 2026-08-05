@@ -422,7 +422,7 @@ test("mobile homepage reveals the catalog before an optional product preview", a
   await expect(preview).toBeVisible();
 });
 
-test("contained sidebar uses compositor-safe responsive motion", async ({
+test("contained sidebar overlays compact content without layout shift", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -441,6 +441,8 @@ test("contained sidebar uses compositor-safe responsive motion", async ({
       getComputedStyle(element).transitionProperty.split(", "),
     ),
   ).toEqual(["transform"]);
+  const closedContentBox = await content.boundingBox();
+  expect(closedContentBox).not.toBeNull();
 
   await demo.getByRole("button", { name: "Toggle sidebar" }).click();
   await expect(sidebar).toHaveAttribute("aria-hidden", "false");
@@ -458,7 +460,7 @@ test("contained sidebar uses compositor-safe responsive motion", async ({
         navigationBox.x >= demoBox.x - 1 &&
         navigationBox.x + navigationBox.width <=
           demoBox.x + demoBox.width + 1 &&
-        contentBox.x >= navigationBox.x + navigationBox.width,
+        Math.abs(contentBox.x - closedContentBox!.x) <= 1,
       );
     })
     .toBe(true);

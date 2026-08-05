@@ -1,26 +1,24 @@
 # 分页
 
-<Callout title="No dedicated component" icon="circle-alert">
-A3S UI 中没有专用的分页组件。
-</Callout>
+Pagination 提供紧凑的分页导航与明确的当前页状态。Office 样式在精确指针下使用 32px 控件，并在粗指针下保留 44px 触控目标。
 
 <Preview class="max-w-md">
-<nav role="navigation" aria-label="pagination" class="mx-auto flex w-full justify-center">
-  <ul class="flex flex-row items-center gap-1">
+<nav class="pagination" aria-label="分页">
+  <ul>
     <li>
-      <a href="#" class="btn" data-variant="ghost">
-        <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-        <span>Previous</span>
+      <a href="#pagination-page-1" class="btn" data-variant="ghost" data-pagination-direction="previous" aria-label="上一页">
+        <svg data-rtl-flip class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        <span data-pagination-label>上一页</span>
       </a>
     </li>
-    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">1</a></li>
-    <li><a href="#" class="btn" data-variant="outline" data-size="icon" aria-current="page">2</a></li>
-    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">3</a></li>
-    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li><a href="#pagination-page-1" class="btn" data-variant="ghost" data-size="icon" data-pagination-page="1" aria-label="第 1 页">1</a></li>
+    <li><a href="#pagination-page-2" class="btn" data-variant="outline" data-size="icon" data-pagination-page="2" aria-label="第 2 页" aria-current="page">2</a></li>
+    <li><a href="#pagination-page-3" class="btn" data-variant="ghost" data-size="icon" data-pagination-page="3" aria-label="第 3 页">3</a></li>
+    <li><span data-pagination-ellipsis aria-hidden="true"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></span></li>
     <li>
-      <a href="#" class="btn" data-variant="ghost">
-        <span>Next</span>
-        <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+      <a href="#pagination-page-3" class="btn" data-variant="ghost" data-pagination-direction="next" aria-label="下一页">
+        <span data-pagination-label>下一页</span>
+        <svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
       </a>
     </li>
   </ul>
@@ -44,36 +42,37 @@ A3S UI 中没有专用的分页组件。
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/pagination.css";
 @import "@a3s-lab/ui/components/button.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-分页将按钮组件CSS用于其链接和控件。
+Pagination 组件将专用布局契约与 Button 控件组合使用。
 
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
   <Step title="Add your pagination HTML">
 
-使用A3S UI按钮类通过Tailwind实现分页相当简单：
+使用专用根类、列表、页面链接和 `aria-current="page"`：
 
 ```html
-<nav role="navigation" aria-label="pagination" class="mx-auto flex w-full justify-center">
-  <ul class="flex flex-row items-center gap-1">
+<nav class="pagination" aria-label="分页">
+  <ul>
     <li>
-      <a href="#" class="btn" data-variant="ghost">
-        <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-        Previous
+      <a href="?page=1" class="btn" data-variant="ghost" aria-label="上一页">
+        <svg data-rtl-flip ...></svg>
+        <span data-pagination-label>上一页</span>
       </a>
     </li>
-    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">1</a></li>
-    <li><a href="#" class="btn" data-variant="outline" data-size="icon">2</a></li>
-    <li><a href="#" class="btn" data-variant="ghost" data-size="icon">3</a></li>
-    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li><a href="?page=1" class="btn" data-variant="ghost" data-size="icon" aria-label="第 1 页">1</a></li>
+    <li><a href="?page=2" class="btn" data-variant="outline" data-size="icon" aria-label="第 2 页" aria-current="page">2</a></li>
+    <li><a href="?page=3" class="btn" data-variant="ghost" data-size="icon" aria-label="第 3 页">3</a></li>
+    <li><span data-pagination-ellipsis aria-hidden="true"><svg ...></svg></span></li>
     <li>
-      <a href="#" class="btn" data-variant="ghost">
-        Next
-        <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+      <a href="?page=3" class="btn" data-variant="ghost" aria-label="下一页">
+        <span data-pagination-label>下一页</span>
+        <svg data-rtl-flip ...></svg>
       </a>
     </li>
   </ul>
@@ -90,21 +89,21 @@ A3S UI 中没有专用的分页组件。
 分页使用文档方向和逻辑间距。在分页根或父级上设置 `dir="rtl"`。
 
 <Preview class="max-w-md">
-<nav dir="rtl" role="navigation" aria-label="ترقيم الصفحات" class="mx-auto flex w-full justify-center">
-  <ul class="flex flex-row items-center gap-1">
+<nav dir="rtl" class="pagination" aria-label="ترقيم الصفحات">
+  <ul>
     <li>
       <a href="#" class="btn" data-variant="ghost">
         <svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-        <span>السابق</span>
+        <span data-pagination-label>السابق</span>
       </a>
     </li>
     <li><a href="#" class="btn" data-variant="ghost" data-size="icon">١</a></li>
-    <li><a href="#" class="btn" data-variant="outline" data-size="icon">٢</a></li>
+    <li><a href="#" class="btn" data-variant="outline" data-size="icon" aria-current="page">٢</a></li>
     <li><a href="#" class="btn" data-variant="ghost" data-size="icon">٣</a></li>
-    <li><div class="size-9 flex items-center justify-center"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></div></li>
+    <li><span data-pagination-ellipsis aria-hidden="true"><svg class="size-4 shrink-0 lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></span></li>
     <li>
       <a href="#" class="btn" data-variant="ghost">
-        <span>التالي</span>
+        <span data-pagination-label>التالي</span>
         <svg class="lucide lucide-chevron-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
       </a>
     </li>

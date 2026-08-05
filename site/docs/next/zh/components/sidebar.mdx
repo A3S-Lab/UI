@@ -177,6 +177,8 @@ A3S UI maps shadcn/ui's sidebar composition to regular navigation HTML: an `<asi
 
 在 `:root` 或侧边栏根上设置 `--sidebar-width` 和 `--sidebar-mobile-width` 以覆盖默认的 `16rem` 桌面宽度和 `18rem` 移动设备宽度。
 
+桌面端和移动端的打开状态会在 `data-breakpoint` 两侧独立保存。打开移动抽屉时，焦点会进入第一个导航控件；按 `Escape` 或点击遮罩会关闭抽屉，并把焦点返回触发控件。普通的移动导航操作会关闭抽屉，但不会把焦点移回之前的页面位置。
+
 ### JavaScript API
 
 | 应用程序编程接口 | 类型 | 描述 |

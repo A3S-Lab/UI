@@ -108,7 +108,7 @@ App Shell
 └── Status Bar
 ```
 
-These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles. The default Office geometry uses a 46-pixel collapsed activity rail, a 50-pixel Workspace Header, a 43-pixel Toolbar with 29-pixel commands, 36-pixel Ribbon tabs, a 74-pixel Ribbon command panel, and a 28-pixel Status Bar. Responsive navigation becomes a contained drawer below 768 pixels; Task Panes share width above 900 pixels, overlay below it, and fill the workspace below 520 pixels.
+These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles. The default Office geometry uses a 46-pixel collapsed activity rail, a 50-pixel Workspace Header, a 43-pixel Toolbar with 29-pixel commands, 36-pixel Ribbon tabs, a 74-pixel Ribbon command panel, and a 28-pixel Status Bar. Breadcrumbs and horizontal tablists stay on one bounded, scrollable row, while Pagination uses 32-pixel desktop commands with touch-safe coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; Task Panes share width above 900 pixels, overlay below it, and fill the workspace below 520 pixels.
 
 ## Documentation languages and versions
 

@@ -224,6 +224,19 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
   const target = event.target;
   if (!(target instanceof Element)) return;
 
+  const paginationLink = target.closest<HTMLAnchorElement>(
+    '.pagination [data-pagination-page]',
+  );
+  if (paginationLink) {
+    event.preventDefault();
+    const pagination = paginationLink.closest<HTMLElement>('.pagination');
+    pagination
+      ?.querySelectorAll<HTMLElement>('[aria-current="page"]')
+      .forEach((link) => link.removeAttribute('aria-current'));
+    paginationLink.setAttribute('aria-current', 'page');
+    return;
+  }
+
   const activityLink = target.closest<HTMLAnchorElement>(
     '.activity-bar a[href^="#"]',
   );
