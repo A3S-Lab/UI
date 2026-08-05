@@ -109,6 +109,45 @@ const interactiveStateCases = [
   },
 ] as const;
 
+const viewportEdgeOverlayCases = [
+  {
+    expectedSide: "top",
+    position: { bottom: "4px", left: "auto", right: "4px", top: "auto" },
+    route: "dropdown-menu",
+    root: "#demo-dropdown-menu",
+    side: "bottom",
+    trigger: "#demo-dropdown-menu-trigger",
+    popover: "#demo-dropdown-menu-popover",
+  },
+  {
+    expectedSide: "left",
+    position: { bottom: "auto", left: "auto", right: "4px", top: "160px" },
+    route: "popover",
+    root: "#demo-popover",
+    side: "right",
+    trigger: "#demo-popover-trigger",
+    popover: "#demo-popover-popover",
+  },
+  {
+    expectedSide: "bottom",
+    position: { bottom: "auto", left: "4px", right: "auto", top: "4px" },
+    route: "select",
+    root: "#select-demo",
+    side: "top",
+    trigger: "#select-demo-trigger",
+    popover: "#select-demo-popover",
+  },
+  {
+    expectedSide: "right",
+    position: { bottom: "auto", left: "4px", right: "auto", top: "160px" },
+    route: "combobox",
+    root: "#framework-combobox",
+    side: "left",
+    trigger: "#framework-combobox > input[role=combobox]",
+    popover: "#framework-combobox-popover",
+  },
+] as const;
+
 async function openDocumentationPage(page: Page, route: string) {
   await page.goto(`en/components/${route}.html`);
   await page.evaluate(() => document.fonts.ready);
@@ -344,6 +383,134 @@ for (const state of interactiveStateCases) {
     });
   });
 }
+
+test("floating overlays avoid viewport edges and preserve logical alignment", async ({
+  page,
+}) => {
+  const boundaryPadding = 8;
+  await page.setViewportSize({ width: 390, height: 640 });
+
+  for (const state of viewportEdgeOverlayCases) {
+    await test.step(`${state.route} viewport collision`, async () => {
+      await openDocumentationPage(page, state.route);
+      await page.locator(state.root).evaluate(
+        (root, placement) => {
+          const element = root as HTMLElement;
+          Object.assign(element.style, placement.position, {
+            position: "fixed",
+            zIndex: "100",
+          });
+          const popover = element.querySelector<HTMLElement>("[data-popover]");
+          if (popover) {
+            popover.dataset.align = "start";
+            popover.dataset.side = placement.side;
+          }
+        },
+        { position: state.position, side: state.side },
+      );
+
+      await page.locator(state.trigger).click();
+      const popover = page.locator(state.popover);
+      await expect(popover).toBeVisible();
+      await waitForSettledFrames(page);
+
+      await expect(popover).toHaveAttribute("data-a3s-positioned", "true");
+      await expect(popover).toHaveAttribute(
+        "data-resolved-side",
+        state.expectedSide,
+      );
+      const box = await popover.boundingBox();
+      const geometry = await popover.evaluate((element) => {
+        const html = element as HTMLElement;
+        const offsetParent = html.offsetParent as HTMLElement | null;
+        const style = getComputedStyle(html);
+        return {
+          computed: {
+            insetInlineStart: style.insetInlineStart,
+            left: style.left,
+            marginInlineStart: style.marginInlineStart,
+            top: style.top,
+            translate: style.translate,
+          },
+          offsetParent: offsetParent
+            ? {
+                clientLeft: offsetParent.clientLeft,
+                clientTop: offsetParent.clientTop,
+                id: offsetParent.id,
+                rect: offsetParent.getBoundingClientRect().toJSON(),
+                scrollLeft: offsetParent.scrollLeft,
+                scrollTop: offsetParent.scrollTop,
+              }
+            : null,
+          popover: html.getBoundingClientRect().toJSON(),
+          root: html.parentElement?.getBoundingClientRect().toJSON(),
+          style: html.getAttribute("style"),
+          viewport: window.visualViewport
+            ? {
+                height: window.visualViewport.height,
+                offsetLeft: window.visualViewport.offsetLeft,
+                offsetTop: window.visualViewport.offsetTop,
+                width: window.visualViewport.width,
+              }
+            : null,
+        };
+      });
+      expect(box).not.toBeNull();
+      expect(box!.x, JSON.stringify(geometry, null, 2)).toBeGreaterThanOrEqual(
+        boundaryPadding - 0.5,
+      );
+      expect(box!.y, JSON.stringify(geometry, null, 2)).toBeGreaterThanOrEqual(
+        boundaryPadding - 0.5,
+      );
+      expect(
+        box!.x + box!.width,
+        JSON.stringify(geometry, null, 2),
+      ).toBeLessThanOrEqual(390 - boundaryPadding + 0.5);
+      expect(
+        box!.y + box!.height,
+        JSON.stringify(geometry, null, 2),
+      ).toBeLessThanOrEqual(640 - boundaryPadding + 0.5);
+    });
+  }
+
+  await test.step("RTL start alignment", async () => {
+    await page.setViewportSize({ width: 640, height: 640 });
+    await openDocumentationPage(page, "popover");
+    const root = page.locator("#demo-popover");
+    await root.evaluate((element) => {
+      const html = element as HTMLElement;
+      html.dir = "rtl";
+      Object.assign(html.style, {
+        bottom: "auto",
+        left: "320px",
+        position: "fixed",
+        right: "auto",
+        top: "160px",
+        zIndex: "100",
+      });
+      const popover = html.querySelector<HTMLElement>("[data-popover]");
+      if (popover) {
+        popover.dataset.align = "start";
+        popover.dataset.side = "bottom";
+      }
+    });
+
+    await page.locator("#demo-popover-trigger").click();
+    const popover = page.locator("#demo-popover-popover");
+    await expect(popover).toBeVisible();
+    await waitForSettledFrames(page);
+    const [rootBox, popoverBox] = await Promise.all([
+      root.boundingBox(),
+      popover.boundingBox(),
+    ]);
+    expect(rootBox).not.toBeNull();
+    expect(popoverBox).not.toBeNull();
+    expect(popoverBox!.x + popoverBox!.width).toBeCloseTo(
+      rootBox!.x + rootBox!.width,
+      0,
+    );
+  });
+});
 
 test("tooltips keep readable compact text", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

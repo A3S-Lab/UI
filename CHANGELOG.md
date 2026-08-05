@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- Kept dropdown menus, popovers, selects, and combobox lists inside the visual viewport with shared collision flipping, logical RTL alignment, constrained available height, and live scroll/resize repositioning.
 - Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.

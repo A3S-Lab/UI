@@ -136,6 +136,8 @@ Language and version switches preserve the current page whenever that route exis
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
 
+The runtime also keeps open `[data-popover]` surfaces inside the visual viewport. Dropdown menus, popovers, selects, and comboboxes share collision flipping, constrained available height, live scroll/resize positioning, and logical RTL alignment.
+
 ## Development
 
 ```bash
@@ -152,7 +154,7 @@ Run the documentation site locally with `npm run docs:dev`. The static build is 
 
 Run the component-specific browser suites with `npm run test:e2e:a3s`. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
-Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation; these checks are intentionally not part of CI.
+Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
 
 ## Lineage and license
 

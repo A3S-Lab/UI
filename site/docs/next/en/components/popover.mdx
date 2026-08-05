@@ -123,7 +123,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
       <dt><code>&lt;button type="button" aria-expanded="false" aria-controls="&#123; POPOVER_ID &#125;"&gt;</code></dt>
       <dd>Trigger button. The script toggles <code>aria-expanded</code> and opens or closes the content.</dd>
       <dt><code>&lt;div data-popover id="&#123; POPOVER_ID &#125;" aria-hidden="true"&gt;</code></dt>
-      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>.</dd>
+      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>. Open popovers use a 4-pixel side offset and 8-pixel viewport collision padding by default. Override them with <code>data-side-offset</code> and <code>data-collision-padding</code>, or set <code>data-collision="none"</code> to keep static CSS positioning. While positioned, the runtime publishes <code>--available-height</code>, <code>data-resolved-side</code>, <code>data-resolved-align</code>, and <code>data-a3s-positioned="true"</code>.</dd>
     </dl>
   </dd>
 </dl>
