@@ -1,17 +1,28 @@
 /* Card */
 @layer components {
   .card {
-    @apply flex flex-col;
+    @apply flex w-full min-w-0 flex-col;
+
+    > :is(header, section, footer) {
+      @apply min-w-0;
+    }
 
     > header {
       @apply @container/card-header grid auto-rows-min items-start has-[>[data-slot=card-action],>.card-action]:grid-cols-[1fr_auto] has-[>p]:grid-rows-[auto_auto];
     }
 
     > header > :is(h2, h3, [data-title], .card-title) {
-      @apply leading-none;
+      @apply m-0 min-w-0 p-0 leading-none;
     }
 
-    > header > :is([data-slot='card-action'], .card-action) {
+    > header > :is(p, [data-description], .card-description),
+    > section > :is(h2, h3, p),
+    > footer > :is(h2, h3, p) {
+      @apply m-0 min-w-0 p-0;
+      overflow-wrap: anywhere;
+    }
+
+    > header > :is([data-slot="card-action"], .card-action) {
       @apply col-start-2 row-span-2 row-start-1 self-start justify-self-end;
     }
 
@@ -21,6 +32,10 @@
 
     > footer {
       @apply flex items-center;
+    }
+
+    > img {
+      @apply block max-w-full;
     }
   }
 }

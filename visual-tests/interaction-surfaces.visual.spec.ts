@@ -1,4 +1,85 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
+
+interface SwitchGeometry {
+  checked: boolean;
+  control: { height: number; width: number };
+  direction: string;
+  thumb: {
+    height: number;
+    left: number;
+    top: number;
+    translate: string;
+    width: number;
+  };
+  track: { height: number; left: number; top: number; width: number };
+}
+
+async function readSwitchGeometry(control: Locator): Promise<SwitchGeometry> {
+  return control.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const physicalBox = (style: CSSStyleDeclaration) => {
+      const matrix =
+        style.transform === "none"
+          ? new DOMMatrixReadOnly()
+          : new DOMMatrixReadOnly(style.transform);
+      const width = Number.parseFloat(style.width);
+      const height = Number.parseFloat(style.height);
+      const computedLeft = Number.parseFloat(style.left);
+      const computedRight = Number.parseFloat(style.right);
+      const computedTop = Number.parseFloat(style.top);
+      const left = Number.isFinite(computedLeft)
+        ? computedLeft
+        : rect.width - computedRight - width;
+
+      return {
+        height,
+        left: left + matrix.m41,
+        top: computedTop + matrix.m42,
+        width,
+      };
+    };
+    const trackStyle = getComputedStyle(element, "::after");
+    const thumbStyle = getComputedStyle(element, "::before");
+
+    return {
+      checked: (element as HTMLInputElement).checked,
+      control: { height: rect.height, width: rect.width },
+      direction: getComputedStyle(element).direction,
+      thumb: {
+        ...physicalBox(thumbStyle),
+        translate: thumbStyle.translate,
+      },
+      track: physicalBox(trackStyle),
+    };
+  });
+}
+
+function expectSwitchThumbAtEndpoint(geometry: SwitchGeometry) {
+  const leftGap = geometry.thumb.left - geometry.track.left;
+  const rightGap =
+    geometry.track.left +
+    geometry.track.width -
+    geometry.thumb.left -
+    geometry.thumb.width;
+  const inlineStartGap = geometry.direction === "rtl" ? rightGap : leftGap;
+  const inlineEndGap = geometry.direction === "rtl" ? leftGap : rightGap;
+  const endpointGap = geometry.checked ? inlineEndGap : inlineStartGap;
+  const oppositeGap = geometry.checked ? inlineStartGap : inlineEndGap;
+  const expectedEndpointGap =
+    (geometry.track.height - geometry.thumb.height) / 2;
+
+  expect(["none", "0px", "0px 0px"]).toContain(geometry.thumb.translate);
+  expect(endpointGap).toBeCloseTo(expectedEndpointGap, 1);
+  expect(oppositeGap).toBeCloseTo(
+    geometry.track.width - geometry.thumb.width - expectedEndpointGap,
+    1,
+  );
+  expect(
+    geometry.thumb.top +
+      geometry.thumb.height / 2 -
+      (geometry.track.top + geometry.track.height / 2),
+  ).toBeCloseTo(0, 1);
+}
 
 async function openComponent(page: Page, component: string) {
   if (page.viewportSize()!.width <= 768) {
@@ -53,28 +134,22 @@ test("Switch keeps Office track geometry and mutable MDX state", async ({
   expect(geometry.thumbWidth).toBeCloseTo(12, 0);
   expect(geometry.thumbHeight).toBeCloseTo(12, 0);
 
-  const uncheckedThumbX = await control.evaluate(
-    (element) =>
-      new DOMMatrixReadOnly(getComputedStyle(element, "::before").transform)
-        .m41,
-  );
+  const uncheckedGeometry = await readSwitchGeometry(control);
+  expectSwitchThumbAtEndpoint(uncheckedGeometry);
   await control.check();
   await expect(control).toBeChecked();
   await expect
-    .poll(() =>
-      control.evaluate(
-        (element) =>
-          new DOMMatrixReadOnly(getComputedStyle(element, "::before").transform)
-            .m41,
-      ),
-    )
-    .toBeCloseTo(uncheckedThumbX + 12, 1);
-  const checkedThumbX = await control.evaluate(
-    (element) =>
-      new DOMMatrixReadOnly(getComputedStyle(element, "::before").transform)
-        .m41,
+    .poll(async () => {
+      const current = await readSwitchGeometry(control);
+      return current.thumb.left - uncheckedGeometry.thumb.left;
+    })
+    .toBeCloseTo(12, 1);
+  const checkedGeometry = await readSwitchGeometry(control);
+  expectSwitchThumbAtEndpoint(checkedGeometry);
+  expect(checkedGeometry.thumb.left - uncheckedGeometry.thumb.left).toBeCloseTo(
+    12,
+    1,
   );
-  expect(checkedThumbX - uncheckedThumbX).toBeCloseTo(12, 1);
 
   const small = page.locator("#switch-size-sm");
   const smallGeometry = await small.evaluate((element) => {
@@ -95,12 +170,93 @@ test("Switch keeps Office track geometry and mutable MDX state", async ({
   expect(smallGeometry.trackHeight).toBeCloseTo(14, 0);
   expect(smallGeometry.thumbHeight).toBeCloseTo(10, 0);
 
+  const smallUncheckedGeometry = await readSwitchGeometry(small);
+  expectSwitchThumbAtEndpoint(smallUncheckedGeometry);
+  await small.check();
+  await expect(small).toBeChecked();
+  await expect
+    .poll(async () => {
+      const current = await readSwitchGeometry(small);
+      return current.thumb.left - smallUncheckedGeometry.thumb.left;
+    })
+    .toBeCloseTo(10, 1);
+  const smallCheckedGeometry = await readSwitchGeometry(small);
+  expectSwitchThumbAtEndpoint(smallCheckedGeometry);
+  expect(
+    smallCheckedGeometry.thumb.left - smallUncheckedGeometry.thumb.left,
+  ).toBeCloseTo(10, 1);
+
+  const rtl = page.locator("#switch-rtl");
+  const rtlCheckedGeometry = await readSwitchGeometry(rtl);
+  expectSwitchThumbAtEndpoint(rtlCheckedGeometry);
+  await rtl.uncheck();
+  await expect(rtl).not.toBeChecked();
+  await expect
+    .poll(async () => {
+      const current = await readSwitchGeometry(rtl);
+      return rtlCheckedGeometry.thumb.left - current.thumb.left;
+    })
+    .toBeCloseTo(-12, 1);
+  const rtlUncheckedGeometry = await readSwitchGeometry(rtl);
+  expectSwitchThumbAtEndpoint(rtlUncheckedGeometry);
+  expect(
+    rtlCheckedGeometry.thumb.left - rtlUncheckedGeometry.thumb.left,
+  ).toBeCloseTo(-12, 1);
+
   const choiceGroup = page.getByRole("group", { name: "Focus settings" });
   const initiallyEnabled = choiceGroup.locator('input[role="switch"]').nth(1);
   await expect(initiallyEnabled).toBeChecked();
   await initiallyEnabled.uncheck();
   await expect(initiallyEnabled).not.toBeChecked();
   await expect(preview).toHaveScreenshot("switch-office-checked.png");
+});
+
+test("Switch centers its visual track inside a coarse touch target", async ({
+  baseURL,
+  browser,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  expect(baseURL).toBeTruthy();
+
+  const context = await browser.newContext({
+    baseURL,
+    hasTouch: true,
+    isMobile: true,
+    reducedMotion: "reduce",
+    viewport: { height: 844, width: 390 },
+  });
+
+  try {
+    const page = await context.newPage();
+    await openComponent(page, "switch");
+    await expect
+      .poll(() => page.evaluate(() => matchMedia("(pointer: coarse)").matches))
+      .toBe(true);
+
+    const control = page.locator("#airplane-mode").first();
+    const uncheckedGeometry = await readSwitchGeometry(control);
+    expect(uncheckedGeometry.control.width).toBeCloseTo(44, 0);
+    expect(uncheckedGeometry.control.height).toBeCloseTo(44, 0);
+    expect(uncheckedGeometry.track.width).toBeCloseTo(30, 0);
+    expect(uncheckedGeometry.track.height).toBeCloseTo(18, 0);
+    expectSwitchThumbAtEndpoint(uncheckedGeometry);
+
+    await control.check();
+    await expect(control).toBeChecked();
+    await expect
+      .poll(async () => {
+        const current = await readSwitchGeometry(control);
+        return current.thumb.left - uncheckedGeometry.thumb.left;
+      })
+      .toBeCloseTo(12, 1);
+    const checkedGeometry = await readSwitchGeometry(control);
+    expectSwitchThumbAtEndpoint(checkedGeometry);
+    expect(
+      checkedGeometry.thumb.left - uncheckedGeometry.thumb.left,
+    ).toBeCloseTo(12, 1);
+  } finally {
+    await context.close();
+  }
 });
 
 test("Slider keeps its visual fill synchronized with keyboard value", async ({

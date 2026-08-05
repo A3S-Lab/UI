@@ -1,6 +1,6 @@
 # Toast
 
-<div id="toaster" class="toaster"></div>
+<div id="toaster" class="toaster rp-not-doc"></div>
 
 <Preview class="max-w-md">
 <button
@@ -9,6 +9,7 @@
     category: 'success',
     title: 'Success',
     description: 'A success toast called from the front-end.',
+    duration: -1,
     cancel: {
       label: 'Dismiss'
     }
@@ -158,11 +159,11 @@ Append server-rendered toast markup to the toaster, or create one from JavaScrip
   <dt><code>category</code> <span class="badge" data-variant="secondary">Optional</span></dt>
   <dd>Category of the toast, either <code>success</code>, <code>info</code>, <code>warning</code>, or <code>error</code>.</dd>
   <dt><code>title</code></dt>
-  <dd>The title of the toast.</dd>
+  <dd>The title of the toast. It is rendered as text, not HTML.</dd>
   <dt><code>description</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>The description of the toast.</dd>
+  <dd>The description of the toast. It is rendered as text, not HTML.</dd>
   <dt><code>action</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Primary action. Supports <code>label</code> with either <code>href</code> or <code>onclick</code>.</dd>
+  <dd>Primary action. Supports <code>label</code>, optional <code>href</code>, and an optional <code>onClick(event)</code> callback.</dd>
   <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Secondary action. Supports <code>label</code> and optional <code>onclick</code>.</dd>
+  <dd>Secondary action. Supports <code>label</code> and an optional <code>onClick(event)</code> callback.</dd>
 </dl>

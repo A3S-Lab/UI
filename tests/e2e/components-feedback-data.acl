@@ -57,14 +57,21 @@ suite "a3s-ui-feedback-and-data" {
     }
 
     scenario "toast" {
-        name = "Toast preview creates front-end feedback"
+        name = "Toast stays compact, supports keyboard focus, and dismisses cleanly"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toast.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         click "create-toast" { target = role("button", "Toast from front-end") }
         expect "toast-visible" { visible = css("#toaster .toast:not([aria-hidden=true])") }
-        screenshot "toast" { path = "components/toast.png" }
+        expect "toast-title-visible" { visible = css("#toaster.rp-not-doc .toast h2") }
+        expect "toast-description-visible" { visible = css("#toaster.rp-not-doc .toast p") }
+        focus "focus-dismiss" { target = css("#toaster [data-toast-cancel]") }
+        expect "dismiss-focused" { visible = css("#toaster [data-toast-cancel]:focus") }
+        screenshot "toast-phone-focused" { path = "components/toast-phone-focused.png" }
+        click "dismiss-toast" { target = css("#toaster [data-toast-cancel]") }
+        expect "toast-dismissed" { visible = css("#toaster:not(:has(.toast:not([aria-hidden=true])))") }
     }
 
     scenario "accordion" {
@@ -87,13 +94,19 @@ suite "a3s-ui-feedback-and-data" {
     }
 
     scenario "card" {
-        name = "Card preview accepts login form input"
+        name = "Card fills its mobile preview and keeps compact variants reachable"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/card.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         fill "enter-email" { target = css(".a3s-preview[data-preview-component=card] input[type=email]") value = "tester@example.test" }
+        fill "enter-password" { target = css(".a3s-preview[data-preview-component=card] input[type=password]") value = "correct-horse-battery-staple" }
         expect "card-visible" { visible = css(".a3s-preview[data-preview-component=card] .card") }
+        expect "small-card-visible" { visible = css(".a3s-preview[data-preview-component=card] .card[data-size=sm]") }
+        focus "focus-login" { target = css(".a3s-preview[data-preview-component=card] .card:first-child footer .btn:first-child") }
+        expect "login-focused" { visible = css(".a3s-preview[data-preview-component=card] .card:first-child footer .btn:first-child:focus") }
+        screenshot "card-phone" { path = "components/card-phone.png" }
     }
 
     scenario "chart" {
