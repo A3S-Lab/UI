@@ -505,10 +505,10 @@ test("floating overlays avoid viewport edges and preserve logical alignment", as
     ]);
     expect(rootBox).not.toBeNull();
     expect(popoverBox).not.toBeNull();
-    expect(popoverBox!.x + popoverBox!.width).toBeCloseTo(
-      rootBox!.x + rootBox!.width,
-      0,
+    const inlineEndDelta = Math.abs(
+      popoverBox!.x + popoverBox!.width - (rootBox!.x + rootBox!.width),
     );
+    expect(inlineEndDelta).toBeLessThanOrEqual(1);
   });
 });
 

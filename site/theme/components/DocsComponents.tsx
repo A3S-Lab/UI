@@ -6,6 +6,7 @@ import {
   useRef,
   type CSSProperties,
   type HTMLAttributes,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type ReactNode,
@@ -159,24 +160,136 @@ function initializeDocumentationDemos(root: HTMLElement) {
     synchronize();
   });
 
+  synchronizeShellToggles(root);
+
   window.a3sUI?.initAll();
+}
+
+const compactShellMedia = '(max-width: 48rem)';
+
+function shellToggleLabels() {
+  const chinese = document.documentElement.lang.toLowerCase().startsWith('zh');
+  return chinese
+    ? {
+        close: '关闭导航',
+        collapse: '折叠导航',
+        expand: '展开导航',
+        open: '打开导航',
+      }
+    : {
+        close: 'Close navigation',
+        collapse: 'Collapse navigation',
+        expand: 'Expand navigation',
+        open: 'Open navigation',
+      };
+}
+
+function synchronizeShellToggle(shell: HTMLElement, toggle: HTMLButtonElement) {
+  const labels = shellToggleLabels();
+  if (window.matchMedia(compactShellMedia).matches) {
+    const open = shell.dataset.mobileNavigation === 'open';
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? labels.close : labels.open);
+    return;
+  }
+
+  const expanded = shell.dataset.navigation !== 'collapsed';
+  toggle.setAttribute('aria-expanded', String(expanded));
+  toggle.setAttribute('aria-label', expanded ? labels.collapse : labels.expand);
+}
+
+function synchronizeShellToggles(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>('.app-shell').forEach((shell) => {
+    const toggle = shell.querySelector<HTMLButtonElement>(
+      '[data-demo-shell-toggle]',
+    );
+    if (toggle) synchronizeShellToggle(shell, toggle);
+  });
+}
+
+function closeCompactShellNavigation(
+  shell: HTMLElement,
+  restoreFocus: boolean,
+) {
+  shell.removeAttribute('data-mobile-navigation');
+  const toggle = shell.querySelector<HTMLButtonElement>(
+    '[data-demo-shell-toggle]',
+  );
+  if (!toggle) return;
+  synchronizeShellToggle(shell, toggle);
+  if (restoreFocus) toggle.focus();
 }
 
 function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  const button = target.closest<HTMLButtonElement>('[data-demo-shell-toggle]');
-  if (!button) return;
 
-  const shell = button.closest<HTMLElement>('.app-shell');
-  if (!shell) return;
-  const expanded = shell.dataset.navigation !== 'collapsed';
-  shell.dataset.navigation = expanded ? 'collapsed' : 'expanded';
-  button.setAttribute('aria-expanded', String(!expanded));
-  button.setAttribute(
-    'aria-label',
-    expanded ? 'Expand navigation' : 'Collapse navigation',
+  const activityLink = target.closest<HTMLAnchorElement>(
+    '.activity-bar a[href^="#"]',
   );
+  if (activityLink) {
+    event.preventDefault();
+    const activityBar = activityLink.closest<HTMLElement>('.activity-bar');
+    activityBar
+      ?.querySelectorAll<HTMLAnchorElement>('a[aria-current="page"]')
+      .forEach((link) => link.removeAttribute('aria-current'));
+    activityLink.setAttribute('aria-current', 'page');
+    const compactShell = activityLink.closest<HTMLElement>(
+      '.app-shell[data-mobile-navigation="open"]',
+    );
+    if (compactShell) closeCompactShellNavigation(compactShell, true);
+    return;
+  }
+
+  const button = target.closest<HTMLButtonElement>('[data-demo-shell-toggle]');
+  if (button) {
+    const shell = button.closest<HTMLElement>('.app-shell');
+    if (!shell) return;
+    if (window.matchMedia(compactShellMedia).matches) {
+      const open = shell.dataset.mobileNavigation === 'open';
+      if (open) closeCompactShellNavigation(shell, true);
+      else {
+        shell.dataset.mobileNavigation = 'open';
+        synchronizeShellToggle(shell, button);
+        requestAnimationFrame(() => {
+          shell
+            .querySelector<HTMLElement>(
+              '[data-app-navigation] a[href], [data-app-navigation] button',
+            )
+            ?.focus({ preventScroll: true });
+        });
+      }
+      return;
+    }
+
+    shell.removeAttribute('data-mobile-navigation');
+    const expanded = shell.dataset.navigation !== 'collapsed';
+    shell.dataset.navigation = expanded ? 'collapsed' : 'expanded';
+    synchronizeShellToggle(shell, button);
+    return;
+  }
+
+  const openShell = target.closest<HTMLElement>(
+    '.app-shell[data-mobile-navigation="open"]',
+  );
+  if (openShell && !target.closest('[data-app-navigation]')) {
+    closeCompactShellNavigation(openShell, true);
+  }
+}
+
+function handleDocumentationDemoKeyDown(
+  event: ReactKeyboardEvent<HTMLDivElement>,
+) {
+  if (event.key !== 'Escape') return;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const shell = target.closest<HTMLElement>(
+    '.app-shell[data-mobile-navigation="open"]',
+  );
+  if (!shell) return;
+  event.preventDefault();
+  event.stopPropagation();
+  closeCompactShellNavigation(shell, true);
 }
 
 type PreviewProps = HTMLAttributes<HTMLDivElement> & {
@@ -194,6 +307,10 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
 
   useEffect(() => {
     const preview = previewRef.current;
+    const compactShellQuery = window.matchMedia(compactShellMedia);
+    const synchronizeResponsiveShells = () => {
+      if (canvasRef.current) synchronizeShellToggles(canvasRef.current);
+    };
     const syncOverlayState = () => {
       preview?.toggleAttribute(
         'data-overlay-open',
@@ -211,12 +328,17 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
     }
 
     syncOverlayState();
+    compactShellQuery.addEventListener('change', synchronizeResponsiveShells);
     const frame = requestAnimationFrame(() => {
       if (canvasRef.current) initializeDocumentationDemos(canvasRef.current);
       syncOverlayState();
     });
     return () => {
       cancelAnimationFrame(frame);
+      compactShellQuery.removeEventListener(
+        'change',
+        synchronizeResponsiveShells,
+      );
       overlayObserver.disconnect();
     };
   }, [children]);
@@ -238,6 +360,7 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
         <div
           ref={canvasRef}
           onClick={handleDocumentationDemoClick}
+          onKeyDown={handleDocumentationDemoKeyDown}
           className={['a3s-preview__canvas', 'rp-not-doc', className, htmlClass]
             .filter(Boolean)
             .join(' ')}

@@ -19,7 +19,10 @@
   .activity-bar > nav {
     min-height: 0;
     flex: 1;
+    overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 
   .activity-bar ul {
@@ -31,6 +34,7 @@
   }
 
   .activity-bar li > :is(a, button) {
+    position: relative;
     display: flex;
     width: 100%;
     min-width: 0;
@@ -66,5 +70,19 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+  }
+
+  :is(
+      .app-shell[data-navigation='collapsed'] .activity-bar,
+      .activity-bar[data-labels='hidden']
+    )
+    > :is(header, footer),
+  :is(
+      .app-shell[data-navigation='collapsed'] .activity-bar,
+      .activity-bar[data-labels='hidden']
+    )
+    li
+    > :is(a, button) {
+    justify-content: center;
   }
 }

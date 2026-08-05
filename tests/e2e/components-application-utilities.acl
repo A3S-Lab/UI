@@ -2,33 +2,52 @@ suite "a3s-ui-application-and-utilities" {
     version = 1
 
     scenario "app-shell" {
-        name = "App Shell preview collapses product navigation"
+        name = "App Shell preview supports desktop collapse and a contained compact drawer"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
         click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
+        viewport "compact" { width = 768 height = 900 }
+        expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
+        navigate "reopen-compact" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
+        wait "compact-loaded" { load = "networkidle" }
+        expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
+        click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
+        expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
+        expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
+        press "close-compact-navigation" { key = "Escape" }
+        expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-demo-shell-toggle]:focus") }
+        screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
     }
 
     scenario "workspace-header" {
-        name = "Workspace Header preview exposes identity and actions"
+        name = "Workspace Header preview preserves identity and primary actions on phones"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/workspace-header.html" }
         wait "loaded" { load = "networkidle" }
         expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity]") }
         expect "actions-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-title-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity] > h1") }
+        expect "phone-primary-action-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
+        screenshot "workspace-header-phone" { path = "components/workspace-header-phone.png" }
     }
 
     scenario "toolbar" {
-        name = "Toolbar preview toggles pressed formatting state"
+        name = "Toolbar preview toggles formatting and keeps compact commands reachable"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
         wait "loaded" { load = "networkidle" }
         click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-last-command" { target = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child") }
+        expect "last-command-focused" { visible = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child:focus") }
+        screenshot "toolbar-phone" { path = "components/toolbar-phone.png" }
     }
 
     scenario "ribbon" {

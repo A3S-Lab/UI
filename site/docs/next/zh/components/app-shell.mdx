@@ -3,7 +3,7 @@
 App Shell 提供持久导航区域与边界明确的产品工作区，是 A3S Office、网关运维和智能体控制台的顶层框架。
 
 <Preview>
-<div class="app-shell" data-navigation="expanded" style="--app-shell-min-height:30rem;--app-shell-navigation-size:13rem">
+<div class="app-shell" data-navigation="expanded" style="--app-shell-height:30rem;--app-shell-min-height:30rem;--app-shell-navigation-size:13rem">
   <aside data-app-navigation>
     <div class="activity-bar" aria-label="演示工作区">
 <header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S UI</span></header>
@@ -40,12 +40,14 @@ App Shell 提供持久导航区域与边界明确的产品工作区，是 A3S Of
 | `data-navigation` | `expanded`、`collapsed`、`hidden` | `expanded` | 桌面导航状态 |
 | `data-mobile-navigation` | `open` 或省略 | 省略 | 移动端抽屉是否可见 |
 | `--app-shell-navigation-size` | CSS 长度 | `15rem` | 展开后的导航宽度 |
-| `--app-shell-navigation-collapsed-size` | CSS 长度 | `4rem` | 图标栏宽度 |
+| `--app-shell-navigation-collapsed-size` | CSS 长度 | `2.875rem` | 与 Office 对齐的图标栏宽度 |
+| `--app-shell-navigation-max-size` | CSS 长度或百分比 | `38%` | 展开导航最多占用的比例 |
+| `--app-shell-height` | CSS 长度或 `auto` | `auto` | 可选的有界外壳高度 |
 | `--app-shell-min-height` | CSS 长度 | `36rem` | 外壳最小高度 |
 
 ## 状态和变体
 
-App Shell 支持展开、折叠、隐藏与移动端打开状态。状态管理由宿主应用负责，以便保存用户偏好并与路由协调；预览只使用文档专用的轻量控制器。
+App Shell 支持展开、折叠、隐藏与移动端打开状态。低于 768px 时，导航会成为限制在外壳内部的浮层；关闭状态不会接收指针或键盘交互，`data-mobile-navigation="open"` 会在局部遮罩之上显示导航。状态管理由宿主应用负责，以便保存用户偏好并与路由协调；预览只使用文档专用的轻量控制器。
 
 ## 可访问性
 

@@ -28,13 +28,15 @@ A Toolbar groups compact, frequently used commands. It supports horizontal scrol
 | --- | --- | --- | --- |
 | `data-density` | `compact`, omitted | omitted | Removes gaps inside command groups |
 | `data-wrap` | `true`, omitted | omitted | Wraps groups instead of horizontal scrolling |
+| `--toolbar-height` | CSS length | `2.6875rem` (43px) | Office toolbar row height |
+| `--toolbar-control-height` | CSS length | `1.8125rem` (29px) | Compact command height |
 | `role="toolbar"` | — | Required | Announces the composite command region |
 | Child `role="group"` | — | Recommended | Names related command sets |
 | `<hr role="separator">` | — | Optional | Logical visual division |
 
 ## States and variants
 
-Use `aria-pressed` for toggle buttons and `disabled` for unavailable commands. A compact toolbar is appropriate inside Ribbons; wrapping is appropriate in responsive inspector panels.
+Use `aria-pressed` for toggle buttons and `disabled` for unavailable commands. The default row and command sizes match the A3S Office editor chrome. Commands never shrink in a narrow non-wrapping toolbar; keyboard focus scrolls the active command into view. A compact toolbar is appropriate inside Ribbons; wrapping is appropriate in responsive inspector panels.
 
 ## Accessibility
 

@@ -2,12 +2,15 @@ suite "a3s-ui-navigation-and-overlays" {
     version = 1
 
     scenario "activity-bar" {
-        name = "Activity Bar preview exposes product navigation"
+        name = "Activity Bar preview updates its current workspace destination"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/activity-bar.html" }
         wait "loaded" { load = "networkidle" }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=activity-bar] .activity-bar nav") }
+        click "open-traces" { target = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces']") }
+        expect "traces-current" { visible = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces'][aria-current=page]") }
+        screenshot "activity-bar-current" { path = "components/activity-bar-current.png" }
     }
 
     scenario "breadcrumb" {

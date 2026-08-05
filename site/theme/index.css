@@ -939,7 +939,7 @@ html .rp-doc-layout__doc {
 }
 
 .ui-workbench-shell .workspace-header {
-  min-height: 48px;
+  --workspace-header-height: 50px;
 }
 
 .ui-workbench-shell .workspace-header [data-workspace-title] {
@@ -1676,12 +1676,12 @@ html .rp-doc-layout__doc {
     padding: 20px 14px;
   }
 
-  .rp-doc h1 {
+  .rp-doc :not(:where(.rp-not-doc, .rp-not-doc *)):where(h1) {
     font-size: 38px;
     line-height: 1.08;
   }
 
-  .rp-doc h2 {
+  .rp-doc :not(:where(.rp-not-doc, .rp-not-doc *)):where(h2) {
     margin-top: 44px;
     font-size: 24px;
   }

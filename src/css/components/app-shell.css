@@ -1,10 +1,22 @@
 @layer components {
   .app-shell {
     --app-shell-navigation-size: 15rem;
-    --app-shell-navigation-collapsed-size: 4rem;
+    --app-shell-navigation-collapsed-size: var(
+      --a3s-activity-rail-size,
+      2.875rem
+    );
+    --app-shell-navigation-max-size: 38%;
+    position: relative;
+    isolation: isolate;
     display: grid;
-    grid-template-columns: var(--app-shell-navigation-size) minmax(0, 1fr);
+    grid-template-columns:
+      min(
+        var(--app-shell-navigation-size),
+        var(--app-shell-navigation-max-size)
+      )
+      minmax(0, 1fr);
     width: 100%;
+    height: var(--app-shell-height, auto);
     min-width: 0;
     min-height: var(--app-shell-min-height, 36rem);
     overflow: hidden;
@@ -55,8 +67,26 @@
       inset-block: 0;
       inset-inline-start: 0;
       width: min(var(--app-shell-navigation-size), calc(100% - 3rem));
+      pointer-events: none;
       transform: translateX(-105%);
-      transition: transform 180ms ease;
+      visibility: hidden;
+      transition:
+        transform 180ms ease,
+        visibility 0s linear 180ms;
+    }
+
+    .app-shell::after {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      background: rgb(18 24 36 / 22%);
+      content: '';
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition:
+        opacity 180ms ease,
+        visibility 0s linear 180ms;
     }
 
     [dir='rtl'] .app-shell > [data-app-navigation] {
@@ -64,12 +94,23 @@
     }
 
     .app-shell[data-mobile-navigation='open'] > [data-app-navigation] {
+      pointer-events: auto;
       transform: translateX(0);
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    .app-shell[data-mobile-navigation='open']::after {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transition-delay: 0s;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .app-shell > [data-app-navigation] {
+    .app-shell > [data-app-navigation],
+    .app-shell::after {
       transition: none;
     }
   }

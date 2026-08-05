@@ -5,6 +5,7 @@
 ### Changed
 
 - Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.
 - Preserved compact desktop controls while providing 44-pixel form, button, tab, and sidebar targets for coarse pointers and intentional reduced-motion feedback.
@@ -14,6 +15,7 @@
 ### Fixed
 
 - Kept dropdown menus, popovers, selects, and combobox lists inside the visual viewport with shared collision flipping, logical RTL alignment, constrained available height, and live scroll/resize repositioning.
+- Contained the compact App Shell drawer inside its shell, removed its closed state from pointer and keyboard interaction, restored focus on Escape, and prevented mobile documentation typography from leaking into component previews.
 - Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.
