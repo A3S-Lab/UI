@@ -3,10 +3,8 @@
 A Ribbon combines tab navigation with grouped application commands. The pattern is extracted from A3S Office and generalized for editors, topology tools, and operational workbenches.
 
 <Preview>
-  <div
-    class="ribbon tabs w-full rounded-xl border border-border"
-    data-accent="blue"
-  >
+  <div class="w-full overflow-hidden border border-border bg-[var(--a3s-bg)]">
+    <div class="ribbon tabs w-full" data-accent="blue">
     <div role="tablist" aria-label="Document commands">
       <button
         type="button"
@@ -210,6 +208,13 @@ A Ribbon combines tab navigation with grouped application commands. The pattern 
         </div>
       </fieldset>
     </div>
+    </div>
+    <div
+      class="grid min-h-40 place-items-center text-sm text-muted-foreground"
+      data-editor-canvas
+    >
+      Document canvas
+    </div>
   </div>
 </Preview>
 
@@ -239,10 +244,13 @@ Load the Tabs controller and combine `ribbon` with `tabs`.
 | `aria-controls` / `aria-labelledby` | Element IDs                         | Required    | Associates tabs and panels             |
 | `data-ribbon-group`                 | —                                   | Required    | Command group layout                   |
 | `data-ribbon-controls`              | —                                   | Recommended | Aligns commands above the group legend |
+| `--ribbon-tabs-height`              | CSS length                          | `2.25rem`   | Fixed tab-strip height                  |
+| `--ribbon-panel-height`             | CSS length                          | `4.625rem`  | Fixed command-panel height              |
+| `--ribbon-group-height`             | CSS length                          | `4.0625rem` | Fixed command-group height              |
 
 ## States and variants
 
-Blue suits documents and general workspaces, green suits spreadsheets or healthy operations, orange suits presentations, and purple suits agent workflows. Disabled tabs and commands use native `disabled`.
+Blue suits documents and general workspaces, green suits spreadsheets or healthy operations, orange suits presentations, and purple suits agent workflows. Disabled tabs and commands use native `disabled`. The default 36-pixel tab strip and 74-pixel command panel match A3S Office; compact viewports keep tabs unshrunk and scroll them horizontally.
 
 ### JavaScript API
 

@@ -3,7 +3,17 @@
 状态栏持续展示文档状态、视图控件与缩放信息，同时避免与工作区主操作争夺注意力。
 
 <Preview>
-  <footer class="status-bar w-full" aria-label="文档状态">
+  <div
+    class="flex h-48 w-full flex-col overflow-hidden border border-border bg-[var(--a3s-bg)]"
+    data-status-bar-host
+  >
+    <div
+      class="grid min-h-0 flex-1 place-items-center text-sm text-muted-foreground"
+      data-editor-canvas
+    >
+      文档画布
+    </div>
+    <footer class="status-bar w-full" aria-label="文档状态">
     <div data-status-info>
       <span data-status-priority="low">第 1 页，共 12 页</span>
       <span data-status-priority="low">132 字</span>
@@ -44,7 +54,8 @@
         aria-label="缩放"
       />
     </div>
-  </footer>
+    </footer>
+  </div>
 </Preview>
 
 ## Usage
@@ -67,7 +78,7 @@
 
 ## States and variants
 
-状态文案应简短且稳定。为可舍弃的上下文添加 `data-status-priority="low"`，让窄屏优先保留保存状态与操作区。临时保存或校验状态使用语义色，视图模式控件使用 `aria-pressed`。
+状态文案应简短且稳定。默认 28 像素状态栏使用固定 flex 基准，使其始终贴合工作区边缘，不会被内部控件撑高。为可舍弃的上下文添加 `data-status-priority="low"`，让窄屏优先保留保存状态与操作区。临时保存或校验状态使用语义色，视图模式控件使用 `aria-pressed`。
 
 ## Accessibility
 

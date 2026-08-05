@@ -3,7 +3,17 @@
 A Status Bar keeps document state, view controls, and zoom information available without competing with the primary workspace.
 
 <Preview>
-  <footer class="status-bar w-full" aria-label="Document status">
+  <div
+    class="flex h-48 w-full flex-col overflow-hidden border border-border bg-[var(--a3s-bg)]"
+    data-status-bar-host
+  >
+    <div
+      class="grid min-h-0 flex-1 place-items-center text-sm text-muted-foreground"
+      data-editor-canvas
+    >
+      Document canvas
+    </div>
+    <footer class="status-bar w-full" aria-label="Document status">
     <div data-status-info>
       <span data-status-priority="low">Page 1 of 12</span>
       <span data-status-priority="low">132 words</span>
@@ -44,7 +54,8 @@ A Status Bar keeps document state, view controls, and zoom information available
         aria-label="Zoom"
       />
     </div>
-  </footer>
+    </footer>
+  </div>
 </Preview>
 
 ## Usage
@@ -67,7 +78,7 @@ A Status Bar keeps document state, view controls, and zoom information available
 
 ## States and variants
 
-Keep status copy terse and stable. Mark expendable context with `data-status-priority="low"` so save state and actions remain intact on narrow screens. Use semantic text colors for transient save or validation states, and `aria-pressed` for view-mode controls.
+Keep status copy terse and stable. The default 28-pixel bar uses a fixed flex basis so it remains anchored to the workspace edge instead of growing with its controls. Mark expendable context with `data-status-priority="low"` so save state and actions remain intact on narrow screens. Use semantic text colors for transient save or validation states, and `aria-pressed` for view-mode controls.
 
 ## Accessibility
 

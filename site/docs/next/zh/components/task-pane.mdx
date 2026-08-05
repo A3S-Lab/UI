@@ -3,11 +3,17 @@
 任务窗格在当前编辑器旁承载上下文属性、评论、导航与智能助手工作流。
 
 <Preview>
-  <div class="flex h-80 w-full overflow-hidden rounded-xl border border-border bg-[var(--a3s-bg)]">
-    <main class="grid min-w-0 flex-1 place-items-center p-6 text-sm text-muted-foreground">
+  <div
+    class="relative flex h-80 w-full overflow-hidden border border-border bg-[var(--a3s-bg)]"
+    data-task-pane-host
+  >
+    <div
+      class="grid min-w-0 flex-1 place-items-center p-6 text-sm text-muted-foreground"
+      data-editor-canvas
+    >
       编辑器画布
-    </main>
-    <aside class="task-pane">
+    </div>
+    <aside class="task-pane" data-responsive="overlay">
       <header>
         <h2>页面设置</h2>
         <button
@@ -24,16 +30,16 @@
         <div class="field">
           <label for="task-pane-paper-zh">纸张大小</label>
           <select id="task-pane-paper-zh">
-            <option>A4</option>
-            <option>Letter</option>
+            <option value="a4">A4</option>
+            <option value="letter">Letter</option>
           </select>
           <p>210 × 297 mm</p>
         </div>
         <div class="field mt-4">
           <label for="task-pane-margin-zh">页边距</label>
           <select id="task-pane-margin-zh">
-            <option>普通</option>
-            <option>窄</option>
+            <option value="normal">普通</option>
+            <option value="narrow">窄</option>
           </select>
         </div>
       </section>
@@ -52,7 +58,8 @@
 ## Usage
 
 ```html
-<aside class="task-pane">
+<div class="relative"><!-- 建立覆盖定位上下文 -->
+<aside class="task-pane" data-responsive="overlay">
   <header>
     <h2>属性</h2>
     ...
@@ -60,6 +67,7 @@
   <section>...</section>
   <footer>...</footer>
 </aside>
+</div>
 ```
 
 ### Parameters
@@ -69,12 +77,15 @@
 | 语义化 `header`         | 推荐 | 标题、关闭或更多操作       |
 | 语义化 `section`        | 是   | 可滚动的窗格内容           |
 | 语义化 `footer`         | 否   | 持续显示的操作             |
-| `--task-pane-width`     | 否   | 窗格宽度，默认 `18rem`     |
-| `--task-pane-min-width` | 否   | 最小窗格宽度，默认 `14rem` |
+| `data-responsive="overlay"` | 否 | 高于 `56.25rem` 共享工作区宽度，低于该值时覆盖，低于 `32.5rem` 时占满宿主 |
+| `--task-pane-width`     | 否   | 窗格宽度，默认 `clamp(20rem, 28vw, 23.75rem)` |
+| `--task-pane-min-width` | 否   | 共享布局的最小宽度，默认 `18.75rem` |
+| `--task-pane-overlay-width` | 否 | 覆盖层宽度，默认 `23.75rem` |
+| `--task-pane-overlay-z-index` | 否 | 覆盖层层级，默认 `20` |
 
 ## States and variants
 
-宿主应用负责决定窗格是挂载、覆盖还是放入 Split Pane。根组件契约只负责内部布局与视觉。
+宿主应用负责决定窗格是挂载还是放入 Split Pane。需要 Office 响应式行为时添加 `data-responsive="overlay"`：900 像素以上与工作区共享宽度，900 像素以下在行内末端覆盖，520 像素以下占满工作区。宿主必须建立定位上下文，通常使用 `position: relative`。
 
 ## Accessibility
 

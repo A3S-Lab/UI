@@ -108,7 +108,7 @@ App Shell
 └── Status Bar
 ```
 
-These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles.
+These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles. The default Office geometry keeps Ribbon tabs at 36 pixels, its command panel at 74 pixels, and the Status Bar at 28 pixels; responsive Task Panes share width above 900 pixels, overlay below it, and fill the workspace below 520 pixels.
 
 ## Documentation languages and versions
 

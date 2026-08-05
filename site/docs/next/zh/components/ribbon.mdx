@@ -3,10 +3,8 @@
 Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 A3S Office，并被泛化到编辑器、拓扑工具与运维工作台。
 
 <Preview>
-  <div
-    class="ribbon tabs w-full rounded-xl border border-border"
-    data-accent="blue"
-  >
+  <div class="w-full overflow-hidden border border-border bg-[var(--a3s-bg)]">
+    <div class="ribbon tabs w-full" data-accent="blue">
     <div role="tablist" aria-label="文档命令">
       <button
         type="button"
@@ -210,6 +208,13 @@ Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 
         </div>
       </fieldset>
     </div>
+    </div>
+    <div
+      class="grid min-h-40 place-items-center text-sm text-muted-foreground"
+      data-editor-canvas
+    >
+      文档画布
+    </div>
   </div>
 </Preview>
 
@@ -239,10 +244,13 @@ Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 
 | `aria-controls` / `aria-labelledby` | 元素 ID                             | 必填   | 关联选项卡和面板       |
 | `data-ribbon-group`                 | —                                   | 必填   | 命令组布局             |
 | `data-ribbon-controls`              | —                                   | 推荐   | 将命令与组图例上方对齐 |
+| `--ribbon-tabs-height`              | CSS 长度                            | `2.25rem` | 固定标签栏高度       |
+| `--ribbon-panel-height`             | CSS 长度                            | `4.625rem` | 固定命令区高度       |
+| `--ribbon-group-height`             | CSS 长度                            | `4.0625rem` | 固定命令组高度       |
 
 ## 状态和变体
 
-蓝色适合文档与通用工作区，绿色适合电子表格或健康状态，橙色适合演示文稿，紫色适合智能体工作流。禁用的标签页与命令使用原生 `disabled`。
+蓝色适合文档与通用工作区，绿色适合电子表格或健康状态，橙色适合演示文稿，紫色适合智能体工作流。禁用的标签页与命令使用原生 `disabled`。默认 36 像素标签栏和 74 像素命令区与 A3S Office 一致；紧凑视口保持标签不收缩并允许横向滚动。
 
 ### JavaScript API
 

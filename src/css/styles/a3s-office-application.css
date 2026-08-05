@@ -351,13 +351,17 @@
     border-inline-start: 1px solid var(--a3s-line);
     background: var(--a3s-panel);
     color: var(--a3s-ink);
-    box-shadow: -0.5rem 0 1.5rem rgb(24 31 48 / 3%);
+    box-shadow: -0.625rem 0 1.75rem rgb(24 31 48 / 7%);
   }
 
-  .task-pane > header,
+  .task-pane > header {
+    min-height: 3.25rem;
+    padding: 0.5rem 0.625rem 0.5rem 0.875rem;
+  }
+
   .task-pane > footer {
-    min-height: 2.75rem;
-    padding: 0.625rem 0.75rem;
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .task-pane > header {
@@ -371,12 +375,18 @@
   }
 
   .task-pane > section {
-    padding: 0.75rem;
+    padding: 0.875rem;
   }
 
   .task-pane > footer {
     border-block-start: 1px solid var(--a3s-line);
     background: color-mix(in srgb, var(--a3s-panel-soft) 48%, var(--a3s-panel));
+  }
+
+  @media (max-width: 56.25rem) {
+    .task-pane[data-responsive="overlay"] {
+      box-shadow: -1rem 0 2.25rem rgb(20 28 43 / 18%);
+    }
   }
 
   @media (max-width: 48rem) {

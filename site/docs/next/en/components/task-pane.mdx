@@ -3,11 +3,17 @@
 A Task Pane hosts contextual properties, comments, navigation, and assistant workflows beside the active editor.
 
 <Preview>
-  <div class="flex h-80 w-full overflow-hidden rounded-xl border border-border bg-[var(--a3s-bg)]">
-    <main class="grid min-w-0 flex-1 place-items-center p-6 text-sm text-muted-foreground">
+  <div
+    class="relative flex h-80 w-full overflow-hidden border border-border bg-[var(--a3s-bg)]"
+    data-task-pane-host
+  >
+    <div
+      class="grid min-w-0 flex-1 place-items-center p-6 text-sm text-muted-foreground"
+      data-editor-canvas
+    >
       Editor canvas
-    </main>
-    <aside class="task-pane">
+    </div>
+    <aside class="task-pane" data-responsive="overlay">
       <header>
         <h2>Page setup</h2>
         <button
@@ -24,16 +30,16 @@ A Task Pane hosts contextual properties, comments, navigation, and assistant wor
         <div class="field">
           <label for="task-pane-paper">Paper size</label>
           <select id="task-pane-paper">
-            <option>A4</option>
-            <option>Letter</option>
+            <option value="a4">A4</option>
+            <option value="letter">Letter</option>
           </select>
           <p>210 × 297 mm</p>
         </div>
         <div class="field mt-4">
           <label for="task-pane-margin">Margin</label>
           <select id="task-pane-margin">
-            <option>Normal</option>
-            <option>Narrow</option>
+            <option value="normal">Normal</option>
+            <option value="narrow">Narrow</option>
           </select>
         </div>
       </section>
@@ -52,7 +58,8 @@ A Task Pane hosts contextual properties, comments, navigation, and assistant wor
 ## Usage
 
 ```html
-<aside class="task-pane">
+<div class="relative"><!-- establishes the overlay containing block -->
+<aside class="task-pane" data-responsive="overlay">
   <header>
     <h2>Properties</h2>
     ...
@@ -60,6 +67,7 @@ A Task Pane hosts contextual properties, comments, navigation, and assistant wor
   <section>...</section>
   <footer>...</footer>
 </aside>
+</div>
 ```
 
 ### Parameters
@@ -69,12 +77,15 @@ A Task Pane hosts contextual properties, comments, navigation, and assistant wor
 | Semantic `header`       | Recommended | Title and close or overflow actions |
 | Semantic `section`      | Yes         | Scrollable pane content             |
 | Semantic `footer`       | Optional    | Persistent actions                  |
-| `--task-pane-width`     | Optional    | Pane width, default `18rem`         |
-| `--task-pane-min-width` | Optional    | Minimum pane width, default `14rem` |
+| `data-responsive="overlay"` | Optional | Shares workspace width above `56.25rem`, overlays below it, and fills the host below `32.5rem` |
+| `--task-pane-width`     | Optional    | Pane width, default `clamp(20rem, 28vw, 23.75rem)` |
+| `--task-pane-min-width` | Optional    | Minimum shared-layout width, default `18.75rem` |
+| `--task-pane-overlay-width` | Optional | Overlay width, default `23.75rem` |
+| `--task-pane-overlay-z-index` | Optional | Overlay stacking level, default `20` |
 
 ## States and variants
 
-The host application owns whether the pane is mounted, overlaid, or placed in a Split Pane. Keep the root contract focused on internal layout and presentation.
+The host application owns whether the pane is mounted or placed in a Split Pane. Add `data-responsive="overlay"` when the Office behavior is desired: the pane shares workspace width above 900 pixels, overlays at the inline end below 900 pixels, and becomes workspace-wide below 520 pixels. Its host must establish a positioning context, normally with `position: relative`.
 
 ## Accessibility
 

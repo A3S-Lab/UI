@@ -32,14 +32,20 @@ suite "a3s-ui-application-and-utilities" {
     }
 
     scenario "ribbon" {
-        name = "Ribbon preview switches command groups"
+        name = "Ribbon preview switches command groups with roving keyboard focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/ribbon.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "compact" { width = 768 height = 900 }
         click "activate-insert" { target = css("#ribbon-insert-tab") }
         expect "insert-active" { visible = css("#ribbon-insert-tab[aria-selected=true]") }
         expect "insert-panel-visible" { visible = css("#ribbon-insert:not([hidden])") }
+        focus "focus-insert" { target = css("#ribbon-insert-tab") }
+        press "move-to-review" { key = "ArrowRight" }
+        expect "review-active" { visible = css("#ribbon-review-tab[aria-selected=true]:focus") }
+        expect "review-panel-visible" { visible = css("#ribbon-review:not([hidden])") }
+        screenshot "ribbon-compact" { path = "components/ribbon-compact.png" }
     }
 
     scenario "settings-layout" {
@@ -73,23 +79,37 @@ suite "a3s-ui-application-and-utilities" {
     }
 
     scenario "task-pane" {
-        name = "Task Pane preview exposes inspector fields"
+        name = "Task Pane preview keeps inspector controls usable as an overlay"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-pane.html" }
         wait "loaded" { load = "networkidle" }
         expect "task-pane-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane") }
         expect "task-pane-field-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] .task-pane .field") }
+        select "choose-letter" {
+            target = css("#task-pane-paper")
+            values = ["letter"]
+        }
+        expect "letter-selected" { visible = css("#task-pane-paper:has(option[value=letter]:checked)") }
+        viewport "compact-overlay" { width = 768 height = 900 }
+        expect "responsive-overlay-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane[data-responsive=overlay]") }
+        screenshot "task-pane-compact" { path = "components/task-pane-compact.png" }
     }
 
     scenario "status-bar" {
-        name = "Status Bar preview exposes information and actions"
+        name = "Status Bar preview preserves primary actions on narrow screens"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/status-bar.html" }
         wait "loaded" { load = "networkidle" }
         expect "status-info-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-info]") }
         expect "status-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-actions]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-zoom" { target = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]") }
+        press "increase-zoom" { key = "ArrowRight" }
+        expect "zoom-remains-focused" { visible = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]:focus") }
+        expect "phone-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] [data-status-actions]") }
+        screenshot "status-bar-phone" { path = "components/status-bar-phone.png" }
     }
 
     scenario "scroll-area" {

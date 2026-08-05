@@ -954,18 +954,20 @@ html .rp-doc-layout__doc {
 }
 
 .ui-workbench-shell .ribbon > [role="tabpanel"] {
-  min-height: 64px;
-  height: 64px;
+  min-height: 74px;
+  height: 74px;
 }
 
 .ui-workbench-shell .ribbon > [role="tabpanel"] > fieldset[data-ribbon-group] {
-  min-height: 54px;
+  min-height: 65px;
+  height: 65px;
 }
 
 .ui-office-workspace {
+  position: relative;
   display: grid;
   min-height: 252px;
-  grid-template-columns: minmax(0, 1fr) 148px;
+  grid-template-columns: minmax(0, 1fr) 168px;
   overflow: hidden;
   background:
     radial-gradient(
@@ -1052,8 +1054,9 @@ html .rp-doc-layout__doc {
 }
 
 .ui-office-task-pane.task-pane {
-  --task-pane-width: 148px;
-  --task-pane-min-width: 148px;
+  --task-pane-width: 168px;
+  --task-pane-min-width: 168px;
+  --task-pane-overlay-width: min(23.75rem, 46%);
   box-shadow: none;
 }
 
@@ -1130,7 +1133,7 @@ html .rp-doc-layout__doc {
 }
 
 .ui-workbench-shell .status-bar {
-  font-size: 10px;
+  font-size: var(--a3s-font-size-micro);
 }
 
 .ui-specimen-measure {
@@ -1586,14 +1589,6 @@ html .rp-doc-layout__doc {
     padding: 56px 0 48px;
   }
 
-  .ui-office-workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .ui-office-task-pane {
-    display: none;
-  }
-
   .ui-section {
     padding: 78px 40px;
   }
@@ -1608,6 +1603,10 @@ html .rp-doc-layout__doc {
 }
 
 @media (max-width: 900px) {
+  .ui-office-workspace {
+    grid-template-columns: 1fr;
+  }
+
   .ui-hero {
     grid-template-columns: 1fr;
     gap: 0;

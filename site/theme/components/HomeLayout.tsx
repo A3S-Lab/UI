@@ -537,7 +537,10 @@ function WorkbenchSpecimen({ locale }: { locale: Locale }) {
                 ))}
               </div>
             </section>
-            <aside className="task-pane ui-office-task-pane">
+            <aside
+              className="task-pane ui-office-task-pane"
+              data-responsive="overlay"
+            >
               <header>
                 <strong>{labels.properties}</strong>
                 <span

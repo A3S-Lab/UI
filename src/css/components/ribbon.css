@@ -1,5 +1,9 @@
 @layer components {
   .ribbon {
+    --ribbon-tabs-height: var(--a3s-ribbon-tabs-height, 2.25rem);
+    --ribbon-panel-height: var(--a3s-ribbon-panel-height, 4.625rem);
+    --ribbon-group-height: 4.0625rem;
+
     display: flex;
     min-width: 0;
     flex-direction: column;
@@ -8,19 +12,27 @@
   .ribbon > [role='tablist'] {
     display: flex;
     min-width: 0;
-    flex: none;
+    min-height: var(--ribbon-tabs-height);
+    height: var(--ribbon-tabs-height);
+    flex: 0 0 var(--ribbon-tabs-height);
     align-items: center;
     overflow-x: auto;
   }
 
   .ribbon > [role='tablist'] > [role='tab'] {
+    min-height: 100%;
+    height: 100%;
     flex: none;
   }
 
   .ribbon > [role='tabpanel'] {
     display: flex;
     min-width: 0;
+    min-height: var(--ribbon-panel-height);
+    height: var(--ribbon-panel-height);
+    flex: 0 0 var(--ribbon-panel-height);
     overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .ribbon > [role='tabpanel'][hidden] {
@@ -30,6 +42,8 @@
   .ribbon > [role='tabpanel'] > fieldset {
     display: inline-flex;
     min-width: max-content;
+    min-height: var(--ribbon-group-height);
+    height: var(--ribbon-group-height);
     flex: none;
     flex-direction: column;
     justify-content: center;
