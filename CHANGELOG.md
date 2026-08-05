@@ -15,6 +15,8 @@
 
 ### Fixed
 
+- Restored the Native Select chevron through Office hover, dark, and RTL states; aligned the Radio Group preview with Office field spacing and typography; and kept preselected MDX form controls interactive.
+- Corrected Card interior spacing, Toast layout and lifecycle behavior, and Switch thumb travel across desktop, touch, and RTL states.
 - Corrected RTL tab arrow order, kept long breadcrumbs and tablists inside their own scroll boundaries, and synchronized Sidebar focus, dismissal, and independent desktop/mobile state across its breakpoint.
 - Kept dropdown menus, popovers, selects, and combobox lists inside the visual viewport with shared collision flipping, logical RTL alignment, constrained available height, and live scroll/resize repositioning.
 - Contained the compact App Shell drawer inside its shell, removed its closed state from pointer and keyboard interaction, restored focus on Escape, and prevented mobile documentation typography from leaking into component previews.

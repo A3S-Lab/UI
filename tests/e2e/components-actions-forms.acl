@@ -79,6 +79,7 @@ suite "a3s-ui-actions-and-forms" {
             values = ["banana"]
         }
         expect "banana-selected" { visible = css(".a3s-preview[data-preview-component=native-select] select:has(option[value=banana]:checked)") }
+        screenshot "native-select-ltr" { path = "components/native-select-ltr.png" }
     }
 
     scenario "select" {
@@ -95,22 +96,27 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "checkbox" {
-        name = "Checkbox preview toggles a labeled option"
+        name = "Checkbox preview toggles unchecked and prechecked options"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
         wait "loaded" { load = "networkidle" }
         check "accept-terms" { target = label("Accept terms and conditions") }
         expect "checked" { visible = css("#terms-checkbox:checked") }
+        click "clear-prechecked-option" { target = css("#terms-checkbox-2") }
+        expect "prechecked-option-cleared" { visible = css("#terms-checkbox-2:not(:checked)") }
     }
 
     scenario "radio-group" {
-        name = "Radio Group preview changes the selected density"
+        name = "Radio Group preview changes density in both directions"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/radio-group.html" }
         wait "loaded" { load = "networkidle" }
-        check "choose-comfortable" { target = label("Comfortable") }
+        check "choose-default" { target = css("#r1") }
+        expect "default-selected" { visible = css("#r1:checked") }
+        expect "comfortable-cleared" { visible = css("#r2:not(:checked)") }
+        check "choose-comfortable" { target = css("#r2") }
         expect "comfortable-selected" { visible = css("#r2:checked") }
     }
 

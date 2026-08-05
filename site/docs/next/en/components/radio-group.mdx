@@ -2,15 +2,15 @@
 
 <Preview>
 <div role="radiogroup" aria-label="View density" data-slot="radio-group" class="w-fit">
-  <div class="flex items-center gap-3">
+  <div role="group" class="field" data-orientation="horizontal">
     <input type="radio" id="r1" name="radio-demo" value="default" class="input" />
     <label for="r1">Default</label>
   </div>
-  <div class="flex items-center gap-3">
-    <input type="radio" id="r2" name="radio-demo" value="comfortable" class="input" checked />
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r2" name="radio-demo" value="comfortable" class="input" defaultChecked />
     <label for="r2">Comfortable</label>
   </div>
-  <div class="flex items-center gap-3">
+  <div role="group" class="field" data-orientation="horizontal">
     <input type="radio" id="r3" name="radio-demo" value="compact" class="input" />
     <label for="r3">Compact</label>
   </div>
@@ -71,7 +71,7 @@ Radio group items with a description using the `Field` component.
     </section>
   </div>
   <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r2" name="radio-description" value="comfortable" class="input" checked />
+    <input type="radio" id="desc-r2" name="radio-description" value="comfortable" class="input" defaultChecked />
     <section>
       <label for="desc-r2">Comfortable</label>
       <p>More space between elements.</p>
@@ -99,7 +99,7 @@ Use a native `<label>` to wrap the entire `.field` for a clickable card-style se
         <h3>Plus</h3>
         <p>For individuals and small teams.</p>
       </section>
-      <input type="radio" id="plus-plan" name="choice-plan" value="plus" class="input" checked />
+      <input type="radio" id="plus-plan" name="choice-plan" value="plus" class="input" defaultChecked />
     </div>
   </label>
   <label for="pro-plan">
@@ -133,7 +133,7 @@ Use a native `<fieldset>` and `<legend>` to group radio items with a label and d
   <p>Yearly and lifetime plans offer significant savings.</p>
   <div role="radiogroup" aria-label="Subscription plan" data-slot="radio-group">
     <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-monthly" name="subscription-plan" value="monthly" class="input" checked />
+      <input type="radio" id="plan-monthly" name="subscription-plan" value="monthly" class="input" defaultChecked />
       <label for="plan-monthly" class="font-normal">Monthly ($9.99/month)</label>
     </div>
     <div role="group" class="field" data-orientation="horizontal">
@@ -159,7 +159,7 @@ Use the `disabled` attribute to disable individual items.
     <label for="disabled-1" class="font-normal">Disabled</label>
   </div>
   <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="disabled-2" name="radio-disabled" value="option2" class="input" checked />
+    <input type="radio" id="disabled-2" name="radio-disabled" value="option2" class="input" defaultChecked />
     <label for="disabled-2" class="font-normal">Option 2</label>
   </div>
   <div role="group" class="field" data-orientation="horizontal">
@@ -179,7 +179,7 @@ Use `aria-invalid="true"` on radio inputs and `data-invalid` on fields to show v
   <p>Choose how you want to receive notifications.</p>
   <div role="radiogroup" aria-label="Notification preferences" data-slot="radio-group">
     <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-email" name="notification-preference" value="email" class="input" aria-invalid="true" checked />
+      <input type="radio" id="invalid-email" name="notification-preference" value="email" class="input" aria-invalid="true" defaultChecked />
       <label for="invalid-email" class="font-normal">Email only</label>
     </div>
     <div role="group" class="field" data-orientation="horizontal" data-invalid>
@@ -208,7 +208,7 @@ Set `dir="rtl"` on the radio group or an ancestor.
     </section>
   </div>
   <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r2-rtl" name="radio-rtl" value="comfortable" class="input" checked />
+    <input type="radio" id="r2-rtl" name="radio-rtl" value="comfortable" class="input" defaultChecked />
     <section>
       <label for="r2-rtl">مريح</label>
       <p>مساحة أكبر بين العناصر.</p>
