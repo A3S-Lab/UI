@@ -11,12 +11,18 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "button-group" {
-        name = "Button Group preview renders adjacent grouped actions"
+        name = "Button Group keeps mixed controls aligned and restores menu focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button-group.html" }
         wait "loaded" { load = "networkidle" }
         expect "group-visible" { visible = css(".a3s-preview[data-preview-component=button-group] .btn + .btn") }
+        viewport "phone" { width = 390 height = 844 }
+        click "open-group-menu" { target = css("#dropdown-menu-609880-trigger") }
+        expect "group-menu-open" { visible = css("#dropdown-menu-609880-popover[aria-hidden=false]") }
+        screenshot "button-group-phone-open" { path = "components/button-group-phone-open.png" }
+        press "close-group-menu" { key = "Escape" }
+        expect "group-menu-focus-restored" { visible = css("#dropdown-menu-609880-trigger:focus") }
     }
 
     scenario "field" {
@@ -109,24 +115,33 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "switch" {
-        name = "Switch preview toggles airplane mode"
+        name = "Switch thumb moves in both directions on a phone viewport"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         check "enable-airplane-mode" { target = label("Airplane Mode") }
         expect "switch-checked" { visible = css("#airplane-mode:checked") }
+        screenshot "switch-checked-phone" { path = "components/switch-checked-phone.png" }
+        click "disable-airplane-mode" { target = label("Airplane Mode") }
+        expect "switch-unchecked" { visible = css("#airplane-mode:not(:checked)") }
+        screenshot "switch-unchecked-phone" { path = "components/switch-unchecked-phone.png" }
     }
 
     scenario "slider" {
-        name = "Slider preview supports keyboard adjustment"
+        name = "Slider thumb reaches both keyboard endpoints"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         focus "focus-range" { target = css(".a3s-preview[data-preview-component=slider] input[type=range]") }
-        press "increase" { key = "ArrowRight" }
+        press "move-to-start" { key = "Home" }
+        screenshot "slider-start-phone" { path = "components/slider-start-phone.png" }
+        press "move-to-end" { key = "End" }
         expect "slider-focused" { visible = css(".a3s-preview[data-preview-component=slider] input[type=range]:focus") }
+        screenshot "slider-end-phone" { path = "components/slider-end-phone.png" }
     }
 
     scenario "label" {

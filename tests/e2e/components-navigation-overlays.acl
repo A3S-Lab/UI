@@ -76,36 +76,47 @@ suite "a3s-ui-navigation-and-overlays" {
     }
 
     scenario "alert-dialog" {
-        name = "Alert Dialog preview opens a modal confirmation"
+        name = "Alert Dialog preserves semantics, action focus, and trigger return"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert-dialog.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Show Dialog") }
-        expect "dialog-open" { visible = css("#demo-alert-dialog[open]") }
-        screenshot "alert-dialog" { path = "components/alert-dialog.png" }
+        expect "dialog-open" { visible = css("#demo-alert-dialog[open][role=alertdialog]") }
+        expect "cancel-focused" { visible = css("#demo-alert-dialog button[value=cancel]:focus") }
+        screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
+        click "cancel-dialog" { target = css("#demo-alert-dialog button[value=cancel]") }
+        expect "dialog-trigger-restored" { visible = css("button[commandfor=demo-alert-dialog]:focus") }
     }
 
     scenario "dialog" {
-        name = "Dialog preview opens its edit profile surface"
+        name = "Dialog accepts edits and restores trigger focus after Escape"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dialog.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Open Dialog") }
         expect "dialog-open" { visible = css("#demo-dialog-edit-profile[open]") }
-        screenshot "dialog" { path = "components/dialog.png" }
+        fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
+        screenshot "dialog-phone" { path = "components/dialog-phone.png" }
+        press "close-dialog" { key = "Escape" }
+        expect "dialog-trigger-restored" { visible = css("button[commandfor=demo-dialog-edit-profile]:focus") }
     }
 
     scenario "drawer" {
-        name = "Drawer preview opens its native dialog surface"
+        name = "Drawer stays bounded on mobile and restores trigger focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/drawer.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         click "open-drawer" { target = role("button", "Open Drawer") }
         expect "drawer-open" { visible = css("#demo-drawer[open]") }
-        screenshot "drawer" { path = "components/drawer.png" }
+        screenshot "drawer-phone" { path = "components/drawer-phone.png" }
+        click "cancel-drawer" { target = css("#demo-drawer button[value=cancel]") }
+        expect "drawer-trigger-restored" { visible = css("button[commandfor=demo-drawer]:focus") }
     }
 
     scenario "dropdown-menu" {
@@ -121,15 +132,20 @@ suite "a3s-ui-navigation-and-overlays" {
     }
 
     scenario "popover" {
-        name = "Popover preview opens above the following documentation"
+        name = "Popover focuses editable content and restores its trigger"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/popover.html" }
         wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
         click "open-popover" { target = css("#demo-popover-trigger") }
         expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
-        screenshot "popover" { path = "components/popover.png" }
+        expect "popover-input-focused" { visible = css("#demo-popover-width:focus") }
+        fill "edit-popover-width" { target = css("#demo-popover-width") value = "72%" }
+        screenshot "popover-phone" { path = "components/popover-phone.png" }
+        press "close-popover" { key = "Escape" }
+        expect "popover-trigger-restored" { visible = css("#demo-popover-trigger:focus") }
     }
 
     scenario "command" {

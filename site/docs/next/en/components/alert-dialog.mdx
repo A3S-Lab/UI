@@ -4,7 +4,7 @@ A modal dialog that interrupts the user with important content and expects a res
 
 <Preview>
 <button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">Show Dialog</button>
-<dialog id="demo-alert-dialog" class="alert-dialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
+<dialog id="demo-alert-dialog" class="alert-dialog" role="alertdialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
   <div>
     <header>
       <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
@@ -12,7 +12,7 @@ A modal dialog that interrupts the user with important content and expects a res
     </header>
     <footer>
       <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Continue</button>
+      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Continue</button>
     </footer>
   </div>
 </dialog>
@@ -50,7 +50,7 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
 
 ```html
 <button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">Show Dialog</button>
-<dialog id="demo-alert-dialog" class="alert-dialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
+<dialog id="demo-alert-dialog" class="alert-dialog" role="alertdialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
   <div>
     <header>
       <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
@@ -58,7 +58,7 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
     </header>
     <footer>
       <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Continue</button>
+      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Continue</button>
     </footer>
   </div>
 </dialog>
@@ -108,7 +108,7 @@ A basic alert dialog with a title, description, and cancel and continue buttons.
 
 <Preview>
 <button type="button" onclick="document.getElementById('alert-dialog-basic').showModal()" class="btn" data-variant="outline">Show Dialog</button>
-<dialog id="alert-dialog-basic" class="alert-dialog" aria-labelledby="alert-dialog-basic-title" aria-describedby="alert-dialog-basic-description">
+<dialog id="alert-dialog-basic" class="alert-dialog" role="alertdialog" aria-labelledby="alert-dialog-basic-title" aria-describedby="alert-dialog-basic-description">
   <div>
     <header>
       <h2 id="alert-dialog-basic-title">Are you absolutely sure?</h2>
@@ -128,7 +128,7 @@ Use a `<figure>` in the header to add a media element such as an icon or image t
 
 <Preview>
 <button type="button" onclick="document.getElementById('alert-dialog-media').showModal()" class="btn" data-variant="outline">Share Project</button>
-<dialog id="alert-dialog-media" class="alert-dialog" aria-labelledby="alert-dialog-media-title" aria-describedby="alert-dialog-media-description">
+<dialog id="alert-dialog-media" class="alert-dialog" role="alertdialog" aria-labelledby="alert-dialog-media-title" aria-describedby="alert-dialog-media-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-circle-fading-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.38 16.75" /><path d="M12 8v8" /><path d="M16 12H8" /><path d="M2.5 8.88a10 10 0 0 0 0 6.24" /><path d="M4.64 4.64a10 10 0 0 0 0 14.72" /></svg></figure>
@@ -149,7 +149,7 @@ Use a destructive action button when the alert dialog confirms a destructive ope
 
 <Preview>
 <button type="button" onclick="document.getElementById('alert-dialog-destructive').showModal()" class="btn" data-variant="destructive">Delete Chat</button>
-<dialog id="alert-dialog-destructive" class="alert-dialog" aria-labelledby="alert-dialog-destructive-title" aria-describedby="alert-dialog-destructive-description">
+<dialog id="alert-dialog-destructive" class="alert-dialog" role="alertdialog" aria-labelledby="alert-dialog-destructive-title" aria-describedby="alert-dialog-destructive-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></figure>
@@ -170,7 +170,7 @@ Use `data-size="sm"` for a compact alert dialog. The small size keeps media, tit
 
 <Preview>
 <button type="button" onclick="document.getElementById('alert-dialog-small').showModal()" class="btn" data-variant="outline">Invite Members</button>
-<dialog id="alert-dialog-small" class="alert-dialog" data-size="sm" aria-labelledby="alert-dialog-small-title" aria-describedby="alert-dialog-small-description">
+<dialog id="alert-dialog-small" class="alert-dialog" role="alertdialog" data-size="sm" aria-labelledby="alert-dialog-small-title" aria-describedby="alert-dialog-small-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-users" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" /></svg></figure>
@@ -192,7 +192,7 @@ Alert Dialog supports document direction. Set `dir="rtl"` on the dialog or a par
 <Preview>
 <div dir="rtl">
   <button type="button" onclick="document.getElementById('alert-dialog-rtl').showModal()" class="btn" data-variant="outline">إظهار الحوار</button>
-  <dialog id="alert-dialog-rtl" class="alert-dialog" aria-labelledby="alert-dialog-rtl-title" aria-describedby="alert-dialog-rtl-description">
+  <dialog id="alert-dialog-rtl" class="alert-dialog" role="alertdialog" aria-labelledby="alert-dialog-rtl-title" aria-describedby="alert-dialog-rtl-description">
     <div>
       <header>
         <h2 id="alert-dialog-rtl-title">هل أنت متأكد تماماً؟</h2>

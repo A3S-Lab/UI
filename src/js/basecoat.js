@@ -115,7 +115,7 @@
       : "start";
     const offset = Math.max(
       0,
-      parsePopoverNumber(popover.dataset.sideOffset, 4),
+      parsePopoverNumber(popover.dataset.sideOffset, 8),
     );
     const padding = Math.max(
       0,
