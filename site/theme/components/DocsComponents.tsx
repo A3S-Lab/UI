@@ -19,14 +19,6 @@ import {
 } from '@rspress/core/runtime';
 import Chart, { type ChartConfiguration } from 'chart.js/auto';
 
-declare global {
-  interface Window {
-    a3sUI?: {
-      initAll: (options?: { force?: boolean }) => void;
-    };
-  }
-}
-
 const attributeAliases: Record<string, string> = {
   class: 'className',
   for: 'htmlFor',
@@ -92,9 +84,27 @@ function normalizePreviewNode(node: ReactNode): ReactNode {
 
   const element = node as ReactElement<Record<string, unknown>>;
   const normalizedProps: Record<string, unknown> = {};
+  const isMutableFormControl =
+    typeof element.type === 'string' &&
+    ['input', 'select', 'textarea'].includes(element.type);
+  const hasValueHandler = ['onChange', 'onInput', 'onchange', 'oninput'].some(
+    (name) => element.props[name] !== undefined,
+  );
 
   for (const [name, value] of Object.entries(element.props)) {
     if (name === 'children') continue;
+
+    if (isMutableFormControl && !hasValueHandler && name === 'value') {
+      normalizedProps.value = undefined;
+      normalizedProps.defaultValue = value;
+      continue;
+    }
+
+    if (isMutableFormControl && !hasValueHandler && name === 'checked') {
+      normalizedProps.checked = undefined;
+      normalizedProps.defaultChecked = value;
+      continue;
+    }
 
     const attributeAlias = attributeAliases[name];
     if (attributeAlias) {
@@ -211,12 +221,9 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
     }
 
     syncOverlayState();
-    const frame = requestAnimationFrame(() => {
-      if (canvasRef.current) initializeDocumentationDemos(canvasRef.current);
-      syncOverlayState();
-    });
+    if (canvasRef.current) initializeDocumentationDemos(canvasRef.current);
+    syncOverlayState();
     return () => {
-      cancelAnimationFrame(frame);
       overlayObserver.disconnect();
     };
   }, [children]);

@@ -1,6 +1,15 @@
 import { useContext, useEffect, type ReactNode } from "react";
 import { ThemeContext, useLocation, useVersion } from "@rspress/core/runtime";
 
+declare global {
+  interface Window {
+    a3sUI?: {
+      initAll: (options?: { force?: boolean }) => void;
+      start: () => void;
+    };
+  }
+}
+
 type RootProps = {
   children: ReactNode;
 };
@@ -9,6 +18,12 @@ export function Root({ children }: RootProps) {
   const location = useLocation();
   const currentVersion = useVersion();
   const { theme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    window.a3sUI?.initAll();
+    window.a3sUI?.start();
+    document.documentElement.removeAttribute("data-a3s-defer-init");
+  }, []);
 
   useEffect(() => {
     try {

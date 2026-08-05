@@ -25,6 +25,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "activate-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
         expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
         expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
@@ -45,6 +46,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sidebar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
         click "toggle-sidebar" { target = role("button", "Toggle sidebar") }
         expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
@@ -57,6 +59,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert-dialog.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-dialog" { target = role("button", "Show Dialog") }
         expect "dialog-open" { visible = css("#demo-alert-dialog[open]") }
         screenshot "alert-dialog" { path = "components/alert-dialog.png" }
@@ -68,6 +71,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dialog.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-dialog" { target = role("button", "Open Dialog") }
         expect "dialog-open" { visible = css("#demo-dialog-edit-profile[open]") }
         screenshot "dialog" { path = "components/dialog.png" }
@@ -79,6 +83,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/drawer.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-drawer" { target = role("button", "Open Drawer") }
         expect "drawer-open" { visible = css("#demo-drawer[open]") }
         screenshot "drawer" { path = "components/drawer.png" }
@@ -90,6 +95,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-menu" { target = css("#demo-dropdown-menu-trigger") }
         expect "menu-visible" { visible = css("#demo-dropdown-menu [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-overlay-open]") }
@@ -102,6 +108,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/popover.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-popover" { target = css("#demo-popover-trigger") }
         expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
@@ -114,6 +121,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/command.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "filter-commands" { target = placeholder("Type a command or search...") value = "Calendar" }
         expect "calendar-visible" { visible = css("#demo-command-standalone [role=menuitem][data-filter=Calendar]:not([aria-hidden=true])") }
     }
@@ -124,6 +132,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tooltip.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         hover "show-tooltip" { target = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip]") }
         expect "tooltip-trigger-visible" { visible = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip='Add to library']") }
         screenshot "tooltip" { path = "components/tooltip.png" }

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Added route-level geometry and state contracts for all 51 public component guides, including real component-root checks and browser warning and error regression coverage.
+
 ### Changed
 
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
@@ -12,6 +16,7 @@
 
 ### Fixed
 
+- Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
 - Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.

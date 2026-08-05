@@ -62,6 +62,7 @@ suite "a3s-ui-feedback-and-data" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toast.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "create-toast" { target = role("button", "Toast from front-end") }
         expect "toast-visible" { visible = css("#toaster .toast:not([aria-hidden=true])") }
         screenshot "toast" { path = "components/toast.png" }
@@ -73,6 +74,7 @@ suite "a3s-ui-feedback-and-data" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/accordion.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-return-policy" { target = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2) > summary") }
         expect "return-policy-open" { visible = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2)[open]") }
     }
@@ -92,6 +94,7 @@ suite "a3s-ui-feedback-and-data" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/card.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-email" { target = css(".a3s-preview[data-preview-component=card] input[type=email]") value = "tester@example.test" }
         expect "card-visible" { visible = css(".a3s-preview[data-preview-component=card] .card") }
     }

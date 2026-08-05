@@ -1,6 +1,69 @@
 (() => {
   const componentRegistry = {};
   let observer = null;
+  let viewportPositionFrame = null;
+  const popoverPositionSchedules = new WeakMap();
+  const popoverViewportPadding = 8;
+
+  const clearPopoverPositionSchedule = (popover) => {
+    const schedule = popoverPositionSchedules.get(popover);
+    if (!schedule) return;
+    cancelAnimationFrame(schedule.frame);
+    schedule.timers.forEach(clearTimeout);
+    popoverPositionSchedules.delete(popover);
+  };
+
+  const positionPopoverInViewport = (popover) => {
+    if (!popover.isConnected || popover.getAttribute('aria-hidden') !== 'false') return;
+
+    const rect = popover.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    let shiftX = parseFloat(popover.style.getPropertyValue('--a3s-popover-viewport-x')) || 0;
+    let shiftY = parseFloat(popover.style.getPropertyValue('--a3s-popover-viewport-y')) || 0;
+
+    if (rect.left < popoverViewportPadding) {
+      shiftX += popoverViewportPadding - rect.left;
+    } else if (rect.right > viewportWidth - popoverViewportPadding) {
+      shiftX += viewportWidth - popoverViewportPadding - rect.right;
+    }
+
+    if (rect.top < popoverViewportPadding) {
+      shiftY += popoverViewportPadding - rect.top;
+    } else if (rect.bottom > viewportHeight - popoverViewportPadding) {
+      shiftY += viewportHeight - popoverViewportPadding - rect.bottom;
+    }
+
+    popover.style.setProperty('--a3s-popover-viewport-x', `${shiftX}px`);
+    popover.style.setProperty('--a3s-popover-viewport-y', `${shiftY}px`);
+  };
+
+  const schedulePopoverPosition = (popover, { reset = false } = {}) => {
+    clearPopoverPositionSchedule(popover);
+    if (popover.getAttribute('aria-hidden') !== 'false') return;
+
+    if (reset) {
+      popover.style.setProperty('--a3s-popover-viewport-x', '0px');
+      popover.style.setProperty('--a3s-popover-viewport-y', '0px');
+    }
+
+    const frame = requestAnimationFrame(() => positionPopoverInViewport(popover));
+    const timers = [
+      setTimeout(() => positionPopoverInViewport(popover), 80),
+      setTimeout(() => positionPopoverInViewport(popover), 180),
+    ];
+    popoverPositionSchedules.set(popover, { frame, timers });
+  };
+
+  const scheduleOpenPopoverPositions = () => {
+    if (viewportPositionFrame !== null) return;
+    viewportPositionFrame = requestAnimationFrame(() => {
+      viewportPositionFrame = null;
+      document.querySelectorAll('[data-popover][aria-hidden="false"]').forEach((popover) => {
+        schedulePopoverPosition(popover, { reset: true });
+      });
+    });
+  };
 
   const registerComponent = (name, selectorOrOptions, initFunction) => {
     const options = typeof selectorOrOptions === 'object'
@@ -112,18 +175,48 @@
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach(initNewComponents);
-        mutation.removedNodes.forEach(destroyRemovedComponents);
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach(initNewComponents);
+          mutation.removedNodes.forEach(destroyRemovedComponents);
+        }
+
+        const target = mutation.target.nodeType === Node.ELEMENT_NODE ? mutation.target : null;
+        const popover = target?.matches('[data-popover]')
+          ? target
+          : target?.closest('[data-popover][aria-hidden="false"]');
+        if (!popover) return;
+
+        if (popover.getAttribute('aria-hidden') === 'false') {
+          schedulePopoverPosition(popover, { reset: target === popover });
+        } else {
+          clearPopoverPositionSchedule(popover);
+        }
       });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+      attributeFilter: ['aria-hidden'],
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+    window.addEventListener('resize', scheduleOpenPopoverPositions);
+    window.addEventListener('scroll', scheduleOpenPopoverPositions, true);
+    window.visualViewport?.addEventListener('resize', scheduleOpenPopoverPositions);
   };
 
   const stopObserver = () => {
     if (!observer) return;
     observer.disconnect();
     observer = null;
+    window.removeEventListener('resize', scheduleOpenPopoverPositions);
+    window.removeEventListener('scroll', scheduleOpenPopoverPositions, true);
+    window.visualViewport?.removeEventListener('resize', scheduleOpenPopoverPositions);
+    if (viewportPositionFrame !== null) {
+      cancelAnimationFrame(viewportPositionFrame);
+      viewportPositionFrame = null;
+    }
+    document.querySelectorAll('[data-popover]').forEach(clearPopoverPositionSchedule);
   };
 
   const initRegisteredComponent = (componentName, options = {}) => {
@@ -176,6 +269,7 @@
   window.basecoat = runtime;
 
   document.addEventListener('DOMContentLoaded', () => {
+    if (document.documentElement.hasAttribute('data-a3s-defer-init')) return;
     initAllComponents();
     startObserver();
   });

@@ -7,6 +7,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
     }
@@ -27,6 +28,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
     }
@@ -37,6 +39,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/ribbon.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "activate-insert" { target = css("#ribbon-insert-tab") }
         expect "insert-active" { visible = css("#ribbon-insert-tab[aria-selected=true]") }
         expect "insert-panel-visible" { visible = css("#ribbon-insert:not([hidden])") }
@@ -67,6 +70,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/split-pane.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-separator" { target = css(".a3s-preview[data-preview-component=split-pane] [role=separator]") }
         press "resize-right" { key = "ArrowRight" }
         expect "value-updated" { visible = css(".a3s-preview[data-preview-component=split-pane] .split-pane[data-value='47'] [role=separator][aria-valuenow='47']") }
@@ -98,6 +102,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/scroll-area.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wheel "scroll-content" {
             target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar")
             delta_y = 240
@@ -111,10 +116,12 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 60000
         navigate "open-home" { url = "http://127.0.0.1:4178/UI/en/" }
         wait "home-loaded" { load = "networkidle" }
+        wait "home-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "force-light" { target = css("[data-theme-appearance=light]") }
         expect "light-ready" { visible = css("html:not(.dark):not(.rp-dark)") }
         navigate "open-component" { url = "http://127.0.0.1:4178/UI/en/components/theme-switcher.html" }
         wait "component-loaded" { load = "networkidle" }
+        wait "component-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "toggle-theme" { target = css(".a3s-preview[data-preview-component=theme-switcher] button[aria-label='Toggle dark mode']") }
         expect "dark-applied" { visible = css("html.dark.rp-dark") }
         screenshot "theme-switcher" { path = "components/theme-switcher.png" }

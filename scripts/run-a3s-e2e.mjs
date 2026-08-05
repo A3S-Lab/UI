@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
-import { readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +27,7 @@ function parseArguments(argv) {
       options.browserExecutable = argv[++index];
     else if (argument === '--max-parallel-scenarios')
       options.maxParallel = argv[++index];
+    else if (argument === '--preview-port') options.previewPort = argv[++index];
     else if (argument === '--suite') options.suites.push(argv[++index]);
     else throw new Error(`Unknown argument: ${argument}`);
   }
@@ -58,9 +61,35 @@ function run(command, args, options = {}) {
   });
 }
 
-async function waitForPreview(url, timeoutMs = 30000) {
+async function allocatePreviewPort() {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (!address || typeof address === 'string') {
+        server.close();
+        reject(new Error('Unable to allocate an A3S Test preview port.'));
+        return;
+      }
+      server.close((error) => {
+        if (error) reject(error);
+        else resolve(address.port);
+      });
+    });
+  });
+}
+
+async function waitForPreview(url, getPreviewExit, timeoutMs = 30000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
+    const previewExit = getPreviewExit();
+    if (previewExit) {
+      throw new Error(
+        `Documentation preview exited before becoming ready (${previewExit}).`,
+      );
+    }
     try {
       const response = await fetch(url);
       if (response.ok) return;
@@ -132,7 +161,7 @@ if (duplicateComponents.length > 0) {
 }
 
 for (const suite of allSuites) {
-  await run(a3sTest, ['check', suite, '--json']);
+  await run(a3sTest, ['check', suite]);
 }
 
 if (options.checkOnly) {
@@ -140,6 +169,33 @@ if (options.checkOnly) {
     `Validated ${suites.length} A3S Test suites covering ${documentedComponents.length} component pages.`,
   );
   process.exit(0);
+}
+
+const configuredPreviewPort =
+  options.previewPort ?? process.env.A3S_TEST_PREVIEW_PORT;
+const previewPort = configuredPreviewPort
+  ? Number.parseInt(configuredPreviewPort, 10)
+  : await allocatePreviewPort();
+if (!Number.isInteger(previewPort) || previewPort < 1 || previewPort > 65535) {
+  throw new Error(`Invalid A3S Test preview port: ${configuredPreviewPort}`);
+}
+const previewOrigin = `http://127.0.0.1:${previewPort}`;
+const runtimeSuiteRoot = await mkdtemp(
+  path.join(tmpdir(), 'a3s-ui-e2e-'),
+);
+const runtimeSuites = [];
+for (const suite of suites) {
+  const source = await readFile(path.join(projectRoot, suite), 'utf8');
+  const runtimeSource = source.replaceAll(
+    'http://127.0.0.1:4178',
+    previewOrigin,
+  );
+  if (runtimeSource === source) {
+    throw new Error(`A3S Test suite has no local preview URL: ${suite}`);
+  }
+  const runtimeSuite = path.join(runtimeSuiteRoot, path.basename(suite));
+  await writeFile(runtimeSuite, runtimeSource, 'utf8');
+  runtimeSuites.push(runtimeSuite);
 }
 
 const preview = spawn(
@@ -150,7 +206,7 @@ const preview = spawn(
     '--host',
     '127.0.0.1',
     '--port',
-    '4178',
+    String(previewPort),
   ],
   {
     cwd: siteRoot,
@@ -159,6 +215,10 @@ const preview = spawn(
     windowsHide: true,
   },
 );
+let previewExit = null;
+preview.once('exit', (code, signal) => {
+  previewExit = `code ${code ?? 'none'}, signal ${signal ?? 'none'}`;
+});
 
 const stopPreview = () => {
   if (!preview.killed) preview.kill();
@@ -168,8 +228,11 @@ process.once('SIGINT', stopPreview);
 process.once('SIGTERM', stopPreview);
 
 try {
-  await waitForPreview('http://127.0.0.1:4178/UI/');
-  for (const suite of suites) {
+  await waitForPreview(
+    `${previewOrigin}/UI/`,
+    () => previewExit,
+  );
+  for (const suite of runtimeSuites) {
     const runArguments = [
       'run',
       suite,
@@ -185,7 +248,6 @@ try {
       '0',
       '--max-parallel-scenarios',
       maxParallel,
-      '--json',
     ];
     if (browserExecutable) {
       runArguments.push('--browser-executable', browserExecutable);
@@ -194,4 +256,5 @@ try {
   }
 } finally {
   stopPreview();
+  await rm(runtimeSuiteRoot, { recursive: true, force: true });
 }

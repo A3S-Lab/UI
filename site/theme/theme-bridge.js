@@ -2,6 +2,7 @@
   'use strict';
 
   const root = document.documentElement;
+  root.setAttribute('data-a3s-defer-init', '');
   const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
   const isMode = (value) => value === 'dark' || value === 'light';
   const isAccent = (value) =>

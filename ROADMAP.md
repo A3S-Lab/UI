@@ -11,6 +11,8 @@
 
 ## Delivered on `next`
 
+- [x] Added per-route component geometry, state, and browser diagnostic regression coverage without changing the established A3S visual language.
+- [x] Deferred component initialization until live documentation previews finish React hydration.
 - [x] Aligned A3S foundations, control density, interaction states, overlays, and application chrome with the A3S Office visual contract.
 - [x] Added independently reusable Task Pane and Status Bar contracts with localized documentation.
 - [x] Rebuilt the homepage specimen from public components instead of private look-alike styles.

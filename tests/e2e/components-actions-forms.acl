@@ -25,6 +25,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/field.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-card-number" {
             target = css(".a3s-preview[data-preview-component=field] input[type=text]")
             value = "4242 4242 4242 4242"
@@ -38,6 +39,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-email" { target = placeholder("Email") value = "tester@example.test" }
         expect "input-visible" { visible = css(".a3s-preview[data-preview-component=input] input[type=email]") }
     }
@@ -48,6 +50,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "search" { target = placeholder("Search...") value = "agent runtime" }
         expect "group-visible" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group") }
     }
@@ -58,6 +61,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/textarea.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-message" { target = placeholder("Type your message here") value = "A3S UI component review" }
         expect "textarea-visible" { visible = css(".a3s-preview[data-preview-component=textarea] textarea") }
     }
@@ -68,6 +72,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/native-select.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         select "choose-banana" {
             target = css(".a3s-preview[data-preview-component=native-select] select")
             values = ["banana"]
@@ -81,6 +86,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/select.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-list" { target = css("#select-demo-trigger") }
         wait "list-visible" { visible = css("#select-demo [data-popover][aria-hidden=false]") }
         click "choose-banana" { target = css("#select-demo [role=option][data-value=banana]") }
@@ -94,6 +100,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "accept-terms" { target = label("Accept terms and conditions") }
         expect "checked" { visible = css("#terms-checkbox:checked") }
     }
@@ -104,6 +111,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/radio-group.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "choose-comfortable" { target = label("Comfortable") }
         expect "comfortable-selected" { visible = css("#r2:checked") }
     }
@@ -114,6 +122,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "enable-airplane-mode" { target = label("Airplane Mode") }
         expect "switch-checked" { visible = css("#airplane-mode:checked") }
     }
@@ -124,6 +133,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-range" { target = css(".a3s-preview[data-preview-component=slider] input[type=range]") }
         press "increase" { key = "ArrowRight" }
         expect "slider-focused" { visible = css(".a3s-preview[data-preview-component=slider] input[type=range]:focus") }
@@ -135,6 +145,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/label.html" }
         wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "accept-terms" { target = label("Accept terms and conditions") }
         expect "wrapped-control-checked" { visible = css(".a3s-preview[data-preview-component=label] input:checked") }
     }
@@ -145,7 +156,10 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/combobox.html" }
         wait "loaded" { load = "networkidle" }
-        fill "filter-frameworks" { target = placeholder("Select a framework") value = "Astro" }
+        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "open-frameworks" { target = css("#framework-combobox > input[role=combobox]") }
+        wait "options-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
+        fill "filter-frameworks" { target = css("#framework-combobox > input[role=combobox]") value = "Astro" }
         wait "options-visible" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
         expect "astro-visible" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
         screenshot "filtered-combobox" { path = "components/combobox.png" }

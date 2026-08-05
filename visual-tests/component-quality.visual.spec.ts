@@ -61,6 +61,93 @@ const componentRoutes = [
   "workspace-header",
 ] as const;
 
+const componentRootSelectors = {
+  accordion: ".accordion",
+  "activity-bar": ".activity-bar",
+  "alert-dialog": ".alert-dialog > div",
+  alert: ".alert",
+  "app-shell": ".app-shell",
+  avatar: ".avatar",
+  badge: ".badge",
+  breadcrumb: ".breadcrumb [aria-current='page']",
+  button: ".btn",
+  "button-group": ".button-group > .btn",
+  card: ".card",
+  chart: ".a3s-chart-demo canvas",
+  checkbox: "input[type='checkbox']:checked",
+  combobox: ".combobox > input",
+  command: ".command",
+  dialog: ".dialog > div",
+  drawer: ".drawer > article",
+  "dropdown-menu": ".dropdown-menu > .btn",
+  empty: ".empty",
+  field: ".field input[type='text']",
+  input: ".input",
+  "input-group": ".input-group",
+  item: ".item",
+  kbd: ".kbd",
+  label: ".label",
+  "native-select": "select.select",
+  pagination: "nav[aria-label='pagination'] [aria-current='page']",
+  popover: ".popover > .btn",
+  progress: ".progress",
+  "radio-group": "[data-slot='radio-group'] input:checked",
+  "resource-card": ".resource-card",
+  ribbon: ".ribbon [role='tab'][aria-selected='true']",
+  "scroll-area": ".card",
+  select: ".select > button",
+  "settings-layout": ".settings-layout > main > section",
+  sidebar: ".sidebar [aria-current='page']",
+  skeleton: ".skeleton",
+  slider: "input[type='range']",
+  spinner: ".animate-spin",
+  "split-pane": ".split-pane",
+  "status-bar": ".status-bar",
+  switch: "input[role='switch']",
+  table: ".table-container",
+  tabs: ".tabs [role='tab'][aria-selected='true']",
+  "task-pane": ".task-pane",
+  textarea: ".textarea",
+  "theme-switcher": "button[data-tooltip='Toggle dark mode']",
+  toast: "#toaster .toast-content",
+  toolbar: ".toolbar",
+  tooltip: "[data-tooltip]",
+  "workspace-header": ".workspace-header",
+} as const satisfies Record<(typeof componentRoutes)[number], string>;
+
+const initiallyHiddenRootRoutes = new Set<(typeof componentRoutes)[number]>([
+  "alert-dialog",
+  "dialog",
+  "drawer",
+]);
+
+const controlRootRoutes = new Set<(typeof componentRoutes)[number]>([
+  "button",
+  "button-group",
+  "combobox",
+  "dropdown-menu",
+  "field",
+  "input",
+  "input-group",
+  "native-select",
+  "popover",
+  "select",
+  "textarea",
+  "theme-switcher",
+  "tooltip",
+]);
+
+const selectedRootRoutes = new Set<(typeof componentRoutes)[number]>([
+  "breadcrumb",
+  "checkbox",
+  "pagination",
+  "radio-group",
+  "ribbon",
+  "sidebar",
+  "switch",
+  "tabs",
+]);
+
 const interactiveStateCases = [
   {
     route: "alert-dialog",
@@ -108,6 +195,13 @@ const interactiveStateCases = [
     visible: "#toaster .toast",
   },
 ] as const;
+
+const previewOverlayRoutes = new Set([
+  "combobox",
+  "dropdown-menu",
+  "popover",
+  "select",
+]);
 
 async function openDocumentationPage(page: Page, route: string) {
   await page.goto(`en/components/${route}.html`);
@@ -294,6 +388,94 @@ async function inspectPreviewQuality(
   });
 }
 
+test("all component routes expose stable geometry, state, and diagnostics", async ({
+  page,
+}) => {
+  test.slow();
+  const diagnostics: string[] = [];
+
+  page.on("console", (message) => {
+    if (message.type() === "error" || message.type() === "warning") {
+      diagnostics.push(`console.${message.type()}: ${message.text()}`);
+    }
+  });
+  page.on("pageerror", (error) => {
+    diagnostics.push(`pageerror: ${error.message}`);
+  });
+
+  for (const route of componentRoutes) {
+    await test.step(route, async () => {
+      const diagnosticOffset = diagnostics.length;
+      await openDocumentationPage(page, route);
+      const preview = page
+        .locator(`.a3s-preview[data-preview-component="${route}"]`)
+        .first();
+      await expect(preview).toBeVisible();
+      await expect(page.locator("html")).not.toHaveAttribute(
+        "data-a3s-defer-init",
+      );
+
+      if (route === "switch") {
+        await preview.locator(componentRootSelectors.switch).check();
+      } else if (route === "toast") {
+        await preview.locator("button").first().click();
+      }
+      await waitForSettledFrames(page);
+
+      const root = componentRootSelectors[route].startsWith("#toaster")
+        ? page.locator(componentRootSelectors[route]).first()
+        : preview.locator(componentRootSelectors[route]).first();
+      await expect(root).toBeAttached();
+
+      if (!initiallyHiddenRootRoutes.has(route)) {
+        await expect(root).toBeVisible();
+        const [rootBox, canvasBox] = await Promise.all([
+          root.boundingBox(),
+          preview.locator(".a3s-preview__canvas").boundingBox(),
+        ]);
+        expect(rootBox).not.toBeNull();
+        expect(canvasBox).not.toBeNull();
+        expect(Number.isFinite(rootBox!.width)).toBe(true);
+        expect(Number.isFinite(rootBox!.height)).toBe(true);
+        expect(rootBox!.width).toBeGreaterThan(0);
+        expect(rootBox!.height).toBeGreaterThan(0);
+
+        if (route !== "toast") {
+          expect(rootBox!.x).toBeGreaterThanOrEqual(canvasBox!.x - 1);
+          expect(rootBox!.x + rootBox!.width).toBeLessThanOrEqual(
+            canvasBox!.x + canvasBox!.width + 1,
+          );
+        }
+
+        if (controlRootRoutes.has(route)) {
+          expect(rootBox!.height).toBeGreaterThanOrEqual(24);
+        }
+      }
+
+      if (selectedRootRoutes.has(route)) {
+        expect(
+          await root.evaluate(
+            (element) =>
+              element.matches(
+                ":checked, [aria-current], [aria-selected='true'], [aria-pressed='true']",
+              ) ||
+              Boolean(
+                element.querySelector(
+                  ":checked, [aria-current], [aria-selected='true'], [aria-pressed='true']",
+                ),
+              ),
+          ),
+        ).toBe(true);
+      }
+
+      expect(
+        diagnostics.slice(diagnosticOffset),
+        `${route} emitted browser diagnostics`,
+      ).toEqual([]);
+    });
+  }
+});
+
 test("all component previews meet the shared quality floor", async ({
   page,
 }) => {
@@ -320,7 +502,15 @@ for (const state of interactiveStateCases) {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openDocumentationPage(page, state.route);
-    await page.locator(state.trigger).first().click();
+    const trigger = page.locator(state.trigger).first();
+    const triggerBoxBefore = await trigger.boundingBox();
+    expect(triggerBoxBefore).not.toBeNull();
+
+    if (state.route !== "toast") {
+      await expect(page.locator(state.visible).first()).toBeHidden();
+    }
+
+    await trigger.click();
     const visibleState = page.locator(state.visible).first();
     await expect(visibleState).toBeVisible();
     await visibleState.evaluate(async (element) => {
@@ -331,6 +521,62 @@ for (const state of interactiveStateCases) {
       );
     });
     await waitForSettledFrames(page);
+
+    const [stateBox, triggerBoxAfter] = await Promise.all([
+      visibleState.boundingBox(),
+      trigger.boundingBox(),
+    ]);
+    const viewport = page.viewportSize();
+    expect(stateBox).not.toBeNull();
+    expect(triggerBoxAfter).not.toBeNull();
+    expect(viewport).not.toBeNull();
+    expect(stateBox!.width).toBeGreaterThan(0);
+    expect(stateBox!.height).toBeGreaterThan(0);
+    expect(stateBox!.x).toBeGreaterThanOrEqual(-1);
+    expect(stateBox!.y).toBeGreaterThanOrEqual(-1);
+    expect(stateBox!.x + stateBox!.width).toBeLessThanOrEqual(
+      viewport!.width + 1,
+    );
+    expect(stateBox!.y + stateBox!.height).toBeLessThanOrEqual(
+      viewport!.height + 1,
+    );
+    expect(triggerBoxAfter!.width).toBeCloseTo(triggerBoxBefore!.width, 0);
+    expect(triggerBoxAfter!.height).toBeCloseTo(triggerBoxBefore!.height, 0);
+
+    expect(
+      await visibleState.evaluate((element) => {
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        const topElement = document.elementFromPoint(
+          Math.min(window.innerWidth - 1, rect.left + rect.width / 2),
+          Math.min(window.innerHeight - 1, rect.top + rect.height / 2),
+        );
+        return {
+          display: style.display,
+          opacity: Number.parseFloat(style.opacity),
+          ownsCenterPoint: Boolean(
+            topElement &&
+              (element === topElement || element.contains(topElement)),
+          ),
+          pointerEvents: style.pointerEvents,
+          visibility: style.visibility,
+        };
+      }),
+    ).toEqual({
+      display: expect.not.stringMatching(/^none$/),
+      opacity: expect.any(Number),
+      ownsCenterPoint: true,
+      pointerEvents: expect.not.stringMatching(/^none$/),
+      visibility: expect.not.stringMatching(/^hidden$/),
+    });
+
+    if (previewOverlayRoutes.has(state.route)) {
+      await expect(
+        visibleState.locator(
+          "xpath=ancestor::section[contains(concat(' ', normalize-space(@class), ' '), ' a3s-preview ')][1]",
+        ),
+      ).toHaveAttribute("data-overlay-open", "");
+    }
 
     const issues = await inspectPreviewQuality(page);
     expect(

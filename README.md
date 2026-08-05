@@ -152,7 +152,7 @@ Run the documentation site locally with `npm run docs:dev`. The static build is 
 
 Run the component-specific browser suites with `npm run test:e2e:a3s`. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
-Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation; these checks are intentionally not part of CI.
+Visual checks use Playwright with platform-specific desktop and compact baselines. Every public component route also has a component-root geometry and state contract plus browser diagnostic coverage. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation; these checks are intentionally not part of CI.
 
 ## Lineage and license
 

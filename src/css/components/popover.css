@@ -2,6 +2,13 @@
 @layer components {
   [data-popover] {
     @apply absolute z-50 min-w-full w-max overflow-x-hidden overflow-y-auto visible opacity-100 scale-100 transition-all outline-hidden;
+    max-inline-size: calc(100dvw - 1rem);
+    max-block-size: calc(100dvh - 1rem);
+    transform: translate(
+      var(--a3s-popover-viewport-x, 0px),
+      var(--a3s-popover-viewport-y, 0px)
+    );
+    transition-property: opacity, scale, translate, visibility;
 
     &[aria-hidden='true'] {
       @apply invisible opacity-0 scale-95;
