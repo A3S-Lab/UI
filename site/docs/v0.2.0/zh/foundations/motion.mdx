@@ -1,0 +1,26 @@
+# 动效
+
+动效用于解释状态变化，不应拖慢操作。A3S UI 为悬停、焦点、导航与可调整布局提供短时过渡，不使用纯装饰性的页面动画。
+
+<Preview>
+<div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
+  <button type="button" class="btn">悬停或聚焦</button>
+  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>资源动效</strong><small>160ms 抬升与边框反馈</small></section></a>
+</div>
+</Preview>
+
+## 时长
+
+| 时长 | 用途 |
+| ---: | --- |
+| `120ms` | 颜色与焦点反馈 |
+| `160–180ms` | 卡片抬升、导航显示与小范围布局变化 |
+| `200–240ms` | Dialog 或 Drawer 进入 |
+
+## 缓动
+
+可逆界面反馈使用标准 `ease`。表面进入视口使用 `ease-out`，离开视口使用 `ease-in`。Split Pane 调整等连续指针交互应直接更新，不添加过渡。
+
+## 减少动效
+
+包含非必要过渡或布局变化的组件会在 `prefers-reduced-motion: reduce` 下禁用动效。产品不能只依赖动画表达状态。

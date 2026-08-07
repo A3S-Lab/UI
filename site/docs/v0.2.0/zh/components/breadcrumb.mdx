@@ -1,0 +1,156 @@
+# 面包屑
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><a href="#">Components</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基本 CSS、面包组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/breadcrumb.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your breadcrumb HTML">
+
+使用带有有序列表的导航地标。用 `aria-current="page"` 标记当前页面。
+
+```html
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" ...></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+```
+
+  </Step>
+</Steps>
+
+## HTML结构
+
+- `nav.breadcrumb` 是根地标，应包含 `aria-label="面包屑"`。
+- `ol` 包含按层次结构顺序排列的面包屑项目。
+- `li > a` 代表可导航的祖先。
+- `li[aria-hidden="true"]` 表示视觉分隔符。
+- `[aria-current="page"]` 代表当前页面。
+- `li > span[aria-hidden="true"]` 表示折叠的省略号。
+
+面包屑项目始终保持在同一命令行中。当可用宽度小于完整路径时，有序列表会横向滚动，不会把分隔符换到下一行。对于持续狭窄的界面，应折叠中间层级。
+
+## 示例
+
+### 基本
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><a href="#">Components</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+</Preview>
+
+### 定制分隔符
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg class="lucide lucide-dot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12.1" cy="12.1" r="1" /></svg></li>
+    <li><a href="#">Components</a></li>
+    <li aria-hidden="true"><svg class="lucide lucide-dot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12.1" cy="12.1" r="1" /></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+</Preview>
+
+### 下拉菜单
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li>
+      <div id="breadcrumb-dropdown" class="dropdown-menu">
+        <button type="button" id="breadcrumb-dropdown-trigger" class="btn" data-variant="ghost" data-size="icon-sm" aria-haspopup="menu" aria-controls="breadcrumb-dropdown-menu" aria-expanded="false"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
+          <span class="sr-only">Toggle menu</span>
+        </button>
+        <div id="breadcrumb-dropdown-popover" data-popover aria-hidden="true">
+          <div role="menu" id="breadcrumb-dropdown-menu" aria-labelledby="breadcrumb-dropdown-trigger">
+            <nav role="menu">
+              <button type="button" role="menuitem">Documentation</button>
+              <button type="button" role="menuitem">Themes</button>
+              <button type="button" role="menuitem">GitHub</button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><a href="#">Components</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+</Preview>
+
+### 已折叠
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li> <span aria-hidden="true"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></span></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><a href="#">Components</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><span aria-current="page">Breadcrumb</span></li>
+  </ol>
+</nav>
+</Preview>
+
+### RTL
+
+<Preview>
+<nav class="breadcrumb" aria-label="Breadcrumb" dir="rtl">
+  <ol>
+    <li><a href="#">الرئيسية</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><a href="#">المكونات</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
+    <li><span aria-current="page">مسار التنقل</span></li>
+  </ol>
+</nav>
+</Preview>

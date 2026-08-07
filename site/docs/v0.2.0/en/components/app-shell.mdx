@@ -1,0 +1,54 @@
+# App Shell
+
+The App Shell establishes a persistent navigation region and a bounded product workspace. It is the top-level frame used by A3S Office, gateway operations, and agent consoles.
+
+<Preview>
+<div class="app-shell" data-navigation="expanded" style="--app-shell-height:30rem;--app-shell-min-height:30rem;--app-shell-navigation-size:13rem">
+  <aside data-app-navigation>
+    <div class="activity-bar" aria-label="Demo workspace">
+      <header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S UI</span></header>
+      <nav aria-label="Demo"><ul><li><a href="#shell-home" aria-current="page"><span aria-hidden="true">◫</span><span data-navigation-label>Workspace</span></a></li><li><a href="#shell-components"><span aria-hidden="true">◇</span><span data-navigation-label>Components</span></a></li><li><a href="#shell-settings"><span aria-hidden="true">⚙</span><span data-navigation-label>Settings</span></a></li></ul></nav>
+      <footer><span class="size-2 rounded-full bg-[var(--a3s-green)]"></span><span data-navigation-label>All systems ready</span></footer>
+    </div>
+  </aside>
+  <main data-app-main>
+    <header class="workspace-header"><div data-workspace-leading><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-demo-shell-toggle aria-label="Collapse navigation" aria-expanded="true">☰</button></div><div data-workspace-identity><h1>Design system workspace</h1><span>Application composition preview</span></div><div data-workspace-actions><button type="button" class="btn" data-size="sm">Publish</button></div></header>
+    <div data-app-content class="grid content-start gap-4 p-5">
+      <div><span class="badge">Live pattern</span><h2 class="mt-2 text-xl font-semibold">Compose product UI from stable primitives.</h2><p class="mt-1 max-w-xl text-sm text-muted-foreground">Resize the viewport or collapse navigation. Content remains bounded and scrollable.</p></div>
+      <div class="resource-grid" style="--resource-grid-min:10rem"><article class="resource-card" data-kind="agent"><figure class="text-2xl">◇</figure><section><strong>Agent session</strong><small>Active · 2 tools</small></section></article><article class="resource-card"><figure class="text-2xl">▤</figure><section><strong>Configuration</strong><small>Validated · ACL</small></section></article></div>
+    </div>
+  </main>
+</div>
+</Preview>
+
+## Usage
+
+```html
+<div class="app-shell" data-navigation="expanded">
+  <aside data-app-navigation>...</aside>
+  <main data-app-main>
+    <header class="workspace-header">...</header>
+    <div data-app-content>...</div>
+  </main>
+</div>
+```
+
+### Parameters
+
+| Parameter | Values | Default | Purpose |
+| --- | --- | --- | --- |
+| `data-navigation` | `expanded`, `collapsed`, `hidden` | `expanded` | Desktop navigation state |
+| `data-mobile-navigation` | `open`, omitted | omitted | Mobile drawer visibility |
+| `--app-shell-navigation-size` | CSS length | `15rem` | Expanded navigation width |
+| `--app-shell-navigation-collapsed-size` | CSS length | `2.875rem` | Office-aligned icon-rail width |
+| `--app-shell-navigation-max-size` | CSS length or percentage | `38%` | Maximum expanded-navigation share |
+| `--app-shell-height` | CSS length or `auto` | `auto` | Optional bounded shell height |
+| `--app-shell-min-height` | CSS length | `36rem` | Minimum shell height |
+
+## States and variants
+
+The shell has expanded, collapsed, hidden, and mobile-open states. Below 768px the navigation becomes a contained overlay: its closed state is removed from pointer and keyboard interaction, while `data-mobile-navigation="open"` reveals it above a local backdrop. State management belongs to the host application because it often persists user preference and coordinates routing. The preview uses a small documentation-only controller.
+
+## Accessibility
+
+Use landmark elements (`aside`, `nav`, `main`, `header`) and name each navigation region. The navigation toggle needs `aria-expanded` and a label that changes with state. When mobile navigation is modal, pair this layout with the [Drawer](/components/drawer) behavior for focus containment.

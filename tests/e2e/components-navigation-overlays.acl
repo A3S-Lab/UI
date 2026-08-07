@@ -84,10 +84,10 @@ suite "a3s-ui-navigation-and-overlays" {
         viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Show Dialog") }
         expect "dialog-open" { visible = css("#demo-alert-dialog[open][role=alertdialog]") }
-        expect "cancel-focused" { visible = css("#demo-alert-dialog button[value=cancel]:focus") }
+        expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
         screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
-        click "cancel-dialog" { target = css("#demo-alert-dialog button[value=cancel]") }
-        expect "dialog-trigger-restored" { visible = css("button[commandfor=demo-alert-dialog]:focus") }
+        click "cancel-dialog" { target = role("button", "Cancel") }
+        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "dialog" {
@@ -102,7 +102,7 @@ suite "a3s-ui-navigation-and-overlays" {
         fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
         screenshot "dialog-phone" { path = "components/dialog-phone.png" }
         press "close-dialog" { key = "Escape" }
-        expect "dialog-trigger-restored" { visible = css("button[commandfor=demo-dialog-edit-profile]:focus") }
+        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "drawer" {
@@ -115,8 +115,9 @@ suite "a3s-ui-navigation-and-overlays" {
         click "open-drawer" { target = role("button", "Open Drawer") }
         expect "drawer-open" { visible = css("#demo-drawer[open]") }
         screenshot "drawer-phone" { path = "components/drawer-phone.png" }
-        click "cancel-drawer" { target = css("#demo-drawer button[value=cancel]") }
-        expect "drawer-trigger-restored" { visible = css("button[commandfor=demo-drawer]:focus") }
+        click "cancel-drawer" { target = role("button", "Cancel") }
+        wait "drawer-close-animation" { load = "networkidle" }
+        expect "drawer-trigger-restored" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "dropdown-menu" {

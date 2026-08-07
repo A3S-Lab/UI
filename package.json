@@ -1,6 +1,6 @@
 {
   "name": "@a3s-lab/ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A framework-agnostic design system for A3S applications and agent workspaces",
   "author": {
     "name": "A3S Lab",
@@ -18,7 +18,8 @@
   "style": "dist/a3s-ui.css",
   "publishConfig": {
     "access": "public",
-    "provenance": true
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
   },
   "files": [
     "dist/",
@@ -151,7 +152,10 @@
     "build": "node ./scripts/build.js",
     "prepare": "node ./scripts/build.js",
     "prepack": "node ./scripts/build.js",
-    "docs:build": "npm run build && npm --prefix site clean-install --progress=false && npm --prefix site run build && npm --prefix site run check:site",
+    "prepublishOnly": "npm run build && npm run check:package",
+    "check:package": "node ./scripts/check-package.mjs",
+    "release:check": "npm run build && npm run check:package && npm run docs:build && npm run test:e2e:a3s:check",
+    "docs:build": "npm run build && npm --prefix site clean-install --registry=https://registry.npmjs.org/ --replace-registry-host=never --progress=false && npm --prefix site run build && npm --prefix site run check:site",
     "docs:dev": "npm run build && npm --prefix site run dev",
     "docs:preview": "npm run docs:build && npm --prefix site run preview",
     "test:e2e:a3s": "npm run docs:build && node ./scripts/run-a3s-e2e.mjs",

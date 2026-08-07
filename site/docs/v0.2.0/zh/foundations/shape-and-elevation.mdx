@@ -1,0 +1,31 @@
+# 形状与阴影
+
+形状用于表达层级：控件使用紧凑圆角，内容表面使用中等圆角，完整应用外壳使用最大圆角。阴影只用于浮动或重叠表面。
+
+<Preview>
+<div class="grid w-full gap-4 sm:grid-cols-3">
+  <div class="rounded-md border border-border bg-card p-5 text-center text-sm">控件<br/><code class="text-xs text-muted-foreground">--radius-md</code></div>
+  <div class="rounded-xl border border-border bg-card p-5 text-center text-sm shadow-sm">表面<br/><code class="text-xs text-muted-foreground">--radius-xl</code></div>
+  <div class="rounded-[var(--a3s-radius)] border border-border bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">应用外壳<br/><code class="text-xs text-muted-foreground">--a3s-radius</code></div>
+</div>
+</Preview>
+
+## 圆角
+
+| 令牌 | 默认值 | 用途 |
+| --- | ---: | --- |
+| `--radius-sm` | 基础值减 4px | Badge 与微型控件 |
+| `--radius-md` | 基础值减 2px | Button、Input 与导航项 |
+| `--radius-lg` | 基础圆角 | Toolbar 与侧边导航 |
+| `--radius-xl` | 基础值加 4px | Card 与 Panel |
+| `--a3s-radius` | `16px` | 应用外壳与产品框架 |
+
+## 阴影层级
+
+| 令牌 | 用途 |
+| --- | --- |
+| `--shadow-xs` | Input 与 Card 的边缘分离 |
+| `--a3s-shadow-soft` | 悬停 Resource Card 与紧凑浮层 |
+| `--a3s-shadow` | 模态 Dialog 与大型浮动面板 |
+
+边框是默认分隔方式。不要给每张卡片都添加阴影；阴影必须对应真实层级变化。

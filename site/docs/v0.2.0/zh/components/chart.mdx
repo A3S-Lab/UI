@@ -1,0 +1,240 @@
+# 图表
+
+<Callout type="warning" title="Beta API" icon="triangle-alert">
+图表支持一个测试阶段。在稳定的 1.0 版本发布之前，JavaScript API、生成的标记和选项名称可能会发生变化。
+</Callout>
+
+使用 Chart.js 和 A3S UI 默认设置主题颜色、外部工具提示和可选生成的图例。
+
+<Preview class="w-full">
+  <ChartDemo variant="bar" />
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、图表组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/chart.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供Chart.js、A3S UI运行时和图表脚本。
+
+```html
+<script src="/assets/js/chart.umd.min.js"></script>
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/chart.min.js" defer></script>
+```
+
+图表不包含完整的 A3S UI JavaScript 包中。
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your chart HTML">
+
+```html
+<canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    window.a3sUI.chart("#visitors-chart", {
+      type: "bar",
+      labelKey: "month",
+      data: [
+        { month: "Jan", desktop: 186, mobile: 80 },
+        { month: "Feb", desktop: 305, mobile: 200 },
+        { month: "Mar", desktop: 237, mobile: 120 },
+        { month: "Apr", desktop: 73, mobile: 190 },
+        { month: "May", desktop: 209, mobile: 130 },
+        { month: "Jun", desktop: 214, mobile: 140 },
+      ],
+      series: {
+        desktop: { label: "Desktop", color: "var(--chart-1)" },
+        mobile: { label: "Mobile", color: "var(--chart-2)" },
+      },
+    })
+  })
+</script>
+```
+
+  </Step>
+</Steps>
+
+`a3sUI.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
+
+图表默认为 `aspect-video`。当您需要不同的测量框时，请在父元素上使用高度、`min-h-*` 或 `aspect-*` 工具类。
+
+## 图例
+
+`legend: true`以在最低后生成A3S UI风格的图例。
+
+生成的图例默认仅显示，与 shadcn/ui 匹配。如果您需要点击切换行为，请使用 Chart.js 插件或自定义图例标记。
+
+```js
+window.a3sUI.chart("#visitors-chart", {
+  type: "bar",
+  labelKey: "month",
+  data,
+  series,
+  legend: true,
+})
+```
+
+## 系列
+
+`series` 将每个数据行的对象键映射到标签、颜色和任选的 Chart.js 数据集设置。
+
+```js
+window.a3sUI.chart("#revenue-chart", {
+  type: "line",
+  labelKey: "month",
+  data,
+  series: {
+    recurring: {
+      label: "Recurring",
+      color: "var(--chart-1)",
+      surface: "gradient",
+      dataset: {
+        fill: true,
+        tension: 0.35,
+      },
+    },
+    new: {
+      label: "New",
+      color: "var(--chart-2)",
+      dataset: {
+        borderDash: [4, 4],
+      },
+    },
+  },
+})
+```
+
+## 逃生舱口
+
+通过 `options` 和 `plugins` 提交原始 Chart.js 选项和插件。
+
+```js
+const chart = window.a3sUI.chart("#visitors-chart", {
+  type: "bar",
+  labelKey: "month",
+  data,
+  series,
+  options: {
+    indexAxis: "x",
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      tooltip: {
+        mode: "index",
+      },
+    },
+  },
+  plugins: [myChartJsPlugin],
+})
+```
+
+当简化 `data` 加 `series` 放大器不够时，通过 `chartData` 提交完整的 Chart.js 数据。
+
+```js
+window.a3sUI.chart("#custom-chart", {
+  type: "scatter",
+  chartData: {
+    datasets: [
+      {
+        label: "Samples",
+        data: [{ x: 1, y: 2 }, { x: 2, y: 5 }],
+      },
+    ],
+  },
+  options: {
+    scales: {
+      x: { type: "linear" },
+    },
+  },
+})
+```
+
+`a3sUI.chart()`返回单个目标的Chart.js实例和多个目标选择器的实例集群。
+
+## 示例
+
+### 条形图 - 多个
+
+<Preview class="w-full">
+  <ChartDemo variant="bar" />
+</Preview>
+
+### 折线图 - 线性
+
+<Preview class="w-full">
+  <ChartDemo variant="line" />
+</Preview>
+
+### 折线图 - 步骤
+
+<Preview class="w-full">
+  <ChartDemo variant="step" />
+</Preview>
+
+### 条形图 - 堆叠
+
+<Preview class="w-full">
+  <ChartDemo variant="stacked" />
+</Preview>
+
+### P饼图 - 甜甜圈
+
+<Preview class="w-full">
+  <ChartDemo variant="donut" />
+</Preview>
+
+### 雷达图
+
+<Preview class="w-full">
+  <ChartDemo variant="radar" />
+</Preview>
+
+## API
+
+| 选项 | 默认 | 描述 |
+| --- | --- | --- |
+| `type` | `"bar"` | Chart.js 图表类型。 |
+| `labelKey` | `"label"` | 用于标签的行键。 |
+| `data` | `[]` | 行对象数组，或带有 `datasets` 的原始 Chart.js 数据。 |
+| `series` | `{}` | 从行键映射的系列配置。 |
+| `legend` | `false` | 在画布后生成 A3S UI 图例。 |
+| `tooltip` | `true` | 使用 A3S UI 外部工具提示。 |
+| `options` | `{}` | 原始 Chart.js 选项。 |
+| `plugins` | `[]` | 原始 Chart.js 插件。 |
+| `chartData` | `undefined` | 完整的 Chart.js 数据对象。覆盖数据映射器。 |
+
+### 系列选项
+
+| 选项 | 描述 |
+| --- | --- |
+| `label` | 显示图例和工具提示的标签。 |
+| `color` | 系列描边、填充、图例标记和工具提示标记的基色。 |
+| `surface` | 从 `color` 派生填充。使用 `true` 进行半透明填充，使用 `"gradient"` 进行上游式垂直淡入淡出，或使用 `{ from, to }` 进行自定义不透明度停止。 |
+| `dataset` | 原始 Chart.js 数据集选项。 |

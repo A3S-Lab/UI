@@ -117,6 +117,7 @@ The documentation site uses the same Rspress, React, and TypeScript stack as the
 | Version | 简体中文 | English |
 | --- | --- | --- |
 | `next` | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| `v0.2.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.2.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.2.0/en/) |
 | `v0.1.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.1.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.1.0/en/) |
 
 Language and version switches preserve the current page whenever that route exists in the destination tree.
@@ -144,6 +145,7 @@ The runtime also keeps open `[data-popover]` surfaces inside the visual viewport
 npm ci
 npm ci --prefix site
 npm run build
+npm run check:package
 npm run docs:build
 npm run test:e2e:a3s:check
 npx playwright install chromium

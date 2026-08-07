@@ -27,7 +27,7 @@ const config: UserConfig = {
   },
   multiVersion: {
     default: 'next',
-    versions: ['next', 'v0.1.0'],
+    versions: ['next', 'v0.2.0', 'v0.1.0'],
   },
   locales: [
     {

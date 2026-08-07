@@ -12,14 +12,20 @@ const base = '/UI/';
 const requiredFiles = [
   'index.html',
   'en/index.html',
+  'v0.2.0/index.html',
+  'v0.2.0/en/index.html',
   'v0.1.0/index.html',
   'v0.1.0/en/index.html',
   'installation.html',
   'en/installation.html',
+  'v0.2.0/installation.html',
+  'v0.2.0/en/installation.html',
   'v0.1.0/installation.html',
   'v0.1.0/en/installation.html',
   'components/index.html',
   'en/components/index.html',
+  'v0.2.0/components/index.html',
+  'v0.2.0/en/components/index.html',
   'v0.1.0/components/index.html',
   'v0.1.0/en/components/index.html',
   'components/app-shell.html',
@@ -55,6 +61,7 @@ const homepageExpectations = [
       'data-mobile-expanded="false"',
       'aria-live="polite"',
       'aria-pressed="true"',
+      'v0.2.0',
       'v0.1.0',
     ],
   },
@@ -70,7 +77,16 @@ const homepageExpectations = [
       'Show product preview',
       'data-a3s-customizer',
       'aria-live="polite"',
+      'v0.2.0',
     ],
+  },
+  {
+    file: 'v0.2.0/index.html',
+    markers: ['lang="zh"', 'A3S 产品设计系统', 'v0.2.0'],
+  },
+  {
+    file: 'v0.2.0/en/index.html',
+    markers: ['lang="en"', 'A3S PRODUCT DESIGN SYSTEM', 'v0.2.0'],
   },
   {
     file: 'v0.1.0/index.html',
@@ -87,6 +103,7 @@ const switchExpectations = [
     file: 'components/app-shell.html',
     links: [
       '/UI/en/components/app-shell.html',
+      '/UI/v0.2.0/components/app-shell',
       '/UI/v0.1.0/components/app-shell',
     ],
   },
@@ -94,6 +111,23 @@ const switchExpectations = [
     file: 'en/components/app-shell.html',
     links: [
       '/UI/components/app-shell.html',
+      '/UI/v0.2.0/en/components/app-shell',
+      '/UI/v0.1.0/en/components/app-shell',
+    ],
+  },
+  {
+    file: 'v0.2.0/components/app-shell.html',
+    links: [
+      '/UI/components/app-shell',
+      '/UI/v0.2.0/en/components/app-shell.html',
+      '/UI/v0.1.0/components/app-shell',
+    ],
+  },
+  {
+    file: 'v0.2.0/en/components/app-shell.html',
+    links: [
+      '/UI/en/components/app-shell',
+      '/UI/v0.2.0/components/app-shell.html',
       '/UI/v0.1.0/en/components/app-shell',
     ],
   },
@@ -101,6 +135,7 @@ const switchExpectations = [
     file: 'v0.1.0/components/app-shell.html',
     links: [
       '/UI/components/app-shell',
+      '/UI/v0.2.0/components/app-shell',
       '/UI/v0.1.0/en/components/app-shell.html',
     ],
   },
@@ -108,6 +143,7 @@ const switchExpectations = [
     file: 'v0.1.0/en/components/app-shell.html',
     links: [
       '/UI/en/components/app-shell',
+      '/UI/v0.2.0/en/components/app-shell',
       '/UI/v0.1.0/components/app-shell.html',
     ],
   },

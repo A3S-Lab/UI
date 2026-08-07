@@ -1,0 +1,85 @@
+# Status Bar
+
+A Status Bar keeps document state, view controls, and zoom information available without competing with the primary workspace.
+
+<Preview>
+  <div
+    class="flex h-48 w-full flex-col overflow-hidden border border-border bg-[var(--a3s-bg)]"
+    data-status-bar-host
+  >
+    <div
+      class="grid min-h-0 flex-1 place-items-center text-sm text-muted-foreground"
+      data-editor-canvas
+    >
+      Document canvas
+    </div>
+    <footer class="status-bar w-full" aria-label="Document status">
+    <div data-status-info>
+      <span data-status-priority="low">Page 1 of 12</span>
+      <span data-status-priority="low">132 words</span>
+      <span class="text-[var(--a3s-green)]">Saved</span>
+    </div>
+    <div data-status-actions>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-xs"
+        data-variant="ghost"
+        aria-label="Print layout"
+        aria-pressed="true"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="16" height="20" x="4" y="2" rx="2" />
+          <path d="M8 6h8M8 10h8M8 14h5" />
+        </svg>
+      </button>
+      <hr role="separator" />
+      <output aria-label="Zoom level">90%</output>
+      <input
+        class="input w-20"
+        type="range"
+        min="50"
+        max="200"
+        value="90"
+        aria-label="Zoom"
+      />
+    </div>
+    </footer>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<footer class="status-bar" aria-label="Document status">
+  <div data-status-info><span data-status-priority="low">Page 1 of 12</span><span>Saved</span></div>
+  <div data-status-actions>...</div>
+</footer>
+```
+
+### Parameters
+
+| Parameter             | Required | Purpose                                      |
+| --------------------- | -------- | -------------------------------------------- |
+| `data-status-info`    | Yes      | Flexible resource and save-state information |
+| `data-status-actions` | Optional | View, zoom, or navigation controls           |
+| `data-status-priority="low"` | Optional | Hides nonessential status items below `30rem` |
+| `--status-bar-height` | Optional | Status bar height, default `1.75rem`         |
+
+## States and variants
+
+Keep status copy terse and stable. The default 28-pixel bar uses a fixed flex basis so it remains anchored to the workspace edge instead of growing with its controls. Mark expendable context with `data-status-priority="low"` so save state and actions remain intact on narrow screens. Use semantic text colors for transient save or validation states, and `aria-pressed` for view-mode controls.
+
+## Accessibility
+
+Name the Status Bar when the page contains several landmark footers. Associate every range input and icon button with an accessible name, and announce asynchronous save failures through a separate live region.

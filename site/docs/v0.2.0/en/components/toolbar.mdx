@@ -1,0 +1,43 @@
+# Toolbar
+
+A Toolbar groups compact, frequently used commands. It supports horizontal scrolling, wrapped layouts, logical separators, and dense Office-style controls.
+
+<Preview>
+<div class="toolbar w-full" role="toolbar" aria-label="Formatting">
+  <div role="group" aria-label="History"><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Undo">↶</button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Redo">↷</button></div>
+  <hr role="separator" />
+  <div role="group" aria-label="Text style"><button type="button" class="btn font-bold" data-size="icon-sm" data-variant="ghost" aria-label="Bold" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">B</button><button type="button" class="btn italic" data-size="icon-sm" data-variant="ghost" aria-label="Italic" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">I</button><button type="button" class="btn underline" data-size="icon-sm" data-variant="ghost" aria-label="Underline" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">U</button></div>
+  <hr role="separator" />
+  <div role="group" aria-label="Insert"><button type="button" class="btn" data-size="sm" data-variant="ghost">Link</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Comment</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Code</button></div>
+</div>
+</Preview>
+
+## Usage
+
+```html
+<div class="toolbar" role="toolbar" aria-label="Formatting">
+  <div role="group" aria-label="Text style">...</div>
+  <hr role="separator" />
+  <div role="group" aria-label="Insert">...</div>
+</div>
+```
+
+### Parameters
+
+| Parameter | Values | Default | Purpose |
+| --- | --- | --- | --- |
+| `data-density` | `compact`, omitted | omitted | Removes gaps inside command groups |
+| `data-wrap` | `true`, omitted | omitted | Wraps groups instead of horizontal scrolling |
+| `--toolbar-height` | CSS length | `2.6875rem` (43px) | Office toolbar row height |
+| `--toolbar-control-height` | CSS length | `1.8125rem` (29px) | Compact command height |
+| `role="toolbar"` | — | Required | Announces the composite command region |
+| Child `role="group"` | — | Recommended | Names related command sets |
+| `<hr role="separator">` | — | Optional | Logical visual division |
+
+## States and variants
+
+Use `aria-pressed` for toggle buttons and `disabled` for unavailable commands. The default row and command sizes match the A3S Office editor chrome. Commands never shrink in a narrow non-wrapping toolbar; keyboard focus scrolls the active command into view. A compact toolbar is appropriate inside Ribbons; wrapping is appropriate in responsive inspector panels.
+
+## Accessibility
+
+Name the toolbar and each ambiguous group. Native buttons remain in the document tab sequence. Provide keyboard shortcuts at the application layer and expose them with [Kbd](/components/kbd) or tooltip text.

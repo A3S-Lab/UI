@@ -1,0 +1,40 @@
+# 可访问性
+
+A3S UI 从语义化 HTML 开始，只在原生元素无法表达复合交互时添加 ARIA。样式选择器不会要求虚假的 ARIA role。
+
+<Preview>
+<form class="grid w-full max-w-md gap-4" onsubmit="event.preventDefault()">
+  <div class="field">
+    <label for="accessibility-name">网关名称 <span aria-hidden="true">*</span></label>
+    <input id="accessibility-name" class="input" required aria-describedby="accessibility-name-help" value="production-gateway" />
+    <small id="accessibility-name-help">该名称会显示在拓扑与调用链视图中。</small>
+  </div>
+  <div class="flex items-center gap-2">
+    <button type="submit" class="btn">保存配置</button>
+    <span class="text-sm text-muted-foreground" role="status" aria-live="polite">没有未保存的更改</span>
+  </div>
+</form>
+</Preview>
+
+## 基本要求
+
+- 操作使用 `<button>`，页面跳转使用 `<a>`。
+- 每个表单控件都要关联可见 `<label>` 或可访问名称。
+- 优先使用 `disabled`、`required`、`checked` 与原生校验，再添加自定义状态。
+- 保持可见焦点环与符合阅读顺序的键盘顺序。
+- 分组选项和 Ribbon 命令组使用 `<fieldset>` 与 `<legend>`。
+- 使用边界明确的 `status` 或 `alert` 区域播报异步结果。
+- 在 200% 缩放与 320px 视口下仍保留文本和结构。
+
+## 复合组件
+
+| 组件 | 键盘契约 |
+| --- | --- |
+| Tabs / Ribbon | 方向键在可用标签之间移动；Home 与 End 跳到边界 |
+| Menu / Select / Combobox | 方向键导航，Enter 选择，Escape 关闭 |
+| Dialog / Drawer | 焦点限制在内部；允许时可用 Escape 关闭 |
+| Split Pane | 方向键调整大小；Home 与 End 使用范围边界；双击恢复默认值 |
+
+## 参数
+
+方向从 `dir="rtl"` 继承。组件使用逻辑属性，只有带方向含义的图标才应翻转。动效遵循用户的减少动效偏好。深色模式必须保持文本、边界、焦点与状态对比度。

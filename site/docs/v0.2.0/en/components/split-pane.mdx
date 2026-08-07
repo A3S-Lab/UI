@@ -1,0 +1,54 @@
+# Split Pane
+
+Split Pane creates keyboard- and pointer-resizable regions for editors, inspectors, trace details, and agent conversations.
+
+<Preview>
+<div class="split-pane w-full" data-value="42" style="--split-pane-min-height:22rem">
+  <section><span class="badge">Trace</span><h2 class="mt-3 text-base font-semibold">POST /v1/agent/run</h2><div class="mt-4 grid gap-2"><div class="rounded-lg border border-border bg-muted p-3 text-sm"><strong>gateway.receive</strong><small class="mt-1 block text-muted-foreground">12.4 ms</small></div><div class="rounded-lg border border-border bg-muted p-3 text-sm"><strong>provider.complete</strong><small class="mt-1 block text-muted-foreground">842 ms</small></div></div></section>
+  <hr role="separator" aria-label="Resize trace details" data-min="25" data-max="75" data-step="5" data-default-value="42" />
+  <section><h2 class="text-base font-semibold">Span details</h2><dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm"><dt class="text-muted-foreground">Status</dt><dd>OK</dd><dt class="text-muted-foreground">Model</dt><dd>coding-agent</dd><dt class="text-muted-foreground">Tokens</dt><dd>12,408</dd><dt class="text-muted-foreground">Duration</dt><dd>854.6 ms</dd></dl></section>
+</div>
+</Preview>
+
+## Usage
+
+Load the runtime before the Split Pane controller, or use the combined JavaScript bundle.
+
+```html
+<div class="split-pane" data-value="40">
+  <section>Primary pane</section>
+  <hr role="separator" aria-label="Resize inspector" data-min="20" data-max="80" data-step="5" />
+  <section>Secondary pane</section>
+</div>
+<script type="module">
+  import "@a3s-lab/ui/runtime";
+  import "@a3s-lab/ui/split-pane";
+</script>
+```
+
+### Parameters
+
+| Parameter | Values | Default | Purpose |
+| --- | --- | --- | --- |
+| Root `data-orientation` | `horizontal`, `vertical` | `horizontal` | Pane flow; horizontal places panes side by side |
+| Root `data-direction` | `normal`, `reverse` | `normal` | Reverses value growth |
+| Root `data-value` | `0–100` | `50` | Initial primary pane percentage |
+| Separator `data-min` | number | `15` | Minimum percentage |
+| Separator `data-max` | number | `85` | Maximum percentage |
+| Separator `data-step` | number | `5` | Keyboard increment |
+| Separator `data-default-value` | number | initial value | Double-click reset value |
+| `--split-pane-min-height` | CSS length | `18rem` | Minimum component height |
+| `--split-handle-size` | CSS length | `0.5rem` | Visible separator track |
+| `--split-hit-size` | CSS length | `1.5rem` | Pointer hit area; expands to `2.75rem` on coarse pointers |
+
+### JavaScript API
+
+`window.a3sUI.refresh(splitPane)` rereads parameters. The root emits `a3s:split-input` continuously while dragging and `a3s:split-change` after a committed pointer or keyboard change. Event detail contains `{ value, orientation }`.
+
+## States and variants
+
+Set `aria-disabled="true"` on the separator to disable resizing. Vertical layout stacks the panes and changes the separator keyboard axis. RTL side-by-side layouts reverse pointer growth automatically.
+
+## Accessibility
+
+The controller adds separator orientation, value bounds, current value, percentage text, and keyboard focus. Arrow keys resize by `data-step`; Home and End move to bounds; double click restores the default.
