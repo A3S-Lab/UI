@@ -657,7 +657,7 @@ export function HomeLayout() {
   };
   const installationHref = route("/installation");
   const componentsHref = route("/components/");
-  const installCommand = "npm install github:A3S-Lab/UI";
+  const installCommand = "npm install @a3s-lab/ui@0.2.0";
   const copyFeedback =
     copyStatus === "copied"
       ? labels.copied

@@ -4,6 +4,10 @@
 
 ## [0.2.0] - 2026-08-07
 
+### Added
+
+- Published `@a3s-lab/ui@0.2.0` to the public npm registry with validated exports and tarball contents.
+
 ### Changed
 
 - Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.

@@ -17,9 +17,9 @@
 - [x] Added browser visual-regression coverage for the Office-derived workbench and application patterns.
 - [x] Promoted the validated `next` visual contract into the v0.2.0 stable documentation snapshot.
 - [x] Added a publish-time package export and tarball contract check.
+- [x] Published `@a3s-lab/ui@0.2.0` to the public npm registry.
 
 ## Next
 
-- [ ] Publish `@a3s-lab/ui` to the npm registry.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.
