@@ -4,6 +4,10 @@
 
 ## [0.2.1] - 2026-08-08
 
+### Added
+
+- Published `@a3s-lab/ui@0.2.1` to the public npm registry and created the `v0.2.1` GitHub release.
+
 ### Fixed
 
 - Kept Input Group as the single focus and validation boundary when direct input, textarea, or select children retain their standalone control classes.
