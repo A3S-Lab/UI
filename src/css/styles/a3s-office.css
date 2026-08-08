@@ -431,6 +431,29 @@
     font-size: inherit;
   }
 
+  /* Standalone control classes must not draw a second boundary in the group. */
+  .input-group
+    > :is(
+      .textarea,
+      select.select,
+      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
+    ) {
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  .input-group
+    > :is(
+      .textarea,
+      select.select,
+      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
+    )[aria-invalid="true"]:focus-visible {
+    box-shadow: none;
+  }
+
   .combobox-chips > input[role="combobox"] {
     min-height: 1.5rem;
   }

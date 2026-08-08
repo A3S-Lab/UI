@@ -112,3 +112,69 @@ test("MDX form previews preserve mutable native checked state", async ({
   await settingsSwitch.uncheck();
   await expect(settingsSwitch).not.toBeChecked();
 });
+
+test("Input Group owns focus when its child keeps a standalone control class", async ({
+  page,
+}) => {
+  await openComponent(page, "input-group");
+
+  const group = page
+    .locator(".a3s-preview[data-preview-component=input-group] .input-group")
+    .first();
+  const input = group.locator("input");
+  const readControlBoundary = () =>
+    input.evaluate((control) => {
+      const style = getComputedStyle(control);
+      return {
+        background: style.backgroundColor,
+        borderWidth: style.borderWidth,
+        hasVisibleShadow: Array.from(
+          style.boxShadow.matchAll(/(-?\d+(?:\.\d+)?)px/g),
+          (match) => Number(match[1]),
+        ).some((value) => Math.abs(value) > 0),
+        outlineStyle: style.outlineStyle,
+        radius: style.borderRadius,
+      };
+    });
+
+  for (const theme of ["light", "dark"] as const) {
+    await test.step(theme, async () => {
+      await page.evaluate((value) => window.a3sUI.theme.set(value), theme);
+      await input.evaluate((element) => element.classList.remove("input"));
+      await input.focus();
+      await expect(input).toBeFocused();
+      const nativeBoundary = await readControlBoundary();
+
+      await input.evaluate((element) => element.classList.add("input"));
+      const classedBoundary = await readControlBoundary();
+      await input.evaluate((element) =>
+        element.setAttribute("aria-invalid", "true"),
+      );
+      const invalidBoundary = await readControlBoundary();
+      const focusState = await group.evaluate((element) => {
+        const control = element.querySelector<HTMLInputElement>("input")!;
+        const groupShadow = getComputedStyle(element).boxShadow;
+        return {
+          groupHasVisibleShadow: Array.from(
+            groupShadow.matchAll(/(-?\d+(?:\.\d+)?)px/g),
+            (match) => Number(match[1]),
+          ).some((value) => Math.abs(value) > 0),
+          inputIsFocusVisible: control.matches(":focus-visible"),
+        };
+      });
+
+      expect(focusState.inputIsFocusVisible).toBe(true);
+      expect(focusState.groupHasVisibleShadow).toBe(true);
+      expect(nativeBoundary.background).toBe("rgba(0, 0, 0, 0)");
+      expect(nativeBoundary.borderWidth).toBe("0px");
+      expect(nativeBoundary.hasVisibleShadow).toBe(false);
+      expect(nativeBoundary.radius).toBe("0px");
+      expect(nativeBoundary.outlineStyle).toBe("none");
+      expect(classedBoundary).toEqual(nativeBoundary);
+      expect(invalidBoundary).toEqual(nativeBoundary);
+      await input.evaluate((element) =>
+        element.removeAttribute("aria-invalid"),
+      );
+    });
+  }
+});

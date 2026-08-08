@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Kept Input Group as the single focus and validation boundary when direct input, textarea, or select children retain their standalone control classes.
+
 ## [0.2.0] - 2026-08-07
 
 ### Added
