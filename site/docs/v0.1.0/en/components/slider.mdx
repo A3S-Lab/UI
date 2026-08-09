@@ -1,14 +1,7 @@
 # Slider
 
 <Preview class="w-full max-w-sm">
-<input
-  type="range"
-  class="input w-full"
-  aria-label="Volume"
-  min="0"
-  max="100"
-  value="50"
-/>
+  <SliderDemo />
 </Preview>
 
 ## Usage
@@ -80,37 +73,23 @@ A3S UI intentionally uses the native range input. Unlike shadcn/ui's Base UI sli
 ### Default
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="Volume" min="0" max="100" value="50" />
+  <SliderDemo />
 </Preview>
 
 ### Label
 
 <Preview class="w-full max-w-sm">
-<div class="grid w-full gap-1 max-w-sm">
-  <div class="flex items-center justify-between gap-2">
-    <label class="label" for="temperature">Temperature</label>
-    <output class="text-sm text-muted-foreground" for="temperature">50</output>
-  </div>
-  <input
-    id="temperature"
-    type="range"
-    class="input w-full"
-    min="0"
-    max="100"
-    value="50"
-    oninput="this.previousElementSibling.querySelector('output').value = this.value"
-  />
-</div>
+  <SliderDemo variant="labeled" />
 </Preview>
 
 ### Disabled
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="Volume" min="0" max="100" value="50" disabled />
+  <SliderDemo disabled />
 </Preview>
 
 ### RTL
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="مستوى الصوت" min="0" max="100" value="50" dir="rtl" />
+  <SliderDemo direction="rtl" />
 </Preview>

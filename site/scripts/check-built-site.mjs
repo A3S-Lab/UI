@@ -28,6 +28,18 @@ const requiredFiles = [
   'v0.2.0/en/components/index.html',
   'v0.1.0/components/index.html',
   'v0.1.0/en/components/index.html',
+  'components/field.html',
+  'en/components/field.html',
+  'v0.2.0/components/field.html',
+  'v0.2.0/en/components/field.html',
+  'v0.1.0/components/field.html',
+  'v0.1.0/en/components/field.html',
+  'components/slider.html',
+  'en/components/slider.html',
+  'v0.2.0/components/slider.html',
+  'v0.2.0/en/components/slider.html',
+  'v0.1.0/components/slider.html',
+  'v0.1.0/en/components/slider.html',
   'components/app-shell.html',
   'components/split-pane.html',
   'components/status-bar.html',
@@ -124,6 +136,57 @@ const homepageExpectations = [
     ],
   },
 ];
+
+const componentExpectations = ['', 'v0.2.0/', 'v0.1.0/'].flatMap(
+  (versionPrefix) => [
+    {
+      file: `${versionPrefix}components/field.html`,
+      markers: [
+        'lang="zh"',
+        'data-slider-demo="field"',
+        '价格范围',
+        '最高预算：',
+        'aria-valuetext="US$800"',
+        '交互式组件预览',
+        '实时预览',
+      ],
+    },
+    {
+      file: `${versionPrefix}en/components/field.html`,
+      markers: [
+        'lang="en"',
+        'data-slider-demo="field"',
+        'Price range',
+        'Maximum budget:',
+        'aria-valuetext="$800"',
+        'Interactive component preview',
+        'Live preview',
+      ],
+    },
+    {
+      file: `${versionPrefix}components/slider.html`,
+      markers: [
+        'lang="zh"',
+        'data-slider-demo="standalone"',
+        'data-slider-demo="labeled"',
+        'aria-label="音量"',
+        '>温度<',
+        'dir="rtl"',
+      ],
+    },
+    {
+      file: `${versionPrefix}en/components/slider.html`,
+      markers: [
+        'lang="en"',
+        'data-slider-demo="standalone"',
+        'data-slider-demo="labeled"',
+        'aria-label="Volume"',
+        '>Temperature<',
+        'dir="rtl"',
+      ],
+    },
+  ],
+);
 
 const switchExpectations = [
   {
@@ -287,7 +350,10 @@ if (
   throw new Error('The Rspress theme bootstrap must remain executable.');
 }
 
-for (const { file, markers } of homepageExpectations) {
+for (const { file, markers } of [
+  ...homepageExpectations,
+  ...componentExpectations,
+]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
   for (const marker of markers) {
     if (!html.includes(marker)) {

@@ -35,6 +35,10 @@ suite "a3s-ui-actions-and-forms" {
             target = css(".a3s-preview[data-preview-component=field] input[type=text]")
             value = "4242 4242 4242 4242"
         }
+        focus "focus-budget-slider" { target = css("[data-slider-demo=field] input[type=range]") }
+        press "increase-budget" { key = "ArrowRight" }
+        expect "budget-updated" { text = "$810" }
+        screenshot "field-budget-updated" { path = "components/field-budget-updated.png" }
         expect "field-visible" { visible = css(".a3s-preview[data-preview-component=field] .fieldset") }
     }
 

@@ -14,6 +14,14 @@ interface SwitchGeometry {
   track: { height: number; left: number; top: number; width: number };
 }
 
+interface SliderFillState {
+  direction: string;
+  fillOffset: string;
+  thumbSize: string;
+  value: string;
+  valuePercent: string;
+}
+
 async function readSwitchGeometry(control: Locator): Promise<SwitchGeometry> {
   return control.evaluate((element) => {
     const rect = element.getBoundingClientRect();
@@ -100,6 +108,28 @@ async function waitForSettledFrames(page: Page) {
         });
       }),
   );
+}
+
+async function readSliderFillState(slider: Locator): Promise<SliderFillState> {
+  return slider.evaluate((element) => {
+    const input = element as HTMLInputElement;
+    const style = getComputedStyle(input);
+    return {
+      direction: style.direction,
+      fillOffset: style.getPropertyValue("--slider-fill-offset").trim(),
+      thumbSize: style.getPropertyValue("--slider-thumb-size").trim(),
+      value: input.value,
+      valuePercent: style.getPropertyValue("--slider-value").trim(),
+    };
+  });
+}
+
+async function setSliderValue(slider: Locator, value: number) {
+  await slider.evaluate((element, nextValue) => {
+    const input = element as HTMLInputElement;
+    input.value = String(nextValue);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }, value);
 }
 
 test("Switch keeps Office track geometry and mutable MDX state", async ({
@@ -259,9 +289,9 @@ test("Switch centers its visual track inside a coarse touch target", async ({
   }
 });
 
-test("Slider keeps its visual fill synchronized with keyboard value", async ({
+test("Slider keeps its visual fill synchronized across intermediate and RTL values", async ({
   page,
-}) => {
+}, testInfo) => {
   await openComponent(page, "slider");
 
   const slider = page
@@ -292,6 +322,39 @@ test("Slider keeps its visual fill synchronized with keyboard value", async ({
       ),
     )
     .toBe("51%");
+  await expect
+    .poll(async () => (await readSliderFillState(slider)).fillOffset)
+    .toBe("-0.12px");
+
+  await setSliderValue(slider, 20);
+  await expect(slider).toHaveValue("20");
+  await expect
+    .poll(async () => await readSliderFillState(slider))
+    .toMatchObject({
+      direction: "ltr",
+      fillOffset: "3.6px",
+      thumbSize: "12px",
+      valuePercent: "20%",
+    });
+  await testInfo.attach("slider-fill-20", {
+    body: await slider.screenshot(),
+    contentType: "image/png",
+  });
+
+  await setSliderValue(slider, 80);
+  await expect(slider).toHaveValue("80");
+  await expect
+    .poll(async () => await readSliderFillState(slider))
+    .toMatchObject({
+      direction: "ltr",
+      fillOffset: "-3.6px",
+      thumbSize: "12px",
+      valuePercent: "80%",
+    });
+  await testInfo.attach("slider-fill-80", {
+    body: await slider.screenshot(),
+    contentType: "image/png",
+  });
 
   await page.keyboard.press("Home");
   await expect(slider).toHaveValue("0");
@@ -302,6 +365,9 @@ test("Slider keeps its visual fill synchronized with keyboard value", async ({
       ),
     )
     .toBe("0%");
+  await expect
+    .poll(async () => (await readSliderFillState(slider)).fillOffset)
+    .toBe("6px");
   await expect(slider).toHaveScreenshot("slider-thumb-start-office.png");
 
   await page.keyboard.press("End");
@@ -313,7 +379,65 @@ test("Slider keeps its visual fill synchronized with keyboard value", async ({
       ),
     )
     .toBe("100%");
+  await expect
+    .poll(async () => (await readSliderFillState(slider)).fillOffset)
+    .toBe("-6px");
   await expect(slider).toHaveScreenshot("slider-thumb-end-office.png");
+
+  const rtlSlider = page.locator('[data-slider-demo="standalone"][dir="rtl"]');
+  await setSliderValue(rtlSlider, 80);
+  await expect
+    .poll(async () => await readSliderFillState(rtlSlider))
+    .toMatchObject({
+      direction: "rtl",
+      fillOffset: "-3.6px",
+      value: "80",
+      valuePercent: "80%",
+    });
+});
+
+test("Field composition reuses a localized mutable Slider demo", async ({
+  page,
+}) => {
+  await openComponent(page, "field");
+
+  const englishPreview = page.locator(
+    'section.a3s-preview:has([data-slider-demo="field"])',
+  );
+  const englishSlider = englishPreview.getByRole("slider", {
+    name: "Price range",
+  });
+  const englishOutput = englishPreview.locator("output");
+  await expect(englishPreview).toHaveAttribute(
+    "aria-label",
+    "Interactive component preview",
+  );
+  await expect(englishOutput).toHaveText("$800");
+  await expect(englishSlider).toHaveAttribute("aria-valuetext", "$800");
+  await englishSlider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(englishSlider).toHaveValue("810");
+  await expect(englishOutput).toHaveText("$810");
+  await expect(englishSlider).toHaveAttribute("aria-valuetext", "$810");
+  await expect
+    .poll(async () => await readSliderFillState(englishSlider))
+    .toMatchObject({ fillOffset: "-3.72px", valuePercent: "81%" });
+
+  await page.goto("components/field.html", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+
+  const chinesePreview = page.locator(
+    'section.a3s-preview:has([data-slider-demo="field"])',
+  );
+  const chineseSlider = chinesePreview.getByRole("slider", {
+    name: "价格范围",
+  });
+  await expect(chinesePreview).toHaveAttribute("aria-label", "交互式组件预览");
+  await expect(chinesePreview.locator(".a3s-preview__header")).toContainText(
+    "实时预览",
+  );
+  await expect(chineseSlider).toHaveAttribute("aria-valuetext", "US$800");
+  await expect(chinesePreview.locator("output")).toHaveText("US$800");
 });
 
 test("Button Group preserves joined edges while hovering and nesting", async ({

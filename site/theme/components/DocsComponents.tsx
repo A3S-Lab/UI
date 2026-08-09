@@ -312,6 +312,7 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
 
 export function Preview({ children, className, class: htmlClass }: PreviewProps) {
   const location = useLocation();
+  const language = useLang();
   const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const componentName =
@@ -360,12 +361,15 @@ export function Preview({ children, className, class: htmlClass }: PreviewProps)
     <section
       ref={previewRef}
       className="a3s-preview"
-      aria-label="Interactive component preview"
+      aria-label={
+        language === 'zh' ? '交互式组件预览' : 'Interactive component preview'
+      }
       data-preview-component={componentName}
     >
       <header className="a3s-preview__header">
         <span>
-          <i aria-hidden="true" /> Live preview
+          <i aria-hidden="true" />
+          {language === 'zh' ? '实时预览' : 'Live preview'}
         </span>
         <small>HTML · CSS · JavaScript</small>
       </header>

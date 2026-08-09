@@ -1,14 +1,7 @@
 # 滑块
 
 <Preview class="w-full max-w-sm">
-<input
-  type="range"
-  class="input w-full"
-  aria-label="音量"
-  min="0"
-  max="100"
-  value="50"
-/>
+  <SliderDemo />
 </Preview>
 
 ## 用途
@@ -80,37 +73,23 @@ A3S UI 有意使用间歇范围输入。与 shadcn/ui 的 Base UI 调整不同�
 ### 默认
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="音量" min="0" max="100" value="50" />
+  <SliderDemo />
 </Preview>
 
 ### 标签
 
 <Preview class="w-full max-w-sm">
-<div class="grid w-full gap-1 max-w-sm">
-  <div class="flex items-center justify-between gap-2">
-    <label class="label" for="temperature">Temperature</label>
-    <output class="text-sm text-muted-foreground" for="temperature">50</output>
-  </div>
-  <input
-    id="temperature"
-    type="range"
-    class="input w-full"
-    min="0"
-    max="100"
-    value="50"
-    oninput="this.previousElementSibling.querySelector('output').value = this.value"
-  />
-</div>
+  <SliderDemo variant="labeled" />
 </Preview>
 
 ### 已禁用
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="音量" min="0" max="100" value="50" disabled />
+  <SliderDemo disabled />
 </Preview>
 
 ### RTL
 
 <Preview class="w-full max-w-sm">
-<input type="range" class="input w-full" aria-label="مستوى الصوت" min="0" max="100" value="50" dir="rtl" />
+  <SliderDemo direction="rtl" />
 </Preview>
