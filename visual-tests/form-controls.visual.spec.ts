@@ -54,6 +54,96 @@ test("Native Select keeps its logical chevron across Office states", async ({
   expect(dark.backgroundColor).not.toBe("rgb(255, 255, 255)");
 });
 
+test("Office choice controls reserve space only for overlaid indicators", async ({
+  page,
+}) => {
+  await openComponent(page, "select");
+
+  const trigger = page.locator("#select-demo-trigger");
+  const readTriggerGeometry = () =>
+    trigger.evaluate((button) => {
+      const label = button.querySelector<HTMLElement>("span")!;
+      const icon = button.querySelector<SVGElement>("svg")!;
+      const buttonRect = button.getBoundingClientRect();
+      const labelRect = label.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      const style = getComputedStyle(button);
+      const isRtl = style.direction === "rtl";
+
+      return {
+        iconEndInset: isRtl
+          ? iconRect.left - buttonRect.left
+          : buttonRect.right - iconRect.right,
+        labelIconGap: isRtl
+          ? labelRect.left - iconRect.right
+          : iconRect.left - labelRect.right,
+        paddingInlineEnd: style.paddingInlineEnd,
+        paddingInlineStart: style.paddingInlineStart,
+      };
+    });
+
+  expect(await readTriggerGeometry()).toEqual({
+    iconEndInset: 11,
+    labelIconGap: 6,
+    paddingInlineEnd: "10px",
+    paddingInlineStart: "10px",
+  });
+
+  await trigger.locator("span").evaluate((label) => {
+    label.textContent =
+      "A deliberately long option label that must truncate before the chevron";
+  });
+  expect((await readTriggerGeometry()).labelIconGap).toBe(6);
+
+  await trigger.evaluate((button) => {
+    button.closest<HTMLElement>(".select")!.dir = "rtl";
+  });
+  expect(await readTriggerGeometry()).toEqual({
+    iconEndInset: 11,
+    labelIconGap: 6,
+    paddingInlineEnd: "10px",
+    paddingInlineStart: "10px",
+  });
+
+  await trigger.evaluate((button) => {
+    button.closest<HTMLElement>(".select")!.dir = "ltr";
+    button.querySelector("span")!.textContent = "Select a fruit";
+  });
+  await trigger.click();
+  await page
+    .locator('#select-demo-listbox [role="option"][data-value="apple"]')
+    .click();
+  await trigger.click();
+
+  const selectedOption = page.locator(
+    '#select-demo-listbox [role="option"][aria-selected="true"]',
+  );
+  await expect(selectedOption).toHaveCSS("padding-inline-end", "32px");
+  await expect(selectedOption).not.toHaveCSS("background-image", "none");
+
+  await openComponent(page, "combobox");
+  const combobox = page.locator("#framework-combobox");
+  const comboboxGeometry = await combobox.evaluate((root) => {
+    const input = root.querySelector<HTMLInputElement>(
+      'input[role="combobox"]',
+    )!;
+    const icon = root.querySelector<SVGElement>(".combobox-trigger-icon")!;
+    const inputRect = input.getBoundingClientRect();
+    const iconRect = icon.getBoundingClientRect();
+    const style = getComputedStyle(input);
+    return {
+      iconEndInset: inputRect.right - iconRect.right,
+      paddingInlineEnd: style.paddingInlineEnd,
+      paddingInlineStart: style.paddingInlineStart,
+    };
+  });
+  expect(comboboxGeometry).toEqual({
+    iconEndInset: 10,
+    paddingInlineEnd: "32px",
+    paddingInlineStart: "10px",
+  });
+});
+
 test("MDX form previews preserve mutable native checked state", async ({
   page,
 }) => {

@@ -389,9 +389,14 @@
   }
 
   .field > select,
-  select.select,
-  .select:not(select) > button {
+  select.select {
     padding-inline: 0.625rem 2rem;
+  }
+
+  /* Inline trigger icons participate in layout and do not need a second
+   * native-select-sized end reserve. */
+  .select:not(select) > button {
+    padding-inline: 0.625rem;
   }
 
   .field > textarea:hover:not(:disabled),
@@ -1247,6 +1252,12 @@
     font-size: var(--a3s-font-size-compact);
   }
 
+  /* Select and Combobox paint their selected check at the logical end. */
+  .select:not(select) [role="option"],
+  .combobox [role="option"] {
+    padding-inline-end: 2rem;
+  }
+
   .dropdown-menu
     :is(
       [role="menuitem"],
@@ -1265,7 +1276,7 @@
   .combobox [role="option"]:focus-visible,
   .command [role="menuitem"].active,
   .command [role="menuitem"]:focus-visible {
-    background: var(--a3s-panel-soft);
+    background-color: var(--a3s-panel-soft);
     color: var(--a3s-ink);
   }
 
