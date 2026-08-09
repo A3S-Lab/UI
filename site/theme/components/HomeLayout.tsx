@@ -103,53 +103,55 @@ const resourceKinds = [
 
 const homeCopy = {
   zh: {
-    kicker: "A3S 产品设计系统",
-    titleLead: "让每个界面",
-    titleAccent: "都像同一个产品。",
+    kicker: "A3S 产品界面系统",
+    titleLead: "复杂界面，",
+    titleAccent: "也该有清晰语法。",
     subtitle:
-      "源自 A3S Office、智能体工作区和运维控制台的可复用视觉语言，以语义化 HTML、Tailwind CSS 与轻量原生 JavaScript 控制器交付。",
-    start: "开始使用",
-    github: "查看 GitHub",
+      "把 A3S Office 验证过的应用外壳、功能区、分栏与状态模型，交付为语义化 HTML、Tailwind CSS 和少量原生 JavaScript。无需 React，不绑定框架运行时。",
+    start: "安装 A3S UI",
+    github: "查看源码",
     copy: "复制安装命令",
-    copied: "已复制",
-    copyError: "复制失败，请重试",
-    componentGuides: "组件指南",
-    foundationSystems: "基础系统",
-    runtimeDependencies: "运行时依赖",
-    liveSpecimen: "实时样例",
-    specimenMeta: "可交互 OFFICE 工作台",
+    copied: "安装命令已复制",
+    copyError: "无法复制，请手动选择命令",
+    installCommandLabel: "npm 安装命令",
+    componentGuides: "组件契约",
+    foundationSystems: "设计基础",
+    runtimeDependencies: "框架运行时",
+    liveSpecimen: "公开组件组合",
+    specimenMeta: "可交互 A3S OFFICE 工作台",
     semanticHtml: "语义化 HTML",
-    lightDark: "浅色 + 深色",
-    responsiveRtl: "响应式 + RTL",
-    accessibleStates: "可访问状态",
-    templates: "Nunjucks + Jinja",
-    catalogTitle: "从基础控件到完整工作台。",
+    nativeBehavior: "浏览器原生行为",
+    applicationPatterns: "应用级组合",
+    bidirectionalLayout: "响应式 + RTL",
+    serverTemplates: "服务端模板",
+    catalogTitle: "从一个控件，到整个工作台。",
     catalogBody:
-      "每篇指南都包含实时样例、最小标记、参数、变体、状态行为与可访问性说明。",
-    guides: "篇指南",
-    browseCatalog: "浏览完整组件目录",
-    foundationsTitle: "一套系统，覆盖每个 A3S 界面。",
+      "每篇指南提供可运行样例、最小标记和完整状态契约；应用模式展示这些组件如何组成真实工作区。",
+    guides: "个契约",
+    browseCatalog: "查看全部组件契约",
+    foundationsTitle: "一套语义契约，多种视觉基础。",
     foundationsBody:
-      "产品语义只定义一次，并在文档工具、Coding Agent 界面与可观测控制台之间共享。",
+      "颜色、字体与形状可以切换，组件结构、交互状态和可访问行为始终保持一致。",
     principles: [
       {
-        title: "平台优先",
-        body: "以原生控件和语义化地标为基础；只有平台无法提供的交互才使用 JavaScript。",
+        title: "平台能力优先",
+        body: "原生控件和语义化地标始终优先；只有浏览器无法提供的交互才使用 JavaScript。",
       },
       {
-        title: "参数，而不是分叉",
-        body: "通过 CSS 变量和明确的数据属性适配组件，不复制结构，也不牺牲可访问行为。",
+        title: "坚持一份契约",
+        body: "CSS 变量和已记录的数据属性负责适配，不分叉组件结构，也不牺牲可访问行为。",
       },
       {
-        title: "面向生产力应用的密度",
-        body: "清晰层级、紧凑工具栏、可预测焦点，以及能承受复杂业务的响应式布局。",
+        title: "为复杂工作而设",
+        body: "紧凑界面、稳定焦点与响应式工作区，让高密度产品始终保持清晰。",
       },
     ],
-    principlesTitle: "支撑复杂产品的三条原则。",
-    ctaTitle: "构建下一个 A3S 界面。",
-    ctaBody: "安装组件包、选择设计基础，然后从任意组件指南复制语义化标记。",
-    installation: "安装指南",
-    explore: "探索组件",
+    principlesTitle: "三条不能妥协的产品原则。",
+    ctaTitle: "从一个真实界面开始。",
+    ctaBody:
+      "安装 @a3s-lab/ui，选择视觉基础，然后从 App Shell 或任一组件契约复制可运行标记。",
+    installation: "查看安装方式",
+    explore: "浏览组件契约",
     workspace: "工作区 / 最近使用",
     continue: "继续上次工作",
     newResource: "新建资源",
@@ -163,54 +165,55 @@ const homeCopy = {
     workbenchRegion: "交互式 A3S Office 工作台样例",
   },
   en: {
-    kicker: "A3S PRODUCT DESIGN SYSTEM",
-    titleLead: "Interfaces that feel",
-    titleAccent: "like one product.",
+    kicker: "A3S PRODUCT INTERFACE SYSTEM",
+    titleLead: "Complex UI.",
+    titleAccent: "Clear grammar.",
     subtitle:
-      "Reusable semantics and styling for A3S Office, agent workspaces, and operational consoles, delivered in HTML, Tailwind CSS, and vanilla JavaScript.",
-    start: "Get started",
-    github: "GitHub",
+      "A3S Office patterns—app shells, ribbons, split panes, and state models—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers. No React. No framework runtime.",
+    start: "Install A3S UI",
+    github: "View source",
     copy: "Copy install command",
-    copied: "Copied",
-    copyError: "Copy failed. Try again",
-    componentGuides: "Component guides",
-    foundationSystems: "Foundation systems",
-    runtimeDependencies: "Runtime dependencies",
-    liveSpecimen: "LIVE SPECIMEN",
-    specimenMeta: "INTERACTIVE OFFICE WORKBENCH",
+    copied: "Install command copied",
+    copyError: "Couldn’t copy. Select the command manually.",
+    installCommandLabel: "npm install command",
+    componentGuides: "Component contracts",
+    foundationSystems: "Design foundations",
+    runtimeDependencies: "Framework runtimes",
+    liveSpecimen: "PUBLIC COMPONENT COMPOSITION",
+    specimenMeta: "INTERACTIVE A3S OFFICE WORKBENCH",
     semanticHtml: "Semantic HTML",
-    lightDark: "Light + dark",
-    responsiveRtl: "Responsive + RTL",
-    accessibleStates: "Accessible states",
-    templates: "Nunjucks + Jinja",
-    catalogTitle: "From controls to complete workspaces.",
+    nativeBehavior: "Browser-native behavior",
+    applicationPatterns: "Application composition",
+    bidirectionalLayout: "Responsive + RTL",
+    serverTemplates: "Server templates",
+    catalogTitle: "From one control to a complete workspace.",
     catalogBody:
-      "Each guide includes a live specimen, minimal markup, parameters, variants, state behavior, and accessibility notes.",
-    guides: "GUIDES",
-    browseCatalog: "Browse the complete component catalog",
-    foundationsTitle: "One system. Every A3S surface.",
+      "Every guide pairs a live specimen with minimal markup and a complete state contract. Application patterns show how those pieces become real workspaces.",
+    guides: "CONTRACTS",
+    browseCatalog: "View all component contracts",
+    foundationsTitle: "One semantic contract. Multiple visual foundations.",
     foundationsBody:
-      "Product semantics are encoded once, then shared across document tools, coding-agent interfaces, and observability consoles.",
+      "Color, type, and shape can change while component structure, interaction state, and accessible behavior stay intact.",
     principles: [
       {
-        title: "Platform first",
-        body: "Native controls and semantic landmarks remain the foundation. JavaScript is reserved for behavior that the platform does not provide.",
+        title: "Use the platform",
+        body: "Native controls and semantic landmarks come first. JavaScript appears only when the browser does not supply the interaction.",
       },
       {
-        title: "Parameters, not forks",
-        body: "CSS variables and documented data attributes adapt components without duplicating their structure or accessibility behavior.",
+        title: "Keep one contract",
+        body: "CSS variables and documented data attributes adapt the interface without forking structure or accessibility behavior.",
       },
       {
-        title: "Application density",
-        body: "The system is tuned for serious workspaces: clear hierarchy, compact chrome, predictable focus, and resilient responsive layouts.",
+        title: "Design for dense work",
+        body: "Compact chrome, predictable focus, and responsive workspaces keep complex product surfaces legible.",
       },
     ],
-    principlesTitle: "Three rules for resilient product work.",
-    ctaTitle: "Build the next A3S interface.",
+    principlesTitle: "Three non-negotiables.",
+    ctaTitle: "Start with a real interface.",
     ctaBody:
-      "Install the package, choose a foundation, and copy the semantic markup from any component guide.",
-    installation: "Installation",
-    explore: "Explore components",
+      "Install @a3s-lab/ui, choose a visual foundation, then copy working markup from App Shell or any component contract.",
+    installation: "View installation",
+    explore: "Browse component contracts",
     workspace: "WORKSPACE / RECENT",
     continue: "Continue where you left off",
     newResource: "New resource",
@@ -657,7 +660,11 @@ export function HomeLayout() {
   };
   const installationHref = route("/installation");
   const componentsHref = route("/components/");
-  const installCommand = "npm install @a3s-lab/ui@0.2.0";
+  const installVersion =
+    version && version !== defaultVersion
+      ? `@${version.replace(/^v/, "")}`
+      : "";
+  const installCommand = `npm install @a3s-lab/ui${installVersion}`;
   const copyFeedback =
     copyStatus === "copied"
       ? labels.copied
@@ -722,7 +729,7 @@ export function HomeLayout() {
           </div>
           <div
             className="ui-install-command"
-            aria-label="npm installation command"
+            aria-label={labels.installCommandLabel}
           >
             <span>$</span>
             <code>{installCommand}</code>
@@ -793,15 +800,15 @@ export function HomeLayout() {
       <section
         className="ui-proof-strip"
         aria-label={
-          locale === "zh" ? "设计系统能力" : "Design system qualities"
+          locale === "zh" ? "A3S UI 交付边界" : "A3S UI delivery boundaries"
         }
       >
         {[
           labels.semanticHtml,
-          labels.lightDark,
-          labels.responsiveRtl,
-          labels.accessibleStates,
-          labels.templates,
+          labels.nativeBehavior,
+          labels.applicationPatterns,
+          labels.bidirectionalLayout,
+          labels.serverTemplates,
         ].map((label) => (
           <div key={label}>
             <CheckIcon />
