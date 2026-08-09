@@ -58,6 +58,7 @@ const componentRoutes = [
   "toast",
   "toolbar",
   "tooltip",
+  "tree",
   "workspace-header",
 ] as const;
 
@@ -197,6 +198,7 @@ async function inspectPreviewQuality(
             "[role='option']",
             "[role='separator'][tabindex]",
             "[role='tab']",
+            "[role='treeitem']",
           ].join(","),
         ),
       ),

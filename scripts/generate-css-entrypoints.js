@@ -48,6 +48,7 @@ const componentOrder = [
   'status-bar',
   'table',
   'tabs',
+  'tree',
   'task-pane',
   'textarea',
   'input-group',

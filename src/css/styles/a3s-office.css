@@ -213,6 +213,67 @@
     height: var(--a3s-control-height);
   }
 
+  .button-group:has(
+      > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
+    ):focus-within {
+    border-radius: var(--a3s-radius-sm);
+    box-shadow: var(--a3s-shadow-focus);
+  }
+
+  .button-group:has(
+      > .input:not([type="checkbox"]):not([type="radio"]):not(
+          [type="range"]
+        )[aria-invalid="true"]
+    ):focus-within {
+    box-shadow: var(--a3s-shadow-error);
+  }
+
+  .button-group:has(
+      > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
+    )
+    > :is(.input, .btn):focus-visible,
+  .button-group:has(
+      > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
+    )
+    > :is(.dropdown-menu, .popover, .select)
+    > button:focus-visible {
+    box-shadow: none;
+  }
+
+  .button-group:not([data-orientation="vertical"]):not(:has(> .button-group))
+    > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      :first-child
+    ) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-inline-start-width: 0;
+  }
+
+  .button-group:not([data-orientation="vertical"]):not(:has(> .button-group))
+    > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      :last-child
+    ) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .button-group[data-orientation="vertical"]:not(:has(> .button-group))
+    > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      :first-child
+    ) {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    border-top-width: 0;
+  }
+
+  .button-group[data-orientation="vertical"]:not(:has(> .button-group))
+    > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      :last-child
+    ) {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
   .btn:focus-visible {
     border-color: var(--a3s-blue);
     box-shadow: var(--a3s-shadow-focus);
@@ -564,6 +625,7 @@
 
   :is(.field > input[type="radio"], .input[type="radio"])::after {
     position: absolute;
+    z-index: 1;
     inset: 50% auto auto 50%;
     width: 0.9375rem;
     height: 0.9375rem;
@@ -588,9 +650,27 @@
 
   .field > input[type="radio"]:checked::before,
   .input[type="radio"]:checked::before {
+    z-index: 2;
     width: 0.4375rem;
     height: 0.4375rem;
     background: var(--a3s-blue);
+  }
+
+  :is(.field > input[type="radio"], .input[type="radio"]):focus-visible {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  :is(.field > input[type="radio"], .input[type="radio"]):focus-visible::after {
+    outline: 2px solid var(--a3s-blue);
+    outline-offset: 2px;
+  }
+
+  :is(
+      .field > input[type="radio"],
+      .input[type="radio"]
+    )[aria-invalid="true"]:focus-visible::after {
+    outline-color: var(--a3s-red);
   }
 
   .field[data-orientation="horizontal"]:has(
@@ -1352,6 +1432,62 @@
   .item:hover,
   a.item:hover {
     background: var(--a3s-panel-soft);
+  }
+
+  .tree {
+    color: var(--a3s-ink);
+    font-size: 0.75rem;
+  }
+
+  .tree [role="group"] {
+    border-color: var(--a3s-line);
+  }
+
+  .tree [role="treeitem"] > [data-tree-row] {
+    min-height: 2rem;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .tree [role="treeitem"] > [data-tree-row]::before {
+    color: var(--a3s-muted);
+  }
+
+  .tree
+    [role="treeitem"]:not([aria-disabled="true"]):not([data-disabled="true"])
+    > [data-tree-row]:hover {
+    background: var(--a3s-panel-soft);
+  }
+
+  .tree [role="treeitem"][aria-selected="true"] > [data-tree-row] {
+    background: color-mix(in srgb, var(--a3s-blue) 13%, transparent);
+    color: var(--a3s-ink);
+    font-weight: 620;
+  }
+
+  .tree [role="treeitem"]:focus-visible > [data-tree-row] {
+    outline: 2px solid color-mix(in srgb, var(--a3s-blue) 72%, transparent);
+    outline-offset: -2px;
+    box-shadow: none;
+  }
+
+  .tree [data-tree-row] > svg:not([class*="size-"]) {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .tree [data-tree-meta] {
+    color: var(--a3s-muted);
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  @media (pointer: coarse) {
+    .tree [role="treeitem"] > [data-tree-row] {
+      min-height: 2.75rem;
+    }
   }
 
   .table {

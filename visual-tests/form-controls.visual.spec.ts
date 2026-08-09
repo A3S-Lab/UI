@@ -113,6 +113,160 @@ test("MDX form previews preserve mutable native checked state", async ({
   await expect(settingsSwitch).not.toBeChecked();
 });
 
+test("Office Radio keeps its hit target, selected dot, and visible focus ring", async ({
+  page,
+}) => {
+  await openComponent(page, "radio-group");
+
+  const uncheckedRadio = page.locator("#r1");
+  const checkedRadio = page.locator("#r2");
+  const readRadioState = (radio: Locator) =>
+    radio.evaluate((element) => {
+      const control = getComputedStyle(element);
+      const indicator = getComputedStyle(element, "::before");
+      const ring = getComputedStyle(element, "::after");
+      const rect = element.getBoundingClientRect();
+
+      return {
+        control: {
+          boxShadow: control.boxShadow,
+          height: rect.height,
+          width: rect.width,
+        },
+        indicator: {
+          backgroundColor: indicator.backgroundColor,
+          height: indicator.height,
+          width: indicator.width,
+          zIndex: indicator.zIndex,
+        },
+        ring: {
+          backgroundColor: ring.backgroundColor,
+          borderColor: ring.borderColor,
+          height: ring.height,
+          outlineColor: ring.outlineColor,
+          outlineOffset: ring.outlineOffset,
+          outlineStyle: ring.outlineStyle,
+          outlineWidth: ring.outlineWidth,
+          width: ring.width,
+          zIndex: ring.zIndex,
+        },
+      };
+    });
+
+  for (const theme of ["light", "dark"] as const) {
+    await test.step(theme, async () => {
+      await page.evaluate((value) => window.a3sUI.theme.set(value), theme);
+
+      await uncheckedRadio.focus();
+      await expect(uncheckedRadio).toBeFocused();
+      const unchecked = await readRadioState(uncheckedRadio);
+      expect(unchecked.control).toEqual({
+        boxShadow: "none",
+        height: 24,
+        width: 24,
+      });
+      expect(unchecked.ring).toMatchObject({
+        height: "15px",
+        outlineOffset: "2px",
+        outlineStyle: "solid",
+        outlineWidth: "2px",
+        width: "15px",
+        zIndex: "1",
+      });
+
+      await checkedRadio.focus();
+      await expect(checkedRadio).toBeChecked();
+      await expect(checkedRadio).toBeFocused();
+      const checked = await readRadioState(checkedRadio);
+      expect(checked.control).toEqual({
+        boxShadow: "none",
+        height: 24,
+        width: 24,
+      });
+      expect(checked.indicator).toMatchObject({
+        height: "7px",
+        width: "7px",
+        zIndex: "2",
+      });
+      expect(checked.indicator.backgroundColor).not.toBe(
+        checked.ring.backgroundColor,
+      );
+      expect(Number(checked.indicator.zIndex)).toBeGreaterThan(
+        Number(checked.ring.zIndex),
+      );
+
+      await checkedRadio.evaluate((element) =>
+        element.setAttribute("aria-invalid", "true"),
+      );
+      const invalid = await readRadioState(checkedRadio);
+      expect(invalid.ring.outlineColor).toBe(invalid.ring.borderColor);
+      await checkedRadio.evaluate((element) =>
+        element.removeAttribute("aria-invalid"),
+      );
+    });
+  }
+});
+
+test("Button Group presents one focus boundary for composite inputs", async ({
+  page,
+}) => {
+  await openComponent(page, "button-group");
+
+  const group = page.getByRole("group", { name: "Search", exact: true });
+  const input = group.getByRole("textbox", { name: "Search messages" });
+  const button = group.getByRole("button", { name: "Search", exact: true });
+  const readFocusState = () =>
+    group.evaluate((element) => {
+      const input = element.querySelector<HTMLInputElement>("input")!;
+      const button = element.querySelector<HTMLButtonElement>("button")!;
+      const groupStyle = getComputedStyle(element);
+      const inputStyle = getComputedStyle(input);
+      const buttonStyle = getComputedStyle(button);
+      const hasVisibleShadow = (shadow: string) =>
+        Array.from(shadow.matchAll(/(-?\d+(?:\.\d+)?)px/g), (match) =>
+          Number(match[1]),
+        ).some((value) => Math.abs(value) > 0);
+
+      return {
+        buttonShadow: buttonStyle.boxShadow,
+        groupHasVisibleShadow: hasVisibleShadow(groupStyle.boxShadow),
+        groupShadow: groupStyle.boxShadow,
+        inputEndRadius: inputStyle.borderEndEndRadius,
+        inputShadow: inputStyle.boxShadow,
+      };
+    });
+
+  for (const theme of ["light", "dark"] as const) {
+    await test.step(theme, async () => {
+      await page.evaluate((value) => window.a3sUI.theme.set(value), theme);
+
+      await input.focus();
+      await expect(input).toBeFocused();
+      const focusedInput = await readFocusState();
+      expect(focusedInput.groupHasVisibleShadow).toBe(true);
+      expect(focusedInput.inputEndRadius).toBe("0px");
+      expect(focusedInput.inputShadow).toBe("none");
+
+      await input.evaluate((element) =>
+        element.setAttribute("aria-invalid", "true"),
+      );
+      const invalidInput = await readFocusState();
+      expect(invalidInput.groupHasVisibleShadow).toBe(true);
+      expect(invalidInput.groupShadow).not.toBe(focusedInput.groupShadow);
+      expect(invalidInput.inputShadow).toBe("none");
+      await input.evaluate((element) =>
+        element.removeAttribute("aria-invalid"),
+      );
+
+      await button.focus();
+      await expect(button).toBeFocused();
+      const focusedButton = await readFocusState();
+      expect(focusedButton.buttonShadow).toBe("none");
+      expect(focusedButton.groupHasVisibleShadow).toBe(true);
+    });
+  }
+});
+
 test("Input Group owns focus when its child keeps a standalone control class", async ({
   page,
 }) => {

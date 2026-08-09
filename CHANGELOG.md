@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
+
+### Fixed
+
+- Unified Radio selection and focus visuals, made joined Button Group inputs share one focus boundary, and replaced machine-translated Chinese component terminology with standard UI language.
+
 ## [0.2.1] - 2026-08-08
 
 ### Added

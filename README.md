@@ -75,7 +75,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Navigation | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar |
 | Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
 | Feedback | Alert, Badge, Empty, Progress, Skeleton, Spinner, and Toast |
-| Data display | Accordion, Avatar, Card, Chart, Item, Kbd, and Table |
+| Data display | Accordion, Avatar, Card, Chart, Item, Kbd, Table, and Tree |
 | Application patterns | App Shell, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
 | Utilities | Scroll Area and Theme Switcher |
 

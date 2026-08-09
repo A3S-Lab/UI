@@ -1178,6 +1178,49 @@
     @apply my-2;
   }
 
+  /* Tree */
+  .tree {
+    @apply text-foreground text-sm;
+  }
+
+  .tree [role='group'] {
+    @apply border-border;
+  }
+
+  .tree [role='treeitem'] > [data-tree-row] {
+    @apply min-h-8 gap-2 rounded-md px-2 py-1 text-sm transition-colors;
+  }
+
+  .tree [role='treeitem'] > [data-tree-row]::before {
+    @apply text-muted-foreground;
+  }
+
+  .tree [role='treeitem']:not([aria-disabled='true']):not([data-disabled='true']) > [data-tree-row]:hover {
+    @apply bg-muted/60;
+  }
+
+  .tree [role='treeitem'][aria-selected='true'] > [data-tree-row] {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .tree [role='treeitem']:focus-visible > [data-tree-row] {
+    @apply ring-ring ring-2;
+  }
+
+  .tree [data-tree-row] > svg:not([class*='size-']) {
+    @apply size-4;
+  }
+
+  .tree [data-tree-meta] {
+    @apply text-muted-foreground text-xs;
+  }
+
+  @media (pointer: coarse) {
+    .tree [role='treeitem'] > [data-tree-row] {
+      @apply min-h-11;
+    }
+  }
+
   /* Kbd */
   .kbd {
     @apply bg-muted text-muted-foreground in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 h-5 w-fit min-w-5 gap-1 rounded-sm px-1 font-sans text-xs font-medium [&_svg:not([class*='size-'])]:size-3;

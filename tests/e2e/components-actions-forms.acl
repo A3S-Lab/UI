@@ -123,6 +123,23 @@ suite "a3s-ui-actions-and-forms" {
         expect "comfortable-cleared" { visible = css("#r2:not(:checked)") }
         check "choose-comfortable" { target = css("#r2") }
         expect "comfortable-selected" { visible = css("#r2:checked") }
+        focus "focus-comfortable" { target = css("#r2") }
+        screenshot "radio-selected-focused" { path = "components/radio-selected-focused.png" }
+    }
+
+    scenario "radio-group-zh" {
+        name = "Chinese Field preview uses component terminology and keeps Radio interactive"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/field.html" }
+        wait "loaded" { load = "networkidle" }
+        viewport "phone" { width = 390 height = 844 }
+        expect "monthly-selected" { visible = css("#plan-monthly:checked") }
+        check "choose-yearly" { target = label("按年（$99.99/年）") }
+        expect "yearly-selected" { visible = css("#plan-yearly:checked") }
+        expect "monthly-cleared" { visible = css("#plan-monthly:not(:checked)") }
+        focus "focus-yearly" { target = css("#plan-yearly") }
+        screenshot "field-radio-zh-phone" { path = "components/field-radio-zh-phone.png" }
     }
 
     scenario "switch" {

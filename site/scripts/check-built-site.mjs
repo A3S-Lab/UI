@@ -34,6 +34,30 @@ const requiredFiles = [
   'v0.2.0/en/components/field.html',
   'v0.1.0/components/field.html',
   'v0.1.0/en/components/field.html',
+  'components/radio-group.html',
+  'en/components/radio-group.html',
+  'v0.2.0/components/radio-group.html',
+  'v0.2.0/en/components/radio-group.html',
+  'v0.1.0/components/radio-group.html',
+  'v0.1.0/en/components/radio-group.html',
+  'components/button-group.html',
+  'en/components/button-group.html',
+  'v0.2.0/components/button-group.html',
+  'v0.2.0/en/components/button-group.html',
+  'v0.1.0/components/button-group.html',
+  'v0.1.0/en/components/button-group.html',
+  'components/input-group.html',
+  'en/components/input-group.html',
+  'v0.2.0/components/input-group.html',
+  'v0.2.0/en/components/input-group.html',
+  'v0.1.0/components/input-group.html',
+  'v0.1.0/en/components/input-group.html',
+  'components/tree.html',
+  'en/components/tree.html',
+  'v0.2.0/components/tree.html',
+  'v0.2.0/en/components/tree.html',
+  'v0.1.0/components/tree.html',
+  'v0.1.0/en/components/tree.html',
   'components/slider.html',
   'en/components/slider.html',
   'v0.2.0/components/slider.html',
@@ -147,6 +171,10 @@ const componentExpectations = ['', 'v0.2.0/', 'v0.1.0/'].flatMap(
         '价格范围',
         '最高预算：',
         'aria-valuetext="US$800"',
+        '单选按钮',
+        '订阅方案',
+        '字段组',
+        '卡片式选项',
         '交互式组件预览',
         '实时预览',
       ],
@@ -161,6 +189,69 @@ const componentExpectations = ['', 'v0.2.0/', 'v0.1.0/'].flatMap(
         'aria-valuetext="$800"',
         'Interactive component preview',
         'Live preview',
+      ],
+    },
+    {
+      file: `${versionPrefix}components/radio-group.html`,
+      markers: [
+        'lang="zh"',
+        '单选组',
+        'aria-label="视图密度"',
+        '>宽松<',
+        '卡片式选项',
+        '订阅方案',
+        '通知方式',
+      ],
+    },
+    {
+      file: `${versionPrefix}en/components/radio-group.html`,
+      markers: [
+        'lang="en"',
+        'Radio Group',
+        'aria-label="View density"',
+        '>Comfortable<',
+        'Choice Card',
+        'Subscription Plan',
+        'Notification Preferences',
+      ],
+    },
+    {
+      file: `${versionPrefix}components/button-group.html`,
+      markers: [
+        'lang="zh"',
+        '按钮组负责连接子控件的边界与交互状态',
+        'aria-label="搜索"',
+        'placeholder="搜索…"',
+        '拆分按钮',
+      ],
+    },
+    {
+      file: `${versionPrefix}en/components/button-group.html`,
+      markers: [
+        'lang="en"',
+        'aria-label="Search"',
+        'placeholder="Search..."',
+        'Split',
+      ],
+    },
+    {
+      file: `${versionPrefix}components/input-group.html`,
+      markers: [
+        'lang="zh"',
+        '12 条结果',
+        '行内起始',
+        '块级末端',
+        'placeholder="输入密码"',
+      ],
+    },
+    {
+      file: `${versionPrefix}en/components/input-group.html`,
+      markers: [
+        'lang="en"',
+        '12 results',
+        'Inline start',
+        'Block end',
+        'placeholder="Enter password"',
       ],
     },
     {
@@ -187,6 +278,49 @@ const componentExpectations = ['', 'v0.2.0/', 'v0.1.0/'].flatMap(
     },
   ],
 );
+
+const nextTreeExpectations = [
+  {
+    file: 'components/tree.html',
+    markers: [
+      'lang="zh"',
+      '树形控件',
+      'role="tree"',
+      'aria-label="项目文件"',
+      'data-tree-row',
+      'data-tree-label',
+      'a3s:tree-toggle',
+    ],
+  },
+  {
+    file: 'en/components/tree.html',
+    markers: [
+      'lang="en"',
+      '>Tree<',
+      'role="tree"',
+      'aria-label="Project files"',
+      'data-tree-row',
+      'data-tree-label',
+      'a3s:tree-toggle',
+    ],
+  },
+  {
+    file: 'v0.2.0/components/tree.html',
+    markers: ['v0.2.0 不包含此组件', '不属于该历史版本的公开契约'],
+  },
+  {
+    file: 'v0.2.0/en/components/tree.html',
+    markers: ['Not available in v0.2.0', 'not part of this published package contract'],
+  },
+  {
+    file: 'v0.1.0/components/tree.html',
+    markers: ['v0.1.0 不包含此组件', '不属于该历史版本的公开契约'],
+  },
+  {
+    file: 'v0.1.0/en/components/tree.html',
+    markers: ['Not available in v0.1.0', 'not part of this published package contract'],
+  },
+];
 
 const switchExpectations = [
   {
@@ -353,6 +487,7 @@ if (
 for (const { file, markers } of [
   ...homepageExpectations,
   ...componentExpectations,
+  ...nextTreeExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
   for (const marker of markers) {
@@ -404,17 +539,37 @@ for (const expectation of styleExpectations) {
 
 const brokenReferences = [];
 const publicBrandingLeaks = [];
+const chineseTerminologyLeaks = [];
+const disallowedChineseTerms = [
+  '收音机',
+  '无线电组',
+  '无线电图标',
+  '无线电输入',
+  '现场组',
+  '间歇范围输入',
+  '微调器',
+  '旋转器',
+  '选择卡',
+];
 const htmlFiles = await collectHtmlFiles(outputRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, 'utf8');
+  const relativeHtmlFile = path.relative(outputRoot, htmlFile);
   const visibleText = html
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
   if (/basecoat/i.test(visibleText)) {
-    publicBrandingLeaks.push(path.relative(outputRoot, htmlFile));
+    publicBrandingLeaks.push(relativeHtmlFile);
+  }
+  if (!relativeHtmlFile.split(path.sep).includes('en')) {
+    for (const term of disallowedChineseTerms) {
+      if (visibleText.includes(term)) {
+        chineseTerminologyLeaks.push(`${relativeHtmlFile} -> ${term}`);
+      }
+    }
   }
   const htmlWithGeneratedSelfLinksOmitted = html
     .replace(
@@ -476,6 +631,14 @@ if (publicBrandingLeaks.length > 0) {
   );
 }
 
+if (chineseTerminologyLeaks.length > 0) {
+  throw new Error(
+    `Chinese terminology check failed:\n${chineseTerminologyLeaks
+      .map((leak) => `  - ${leak}`)
+      .join('\n')}`,
+  );
+}
+
 console.log(
-  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, public branding, and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
 );

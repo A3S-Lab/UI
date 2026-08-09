@@ -146,4 +146,35 @@ suite "a3s-ui-feedback-and-data" {
         expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
         expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table] table > caption") }
     }
+
+    scenario "tree" {
+        name = "Tree preserves hierarchy, selection, disabled-node skipping, and localized copy"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tree.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "tree-initialized" { visible = css("#tree-demo[data-tree-initialized=true]") }
+        focus "focus-root-branch" { target = css("#tree-demo-src") }
+        press "collapse-root-branch" { key = "ArrowLeft" }
+        expect "root-collapsed" { visible = css("#tree-demo-src[aria-expanded=false]:focus") }
+        press "expand-root-branch" { key = "ArrowRight" }
+        press "enter-root-branch" { key = "ArrowRight" }
+        expect "components-focused" { visible = css("#tree-demo-components:focus") }
+        press "enter-components" { key = "ArrowRight" }
+        expect "first-file-focused" { visible = css("#tree-demo [role=treeitem][aria-label='button.css']:focus") }
+        press "move-to-selected-file" { key = "ArrowDown" }
+        expect "tree-file-focused" { visible = css("#tree-demo-tree-css:focus") }
+        press "skip-disabled-file" { key = "ArrowDown" }
+        expect "tests-focused" { visible = css("#tree-demo-tests:focus") }
+        press "select-tests" { key = "Space" }
+        expect "tests-selected" { visible = css("#tree-demo-tests[aria-selected=true]") }
+        click "expand-tests" { target = css("#tree-demo-tests > [data-tree-row]") }
+        expect "tests-expanded" { visible = css("#tree-demo-tests[aria-expanded=true] > [role=group]:not([hidden])") }
+        viewport "phone" { width = 390 height = 844 }
+        screenshot "tree-phone" { path = "components/tree-phone.png" }
+        navigate "open-chinese" { url = "http://127.0.0.1:4178/UI/components/tree.html" }
+        wait "chinese-loaded" { load = "networkidle" }
+        expect "localized-tree-title" { text = "树形控件" }
+        expect "localized-project-tree" { visible = css("#tree-demo[aria-label='项目文件'][data-tree-initialized=true]") }
+    }
 }

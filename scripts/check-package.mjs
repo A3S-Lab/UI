@@ -36,6 +36,7 @@ const requiredFiles = [
   'dist/a3s-ui.cdn.css',
   'dist/js/runtime.js',
   'dist/js/all.js',
+  'dist/js/tree.js',
 ];
 
 for (const requiredFile of requiredFiles) {
