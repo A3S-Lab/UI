@@ -58,6 +58,12 @@ const requiredFiles = [
   'v0.2.0/en/components/tree.html',
   'v0.1.0/components/tree.html',
   'v0.1.0/en/components/tree.html',
+  'components/code-editor.html',
+  'en/components/code-editor.html',
+  'v0.2.0/components/code-editor.html',
+  'v0.2.0/en/components/code-editor.html',
+  'v0.1.0/components/code-editor.html',
+  'v0.1.0/en/components/code-editor.html',
   'components/slider.html',
   'en/components/slider.html',
   'v0.2.0/components/slider.html',
@@ -322,6 +328,54 @@ const nextTreeExpectations = [
   },
 ];
 
+const nextCodeEditorExpectations = [
+  {
+    file: 'components/code-editor.html',
+    markers: [
+      'lang="zh"',
+      '代码编辑器',
+      'class="code-editor"',
+      'data-code-editor-lines',
+      'data-code-editor-position',
+      'data-validation="json"',
+      'export async function run(input: unknown) {',
+      'aria-label="只读 YAML" readOnly=""',
+    ],
+  },
+  {
+    file: 'en/components/code-editor.html',
+    markers: [
+      'lang="en"',
+      '>Code Editor<',
+      'class="code-editor"',
+      'data-code-editor-lines',
+      'data-code-editor-position',
+      'data-validation="json"',
+      'export async function run(input: unknown) {',
+      'aria-label="Read-only YAML" readOnly=""',
+    ],
+  },
+  {
+    file: 'v0.2.0/components/code-editor.html',
+    markers: ['v0.2.0 不包含此组件', '不属于该历史版本的公开契约'],
+  },
+  {
+    file: 'v0.2.0/en/components/code-editor.html',
+    markers: [
+      'Not available in v0.2.0',
+      'not part of this published package contract',
+    ],
+  },
+  {
+    file: 'v0.1.0/components/code-editor.html',
+    markers: ['v0.1.0 不包含此组件', '不属于该历史版本的公开契约'],
+  },
+  {
+    file: 'v0.1.0/en/components/code-editor.html',
+    markers: ['Not available in v0.1.0', 'not part of this published package contract'],
+  },
+];
+
 const switchExpectations = [
   {
     file: 'components/app-shell.html',
@@ -454,10 +508,11 @@ if (
   );
 }
 
-const runtimeScriptMarkup = `<script src="${base}assets/a3s-ui.min.js" defer></script>`;
-if (!homepageHtml.includes(runtimeScriptMarkup)) {
+const runtimePreloadMarkup =
+  `<link rel="preload" as="script" href="${base}assets/a3s-ui.min.js">`;
+if (!homepageHtml.includes(runtimePreloadMarkup)) {
   throw new Error(
-    'The A3S runtime script must use an explicit closing tag so it cannot swallow later head markup.',
+    'The A3S runtime must be preloaded for the post-hydration documentation loader.',
   );
 }
 
@@ -488,6 +543,7 @@ for (const { file, markers } of [
   ...homepageExpectations,
   ...componentExpectations,
   ...nextTreeExpectations,
+  ...nextCodeEditorExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
   for (const marker of markers) {

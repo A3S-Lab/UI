@@ -20,7 +20,7 @@ type ComponentFamily = {
 const componentFamilies: ComponentFamily[] = [
   {
     category: { zh: "输入与选择", en: "Input and selection" },
-    count: "12",
+    count: "13",
     description: {
       zh: "字段、选择器、开关、滑块，以及可访问的表单组合。",
       en: "Fields, selects, switches, sliders, and accessible form composition.",

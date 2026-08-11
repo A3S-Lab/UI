@@ -378,6 +378,85 @@
     border-inline-end: 1px solid var(--border);
   }
 
+  .code-editor {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--card-foreground);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .code-editor > header {
+    border-block-end: 1px solid var(--border);
+    background: color-mix(in srgb, var(--card) 94%, var(--muted));
+    color: var(--foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+  }
+
+  .code-editor > header [data-code-editor-file] {
+    font-weight: 600;
+  }
+
+  .code-editor > header [data-code-editor-language] {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    font-weight: 500;
+  }
+
+  .code-editor > section {
+    background: var(--background);
+  }
+
+  .code-editor > section > [data-code-editor-gutter] {
+    padding-block: 0.75rem;
+    border-inline-end: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 56%, var(--background));
+    color: var(--muted-foreground);
+  }
+
+  .code-editor > section > textarea {
+    padding: 0.75rem 1rem;
+    background: var(--background);
+    color: var(--foreground);
+    caret-color: var(--primary);
+  }
+
+  .code-editor > section > textarea::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.8;
+  }
+
+  .code-editor > section > textarea::selection {
+    background: color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+
+  .code-editor > footer {
+    border-block-start: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 52%, var(--card));
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+  }
+
+  .code-editor > footer [data-code-editor-state] {
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-weight: 600;
+  }
+
+  .code-editor > footer [data-code-editor-message] {
+    font-family: var(--font-sans);
+  }
+
+  .code-editor[data-validation-state='invalid'] {
+    border-color: color-mix(in srgb, var(--destructive) 50%, var(--border));
+  }
+
+  .code-editor[data-validation-state='valid'] {
+    border-color: color-mix(in srgb, var(--success, var(--a3s-green, #159469)) 30%, var(--border));
+  }
+
   .split-pane {
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);

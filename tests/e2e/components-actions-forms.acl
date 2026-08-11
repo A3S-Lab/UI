@@ -73,6 +73,20 @@ suite "a3s-ui-actions-and-forms" {
         expect "textarea-visible" { visible = css(".a3s-preview[data-preview-component=textarea] textarea") }
     }
 
+    scenario "code-editor" {
+        name = "Code Editor preview keeps editing status and JSON validation visible"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-editor.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "interactive-ready" { visible = css("#code-editor-demo[data-code-editor-initialized=true]") }
+        fill "edit-code" { target = css("#code-editor-demo textarea") value = "const value = 1;\nreturn value;" }
+        expect "dirty-status" { visible = css("#code-editor-demo[data-dirty=true]") }
+        expect "line-count" { text = "2 lines" }
+        fill "break-json" { target = css("#code-editor-json textarea") value = "{\"enabled\": }" }
+        expect "json-invalid" { visible = css("#code-editor-json[data-validation-state=invalid] textarea[aria-invalid=true]") }
+    }
+
     scenario "native-select" {
         name = "Native Select preview changes the selected option"
         surface = "web"

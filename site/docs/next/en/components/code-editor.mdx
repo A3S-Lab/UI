@@ -1,0 +1,241 @@
+# Code Editor
+
+Code Editor gives code and configuration fields a focused editing surface without coupling the application to a framework or a particular editor engine. The native textarea fallback works on its own; Monaco, CodeMirror, or another editor can mount in the same viewport when an application needs syntax services.
+
+<Preview class="w-full">
+  <div
+    id="code-editor-demo"
+    class="code-editor"
+    role="group"
+    data-language="typescript"
+    data-indent-size="2"
+    data-label-line="line"
+    data-label-lines="lines"
+    data-label-character="character"
+    data-label-characters="characters"
+    data-label-position="Ln {line}, Col {column}"
+    aria-label="Workflow code editor"
+  >
+    <header>
+      <div data-code-editor-file>
+        <span data-code-editor-dirty-indicator aria-hidden="true"></span>
+        <strong>workflow.ts</strong>
+      </div>
+      <div data-code-editor-actions>
+        <span data-code-editor-language>TypeScript</span>
+        <kbd>Ctrl/Cmd S</kbd>
+      </div>
+    </header>
+    <section>
+      <textarea
+        aria-label="Workflow TypeScript"
+        autoComplete="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        defaultValue={"export async function run(input: unknown) {\n  return input;\n}"}
+      />
+    </section>
+    <footer>
+      <div data-code-editor-info>
+        <span data-code-editor-state aria-live="polite">Saved</span>
+        <span data-code-editor-lines></span>
+        <span data-code-editor-characters></span>
+      </div>
+      <div data-code-editor-meta>
+        <output data-code-editor-position aria-label="Cursor position"></output>
+      </div>
+    </footer>
+  </div>
+</Preview>
+
+## Usage
+
+Load the runtime before the Code Editor controller, or use the combined JavaScript bundle. The complete A3S stylesheet includes the structural and visual layers.
+
+```html
+<div
+  class="code-editor"
+  role="group"
+  data-language="typescript"
+  aria-label="Workflow code editor"
+>
+  <header>
+    <div data-code-editor-file><strong>workflow.ts</strong></div>
+    <div data-code-editor-actions>
+      <span data-code-editor-language>TypeScript</span>
+    </div>
+  </header>
+  <section>
+    <textarea aria-label="Workflow TypeScript" spellcheck="false"></textarea>
+  </section>
+  <footer>
+    <div data-code-editor-info>
+      <span data-code-editor-state aria-live="polite">Saved</span
+      ><span data-code-editor-lines></span
+      ><span data-code-editor-characters></span>
+    </div>
+    <div data-code-editor-meta>
+      <output data-code-editor-position aria-label="Cursor position"></output>
+    </div>
+  </footer>
+</div>
+<script type="module">
+  import "@a3s-lab/ui/runtime";
+  import "@a3s-lab/ui/code-editor";
+</script>
+```
+
+Using the complete runtime bundle is equivalent:
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+### Parameters
+
+| Parameter                   | Values                  | Default    | Purpose                                                               |
+| --------------------------- | ----------------------- | ---------- | --------------------------------------------------------------------- |
+| Root `data-language`        | Any language identifier | `text`     | Describes the document and enables JSON validation when set to `json` |
+| Root `data-validation`      | `json`                  | —          | Enables a validator explicitly, independent of the language label     |
+| Root `data-indent-size`     | Positive integer        | `2`        | Number of spaces inserted by Tab and removed by Shift+Tab             |
+| Root `data-size`            | `sm`, `lg`              | —          | Compact or tall editing surface; the default is `15rem`               |
+| Root `data-line-numbers`    | `false`                 | —          | Hides the generated line-number gutter                                |
+| Root `data-wrap`            | `true`                  | —          | Wraps long lines in the native editing fallback                       |
+| `--code-editor-min-height`  | CSS length              | `15rem`    | Minimum and default editor height                                     |
+| `--code-editor-font-size`   | CSS length              | `0.75rem`  | Monospace editor and gutter size                                      |
+| `--code-editor-line-height` | CSS length              | `1.375rem` | Shared text and line-number rhythm                                    |
+| `--code-editor-tab-size`    | Positive integer        | `2`        | Visual tab width                                                      |
+
+The optional `data-label-*` attributes localize generated status text. Available names are `labelLine`, `labelLines`, `labelCharacter`, `labelCharacters`, `labelPosition`, `labelSaved`, `labelDirty`, `labelReadonly`, `labelDisabled`, `labelValid`, `labelInvalidPrefix`, and `labelEmpty`. The `labelPosition` template is also used in JSON error messages.
+
+The `header`, `[data-code-editor-file]`, `[data-code-editor-actions]`, `[data-code-editor-language]`, `footer`, and status output elements are optional. Keep the textarea's accessible name even when the chrome is omitted.
+
+### JavaScript API
+
+When the native textarea fallback is present, the controller adds these methods to the root after initialization:
+
+| Method                              | Purpose                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| `editor.getValue()`                 | Returns the current textarea value                                             |
+| `editor.setValue(value, { clean })` | Sets the value and refreshes status; `clean: true` makes it the saved baseline |
+| `editor.markClean()`                | Marks the current value as saved                                               |
+| `editor.refresh()`                  | Re-reads a value changed by application code and refreshes status              |
+
+The root emits `a3s:code-input` for user and programmatic changes, `a3s:code-save` for Ctrl/Cmd+S, and `a3s:code-clean` after `markClean()`. Event details include `value`, `lines`, `characters`, `position`, `dirty`, and `validationState`.
+
+## States and variants
+
+### JSON validation
+
+Set `data-validation="json"` (or `data-language="json"`) and include a message target. Empty input is treated as incomplete, valid input is announced as valid, and malformed input sets `aria-invalid="true"` on the textarea.
+
+<Preview class="w-full">
+  <div
+    id="code-editor-json"
+    class="code-editor"
+    role="group"
+    data-language="json"
+    data-validation="json"
+    data-label-valid="Valid JSON"
+    data-label-invalid-prefix="Invalid JSON near"
+    aria-label="JSON editor"
+  >
+    <header>
+      <div data-code-editor-file>
+        <span data-code-editor-dirty-indicator aria-hidden="true"></span>
+        <strong>settings.json</strong>
+      </div>
+      <div data-code-editor-actions>
+        <span data-code-editor-language>JSON</span>
+      </div>
+    </header>
+    <section>
+      <textarea
+        aria-label="JSON settings"
+        autoComplete="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        defaultValue={'{\n  "enabled": true\n}'}
+      />
+    </section>
+    <footer>
+      <div data-code-editor-info>
+        <span data-code-editor-state aria-live="polite">Saved</span>
+        <span data-code-editor-lines></span>
+        <span data-code-editor-characters></span>
+      </div>
+      <div data-code-editor-meta>
+        <output data-code-editor-message></output>
+        <output data-code-editor-position aria-label="Cursor position"></output>
+      </div>
+    </footer>
+  </div>
+</Preview>
+
+### Read-only
+
+Use the native `readonly` attribute for a selectable, non-editable document. Use `disabled` when the value should not participate in interaction or submission.
+
+<Preview class="w-full">
+  <div
+    id="code-editor-readonly"
+    class="code-editor"
+    role="group"
+    data-language="yaml"
+    data-size="sm"
+    aria-label="Read-only YAML editor"
+  >
+    <header>
+      <div data-code-editor-file>
+        <span data-code-editor-dirty-indicator aria-hidden="true"></span>
+        <strong>runtime.yaml</strong>
+      </div>
+      <div data-code-editor-actions>
+        <span data-code-editor-language>YAML</span>
+      </div>
+    </header>
+    <section>
+      <textarea
+        aria-label="Read-only YAML"
+        readOnly
+        spellCheck={false}
+        defaultValue={"runtime: a3s\nmemory: local"}
+      />
+    </section>
+    <footer>
+      <div data-code-editor-info>
+        <span data-code-editor-state aria-live="polite"></span>
+        <span data-code-editor-lines></span>
+        <span data-code-editor-characters></span>
+      </div>
+      <div data-code-editor-meta>
+        <output data-code-editor-position aria-label="Cursor position"></output>
+      </div>
+    </footer>
+  </div>
+</Preview>
+
+### External editor engine
+
+For Monaco or CodeMirror, replace the textarea with a mount target and keep the same header and footer contract. The design system supplies the surface; the host adapter owns syntax highlighting, completion, diagnostics, model lifecycle, and synchronization of status outputs and `data-*` state.
+
+```html
+<div
+  class="code-editor"
+  role="group"
+  data-language="typescript"
+  aria-label="Workflow code editor"
+>
+  <header>...</header>
+  <section>
+    <div data-code-editor-viewport id="workflow-editor-mount"></div>
+  </section>
+  <footer>...</footer>
+</div>
+```
+
+## Accessibility
+
+The editing surface is a native `textarea`, so selection, copy, undo, redo, screen-reader text editing, and browser form submission remain available without a JavaScript editor engine. Give it an explicit label or connect a visible `<label>` with `for`. Give the root `role="group"` when it has an accessible name. Keep only the save state inside an `aria-live="polite"` region so cursor movement and counts are not announced on every keystroke; validation messages manage their own status or alert role. The line-number gutter is decorative and is marked `aria-hidden`.
+
+The controller respects `readonly`, `disabled`, reduced motion, browser zoom, and RTL direction. Ctrl/Cmd+S is intercepted only while the editable textarea has focus; Tab and Shift+Tab indent the current line or selection, while other modifier combinations retain browser and assistive-technology shortcuts.

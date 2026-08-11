@@ -20,6 +20,7 @@ const componentRoutes = [
   "button-group",
   "card",
   "chart",
+  "code-editor",
   "checkbox",
   "combobox",
   "command",

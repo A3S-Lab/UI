@@ -24,6 +24,7 @@ declare global {
   interface Window {
     a3sUI?: {
       initAll: (options?: { force?: boolean }) => void;
+      start: () => void;
     };
   }
 }
@@ -162,6 +163,7 @@ function initializeDocumentationDemos(root: HTMLElement) {
 
   synchronizeShellToggles(root);
 
+  window.a3sUI?.start();
   window.a3sUI?.initAll();
 }
 

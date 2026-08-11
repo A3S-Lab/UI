@@ -71,7 +71,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Family | Included patterns |
 | --- | --- |
 | Actions | Button and Button Group |
-| Forms | Fields, inputs, textareas, selects, checkboxes, radio groups, switches, sliders, labels, and comboboxes |
+| Forms | Fields, inputs, textareas, code editors, selects, checkboxes, radio groups, switches, sliders, labels, and comboboxes |
 | Navigation | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar |
 | Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
 | Feedback | Alert, Badge, Empty, Progress, Skeleton, Spinner, and Toast |
@@ -132,7 +132,7 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/styles/a3s.css` | A3S visual foundation for split-import builds |
 | `@a3s-lab/ui/runtime` | Shared lifecycle and controller registry |
 | `@a3s-lab/ui/all` | Shared runtime plus all auto-initialized controllers except Chart |
-| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `tabs` or `split-pane` |
+| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `tabs`, `split-pane`, or `code-editor` |
 | `@a3s-lab/ui/templates/*` | Nunjucks and Jinja templates for server-rendered applications |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.

@@ -5,6 +5,7 @@
 ### Added
 
 - Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
+- Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
 
 ### Fixed
 
