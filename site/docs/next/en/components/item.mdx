@@ -16,9 +16,12 @@
     <section><h3>Your profile has been verified.</h3></section>
     <aside><svg class="lucide lucide-chevron-right size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></aside>
   </a>
+  <button type="button" class="item" data-variant="outline" data-size="sm">
+    <span data-item-content><strong>run_01JY7K</strong><small>Exact Agent release</small></span>
+    <span data-item-actions><span class="status-badge" data-state="active" data-indicator>Running</span></span>
+  </button>
 </div>
 </Preview>
-
 ## Usage
 
 <Steps>
@@ -37,6 +40,7 @@ Or import only the base CSS, the component CSS files it composes, and one style 
 @import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/item.css";
+@import "@a3s-lab/ui/components/status-badge.css";
 @import "@a3s-lab/ui/components/button.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
@@ -62,13 +66,22 @@ Add `class="item"` to a semantic element such as `<article>` or `<a>`. Use `clas
 </article>
 ```
 
+Use inline content markers when the whole item is a native button; sectioning elements are not valid button children.
+
+```html
+<button type="button" class="item" data-variant="outline">
+  <span data-item-content><strong>run_01JY7K</strong><small>Exact Agent release</small></span>
+  <span data-item-actions><span class="status-badge" data-state="active">Running</span></span>
+</button>
+```
+
   </Step>
 </Steps>
 
 #### HTML structure
 
 <dl>
-  <dt><code>&lt;article class="item"&gt;</code> or <code>&lt;a class="item"&gt;</code></dt>
+  <dt><code>&lt;article class="item"&gt;</code>, <code>&lt;a class="item"&gt;</code>, or <code>&lt;button class="item"&gt;</code></dt>
   <dd>
     The item root. Use <code>data-variant="outline|muted"</code> and <code>data-size="sm|xs"</code> when needed.
     <dl>
@@ -86,6 +99,8 @@ Add `class="item"` to a semantic element such as `<article>` or `<a>`. Use `clas
       </dd>
       <dt><code>&lt;aside&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
       <dd>Actions or trailing metadata.</dd>
+      <dt><code>[data-item-content]</code>, <code>[data-item-actions]</code> <span class="badge" data-variant="secondary">Button items</span></dt>
+      <dd>Inline content and trailing metadata for a native button root.</dd>
       <dt><code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
       <dd>Full-width item regions.</dd>
     </dl>

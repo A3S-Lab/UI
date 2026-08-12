@@ -1,0 +1,35 @@
+/* Status Badge */
+@layer components {
+  .status-badge {
+    display: inline-flex;
+    width: fit-content;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .status-badge > svg {
+    flex: none;
+    pointer-events: none;
+  }
+
+  .status-badge[data-indicator]::before {
+    width: 0.375rem;
+    height: 0.375rem;
+    flex: none;
+    border-radius: 999px;
+    content: "";
+  }
+
+  .status-badge[data-truncate] {
+    max-width: 100%;
+  }
+
+  .status-badge[data-truncate] > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

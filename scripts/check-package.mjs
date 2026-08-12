@@ -17,9 +17,14 @@ if (manifest.name !== '@a3s-lab/ui') {
   throw new Error(`Unexpected package name: ${manifest.name}`);
 }
 
+const npmCliPath = process.env.npm_execpath;
+if (!npmCliPath) {
+  throw new Error('npm_execpath is required to validate the package.');
+}
+
 const { stdout } = await execFileAsync(
-  'npm',
-  ['pack', '--dry-run', '--ignore-scripts', '--json'],
+  process.execPath,
+  [npmCliPath, 'pack', '--dry-run', '--ignore-scripts', '--json'],
   { cwd: projectRoot, maxBuffer: 10 * 1024 * 1024 },
 );
 const [pack] = JSON.parse(stdout);

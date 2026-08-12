@@ -22,6 +22,38 @@ suite "a3s-ui-application-and-utilities" {
         screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
     }
 
+    scenario "agent-workbench" {
+        name = "Agent Workbench keeps authoring, binding, and execution evidence in one responsive flow"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/agent-workbench.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "context-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-context]") }
+        expect "canvas-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] article[data-agent-canvas]") }
+        expect "inspector-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector]") }
+        expect "activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
+        focus "focus-build-release" { target = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button") }
+        expect "build-release-focused" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
+        screenshot "agent-workbench-phone" { path = "components/agent-workbench-phone.png" }
+    }
+
+    scenario "brand-lockup" {
+        name = "Brand Lockup preserves textual identity and compact header geometry"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/brand-lockup.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "linked-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup[data-brand-name], .a3s-preview[data-preview-component=brand-lockup] a.brand-lockup [data-brand-name]") }
+        expect "compact-identity-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup[data-size=sm] [data-brand-identity]") }
+        focus "focus-home-link" { target = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup") }
+        expect "home-link-focused" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup") }
+        screenshot "brand-lockup-phone" { path = "components/brand-lockup-phone.png" }
+    }
+
     scenario "workspace-header" {
         name = "Workspace Header preview preserves identity and primary actions on phones"
         surface = "web"

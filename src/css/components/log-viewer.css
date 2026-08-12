@@ -1,0 +1,118 @@
+/* Log Viewer */
+@layer components {
+  .log-viewer {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .log-viewer > header,
+  .log-viewer > footer,
+  .log-viewer > [data-log-meta] {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .log-viewer > header > :first-child {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .log-viewer > header :is(h2, h3, p),
+  .log-viewer > [data-log-meta] :is(span, output) {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .log-viewer > header :is(h2, h3),
+  .log-viewer > [data-log-meta] :is(span, output) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .log-viewer [data-log-actions] {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .log-viewer fieldset[data-log-actions] {
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  .log-viewer > :is([role="log"], [data-log-viewport]) {
+    min-width: 0;
+    min-height: var(--log-viewer-min-height, 12rem);
+    max-height: var(--log-viewer-max-height, 32rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .log-viewer [data-log-record] {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto auto auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .log-viewer [data-log-record] > :is(span, time) {
+    white-space: nowrap;
+  }
+
+  .log-viewer [data-log-record] > pre {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .log-viewer [data-log-gap],
+  .log-viewer > output {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .log-viewer [data-log-gap] > :last-child,
+  .log-viewer > output > :last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 36rem) {
+    .log-viewer > header,
+    .log-viewer > [data-log-meta] {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .log-viewer [data-log-actions] {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .log-viewer [data-log-record] {
+      grid-template-columns: auto auto minmax(0, 1fr);
+      gap: 0.375rem 0.625rem;
+    }
+
+    .log-viewer [data-log-record] > pre {
+      grid-column: 1 / -1;
+    }
+  }
+}

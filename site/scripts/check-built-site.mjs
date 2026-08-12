@@ -64,6 +64,48 @@ const requiredFiles = [
   'v0.2.0/en/components/code-editor.html',
   'v0.1.0/components/code-editor.html',
   'v0.1.0/en/components/code-editor.html',
+  'components/agent-workbench.html',
+  'en/components/agent-workbench.html',
+  'v0.2.0/components/agent-workbench.html',
+  'v0.2.0/en/components/agent-workbench.html',
+  'v0.1.0/components/agent-workbench.html',
+  'v0.1.0/en/components/agent-workbench.html',
+  'components/brand-lockup.html',
+  'en/components/brand-lockup.html',
+  'v0.2.0/components/brand-lockup.html',
+  'v0.2.0/en/components/brand-lockup.html',
+  'v0.1.0/components/brand-lockup.html',
+  'v0.1.0/en/components/brand-lockup.html',
+  'components/log-viewer.html',
+  'en/components/log-viewer.html',
+  'v0.2.0/components/log-viewer.html',
+  'v0.2.0/en/components/log-viewer.html',
+  'v0.1.0/components/log-viewer.html',
+  'v0.1.0/en/components/log-viewer.html',
+  'components/property-list.html',
+  'en/components/property-list.html',
+  'v0.2.0/components/property-list.html',
+  'v0.2.0/en/components/property-list.html',
+  'v0.1.0/components/property-list.html',
+  'v0.1.0/en/components/property-list.html',
+  'components/status-badge.html',
+  'en/components/status-badge.html',
+  'v0.2.0/components/status-badge.html',
+  'v0.2.0/en/components/status-badge.html',
+  'v0.1.0/components/status-badge.html',
+  'v0.1.0/en/components/status-badge.html',
+  'components/stepper.html',
+  'en/components/stepper.html',
+  'v0.2.0/components/stepper.html',
+  'v0.2.0/en/components/stepper.html',
+  'v0.1.0/components/stepper.html',
+  'v0.1.0/en/components/stepper.html',
+  'components/timeline.html',
+  'en/components/timeline.html',
+  'v0.2.0/components/timeline.html',
+  'v0.2.0/en/components/timeline.html',
+  'v0.1.0/components/timeline.html',
+  'v0.1.0/en/components/timeline.html',
   'components/slider.html',
   'en/components/slider.html',
   'v0.2.0/components/slider.html',
@@ -103,9 +145,10 @@ const homepageExpectations = [
       '公开组件组合',
       'data-a3s-customizer',
       'data-mobile-expanded="false"',
-      'aria-live="polite"',
-      'aria-pressed="true"',
-      'v0.2.0',
+     'aria-live="polite"',
+     'aria-pressed="true"',
+      '<dt>60</dt>',
+     'v0.2.0',
       'v0.1.0',
     ],
   },
@@ -120,9 +163,10 @@ const homepageExpectations = [
       'npm install @a3s-lab/ui',
       'From one control to a complete workspace.',
       'PUBLIC COMPONENT COMPOSITION',
-      'data-a3s-customizer',
-      'aria-live="polite"',
-      'v0.2.0',
+     'data-a3s-customizer',
+     'aria-live="polite"',
+      '<dt>60</dt>',
+     'v0.2.0',
     ],
   },
   {
@@ -285,6 +329,25 @@ const componentExpectations = ['', 'v0.2.0/', 'v0.1.0/'].flatMap(
   ],
 );
 
+const nextCatalogExpectations = [
+  {
+    file: 'components/index.html',
+    markers: [
+      'id="工具"',
+      'href="/UI/components/scroll-area.html"',
+      'href="/UI/components/theme-switcher.html"',
+    ],
+  },
+  {
+    file: 'en/components/index.html',
+    markers: [
+      'id="utilities"',
+      'href="/UI/en/components/scroll-area.html"',
+      'href="/UI/en/components/theme-switcher.html"',
+    ],
+  },
+];
+
 const nextTreeExpectations = [
   {
     file: 'components/tree.html',
@@ -375,6 +438,155 @@ const nextCodeEditorExpectations = [
     markers: ['Not available in v0.1.0', 'not part of this published package contract'],
   },
 ];
+
+const nextExtractedComponentExpectations = [
+  {
+    file: 'components/agent-workbench.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"agent-workbench\"",
+      "data-agent-canvas",
+      "data-agent-activity",
+    ],
+  },
+  {
+    file: 'en/components/agent-workbench.html',
+    markers: [
+      "lang=\"en\"",
+      ">Agent Workbench<",
+      "class=\"agent-workbench\"",
+      "data-agent-inspector",
+    ],
+  },
+  {
+    file: 'components/brand-lockup.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"brand-lockup\"",
+      "data-brand-mark",
+      "data-brand-name",
+    ],
+  },
+  {
+    file: 'en/components/brand-lockup.html',
+    markers: [
+      "lang=\"en\"",
+      ">Brand Lockup<",
+      "class=\"brand-lockup\"",
+      "data-brand-identity",
+    ],
+  },
+  {
+    file: 'components/log-viewer.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"log-viewer\"",
+      "data-log-record",
+      "role=\"log\"",
+    ],
+  },
+  {
+    file: 'en/components/log-viewer.html',
+    markers: [
+      "lang=\"en\"",
+      ">Log Viewer<",
+      "class=\"log-viewer\"",
+      "data-log-gap",
+    ],
+  },
+  {
+    file: 'components/property-list.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"property-list\"",
+      "<dt>",
+      "<dd>",
+    ],
+  },
+  {
+    file: 'en/components/property-list.html',
+    markers: [
+      "lang=\"en\"",
+      ">Property List<",
+      "class=\"property-list\"",
+      "<dt>Provider</dt>",
+    ],
+  },
+  {
+    file: 'components/status-badge.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"status-badge\"",
+      "data-state=\"active\"",
+      "data-state=\"danger\"",
+    ],
+  },
+  {
+    file: 'en/components/status-badge.html',
+    markers: [
+      "lang=\"en\"",
+      ">Status Badge<",
+      "class=\"status-badge\"",
+      "data-indicator",
+    ],
+  },
+  {
+    file: 'components/stepper.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"stepper\"",
+      "data-step-marker",
+      "aria-current=\"step\"",
+    ],
+  },
+  {
+    file: 'en/components/stepper.html',
+    markers: [
+      "lang=\"en\"",
+      ">Stepper<",
+      "class=\"stepper\"",
+      "data-state=\"active\"",
+    ],
+  },
+  {
+    file: 'components/timeline.html',
+    markers: [
+      "lang=\"zh\"",
+      "class=\"timeline\"",
+      "data-state=\"success\"",
+      "aria-current=\"step\"",
+    ],
+  },
+  {
+    file: 'en/components/timeline.html',
+    markers: [
+      "lang=\"en\"",
+      ">Timeline<",
+      "class=\"timeline\"",
+      "data-state=\"active\"",
+    ],
+  },
+];
+const nextExtractedComponentHistoricalExpectations = [
+  'agent-workbench',
+  'brand-lockup',
+  'log-viewer',
+  'property-list',
+  'status-badge',
+  'stepper',
+  'timeline',
+].flatMap((route) =>
+  ['v0.2.0', 'v0.1.0'].flatMap((version) => [
+    {
+      file: `${version}/components/${route}.html`,
+      markers: [`${version} 不包含此组件`, '不属于该历史版本的公开契约'],
+    },
+    {
+      file: `${version}/en/components/${route}.html`,
+      markers: [`Not available in ${version}`, 'package contract'],
+    },
+  ]),
+);
 
 const switchExpectations = [
   {
@@ -542,8 +754,11 @@ if (
 for (const { file, markers } of [
   ...homepageExpectations,
   ...componentExpectations,
+  ...nextCatalogExpectations,
   ...nextTreeExpectations,
   ...nextCodeEditorExpectations,
+  ...nextExtractedComponentExpectations,
+  ...nextExtractedComponentHistoricalExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
   for (const marker of markers) {

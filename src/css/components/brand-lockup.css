@@ -1,0 +1,27 @@
+/* Brand Lockup */
+@layer components {
+  .brand-lockup {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  .brand-lockup > [data-brand-mark] {
+    display: grid;
+    flex: none;
+    place-items: center;
+  }
+
+  .brand-lockup > [data-brand-identity] {
+    display: grid;
+    min-width: 0;
+    align-content: center;
+  }
+
+  .brand-lockup :is([data-brand-name], [data-brand-description]) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

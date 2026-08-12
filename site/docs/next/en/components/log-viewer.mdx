@@ -1,0 +1,108 @@
+# Log Viewer
+
+Log Viewer is a bounded, framework-agnostic surface for build output, workload logs, and Agent execution streams. The host application owns transport, filtering, retention, and reconnection.
+
+<Preview class="w-full">
+  <section
+    class="log-viewer"
+    aria-label="Build output"
+    style="--log-viewer-min-height:11rem;--log-viewer-max-height:16rem"
+  >
+    <header>
+      <div>
+        <h2>Build output</h2>
+        <p>BuildRun build_01JY7K · ordered records</p>
+      </div>
+      <fieldset data-log-actions>
+        <legend class="sr-only">Stream filter</legend>
+        <button type="button" class="btn" data-size="sm" aria-pressed="true">
+          All
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" aria-pressed="false">
+          stdout
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" aria-pressed="false">
+          stderr
+        </button>
+      </fieldset>
+    </header>
+    <div data-log-meta>
+      <span>Connected</span>
+      <span>Latest 500 ordered records</span>
+    </div>
+    <div role="log" aria-live="polite" aria-label="Ordered build output" tabIndex={0}>
+      <div data-log-record data-stream="stdout">
+        <span data-log-sequence>#104</span>
+        <time dateTime="2026-08-12T09:41:02Z">09:41:02.118</time>
+        <span data-log-stream>stdout</span>
+        <pre>Resolved immutable source revision.</pre>
+      </div>
+      <div data-log-record data-stream="stdout">
+        <span data-log-sequence>#105</span>
+        <time dateTime="2026-08-12T09:41:02Z">09:41:02.624</time>
+        <span data-log-stream>stdout</span>
+        <pre>Building linux/amd64 artifact.</pre>
+      </div>
+      <div data-log-gap>
+        <span>#106–108</span>
+        <strong>Compacted records · 3 entries</strong>
+      </div>
+      <div data-log-record data-stream="stderr">
+        <span data-log-sequence>#109</span>
+        <time dateTime="2026-08-12T09:41:04Z">09:41:04.003</time>
+        <span data-log-stream>stderr</span>
+        <pre>Retrying registry connection.</pre>
+      </div>
+    </div>
+  </section>
+</Preview>
+
+## Usage
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<section class="log-viewer" aria-label="Execution log">
+  <header>
+    <div>
+      <h2>Execution log</h2>
+      <p>Ordered semantic output</p>
+    </div>
+  </header>
+  <div data-log-meta><span>Connected</span><span>Latest 500 records</span></div>
+  <div role="log" aria-live="polite" aria-label="Ordered execution output" tabindex="0">
+    <div data-log-record data-stream="stdout">
+      <span data-log-sequence>#42</span
+      ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+      ><span data-log-stream>stdout</span>
+      <pre>Provider started.</pre>
+    </div>
+  </div>
+</section>
+```
+
+### Parameters
+
+| API                                                  | Values                        | Purpose                                      |
+| ---------------------------------------------------- | ----------------------------- | -------------------------------------------- |
+| `class="log-viewer"`                                 | Required                      | Root surface                                 |
+| `data-log-actions`                                   | Marker                        | Filter and stream actions in the header      |
+| `data-log-meta`                                      | Marker                        | Connection and retention metadata            |
+| `role="log"` or `data-log-viewport`                  | Native role or marker         | Bounded scrolling output region              |
+| `tabindex="0"`                                       | Native attribute              | Makes an overflowing viewport keyboard-scrollable |
+| `data-log-record`                                    | Marker                        | One ordered record                           |
+| `data-stream`                                        | `stdout`, `stderr`, `unknown` | Stream treatment                             |
+| `data-log-sequence`, `data-log-stream`               | Markers                       | Record metadata                              |
+| `data-log-gap`                                       | Marker                        | Explicit compaction or missing-record notice |
+| `--log-viewer-min-height`, `--log-viewer-max-height` | CSS lengths                   | Viewport bounds                              |
+
+## States and variants
+
+Render unavailable, connecting, empty, live, retrying, and failed states with explicit text. Use `data-log-gap` when the server reports compacted or missing records. A direct child `<output role="alert">` may report a recoverable stream error without replacing already received output.
+
+## Accessibility
+
+Give the root and focusable log viewport accessible names. Use `role="log"` and `aria-live="polite"` only for appended records; do not re-render the entire log on every message. Keep filters in a labeled `<fieldset>`, expose the selected filter with `aria-pressed`, preserve chronological DOM order, and avoid moving keyboard focus when new records arrive.

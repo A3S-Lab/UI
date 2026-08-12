@@ -50,30 +50,30 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "状态与反馈", en: "Status and feedback" },
-    count: "07",
+    count: "08",
     description: {
-      zh: "警告、徽标、进度、骨架屏、加载状态与 Toast 反馈。",
-      en: "Alerts, badges, progress, skeletons, spinners, and toast feedback.",
+      zh: "警告、状态徽章、进度、骨架屏、加载状态与 Toast 反馈。",
+      en: "Alerts, status badges, progress, skeletons, spinners, and toast feedback.",
     },
     href: "/components/alert",
     title: { zh: "反馈", en: "Feedback" },
   },
   {
     category: { zh: "结构化内容", en: "Structured content" },
-    count: "07",
+    count: "12",
     description: {
-      zh: "卡片、图表、表格、列表项、头像与结构化信息展示。",
-      en: "Cards, charts, tables, items, avatars, and structured disclosure.",
+      zh: "卡片、属性列表、步骤条、时间线、日志、表格与结构化信息展示。",
+      en: "Cards, property lists, steppers, timelines, logs, tables, and structured disclosure.",
     },
     href: "/components/card",
     title: { zh: "数据展示", en: "Data display" },
   },
   {
     category: { zh: "应用组合", en: "Application composition" },
-    count: "10",
+    count: "12",
     description: {
-      zh: "应用外壳、功能区、工具栏、分割面板与资源网格。",
-      en: "Application shells, ribbons, toolbars, split panes, and resource grids.",
+      zh: "应用外壳、Agent 工作台、品牌标识组、分割面板与资源网格。",
+      en: "Application shells, Agent workbenches, brand lockups, split panes, and resource grids.",
     },
     href: "/components/app-shell",
     title: { zh: "应用模式", en: "Application patterns" },
@@ -747,7 +747,7 @@ export function HomeLayout() {
           </div>
           <dl className="ui-hero__facts">
             <div>
-              <dt>52</dt>
+              <dt>60</dt>
               <dd>{labels.componentGuides}</dd>
             </div>
             <div>

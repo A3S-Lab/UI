@@ -28,12 +28,21 @@
     @apply flex flex-1 flex-col;
   }
 
+  .item > [data-item-content] {
+    @apply flex min-w-0 flex-1 flex-col items-start;
+  }
+
   .item > section + section {
     @apply flex-none;
   }
 
-  .item > aside {
+  .item > aside,
+  .item > [data-item-actions] {
     @apply flex items-center;
+  }
+
+  .item > [data-item-actions] {
+    @apply shrink-0;
   }
 
   .item > :is(header, footer) {
@@ -46,5 +55,9 @@
 
   .item p {
     @apply text-muted-foreground line-clamp-2 text-start font-normal [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary;
+  }
+
+  .item > [data-item-content] > :is(strong, small) {
+    @apply min-w-0 max-w-full;
   }
 }

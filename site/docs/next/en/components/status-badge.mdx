@@ -1,0 +1,58 @@
+# Status Badge
+
+Status Badge gives operational states a compact, consistent treatment without exposing backend-specific status names as a styling API. It is suited to Agent executions, builds, deployments, streams, and release lifecycle state.
+
+<Preview class="w-full">
+  <div class="flex w-full flex-wrap items-center justify-center gap-2">
+    <span class="status-badge" data-state="neutral" data-indicator>
+      Queued
+    </span>
+    <span class="status-badge" data-state="active" data-indicator>
+      Running
+    </span>
+    <span class="status-badge" data-state="success" data-indicator>
+      Completed
+    </span>
+    <span class="status-badge" data-state="warning" data-indicator>
+      Retrying
+    </span>
+    <span class="status-badge" data-state="danger" data-indicator>
+      Failed
+    </span>
+  </div>
+</Preview>
+
+## Usage
+
+Map domain statuses to the five semantic states in the host application.
+
+```html
+<span class="status-badge" data-state="active" data-indicator>Running</span>
+```
+
+### Parameters
+
+| API                    | Values                                              | Purpose                                      |
+| ---------------------- | --------------------------------------------------- | -------------------------------------------- |
+| `class="status-badge"` | Required                                            | Root status label                            |
+| `data-state`           | `neutral`, `active`, `success`, `warning`, `danger` | Semantic state treatment                     |
+| `data-size`            | `sm`                                                | More compact geometry                        |
+| `data-indicator`       | Marker                                              | Adds a decorative state dot                  |
+| `data-truncate`        | Marker                                              | Truncates a direct child `<span>` when bound |
+| `--status-badge-tone`  | CSS color                                           | Optional product-specific semantic tone      |
+
+## States and variants
+
+Use `neutral` for queued, unknown, or inactive state; `active` for live work; `success` for terminal success; `warning` for degraded or retrying work; and `danger` for failed, cancelled, or blocked work. Keep the user-facing label specific to the domain.
+
+```html
+<span class="status-badge" data-state="success">Published</span>
+<span class="status-badge" data-state="warning">Cleanup pending</span>
+<span class="status-badge" data-state="danger">Cancelled</span>
+```
+
+Status Badge is distinct from Badge: use Badge for categories, counts, and immutable labels; use Status Badge for state that may change over time.
+
+## Accessibility
+
+Always include visible state text so color and the optional indicator are redundant. Do not add `role="status"` to every badge; add a live-region role only when the host application must announce a state transition. When a status controls another region, keep that relationship and its loading or error semantics on the owning control or region.

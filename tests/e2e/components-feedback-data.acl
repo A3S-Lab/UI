@@ -19,6 +19,18 @@ suite "a3s-ui-feedback-and-data" {
         expect "destructive-badge-visible" { visible = css(".a3s-preview[data-preview-component=badge] .badge[data-variant=destructive]") }
     }
 
+    scenario "status-badge" {
+        name = "Status Badge preview exposes every operational state with text"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/status-badge.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "active-status-visible" { visible = css(".a3s-preview[data-preview-component=status-badge] .status-badge[data-state=active][data-indicator]") }
+        expect "success-status-visible" { visible = css(".a3s-preview[data-preview-component=status-badge] .status-badge[data-state=success]") }
+        expect "warning-status-visible" { visible = css(".a3s-preview[data-preview-component=status-badge] .status-badge[data-state=warning]") }
+        expect "danger-status-visible" { visible = css(".a3s-preview[data-preview-component=status-badge] .status-badge[data-state=danger]") }
+    }
+
     scenario "empty" {
         name = "Empty preview presents recovery actions"
         surface = "web"
@@ -119,13 +131,14 @@ suite "a3s-ui-feedback-and-data" {
     }
 
     scenario "item" {
-        name = "Item preview exposes its contextual action"
+        name = "Item preview exposes contextual actions and native button rows"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/item.html" }
         wait "loaded" { load = "networkidle" }
         expect "item-visible" { visible = css(".a3s-preview[data-preview-component=item] .item[data-variant=outline]") }
         expect "item-action-visible" { visible = css(".a3s-preview[data-preview-component=item] .item .btn") }
+        expect "button-item-visible" { visible = css(".a3s-preview[data-preview-component=item] button.item > [data-item-content] + [data-item-actions]") }
     }
 
     scenario "kbd" {
@@ -145,6 +158,61 @@ suite "a3s-ui-feedback-and-data" {
         wait "loaded" { load = "networkidle" }
         expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
         expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table] table > caption") }
+    }
+
+    scenario "property-list" {
+        name = "Property List preview preserves native operational metadata"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/property-list.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "property-list-visible" { visible = css(".a3s-preview[data-preview-component=property-list] dl.property-list") }
+        expect "provider-pair-visible" { visible = css(".a3s-preview[data-preview-component=property-list] .property-list > div:first-child > dt + dd") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "property-list-phone-visible" { visible = css(".a3s-preview[data-preview-component=property-list] dl.property-list") }
+    }
+
+    scenario "stepper" {
+        name = "Stepper preview exposes completed, current, and pending process stages"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/stepper.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "completed-stage-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper > li[data-state=success]") }
+        expect "current-stage-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper > li[data-state=active][aria-current=step]") }
+        expect "pending-stage-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper > li:not([data-state])") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-scrollable-stepper" { target = css(".a3s-preview[data-preview-component=stepper] .stepper[tabindex=0]") }
+        expect "stepper-focused" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper:focus") }
+        expect "phone-stepper-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper") }
+        screenshot "stepper-phone" { path = "components/stepper-phone.png" }
+    }
+
+    scenario "timeline" {
+        name = "Timeline preview exposes completed, current, and pending events"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/timeline.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "completed-event-visible" { visible = css(".a3s-preview[data-preview-component=timeline] .timeline > li[data-state=success]") }
+        expect "current-event-visible" { visible = css(".a3s-preview[data-preview-component=timeline] .timeline > li[data-state=active][aria-current=step]") }
+        expect "pending-event-visible" { visible = css(".a3s-preview[data-preview-component=timeline] .timeline > li:not([data-state])") }
+    }
+
+    scenario "log-viewer" {
+        name = "Log Viewer preview keeps ordered stream records and compaction evidence"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/log-viewer.html" }
+        wait "loaded" { load = "networkidle" }
+        expect "log-region-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] .log-viewer [role=log][aria-live=polite][tabindex=0]") }
+        expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-actions] button[aria-pressed=true]") }
+        expect "stderr-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-record][data-stream=stderr]") }
+        expect "compaction-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-gap]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-log-region" { target = css(".a3s-preview[data-preview-component=log-viewer] [role=log]") }
+        expect "log-region-focused" { visible = css(".a3s-preview[data-preview-component=log-viewer] [role=log]:focus") }
+        screenshot "log-viewer-phone" { path = "components/log-viewer-phone.png" }
     }
 
     scenario "tree" {

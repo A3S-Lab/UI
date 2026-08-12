@@ -1,0 +1,58 @@
+# 状态徽章
+
+状态徽章为运行状态提供紧凑且一致的表达，同时避免把后端状态名称直接暴露为样式 API。它适用于 Agent 执行、构建、部署、数据流与发布生命周期。
+
+<Preview class="w-full">
+  <div class="flex w-full flex-wrap items-center justify-center gap-2">
+    <span class="status-badge" data-state="neutral" data-indicator>
+      已排队
+    </span>
+    <span class="status-badge" data-state="active" data-indicator>
+      运行中
+    </span>
+    <span class="status-badge" data-state="success" data-indicator>
+      已完成
+    </span>
+    <span class="status-badge" data-state="warning" data-indicator>
+      重试中
+    </span>
+    <span class="status-badge" data-state="danger" data-indicator>
+      失败
+    </span>
+  </div>
+</Preview>
+
+## 用法
+
+由宿主应用把领域状态映射到五种语义状态。
+
+```html
+<span class="status-badge" data-state="active" data-indicator>运行中</span>
+```
+
+### 参数
+
+| API                    | 值                                                  | 用途                              |
+| ---------------------- | --------------------------------------------------- | --------------------------------- |
+| `class="status-badge"` | 必需                                                | 状态标签根元素                    |
+| `data-state`           | `neutral`、`active`、`success`、`warning`、`danger` | 语义状态样式                      |
+| `data-size`            | `sm`                                                | 更紧凑的尺寸                      |
+| `data-indicator`       | 标记                                                | 添加装饰性状态圆点                |
+| `data-truncate`        | 标记                                                | 在宽度受限时截断直接子级 `<span>` |
+| `--status-badge-tone`  | CSS 颜色                                            | 可选的产品专用语义色              |
+
+## 状态与变体
+
+`neutral` 用于排队、未知或非活动状态；`active` 用于正在运行的工作；`success` 用于成功终态；`warning` 用于降级或重试；`danger` 用于失败、取消或阻塞。面向用户的文本仍应使用具体领域名称。
+
+```html
+<span class="status-badge" data-state="success">已发布</span>
+<span class="status-badge" data-state="warning">等待清理</span>
+<span class="status-badge" data-state="danger">已取消</span>
+```
+
+状态徽章与普通 Badge 的用途不同：Badge 用于分类、计数和不可变标签；状态徽章用于会随时间变化的状态。
+
+## 可访问性
+
+始终提供可见状态文本，让颜色和可选圆点只作为冗余提示。不要为每个徽章都添加 `role="status"`；只有宿主应用确实需要播报状态变化时才使用实时区域。若状态属于某个控件或区域，其加载、错误和关联语义应保留在对应控件或区域上。
