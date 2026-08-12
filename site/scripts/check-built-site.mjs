@@ -397,6 +397,10 @@ const nextCodeEditorExpectations = [
     markers: [
       'lang="zh"',
       '代码编辑器',
+      'data-workbench-locale="zh"',
+      'data-monaco-host',
+      'data-workbench-command-trigger',
+      '示例工作区',
       'class="code-editor"',
       'data-code-editor-lines',
       'data-code-editor-position',
@@ -410,6 +414,10 @@ const nextCodeEditorExpectations = [
     markers: [
       'lang="en"',
       '>Code Editor<',
+      'data-workbench-locale="en"',
+      'data-monaco-host',
+      'data-workbench-command-trigger',
+      'Illustrative workspace',
       'class="code-editor"',
       'data-code-editor-lines',
       'data-code-editor-position',

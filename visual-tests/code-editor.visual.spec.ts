@@ -8,6 +8,18 @@ async function openCodeEditor(page: Page) {
   return editor;
 }
 
+async function openMonacoWorkbench(page: Page) {
+  await page.goto("en/components/code-editor.html");
+  await page.evaluate(() => document.fonts.ready);
+  const workbench = page.locator(".monaco-workbench");
+  await workbench.scrollIntoViewIfNeeded();
+  await expect(workbench).toHaveAttribute("data-monaco-ready", "true", {
+    timeout: 20_000,
+  });
+  await expect(workbench.locator(".monaco-editor")).toBeVisible();
+  return workbench;
+}
+
 test("code editor reports document state and preserves editing shortcuts", async ({
   page,
 }) => {
@@ -160,6 +172,119 @@ test("Chinese validation messages use the localized cursor position", async ({
   await expect(editor.locator("[data-code-editor-message]")).toContainText(
     "第 1 行，第",
   );
+});
+
+test("Monaco workbench edits real models and exposes workbench commands", async ({
+  page,
+}) => {
+  const failedWorkers: string[] = [];
+  page.on("response", (response) => {
+    if (response.status() >= 400 && response.url().includes("a3s-monaco")) {
+      failedWorkers.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
+  const workbench = await openMonacoWorkbench(page);
+  await expect(workbench).toHaveAttribute("data-active-file", ".a3s/agent.acl");
+
+  const activeFileTab = workbench.locator(
+    ".monaco-workbench__tabs [role=tab][aria-selected=true]",
+  );
+  await activeFileTab.focus();
+  await activeFileTab.press("ArrowRight");
+  await expect(workbench).toHaveAttribute(
+    "data-active-file",
+    "src/release-review.ts",
+  );
+  await workbench
+    .locator('[data-workbench-tab="src/release-review.ts"]')
+    .press("End");
+  await expect(workbench).toHaveAttribute("data-active-file", "README.md");
+
+  await workbench.locator('[data-workbench-tab="config/runtime.json"]').click();
+  await expect(workbench).toHaveAttribute(
+    "data-active-file",
+    "config/runtime.json",
+  );
+
+  await workbench.locator(".monaco-editor").click();
+  await page.keyboard.press("Control+End");
+  await page.keyboard.insertText(" ");
+  await expect(workbench).toHaveAttribute("data-save-state", "unsaved");
+  await page.keyboard.press("Control+s");
+  await expect(workbench).toHaveAttribute("data-save-state", "saved");
+
+  await workbench.locator("[data-workbench-command-trigger]").click();
+  const palette = page.locator("[data-workbench-command-dialog]");
+  await expect(palette).toHaveAttribute("open", "");
+  await palette.locator("[data-workbench-command-input]").fill("minimap");
+  await palette.locator('[data-workbench-command="toggle-minimap"]').click();
+  await expect(workbench).toHaveAttribute("data-minimap-enabled", "false");
+
+  await workbench.locator("[data-workbench-command-trigger]").click();
+  await palette.locator("[data-workbench-command-input]").fill("panel");
+  await palette.locator('[data-workbench-command="toggle-panel"]').click();
+  await expect(workbench).toHaveAttribute("data-panel-open", "false");
+  await expect(workbench.locator("[data-workbench-panel]")).toBeHidden();
+
+  await workbench.getByRole("button", { name: "Toggle bottom panel" }).click();
+  await expect(workbench).toHaveAttribute("data-panel-open", "true");
+  await workbench.locator('[data-workbench-panel-tab="problems"]').focus();
+  await workbench
+    .locator('[data-workbench-panel-tab="problems"]')
+    .press("ArrowRight");
+  await expect(
+    workbench.locator('[data-workbench-panel-tab="output"]'),
+  ).toHaveAttribute("aria-selected", "true");
+  await workbench.locator('[data-workbench-panel-tab="output"]').press("Home");
+  await workbench.locator("[data-workbench-problem]").click();
+  await expect(workbench).toHaveAttribute("data-active-file", ".a3s/agent.acl");
+
+  await workbench.locator(".monaco-editor").click();
+  await page.keyboard.press("Control+a");
+  await page.keyboard.insertText(
+    'agent "demo" {\npermissions {\nallow = ["read(*)"]\n}\n}',
+  );
+  await workbench.locator("[data-workbench-command-trigger]").click();
+  await palette.locator("[data-workbench-command-input]").fill("format");
+  await palette.locator('[data-workbench-command="format-document"]').click();
+  await expect
+    .poll(async () =>
+      (await workbench.locator(".view-lines").innerText()).replaceAll(
+        "\u00a0",
+        " ",
+      ),
+    )
+    .toContain("  permissions {");
+  await expect
+    .poll(async () =>
+      (await workbench.locator(".view-lines").innerText()).replaceAll(
+        "\u00a0",
+        " ",
+      ),
+    )
+    .toContain('    allow = ["read(*)"]');
+  await page.keyboard.press("Control+s");
+
+  await workbench.locator("[data-workbench-command-trigger]").click();
+  await palette.locator("[data-workbench-command-input]").fill("color theme");
+  await palette.locator('[data-workbench-command="switch-theme"]').click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect
+    .poll(() =>
+      workbench.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      ),
+    )
+    .toBe("rgb(17, 19, 26)");
+  expect(failedWorkers).toEqual([]);
+});
+
+test("Monaco workbench remains composed at the documentation breakpoints", async ({
+  page,
+}) => {
+  const workbench = await openMonacoWorkbench(page);
+  await expect(workbench).toHaveScreenshot("monaco-workbench.png");
 });
 
 declare global {

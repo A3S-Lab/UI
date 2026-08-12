@@ -8,9 +8,11 @@
 - Added Brand Lockup and Stepper contracts extracted from A3S Web's shared identity and bounded process-path surfaces, with responsive CSS, bilingual documentation, and browser regression coverage.
 - Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
 - Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
+- Added a bilingual, interactive Monaco workbench example with multi-file models, A3S ACL language services, TypeScript and JSON diagnostics, command and bottom panels, responsive layout, and synchronized themes.
 
 ### Fixed
 
+- Preserved localized JSON error positions when newer browser engines omit numeric offsets from `JSON.parse` error messages.
 - Made horizontally overflowing Stepper and bounded Log Viewer regions keyboard-scrollable with visible focus treatment, exposed log filter state with `aria-pressed`, corrected the 60-component homepage count, and restored catalog links for both utility components.
 - Unified Radio selection and focus visuals, made joined Button Group inputs share one focus boundary, and replaced machine-translated Chinese component terminology with standard UI language.
 

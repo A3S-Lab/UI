@@ -83,8 +83,23 @@
     const message = error instanceof Error ? error.message : "";
     const match = message.match(/position\s+(\d+)/i);
     const offset = match ? Number.parseInt(match[1], 10) : -1;
-    if (!Number.isFinite(offset) || offset < 0) return null;
-    return positionAt(value, offset);
+    if (Number.isFinite(offset) && offset >= 0) {
+      return positionAt(value, offset);
+    }
+    const lineColumn = message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+    if (lineColumn) {
+      return {
+        line: Number.parseInt(lineColumn[1], 10),
+        column: Number.parseInt(lineColumn[2], 10),
+      };
+    }
+    const unexpectedToken = message.match(/unexpected token ['"](.+?)['"]/i);
+    if (unexpectedToken) {
+      const tokenOffset = value.indexOf(unexpectedToken[1]);
+      if (tokenOffset >= 0) return positionAt(value, tokenOffset);
+    }
+    if (/unexpected end/i.test(message)) return positionAt(value, value.length);
+    return null;
   };
 
   const validationFor = (root) => {

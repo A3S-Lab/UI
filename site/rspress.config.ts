@@ -50,6 +50,7 @@ const config: UserConfig = {
       path.join(__dirname, 'theme/mdx/A3SAssetImage.tsx'),
       path.join(__dirname, 'theme/mdx/Callout.tsx'),
       path.join(__dirname, 'theme/mdx/ChartDemo.tsx'),
+      path.join(__dirname, 'theme/mdx/MonacoWorkbenchDemo.tsx'),
       path.join(__dirname, 'theme/mdx/CodeGroup.tsx'),
       path.join(__dirname, 'theme/mdx/Preview.tsx'),
       path.join(__dirname, 'theme/mdx/SliderDemo.tsx'),

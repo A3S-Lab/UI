@@ -1,6 +1,25 @@
 # Code Editor
 
-Code Editor gives code and configuration fields a focused editing surface without coupling the application to a framework or a particular editor engine. The native textarea fallback works on its own; Monaco, CodeMirror, or another editor can mount in the same viewport when an application needs syntax services.
+Code Editor has two layers: A3S UI provides a framework-agnostic native editing contract, while the full workbench below shows how to integrate the real Monaco Editor for a multi-file experience close to VS Code.
+
+## Full Monaco workbench
+
+<Preview class="w-full">
+  <MonacoWorkbenchDemo locale="en" />
+</Preview>
+
+This is an interactive Monaco implementation, not a static mockup. It includes four independent file models, a file tree and tabs, search and modified state, custom ACL highlighting and completion, TypeScript and JSON diagnostics, Problems/Output/Terminal panels, a minimap, synchronized light and dark themes, and a command palette.
+
+- Press `Ctrl/Cmd + Shift + P` or `F1` to open the command palette.
+- Press `Ctrl/Cmd + S` to save the active model and `Ctrl/Cmd + J` to toggle the bottom panel.
+- Switching through the file tree or tabs preserves each Monaco model's content, cursor, and undo history.
+- Selecting the warning in Problems returns to its ACL line; search, formatting, minimap, and theme commands are functional.
+
+The workspace content illustrates the interaction and language services; it is not a production-ready deployment configuration. The host application remains responsible for persistence, authorization, remote language services, and task execution.
+
+## Native fallback
+
+When Monaco is unnecessary, use the A3S UI `textarea` controller for indentation shortcuts, line and column status, save state, and JSON validation.
 
 <Preview class="w-full">
   <div
@@ -32,12 +51,16 @@ Code Editor gives code and configuration fields a focused editing surface withou
         autoComplete="off"
         autoCapitalize="off"
         spellCheck={false}
-        defaultValue={"export async function run(input: unknown) {\n  return input;\n}"}
+        defaultValue={
+          "export async function run(input: unknown) {\n  return input;\n}"
+        }
       />
     </section>
     <footer>
       <div data-code-editor-info>
-        <span data-code-editor-state aria-live="polite">Saved</span>
+        <span data-code-editor-state aria-live="polite">
+          Saved
+        </span>
         <span data-code-editor-lines></span>
         <span data-code-editor-characters></span>
       </div>
@@ -160,7 +183,9 @@ Set `data-validation="json"` (or `data-language="json"`) and include a message t
     </section>
     <footer>
       <div data-code-editor-info>
-        <span data-code-editor-state aria-live="polite">Saved</span>
+        <span data-code-editor-state aria-live="polite">
+          Saved
+        </span>
         <span data-code-editor-lines></span>
         <span data-code-editor-characters></span>
       </div>
@@ -215,9 +240,9 @@ Use the native `readonly` attribute for a selectable, non-editable document. Use
   </div>
 </Preview>
 
-### External editor engine
+### Monaco integration contract
 
-For Monaco or CodeMirror, replace the textarea with a mount target and keep the same header and footer contract. The design system supplies the surface; the host adapter owns syntax highlighting, completion, diagnostics, model lifecycle, and synchronization of status outputs and `data-*` state.
+The full example loads Monaco into an isolated mount target while preserving the A3S workbench header, sidebar, panel, and status-bar contracts. The design system owns layout and presentation; the host adapter owns workers, language registration, completion, diagnostics, model lifecycle, persistence, and synchronization of status outputs and `data-*` state.
 
 ```html
 <div
@@ -236,6 +261,8 @@ For Monaco or CodeMirror, replace the textarea with a mount target and keep the 
 
 ## Accessibility
 
-The editing surface is a native `textarea`, so selection, copy, undo, redo, screen-reader text editing, and browser form submission remain available without a JavaScript editor engine. Give it an explicit label or connect a visible `<label>` with `for`. Give the root `role="group"` when it has an accessible name. Keep only the save state inside an `aria-live="polite"` region so cursor movement and counts are not announced on every keystroke; validation messages manage their own status or alert role. The line-number gutter is decorative and is marked `aria-hidden`.
+The Monaco example gives the editor, workspace navigation, panels, and command dialog separate accessible names, and announces save and command results politely. Keyboard users can complete the workflow through file buttons, tabs, and standard editor shortcuts. Monaco manages its own accessible text input, cursor, and diagnostic information.
+
+The native fallback editing surface is a `textarea`, so selection, copy, undo, redo, screen-reader text editing, and browser form submission remain available without a JavaScript editor engine. Give it an explicit label or connect a visible `<label>` with `for`. Give the root `role="group"` when it has an accessible name. Keep only the save state inside an `aria-live="polite"` region so cursor movement and counts are not announced on every keystroke; validation messages manage their own status or alert role. The line-number gutter is decorative and is marked `aria-hidden`.
 
 The controller respects `readonly`, `disabled`, reduced motion, browser zoom, and RTL direction. Ctrl/Cmd+S is intercepted only while the editable textarea has focus; Tab and Shift+Tab indent the current line or selection, while other modifier combinations retain browser and assistive-technology shortcuts.

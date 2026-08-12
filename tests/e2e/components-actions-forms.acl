@@ -74,11 +74,22 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "code-editor" {
-        name = "Code Editor preview keeps editing status and JSON validation visible"
+        name = "Code Editor preview exercises Monaco workbench and native fallback states"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-editor.html" }
         wait "loaded" { load = "networkidle" }
+        wait "monaco-ready" { visible = css(".monaco-workbench[data-monaco-ready=true] .monaco-editor") }
+        click "open-command-palette" { target = css(".monaco-workbench [data-workbench-command-trigger]") }
+        expect "command-dialog-visible" { visible = css("[data-workbench-command-dialog][open]") }
+        fill "filter-panel-command" { target = css("[data-workbench-command-input]") value = "panel" }
+        click "toggle-panel-command" { target = css("[data-workbench-command=toggle-panel]") }
+        expect "panel-closed" { visible = css(".monaco-workbench[data-panel-open=false]") }
+        click "reopen-panel" { target = css(".monaco-workbench__statusbar button[aria-label='Toggle bottom panel']") }
+        expect "panel-reopened" { visible = css(".monaco-workbench[data-panel-open=true] [data-workbench-panel]") }
+        click "open-runtime-model" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
+        expect "runtime-model-active" { visible = css(".monaco-workbench[data-active-file='config/runtime.json']") }
+        screenshot "monaco-workbench" { path = "components/code-editor-monaco.png" }
         wait "interactive-ready" { visible = css("#code-editor-demo[data-code-editor-initialized=true]") }
         fill "edit-code" { target = css("#code-editor-demo textarea") value = "const value = 1;\nreturn value;" }
         expect "dirty-status" { visible = css("#code-editor-demo[data-dirty=true]") }

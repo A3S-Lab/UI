@@ -1,6 +1,25 @@
 # 代码编辑器
 
-代码编辑器为代码与配置字段提供专注的编辑表面，不绑定框架或具体编辑器引擎。原生 `textarea` 回退模式可以直接使用；需要语法服务时，Monaco、CodeMirror 或其他编辑器可以挂载到同一个视口。
+代码编辑器包含两层能力：A3S UI 提供框架无关的原生编辑契约，下面的完整工作台则演示如何接入真正的 Monaco Editor，构建接近 VS Code 的多文件开发体验。
+
+## 完整 Monaco 工作台
+
+<Preview class="w-full">
+  <MonacoWorkbenchDemo locale="zh" />
+</Preview>
+
+这是一个可交互的真实 Monaco 示例，而不是静态效果图。它包含四个独立文件模型、文件树与标签页、搜索和修改状态、ACL 自定义语法高亮与补全、TypeScript 和 JSON 诊断、问题/输出/终端面板、Minimap、明暗主题同步，以及命令面板。
+
+- 按 `Ctrl/Cmd + Shift + P` 或 `F1` 打开命令面板。
+- 按 `Ctrl/Cmd + S` 保存当前模型，按 `Ctrl/Cmd + J` 显示或隐藏底部面板。
+- 在文件树和标签页之间切换时，Monaco 会保留每个文件的内容、光标与撤销历史。
+- 点击问题面板中的警告会回到对应 ACL 行；搜索、格式化、Minimap 与主题命令均可实际操作。
+
+工作区内容用于演示交互和语言服务，并不代表一套可直接部署的生产配置。宿主应用仍应负责文件持久化、权限、远程语言服务与运行任务。
+
+## 原生回退
+
+无需 Monaco 时，使用 A3S UI 自带的 `textarea` 控制器即可获得缩进快捷键、行列状态、保存状态和 JSON 校验。
 
 <Preview class="w-full">
   <div
@@ -35,12 +54,16 @@
         autoComplete="off"
         autoCapitalize="off"
         spellCheck={false}
-        defaultValue={"export async function run(input: unknown) {\n  return input;\n}"}
+        defaultValue={
+          "export async function run(input: unknown) {\n  return input;\n}"
+        }
       />
     </section>
     <footer>
       <div data-code-editor-info>
-        <span data-code-editor-state aria-live="polite">已保存</span>
+        <span data-code-editor-state aria-live="polite">
+          已保存
+        </span>
         <span data-code-editor-lines></span>
         <span data-code-editor-characters></span>
       </div>
@@ -170,7 +193,9 @@ import "@a3s-lab/ui/all";
     </section>
     <footer>
       <div data-code-editor-info>
-        <span data-code-editor-state aria-live="polite">已保存</span>
+        <span data-code-editor-state aria-live="polite">
+          已保存
+        </span>
         <span data-code-editor-lines></span>
         <span data-code-editor-characters></span>
       </div>
@@ -231,9 +256,9 @@ import "@a3s-lab/ui/all";
   </div>
 </Preview>
 
-### 外部编辑器引擎
+### Monaco 集成契约
 
-使用 Monaco 或 CodeMirror 时，可以将 textarea 替换为挂载目标，并保留相同的头部和状态栏契约。设计系统负责编辑表面；宿主适配器负责语法高亮、补全、诊断、模型生命周期，以及状态输出和 `data-*` 状态的同步。
+完整示例通过独立挂载目标加载 Monaco，并保留 A3S 工作台的头部、侧栏、面板和状态栏契约。设计系统负责布局与视觉层；宿主适配器负责 worker、语言注册、补全、诊断、模型生命周期、持久化，以及状态输出和 `data-*` 状态的同步。
 
 ```html
 <div
@@ -252,6 +277,8 @@ import "@a3s-lab/ui/all";
 
 ## 可访问性
 
-编辑表面是原生 `textarea`，因此无需 JavaScript 编辑器引擎即可使用选择、复制、撤销、重做、屏幕阅读器文本编辑与浏览器表单提交。为它提供明确的 `aria-label`，或通过 `for` 关联可见 `<label>`；根节点有可访问名称时应设置 `role="group"`。只把保存状态放入 `aria-live="polite"` 区域，避免每次按键都播报光标位置和统计信息；校验消息会自行管理 status 或 alert 角色。行号槽是装饰内容，控制器会将其标记为 `aria-hidden`。
+Monaco 示例为编辑器、工作区导航、面板和命令对话框提供独立的可访问名称，并把保存与命令结果放入礼貌播报区域；键盘用户可使用文件按钮、标签页和标准编辑快捷键完成整个流程。Monaco 自身管理可访问文本输入、光标与诊断信息。
+
+原生回退的编辑表面是 `textarea`，因此无需 JavaScript 编辑器引擎即可使用选择、复制、撤销、重做、屏幕阅读器文本编辑与浏览器表单提交。为它提供明确的 `aria-label`，或通过 `for` 关联可见 `<label>`；根节点有可访问名称时应设置 `role="group"`。只把保存状态放入 `aria-live="polite"` 区域，避免每次按键都播报光标位置和统计信息；校验消息会自行管理 status 或 alert 角色。行号槽是装饰内容，控制器会将其标记为 `aria-hidden`。
 
 控制器遵循 `readonly`、`disabled`、减少动态效果、浏览器缩放与 RTL 方向。只有当可编辑 textarea 获得焦点时才会拦截 Ctrl/Cmd+S；Tab 与 Shift+Tab 缩进当前行或选区，其他修饰键组合仍交给浏览器和辅助技术处理。
