@@ -1,0 +1,128 @@
+# 原生选择器
+
+<Preview>
+<select class="select w-full" aria-label="Fruit">
+  <option value="">Select a fruit</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+  <option value="blueberry">Blueberry</option>
+  <option value="pineapple">Pineapple</option>
+</select>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、原生选择CSS组件和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/native-select.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your native select HTML">
+
+Add `class="select"` to a native `<select>`. Use standard `<option>` and `<optgroup>` elements.
+
+```html
+<select class="select" aria-label="Fruit">
+  <option value="">Select a fruit</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+  <option value="blueberry">Blueberry</option>
+  <option value="pineapple">Pineapple</option>
+</select>
+```
+
+  </Step>
+</Steps>
+
+使用 Native Select 实现原生浏览器行为、表单集成和移动优化选择器。使用 [Select](/components/select) 自定义选项内容、多选行为或 JavaScript API。
+
+## 示例
+
+### 组
+
+<Preview>
+<select class="select w-full" aria-label="Food">
+  <option value="">Select food</option>
+  <optgroup label="Fruits">
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+    <option value="blueberry">Blueberry</option>
+  </optgroup>
+  <optgroup label="Vegetables">
+    <option value="carrot">Carrot</option>
+    <option value="potato">Potato</option>
+    <option value="tomato">Tomato</option>
+  </optgroup>
+</select>
+</Preview>
+
+### 已禁用
+
+<Preview>
+<select class="select w-full" aria-label="Fruit" disabled>
+  <option value="">Select a fruit</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+</select>
+</Preview>
+
+### 无效
+
+<Preview>
+<div role="group" class="field" data-invalid="true">
+  <label for="native-select-invalid">Fruit</label>
+  <select id="native-select-invalid" class="select w-full" aria-invalid="true" aria-describedby="native-select-invalid-error">
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+  </select>
+  <p id="native-select-invalid-error" role="alert">Select a fruit to continue.</p>
+</div>
+</Preview>
+
+### 尺寸
+
+<Preview>
+<div class="flex flex-wrap items-center gap-3">
+  <select class="select w-42" aria-label="Default size">
+    <option>Default</option>
+    <option>Apple</option>
+    <option>Banana</option>
+  </select>
+  <select class="select w-42" data-size="sm" aria-label="Small size">
+    <option>Small</option>
+    <option>Apple</option>
+    <option>Banana</option>
+  </select>
+</div>
+</Preview>
+
+### RTL
+
+在选择元素或父元素上设置 `dir="rtl"`。
+
+<Preview>
+<select dir="rtl" class="select w-full" aria-label="الفاكهة">
+  <option value="">اختر فاكهة</option>
+  <option value="apple">تفاح</option>
+  <option value="banana">موز</option>
+  <option value="blueberry">توت</option>
+</select>
+</Preview>

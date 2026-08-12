@@ -1,0 +1,60 @@
+# 间距
+
+间距系统以 4px 为基础单位。紧凑应用工具栏使用 4–12px 间距，内容与页面区域使用 16–32px 间距。
+
+<Preview>
+<div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">4px</code><span class="h-3 w-4 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-1</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">8px</code><span class="h-3 w-8 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-2</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">12px</code><span class="h-3 w-12 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-3</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">16px</code><span class="h-3 w-16 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-4</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">24px</code><span class="h-3 w-24 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-6</span></div>
+  <div class="flex items-center gap-4"><code class="w-16 text-xs text-muted-foreground">32px</code><span class="h-3 w-32 rounded-full bg-[var(--a3s-blue)]"></span><span class="text-xs text-muted-foreground">space-8</span></div>
+</div>
+</Preview>
+
+## 间距刻度
+
+| 步骤 | 值 | 典型用途 |
+| --- | ---: | --- |
+| `1` | 4px | 图标与标签之间的微间距 |
+| `2` | 8px | 相邻控件 |
+| `3` | 12px | 工具栏与字段间距 |
+| `4` | 16px | 卡片内边距与网格间距 |
+| `6` | 24px | 分区间距 |
+| `8` | 32px | 页面区域 |
+
+## 布局参数
+
+应用组件通过 CSS 变量公开连续值：
+
+| 变量 | 默认值 | 组件 |
+| --- | ---: | --- |
+| `--app-shell-navigation-size` | `15rem` | App Shell |
+| `--settings-navigation-size` | `14rem` | Settings Layout |
+| `--resource-grid-min` | `12rem` | Resource Grid |
+| `--resource-grid-gap` | `1rem` | Resource Grid |
+| `--split-pane-min-height` | `18rem` | Split Pane |
+| `--task-pane-width` | `18rem` | Task Pane |
+| `--task-pane-min-width` | `14rem` | Task Pane |
+
+优先调整这些参数，不要覆盖组件内部网格选择器。
+
+## Office 密度契约
+
+A3S 视觉包采用与 A3S Office 相同的紧凑应用框架节奏。只有当整个产品确实需要不同密度时，才覆盖以下语义化变量：
+
+| 变量                            |     默认值 | 使用位置                       |
+| ------------------------------- | ---------: | ------------------------------ |
+| `--a3s-control-height`          |  `2.25rem` | 标准控件                       |
+| `--a3s-control-height-sm`       |  `1.75rem` | 紧凑按钮与 Ribbon 命令         |
+| `--a3s-control-height-xs`       |   `1.5rem` | 微型控件与图标按钮             |
+| `--a3s-activity-rail-size`      | `2.875rem` | 折叠 App Shell / Activity Bar  |
+| `--a3s-workspace-header-height` | `3.125rem` | Workspace Header               |
+| `--a3s-toolbar-height`          | `2.6875rem` | 独立 Toolbar 行                |
+| `--a3s-toolbar-control-height`  | `1.8125rem` | Toolbar 命令                   |
+| `--a3s-ribbon-tabs-height`      |  `2.25rem` | Ribbon 标签栏                  |
+| `--a3s-ribbon-panel-height`     | `4.625rem` | Ribbon 命令区                  |
+| `--a3s-status-height`           |  `1.75rem` | Status Bar                     |
+
+调整变量时保持 4px 基线，并在桌面与紧凑宽度下验证完整应用外壳。

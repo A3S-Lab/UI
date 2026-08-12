@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.3.0] - 2026-08-12
+
 ### Added
 
 - Added Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts extracted from A3S Web's Agent execution, build, evidence, status, and event-stream surfaces, with responsive CSS and bilingual documentation.

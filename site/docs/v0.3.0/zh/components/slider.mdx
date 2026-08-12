@@ -1,0 +1,95 @@
+# 滑块
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo />
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基本 CSS、重新组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/range.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+滑块使用 Range 组件 CSS。
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者复制或提供 A3S UI 运行时和脚本。
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/range.min.js" defer></script>
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your slider HTML">
+
+Use a native `<input type="range" class="input">`. Include `range.js` so A3S UI can keep the filled track in sync with the input value.
+
+```html
+<input type="range" class="input w-full" aria-label="音量" min="0" max="100" value="50" />
+```
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;input type="range" class="input"&gt;</code></dt>
+  <dd>Native range input styled as a slider. Width utilities such as <code>w-full</code> can be added directly.</dd>
+</dl>
+
+A3S UI 有意采用原生范围输入控件。与 shadcn/ui 的 Base UI Slider 不同，它不支持多个滑块手柄或垂直方向。
+
+## 示例
+
+### 默认
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo />
+</Preview>
+
+### 标签
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo variant="labeled" />
+</Preview>
+
+### 已禁用
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo disabled />
+</Preview>
+
+### RTL
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo direction="rtl" />
+</Preview>

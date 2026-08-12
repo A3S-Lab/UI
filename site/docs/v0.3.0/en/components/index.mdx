@@ -1,0 +1,74 @@
+# Component catalog
+
+A3S UI combines semantic primitives with reusable application patterns. Every component page includes a live preview, minimal HTML, supported parameters, meaningful states, and accessibility guidance.
+
+<Preview>
+<div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5">
+  <article class="card" data-size="sm"><header><span class="badge">02</span><h2>Actions</h2><p>Buttons and grouped commands.</p></header></article>
+  <article class="card" data-size="sm"><header><span class="badge" data-variant="secondary">13</span><h2>Forms</h2><p>Fields, inputs, choices, and selection.</p></header></article>
+  <article class="card" data-size="sm"><header><span class="badge" data-variant="outline">32</span><h2>Primitives</h2><p>Navigation, overlays, feedback, and data.</p></header></article>
+  <article class="card" data-size="sm"><header><span class="badge">12</span><h2>Patterns</h2><p>Shells, workspaces, identity, panes, and status.</p></header></article>
+  <article class="card" data-size="sm"><header><span class="badge" data-variant="secondary">02</span><h2>Utilities</h2><p>Scrolling and theme controls.</p></header></article>
+</div>
+</Preview>
+
+## API model
+
+A3S UI keeps parameters close to the browser platform:
+
+| API surface | Purpose | Example |
+| --- | --- | --- |
+| Root class | Selects the component | `class="resource-card"` |
+| Native attributes | Behavior and accessibility | `disabled`, `checked`, `aria-current="page"` |
+| `data-*` attributes | Finite visual or behavioral variants | `data-size="sm"`, `data-orientation="vertical"` |
+| CSS custom properties | Continuous layout values and theme decisions | `--split-position: 40%` |
+| Vanilla JavaScript | Behavior the browser does not provide | Split-pane pointer and keyboard resizing |
+
+Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a library-specific boolean. State reflected with ARIA is both accessible and styleable.
+
+## Groups
+
+### Actions
+
+[Button](/components/button) · [Button Group](/components/button-group)
+
+### Forms
+
+[Field](/components/field) · [Input](/components/input) · [Input Group](/components/input-group) · [Textarea](/components/textarea) · [Code Editor](/components/code-editor) · [Native Select](/components/native-select) · [Select](/components/select) · [Checkbox](/components/checkbox) · [Radio Group](/components/radio-group) · [Switch](/components/switch) · [Slider](/components/slider) · [Label](/components/label) · [Combobox](/components/combobox)
+
+### Navigation
+
+[Activity Bar](/components/activity-bar) · [Breadcrumb](/components/breadcrumb) · [Tabs](/components/tabs) · [Pagination](/components/pagination) · [Sidebar](/components/sidebar)
+
+### Overlays
+
+[Alert Dialog](/components/alert-dialog) · [Dialog](/components/dialog) · [Drawer](/components/drawer) · [Dropdown Menu](/components/dropdown-menu) · [Popover](/components/popover) · [Command](/components/command) · [Tooltip](/components/tooltip)
+
+### Feedback
+
+[Alert](/components/alert) · [Badge](/components/badge) · [Status Badge](/components/status-badge) · [Empty](/components/empty) · [Progress](/components/progress) · [Skeleton](/components/skeleton) · [Spinner](/components/spinner) · [Toast](/components/toast)
+
+### Data display
+
+[Accordion](/components/accordion) · [Avatar](/components/avatar) · [Card](/components/card) · [Chart](/components/chart) · [Item](/components/item) · [Kbd](/components/kbd) · [Log Viewer](/components/log-viewer) · [Property List](/components/property-list) · [Table](/components/table) · [Stepper](/components/stepper) · [Timeline](/components/timeline) · [Tree](/components/tree)
+
+### Application patterns
+
+[App Shell](/components/app-shell) · [Agent Workbench](/components/agent-workbench) · [Brand Lockup](/components/brand-lockup) · [Workspace Header](/components/workspace-header) · [Toolbar](/components/toolbar) · [Ribbon](/components/ribbon) · [Settings Layout](/components/settings-layout) · [Resource Card](/components/resource-card) · [Split Pane](/components/split-pane) · [Task Pane](/components/task-pane) · [Status Bar](/components/status-bar) · [Resource Workbench](/patterns/resource-workbench)
+
+### Utilities
+
+[Scroll Area](/components/scroll-area) · [Theme Switcher](/components/theme-switcher)
+
+## Support matrix
+
+| Capability | Primitives | Application patterns |
+| --- | --- | --- |
+| Semantic HTML | Required | Required |
+| Light and dark themes | Yes | Yes |
+| RTL logical layout | Yes | Yes |
+| Responsive layout | Component-specific | Built in |
+| Nunjucks and Jinja | Existing primitive templates | HTML composition |
+| JavaScript dependency | Only interactive composites | Split Pane only |
+
+Choose the A3S style pack for the Office-derived visual language. The inherited Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea packs remain available for A3S UI-compatible applications.

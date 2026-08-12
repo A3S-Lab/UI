@@ -1,0 +1,38 @@
+# Settings Layout
+
+Settings Layout provides navigable configuration sections with real form controls. It is intended for operational configuration, preferences, policy, providers, routing, and other structured settings.
+
+<Preview>
+<div class="settings-layout w-full" style="--settings-navigation-size:11rem">
+  <aside><nav aria-label="Settings sections"><ul><li><a href="#settings-general" aria-current="page">General</a></li><li><a href="#settings-providers">Providers</a></li><li><a href="#settings-routing">Routing</a></li><li><a href="#settings-security">Security</a></li></ul></nav></aside>
+  <main>
+    <section id="settings-general"><header><h2>General</h2><p>Identity and network defaults for this gateway.</p></header><div class="grid gap-4 sm:grid-cols-2"><div class="field"><label for="settings-name">Gateway name</label><input id="settings-name" class="input" value="production-east" /></div><div class="field"><label for="settings-port">Port</label><input id="settings-port" class="input" type="number" value="8080" /></div></div><label class="field" data-orientation="horizontal"><input class="input" type="checkbox" role="switch" defaultChecked /><section><span class="font-medium">Observability</span><p>Collect traces, logs, and performance metrics.</p></section></label><footer class="flex justify-end"><button type="button" class="btn">Save changes</button></footer></section>
+  </main>
+</div>
+</Preview>
+
+## Usage
+
+```html
+<div class="settings-layout">
+  <aside><nav aria-label="Settings sections">...</nav></aside>
+  <main><section id="general">...</section></main>
+</div>
+```
+
+### Parameters
+
+| Parameter | Default | Purpose |
+| --- | --- | --- |
+| `--settings-navigation-size` | `14rem` | Navigation column width |
+| `--settings-sticky-offset` | `1rem` | Sticky navigation top offset |
+| `--settings-section-gap` | `1.5rem` | Gap between configuration sections |
+| `aria-current="page"` | — | Marks the active settings destination |
+
+## Variants and states
+
+The layout becomes a horizontally scrollable section list below 768px. Form state belongs to child primitives: `required`, `disabled`, `aria-invalid`, validation messages, dirty-state badges, and save feedback.
+
+## Accessibility
+
+Use real form controls and field labels; do not replace configuration with an unstructured source editor. Keep advanced raw configuration as an optional escape hatch. Each section needs a unique heading and ID so navigation can deep-link to it.

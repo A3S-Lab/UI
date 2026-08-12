@@ -39,8 +39,11 @@ const requiredFiles = [
   'package.json',
   'dist/a3s-ui.css',
   'dist/a3s-ui.cdn.css',
+  'dist/components/code-editor.css',
   'dist/js/runtime.js',
   'dist/js/all.js',
+  'dist/js/code-editor.js',
+  'dist/js/code-editor.min.js',
   'dist/js/tree.js',
 ];
 

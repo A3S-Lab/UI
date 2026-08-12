@@ -1,0 +1,188 @@
+# 侧边栏
+
+<Preview>
+<div class="a3s-sidebar-demo">
+  <aside id="demo-sidebar" class="sidebar" data-demo-contained data-initial-open="true">
+    <nav aria-label="侧边栏演示导航">
+      <header><strong>A3S 工作区</strong></header>
+      <section>
+        <div role="group" aria-labelledby="demo-sidebar-group">
+          <h3 id="demo-sidebar-group">工作区</h3>
+          <ul>
+            <li><a href="#" aria-current="page"><span>概览</span></a></li>
+            <li><a href="#"><span>智能体</span></a></li>
+            <li><a href="#"><span>部署</span></a></li>
+          </ul>
+        </div>
+      </section>
+    </nav>
+  </aside>
+  <main>
+    <div>
+      <span class="badge">实时预览</span>
+      <h2>限定在画布内的产品导航</h2>
+      <p>文档预览会将固定定位的产品侧边栏限制在当前画布中。</p>
+      <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-sidebar').toggle()">切换侧边栏</button>
+    </div>
+  </main>
+</div>
+</Preview>
+
+## 用途
+
+<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#sidebar" }}>
+该组件为 Jinja 和 Nunjucks 提供了 `sidebar()` 宏。
+</Callout>
+
+Sidebar uses a native `<aside>` next to your page content. A3S UI owns the fixed positioning, overlay behavior, active states, nested lists, and `details` submenu styling. Your app still owns the navigation data and current route.
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、侧边栏组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/sidebar.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者复制或提供A3S UI运行时和侧边栏脚本。
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/sidebar.min.js" defer></script>
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your sidebar HTML">
+```html
+<aside id="sidebar" class="sidebar" data-side="left">
+  <nav aria-label="Sidebar navigation">
+    <section class="scrollbar-sm">
+      <div role="group" aria-labelledby="group-label-content-1">
+        <h3 id="group-label-content-1">Getting started</h3>
+        <ul>
+          <li>
+            <a href="#">
+              <svg class="lucide lucide-square-terminal" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 2-2-2-2" /><path d="M11 13h4" /><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /></svg>
+              <span>Playground</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <svg class="lucide lucide-bot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" /></svg>
+              <span>Models</span>
+            </a>
+          </li>
+          <li>
+            <details id="submenu-content-1-3">
+              <summary aria-controls="submenu-content-1-3-content"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
+                <span>Settings</span>
+              </summary>
+              <ul id="submenu-content-1-3-content">
+                <li><a href="#"><span>General</span></a></li>
+                <li><a href="#"><span>Team</span></a></li>
+                <li><a href="#"><span>Billing</span></a></li>
+                <li><a href="#"><span>Limits</span></a></li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </nav>
+</aside>
+<main>
+  <button type="button" onclick="document.getElementById('sidebar')?.toggle()">Toggle sidebar</button>
+  <h1>Content</h1>
+</main>
+```
+  </Step>
+</Steps>
+
+### RTL
+
+在侧边栏或父元素上设置 `dir="rtl"`。逻辑间距、嵌套边框和项目内容遵循文档方向。 `data-side` 是物理的：`left` 和 `right` 指的是视口侧面。
+
+<Callout type="warning" title="Differences with shadcn/ui" icon="triangle-alert">
+A3S UI 感知支持稳定的 HTML 侧边栏表面：固定的左/右侧边栏、移动覆盖行为、折叠导航、活动状态和原生 `details` 子菜单。其不公开 shadcn/ui 的 React 提供程序、轨道、插入/浮动变体、仅图标折叠模式、菜单操作、菜单栏或菜单组件 API。
+</Callout>
+
+### HTML 结构
+
+A3S UI maps shadcn/ui's sidebar composition to regular navigation HTML: an `<aside>` root, one `<nav>`, optional header/footer regions, grouped lists, item controls, and native `<details>` for nested menus.
+
+<dl>
+  <dt><code>&lt;aside class="sidebar"&gt;</code></dt>
+  <dd>
+    Sidebar root. Supports <code>id</code>, <code>data-side="left|right"</code>, <code>data-initial-open="false"</code>, <code>data-initial-mobile-open="true"</code>, and <code>data-breakpoint</code>. JavaScript manages <code>aria-hidden</code>, <code>inert</code>, and the internal <code>data-sidebar-initialized</code> flag.
+    <dl>
+      <dt><code>&lt;nav aria-label="..."&gt;</code></dt>
+      <dd>
+        Navigation landmark inside the sidebar.
+        <dl>
+          <dt><code>&lt;header&gt;</code></dt>
+          <dd>Optional header for branding, workspace controls, user controls, or persistent actions.</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>
+            Scrollable content region between the optional header and footer.
+            <dl>
+              <dt><code>&lt;div role="group" aria-labelledby="..."&gt;</code></dt>
+              <dd>Named navigation group. Use a heading element as the group label.</dd>
+              <dt><code>&lt;ul&gt;</code> + <code>&lt;li&gt;</code></dt>
+              <dd>
+                Menu and menu item structure. Top-level lists and nested submenu lists receive different spacing and borders.
+                <dl>
+                  <dt><code>&lt;a&gt;</code> / <code>&lt;button&gt;</code></dt>
+                  <dd>Menu item control. Use links for navigation and buttons for actions. Supports <code>data-variant="default|outline"</code>, <code>data-size="default|sm|lg"</code>, <code>data-active="true"</code>, <code>disabled</code> on buttons, and <code>aria-disabled="true"</code> on custom-disabled controls. For links, prefer <code>&lt;a aria-current="page"&gt;</code> for the current page. Add <code>data-keep-mobile-sidebar-open</code> on a clicked link, button, or ancestor when that control should not close the mobile sidebar.</dd>
+                  <dt><code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code></dt>
+                  <dd>Native disclosure for collapsible submenus. Put the nested <code>&lt;ul&gt;</code> directly after <code>&lt;summary&gt;</code>. The <code>&lt;summary&gt;</code> supports the same active, variant, and size attributes as menu item controls. Add <code>id</code> and <code>aria-controls</code> when the relationship is not obvious from nearby markup.</dd>
+                  <dt><code>&lt;hr role="separator"&gt;</code></dt>
+                  <dd>Optional separator between groups or menu sections.</dd>
+                </dl>
+              </dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;footer&gt;</code></dt>
+          <dd>Optional footer for account controls, status, or persistent actions.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+  <dt><code>&lt;main&gt;</code></dt>
+  <dd>Sibling content wrapper. The desktop margin applies to the sibling immediately after the sidebar.</dd>
+</dl>
+
+在 `:root` 或侧边栏根上设置 `--sidebar-width` 和 `--sidebar-mobile-width` 以覆盖默认的 `16rem` 桌面宽度和 `18rem` 移动设备宽度。
+
+桌面端和移动端的打开状态会在 `data-breakpoint` 两侧独立保存。打开移动抽屉时，焦点会进入第一个导航控件；按 `Escape` 或点击遮罩会关闭抽屉，并把焦点返回触发控件。普通的移动导航操作会关闭抽屉，但不会把焦点移回之前的页面位置。
+
+### JavaScript API
+
+| 应用程序编程接口 | 类型 | 描述 |
+| --- | --- | --- |
+| `sidebar.open()` | 方法 | 打开侧边栏。 |
+| `sidebar.close()` | 方法 | 关闭侧边栏。 |
+| `sidebar.toggle()` | 方法 | 切换侧边栏。 |

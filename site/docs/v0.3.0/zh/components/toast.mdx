@@ -1,0 +1,169 @@
+# Toast
+
+<div id="toaster" class="toaster rp-not-doc"></div>
+
+<Preview class="max-w-md">
+<button
+  class="btn" data-variant="outline"
+  onclick="document.getElementById('toaster').toast({
+    category: 'success',
+    title: 'Success',
+    description: 'A success toast called from the front-end.',
+    duration: -1,
+    cancel: {
+      label: 'Dismiss'
+    }
+  })"
+>Toast from front-end</button>
+</Preview>
+
+## 用途
+
+<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#toast" }}>
+该组件为 Jinja 和 Nunjucks 提供了 `toaster()` 和 `toast()` 宏。
+</Callout>
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、Toast组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/toast.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者复制或提供A3S UI运行时和Toast脚本。
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/toast.min.js" defer></script>
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add the toaster HTML">
+
+在页面正文末尾附近添加一台烤面包机：
+
+```html
+<div id="toaster" class="toaster"></div>
+```
+
+在烤面包机上设置 `data-align="start"`、`data-align="center"` 或 `data-align="end"` 以更改位置。
+
+  </Step>
+  <Step title="Add your toasts">
+
+将服务器渲染的Toast标记附加到烤面包机上，或使用 `toaster.toast(config)` 从 JavaScript 创建标记。
+
+```html
+<div id="toaster" class="toaster">
+  <div class="toast" role="status" aria-atomic="true" aria-hidden="false" data-category="success">
+    <div class="toast-content"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+      <section>
+        <h2>Success</h2>
+        <p>A success toast called from the front-end.</p>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-toast-action>Dismiss</button>
+      </footer>
+    </div>
+  </div>
+</div>
+```
+
+```html
+<button
+  class="btn" data-variant="outline"
+  onclick="document.getElementById('toaster').toast({
+    category: 'success',
+    title: 'Success',
+    description: 'A success toast called from the front-end.',
+    cancel: {
+      label: 'Dismiss'
+    }
+  })">Toast from front-end</button>
+```
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;div id="toaster" class="toaster"&gt;</code></dt>
+  <dd>Toast container. Optional <code>data-align</code> values are <code>start</code>, <code>center</code>, and <code>end</code>.</dd>
+  <dt><code>&lt;div class="toast"&gt;</code></dt>
+  <dd>
+    Toast item. Use <code>data-category="success|info|warning|error"</code> for category styling and <code>data-duration</code> to override the timeout in milliseconds. Use <code>data-duration="-1"</code> to keep it open.
+    <dl>
+      <dt><code>&lt;div class="toast-content"&gt;</code></dt>
+      <dd>
+        Content wrapper.
+        <dl>
+          <dt><code>&lt;svg aria-hidden="true"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Icon.</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>
+            Message region.
+            <dl>
+              <dt><code>&lt;h2&gt;</code></dt>
+              <dd>Title.</dd>
+              <dt><code>&lt;p&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+              <dd>Description.</dd>
+            </dl>
+          </dd>
+          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+          <dd>Action buttons or links. Clicking a footer button or link closes the toast.</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>
+
+### JavaScript API
+
+| 应用程序编程接口 | 类型 | 描述 |
+| --- | --- | --- |
+| `toaster.toast(config)` | Method | Creates a toast from a config object and returns the inserted `.toast` element. [See "Config object" below](#config-object). |
+| `toaster.closeAll()` | 方法 | 关闭烤面包机内的每个Toast。 |
+| `toast.close()` | 方法 | 关闭一个已初始化的 toast 元素。 |
+
+### Config 对象
+
+<dl>
+  <dt><code>duration</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Timeout in milliseconds. Defaults to <code>3000</code>, or <code>5000</code> for error toasts. Use <code>-1</code> to keep it open.</dd>
+  <dt><code>category</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Category of the toast, either <code>success</code>, <code>info</code>, <code>warning</code>, or <code>error</code>.</dd>
+  <dt><code>title</code></dt>
+  <dd>Toast 标题。内容以纯文本渲染，不会解析为 HTML。</dd>
+  <dt><code>description</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>Toast 描述。内容以纯文本渲染，不会解析为 HTML。</dd>
+  <dt><code>action</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>主要操作。支持 <code>label</code>、可选的 <code>href</code>，以及可选的 <code>onClick(event)</code> 回调。</dd>
+  <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dd>次要操作。支持 <code>label</code> 和可选的 <code>onClick(event)</code> 回调。</dd>
+</dl>

@@ -1,0 +1,450 @@
+# 表单字段
+
+<Preview class="w-full max-w-md">
+<form>
+  <div role="group" aria-label="结账字段" class="fieldset">
+    <fieldset class="fieldset">
+      <legend>支付方式</legend>
+      <p>所有交易均经过安全加密</p>
+      <div role="group" aria-label="支付方式字段">
+        <div role="group" class="field">
+          <label for="checkout-card-name">持卡人姓名</label>
+          <input id="checkout-card-name" type="text" placeholder="王小明" required />
+        </div>
+        <div role="group" class="field">
+          <label for="checkout-card-number">卡号</label>
+          <input id="checkout-card-number" type="text" placeholder="1234 5678 9012 3456" aria-describedby="checkout-card-number-description" required />
+          <p id="checkout-card-number-description">请输入 16 位卡号</p>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div role="group" class="field">
+            <label for="checkout-exp-month">月</label>
+            <select id="checkout-exp-month" class="select w-full">
+              <option value="">MM</option>
+              <option value="01">01</option>
+              <option value="02">02</option>
+              <option value="03">03</option>
+              <option value="04">04</option>
+              <option value="05">05</option>
+              <option value="06">06</option>
+              <option value="07">07</option>
+              <option value="08">08</option>
+              <option value="09">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div role="group" class="field">
+            <label for="checkout-exp-year">年</label>
+            <select id="checkout-exp-year" class="select w-full">
+              <option value="">YYYY</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+            </select>
+          </div>
+          <div role="group" class="field">
+            <label for="checkout-cvv">CVV</label>
+            <input id="checkout-cvv" type="text" placeholder="123" required />
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <div class="field-separator">
+      <hr role="separator" />
+    </div>
+    <fieldset class="fieldset">
+      <legend>账单地址</legend>
+      <p>与该支付方式关联的账单地址</p>
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="checkout-same-as-shipping" type="checkbox" defaultChecked />
+        <label for="checkout-same-as-shipping" class="font-normal">与收货地址相同</label>
+      </div>
+    </fieldset>
+    <fieldset class="fieldset">
+      <div role="group" class="field">
+        <label for="checkout-comments">备注</label>
+        <textarea id="checkout-comments" placeholder="添加其他备注" rows="3"></textarea>
+      </div>
+    </fieldset>
+    <div role="group" class="field" data-orientation="horizontal">
+      <button type="submit" class="btn">提交</button>
+      <button type="button" class="btn" data-variant="outline">取消</button>
+    </div>
+  </div>
+</form>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="引入 CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基础 CSS、字段组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用 CDN 或打包工具导入？请参阅[安装页](/installation)。
+
+  </Step>
+  <Step title="添加字段 HTML">
+
+单个控件使用 `class="field"`，相关控件组使用 `class="fieldset"`。需要 `<legend>` 标题时使用原生 `<fieldset>`；其他情况使用带标签的 `role="group"`。
+
+```html
+<fieldset class="fieldset">
+  <legend>个人资料</legend>
+  <p>这些信息会显示在账单和邮件中。</p>
+  <div role="group" aria-label="个人资料字段">
+    <div role="group" class="field">
+      <label for="name">姓名</label>
+      <input id="name" autocomplete="off" placeholder="王小明" />
+      <p>这些信息会显示在账单和邮件中。</p>
+    </div>
+    <div role="group" class="field" data-invalid>
+      <label for="username">用户名</label>
+      <input id="username" autocomplete="off" aria-invalid="true" aria-describedby="username-error" />
+      <p id="username-error" role="alert">请换一个用户名。</p>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal">
+      <input id="newsletter" type="checkbox" role="switch" />
+      <label for="newsletter">订阅新闻邮件</label>
+    </div>
+  </div>
+</fieldset>
+```
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;fieldset class="fieldset"&gt;</code></dt>
+  <dd>相关字段的原生分组。使用 <code>&lt;legend&gt;</code> 作为标题，并用紧随其后的 <code>&lt;p&gt;</code> 提供说明。</dd>
+  <dt><code>&lt;div role="group" class="fieldset"&gt;</code></dt>
+  <dd>不适合使用 <code>&lt;fieldset&gt;</code> 时的结构分组。请添加 <code>aria-label</code> 或 <code>aria-labelledby</code>。</dd>
+  <dt><code>&lt;div role="group" class="field"&gt;</code></dt>
+  <dd>单个字段的容器。需要时添加 <code>data-orientation</code>。</dd>
+  <dt><code>&lt;label&gt;</code></dt>
+  <dd>控件标签。控件有 <code>id</code> 时，请用 <code>for</code> 与其关联。</dd>
+  <dt><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code></dt>
+  <dd>原生表单控件。请将 <code>aria-invalid="true"</code> 添加到无效控件本身，而不只是外层容器。</dd>
+  <dt><code>&lt;section&gt;</code></dt>
+  <dd>控件与文字并排时，可用它包裹标签和说明。</dd>
+  <dt><code>&lt;p&gt;</code></dt>
+  <dd>帮助或错误文本。校验错误使用 <code>role="alert"</code>，并通过 <code>aria-describedby</code> 与控件关联。</dd>
+</dl>
+
+## 示例
+
+### 输入
+
+<Preview class="w-full max-w-xs">
+<fieldset class="fieldset">
+  <div role="group" aria-label="账户凭据">
+    <div role="group" class="field">
+      <label for="username">用户名</label>
+      <input id="username" type="text" placeholder="王小明" aria-describedby="username-description" />
+      <p id="username-description">为账户选择一个唯一的用户名。</p>
+    </div>
+    <div role="group" class="field">
+      <label for="password">密码</label>
+      <p id="password-description">至少需要 8 个字符。</p>
+      <input id="password" type="password" placeholder="••••••••" aria-describedby="password-description" />
+    </div>
+  </div>
+</fieldset>
+</Preview>
+
+### 文本区域
+
+<Preview class="w-full max-w-xs">
+<fieldset class="fieldset">
+  <div role="group" class="field">
+    <label for="feedback">反馈</label>
+    <textarea id="feedback" placeholder="你的反馈能帮助我们持续改进……" rows="4" aria-describedby="feedback-description"></textarea>
+    <p id="feedback-description">告诉我们你对服务的看法。</p>
+  </div>
+</fieldset>
+</Preview>
+
+### 选择
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field">
+  <label for="department">部门</label>
+  <select id="department" class="select w-full" aria-describedby="department-description">
+    <option value="">选择部门</option>
+    <option value="engineering">工程</option>
+    <option value="design">设计</option>
+    <option value="marketing">市场</option>
+    <option value="sales">销售</option>
+    <option value="support">客户支持</option>
+    <option value="hr">人力资源</option>
+    <option value="finance">财务</option>
+    <option value="operations">运营</option>
+  </select>
+  <p id="department-description">选择你所在的部门或工作领域。</p>
+</div>
+</Preview>
+
+### 滑块
+
+<Preview class="w-full max-w-xs">
+  <SliderDemo variant="field" />
+</Preview>
+
+### 字段组
+
+<Preview class="w-full max-w-sm">
+<fieldset class="fieldset">
+  <legend>地址信息</legend>
+  <p>我们需要你的地址来配送订单。</p>
+  <div role="group" aria-label="地址字段">
+    <div role="group" class="field">
+      <label for="street">街道地址</label>
+      <input id="street" type="text" placeholder="中山路 123 号" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div role="group" class="field">
+        <label for="city">城市</label>
+        <input id="city" type="text" placeholder="上海" />
+      </div>
+      <div role="group" class="field">
+        <label for="zip">邮政编码</label>
+        <input id="zip" type="text" placeholder="90502" />
+      </div>
+    </div>
+  </div>
+</fieldset>
+</Preview>
+
+### 复选框
+
+<Preview class="w-full max-w-xs">
+<div role="group" aria-label="Finder 偏好设置" class="fieldset">
+  <fieldset class="fieldset">
+    <legend data-variant="label">在桌面显示以下项目</legend>
+    <p>选择要在桌面显示的项目。</p>
+    <div role="group" aria-label="桌面项目">
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="finder-hard-disks" type="checkbox" />
+        <label for="finder-hard-disks" class="font-normal">硬盘</label>
+      </div>
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="finder-external-disks" type="checkbox" />
+        <label for="finder-external-disks" class="font-normal">外置磁盘</label>
+      </div>
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="finder-cds" type="checkbox" />
+        <label for="finder-cds" class="font-normal">CD、DVD 和 iPod</label>
+      </div>
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="finder-connected-servers" type="checkbox" />
+        <label for="finder-connected-servers" class="font-normal">已连接的服务器</label>
+      </div>
+    </div>
+  </fieldset>
+  <div class="field-separator">
+    <hr role="separator" />
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input id="sync-folders" type="checkbox" defaultChecked />
+    <section>
+      <label for="sync-folders">同步“桌面”和“文稿”文件夹</label>
+      <p>“桌面”和“文稿”文件夹正在与 iCloud 云盘同步，你可以从其他设备访问它们。</p>
+    </section>
+  </div>
+</div>
+</Preview>
+
+### 单选按钮
+
+<Preview class="w-full max-w-xs">
+<fieldset class="fieldset">
+  <legend data-variant="label">订阅方案</legend>
+  <p>按年和终身方案可享大幅优惠。</p>
+  <div role="radiogroup" aria-label="订阅方案">
+    <div role="group" class="field" data-orientation="horizontal">
+      <input id="plan-monthly" type="radio" name="plan" value="monthly" defaultChecked />
+      <label for="plan-monthly" class="font-normal">按月（$9.99/月）</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal">
+      <input id="plan-yearly" type="radio" name="plan" value="yearly" />
+      <label for="plan-yearly" class="font-normal">按年（$99.99/年）</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal">
+      <input id="plan-lifetime" type="radio" name="plan" value="lifetime" />
+      <label for="plan-lifetime" class="font-normal">终身（$299.99）</label>
+    </div>
+  </div>
+</fieldset>
+</Preview>
+
+### 开关
+
+<Preview class="w-full max-w-sm">
+<div role="group" class="field" data-orientation="horizontal">
+  <section>
+    <label for="multi-factor-authentication">多重身份验证</label>
+    <p>启用多重身份验证。没有验证设备时，可以使用发送到邮箱的一次性验证码。</p>
+  </section>
+  <input id="multi-factor-authentication" type="checkbox" role="switch" />
+</div>
+</Preview>
+
+### 卡片式选项
+
+将 `.field` 包裹在 `<label>` 中即可创建整卡可点击的选项，适用于单选按钮、复选框和开关。
+
+<Preview class="w-full max-w-xs">
+<fieldset class="fieldset">
+  <legend data-variant="label">计算环境</legend>
+  <p>选择集群使用的计算环境。</p>
+  <div role="radiogroup" aria-label="计算环境">
+    <label for="compute-kubernetes">
+      <div role="group" class="field" data-orientation="horizontal">
+        <section>
+          <h3>Kubernetes</h3>
+          <p>在 Kubernetes 集群上运行 GPU 工作负载。</p>
+        </section>
+        <input id="compute-kubernetes" type="radio" name="compute" value="kubernetes" defaultChecked />
+      </div>
+    </label>
+    <label for="compute-vm">
+      <div role="group" class="field" data-orientation="horizontal">
+        <section>
+          <h3>虚拟机</h3>
+          <p>接入虚拟机集群并运行 GPU 工作负载。</p>
+        </section>
+        <input id="compute-vm" type="radio" name="compute" value="vm" />
+      </div>
+    </label>
+  </div>
+</fieldset>
+</Preview>
+
+### 字段分组
+
+将字段堆叠在组内并使用 `.field-separator` 来划分部分。
+
+<Preview class="w-full max-w-xs">
+<div role="group" aria-label="通知偏好设置" class="fieldset">
+  <fieldset class="fieldset">
+    <legend data-variant="label">回复</legend>
+    <p>当 ChatGPT 完成研究、图像生成等耗时请求时接收通知。</p>
+    <div role="group" aria-label="回复通知">
+      <div role="group" class="field" data-orientation="horizontal" data-disabled="true">
+        <input id="push-responses" type="checkbox" defaultChecked disabled />
+        <label for="push-responses" class="font-normal">推送通知</label>
+      </div>
+    </div>
+  </fieldset>
+  <div class="field-separator">
+    <hr role="separator" />
+  </div>
+  <fieldset class="fieldset">
+    <legend data-variant="label">任务</legend>
+    <p>你创建的任务有更新时接收通知。<a href="#">管理任务</a></p>
+    <div role="group" aria-label="任务通知">
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="push-tasks" type="checkbox" />
+        <label for="push-tasks" class="font-normal">推送通知</label>
+      </div>
+      <div role="group" class="field" data-orientation="horizontal">
+        <input id="email-tasks" type="checkbox" />
+        <label for="email-tasks" class="font-normal">邮件通知</label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+</Preview>
+
+### 响应式布局
+
+默认情况下使用 `data-orientation="responsive"` 堆叠，并在较宽的容器中切换为水平堆叠。
+
+<Preview class="w-full max-w-4xl">
+<form>
+  <fieldset class="fieldset">
+    <legend>个人资料</legend>
+    <p>填写你的个人资料。</p>
+    <div class="field-separator">
+      <hr role="separator" />
+    </div>
+    <div role="group" aria-label="个人资料字段">
+      <div role="group" class="field" data-orientation="responsive">
+        <section>
+          <label for="responsive-name">姓名</label>
+          <p id="responsive-name-description">填写用于识别身份的姓名</p>
+        </section>
+        <input id="responsive-name" placeholder="王小明" aria-describedby="responsive-name-description" required />
+      </div>
+      <div class="field-separator">
+        <hr role="separator" />
+      </div>
+      <div role="group" class="field" data-orientation="responsive">
+        <section>
+          <label for="responsive-message">留言</label>
+          <p id="responsive-message-description">在这里填写留言，建议控制在 100 个字符以内。</p>
+        </section>
+        <textarea id="responsive-message" placeholder="你好，世界！" rows="4" aria-describedby="responsive-message-description" required class="min-h-[100px] resize-none sm:min-w-[300px]"></textarea>
+      </div>
+      <div class="field-separator">
+        <hr role="separator" />
+      </div>
+      <div role="group" class="field" data-orientation="responsive">
+        <button type="submit" class="btn">提交</button>
+        <button type="button" class="btn" data-variant="outline">取消</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+</Preview>
+
+### 验证和错误
+
+将 `data-invalid` 添加到 `.field`，将 `aria-invalid="true"` 添加到无效控制。
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field" data-invalid>
+  <label for="invalid-email">邮箱</label>
+  <input id="invalid-email" type="email" value="wrong-email" aria-invalid="true" aria-describedby="invalid-email-error" />
+  <p id="invalid-email-error" role="alert">请输入有效的邮箱地址。</p>
+</div>
+</Preview>
+
+### RTL
+
+将 `dir="rtl"` 添加到字段、字段集或祖先。
+
+<Preview class="w-full max-w-xs">
+<fieldset class="fieldset" dir="rtl">
+  <legend>الملف الشخصي</legend>
+  <p>تظهر هذه المعلومات في حسابك.</p>
+  <div role="group" aria-label="حقول الملف الشخصي">
+    <div role="group" class="field">
+      <label for="field-rtl-name">الاسم الكامل</label>
+      <input id="field-rtl-name" type="text" placeholder="أرنب شرير" />
+      <p>اكتب اسمك الأول والأخير.</p>
+    </div>
+  </div>
+</fieldset>
+</Preview>

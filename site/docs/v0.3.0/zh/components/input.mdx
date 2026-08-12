@@ -1,0 +1,187 @@
+# 输入
+
+<Preview class="w-full max-w-xs">
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、输入组件CSS和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/input.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your input HTML">
+
+Add `class="input"` to supported `<input>` elements. Inputs inside a `class="field"` container also receive the same styling automatically for common text-like input types.
+
+使用原生HTML属性来实现：`disabled`用于禁止输入，`required`用于必填字段行为，`aria-invalid="true"`用于无效状态样式。
+
+```html
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+```
+
+  </Step>
+</Steps>
+
+## 示例
+
+### 基本
+
+<Preview class="w-full max-w-xs">
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+</Preview>
+
+### 现场
+
+使用带有标签和说明的 `field` 创建可访问字段。
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field">
+  <label for="input-field">Email</label>
+  <input id="input-field" type="email" placeholder="m@example.com" />
+  <p>Enter your email address.</p>
+</div>
+</Preview>
+
+### 字段组
+
+<Preview class="w-full max-w-xs">
+<div class="grid gap-4">
+  <div role="group" class="field">
+    <label for="input-first-name">First name</label>
+    <input id="input-first-name" type="text" placeholder="Jane" />
+  </div>
+  <div role="group" class="field">
+    <label for="input-last-name">Last name</label>
+    <input id="input-last-name" type="text" placeholder="Doe" />
+  </div>
+</div>
+</Preview>
+
+### 已禁用
+
+<Preview class="w-full max-w-xs">
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" disabled />
+</Preview>
+
+### 无效
+
+<Preview class="w-full max-w-xs">
+<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" aria-invalid="true" />
+</Preview>
+
+### 文件
+
+<Preview class="w-full max-w-xs">
+<input class="input" type="file" aria-label="上传文件" />
+</Preview>
+
+### 内联
+
+<Preview class="w-full max-w-xs">
+<div class="flex items-center gap-2">
+  <input class="input" type="search" aria-label="搜索" placeholder="Search..." />
+  <button type="submit" class="btn">Search</button>
+</div>
+</Preview>
+
+### 网格
+
+<Preview class="w-full max-w-sm">
+<div class="grid gap-4 md:grid-cols-2">
+  <input class="input" type="text" aria-label="名字" placeholder="First name" />
+  <input class="input" type="text" aria-label="姓氏" placeholder="Last name" />
+  <input class="input md:col-span-2" type="email" aria-label="电子邮箱" placeholder="Email" />
+</div>
+</Preview>
+
+### 必填
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field">
+  <label for="input-required">Username <span class="text-destructive">*</span></label>
+  <input id="input-required" type="text" placeholder="hunvreus" required />
+</div>
+</Preview>
+
+### 徽章
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field">
+  <label for="input-badge" class="flex w-full items-center gap-2">
+    Email
+    <span class="badge ml-auto" data-variant="secondary">Recommended</span>
+  </label>
+  <input id="input-badge" type="email" placeholder="m@example.com" />
+</div>
+</Preview>
+
+### 输入组
+
+使用 [Input Group](/components/input-group) 模式在输入内添加图标、文本或按钮。
+
+<Preview class="w-full max-w-xs">
+<div class="relative">
+  <input class="input ps-9" type="search" aria-label="搜索" placeholder="Search..." />
+  <div class="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground [&>svg]:size-4"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg>
+  </div>
+</div>
+</Preview>
+
+### 按钮组
+
+当输入应与顶层按钮组时，请使用 [按钮组](/components/button-group)。
+
+<Preview class="w-full max-w-xs">
+<div role="group" aria-label="Search" class="button-group">
+  <input class="input" type="search" aria-label="搜索" placeholder="Search..." />
+  <button type="submit" class="btn" data-variant="outline" data-size="icon" aria-label="Search"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></button>
+</div>
+</Preview>
+
+### 表格
+
+<Preview class="w-full max-w-sm">
+<form class="space-y-6">
+  <div role="group" class="field">
+    <label for="input-form-username">Username</label>
+    <input id="input-form-username" type="text" placeholder="hunvreus" required />
+    <p>This is your public display name.</p>
+  </div>
+  <div role="group" class="field">
+    <label for="input-form-email">Email</label>
+    <input id="input-form-email" type="email" placeholder="m@example.com" required />
+  </div>
+  <button type="submit" class="btn">Submit</button>
+</form>
+</Preview>
+
+### RTL
+
+输入通过原生浏览器方向处理支持从右到左的布局。将 `dir="rtl"` 添加到输入、字段或祖先。
+
+<Preview class="w-full max-w-xs">
+<div role="group" class="field" dir="rtl">
+  <label for="input-rtl-api-key">مفتاح API</label>
+  <input id="input-rtl-api-key" type="password" placeholder="sk-..." />
+  <p>مفتاح API الخاص بك مشفر ومخزن بأمان.</p>
+</div>
+</Preview>

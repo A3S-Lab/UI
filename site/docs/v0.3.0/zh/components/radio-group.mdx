@@ -1,0 +1,225 @@
+# 单选组
+
+<Preview>
+<div role="radiogroup" aria-label="视图密度" data-slot="radio-group" class="w-fit">
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r1" name="radio-demo" value="default" class="input" />
+    <label for="r1">默认</label>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r2" name="radio-demo" value="comfortable" class="input" defaultChecked />
+    <label for="r2">宽松</label>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r3" name="radio-demo" value="compact" class="input" />
+    <label for="r3">紧凑</label>
+  </div>
+</div>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="引入 CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基础 CSS、单选组组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/components/radio.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+单选组使用 Radio 样式，并在复杂示例中组合 Field 样式。
+
+使用 CDN 或打包工具导入？请参阅[安装页](/installation)。
+
+  </Step>
+  <Step title="添加单选组 HTML">
+
+为单选按钮添加 `class="input"`。互斥选项共用同一个 `name` 属性，并使用语义化的 `<fieldset>` 或带有 `role="radiogroup"` 的元素包裹相关选项。
+
+```html
+<input type="radio" name="plan" class="input" />
+```
+
+  </Step>
+</Steps>
+
+## 示例
+
+### 带说明
+
+使用 Field 样式组合单选项及其说明。
+
+<Preview>
+<div role="radiogroup" aria-label="视图密度" data-slot="radio-group" class="w-fit">
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="desc-r1" name="radio-description" value="default" class="input" />
+    <section>
+      <label for="desc-r1">默认</label>
+      <p>适合大多数场景的标准间距。</p>
+    </section>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="desc-r2" name="radio-description" value="comfortable" class="input" defaultChecked />
+    <section>
+      <label for="desc-r2">宽松</label>
+      <p>元素之间留出更多空间。</p>
+    </section>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="desc-r3" name="radio-description" value="compact" class="input" />
+    <section>
+      <label for="desc-r3">紧凑</label>
+      <p>以最小间距呈现高密度布局。</p>
+    </section>
+  </div>
+</div>
+</Preview>
+
+### 卡片式选项
+
+使用原生 `<label>` 包裹整个 `.field`，让卡片任意位置都可点击。
+
+<Preview class="w-full max-w-sm">
+<div role="radiogroup" aria-label="方案" data-slot="radio-group" class="w-full max-w-md">
+  <label for="plus-plan">
+    <div role="group" class="field" data-orientation="horizontal">
+      <section>
+        <h3>Plus</h3>
+        <p>适合个人和小型团队。</p>
+      </section>
+      <input type="radio" id="plus-plan" name="choice-plan" value="plus" class="input" defaultChecked />
+    </div>
+  </label>
+  <label for="pro-plan">
+    <div role="group" class="field" data-orientation="horizontal">
+      <section>
+        <h3>Pro</h3>
+        <p>适合成长中的企业。</p>
+      </section>
+      <input type="radio" id="pro-plan" name="choice-plan" value="pro" class="input" />
+    </div>
+  </label>
+  <label for="enterprise-plan">
+    <div role="group" class="field" data-orientation="horizontal">
+      <section>
+        <h3>Enterprise</h3>
+        <p>适合大型团队和企业。</p>
+      </section>
+      <input type="radio" id="enterprise-plan" name="choice-plan" value="enterprise" class="input" />
+    </div>
+  </label>
+</div>
+</Preview>
+
+### 字段组
+
+使用原生 `<fieldset>` 和 `<legend>` 为一组单选项提供标题与说明。
+
+<Preview>
+<fieldset class="fieldset">
+  <legend data-variant="label">订阅方案</legend>
+  <p>按年和终身方案可享大幅优惠。</p>
+  <div role="radiogroup" aria-label="订阅方案" data-slot="radio-group">
+    <div role="group" class="field" data-orientation="horizontal">
+      <input type="radio" id="plan-monthly" name="subscription-plan" value="monthly" class="input" defaultChecked />
+      <label for="plan-monthly" class="font-normal">按月（$9.99/月）</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal">
+      <input type="radio" id="plan-yearly" name="subscription-plan" value="yearly" class="input" />
+      <label for="plan-yearly" class="font-normal">按年（$99.99/年）</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal">
+      <input type="radio" id="plan-lifetime" name="subscription-plan" value="lifetime" class="input" />
+      <label for="plan-lifetime" class="font-normal">终身（$299.99）</label>
+    </div>
+  </div>
+</fieldset>
+</Preview>
+
+### 已禁用
+
+使用 `disabled` 属性禁用单个项目。
+
+<Preview>
+<div role="radiogroup" aria-label="禁用选项" data-slot="radio-group" class="w-fit">
+  <div role="group" class="field" data-orientation="horizontal" data-disabled>
+    <input type="radio" id="disabled-1" name="radio-disabled" value="option1" class="input" disabled />
+    <label for="disabled-1" class="font-normal">已禁用</label>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="disabled-2" name="radio-disabled" value="option2" class="input" defaultChecked />
+    <label for="disabled-2" class="font-normal">选项 2</label>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="disabled-3" name="radio-disabled" value="option3" class="input" />
+    <label for="disabled-3" class="font-normal">选项 3</label>
+  </div>
+</div>
+</Preview>
+
+### 无效
+
+在单选按钮上使用 `aria-invalid="true"`，并在字段上使用 `data-invalid` 来显示校验错误。
+
+<Preview>
+<fieldset class="fieldset">
+  <legend data-variant="label">通知方式</legend>
+  <p>选择你希望接收通知的方式。</p>
+  <div role="radiogroup" aria-label="通知方式" data-slot="radio-group">
+    <div role="group" class="field" data-orientation="horizontal" data-invalid>
+      <input type="radio" id="invalid-email" name="notification-preference" value="email" class="input" aria-invalid="true" defaultChecked />
+      <label for="invalid-email" class="font-normal">仅邮件</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal" data-invalid>
+      <input type="radio" id="invalid-sms" name="notification-preference" value="sms" class="input" aria-invalid="true" />
+      <label for="invalid-sms" class="font-normal">仅短信</label>
+    </div>
+    <div role="group" class="field" data-orientation="horizontal" data-invalid>
+      <input type="radio" id="invalid-both" name="notification-preference" value="both" class="input" aria-invalid="true" />
+      <label for="invalid-both" class="font-normal">邮件和短信</label>
+    </div>
+  </div>
+</fieldset>
+</Preview>
+
+## RTL
+
+在单选组或祖先元素上设置 `dir="rtl"`。
+
+<Preview>
+<div dir="rtl" role="radiogroup" aria-label="كثافة العرض" data-slot="radio-group" class="w-fit">
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r1-rtl" name="radio-rtl" value="default" class="input" />
+    <section>
+      <label for="r1-rtl">افتراضي</label>
+      <p>تباعد قياسي لمعظم حالات الاستخدام.</p>
+    </section>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r2-rtl" name="radio-rtl" value="comfortable" class="input" defaultChecked />
+    <section>
+      <label for="r2-rtl">مريح</label>
+      <p>مساحة أكبر بين العناصر.</p>
+    </section>
+  </div>
+  <div role="group" class="field" data-orientation="horizontal">
+    <input type="radio" id="r3-rtl" name="radio-rtl" value="compact" class="input" />
+    <section>
+      <label for="r3-rtl">مضغوط</label>
+      <p>تباعد أدنى للتخطيطات الكثيفة.</p>
+    </section>
+  </div>
+</div>
+</Preview>

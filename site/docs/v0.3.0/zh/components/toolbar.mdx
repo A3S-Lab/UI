@@ -1,0 +1,43 @@
+# 工具栏
+
+工具栏将紧凑、常用的命令分组。它支持水平滚动、环绕布局、逻辑分隔符和密集的 Office 风格控件。
+
+<Preview>
+<div class="toolbar w-full" role="toolbar" aria-label="格式化">
+  <div role="group" aria-label="历史"><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="撤消">↶</button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="重做">↷</button></div>
+  <hr role="separator" />
+<div role="group" aria-label="文字样式"><button type="button" class="btn font-bold" data-size="icon-sm" data-variant="ghost" aria-label="粗体" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">B</button><button type="button" class="btn italic" data-size="icon-sm" data-variant="ghost" aria-label="斜体" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">I</button><button type="button" class="btn underline" data-size="icon-sm" data-variant="ghost" aria-label="下划线" aria-pressed="false" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true')">U</button></div>
+  <hr role="separator" />
+<div role="group" aria-label="插入"><button type="button" class="btn" data-size="sm" data-variant="ghost">链接</button><button type="button" class="btn" data-size="sm" data-variant="ghost">注释</button><button type="button" class="btn" data-size="sm" data-variant="ghost">代码</button></div>
+</div>
+</Preview>
+
+## 用途
+
+```html
+<div class="toolbar" role="toolbar" aria-label="Formatting">
+  <div role="group" aria-label="Text style">...</div>
+  <hr role="separator" />
+  <div role="group" aria-label="Insert">...</div>
+</div>
+```
+
+### 参数
+
+| 参数 | 可选值 | 默认 | 目的 |
+| --- | --- | --- | --- |
+| `data-density` | `compact`，省略 | 省略 | 消除命令组内的间隙 |
+| `data-wrap` | `true`，省略 | 省略 | 换行组而不是水平滚动 |
+| `--toolbar-height` | CSS 长度 | `2.6875rem`（43px） | Office 工具栏行高 |
+| `--toolbar-control-height` | CSS 长度 | `1.8125rem`（29px） | 紧凑命令高度 |
+| `role="toolbar"` | — | 必填 | 宣布复合命令区域 |
+| 子元素 `role="group"` | — | 推荐 | 为相关命令集提供名称 |
+| `<hr role="separator">` | — | 可选 | 逻辑视觉划分 |
+
+## 状态和变体
+
+对于切换按钮使用 `aria-pressed`，对于不可用的命令使用 `disabled`。默认行高和命令尺寸与 A3S Office 编辑器外壳一致；窄屏非换行工具栏中的命令不会收缩，键盘焦点会将当前命令滚动到可视区域。Ribbons 内部适合使用紧凑的工具栏；包装适用于响应式检查器面板。
+
+## 可访问性
+
+命名工具栏和每个不明确的组。原生按钮保留在文档选项卡序列中。在应用程序层提供键盘快捷键，并使用 [Kbd](/components/kbd) 或工具提示文本公开它们。

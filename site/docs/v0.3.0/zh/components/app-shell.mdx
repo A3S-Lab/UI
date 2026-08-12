@@ -1,0 +1,54 @@
+# App Shell 应用外壳
+
+App Shell 提供持久导航区域与边界明确的产品工作区，是 A3S Office、网关运维和智能体控制台的顶层框架。
+
+<Preview>
+<div class="app-shell" data-navigation="expanded" style="--app-shell-height:30rem;--app-shell-min-height:30rem;--app-shell-navigation-size:13rem">
+  <aside data-app-navigation>
+    <div class="activity-bar" aria-label="演示工作区">
+<header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S UI</span></header>
+      <nav aria-label="Demo"><ul><li><a href="#shell-home" aria-current="page"><span aria-hidden="true">◫</span><span data-navigation-label>Workspace</span></a></li><li><a href="#shell-components"><span aria-hidden="true">◇</span><span data-navigation-label>Components</span></a></li><li><a href="#shell-settings"><span aria-hidden="true">⚙</span><span data-navigation-label>Settings</span></a></li></ul></nav>
+<footer><span class="size-2 rounded-full bg-[var(--a3s-green)]"></span><span data-navigation-label>所有系统就绪</span></footer>
+    </div>
+  </aside>
+  <main data-app-main>
+<header class="workspace-header"><div data-workspace-leading><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-demo-shell-toggle aria-label="折叠导航" aria-expanded="true">☰</button></div><div data-workspace-identity><h1>设计系统工作区</h1><span>应用组成预览</span></div><div data-workspace-actions><button type="button" class="btn" data-size="sm">发布</button></div></header>
+    <div data-app-content class="grid content-start gap-4 p-5">
+<div><span class="badge">实时模式</span><h2 class="mt-2 text-xl font-semibold">使用稳定组件组合产品界面。</h2><p class="mt-1 max-w-xl text-sm text-muted-foreground">调整视口大小或折叠导航，内容区域仍保持有界且可滚动。</p></div>
+      <div class="resource-grid" style="--resource-grid-min:10rem"><article class="resource-card" data-kind="agent"><figure class="text-2xl">◇</figure><section><strong>Agent session</strong><small>Active · 2 tools</small></section></article><article class="resource-card"><figure class="text-2xl">▤</figure><section><strong>Configuration</strong><small>Validated · ACL</small></section></article></div>
+    </div>
+  </main>
+</div>
+</Preview>
+
+## 用途
+
+```html
+<div class="app-shell" data-navigation="expanded">
+  <aside data-app-navigation>...</aside>
+  <main data-app-main>
+    <header class="workspace-header">...</header>
+    <div data-app-content>...</div>
+  </main>
+</div>
+```
+
+### 参数
+
+| 参数 | 可选值 | 默认 | 目的 |
+| --- | --- | --- | --- |
+| `data-navigation` | `expanded`、`collapsed`、`hidden` | `expanded` | 桌面导航状态 |
+| `data-mobile-navigation` | `open` 或省略 | 省略 | 移动端抽屉是否可见 |
+| `--app-shell-navigation-size` | CSS 长度 | `15rem` | 展开后的导航宽度 |
+| `--app-shell-navigation-collapsed-size` | CSS 长度 | `2.875rem` | 与 Office 对齐的图标栏宽度 |
+| `--app-shell-navigation-max-size` | CSS 长度或百分比 | `38%` | 展开导航最多占用的比例 |
+| `--app-shell-height` | CSS 长度或 `auto` | `auto` | 可选的有界外壳高度 |
+| `--app-shell-min-height` | CSS 长度 | `36rem` | 外壳最小高度 |
+
+## 状态和变体
+
+App Shell 支持展开、折叠、隐藏与移动端打开状态。低于 768px 时，导航会成为限制在外壳内部的浮层；关闭状态不会接收指针或键盘交互，`data-mobile-navigation="open"` 会在局部遮罩之上显示导航。状态管理由宿主应用负责，以便保存用户偏好并与路由协调；预览只使用文档专用的轻量控制器。
+
+## 可访问性
+
+使用地标元素（`aside`、`nav`、`main`、`header`）并命名每个导航区域。导航开关需要 `aria-expanded` 与随状态变化的可访问名称。移动导航为模态时，应组合 [Drawer](/components/drawer) 来管理焦点。

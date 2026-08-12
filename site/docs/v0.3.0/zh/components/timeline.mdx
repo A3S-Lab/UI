@@ -1,0 +1,77 @@
+# 时间线
+
+Timeline 按顺序组织持久操作、部署与 Agent 语义事件，不限定应用如何管理状态。
+
+<Preview class="w-full max-w-2xl">
+  <ol class="timeline" aria-label="Agent 执行历史">
+    <li data-marker="1" data-state="success">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>已接受执行</h3>
+          <p>Conversation 与精确 Agent Release 已记录。</p>
+        </section>
+        <aside>
+          <span class="badge" data-variant="secondary">
+            09:41:02
+          </span>
+        </aside>
+      </article>
+    </li>
+    <li data-marker="2" data-state="active" aria-current="step">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>Provider 运行中</h3>
+          <p>A3S Code 正在发送有序语义事件。</p>
+        </section>
+        <aside>
+          <span class="badge">实时</span>
+        </aside>
+      </article>
+    </li>
+    <li data-marker="3">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>等待证据</h3>
+          <p>Provider 完成后会显示终态证据。</p>
+        </section>
+      </article>
+    </li>
+  </ol>
+</Preview>
+
+## 使用
+
+导入完整样式包，或把 Timeline 与每个条目所用的组件组合导入。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<ol class="timeline" aria-label="执行历史">
+  <li data-state="success">
+    <article class="item" data-variant="outline">…</article>
+  </li>
+  <li data-state="active" aria-current="step">
+    <article class="item" data-variant="outline">…</article>
+  </li>
+</ol>
+```
+
+### 参数
+
+| API                   | 值                                       | 用途                       |
+| --------------------- | ---------------------------------------- | -------------------------- |
+| `class="timeline"`    | 必需                                     | 有序时间线根元素           |
+| `data-marker`         | 短文本或数字                             | 用紧凑标记替代圆点         |
+| `data-state`          | `active`、`success`、`warning`、`danger` | 语义标记颜色               |
+| `aria-current="step"` | 原生 ARIA                                | 标识当前步骤并应用活动状态 |
+
+## 状态与变体
+
+由宿主应用把领域状态映射到四种语义状态，不要把每个后端状态都变成样式 API。中性或未来事件省略 `data-state`；同时使用文本或 Badge，不能只靠颜色表达状态。
+
+## 可访问性
+
+顺序有意义时使用 `<ol>`，时间戳使用 `<time datetime="…">`。当前状态通过 `aria-current="step"` 明确表达。Timeline 仅提供 CSS；焦点、选择与实时播报仍由宿主应用负责。
