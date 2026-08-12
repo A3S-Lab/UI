@@ -6,6 +6,7 @@
 
 ### Added
 
+- Published `@a3s-lab/ui@0.3.0` to the public npm registry and created the `v0.3.0` GitHub release.
 - Added Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts extracted from A3S Web's Agent execution, build, evidence, status, and event-stream surfaces, with responsive CSS and bilingual documentation.
 - Added Brand Lockup and Stepper contracts extracted from A3S Web's shared identity and bounded process-path surfaces, with responsive CSS, bilingual documentation, and browser regression coverage.
 - Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
