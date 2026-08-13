@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+- Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
+- Added complete Codex Workbench and New Agent Thread composition guides while keeping project, Git, transport, environment, and policy state in the host application.
+- Added route-level geometry, state, and browser diagnostic regression coverage for every public component guide.
+
+### Fixed
+
+- Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
+
 ## [0.3.0] - 2026-08-12
 
 ### Added

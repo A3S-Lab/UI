@@ -1,0 +1,98 @@
+# Agent 对话记录
+
+Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接收流式内容，但不负责传输、Markdown 渲染、历史保留或虚拟化。
+
+<Preview class="w-full max-w-3xl">
+  <section class="agent-transcript" aria-label="对话">
+    <header>
+      <strong>取消测试</strong>
+      <span>本地环境</span>
+    </header>
+    <ol data-transcript-viewport tabindex="0">
+      <li data-role="user">
+        <article>
+          <header>
+            <strong>你</strong>
+            <time datetime="2026-08-13T08:40:00Z">08:40</time>
+          </header>
+          <div data-message-content>
+            <p>为流式执行路径补充取消测试。</p>
+          </div>
+        </article>
+      </li>
+      <li data-role="agent">
+        <article>
+          <header>
+            <strong>A3S Code</strong>
+            <span class="status-badge" data-state="active" data-indicator>运行中</span>
+          </header>
+          <div data-message-content>
+            <p>我在 <code>src/runtime.ts</code> 找到了流生命周期。修改前会先检查现有测试。</p>
+          </div>
+          <details class="execution-item" data-state="success">
+            <summary>
+              <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+              <span data-execution-identity>
+                <strong>搜索测试</strong>
+                <small>rg "cancel|abort" tests src</small>
+              </span>
+              <span
+                class="status-badge"
+                data-state="success"
+                data-execution-status
+              >已完成</span>
+              <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+            </summary>
+            <section>
+              <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
+            </section>
+          </details>
+        </article>
+      </li>
+      <li data-role="system">
+        <article>
+          <div data-message-content>
+            <p>正在等待批准，以便在当前项目之外运行命令。</p>
+          </div>
+        </article>
+      </li>
+    </ol>
+    <footer>
+      <span data-transcript-status aria-live="polite">Agent 正在处理</span>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost">跳到最新</button>
+    </footer>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="agent-transcript" aria-label="对话">
+  <ol data-transcript-viewport tabindex="0">
+    <li data-role="user"><article>...</article></li>
+    <li data-role="agent"><article>...</article></li>
+    <li data-role="system"><article>...</article></li>
+  </ol>
+</section>
+```
+
+### 参数
+
+| API                                         | 取值                      | 用途                             |
+| ------------------------------------------- | ------------------------- | -------------------------------- |
+| `class="agent-transcript"`                  | 必须                      | 具有名称的对话区域               |
+| 直接子 `<ol>` 或 `data-transcript-viewport` | 推荐                      | 有序且有边界的 Turn 视口         |
+| 子项 `data-role`                            | `user`、`agent`、`system` | 与提供方名称无关的稳定展示角色   |
+| 子项 `<article>`                            | 推荐                      | 单条消息或 Turn 表面             |
+| `data-message-content`                      | 推荐                      | 富文本、代码、执行项、审批和证据 |
+| `data-transcript-status`                    | 可选                      | 粗粒度异步状态                   |
+| `--agent-transcript-gap`                    | CSS 长度，默认 `1rem`     | Turn 间距                        |
+| `--agent-message-max-width`                 | CSS 长度，默认 `48rem`    | 可读消息宽度                     |
+
+## 状态与变体
+
+加载中、空、已中断和失败历史应通过明确内容呈现，并在适用时组合 Empty 或 Alert。流式执行期间，追加或更新当前 Agent Turn，不要重建之前的 Turn。长历史由宿主应用窗口化；已知总量时，通过 `aria-posinset` 和 `aria-setsize` 保留有序列表位置。
+
+## 无障碍
+
+为区域提供可访问名称并保持时间顺序。只有实际发生溢出的视口才需要可聚焦。播报“Agent 已完成”或“需要审批”等粗粒度状态，不要把 Token 流本身放入实时区域。读者离开最新 Turn 后，新内容不得抢夺焦点或强制滚动页面。

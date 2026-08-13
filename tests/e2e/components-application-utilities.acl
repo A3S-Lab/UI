@@ -7,12 +7,14 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
         viewport "compact" { width = 768 height = 900 }
         expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
         navigate "reopen-compact" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "compact-loaded" { load = "networkidle" }
+        wait "compact-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
         click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
@@ -28,6 +30,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/agent-workbench.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "context-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-context]") }
         expect "canvas-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] article[data-agent-canvas]") }
         expect "inspector-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector]") }
@@ -39,12 +42,105 @@ suite "a3s-ui-application-and-utilities" {
         screenshot "agent-workbench-phone" { path = "components/agent-workbench-phone.png" }
     }
 
+    scenario "agent-composer" {
+        name = "Agent Composer keeps attached context, queued input, and submission reachable"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/agent-composer.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "composer-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] form.agent-composer") }
+        expect "context-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-context] > li") }
+        expect "queue-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-queue] > li") }
+        focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=agent-composer] textarea[aria-label=Instruction]") }
+        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=agent-composer] textarea[aria-label=Instruction]:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-submit-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] button[type=submit]") }
+    }
+
+    scenario "agent-transcript" {
+        name = "Agent Transcript preserves ordered roles and embedded execution evidence"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/agent-transcript.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "user-turn-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport] > li[data-role=user]") }
+        expect "agent-turn-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport] > li[data-role=agent]") }
+        expect "system-turn-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport] > li[data-role=system]") }
+        expect "execution-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] details.execution-item") }
+        focus "focus-transcript" { target = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport]") }
+        expect "transcript-focused" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport]:focus") }
+    }
+
+    scenario "approval-request" {
+        name = "Approval Request exposes a named decision and native permission scopes"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/approval-request.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "request-visible" { visible = css(".a3s-preview[data-preview-component=approval-request] .approval-request[data-state=pending]") }
+        expect "selected-scope-visible" { visible = css(".a3s-preview[data-preview-component=approval-request] input[type=radio][value=once]:checked") }
+        focus "focus-allow" { target = css(".a3s-preview[data-preview-component=approval-request] button[type=submit]") }
+        expect "allow-focused" { visible = css(".a3s-preview[data-preview-component=approval-request] button[type=submit]:focus") }
+    }
+
+    scenario "execution-item" {
+        name = "Execution Item opens and closes through native disclosure behavior"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/execution-item.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "running-item-open" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running][open]") }
+        click "close-running-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running] > summary") }
+        expect "running-item-closed" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running]:not([open])") }
+        focus "focus-waiting-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary") }
+        expect "waiting-item-focused" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary:focus") }
+    }
+
+    scenario "codex-workbench" {
+        name = "Codex Workbench keeps conversation, execution, approval, and context in one responsive workspace"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/codex-workbench.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "shell-visible" { visible = css(".a3s-preview .app-shell") }
+        expect "conversation-visible" { visible = css(".a3s-preview .agent-transcript[aria-label=Conversation]") }
+        expect "execution-visible" { visible = css(".a3s-preview details.execution-item") }
+        expect "approval-visible" { visible = css(".a3s-preview .approval-request[data-state=pending]") }
+        expect "composer-visible" { visible = css(".a3s-preview form.agent-composer") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-main-visible" { visible = css(".a3s-preview .app-shell > [data-app-main]") }
+        expect "phone-queue-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
+        screenshot "codex-workbench-phone" { path = "patterns/codex-workbench-phone.png" }
+    }
+
+    scenario "new-agent-thread" {
+        name = "New Agent Thread keeps environment choices and first instruction in one submit boundary"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/new-agent-thread.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "thread-form-visible" { visible = css(".a3s-preview form[aria-labelledby=new-thread-title]") }
+        expect "local-environment-selected" { visible = css(".a3s-preview input[name=new-thread-environment][value=local]:checked") }
+        expect "composer-section-visible" { visible = css(".a3s-preview form > div section.agent-composer:not(:has(form))") }
+        expect "instruction-visible" { visible = css(".a3s-preview section.agent-composer textarea[aria-label='First instruction']") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-submit-visible" { visible = css(".a3s-preview form > div section.agent-composer button[type=submit]") }
+        screenshot "new-agent-thread-phone" { path = "patterns/new-agent-thread-phone.png" }
+    }
+
     scenario "brand-lockup" {
         name = "Brand Lockup preserves textual identity and compact header geometry"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/brand-lockup.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "linked-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup[data-brand-name], .a3s-preview[data-preview-component=brand-lockup] a.brand-lockup [data-brand-name]") }
         expect "compact-identity-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup[data-size=sm] [data-brand-identity]") }
         focus "focus-home-link" { target = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup") }
@@ -60,6 +156,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/workspace-header.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity]") }
         expect "actions-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions]") }
         viewport "phone" { width = 390 height = 844 }
@@ -74,6 +171,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
         viewport "phone" { width = 390 height = 844 }
@@ -88,6 +186,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/ribbon.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "compact" { width = 768 height = 900 }
         click "activate-insert" { target = css("#ribbon-insert-tab") }
         expect "insert-active" { visible = css("#ribbon-insert-tab[aria-selected=true]") }
@@ -105,6 +204,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/settings-layout.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav") }
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout > main") }
     }
@@ -115,6 +215,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/resource-card.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "document-resource-visible" { visible = css(".a3s-preview[data-preview-component=resource-card] .resource-card[data-kind=document]") }
     }
 
@@ -124,6 +225,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/split-pane.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-separator" { target = css(".a3s-preview[data-preview-component=split-pane] [role=separator]") }
         press "resize-right" { key = "ArrowRight" }
         expect "value-updated" { visible = css(".a3s-preview[data-preview-component=split-pane] .split-pane[data-value='47'] [role=separator][aria-valuenow='47']") }
@@ -135,6 +237,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-pane.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "task-pane-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane") }
         expect "task-pane-field-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] .task-pane .field") }
         select "choose-letter" {
@@ -153,6 +256,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/status-bar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "status-info-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-info]") }
         expect "status-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-actions]") }
         viewport "phone" { width = 390 height = 844 }
@@ -169,6 +273,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/scroll-area.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wheel "scroll-content" {
             target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar")
             delta_y = 240
@@ -182,10 +287,12 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 60000
         navigate "open-home" { url = "http://127.0.0.1:4178/UI/en/" }
         wait "home-loaded" { load = "networkidle" }
+        wait "home-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "force-light" { target = css("[data-theme-appearance=light]") }
         expect "light-ready" { visible = css("html:not(.dark):not(.rp-dark)") }
         navigate "open-component" { url = "http://127.0.0.1:4178/UI/en/components/theme-switcher.html" }
         wait "component-loaded" { load = "networkidle" }
+        wait "component-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "toggle-theme" { target = css(".a3s-preview[data-preview-component=theme-switcher] button[aria-label='Toggle dark mode']") }
         expect "dark-applied" { visible = css("html.dark.rp-dark") }
         screenshot "theme-switcher" { path = "components/theme-switcher.png" }

@@ -1,0 +1,101 @@
+# 审批请求
+
+审批请求说明 Agent 为什么需要额外权限，并收集一次有边界的权限决定。策略评估、过期、持久化和批准后的执行由宿主应用负责。
+
+<Preview class="w-full max-w-2xl">
+  <section
+    class="approval-request"
+    data-state="pending"
+    aria-labelledby="approval-demo-title"
+  >
+    <header>
+      <div>
+        <h2 id="approval-demo-title">允许在项目之外运行命令吗？</h2>
+        <p>Agent 希望检查已安装的 Node.js 运行时。</p>
+      </div>
+      <span class="status-badge" data-state="warning" data-indicator>需要审批</span>
+    </header>
+    <section>
+      <dl
+        class="property-list"
+        data-size="sm"
+        data-variant="plain"
+        data-layout="rows"
+      >
+        <div>
+          <dt>命令</dt>
+          <dd><code>node --version</code></dd>
+        </div>
+        <div>
+          <dt>工作目录</dt>
+          <dd><code>C:\Program Files\nodejs</code></dd>
+        </div>
+      </dl>
+    </section>
+    <form>
+      <fieldset>
+        <legend>权限范围</legend>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="once" checked />
+          <strong>仅允许一次</strong>
+          <small>只允许当前 Turn 中的这一条命令。</small>
+        </label>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="session" />
+          <strong>本会话内允许</strong>
+          <small>允许匹配命令，直到当前线程关闭。</small>
+        </label>
+      </fieldset>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">拒绝</button>
+        <button type="submit" class="btn" data-size="sm">允许命令</button>
+      </footer>
+    </form>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section
+  class="approval-request"
+  data-state="pending"
+  aria-labelledby="approval-title"
+>
+  <header>
+    <div>
+      <h2 id="approval-title">允许此命令吗？</h2>
+      <p>原因与影响。</p>
+    </div>
+  </header>
+  <section>具体资源、命令、站点或 Capability。</section>
+  <form>
+    <fieldset>
+      <legend>权限范围</legend>
+      ...
+    </fieldset>
+    <footer>...</footer>
+  </form>
+</section>
+```
+
+### 参数
+
+| API                        | 取值                                       | 用途                                    |
+| -------------------------- | ------------------------------------------ | --------------------------------------- |
+| `class="approval-request"` | 必须                                       | 具有名称的决策表面                      |
+| `data-state`               | `pending`、`approved`、`denied`、`expired` | 审批生命周期展示                        |
+| 直接子 `<header>`          | 必须                                       | 决策标题、原因和状态                    |
+| 直接子 `<section>`         | 推荐                                       | 具体命令、路径、站点、Capability 和影响 |
+| 直接子 `<form>`            | Pending 状态                               | 原生范围选择和决策提交                  |
+| `<fieldset>` 与 `<legend>` | 存在多个范围时必须                         | 命名互斥选项组                          |
+
+## 状态与变体
+
+只渲染策略实际允许的范围。结束状态应把决策控件替换为不可变的结果文本、操作人和时间。如果审批在控件聚焦期间过期，保留说明，禁用失效控件，并播报需要重新请求。
+
+组件不发送策略事件。所选范围使用原生 `submit`，拒绝或取消使用普通按钮事件。应用可以取消 Submit 以执行异步决策。
+
+## 无障碍
+
+使用标题并通过 `aria-labelledby` 关联。在控件之前说明具体资源与后果。范围选项使用 Fieldset 中的原生 Radio。只有请求确实阻塞当前任务时才把焦点移动到请求标题；其他情况下应播报请求到达而不抢焦点。不得只依赖颜色区分等待、批准和拒绝状态。

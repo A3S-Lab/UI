@@ -11,6 +11,8 @@
 
 ## Shipped in v0.2.0
 
+- [x] Added per-route component geometry, state, and browser diagnostic regression coverage without changing the established A3S visual language.
+- [x] Deferred component initialization until live documentation previews finish React hydration.
 - [x] Aligned A3S foundations, control density, interaction states, overlays, and application chrome with the A3S Office visual contract.
 - [x] Added independently reusable Task Pane and Status Bar contracts with localized documentation.
 - [x] Rebuilt the homepage specimen from public components instead of private look-alike styles.
@@ -24,5 +26,6 @@
 - [x] Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
 - [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S Web's Agent Factory and operational evidence surfaces.
 - [x] Extracted Brand Lockup and Stepper contracts from repeated A3S Web identity and bounded process-path surfaces.
+- [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Codex Workbench and New Agent Thread compositions.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.

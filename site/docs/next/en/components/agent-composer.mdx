@@ -1,0 +1,110 @@
+# Agent Composer
+
+Agent Composer captures the next instruction, attached context, queued input, and send or stop actions. The host application owns uploads, shortcuts, submission, cancellation, and queue persistence.
+
+<Preview class="w-full max-w-3xl">
+  <form
+    class="agent-composer"
+    aria-label="Message the coding agent"
+    data-state="streaming"
+  >
+    <ul data-composer-context aria-label="Attached context">
+      <li>
+        <span>AGENTS.md</span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-xs"
+          data-variant="ghost"
+          aria-label="Remove AGENTS.md"
+        >
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </li>
+      <li>
+        <span>src/runtime.ts:42–96</span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-xs"
+          data-variant="ghost"
+          aria-label="Remove runtime source range"
+        >
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </li>
+    </ul>
+    <textarea
+      name="prompt"
+      aria-label="Instruction"
+      placeholder="Ask A3S Code to inspect, change, or explain this project…"
+      defaultValue="Add cancellation coverage for the streaming execution path."
+    />
+    <footer>
+      <div data-composer-tools>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost">Attach</button>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost">Context</button>
+        <span data-composer-status aria-live="polite">Agent is running · this message will be queued</span>
+      </div>
+      <div data-composer-actions>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">Stop</button>
+        <button type="submit" class="btn" data-size="sm">Queue message</button>
+      </div>
+    </footer>
+    <ol data-composer-queue aria-label="Queued messages">
+      <li>
+        <span>Then update the English and Chinese API examples.</span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-xs"
+          data-variant="ghost"
+          aria-label="Remove queued message"
+        >
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </li>
+    </ol>
+  </form>
+</Preview>
+
+## Usage
+
+```html
+<form class="agent-composer" aria-label="Message the coding agent">
+  <ul data-composer-context aria-label="Attached context">
+    ...
+  </ul>
+  <textarea name="prompt" aria-label="Instruction"></textarea>
+  <footer>
+    <div data-composer-tools>...</div>
+    <div data-composer-actions>
+      <button type="submit" class="btn">Send</button>
+    </div>
+  </footer>
+</form>
+```
+
+### Parameters
+
+| API                           | Values                                                           | Purpose                                                     |
+| ----------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------- |
+| `class="agent-composer"`      | Required                                                         | Standalone `<form>`, or a Section inside an owning Form     |
+| `data-state`                  | `idle`, `submitting`, `streaming`, `queued`, `error`, `disabled` | Finite presentation state owned by the host                 |
+| `data-composer-context`       | Optional list                                                    | Attachments, files, symbols, source ranges, images, or URLs |
+| `data-composer-tools`         | Optional container                                               | Attachment and context controls                             |
+| `data-composer-actions`       | Recommended container                                            | Send, queue, stop, or retry actions                         |
+| `data-composer-status`        | Optional status text                                             | Submission or queue feedback                                |
+| `data-composer-queue`         | Optional ordered list                                            | Messages waiting behind an active Turn                      |
+| `--agent-composer-min-height` | CSS length, default `5.5rem`                                     | Minimum textarea height                                     |
+| `--agent-composer-max-height` | CSS length, default `18rem`                                      | Maximum textarea height before internal scrolling           |
+
+## States and variants
+
+Use native `disabled` on individual controls and `aria-disabled="true"` only when the entire composer is unavailable. Keep input text when submission fails. During streaming, applications may send immediately, queue the message, or disable submission; the button label and status text must state which behavior applies.
+
+Attachments and queue items are application data. A3S UI neither uploads files nor mutates a queue. Native `submit` and button events are the integration points. Use a `<section class="agent-composer">` only when an ancestor Form already owns the submit boundary; nested Forms are invalid.
+
+## Accessibility
+
+Give the form and textarea accessible names. Keep each removal button adjacent to the item it removes and include the item name in the button label. Put asynchronous status copy in a polite live region, but do not announce every streamed token. Preserve ordinary IME composition and multiline textarea behavior; product shortcuts must not intercept Enter while composition is active.

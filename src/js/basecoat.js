@@ -529,6 +529,7 @@
   window.basecoat = runtime;
 
   document.addEventListener("DOMContentLoaded", () => {
+    if (document.documentElement.hasAttribute("data-a3s-defer-init")) return;
     initAllComponents();
     startObserver();
   });

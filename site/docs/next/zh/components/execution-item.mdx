@@ -1,0 +1,82 @@
+# 执行项
+
+执行项使用原生折叠结构呈现单个命令、工具调用、编辑、搜索、浏览器操作或 MCP 调用。它保持稳定的集成契约，领域细节由应用提供。
+
+<Preview class="w-full max-w-3xl">
+  <div class="grid w-full gap-2">
+    <details class="execution-item" data-state="running" open>
+      <summary>
+        <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+        <span data-execution-identity>
+          <strong>运行聚焦测试</strong>
+          <small>npm test -- runtime.spec.ts</small>
+        </span>
+        <span
+          class="status-badge"
+          data-state="active"
+          data-indicator
+          data-execution-status
+        >运行中</span>
+        <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+      </summary>
+      <section>
+        <pre>PASS tests/runtime.spec.ts Watching cancellation cleanup…</pre>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">停止命令</button>
+      </footer>
+    </details>
+    <details class="execution-item" data-state="waiting">
+      <summary>
+        <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 8v8l8 5 8-5V8l-8-5Z" /><path d="m4 8 8 5 8-5" /><path d="M12 13v8" /></svg></span>
+        <span data-execution-identity>
+          <strong>打开外部文档</strong>
+          <small>browser · learn.chatgpt.com</small>
+        </span>
+        <span class="status-badge" data-state="warning" data-execution-status>等待中</span>
+        <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+      </summary>
+      <section>
+        <p>打开此站点前需要获得批准。</p>
+      </section>
+    </details>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<details class="execution-item" data-state="running">
+  <summary>
+    <span data-execution-icon aria-hidden="true">...</span>
+    <span data-execution-identity
+      ><strong>运行测试</strong><small>npm test</small></span
+    >
+    <span data-execution-status>运行中</span>
+    <span data-execution-disclosure aria-hidden="true">...</span>
+  </summary>
+  <section>...</section>
+  <footer>...</footer>
+</details>
+```
+
+### 参数
+
+| API                         | 取值                                                            | 用途                                   |
+| --------------------------- | --------------------------------------------------------------- | -------------------------------------- |
+| `class="execution-item"`    | 必须用于 `<details>`                                            | 原生折叠根节点                         |
+| `data-state`                | `queued`、`running`、`waiting`、`success`、`error`、`cancelled` | 与提供方无关的执行状态                 |
+| `data-execution-icon`       | 可选                                                            | 工具类型图标；标题已说明操作时作为装饰 |
+| `data-execution-identity`   | 必须                                                            | 操作标题和紧凑目标或命令               |
+| `data-execution-status`     | 推荐                                                            | 文本状态，通常组合 Status Badge        |
+| `data-execution-disclosure` | 可选                                                            | 具有方向性的折叠图标                   |
+| 直接子 `<section>`          | 可选                                                            | 参数、输出、补丁、证据或错误详情       |
+| 直接子 `<footer>`           | 可选                                                            | 停止、重试、检查或复制操作             |
+
+## 状态与变体
+
+将后端特定状态映射到六种公共状态，并在 `data-execution-status` 中保留具体文案。等待审批或外部输入时使用 `waiting`。发生错误或取消后保留部分输出。只有父项代表真实委派组时才嵌套执行项，并避免过深的折叠树。
+
+## 无障碍
+
+原生 `<details>` 与 `<summary>` 提供折叠语义和键盘行为。可见标题必须在不依赖图标的情况下说明操作。不要把 Summary 放入按钮中。普通输出使用文本或 `<pre>`；只有记录确实实时更新时才使用 Live Region，高吞吐流应组合日志查看器。

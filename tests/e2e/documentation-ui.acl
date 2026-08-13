@@ -14,6 +14,10 @@ suite "a3s-ui-site-and-overlays" {
             load = "networkidle"
         }
 
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
         viewport "show-customizer" {
             width = 1280
             height = 1600
@@ -55,6 +59,10 @@ suite "a3s-ui-site-and-overlays" {
             load = "networkidle"
         }
 
+        wait "component-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
         expect "customization-persisted" {
             visible = css("html.dark.rp-dark[data-a3s-accent=violet][data-a3s-radius=rounded][data-a3s-density=comfortable]")
         }
@@ -71,6 +79,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "page-loaded" {
             load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
         }
 
         expect "catalog-preview-visible" {
@@ -93,6 +105,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "page-loaded" {
             load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
         }
 
         expect "visible-site-theme-control" {
@@ -137,6 +153,10 @@ suite "a3s-ui-site-and-overlays" {
             load = "networkidle"
         }
 
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
         click "trigger-dropdown" {
             target = css("#demo-dropdown-menu-trigger")
         }
@@ -165,6 +185,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "page-loaded" {
             load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
         }
 
         click "trigger-popover" {
@@ -197,6 +221,10 @@ suite "a3s-ui-site-and-overlays" {
             load = "networkidle"
         }
 
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
         click "trigger-select" {
             target = css("#select-demo-trigger")
         }
@@ -225,6 +253,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "page-loaded" {
             load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
         }
 
         click "trigger-combobox" {

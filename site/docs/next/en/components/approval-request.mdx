@@ -1,0 +1,101 @@
+# Approval Request
+
+Approval Request explains why an Agent needs additional authority and collects one bounded permission decision. The host application owns policy evaluation, expiration, persistence, and execution after approval.
+
+<Preview class="w-full max-w-2xl">
+  <section
+    class="approval-request"
+    data-state="pending"
+    aria-labelledby="approval-demo-title"
+  >
+    <header>
+      <div>
+        <h2 id="approval-demo-title">Allow a command outside the project?</h2>
+        <p>The Agent wants to inspect the installed Node.js runtime.</p>
+      </div>
+      <span class="status-badge" data-state="warning" data-indicator>Approval required</span>
+    </header>
+    <section>
+      <dl
+        class="property-list"
+        data-size="sm"
+        data-variant="plain"
+        data-layout="rows"
+      >
+        <div>
+          <dt>Command</dt>
+          <dd><code>node --version</code></dd>
+        </div>
+        <div>
+          <dt>Working directory</dt>
+          <dd><code>C:\Program Files\nodejs</code></dd>
+        </div>
+      </dl>
+    </section>
+    <form>
+      <fieldset>
+        <legend>Permission scope</legend>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="once" checked />
+          <strong>Allow once</strong>
+          <small>Only this exact command in this Turn.</small>
+        </label>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="session" />
+          <strong>Allow for this session</strong>
+          <small>Matching commands until this thread closes.</small>
+        </label>
+      </fieldset>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">Deny</button>
+        <button type="submit" class="btn" data-size="sm">Allow command</button>
+      </footer>
+    </form>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section
+  class="approval-request"
+  data-state="pending"
+  aria-labelledby="approval-title"
+>
+  <header>
+    <div>
+      <h2 id="approval-title">Allow this command?</h2>
+      <p>Reason and impact.</p>
+    </div>
+  </header>
+  <section>Exact resource, command, site, or capability.</section>
+  <form>
+    <fieldset>
+      <legend>Permission scope</legend>
+      ...
+    </fieldset>
+    <footer>...</footer>
+  </form>
+</section>
+```
+
+### Parameters
+
+| API                         | Values                                     | Purpose                                           |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------- |
+| `class="approval-request"`  | Required                                   | Named decision surface                            |
+| `data-state`                | `pending`, `approved`, `denied`, `expired` | Approval lifecycle presentation                   |
+| Direct `<header>`           | Required                                   | Decision title, reason, and status                |
+| Direct `<section>`          | Recommended                                | Exact command, path, site, capability, and impact |
+| Direct `<form>`             | Pending state                              | Native scope selection and decision submission    |
+| `<fieldset>` and `<legend>` | Required for several scopes                | Names the mutually exclusive choices              |
+
+## States and variants
+
+Render only scopes that policy actually permits. Finished states should replace decision controls with immutable outcome text, actor, and time. If approval expires while focused, retain the explanation, disable stale controls, and announce that a fresh request is required.
+
+The component emits no policy events. Use native `submit` for the selected scope and ordinary button events for denial or cancellation. Applications may cancel Submit to perform an asynchronous decision.
+
+## Accessibility
+
+Use a heading referenced by `aria-labelledby`. Explain the concrete resource and consequence before the controls. Scope options use native radio inputs in a Fieldset. Move focus to the request heading only when the request blocks the current task; otherwise announce its arrival without stealing focus. Never use color as the only distinction between pending, approved, and denied states.

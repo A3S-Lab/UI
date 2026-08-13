@@ -17,7 +17,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system covers both familiar primitives and application-scale composition: App Shell, Agent Workbench, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, resizable Split Panes, Task Panes, Steppers, and Status Bars all share the same tokens, density, and state model.
+The system covers both familiar primitives and application-scale composition: App Shell, Agent Workbench, Agent Composer, Agent Transcript, Approval Request, Execution Item, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, resizable Split Panes, Task Panes, Steppers, and Status Bars all share the same tokens, density, and state model.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -76,7 +76,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
 | Feedback | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, and Toast |
 | Data display | Accordion, Avatar, Card, Chart, Item, Kbd, Log Viewer, Property List, Table, Stepper, Timeline, and Tree |
-| Application patterns | Agent Workbench, App Shell, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
+| Application patterns | Agent Composer, Agent Transcript, Agent Workbench, Approval Request, Execution Item, App Shell, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
 | Utilities | Scroll Area and Theme Switcher |
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
@@ -109,6 +109,8 @@ App Shell
 ```
 
 These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles. The default Office geometry uses a 46-pixel collapsed activity rail, a 50-pixel Workspace Header, a 43-pixel Toolbar with 29-pixel commands, 36-pixel Ribbon tabs, a 74-pixel Ribbon command panel, and a 28-pixel Status Bar. Breadcrumbs and horizontal tablists stay on one bounded, scrollable row, while Pagination uses 32-pixel desktop commands with touch-safe coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; Task Panes share width above 900 pixels, overlay below it, and fill the workspace below 520 pixels.
+
+The Codex Workbench composition combines project and thread navigation with Agent Transcript, Agent Composer, Execution Item, Approval Request, Split Pane, Task Pane, and Status Bar. A separate New Agent Thread composition keeps environment and permission selection beside the first instruction. Applications continue to own Git, PTY, browser, transport, scheduling, and policy logic.
 
 ## Documentation languages and versions
 
@@ -157,7 +159,7 @@ Run the documentation site locally with `npm run docs:dev`. The static build is 
 
 Run the component-specific browser suites with `npm run test:e2e:a3s`. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
-Visual checks use Playwright with platform-specific desktop and compact baselines. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
+Visual checks use Playwright with platform-specific desktop and compact baselines. Every public component route also has a component-root geometry and state contract plus browser diagnostic coverage. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
 
 ## Lineage and license
 
