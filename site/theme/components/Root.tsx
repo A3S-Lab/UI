@@ -1,10 +1,18 @@
 import { useContext, useEffect, type ReactNode } from "react";
 import {
   ThemeContext,
+  removeBase,
+  useLang,
   useLocation,
+  usePages,
+  useSite,
   useVersion,
   withBase,
 } from "@rspress/core/runtime";
+import {
+  findPageByRoutePath,
+  resolveVersionRoutePath,
+} from "../../version-routing";
 
 type RootProps = {
   children: ReactNode;
@@ -12,7 +20,10 @@ type RootProps = {
 
 export function Root({ children }: RootProps) {
   const location = useLocation();
+  const currentLang = useLang();
   const currentVersion = useVersion();
+  const { pages } = usePages();
+  const { site } = useSite();
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -409,24 +420,53 @@ export function Root({ children }: RootProps) {
   }, [location.pathname]);
 
   useEffect(() => {
-    // Rspress 2.0.19 drops the first path segment from the active default-
-    // version link. Other version links are correct; normalize only the
-    // current item so desktop and mobile menus always point to this page.
+    // Rspress maps every version item to the current path even when the target
+    // version does not publish that page. Keep exact matches and fall back to
+    // the target version's localized homepage for version-exclusive content.
     const currentHref = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    const currentPage = findPageByRoutePath(
+      pages,
+      removeBase(window.location.pathname),
+    );
+    if (!currentPage) return;
+
+    const versions = new Set(site.multiVersion.versions || []);
     const candidates = document.querySelectorAll<HTMLAnchorElement>(
       [
-        ".rp-hover-group__item--active a[aria-label]",
-        ".rp-nav-screen-versions-group__item--active",
+        ".rp-hover-group__item a[aria-label]",
+        ".rp-nav-screen-versions-group__item",
       ].join(", "),
     );
 
     candidates.forEach((link) => {
       const label = link.getAttribute("aria-label") ?? link.textContent?.trim();
-      if (label !== currentVersion) return;
-      link.href = currentHref;
-      link.setAttribute("aria-current", "page");
+      if (!label || !versions.has(label)) return;
+
+      if (label === currentVersion) {
+        link.href = currentHref;
+        link.setAttribute("aria-current", "page");
+        return;
+      }
+
+      link.href = withBase(
+        resolveVersionRoutePath(pages, currentPage, label, {
+          defaultLang: site.lang || "",
+          defaultVersion: site.multiVersion.default || "",
+        }),
+      );
+      link.removeAttribute("aria-current");
     });
-  }, [currentVersion, location.pathname, location.search, location.hash]);
+  }, [
+    currentLang,
+    currentVersion,
+    location.pathname,
+    location.search,
+    location.hash,
+    pages,
+    site.lang,
+    site.multiVersion.default,
+    site.multiVersion.versions,
+  ]);
 
   return <>{children}</>;
 }

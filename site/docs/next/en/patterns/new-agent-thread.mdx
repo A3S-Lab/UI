@@ -1,0 +1,104 @@
+# New Agent Thread
+
+New Agent Thread keeps the first instruction and execution environment decision visible together. Use it before creating a thread when repository, branch, worktree, or permission choices materially change where the Agent operates.
+
+<Preview class="w-full max-w-4xl">
+  <form
+    class="grid w-full gap-5 rounded-xl border border-border bg-card p-5"
+    style="--agent-composer-border-color:transparent;--agent-composer-shadow:none"
+    aria-labelledby="new-thread-title"
+  >
+    <header>
+      <h2 id="new-thread-title" class="text-lg font-semibold">Start a new Agent thread</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Choose where the work runs, then describe the outcome.</p>
+    </header>
+    <div class="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <fieldset class="grid gap-2">
+        <legend class="mb-1 text-sm font-semibold">Environment</legend>
+        <label class="item" data-size="sm" data-variant="outline">
+          <input
+            type="radio"
+            name="new-thread-environment"
+            value="local"
+            checked
+          />
+          <section>
+            <h3>Local project</h3>
+            <p>Work directly in the current checkout.</p>
+          </section>
+          <aside>
+            <span class="status-badge" data-state="success">Ready</span>
+          </aside>
+        </label>
+        <label class="item" data-size="sm" data-variant="outline">
+          <input type="radio" name="new-thread-environment" value="worktree" />
+          <section>
+            <h3>New worktree</h3>
+            <p>Create an isolated branch beside the current checkout.</p>
+          </section>
+          <aside>
+            <span class="badge" data-variant="secondary">Isolated</span>
+          </aside>
+        </label>
+        <label class="item" data-size="sm" data-variant="outline">
+          <input
+            type="radio"
+            name="new-thread-environment"
+            value="cloud"
+            disabled
+          />
+          <section>
+            <h3>Cloud environment</h3>
+            <p>Unavailable for this project.</p>
+          </section>
+        </label>
+      </fieldset>
+      <div class="grid min-w-0 content-start gap-3">
+        <div class="field">
+          <label for="new-thread-project">Project</label>
+          <select id="new-thread-project" class="select w-full max-w-full" name="project">
+            <option>a3s-ui · C:\src\a3s\packages\ui</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="new-thread-permission">Permission profile</label>
+          <select id="new-thread-permission" class="select" name="permission">
+            <option>Workspace write</option>
+            <option>Read only</option>
+          </select>
+          <p>The Agent asks before leaving the project or using the network.</p>
+        </div>
+        <section class="agent-composer" aria-label="First instruction">
+          <textarea
+            name="prompt"
+            aria-label="First instruction"
+            placeholder="Describe the change, investigation, or review…"
+            defaultValue="Add cancellation coverage for the streaming execution path."
+          />
+          <footer>
+            <div data-composer-tools>
+              <button type="button" class="btn" data-size="sm" data-variant="ghost">Attach context</button>
+            </div>
+            <div data-composer-actions>
+              <button type="submit" class="btn" data-size="sm">Start thread</button>
+            </div>
+          </footer>
+        </section>
+      </div>
+    </div>
+  </form>
+</Preview>
+
+## Composition
+
+Use one native `<form>` with Field, Native Select, radio controls, Item rows, and an Agent Composer Section. The outer Form remains the only submit boundary.
+
+The application validates repository availability, creates a branch or worktree, resolves environment actions, and starts the thread. A3S UI owns none of those operations. The project path, status, and instruction shown in the preview are illustrative data.
+
+## Responsive behavior
+
+Keep environment choices before project details in DOM order. Collapse to one column on narrow screens and keep the primary action after the instruction. Long Windows, UNC, Unicode, and spaced paths must wrap or truncate inside the project control without causing document overflow.
+
+## Accessibility
+
+Group mutually exclusive environments in a Fieldset with a Legend. Disabled environments need visible reason text. If setup fails after submit, retain every selection and the first instruction, then focus an error summary associated with the failed field.

@@ -13,7 +13,10 @@ const componentRoutes = [
   "alert-dialog",
   "alert",
   "app-shell",
+  "agent-composer",
+  "agent-transcript",
   "agent-workbench",
+  "approval-request",
   "avatar",
   "badge",
   "brand-lockup",
@@ -30,6 +33,7 @@ const componentRoutes = [
   "drawer",
   "dropdown-menu",
   "empty",
+  "execution-item",
   "field",
   "input",
   "input-group",
@@ -76,7 +80,10 @@ const componentRootSelectors = {
   "alert-dialog": ".alert-dialog > div",
   alert: ".alert",
   "app-shell": ".app-shell",
+  "agent-composer": ".agent-composer",
+  "agent-transcript": ".agent-transcript",
   "agent-workbench": ".agent-workbench",
+  "approval-request": ".approval-request",
   avatar: ".avatar",
   badge: ".badge",
   "brand-lockup": ".brand-lockup",
@@ -93,6 +100,7 @@ const componentRootSelectors = {
   drawer: ".drawer > article",
   "dropdown-menu": ".dropdown-menu > .btn",
   empty: ".empty",
+  "execution-item": ".execution-item",
   field: ".field input[type='text']",
   input: ".input",
   "input-group": ".input-group",
@@ -101,7 +109,7 @@ const componentRootSelectors = {
   label: ".label",
   "log-viewer": ".log-viewer",
   "native-select": "select.select",
-  pagination: "nav[aria-label='pagination'] [aria-current='page']",
+  pagination: ".pagination [aria-current='page']",
   popover: ".popover > .btn",
   progress: ".progress",
   "property-list": ".property-list",
@@ -142,6 +150,7 @@ const initiallyHiddenRootRoutes = new Set<(typeof componentRoutes)[number]>([
 const controlRootRoutes = new Set<(typeof componentRoutes)[number]>([
   "button",
   "button-group",
+  "agent-composer",
   "code-editor",
   "combobox",
   "dropdown-menu",
@@ -472,9 +481,13 @@ test("all component routes expose stable geometry, state, and diagnostics", asyn
     await test.step(route, async () => {
       const diagnosticOffset = diagnostics.length;
       await openDocumentationPage(page, route);
-      const preview = page
-        .locator(`.a3s-preview[data-preview-component="${route}"]`)
-        .first();
+      const previews = page.locator(
+        `.a3s-preview[data-preview-component="${route}"]`,
+      );
+      const preview =
+        route === "code-editor"
+          ? previews.filter({ has: page.locator(".code-editor") }).first()
+          : previews.first();
       await expect(preview).toBeVisible();
 
       if (route === "switch") {
@@ -618,7 +631,7 @@ for (const state of interactiveStateCases) {
           opacity: Number.parseFloat(style.opacity),
           ownsCenterPoint: Boolean(
             topElement &&
-              (element === topElement || element.contains(topElement)),
+            (element === topElement || element.contains(topElement)),
           ),
           pointerEvents: style.pointerEvents,
           visibility: style.visibility,

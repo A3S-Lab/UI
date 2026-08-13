@@ -60,6 +60,14 @@ const requiredFiles = [
   'v0.1.0/en/components/tree.html',
   'components/code-editor.html',
   'en/components/code-editor.html',
+  'components/agent-composer.html',
+  'en/components/agent-composer.html',
+  'components/agent-transcript.html',
+  'en/components/agent-transcript.html',
+  'components/approval-request.html',
+  'en/components/approval-request.html',
+  'components/execution-item.html',
+  'en/components/execution-item.html',
   'v0.2.0/components/code-editor.html',
   'v0.2.0/en/components/code-editor.html',
   'v0.1.0/components/code-editor.html',
@@ -120,6 +128,11 @@ const requiredFiles = [
   'en/components/task-pane.html',
   'foundations/color.html',
   'patterns/resource-workbench.html',
+  'en/patterns/resource-workbench.html',
+  'patterns/codex-workbench.html',
+  'en/patterns/codex-workbench.html',
+  'patterns/new-agent-thread.html',
+  'en/patterns/new-agent-thread.html',
   'llms.txt',
   'llms-full.txt',
   'en/llms.txt',
@@ -145,10 +158,10 @@ const homepageExpectations = [
       '公开组件组合',
       'data-a3s-customizer',
       'data-mobile-expanded="false"',
-     'aria-live="polite"',
-     'aria-pressed="true"',
-      '<dt>60</dt>',
-     'v0.2.0',
+      'aria-live="polite"',
+      'aria-pressed="true"',
+      '<dt>64</dt>',
+      'v0.2.0',
       'v0.1.0',
     ],
   },
@@ -163,10 +176,10 @@ const homepageExpectations = [
       'npm install @a3s-lab/ui',
       'From one control to a complete workspace.',
       'PUBLIC COMPONENT COMPOSITION',
-     'data-a3s-customizer',
-     'aria-live="polite"',
-      '<dt>60</dt>',
-     'v0.2.0',
+      'data-a3s-customizer',
+      'aria-live="polite"',
+      '<dt>64</dt>',
+      'v0.2.0',
     ],
   },
   {
@@ -379,7 +392,10 @@ const nextTreeExpectations = [
   },
   {
     file: 'v0.2.0/en/components/tree.html',
-    markers: ['Not available in v0.2.0', 'not part of this published package contract'],
+    markers: [
+      'Not available in v0.2.0',
+      'not part of this published package contract',
+    ],
   },
   {
     file: 'v0.1.0/components/tree.html',
@@ -387,7 +403,10 @@ const nextTreeExpectations = [
   },
   {
     file: 'v0.1.0/en/components/tree.html',
-    markers: ['Not available in v0.1.0', 'not part of this published package contract'],
+    markers: [
+      'Not available in v0.1.0',
+      'not part of this published package contract',
+    ],
   },
 ];
 
@@ -443,135 +462,246 @@ const nextCodeEditorExpectations = [
   },
   {
     file: 'v0.1.0/en/components/code-editor.html',
-    markers: ['Not available in v0.1.0', 'not part of this published package contract'],
+    markers: [
+      'Not available in v0.1.0',
+      'not part of this published package contract',
+    ],
   },
 ];
 
 const nextExtractedComponentExpectations = [
   {
+    file: 'components/agent-composer.html',
+    markers: [
+      'lang="zh"',
+      'class="agent-composer"',
+      'aria-label="已附加上下文"',
+      'data-composer-queue',
+    ],
+  },
+  {
+    file: 'en/components/agent-composer.html',
+    markers: [
+      'lang="en"',
+      '>Agent Composer<',
+      'class="agent-composer"',
+      'aria-label="Attached context"',
+    ],
+  },
+  {
+    file: 'components/agent-transcript.html',
+    markers: [
+      'lang="zh"',
+      'class="agent-transcript"',
+      'data-role="user"',
+      'data-role="agent"',
+    ],
+  },
+  {
+    file: 'en/components/agent-transcript.html',
+    markers: [
+      'lang="en"',
+      '>Agent Transcript<',
+      'class="agent-transcript"',
+      'data-transcript-viewport',
+    ],
+  },
+  {
     file: 'components/agent-workbench.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"agent-workbench\"",
-      "data-agent-canvas",
-      "data-agent-activity",
+      'lang="zh"',
+      'class="agent-workbench"',
+      'data-agent-canvas',
+      'data-agent-activity',
     ],
   },
   {
     file: 'en/components/agent-workbench.html',
     markers: [
-      "lang=\"en\"",
-      ">Agent Workbench<",
-      "class=\"agent-workbench\"",
-      "data-agent-inspector",
+      'lang="en"',
+      '>Agent Workbench<',
+      'class="agent-workbench"',
+      'data-agent-inspector',
+    ],
+  },
+  {
+    file: 'components/approval-request.html',
+    markers: [
+      'lang="zh"',
+      'class="approval-request"',
+      'data-state="pending"',
+      'checked="" value="once"',
+    ],
+  },
+  {
+    file: 'en/components/approval-request.html',
+    markers: [
+      'lang="en"',
+      '>Approval Request<',
+      'class="approval-request"',
+      '>Permission scope<',
+    ],
+  },
+  {
+    file: 'components/execution-item.html',
+    markers: [
+      'lang="zh"',
+      'class="execution-item"',
+      'data-state="running"',
+      'data-execution-status',
+    ],
+  },
+  {
+    file: 'en/components/execution-item.html',
+    markers: [
+      'lang="en"',
+      '>Execution Item<',
+      'class="execution-item"',
+      'data-execution-disclosure',
     ],
   },
   {
     file: 'components/brand-lockup.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"brand-lockup\"",
-      "data-brand-mark",
-      "data-brand-name",
+      'lang="zh"',
+      'class="brand-lockup"',
+      'data-brand-mark',
+      'data-brand-name',
     ],
   },
   {
     file: 'en/components/brand-lockup.html',
     markers: [
-      "lang=\"en\"",
-      ">Brand Lockup<",
-      "class=\"brand-lockup\"",
-      "data-brand-identity",
+      'lang="en"',
+      '>Brand Lockup<',
+      'class="brand-lockup"',
+      'data-brand-identity',
     ],
   },
   {
     file: 'components/log-viewer.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"log-viewer\"",
-      "data-log-record",
-      "role=\"log\"",
+      'lang="zh"',
+      'class="log-viewer"',
+      'data-log-record',
+      'role="log"',
     ],
   },
   {
     file: 'en/components/log-viewer.html',
     markers: [
-      "lang=\"en\"",
-      ">Log Viewer<",
-      "class=\"log-viewer\"",
-      "data-log-gap",
+      'lang="en"',
+      '>Log Viewer<',
+      'class="log-viewer"',
+      'data-log-gap',
     ],
   },
   {
     file: 'components/property-list.html',
-    markers: [
-      "lang=\"zh\"",
-      "class=\"property-list\"",
-      "<dt>",
-      "<dd>",
-    ],
+    markers: ['lang="zh"', 'class="property-list"', '<dt>', '<dd>'],
   },
   {
     file: 'en/components/property-list.html',
     markers: [
-      "lang=\"en\"",
-      ">Property List<",
-      "class=\"property-list\"",
-      "<dt>Provider</dt>",
+      'lang="en"',
+      '>Property List<',
+      'class="property-list"',
+      '<dt>Provider</dt>',
     ],
   },
   {
     file: 'components/status-badge.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"status-badge\"",
-      "data-state=\"active\"",
-      "data-state=\"danger\"",
+      'lang="zh"',
+      'class="status-badge"',
+      'data-state="active"',
+      'data-state="danger"',
     ],
   },
   {
     file: 'en/components/status-badge.html',
     markers: [
-      "lang=\"en\"",
-      ">Status Badge<",
-      "class=\"status-badge\"",
-      "data-indicator",
+      'lang="en"',
+      '>Status Badge<',
+      'class="status-badge"',
+      'data-indicator',
     ],
   },
   {
     file: 'components/stepper.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"stepper\"",
-      "data-step-marker",
-      "aria-current=\"step\"",
+      'lang="zh"',
+      'class="stepper"',
+      'data-step-marker',
+      'aria-current="step"',
     ],
   },
   {
     file: 'en/components/stepper.html',
     markers: [
-      "lang=\"en\"",
-      ">Stepper<",
-      "class=\"stepper\"",
-      "data-state=\"active\"",
+      'lang="en"',
+      '>Stepper<',
+      'class="stepper"',
+      'data-state="active"',
     ],
   },
   {
     file: 'components/timeline.html',
     markers: [
-      "lang=\"zh\"",
-      "class=\"timeline\"",
-      "data-state=\"success\"",
-      "aria-current=\"step\"",
+      'lang="zh"',
+      'class="timeline"',
+      'data-state="success"',
+      'aria-current="step"',
     ],
   },
   {
     file: 'en/components/timeline.html',
     markers: [
-      "lang=\"en\"",
-      ">Timeline<",
-      "class=\"timeline\"",
-      "data-state=\"active\"",
+      'lang="en"',
+      '>Timeline<',
+      'class="timeline"',
+      'data-state="active"',
+    ],
+  },
+];
+
+const nextAgentPatternExpectations = [
+  {
+    file: 'patterns/codex-workbench.html',
+    markers: [
+      'lang="zh"',
+      'class="app-shell"',
+      'class="agent-transcript min-h-0 flex-1"',
+      'class="approval-request"',
+      'data-demo-shell-toggle',
+    ],
+  },
+  {
+    file: 'en/patterns/codex-workbench.html',
+    markers: [
+      'lang="en"',
+      '>Codex Workbench<',
+      'aria-label="Resize conversation and context"',
+      'aria-valuenow="70"',
+      'illustrative data',
+    ],
+  },
+  {
+    file: 'patterns/new-agent-thread.html',
+    markers: [
+      'lang="zh"',
+      'aria-labelledby="new-thread-title"',
+      'class="agent-composer"',
+      'name="new-thread-environment"',
+    ],
+  },
+  {
+    file: 'en/patterns/new-agent-thread.html',
+    markers: [
+      'lang="en"',
+      '>New Agent Thread<',
+      'aria-label="First instruction"',
+      'illustrative data',
     ],
   },
 ];
@@ -728,8 +858,7 @@ if (
   );
 }
 
-const runtimePreloadMarkup =
-  `<link rel="preload" as="script" href="${base}assets/a3s-ui.min.js">`;
+const runtimePreloadMarkup = `<link rel="preload" as="script" href="${base}assets/a3s-ui.min.js">`;
 if (!homepageHtml.includes(runtimePreloadMarkup)) {
   throw new Error(
     'The A3S runtime must be preloaded for the post-hydration documentation loader.',
@@ -766,6 +895,7 @@ for (const { file, markers } of [
   ...nextTreeExpectations,
   ...nextCodeEditorExpectations,
   ...nextExtractedComponentExpectations,
+  ...nextAgentPatternExpectations,
   ...nextExtractedComponentHistoricalExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');

@@ -1,0 +1,82 @@
+# Execution Item
+
+Execution Item is a native disclosure for one command, tool call, edit, search, browser action, or MCP invocation. It keeps the integration contract stable while applications supply domain-specific details.
+
+<Preview class="w-full max-w-3xl">
+  <div class="grid w-full gap-2">
+    <details class="execution-item" data-state="running" open>
+      <summary>
+        <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+        <span data-execution-identity>
+          <strong>Run focused tests</strong>
+          <small>npm test -- runtime.spec.ts</small>
+        </span>
+        <span
+          class="status-badge"
+          data-state="active"
+          data-indicator
+          data-execution-status
+        >Running</span>
+        <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+      </summary>
+      <section>
+        <pre>PASS tests/runtime.spec.ts Watching cancellation cleanup…</pre>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">Stop command</button>
+      </footer>
+    </details>
+    <details class="execution-item" data-state="waiting">
+      <summary>
+        <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 8v8l8 5 8-5V8l-8-5Z" /><path d="m4 8 8 5 8-5" /><path d="M12 13v8" /></svg></span>
+        <span data-execution-identity>
+          <strong>Open external documentation</strong>
+          <small>browser · learn.chatgpt.com</small>
+        </span>
+        <span class="status-badge" data-state="warning" data-execution-status>Waiting</span>
+        <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+      </summary>
+      <section>
+        <p>This action requires approval before the site can open.</p>
+      </section>
+    </details>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<details class="execution-item" data-state="running">
+  <summary>
+    <span data-execution-icon aria-hidden="true">...</span>
+    <span data-execution-identity
+      ><strong>Run tests</strong><small>npm test</small></span
+    >
+    <span data-execution-status>Running</span>
+    <span data-execution-disclosure aria-hidden="true">...</span>
+  </summary>
+  <section>...</section>
+  <footer>...</footer>
+</details>
+```
+
+### Parameters
+
+| API                         | Values                                                          | Purpose                                                    |
+| --------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
+| `class="execution-item"`    | Required on `<details>`                                         | Native disclosure root                                     |
+| `data-state`                | `queued`, `running`, `waiting`, `success`, `error`, `cancelled` | Provider-neutral execution state                           |
+| `data-execution-icon`       | Optional                                                        | Tool-kind icon, decorative when the title names the action |
+| `data-execution-identity`   | Required                                                        | Action title and compact target or command                 |
+| `data-execution-status`     | Recommended                                                     | Textual status, normally a Status Badge                    |
+| `data-execution-disclosure` | Optional                                                        | Directional disclosure icon                                |
+| Direct `<section>`          | Optional                                                        | Parameters, output, patch, evidence, or error details      |
+| Direct `<footer>`           | Optional                                                        | Stop, retry, inspect, or copy actions                      |
+
+## States and variants
+
+Map backend-specific states into the six public states and retain detailed wording in `data-execution-status`. Use `waiting` for approval or external input. Keep partial output visible after error or cancellation. Nested Execution Items are allowed only when the parent represents a real delegated group; avoid deep disclosure trees.
+
+## Accessibility
+
+Native `<details>` and `<summary>` provide disclosure semantics and keyboard behavior. The visible title must identify the action without relying on its icon. Do not put the Summary inside a button. Keep output in ordinary text or `<pre>` unless records are genuinely live; use Log Viewer for high-volume streams.

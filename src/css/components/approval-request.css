@@ -1,0 +1,85 @@
+/* Approval Request */
+@layer components {
+  .approval-request {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .approval-request > header {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .approval-request > header > :first-child {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .approval-request > header :is(h2, h3, p) {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .approval-request > :is(section, form) {
+    min-width: 0;
+  }
+
+  .approval-request > form {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .approval-request fieldset {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    gap: 0.5rem;
+  }
+
+  .approval-request fieldset > label {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.125rem 0.625rem;
+  }
+
+  .approval-request fieldset > label > input {
+    grid-row: 1 / span 2;
+  }
+
+  .approval-request fieldset > label > :is(strong, small) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .approval-request form > footer,
+  .approval-request > footer {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 30rem) {
+    .approval-request > header {
+      flex-direction: column;
+    }
+
+    .approval-request form > footer > .btn,
+    .approval-request > footer > .btn {
+      flex: 1 1 auto;
+    }
+  }
+}

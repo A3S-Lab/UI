@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { defineConfig, type UserConfig } from '@rspress/core';
+import { versionAwareLinksPlugin } from './plugins/version-aware-links';
 
 const base = process.env.DOCS_BASE ?? '/UI/';
 const siteOrigin = process.env.DOCS_ORIGIN ?? 'https://a3s-lab.github.io';
@@ -29,6 +30,7 @@ const config: UserConfig = {
     default: 'next',
     versions: ['next', 'v0.3.0', 'v0.2.0', 'v0.1.0'],
   },
+  plugins: [versionAwareLinksPlugin(__dirname)],
   locales: [
     {
       lang: 'zh',

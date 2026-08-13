@@ -747,7 +747,7 @@ export function HomeLayout() {
           </div>
           <dl className="ui-hero__facts">
             <div>
-              <dt>60</dt>
+              <dt>64</dt>
               <dd>{labels.componentGuides}</dd>
             </div>
             <div>

@@ -1,0 +1,98 @@
+# Agent Transcript
+
+Agent Transcript presents user, agent, and system Turns in chronological DOM order. It accepts streamed content without owning transport, Markdown rendering, history retention, or virtualization.
+
+<Preview class="w-full max-w-3xl">
+  <section class="agent-transcript" aria-label="Conversation">
+    <header>
+      <strong>Cancellation test</strong>
+      <span>Local environment</span>
+    </header>
+    <ol data-transcript-viewport tabindex="0">
+      <li data-role="user">
+        <article>
+          <header>
+            <strong>You</strong>
+            <time datetime="2026-08-13T08:40:00Z">08:40</time>
+          </header>
+          <div data-message-content>
+            <p>Add cancellation coverage for the streaming execution path.</p>
+          </div>
+        </article>
+      </li>
+      <li data-role="agent">
+        <article>
+          <header>
+            <strong>A3S Code</strong>
+            <span class="status-badge" data-state="active" data-indicator>Running</span>
+          </header>
+          <div data-message-content>
+            <p>I found the stream lifecycle in <code>src/runtime.ts</code>. I’ll inspect the existing tests before changing it.</p>
+          </div>
+          <details class="execution-item" data-state="success">
+            <summary>
+              <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+              <span data-execution-identity>
+                <strong>Search tests</strong>
+                <small>rg "cancel|abort" tests src</small>
+              </span>
+              <span
+                class="status-badge"
+                data-state="success"
+                data-execution-status
+              >Completed</span>
+              <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+            </summary>
+            <section>
+              <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
+            </section>
+          </details>
+        </article>
+      </li>
+      <li data-role="system">
+        <article>
+          <div data-message-content>
+            <p>Waiting for approval before running a command outside the current project.</p>
+          </div>
+        </article>
+      </li>
+    </ol>
+    <footer>
+      <span data-transcript-status aria-live="polite">Agent is working</span>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost">Jump to latest</button>
+    </footer>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="agent-transcript" aria-label="Conversation">
+  <ol data-transcript-viewport tabindex="0">
+    <li data-role="user"><article>...</article></li>
+    <li data-role="agent"><article>...</article></li>
+    <li data-role="system"><article>...</article></li>
+  </ol>
+</section>
+```
+
+### Parameters
+
+| API                                         | Values                      | Purpose                                                   |
+| ------------------------------------------- | --------------------------- | --------------------------------------------------------- |
+| `class="agent-transcript"`                  | Required                    | Named conversation region                                 |
+| Direct `<ol>` or `data-transcript-viewport` | Recommended                 | Ordered, bounded Turn viewport                            |
+| Child `data-role`                           | `user`, `agent`, `system`   | Stable presentation role, independent of provider names   |
+| Child `<article>`                           | Recommended                 | One message or Turn surface                               |
+| `data-message-content`                      | Recommended                 | Rich text, code, execution items, approvals, and evidence |
+| `data-transcript-status`                    | Optional                    | Coarse asynchronous status                                |
+| `--agent-transcript-gap`                    | CSS length, default `1rem`  | Gap between Turns                                         |
+| `--agent-message-max-width`                 | CSS length, default `48rem` | Readable message width                                    |
+
+## States and variants
+
+Loading, empty, interrupted, and failed histories should remain explicit content, using Empty or Alert when appropriate. During streaming, append or update the active Agent Turn without rebuilding earlier Turns. Window long histories in the host application while preserving the logical ordered-list position with `aria-posinset` and `aria-setsize` when known.
+
+## Accessibility
+
+Give the region an accessible name and preserve chronological DOM order. Make only an actually overflowing viewport focusable. Announce coarse state such as “Agent finished” or “Approval required”; do not place the token stream itself in a live region. New content must not steal focus or force the page to scroll when the reader has moved away from the latest Turn.

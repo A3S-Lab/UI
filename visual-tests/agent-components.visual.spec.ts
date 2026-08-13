@@ -76,6 +76,100 @@ test("Agent Workbench preserves region order and responsive geometry", async ({
   await expect(preview).toHaveScreenshot("agent-workbench.png");
 });
 
+test("Agent Composer keeps context, queue, and submission controls bounded", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "agent-composer");
+  const composer = preview.locator("form.agent-composer");
+
+  await expect(composer).toHaveAccessibleName("Message the coding agent");
+  await expect(
+    composer.getByRole("textbox", { name: "Instruction" }),
+  ).toBeVisible();
+  await expect(
+    composer
+      .getByRole("list", { name: "Attached context" })
+      .locator(":scope > li"),
+  ).toHaveCount(2);
+  await expect(
+    composer
+      .getByRole("list", { name: "Queued messages" })
+      .locator(":scope > li"),
+  ).toHaveCount(1);
+  await expect(
+    composer.getByRole("button", { name: "Queue message" }),
+  ).toBeVisible();
+
+  const overflow = await composer.evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test("Agent Transcript preserves chronological roles and bounded rich content", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "agent-transcript");
+  const transcript = preview.locator(".agent-transcript");
+  const turns = transcript.locator("[data-transcript-viewport] > li");
+
+  await expect(transcript).toHaveAccessibleName("Conversation");
+  await expect(turns).toHaveCount(3);
+  await expect(turns.nth(0)).toHaveAttribute("data-role", "user");
+  await expect(turns.nth(1)).toHaveAttribute("data-role", "agent");
+  await expect(turns.nth(2)).toHaveAttribute("data-role", "system");
+  await expect(transcript.locator(".execution-item")).toHaveCount(1);
+  await expect(
+    transcript.locator("[data-transcript-viewport]"),
+  ).toHaveAttribute("tabindex", "0");
+
+  const overflow = await transcript.evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test("Execution Item exposes native disclosure and textual execution state", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "execution-item");
+  const items = preview.locator("details.execution-item");
+  const running = items.first();
+
+  await expect(items).toHaveCount(2);
+  await expect(running).toHaveAttribute("open", "");
+  await expect(running.locator("summary")).toContainText("Run focused tests");
+  await expect(running.locator("[data-execution-status]")).toHaveText(
+    "Running",
+  );
+  await running.locator("summary").click();
+  await expect(running).not.toHaveAttribute("open", "");
+  await running.locator("summary").focus();
+  await expect(running.locator("summary")).toBeFocused();
+});
+
+test("Approval Request names the decision and groups permission scopes", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "approval-request");
+  const request = preview.locator(".approval-request");
+
+  await expect(request).toHaveAccessibleName(
+    "Allow a command outside the project?",
+  );
+  await expect(request).toHaveAttribute("data-state", "pending");
+  await expect(
+    request.getByRole("group", { name: "Permission scope" }),
+  ).toBeVisible();
+  await expect(request.getByRole("radio")).toHaveCount(2);
+  await expect(
+    request.getByRole("radio", { name: /Allow once/ }),
+  ).toBeChecked();
+  await expect(
+    request.getByRole("button", { name: "Allow command" }),
+  ).toBeVisible();
+});
+
 test("Brand Lockup preserves textual identity and compact proportions", async ({
   page,
 }) => {

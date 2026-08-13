@@ -1,0 +1,287 @@
+---
+pageType: doc-wide
+sidebar: false
+outline: false
+---
+
+# Codex Workbench
+
+Codex Workbench composes project and thread navigation, a chronological Agent conversation, queued input, execution evidence, approvals, and a contextual inspector. It is an A3S workbench pattern, not a Codex or ChatGPT visual clone.
+
+<Preview>
+  <div
+    class="app-shell"
+    data-navigation="collapsed"
+    style="--app-shell-height:48rem;--app-shell-min-height:48rem;--app-shell-navigation-size:14rem"
+  >
+    <aside data-app-navigation>
+      <div class="activity-bar" aria-label="Agent projects">
+        <header>
+          <span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span>
+          <span data-navigation-label>A3S Code</span>
+        </header>
+        <nav aria-label="Projects and threads">
+          <ul>
+            <li>
+              <a href="#a3s-ui" aria-current="page">
+                <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /></svg></span>
+                <span data-navigation-label>a3s-ui</span>
+              </a>
+            </li>
+            <li>
+              <a href="#runtime">
+                <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12" /><path d="M6 12h12" /><path d="M6 16h8" /><rect width="18" height="18" x="3" y="3" rx="2" /></svg></span>
+                <span data-navigation-label>Runtime cancellation</span>
+              </a>
+            </li>
+            <li>
+              <a href="#docs">
+                <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12" /><path d="M6 12h12" /><path d="M6 16h8" /><rect width="18" height="18" x="3" y="3" rx="2" /></svg></span>
+                <span data-navigation-label>Update component docs</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <footer>
+          <span class="size-2 rounded-full bg-[var(--a3s-green)]"></span>
+          <span data-navigation-label>Local · main</span>
+        </footer>
+      </div>
+    </aside>
+    <main data-app-main>
+      <header class="workspace-header">
+        <div data-workspace-leading>
+          <button
+            type="button"
+            class="btn"
+            data-size="icon-sm"
+            data-variant="ghost"
+            aria-label="Expand project navigation"
+            aria-expanded="false"
+            data-demo-shell-toggle
+          >
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m14 9 3 3-3 3" /></svg>
+          </button>
+        </div>
+        <div data-workspace-identity>
+          <h1>Runtime cancellation</h1>
+          <span>a3s-ui · local environment · main</span>
+        </div>
+        <div data-workspace-actions>
+          <span
+            class="status-badge"
+            data-state="active"
+            data-indicator
+            data-collapse="mobile"
+          >Running</span>
+          <button type="button" class="btn" data-size="sm" data-variant="outline">Review changes</button>
+        </div>
+      </header>
+      <div
+        data-app-content
+        class="split-pane max-md:grid-cols-1 max-md:grid-rows-[minmax(28rem,1fr)_auto] max-md:overflow-y-auto"
+        data-value="70"
+        style="--split-pane-min-height:0"
+      >
+        <section class="flex min-h-0 flex-col gap-3">
+          <section
+            class="agent-transcript min-h-0 flex-1"
+            aria-label="Conversation"
+          >
+            <ol data-transcript-viewport tabindex="0">
+              <li data-role="user">
+                <article>
+                  <header>
+                    <strong>You</strong>
+                    <time datetime="2026-08-13T08:40:00Z">08:40</time>
+                  </header>
+                  <div data-message-content>
+                    <p>Add cancellation coverage for the streaming execution path.</p>
+                  </div>
+                </article>
+              </li>
+              <li data-role="agent">
+                <article>
+                  <header>
+                    <strong>A3S Code</strong>
+                    <span
+                      class="status-badge"
+                      data-state="active"
+                      data-indicator
+                    >Running</span>
+                  </header>
+                  <div data-message-content>
+                    <p>I found the stream lifecycle. I’m checking existing tests and cleanup ownership before editing.</p>
+                  </div>
+                  <details class="execution-item" data-state="success">
+                    <summary>
+                      <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+                      <span data-execution-identity>
+                        <strong>Search cancellation coverage</strong>
+                        <small>rg "cancel|abort" tests src</small>
+                      </span>
+                      <span
+                        class="status-badge"
+                        data-state="success"
+                        data-execution-status
+                      >Completed</span>
+                      <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+                    </summary>
+                    <section>
+                      <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
+                    </section>
+                  </details>
+                  <section
+                    class="approval-request"
+                    data-state="pending"
+                    aria-labelledby="workbench-approval-title"
+                  >
+                    <header>
+                      <div>
+                        <h2 id="workbench-approval-title">Allow focused tests?</h2>
+                        <p>Runs the package test command in this project.</p>
+                      </div>
+                      <span class="status-badge" data-state="warning">Approval required</span>
+                    </header>
+                    <footer>
+                      <button type="button" class="btn" data-size="sm" data-variant="outline">Deny</button>
+                      <button type="button" class="btn" data-size="sm">Allow once</button>
+                    </footer>
+                  </section>
+                </article>
+              </li>
+            </ol>
+          </section>
+          <form
+            class="agent-composer"
+            aria-label="Message the coding agent"
+            data-state="streaming"
+          >
+            <textarea
+              name="prompt"
+              aria-label="Instruction"
+              placeholder="Follow up or queue the next instruction…"
+            ></textarea>
+            <footer>
+              <div data-composer-tools>
+                <button type="button" class="btn" data-size="sm" data-variant="ghost">Attach</button>
+                <span data-composer-status aria-live="polite">Agent is running</span>
+              </div>
+              <div data-composer-actions>
+                <button type="button" class="btn" data-size="sm" data-variant="outline">Stop</button>
+                <button type="submit" class="btn" data-size="sm">Queue</button>
+              </div>
+            </footer>
+          </form>
+        </section>
+        <hr
+          class="max-md:hidden"
+          role="separator"
+          aria-label="Resize conversation and context"
+          tabindex="0"
+          aria-orientation="vertical"
+          aria-valuemin="55"
+          aria-valuemax="82"
+          aria-valuenow="70"
+          aria-valuetext="70% conversation width"
+          data-min="55"
+          data-max="82"
+          data-step="5"
+          data-default-value="70"
+        />
+        <aside class="task-pane max-md:w-full max-md:min-w-0">
+          <header>
+            <h2>Thread context</h2>
+          </header>
+          <section>
+            <dl
+              class="property-list"
+              data-size="sm"
+              data-variant="plain"
+              data-layout="rows"
+            >
+              <div>
+                <dt>Environment</dt>
+                <dd>Local</dd>
+              </div>
+              <div>
+                <dt>Branch</dt>
+                <dd><code>main</code></dd>
+              </div>
+              <div>
+                <dt>Changes</dt>
+                <dd>2 files</dd>
+              </div>
+              <div>
+                <dt>Permission</dt>
+                <dd>Workspace</dd>
+              </div>
+            </dl>
+            <h3 class="mt-5 text-sm font-semibold">Context</h3>
+            <div class="item-group mt-2" role="list">
+              <article
+                class="item"
+                data-size="xs"
+                data-variant="outline"
+                role="listitem"
+              >
+                <section>
+                  <h4>AGENTS.md</h4>
+                  <p>Repository guidance</p>
+                </section>
+              </article>
+              <article
+                class="item"
+                data-size="xs"
+                data-variant="outline"
+                role="listitem"
+              >
+                <section>
+                  <h4>src/runtime.ts</h4>
+                  <p>Lines 42–96</p>
+                </section>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </div>
+      <footer class="status-bar" aria-label="Agent status">
+        <div data-status-info>
+          <span>main</span>
+          <span data-status-priority="low">2 changed files</span>
+          <span>Waiting for approval</span>
+        </div>
+        <div data-status-actions>
+          <span>Local</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+</Preview>
+
+## Composition
+
+```text
+App Shell
+├── Activity Bar: projects and threads
+└── Main workspace
+    ├── Workspace Header: thread and environment identity
+    ├── Split Pane
+    │   ├── Agent Transcript + Agent Composer
+    │   │   └── Execution Item / Approval Request
+    │   └── Task Pane: context and thread metadata
+    └── Status Bar
+```
+
+The pattern introduces no public root class or product state. Use the documented APIs of each component. Project selection, thread history, stream transport, Git state, approvals, and persistence stay in the host application. Names, paths, counts, and execution results in the preview are illustrative data.
+
+## Responsive behavior
+
+- Below 768 pixels, convert project navigation to the App Shell’s contained drawer.
+- Collapse the inspector into Task Pane overlay behavior or a Drawer before the conversation becomes too narrow.
+- Keep Agent Composer after the transcript in DOM order and anchored to the visible conversation region.
+- Hide low-priority metadata before primary execution state or actions.
+
+## Accessibility
+
+Name project navigation, conversation, split separator, inspector, and status landmarks. The current project or thread uses `aria-current`. When a blocking approval arrives, move focus only if the application cannot continue without it; otherwise announce it and preserve the reader’s position. Do not use the transcript as one continuous live region.
