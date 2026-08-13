@@ -165,6 +165,10 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
         }
 
+        expect "dropdown-positioned" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false][data-a3s-positioned=true][data-resolved-side]")
+        }
+
         screenshot "dropdown-evidence" {
             path = "overlays/dropdown.png"
         }
@@ -193,6 +197,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "overlay-ready" {
             visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        expect "popover-positioned" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false][data-a3s-positioned=true][data-resolved-side]")
         }
 
         screenshot "popover-evidence" {
@@ -225,6 +233,10 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
         }
 
+        expect "select-positioned" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false][data-a3s-positioned=true][data-resolved-side]")
+        }
+
         screenshot "select-evidence" {
             path = "overlays/select.png"
         }
@@ -253,6 +265,10 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "overlay-ready" {
             visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false]")
+        }
+
+        expect "combobox-positioned" {
+            visible = css(".a3s-preview[data-overlay-open] [data-popover][aria-hidden=false][data-a3s-positioned=true][data-resolved-side]")
         }
 
         screenshot "combobox-evidence" {

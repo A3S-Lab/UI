@@ -1,0 +1,46 @@
+/* Property List */
+@layer components {
+  .property-list {
+    --property-list-min: 10rem;
+    --property-list-gap: 0.5rem;
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--property-list-min)), 1fr)
+    );
+    gap: var(--property-list-gap);
+  }
+
+  .property-list[data-layout="rows"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .property-list > div {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: 0.25rem;
+  }
+
+  .property-list[data-layout="rows"] > div {
+    grid-template-columns: minmax(7rem, 0.45fr) minmax(0, 1fr);
+    align-items: baseline;
+  }
+
+  .property-list :is(dt, dd) {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .property-list dd {
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 30rem) {
+    .property-list[data-layout="rows"] > div {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

@@ -1,0 +1,49 @@
+# Activity Bar
+
+An Activity Bar is the compact, persistent navigation surface used by A3S workspaces. It supports labeled and icon-only modes without changing the semantic navigation.
+
+<Preview>
+<div class="h-[28rem] w-full max-w-64 overflow-hidden rounded-xl border border-border">
+  <aside class="activity-bar" aria-label="A3S workspace">
+    <header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S Console</span></header>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#activity-overview" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-navigation-label>Overview</span></a></li>
+        <li><a href="#activity-traces"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18V6m0 6h5l3-5 4 10 4-5"/></svg><span data-navigation-label>Traces</span></a></li>
+        <li><a href="#activity-topology"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="m9 11 6-4m-6 6 6 4"/></svg><span data-navigation-label>Topology</span></a></li>
+        <li><a href="#activity-settings"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg><span data-navigation-label>Settings</span></a></li>
+      </ul>
+    </nav>
+    <footer><span class="size-2 rounded-full bg-[var(--a3s-green)]"></span><span data-navigation-label>Gateway healthy</span></footer>
+  </aside>
+</div>
+</Preview>
+
+## Usage
+
+```html
+<aside class="activity-bar" aria-label="Product navigation">
+  <header>...</header>
+  <nav aria-label="Primary"><ul>...</ul></nav>
+  <footer>...</footer>
+</aside>
+```
+
+### HTML structure
+
+| Element or parameter | Required | Purpose |
+| --- | --- | --- |
+| `<aside class="activity-bar">` | Yes | Component root |
+| `<nav aria-label="…">` | Yes | Names the navigation landmark |
+| `<ul>` and `<li>` | Yes | Navigation collection |
+| `aria-current="page"` | Current item | Exposes and styles the active destination |
+| `data-navigation-label` | Optional | Label hidden in compact mode |
+| `data-labels="hidden"` | Optional | Forces icon-only presentation on the root |
+
+## States and variants
+
+Use `data-labels="hidden"` for a standalone icon rail. Inside an [App Shell](/components/app-shell), `data-navigation="collapsed"` hides labels automatically. Links support default, hover, focus-visible, and current states. Buttons additionally support `aria-pressed="true"` for in-place mode changes.
+
+## Accessibility
+
+Keep labels in the DOM when collapsed. Every icon-only link or button still needs an accessible name. Use `aria-current`, not color alone, for the current page.

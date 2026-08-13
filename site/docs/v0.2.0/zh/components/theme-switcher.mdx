@@ -1,0 +1,97 @@
+# 主题切换器
+
+<Preview>
+<button
+  type="button"
+  aria-label="Toggle dark mode"
+  data-tooltip="Toggle dark mode"
+  data-side="bottom"
+  onclick="window.a3sUI.theme.toggle()"
+  class="btn size-8" data-variant="outline" data-size="icon"
+>
+  <span class="hidden dark:block"><svg class="lucide lucide-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg></span>
+  <span class="block dark:hidden"><svg class="lucide lucide-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg></span>
+</button>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者只导入基本CSS、其组成的组件CSS文件和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/tooltip.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+Theme Switcher 由 Button 和 Tooltip 组件 CSS 组成。
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Include JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者仅复制或提供A3S UI运行时。
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+```
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Avoid the initial flash">
+
+在加载样式之前添加此内联脚本，以便在页面呈现之前应用存储模式。
+
+```html
+<script>
+  (() => {
+    try {
+      const stored = localStorage.getItem("themeMode");
+      if (stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+      }
+    } catch (_) {}
+  })();
+</script>
+```
+
+  </Step>
+  <Step title="Add your switcher HTML">
+
+```html
+<button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom" onclick="window.a3sUI.theme.toggle()" class="btn size-8" data-variant="outline" data-size="icon">
+  <span class="hidden dark:block"><svg class="lucide lucide-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg></span>
+  <span class="block dark:hidden"><svg class="lucide lucide-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg></span>
+</button>
+```
+
+  </Step>
+</Steps>
+
+### JavaScript API
+
+| 应用程序编程接口 | 类型 | 描述 |
+| --- | --- | --- |
+| `window.a3sUI.theme.get()` | 方法 | 返回 `"dark"` 或 `"light"`。 |
+| `window.a3sUI.theme.set(mode)` | 方法 | 将模式设置为 `"dark"` 或 `"light"` 并将其存储在 `localStorage.themeMode` 中。 |
+| `window.a3sUI.theme.toggle()` | 方法 | 在深色和浅色模式之间切换。 |

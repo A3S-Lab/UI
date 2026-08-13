@@ -1,0 +1,255 @@
+/* Code Editor */
+@layer components {
+  .code-editor {
+    --code-editor-line-height: 1.375rem;
+    --code-editor-gutter-width: 3rem;
+    --code-editor-min-height: 15rem;
+    --code-editor-tab-size: 2;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .code-editor > header,
+  .code-editor > footer {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .code-editor > header {
+    min-height: 2.375rem;
+    padding-inline: 0.75rem;
+  }
+
+  .code-editor > header > [data-code-editor-file],
+  .code-editor > header > [data-code-editor-actions],
+  .code-editor > footer > [data-code-editor-info],
+  .code-editor > footer > [data-code-editor-meta] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  .code-editor > header > [data-code-editor-file],
+  .code-editor > footer > [data-code-editor-info],
+  .code-editor > footer > [data-code-editor-meta] {
+    gap: 0.625rem;
+  }
+
+  .code-editor > header > [data-code-editor-actions] {
+    gap: 0.25rem;
+  }
+
+  .code-editor [data-code-editor-file] > :is(span, strong) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .code-editor [data-code-editor-file] > [data-code-editor-dirty-indicator] {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    flex: none;
+    border-radius: 999px;
+  }
+
+  .code-editor > section {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    min-height: var(--code-editor-min-height);
+    grid-template-columns: var(--code-editor-gutter-width) minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .code-editor > section > [data-code-editor-gutter] {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .code-editor > section > [data-code-editor-gutter] > span {
+    display: block;
+    min-height: var(--code-editor-line-height);
+    padding-inline: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: var(--code-editor-font-size, 0.75rem);
+    line-height: var(--code-editor-line-height);
+    text-align: end;
+  }
+
+  .code-editor > section > textarea,
+  .code-editor > section > [data-code-editor-viewport] {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: var(--code-editor-min-height);
+  }
+
+  .code-editor > section > textarea {
+    display: block;
+    width: 100%;
+    height: var(--code-editor-min-height);
+    max-height: min(70vh, 48rem);
+    resize: vertical;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+    font-family: var(--font-mono);
+    font-size: var(--code-editor-font-size, 0.75rem);
+    line-height: var(--code-editor-line-height);
+    tab-size: var(--code-editor-tab-size);
+    white-space: pre;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .code-editor > section > textarea:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .code-editor > section > textarea:read-only {
+    cursor: default;
+  }
+
+  .code-editor > section > textarea:disabled {
+    cursor: not-allowed;
+  }
+
+  .code-editor > section > [data-code-editor-viewport] {
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .code-editor[data-line-numbers="false"] > section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .code-editor[data-line-numbers="false"]
+    > section
+    > [data-code-editor-gutter] {
+    display: none;
+  }
+
+  .code-editor[data-wrap="true"] > section > textarea {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .code-editor[data-size="sm"] {
+    --code-editor-min-height: 5rem;
+  }
+
+  .code-editor[data-size="lg"] {
+    --code-editor-min-height: 24rem;
+  }
+
+  .code-editor[data-size="sm"] > section > textarea,
+  .code-editor[data-size="lg"] > section > textarea {
+    height: var(--code-editor-min-height);
+  }
+
+  .code-editor > footer {
+    min-height: 1.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  .code-editor > footer > [data-code-editor-info],
+  .code-editor > footer > [data-code-editor-meta] {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .code-editor > footer :is(output, span) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .code-editor > footer [data-code-editor-message] {
+    max-width: min(32rem, 42vw);
+  }
+
+  .code-editor[data-validation-state="invalid"] > section > textarea {
+    outline-color: var(--destructive);
+  }
+
+  .code-editor[data-dirty="true"] [data-code-editor-dirty-indicator] {
+    background: var(--warning, var(--a3s-orange, #db663b));
+  }
+
+  .code-editor[data-dirty="false"] [data-code-editor-dirty-indicator] {
+    background: var(--success, var(--a3s-green, #159469));
+  }
+
+  .code-editor[data-validation-state="valid"] [data-code-editor-message] {
+    color: var(--success, var(--a3s-green, #159469));
+  }
+
+  .code-editor[data-validation-state="invalid"] [data-code-editor-message] {
+    color: var(--destructive);
+  }
+
+  .code-editor[data-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 30rem) {
+    .code-editor {
+      --code-editor-gutter-width: 2.5rem;
+    }
+
+    .code-editor > header,
+    .code-editor > footer {
+      gap: 0.5rem;
+    }
+
+    .code-editor > header {
+      min-height: 2.75rem;
+      padding-inline: 0.625rem;
+    }
+
+    .code-editor > header > [data-code-editor-actions] {
+      min-width: 0;
+      overflow-x: auto;
+    }
+
+    .code-editor > footer {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      padding-block: 0.375rem;
+    }
+
+    .code-editor > footer > [data-code-editor-meta] {
+      margin-inline-start: auto;
+    }
+
+    .code-editor > footer [data-code-editor-message] {
+      max-width: 100%;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .code-editor > header > [data-code-editor-actions] .btn {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .code-editor > section > textarea {
+      scroll-behavior: auto;
+    }
+  }
+}

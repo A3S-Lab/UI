@@ -1,4 +1,8 @@
 .a3s-sidebar-demo {
+  --a3s-sidebar-demo-navigation-width: 11.5rem;
+  --a3s-sidebar-demo-content-inset: var(
+    --a3s-sidebar-demo-navigation-width
+  );
   position: relative;
   width: 100%;
   min-height: 22rem;
@@ -17,13 +21,18 @@
 
 .a3s-sidebar-demo > .sidebar[data-demo-contained] nav {
   position: absolute;
-  width: 11rem;
+  width: var(--a3s-sidebar-demo-navigation-width);
   background: var(--a3s-panel);
   pointer-events: auto;
 }
 
+.a3s-sidebar-demo
+  > .sidebar[data-demo-contained][aria-hidden="true"]
+  nav {
+  pointer-events: none;
+}
+
 .a3s-sidebar-demo > .sidebar[data-demo-contained] + main {
-  --a3s-sidebar-demo-width: 11rem;
   display: flex;
   width: 100%;
   min-height: 22rem;
@@ -35,7 +44,7 @@
 }
 
 .a3s-sidebar-demo > .sidebar[data-demo-contained][aria-hidden="true"] + main {
-  --a3s-sidebar-demo-width: 0rem;
+  --a3s-sidebar-demo-content-inset: 0rem;
 }
 
 .a3s-sidebar-demo > .sidebar[data-demo-contained] nav > header {
@@ -49,11 +58,11 @@
 
 .a3s-sidebar-demo > main > div {
   display: grid;
-  width: min(18rem, calc(100% - var(--a3s-sidebar-demo-width)));
+  width: min(18rem, calc(100% - var(--a3s-sidebar-demo-content-inset)));
   max-width: 18rem;
   justify-items: start;
   gap: 0.75rem;
-  transform: translateX(calc(var(--a3s-sidebar-demo-width) / 2));
+  transform: translateX(calc(var(--a3s-sidebar-demo-content-inset) / 2));
   transition: transform 150ms ease;
 }
 
@@ -74,17 +83,22 @@
 }
 
 @media (max-width: 640px) {
+  .a3s-sidebar-demo {
+    --a3s-sidebar-demo-navigation-width: min(15rem, calc(100% - 3rem));
+    --a3s-sidebar-demo-content-inset: 0rem;
+  }
+
   .a3s-sidebar-demo > .sidebar[data-demo-contained] nav {
-    width: 9rem;
+    width: var(--a3s-sidebar-demo-navigation-width);
   }
 
   .a3s-sidebar-demo > .sidebar[data-demo-contained] + main {
-    --a3s-sidebar-demo-width: 9rem;
     padding: 1rem;
   }
 
-  .a3s-sidebar-demo > .sidebar[data-demo-contained][aria-hidden="true"] + main {
-    --a3s-sidebar-demo-width: 0rem;
+  .a3s-sidebar-demo
+    > .sidebar[data-demo-contained][aria-hidden="false"] {
+    pointer-events: auto;
   }
 }
 

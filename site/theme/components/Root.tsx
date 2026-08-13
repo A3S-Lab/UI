@@ -1,14 +1,10 @@
 import { useContext, useEffect, type ReactNode } from "react";
-import { ThemeContext, useLocation, useVersion } from "@rspress/core/runtime";
-
-declare global {
-  interface Window {
-    a3sUI?: {
-      initAll: (options?: { force?: boolean }) => void;
-      start: () => void;
-    };
-  }
-}
+import {
+  ThemeContext,
+  useLocation,
+  useVersion,
+  withBase,
+} from "@rspress/core/runtime";
 
 type RootProps = {
   children: ReactNode;
@@ -20,9 +16,33 @@ export function Root({ children }: RootProps) {
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
-    window.a3sUI?.initAll();
-    window.a3sUI?.start();
-    document.documentElement.removeAttribute("data-a3s-defer-init");
+    const initializeRuntime = () => {
+      window.a3sUI?.start();
+      window.a3sUI?.initAll();
+      document.documentElement.removeAttribute("data-a3s-defer-init");
+    };
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      "script[data-a3s-ui-runtime]",
+    );
+
+    if (existingScript) {
+      if (window.a3sUI) initializeRuntime();
+      else
+        existingScript.addEventListener("load", initializeRuntime, {
+          once: true,
+        });
+      return () =>
+        existingScript.removeEventListener("load", initializeRuntime);
+    }
+
+    const script = document.createElement("script");
+    script.src = withBase("/assets/a3s-ui.min.js");
+    script.async = true;
+    script.dataset.a3sUiRuntime = "true";
+    script.addEventListener("load", initializeRuntime, { once: true });
+    document.head.append(script);
+
+    return () => script.removeEventListener("load", initializeRuntime);
   }, []);
 
   useEffect(() => {

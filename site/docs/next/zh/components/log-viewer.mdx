@@ -1,0 +1,108 @@
+# 日志查看器
+
+Log Viewer 是用于构建输出、Workload 日志和 Agent 执行流的有界、框架无关表面。传输、过滤、保留与重连由宿主应用负责。
+
+<Preview class="w-full">
+  <section
+    class="log-viewer"
+    aria-label="构建输出"
+    style="--log-viewer-min-height:11rem;--log-viewer-max-height:16rem"
+  >
+    <header>
+      <div>
+        <h2>构建输出</h2>
+        <p>BuildRun build_01JY7K · 有序记录</p>
+      </div>
+      <fieldset data-log-actions>
+        <legend class="sr-only">数据流过滤</legend>
+        <button type="button" class="btn" data-size="sm" aria-pressed="true">
+          全部
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" aria-pressed="false">
+          stdout
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" aria-pressed="false">
+          stderr
+        </button>
+      </fieldset>
+    </header>
+    <div data-log-meta>
+      <span>已连接</span>
+      <span>最近 500 条有序记录</span>
+    </div>
+    <div role="log" aria-live="polite" aria-label="有序构建输出" tabIndex={0}>
+      <div data-log-record data-stream="stdout">
+        <span data-log-sequence>#104</span>
+        <time dateTime="2026-08-12T09:41:02Z">09:41:02.118</time>
+        <span data-log-stream>stdout</span>
+        <pre>已解析不可变源版本。</pre>
+      </div>
+      <div data-log-record data-stream="stdout">
+        <span data-log-sequence>#105</span>
+        <time dateTime="2026-08-12T09:41:02Z">09:41:02.624</time>
+        <span data-log-stream>stdout</span>
+        <pre>正在构建 linux/amd64 Artifact。</pre>
+      </div>
+      <div data-log-gap>
+        <span>#106–108</span>
+        <strong>已压缩记录 · 3 条</strong>
+      </div>
+      <div data-log-record data-stream="stderr">
+        <span data-log-sequence>#109</span>
+        <time dateTime="2026-08-12T09:41:04Z">09:41:04.003</time>
+        <span data-log-stream>stderr</span>
+        <pre>正在重试 Registry 连接。</pre>
+      </div>
+    </div>
+  </section>
+</Preview>
+
+## 使用
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<section class="log-viewer" aria-label="执行日志">
+  <header>
+    <div>
+      <h2>执行日志</h2>
+      <p>有序语义输出</p>
+    </div>
+  </header>
+  <div data-log-meta><span>已连接</span><span>最近 500 条记录</span></div>
+  <div role="log" aria-live="polite" aria-label="有序执行输出" tabindex="0">
+    <div data-log-record data-stream="stdout">
+      <span data-log-sequence>#42</span
+      ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+      ><span data-log-stream>stdout</span>
+      <pre>Provider 已启动。</pre>
+    </div>
+  </div>
+</section>
+```
+
+### 参数
+
+| API                                                  | 值                            | 用途                        |
+| ---------------------------------------------------- | ----------------------------- | --------------------------- |
+| `class="log-viewer"`                                 | 必需                          | 根表面                      |
+| `data-log-actions`                                   | 标记                          | Header 中的过滤与数据流操作 |
+| `data-log-meta`                                      | 标记                          | 连接和保留元数据            |
+| `role="log"` 或 `data-log-viewport`                  | 原生角色或标记                | 有界滚动输出区域            |
+| `tabindex="0"`                                       | 原生属性                      | 让溢出视口可通过键盘滚动    |
+| `data-log-record`                                    | 标记                          | 一条有序记录                |
+| `data-stream`                                        | `stdout`、`stderr`、`unknown` | 数据流样式                  |
+| `data-log-sequence`、`data-log-stream`               | 标记                          | 记录元数据                  |
+| `data-log-gap`                                       | 标记                          | 明确的压缩或缺失记录提示    |
+| `--log-viewer-min-height`、`--log-viewer-max-height` | CSS 长度                      | Viewport 高度边界           |
+
+## 状态与变体
+
+用明确文本呈现不可用、连接中、空、实时、重试和失败状态。服务端报告压缩或缺失记录时使用 `data-log-gap`。根元素的直接子级 `<output role="alert">` 可以报告可恢复的数据流错误，同时保留已经收到的输出。
+
+## 可访问性
+
+为根元素和可聚焦的日志视口提供可访问名称。只有追加记录的区域才使用 `role="log"` 与 `aria-live="polite"`；不要在每条消息到达时重渲染整个日志。过滤器放入带标签的 `<fieldset>`，用 `aria-pressed` 暴露当前筛选项，保持 DOM 时间顺序，新记录到达时不要移动键盘焦点。

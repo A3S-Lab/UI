@@ -1,0 +1,91 @@
+# 属性列表
+
+Property List 使用原生描述列表语义展示紧凑的操作元数据，适用于版本、构建证据、运行时事实及其他名称—值投影。
+
+<Preview class="w-full">
+  <dl class="property-list" style="--property-list-min:9rem">
+    <div>
+      <dt>Provider</dt>
+      <dd>A3S Code</dd>
+    </div>
+    <div>
+      <dt>Release</dt>
+      <dd>v0.8.4</dd>
+    </div>
+    <div>
+      <dt>源摘要</dt>
+      <dd>
+        <code>sha256:8f3d…91ac</code>
+      </dd>
+    </div>
+    <div>
+      <dt>目标平台</dt>
+      <dd>linux/amd64</dd>
+    </div>
+  </dl>
+</Preview>
+
+## 使用
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+也可以只导入基础样式、Property List 结构和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/property-list.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+每组 `dt` 与 `dd` 使用一个直接子级 `<div>`。
+
+```html
+<dl class="property-list">
+  <div>
+    <dt>Provider</dt>
+    <dd>A3S Code</dd>
+  </div>
+  <div>
+    <dt>Release</dt>
+    <dd>v0.8.4</dd>
+  </div>
+</dl>
+```
+
+### 参数
+
+| API                     | 值             | 用途                             |
+| ----------------------- | -------------- | -------------------------------- |
+| `class="property-list"` | 必需           | 描述列表根元素                   |
+| `data-layout`           | `grid`、`rows` | 自动卡片网格或对齐的名称—值行    |
+| `data-size`             | `sm`           | 更紧凑的单元格间距               |
+| `data-variant`          | `plain`        | 移除单元格表面，同时保留布局     |
+| `--property-list-min`   | CSS 长度       | 网格单元格最小宽度，默认 `10rem` |
+| `--property-list-gap`   | CSS 长度       | 条目间距，默认 `0.5rem`          |
+
+## 状态与变体
+
+紧凑证据默认使用网格；当值需要沿单一轴线扫描时使用 `data-layout="rows"`。标识符和摘要放入 `<code>`，普通标签和值继续使用界面字体。
+
+```html
+<dl class="property-list" data-layout="rows" data-variant="plain">
+  <div>
+    <dt>Conversation</dt>
+    <dd><code>conv_01JY7K</code></dd>
+  </div>
+  <div>
+    <dt>Execution</dt>
+    <dd>运行中</dd>
+  </div>
+</dl>
+```
+
+## 可访问性
+
+保留原生 `<dl>`、`<dt>` 与 `<dd>` 关系，不要用纯视觉网格替代。值可以换行；除非其他位置提供完整值，否则不要截断权威标识符。

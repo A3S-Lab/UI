@@ -1,0 +1,193 @@
+# Agent Workbench
+
+Agent Workbench provides the responsive regions needed to author, configure, run, and inspect an Agent. It is provider-neutral: A3S Code may be the native provider, but execution state and provider APIs remain in the host application.
+
+<Preview class="w-full">
+  <section
+    class="agent-workbench"
+    aria-label="Coding Agent workbench"
+    style="--agent-workbench-gap:0.75rem"
+  >
+    <aside class="card" data-size="sm" data-agent-context>
+      <header>
+        <h2>Agent context</h2>
+        <p>Immutable release inputs</p>
+      </header>
+      <section>
+        <nav class="item-group" aria-label="Agent resources">
+          <a
+            class="item"
+            data-variant="muted"
+            data-size="xs"
+            href="#agent-instructions"
+          >
+            <section>
+              <h3>Instructions</h3>
+              <p>agent.acl</p>
+            </section>
+          </a>
+          <a
+            class="item"
+            data-variant="outline"
+            data-size="xs"
+            href="#agent-tools"
+          >
+            <section>
+              <h3>Tools</h3>
+              <p>4 MCP capabilities</p>
+            </section>
+          </a>
+          <a
+            class="item"
+            data-variant="outline"
+            data-size="xs"
+            href="#agent-skills"
+          >
+            <section>
+              <h3>Skills</h3>
+              <p>2 exact releases</p>
+            </section>
+          </a>
+        </nav>
+      </section>
+    </aside>
+    <article
+      class="code-editor"
+      data-size="sm"
+      data-line-numbers="false"
+      data-agent-canvas
+    >
+      <header>
+        <div data-code-editor-file>
+          <strong>agent.acl</strong>
+        </div>
+        <div data-code-editor-actions>
+          <span class="badge" data-variant="secondary">
+            ACL
+          </span>
+        </div>
+      </header>
+      <section>
+        <textarea
+          aria-label="Agent configuration"
+          spellCheck={false}
+          defaultValue={
+            'agent "coding" {\n  provider = "a3s-code"\n  skills = ["review", "test"]\n}'
+          }
+        />
+      </section>
+      <footer>
+        <div data-code-editor-info>
+          <span data-code-editor-state>Draft</span>
+        </div>
+        <div data-code-editor-meta>
+          <span>4 lines</span>
+        </div>
+      </footer>
+    </article>
+    <aside class="card" data-size="sm" data-agent-inspector>
+      <header>
+        <h2>Release binding</h2>
+        <p>Exact provider and Skill revisions</p>
+      </header>
+      <section class="grid gap-3">
+        <div class="field">
+          <label for="agent-provider-demo">Provider</label>
+          <select id="agent-provider-demo" class="select">
+            <option>A3S Code · v0.8.4</option>
+          </select>
+        </div>
+        <dl class="property-list" data-size="sm" data-variant="plain">
+          <div>
+            <dt>Execution contract</dt>
+            <dd>AgentExecutionProvider v1</dd>
+          </div>
+          <div>
+            <dt>Mounted Skills</dt>
+            <dd>2 read-only bundles</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-size="sm">
+          Build release
+        </button>
+      </footer>
+    </aside>
+    <section class="card" data-size="sm" data-agent-activity>
+      <header>
+        <h2>Execution activity</h2>
+        <p>Durable semantic events</p>
+        <span
+          class="status-badge card-action"
+          data-state="active"
+          data-indicator
+        >
+          Live
+        </span>
+      </header>
+      <section>
+        <ol class="timeline" aria-label="Execution activity">
+          <li data-marker="1" data-state="success">
+            <article class="item" data-variant="outline" data-size="xs">
+              <section>
+                <h3>Release resolved</h3>
+                <p>Exact artifact and Skill digests recorded.</p>
+              </section>
+            </article>
+          </li>
+          <li data-marker="2" data-state="active" aria-current="step">
+            <article class="item" data-variant="outline" data-size="xs">
+              <section>
+                <h3>Provider running</h3>
+                <p>A3S Code is emitting ordered events.</p>
+              </section>
+            </article>
+          </li>
+        </ol>
+      </section>
+    </section>
+  </section>
+</Preview>
+
+## Usage
+
+Import the complete A3S bundle, then compose the regions from the components your product needs.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<section class="agent-workbench" aria-label="Agent workbench">
+  <aside data-agent-context>…</aside>
+  <article data-agent-canvas>…</article>
+  <aside data-agent-inspector>…</aside>
+  <section data-agent-activity>…</section>
+</section>
+```
+
+### Parameters
+
+| API                                 | Required | Purpose                                                  |
+| ----------------------------------- | -------- | -------------------------------------------------------- |
+| `class="agent-workbench"`           | Yes      | Responsive workbench layout                              |
+| `data-agent-context`                | Yes      | Conversations, files, releases, or other durable context |
+| `data-agent-canvas`                 | Yes      | Primary authoring or execution surface                   |
+| `data-agent-inspector`              | No       | Skill, MCP, provider, policy, and evidence controls      |
+| `data-agent-activity`               | No       | Timeline, logs, traces, and execution evidence           |
+| `--agent-workbench-gap`             | No       | Gap between regions; defaults to `1rem`                  |
+| `--agent-workbench-context-basis`   | No       | Preferred context width; defaults to `13.5rem`           |
+| `--agent-workbench-canvas-basis`    | No       | Preferred canvas width; defaults to `19rem`              |
+| `--agent-workbench-inspector-basis` | No       | Preferred inspector width; defaults to `15rem`           |
+
+## States and variants
+
+Omit the inspector when the workflow has no secondary configuration. Regions wrap from three columns, to a context/canvas pair, to one column according to the workbench's own available inline width rather than the browser viewport.
+
+Use Card, Tree, Code Editor, Field, Property List, Status Badge, Timeline, and Log Viewer inside the regions. Keep loading, empty, unavailable, error, and read-only states explicit in those child components.
+
+## Accessibility
+
+Name the workbench and every navigation or live region. Keep one page-level heading outside or inside the primary canvas, use landmarks that match the content, and preserve a logical DOM order: context, primary work, inspector, then activity. Responsive reflow must not change keyboard order. The host application owns focus after navigation, streaming announcements, validation, and destructive-action confirmation.

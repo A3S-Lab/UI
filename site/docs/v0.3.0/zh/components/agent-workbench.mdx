@@ -1,0 +1,193 @@
+# Agent 工作台
+
+Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式区域。它与 Provider 无关：A3S Code 可以是原生 Provider，但执行状态和 Provider API 仍属于宿主应用。
+
+<Preview class="w-full">
+  <section
+    class="agent-workbench"
+    aria-label="Coding Agent 工作台"
+    style="--agent-workbench-gap:0.75rem"
+  >
+    <aside class="card" data-size="sm" data-agent-context>
+      <header>
+        <h2>Agent 上下文</h2>
+        <p>不可变 Release 输入</p>
+      </header>
+      <section>
+        <nav class="item-group" aria-label="Agent 资源">
+          <a
+            class="item"
+            data-variant="muted"
+            data-size="xs"
+            href="#agent-instructions"
+          >
+            <section>
+              <h3>指令</h3>
+              <p>agent.acl</p>
+            </section>
+          </a>
+          <a
+            class="item"
+            data-variant="outline"
+            data-size="xs"
+            href="#agent-tools"
+          >
+            <section>
+              <h3>工具</h3>
+              <p>4 项 MCP 能力</p>
+            </section>
+          </a>
+          <a
+            class="item"
+            data-variant="outline"
+            data-size="xs"
+            href="#agent-skills"
+          >
+            <section>
+              <h3>Skills</h3>
+              <p>2 个精确 Release</p>
+            </section>
+          </a>
+        </nav>
+      </section>
+    </aside>
+    <article
+      class="code-editor"
+      data-size="sm"
+      data-line-numbers="false"
+      data-agent-canvas
+    >
+      <header>
+        <div data-code-editor-file>
+          <strong>agent.acl</strong>
+        </div>
+        <div data-code-editor-actions>
+          <span class="badge" data-variant="secondary">
+            ACL
+          </span>
+        </div>
+      </header>
+      <section>
+        <textarea
+          aria-label="Agent 配置"
+          spellCheck={false}
+          defaultValue={
+            'agent "coding" {\n  provider = "a3s-code"\n  skills = ["review", "test"]\n}'
+          }
+        />
+      </section>
+      <footer>
+        <div data-code-editor-info>
+          <span data-code-editor-state>草稿</span>
+        </div>
+        <div data-code-editor-meta>
+          <span>4 行</span>
+        </div>
+      </footer>
+    </article>
+    <aside class="card" data-size="sm" data-agent-inspector>
+      <header>
+        <h2>Release 绑定</h2>
+        <p>精确的 Provider 与 Skill 版本</p>
+      </header>
+      <section class="grid gap-3">
+        <div class="field">
+          <label for="agent-provider-demo">Provider</label>
+          <select id="agent-provider-demo" class="select">
+            <option>A3S Code · v0.8.4</option>
+          </select>
+        </div>
+        <dl class="property-list" data-size="sm" data-variant="plain">
+          <div>
+            <dt>执行契约</dt>
+            <dd>AgentExecutionProvider v1</dd>
+          </div>
+          <div>
+            <dt>已挂载 Skills</dt>
+            <dd>2 个只读 Bundle</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button" class="btn" data-size="sm">
+          构建 Release
+        </button>
+      </footer>
+    </aside>
+    <section class="card" data-size="sm" data-agent-activity>
+      <header>
+        <h2>执行活动</h2>
+        <p>持久语义事件</p>
+        <span
+          class="status-badge card-action"
+          data-state="active"
+          data-indicator
+        >
+          实时
+        </span>
+      </header>
+      <section>
+        <ol class="timeline" aria-label="执行活动">
+          <li data-marker="1" data-state="success">
+            <article class="item" data-variant="outline" data-size="xs">
+              <section>
+                <h3>Release 已解析</h3>
+                <p>精确的 Artifact 与 Skill 摘要已记录。</p>
+              </section>
+            </article>
+          </li>
+          <li data-marker="2" data-state="active" aria-current="step">
+            <article class="item" data-variant="outline" data-size="xs">
+              <section>
+                <h3>Provider 运行中</h3>
+                <p>A3S Code 正在发送有序事件。</p>
+              </section>
+            </article>
+          </li>
+        </ol>
+      </section>
+    </section>
+  </section>
+</Preview>
+
+## 使用
+
+导入完整 A3S 样式包，再使用产品实际需要的组件组合各个区域。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<section class="agent-workbench" aria-label="Agent 工作台">
+  <aside data-agent-context>…</aside>
+  <article data-agent-canvas>…</article>
+  <aside data-agent-inspector>…</aside>
+  <section data-agent-activity>…</section>
+</section>
+```
+
+### 参数
+
+| API                                 | 必需 | 用途                                         |
+| ----------------------------------- | ---- | -------------------------------------------- |
+| `class="agent-workbench"`           | 是   | 响应式工作台布局                             |
+| `data-agent-context`                | 是   | Conversation、文件、Release 或其他持久上下文 |
+| `data-agent-canvas`                 | 是   | 主要编写或执行表面                           |
+| `data-agent-inspector`              | 否   | Skill、MCP、Provider、策略和证据控件         |
+| `data-agent-activity`               | 否   | Timeline、日志、Trace 与执行证据             |
+| `--agent-workbench-gap`             | 否   | 区域间距，默认 `1rem`                        |
+| `--agent-workbench-context-basis`   | 否   | 上下文区域首选宽度，默认 `13.5rem`           |
+| `--agent-workbench-canvas-basis`    | 否   | 主画布首选宽度，默认 `19rem`                 |
+| `--agent-workbench-inspector-basis` | 否   | 检查器首选宽度，默认 `15rem`                 |
+
+## 状态与变体
+
+工作流没有次要配置时可以省略 Inspector。区域会依据工作台自身可用的行内宽度，从三列换行成“上下文 + Canvas”双列，再变成单列，而不是依赖浏览器视口宽度。
+
+区域内部组合 Card、Tree、Code Editor、Field、Property List、状态徽章、Timeline 与 Log Viewer。加载、空、不可用、错误和只读状态应由这些子组件明确呈现。
+
+## 可访问性
+
+为工作台以及每个导航或实时区域提供名称。在主 Canvas 内部或外部保留一个页面级标题，使用与内容匹配的 Landmark，并保持合理 DOM 顺序：上下文、主要工作、Inspector、活动。响应式重排不得改变键盘顺序。导航后的焦点、流式播报、验证与破坏性操作确认由宿主应用负责。

@@ -1,0 +1,77 @@
+# Timeline
+
+Timeline orders durable operations, deployments, and semantic Agent events without prescribing application state management.
+
+<Preview class="w-full max-w-2xl">
+  <ol class="timeline" aria-label="Agent execution history">
+    <li data-marker="1" data-state="success">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>Execution accepted</h3>
+          <p>Conversation and exact Agent release were recorded.</p>
+        </section>
+        <aside>
+          <span class="badge" data-variant="secondary">
+            09:41:02
+          </span>
+        </aside>
+      </article>
+    </li>
+    <li data-marker="2" data-state="active" aria-current="step">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>Provider running</h3>
+          <p>A3S Code is emitting ordered semantic events.</p>
+        </section>
+        <aside>
+          <span class="badge">Live</span>
+        </aside>
+      </article>
+    </li>
+    <li data-marker="3">
+      <article class="item" data-variant="outline" data-size="sm">
+        <section>
+          <h3>Evidence pending</h3>
+          <p>Terminal evidence appears after the provider completes.</p>
+        </section>
+      </article>
+    </li>
+  </ol>
+</Preview>
+
+## Usage
+
+Import the full style bundle, or compose Timeline with the components used by each entry.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```html
+<ol class="timeline" aria-label="Execution history">
+  <li data-state="success">
+    <article class="item" data-variant="outline">…</article>
+  </li>
+  <li data-state="active" aria-current="step">
+    <article class="item" data-variant="outline">…</article>
+  </li>
+</ol>
+```
+
+### Parameters
+
+| API                   | Values                                   | Purpose                                                   |
+| --------------------- | ---------------------------------------- | --------------------------------------------------------- |
+| `class="timeline"`    | Required                                 | Ordered timeline root                                     |
+| `data-marker`         | Short text or number                     | Replaces the dot with a compact marker                    |
+| `data-state`          | `active`, `success`, `warning`, `danger` | Semantic marker color                                     |
+| `aria-current="step"` | Native ARIA                              | Identifies the current step and uses the active treatment |
+
+## States and variants
+
+Map domain statuses to the four semantic states in the host application. Do not expose every backend status as a styling API. Omit `data-state` for neutral or future events, and use text or a Badge so color is never the only status signal.
+
+## Accessibility
+
+Use `<ol>` when order matters and `<time datetime="…">` for timestamps. Keep the current state explicit with `aria-current="step"`. Timeline is CSS-only; focus, selection, and live announcements remain the host application's responsibility.

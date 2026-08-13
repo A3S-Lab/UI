@@ -4,6 +4,10 @@
   .input[type='range'] {
     @apply flex appearance-none items-center p-0 outline-none disabled:pointer-events-none disabled:opacity-50;
     --slider-value: 20%;
+    --slider-fill-offset: 0px;
+    --slider-fill-position: calc(
+      var(--slider-value) + var(--slider-fill-offset)
+    );
 
     &::-webkit-slider-thumb {
       @apply block shrink-0 appearance-none;
@@ -11,11 +15,19 @@
 
     &::-webkit-slider-runnable-track {
       @apply w-full appearance-none;
-      background: linear-gradient(to right, var(--primary) var(--slider-value), var(--muted) var(--slider-value));
+      background: linear-gradient(
+        to right,
+        var(--primary) var(--slider-fill-position),
+        var(--muted) var(--slider-fill-position)
+      );
     }
 
     &:dir(rtl)::-webkit-slider-runnable-track {
-      background: linear-gradient(to left, var(--primary) var(--slider-value), var(--muted) var(--slider-value));
+      background: linear-gradient(
+        to left,
+        var(--primary) var(--slider-fill-position),
+        var(--muted) var(--slider-fill-position)
+      );
     }
 
     &::-moz-range-thumb {
@@ -24,11 +36,19 @@
 
     &::-moz-range-track {
       @apply w-full appearance-none;
-      background: linear-gradient(to right, var(--primary) var(--slider-value), var(--muted) var(--slider-value));
+      background: linear-gradient(
+        to right,
+        var(--primary) var(--slider-fill-position),
+        var(--muted) var(--slider-fill-position)
+      );
     }
 
     &:dir(rtl)::-moz-range-track {
-      background: linear-gradient(to left, var(--primary) var(--slider-value), var(--muted) var(--slider-value));
+      background: linear-gradient(
+        to left,
+        var(--primary) var(--slider-fill-position),
+        var(--muted) var(--slider-fill-position)
+      );
     }
 
     &::-ms-thumb {

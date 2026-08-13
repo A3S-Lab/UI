@@ -1,0 +1,88 @@
+# 步骤条
+
+步骤条用于展示设置、收敛、发布等顺序明确且范围有限的流程。当时间和事件历史才是主要信息时，应使用时间线。
+
+<Preview class="w-full">
+  <ol class="stepper" aria-label="部署收敛" tabIndex={0} style="--stepper-min:8rem">
+    <li data-state="success">
+      <span data-step-marker aria-hidden="true">
+        1
+      </span>
+      <section>
+        <h3>期望状态</h3>
+        <p>已提交</p>
+      </section>
+    </li>
+    <li data-state="success">
+      <span data-step-marker aria-hidden="true">
+        2
+      </span>
+      <section>
+        <h3>Runtime 应用</h3>
+        <p>已完成</p>
+      </section>
+    </li>
+    <li data-state="active" aria-current="step">
+      <span data-step-marker aria-hidden="true">
+        3
+      </span>
+      <section>
+        <h3>健康证明</h3>
+        <p>正在验证</p>
+      </section>
+    </li>
+    <li>
+      <span data-step-marker aria-hidden="true">
+        4
+      </span>
+      <section>
+        <h3>边缘路由</h3>
+        <p>等待中</p>
+      </section>
+    </li>
+  </ol>
+</Preview>
+
+## 用法
+
+使用原生有序列表，并为每个阶段保留文字标签。
+
+```html
+<ol class="stepper" aria-label="发布进度" tabindex="0">
+  <li data-state="success">
+    <span data-step-marker aria-hidden="true">1</span>
+    <section>
+      <h3>构建</h3>
+      <p>已完成</p>
+    </section>
+  </li>
+  <li data-state="active" aria-current="step">
+    <span data-step-marker aria-hidden="true">2</span>
+    <section>
+      <h3>发布</h3>
+      <p>进行中</p>
+    </section>
+  </li>
+</ol>
+```
+
+### 参数
+
+| API                     | 取值                                     | 用途                   |
+| ----------------------- | ---------------------------------------- | ---------------------- |
+| `class="stepper"`       | 必填                                     | 有序流程根元素         |
+| `data-step-marker`      | 必填                                     | 数字、短代码或图标标记 |
+| `data-state`            | `active`、`success`、`warning`、`danger` | 语义化阶段状态         |
+| `aria-current`          | `step`                                   | 标识当前阶段           |
+| `tabindex`              | `0`                                      | 让溢出的横向序列可通过键盘滚动 |
+| `data-orientation`      | `vertical`                               | 垂直排列阶段与连接线   |
+| `--stepper-min`         | CSS 长度                                 | 水平阶段的最小宽度     |
+| `--stepper-marker-size` | CSS 长度                                 | 标记直径               |
+
+## 状态与变体
+
+默认水平布局在序列超出容器时可以横向滚动。狭窄窗格或阶段说明较长时使用 `data-orientation="vertical"`。等待中的中性阶段不设置 `data-state`；警告和危险状态只用于真实流程条件。
+
+## 可访问性
+
+为有序列表提供名称，并用文字表达每个阶段的名称和状态。只给一个当前阶段设置 `aria-current="step"`。横向序列可能溢出时添加 `tabindex="0"`，让键盘用户可以滚动；A3S 样式会提供清晰的焦点环。列表本身已经表达顺序，因此装饰性的数字或图标标记可以对辅助技术隐藏。不要只依赖连接线或标记颜色传达状态。

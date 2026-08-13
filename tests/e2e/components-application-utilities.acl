@@ -2,47 +2,108 @@ suite "a3s-ui-application-and-utilities" {
     version = 1
 
     scenario "app-shell" {
-        name = "App Shell preview collapses product navigation"
+        name = "App Shell preview supports desktop collapse and a contained compact drawer"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
+        viewport "compact" { width = 768 height = 900 }
+        expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
+        navigate "reopen-compact" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
+        wait "compact-loaded" { load = "networkidle" }
+        wait "compact-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
+        click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
+        expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
+        expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
+        press "close-compact-navigation" { key = "Escape" }
+        expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-demo-shell-toggle]:focus") }
+        screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
+    }
+
+    scenario "agent-workbench" {
+        name = "Agent Workbench keeps authoring, binding, and execution evidence in one responsive flow"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/agent-workbench.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "context-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-context]") }
+        expect "canvas-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] article[data-agent-canvas]") }
+        expect "inspector-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector]") }
+        expect "activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
+        focus "focus-build-release" { target = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button") }
+        expect "build-release-focused" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
+        screenshot "agent-workbench-phone" { path = "components/agent-workbench-phone.png" }
+    }
+
+    scenario "brand-lockup" {
+        name = "Brand Lockup preserves textual identity and compact header geometry"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/brand-lockup.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "linked-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup[data-brand-name], .a3s-preview[data-preview-component=brand-lockup] a.brand-lockup [data-brand-name]") }
+        expect "compact-identity-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup[data-size=sm] [data-brand-identity]") }
+        focus "focus-home-link" { target = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup") }
+        expect "home-link-focused" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup") }
+        screenshot "brand-lockup-phone" { path = "components/brand-lockup-phone.png" }
     }
 
     scenario "workspace-header" {
-        name = "Workspace Header preview exposes identity and actions"
+        name = "Workspace Header preview preserves identity and primary actions on phones"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/workspace-header.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity]") }
         expect "actions-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-title-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity] > h1") }
+        expect "phone-primary-action-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
+        screenshot "workspace-header-phone" { path = "components/workspace-header-phone.png" }
     }
 
     scenario "toolbar" {
-        name = "Toolbar preview toggles pressed formatting state"
+        name = "Toolbar preview toggles formatting and keeps compact commands reachable"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-last-command" { target = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child") }
+        expect "last-command-focused" { visible = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child:focus") }
+        screenshot "toolbar-phone" { path = "components/toolbar-phone.png" }
     }
 
     scenario "ribbon" {
-        name = "Ribbon preview switches command groups"
+        name = "Ribbon preview switches command groups with roving keyboard focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/ribbon.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "compact" { width = 768 height = 900 }
         click "activate-insert" { target = css("#ribbon-insert-tab") }
         expect "insert-active" { visible = css("#ribbon-insert-tab[aria-selected=true]") }
         expect "insert-panel-visible" { visible = css("#ribbon-insert:not([hidden])") }
+        focus "focus-insert" { target = css("#ribbon-insert-tab") }
+        press "move-to-review" { key = "ArrowRight" }
+        expect "review-active" { visible = css("#ribbon-review-tab[aria-selected=true]:focus") }
+        expect "review-panel-visible" { visible = css("#ribbon-review:not([hidden])") }
+        screenshot "ribbon-compact" { path = "components/ribbon-compact.png" }
     }
 
     scenario "settings-layout" {
@@ -51,6 +112,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/settings-layout.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav") }
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout > main") }
     }
@@ -61,6 +123,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/resource-card.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "document-resource-visible" { visible = css(".a3s-preview[data-preview-component=resource-card] .resource-card[data-kind=document]") }
     }
 
@@ -70,30 +133,46 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/split-pane.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-separator" { target = css(".a3s-preview[data-preview-component=split-pane] [role=separator]") }
         press "resize-right" { key = "ArrowRight" }
         expect "value-updated" { visible = css(".a3s-preview[data-preview-component=split-pane] .split-pane[data-value='47'] [role=separator][aria-valuenow='47']") }
     }
 
     scenario "task-pane" {
-        name = "Task Pane preview exposes inspector fields"
+        name = "Task Pane preview keeps inspector controls usable as an overlay"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-pane.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "task-pane-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane") }
         expect "task-pane-field-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] .task-pane .field") }
+        select "choose-letter" {
+            target = css("#task-pane-paper")
+            values = ["letter"]
+        }
+        expect "letter-selected" { visible = css("#task-pane-paper:has(option[value=letter]:checked)") }
+        viewport "compact-overlay" { width = 768 height = 900 }
+        expect "responsive-overlay-visible" { visible = css(".a3s-preview[data-preview-component=task-pane] aside.task-pane[data-responsive=overlay]") }
+        screenshot "task-pane-compact" { path = "components/task-pane-compact.png" }
     }
 
     scenario "status-bar" {
-        name = "Status Bar preview exposes information and actions"
+        name = "Status Bar preview preserves primary actions on narrow screens"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/status-bar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "status-info-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-info]") }
         expect "status-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] .status-bar [data-status-actions]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-zoom" { target = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]") }
+        press "increase-zoom" { key = "ArrowRight" }
+        expect "zoom-remains-focused" { visible = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]:focus") }
+        expect "phone-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] [data-status-actions]") }
+        screenshot "status-bar-phone" { path = "components/status-bar-phone.png" }
     }
 
     scenario "scroll-area" {
@@ -102,7 +181,7 @@ suite "a3s-ui-application-and-utilities" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/scroll-area.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wheel "scroll-content" {
             target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar")
             delta_y = 240

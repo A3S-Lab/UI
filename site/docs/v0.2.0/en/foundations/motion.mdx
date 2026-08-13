@@ -1,0 +1,26 @@
+# Motion
+
+Motion explains state change without delaying work. A3S UI uses short transitions for hover, focus, navigation, and resizable layouts; it does not use decorative page animation.
+
+<Preview>
+<div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
+  <button type="button" class="btn">Hover or focus</button>
+  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>Resource motion</strong><small>160ms lift and boundary</small></section></a>
+</div>
+</Preview>
+
+## Durations
+
+| Duration | Use |
+| ---: | --- |
+| `120ms` | Color and focus feedback |
+| `160–180ms` | Card lift, navigation reveal, small layout changes |
+| `200–240ms` | Dialog or drawer entry |
+
+## Easing
+
+Use standard `ease` for reversible interface feedback. Use `ease-out` for surfaces entering the viewport and `ease-in` when they leave. Continuous pointer interactions such as Split Pane resizing update without transition.
+
+## Reduced motion
+
+Components with nonessential transform or layout transitions disable them under `prefers-reduced-motion: reduce`. Products must not rely on animation alone to explain state.

@@ -1,0 +1,100 @@
+# 定制
+
+A3S UI 定制分为三层：选择样式包、覆盖语义标记以及在标记不足的情况下添加范围狭窄的产品 CSS。
+
+## 风格包
+
+A3S 样式是默认样式，包含 Office 派生的产品语言。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+```
+
+兼容旧版视觉语言的 Vega、Nova、Maia、Lyra、Mira、Luma、Sera 和 Rhea 风格仍然可用。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/maia";
+```
+
+每个完整的样式包都是独立的。恰好加载一个；不要导入完整样式，然后用另一个完整样式撤消它。
+
+## 主题令牌
+
+库导入后覆盖语义标记。在 `:root` 下定义亮值，在 `.dark` 下定义暗值。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+
+:root {
+  --primary: #16233f;
+  --ring: #315fdb;
+  --a3s-blue: #315fdb;
+}
+
+.dark {
+  --primary: #f2f5ff;
+  --ring: #86a7ff;
+  --a3s-blue: #86a7ff;
+}
+```
+
+完整语义调色板参阅[颜色](/foundations/color)；圆角与阴影令牌参阅[形状与阴影](/foundations/shape-and-elevation)。
+
+## 布局参数
+
+连续的组件决策使用 CSS 自定义属性。将它们设置在组件实例或产品范围上。
+
+```css
+.gateway-console {
+  --app-shell-navigation-size: 17rem;
+  --settings-navigation-size: 15rem;
+  --resource-grid-min: 14rem;
+}
+```
+
+有限变体保留在 `data-*` 属性中，因此标记可以传达所选合约。
+
+```html
+<div class="app-shell" data-navigation="collapsed">...</div>
+<article class="resource-card" data-kind="agent">...</article>
+```
+
+## 字体
+
+A3S风格使用平台UI堆栈，包括CJK系统字体。如果产品提供自己的字体文件，则覆盖 `--font-sans` 或 `--font-mono`。
+
+```css
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+```
+
+## 图标
+
+A3S UI 不捆绑图标包。内联 SVG 是纯 HTML 和服务器渲染模板的最便携选项。产品框架可以使用 Lucide 或其他现有的图标系统。
+
+## 定制风格包
+
+对于完整的视觉系统，导入无样式基础并维护独立的样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base";
+@import "./styles/acme.css";
+```
+
+从 `src/css/styles/` 中的源文件开始，然后更改新文件中的视觉规则和标记。组件 CSS 拥有结构和可访问性钩子；样式包拥有颜色、半径、阴影、排版、间距、变体和状态视觉效果。
+
+## 兼容性
+
+迁移旧版 A3S UI 类别名的应用程序可能会在 A3S UI 之后加载兼容层。新代码应该使用记录的根类、语义子类和属性。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s";
+@import "@a3s-lab/ui/compat";
+```

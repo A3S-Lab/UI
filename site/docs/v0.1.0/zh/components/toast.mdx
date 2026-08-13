@@ -1,6 +1,6 @@
 # Toast
 
-<div id="toaster" class="toaster"></div>
+<div id="toaster" class="toaster rp-not-doc"></div>
 
 <Preview class="max-w-md">
 <button
@@ -9,6 +9,7 @@
     category: 'success',
     title: 'Success',
     description: 'A success toast called from the front-end.',
+    duration: -1,
     cancel: {
       label: 'Dismiss'
     }
@@ -158,11 +159,11 @@
   <dt><code>category</code> <span class="badge" data-variant="secondary">Optional</span></dt>
   <dd>Category of the toast, either <code>success</code>, <code>info</code>, <code>warning</code>, or <code>error</code>.</dd>
   <dt><code>title</code></dt>
-  <dd>The title of the toast.</dd>
+  <dd>Toast 标题。内容以纯文本渲染，不会解析为 HTML。</dd>
   <dt><code>description</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>The description of the toast.</dd>
+  <dd>Toast 描述。内容以纯文本渲染，不会解析为 HTML。</dd>
   <dt><code>action</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Primary action. Supports <code>label</code> with either <code>href</code> or <code>onclick</code>.</dd>
+  <dd>主要操作。支持 <code>label</code>、可选的 <code>href</code>，以及可选的 <code>onClick(event)</code> 回调。</dd>
   <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Secondary action. Supports <code>label</code> and optional <code>onclick</code>.</dd>
+  <dd>次要操作。支持 <code>label</code> 和可选的 <code>onClick(event)</code> 回调。</dd>
 </dl>

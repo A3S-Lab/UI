@@ -1,17 +1,20 @@
 @layer components {
   .workspace-header {
     display: flex;
+    height: var(--workspace-header-height, 3.125rem);
     min-width: 0;
-    min-height: var(--workspace-header-height, 3.5rem);
+    min-height: var(--workspace-header-height, 3.125rem);
     flex: none;
     align-items: center;
     gap: 0.75rem;
+    overflow: hidden;
   }
 
   .workspace-header > [data-workspace-leading],
   .workspace-header > [data-workspace-actions] {
     display: flex;
     min-width: 0;
+    flex: none;
     align-items: center;
     gap: 0.5rem;
   }
@@ -20,10 +23,13 @@
     display: grid;
     min-width: 0;
     flex: 1;
+    align-content: center;
     gap: 0.125rem;
   }
 
-  .workspace-header > [data-workspace-identity] > :is(h1, p, span, input) {
+  .workspace-header
+    > [data-workspace-identity]
+    > :is(h1, p, span, strong, input, [data-workspace-title]) {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -35,6 +41,10 @@
   }
 
   @media (max-width: 40rem) {
+    .workspace-header {
+      gap: 0.5rem;
+    }
+
     .workspace-header [data-collapse='mobile'] {
       display: none;
     }

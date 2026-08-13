@@ -1,0 +1,78 @@
+/* Stepper */
+@layer components {
+  .stepper {
+    --stepper-marker-size: 1.75rem;
+    --stepper-min: 8.5rem;
+    display: flex;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style: none;
+    overscroll-behavior-inline: contain;
+  }
+
+  .stepper > li {
+    position: relative;
+    display: grid;
+    min-width: min(100%, var(--stepper-min));
+    flex: 1 0 var(--stepper-min);
+    grid-template-columns: var(--stepper-marker-size) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .stepper > li:not(:last-child)::after {
+    position: absolute;
+    z-index: 0;
+    inset-block-start: calc(var(--stepper-marker-size) / 2);
+    inset-inline-start: calc(var(--stepper-marker-size) + 0.25rem);
+    inset-inline-end: calc(var(--stepper-marker-size) / -2);
+    border-block-start: 1px solid;
+    content: "";
+  }
+
+  .stepper [data-step-marker] {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: var(--stepper-marker-size);
+    height: var(--stepper-marker-size);
+    flex: none;
+    place-items: center;
+    border-radius: 999px;
+  }
+
+  .stepper > li > section {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-width: 0;
+  }
+
+  .stepper > li > section > :is(h2, h3, h4, p, small) {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .stepper[data-orientation="vertical"] {
+    overflow: visible;
+    flex-direction: column;
+  }
+
+  .stepper[data-orientation="vertical"] > li {
+    width: 100%;
+    min-width: 0;
+    flex: none;
+  }
+
+  .stepper[data-orientation="vertical"] > li:not(:last-child)::after {
+    inset-block-start: calc(var(--stepper-marker-size) + 0.25rem);
+    inset-block-end: calc(var(--stepper-marker-size) / -2);
+    inset-inline-start: calc(var(--stepper-marker-size) / 2);
+    inset-inline-end: auto;
+    border-block-start: 0;
+    border-inline-start: 1px solid;
+  }
+}

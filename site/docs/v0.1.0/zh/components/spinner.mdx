@@ -35,9 +35,9 @@ Spinner 是纯 HTML 加上 Tailwind 工具类，没有专用的 CSS 组件文件
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your spinner HTML">
+  <Step title="添加加载指示器 HTML">
 
-旋转器是纯HTML，使用`loader-circle` Lucide图标和`animate-spin` Tailwind工具类。添加`role="status"`和`aria-label="加载中"`以实现可访问性。
+加载指示器使用纯 HTML、`loader-circle` Lucide 图标和 `animate-spin` Tailwind 工具类。添加 `role="status"` 和 `aria-label="加载中"` 以提供无障碍状态说明。
 
 ```html
 <svg aria-label="Loading" role="status" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
@@ -50,7 +50,7 @@ Spinner 是纯 HTML 加上 Tailwind 工具类，没有专用的 CSS 组件文件
 
 ### 尺寸
 
-使用 `size-*` 工具类类更改微调器的大小。
+使用 `size-*` 工具类调整加载指示器的大小。
 
 <Preview>
 <div class="flex items-center gap-6"><svg aria-label="Loading" role="status" class="size-3 animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg><svg aria-label="Loading" role="status" class="size-4 animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg><svg aria-label="Loading" role="status" class="size-6 animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg><svg aria-label="Loading" role="status" class="size-8 animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg></div>
@@ -58,7 +58,7 @@ Spinner 是纯 HTML 加上 Tailwind 工具类，没有专用的 CSS 组件文件
 
 ### 按钮
 
-向按钮添加微调器以指示加载状态。将旋转器放置在标签之前或之后；按钮间距是自动处理的。
+在按钮中添加加载指示器来表达加载状态。它可以放在标签之前或之后，按钮会自动处理间距。
 
 <Preview>
 <div class="flex flex-col items-center gap-4">
@@ -76,7 +76,7 @@ Spinner 是纯 HTML 加上 Tailwind 工具类，没有专用的 CSS 组件文件
 
 ### 徽章
 
-将微调器添加到徽章以指示加载状态。将旋转器放置在标签之前或之后；徽章间距是自动处理的。
+在徽章中添加加载指示器来表达加载状态。它可以放在标签之前或之后，徽章会自动处理间距。
 
 <Preview>
 <div class="flex items-center gap-4">
@@ -127,7 +127,7 @@ Spinner 是纯 HTML 加上 Tailwind 工具类，没有专用的 CSS 组件文件
 
 ## RTL
 
-微调器布局遵循文档方向。当周围间距取决于方向时，请使用逻辑工具类。
+加载指示器的布局遵循文档方向。周围间距与方向有关时，请使用逻辑属性工具类。
 
 <Preview class="w-full max-w-xs">
 <article class="item bg-muted/50 border-transparent" dir="rtl">

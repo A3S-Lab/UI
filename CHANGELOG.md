@@ -4,10 +4,50 @@
 
 ### Added
 
-- Added route-level geometry and state contracts for all 51 public component guides, including real component-root checks and browser warning and error regression coverage.
+- Added route-level geometry, state, and browser diagnostic regression coverage for every public component guide.
+
+### Fixed
+
+- Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
+
+## [0.3.0] - 2026-08-12
+
+### Added
+
+- Published `@a3s-lab/ui@0.3.0` to the public npm registry and created the `v0.3.0` GitHub release.
+- Added Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts extracted from A3S Web's Agent execution, build, evidence, status, and event-stream surfaces, with responsive CSS and bilingual documentation.
+- Added Brand Lockup and Stepper contracts extracted from A3S Web's shared identity and bounded process-path surfaces, with responsive CSS, bilingual documentation, and browser regression coverage.
+- Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
+- Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
+- Added a bilingual, interactive Monaco workbench example with multi-file models, A3S ACL language services, TypeScript and JSON diagnostics, command and bottom panels, responsive layout, and synchronized themes.
+
+### Fixed
+
+- Preserved localized JSON error positions when newer browser engines omit numeric offsets from `JSON.parse` error messages.
+- Made horizontally overflowing Stepper and bounded Log Viewer regions keyboard-scrollable with visible focus treatment, exposed log filter state with `aria-pressed`, corrected the 60-component homepage count, and restored catalog links for both utility components.
+- Unified Radio selection and focus visuals, made joined Button Group inputs share one focus boundary, and replaced machine-translated Chinese component terminology with standard UI language.
+
+## [0.2.1] - 2026-08-08
+
+### Added
+
+- Published `@a3s-lab/ui@0.2.1` to the public npm registry and created the `v0.2.1` GitHub release.
+
+### Fixed
+
+- Kept Input Group as the single focus and validation boundary when direct input, textarea, or select children retain their standalone control classes.
+
+## [0.2.0] - 2026-08-07
+
+### Added
+
+- Published `@a3s-lab/ui@0.2.0` to the public npm registry with validated exports and tarball contents.
 
 ### Changed
 
+- Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
+- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.
 - Preserved compact desktop controls while providing 44-pixel form, button, tab, and sidebar targets for coarse pointers and intentional reduced-motion feedback.
@@ -16,7 +56,11 @@
 
 ### Fixed
 
-- Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
+- Restored the Native Select chevron through Office hover, dark, and RTL states; aligned the Radio Group preview with Office field spacing and typography; and kept preselected MDX form controls interactive.
+- Corrected Card interior spacing, Toast layout and lifecycle behavior, and Switch thumb travel across desktop, touch, and RTL states.
+- Corrected RTL tab arrow order, kept long breadcrumbs and tablists inside their own scroll boundaries, and synchronized Sidebar focus, dismissal, and independent desktop/mobile state across its breakpoint.
+- Kept dropdown menus, popovers, selects, and combobox lists inside the visual viewport with shared collision flipping, logical RTL alignment, constrained available height, and live scroll/resize repositioning.
+- Contained the compact App Shell drawer inside its shell, removed its closed state from pointer and keyboard interaction, restored focus on Escape, and prevented mobile documentation typography from leaking into component previews.
 - Added localized open and close states, focus entry and return, and explicit panel ownership to the mobile primary navigation.
 - Removed closed mobile documentation navigation and outlines from the accessibility tree, added focus entry and return behavior, and supported Escape dismissal.
 - Made the mobile documentation search control keyboard accessible with a localized label and a 44-pixel target.

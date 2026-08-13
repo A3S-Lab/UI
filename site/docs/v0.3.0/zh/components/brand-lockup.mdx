@@ -1,0 +1,70 @@
+# 品牌标识组
+
+品牌标识组将产品标记、名称和可选说明稳定地组合在应用标题栏、认证界面与产品导航中。
+
+<Preview class="w-full">
+  <div class="flex w-full flex-wrap items-center justify-between gap-4 rounded-xl border bg-card p-4">
+    <a
+      class="brand-lockup"
+      href="#brand-lockup-product"
+      aria-label="A3S OS 首页"
+    >
+      <span data-brand-mark aria-hidden="true">
+        A3
+      </span>
+      <span data-brand-name>A3S OS</span>
+    </a>
+    <div class="brand-lockup" data-size="sm">
+      <span data-brand-mark aria-hidden="true">
+        A3
+      </span>
+      <span data-brand-identity>
+        <strong data-brand-name>A3S Web</strong>
+        <small data-brand-description>控制平面</small>
+      </span>
+    </div>
+  </div>
+</Preview>
+
+## 用法
+
+可导入完整 A3S 样式包，也可以按需导入品牌标识组入口。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/brand-lockup.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+标识组用于返回首页时使用链接；仅用于标识当前产品时使用普通容器。
+
+```html
+<a class="brand-lockup" href="/" aria-label="A3S OS 首页">
+  <span data-brand-mark aria-hidden="true">A3</span>
+  <span data-brand-identity>
+    <strong data-brand-name>A3S OS</strong>
+    <small data-brand-description>Agent Factory</small>
+  </span>
+</a>
+```
+
+### 参数
+
+| API                      | 取值     | 用途                             |
+| ------------------------ | -------- | -------------------------------- |
+| `class="brand-lockup"`   | 必填     | 标识组根元素                     |
+| `data-brand-mark`        | 必填     | 固定的图形、字母组合或 Logo 区域 |
+| `data-brand-identity`    | 可选     | 组合名称和说明                   |
+| `data-brand-name`        | 必填     | 可见的产品或组织名称             |
+| `data-brand-description` | 可选     | 紧凑的产品上下文                 |
+| `data-size`              | `sm`     | 更紧凑的标题栏样式               |
+| `--brand-lockup-accent`  | CSS 颜色 | 覆盖标记强调色                   |
+
+## 状态与变体
+
+不需要说明时，名称可以直接放在标记旁边。密集的工作区标题栏使用 `data-size="sm"`。仅使用获准的品牌令牌覆盖 `--brand-lockup-accent`，不要用业务状态颜色装饰产品身份。
+
+## 可访问性
+
+产品名称必须保留为可见文本。装饰性的字母标记和 Logo 使用 `aria-hidden="true"`；当整个标识组是链接时，为链接提供能说明目标位置的可访问名称。不要让标记和名称在可访问性树中重复朗读同一产品名。

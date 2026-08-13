@@ -27,7 +27,7 @@ const config: UserConfig = {
   },
   multiVersion: {
     default: 'next',
-    versions: ['next', 'v0.1.0'],
+    versions: ['next', 'v0.3.0', 'v0.2.0', 'v0.1.0'],
   },
   locales: [
     {
@@ -50,8 +50,10 @@ const config: UserConfig = {
       path.join(__dirname, 'theme/mdx/A3SAssetImage.tsx'),
       path.join(__dirname, 'theme/mdx/Callout.tsx'),
       path.join(__dirname, 'theme/mdx/ChartDemo.tsx'),
+      path.join(__dirname, 'theme/mdx/MonacoWorkbenchDemo.tsx'),
       path.join(__dirname, 'theme/mdx/CodeGroup.tsx'),
       path.join(__dirname, 'theme/mdx/Preview.tsx'),
+      path.join(__dirname, 'theme/mdx/SliderDemo.tsx'),
       path.join(__dirname, 'theme/mdx/Step.tsx'),
       path.join(__dirname, 'theme/mdx/Steps.tsx'),
     ],
@@ -71,7 +73,14 @@ const config: UserConfig = {
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-cascade.css` }],
     ['link', { rel: 'stylesheet', href: `${base}assets/a3s-ui.css` }],
-    `<script src="${base}assets/a3s-ui.min.js" defer></script>`,
+    [
+      'link',
+      {
+        rel: 'preload',
+        as: 'script',
+        href: `${base}assets/a3s-ui.min.js`,
+      },
+    ],
     (route) => [
       'link',
       {

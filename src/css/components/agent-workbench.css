@@ -1,0 +1,41 @@
+/* Agent Workbench */
+@layer components {
+  .agent-workbench {
+    --agent-workbench-gap: 1rem;
+    --agent-workbench-context-basis: 13.5rem;
+    --agent-workbench-canvas-basis: 19rem;
+    --agent-workbench-inspector-basis: 15rem;
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: var(--agent-workbench-gap);
+  }
+
+  .agent-workbench > [data-agent-context] {
+    flex: 1 1 var(--agent-workbench-context-basis);
+  }
+
+  .agent-workbench > [data-agent-canvas] {
+    flex: 1.35 1 var(--agent-workbench-canvas-basis);
+  }
+
+  .agent-workbench > [data-agent-inspector] {
+    flex: 1 1 var(--agent-workbench-inspector-basis);
+  }
+
+  .agent-workbench > [data-agent-activity] {
+    flex: 1 0 100%;
+  }
+
+  .agent-workbench
+    > :is(
+      [data-agent-context],
+      [data-agent-canvas],
+      [data-agent-inspector],
+      [data-agent-activity]
+    ) {
+    min-width: 0;
+    min-height: 0;
+  }
+}

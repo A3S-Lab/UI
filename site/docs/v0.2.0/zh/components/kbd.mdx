@@ -1,0 +1,110 @@
+# Kbd
+
+<Preview>
+<div class="flex flex-col items-center gap-4">
+  <span class="inline-flex items-center gap-1">
+    <kbd class="kbd">⌘</kbd>
+    <kbd class="kbd">⇧</kbd>
+    <kbd class="kbd">⌥</kbd>
+    <kbd class="kbd">⌃</kbd>
+  </span>
+  <span class="inline-flex items-center gap-1">
+    <kbd class="kbd">Ctrl</kbd>
+    <span>+</span>
+    <kbd class="kbd">B</kbd>
+  </span>
+</div>
+</Preview>
+
+## 用途
+
+<Steps>
+  <Step title="Include CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基本 CSS、Kbd 组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/button-group.css";
+@import "@a3s-lab/ui/components/input-group.css";
+@import "@a3s-lab/ui/components/kbd.css";
+@import "@a3s-lab/ui/components/tooltip.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+Kbd 示例由按钮、按钮组、输入组和工具提示样式组成。
+
+使用CDN或批量程序导入？请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="Add your kbd HTML">
+
+Use `<kbd class="kbd">` for a key label. Use an inline wrapper with utilities when grouping multiple keys.
+
+```html
+<kbd class="kbd">⌘K</kbd>
+```
+
+  </Step>
+</Steps>
+
+键盘标签与方向无关。当位置很重要时，周围的空间应该使用逻辑工具类。
+
+## 示例
+
+### 组
+
+<Preview>
+<p class="text-muted-foreground text-sm">Use <span class="inline-flex items-center gap-1"><kbd class="kbd">Ctrl</kbd><span>+</span><kbd class="kbd">B</kbd></span> <span class="inline-flex items-center gap-1"><kbd class="kbd">Ctrl</kbd><span>+</span><kbd class="kbd">K</kbd></span> to open the command palette</p>
+</Preview>
+
+### 按钮
+
+<Preview>
+<button class="btn" data-variant="outline">
+  Accept
+  <kbd class="kbd translate-x-0.5" data-icon="inline-end">⏎</kbd>
+</button>
+</Preview>
+
+### 输入组
+
+<Preview class="w-full max-w-xs">
+<div class="input-group">
+  <input type="search" aria-label="搜索" placeholder="Search..." />
+  <span data-align="start" aria-hidden="true"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></span>
+  <span class="inline-flex items-center gap-1" data-align="end">
+    <kbd class="kbd">⌘</kbd>
+    <kbd class="kbd">K</kbd>
+  </span>
+</div>
+</Preview>
+
+## RTL
+
+键盘标签与方向无关。当位置很重要时，周围的空间应该使用逻辑工具类。
+
+<Preview>
+<div class="flex flex-col items-center gap-4" dir="rtl">
+  <span class="inline-flex items-center gap-1">
+    <kbd class="kbd">⌘</kbd>
+    <kbd class="kbd">⇧</kbd>
+    <kbd class="kbd">⌥</kbd>
+    <kbd class="kbd">⌃</kbd>
+  </span>
+  <span class="inline-flex items-center gap-1">
+    <kbd class="kbd">Ctrl</kbd>
+    <span>+</span>
+    <kbd class="kbd">B</kbd>
+  </span>
+</div>
+</Preview>

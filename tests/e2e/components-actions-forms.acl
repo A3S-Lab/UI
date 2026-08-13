@@ -7,16 +7,24 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "button-visible" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
     }
 
     scenario "button-group" {
-        name = "Button Group preview renders adjacent grouped actions"
+        name = "Button Group keeps mixed controls aligned and restores menu focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button-group.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "group-visible" { visible = css(".a3s-preview[data-preview-component=button-group] .btn + .btn") }
+        viewport "phone" { width = 390 height = 844 }
+        click "open-group-menu" { target = css("#dropdown-menu-609880-trigger") }
+        expect "group-menu-open" { visible = css("#dropdown-menu-609880-popover[aria-hidden=false]") }
+        screenshot "button-group-phone-open" { path = "components/button-group-phone-open.png" }
+        press "close-group-menu" { key = "Escape" }
+        expect "group-menu-focus-restored" { visible = css("#dropdown-menu-609880-trigger:focus") }
     }
 
     scenario "field" {
@@ -25,11 +33,15 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/field.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-card-number" {
             target = css(".a3s-preview[data-preview-component=field] input[type=text]")
             value = "4242 4242 4242 4242"
         }
+        focus "focus-budget-slider" { target = css("[data-slider-demo=field] input[type=range]") }
+        press "increase-budget" { key = "ArrowRight" }
+        expect "budget-updated" { text = "$810" }
+        screenshot "field-budget-updated" { path = "components/field-budget-updated.png" }
         expect "field-visible" { visible = css(".a3s-preview[data-preview-component=field] .fieldset") }
     }
 
@@ -39,7 +51,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-email" { target = placeholder("Email") value = "tester@example.test" }
         expect "input-visible" { visible = css(".a3s-preview[data-preview-component=input] input[type=email]") }
     }
@@ -50,9 +62,10 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "search" { target = placeholder("Search...") value = "agent runtime" }
         expect "group-visible" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group") }
+        screenshot "focused-group" { path = "components/input-group-focused.png" }
     }
 
     scenario "textarea" {
@@ -61,9 +74,35 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/textarea.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "enter-message" { target = placeholder("Type your message here") value = "A3S UI component review" }
         expect "textarea-visible" { visible = css(".a3s-preview[data-preview-component=textarea] textarea") }
+    }
+
+    scenario "code-editor" {
+        name = "Code Editor preview exercises Monaco workbench and native fallback states"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-editor.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "monaco-ready" { visible = css(".monaco-workbench[data-monaco-ready=true] .monaco-editor") }
+        click "open-command-palette" { target = css(".monaco-workbench [data-workbench-command-trigger]") }
+        expect "command-dialog-visible" { visible = css("[data-workbench-command-dialog][open]") }
+        fill "filter-panel-command" { target = css("[data-workbench-command-input]") value = "panel" }
+        click "toggle-panel-command" { target = css("[data-workbench-command=toggle-panel]") }
+        expect "panel-closed" { visible = css(".monaco-workbench[data-panel-open=false]") }
+        click "reopen-panel" { target = css(".monaco-workbench__statusbar button[aria-label='Toggle bottom panel']") }
+        expect "panel-reopened" { visible = css(".monaco-workbench[data-panel-open=true] [data-workbench-panel]") }
+        click "open-runtime-model" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
+        expect "runtime-model-active" { visible = css(".monaco-workbench[data-active-file='config/runtime.json']") }
+        screenshot "monaco-workbench" { path = "components/code-editor-monaco.png" }
+        wait "interactive-ready" { visible = css("#code-editor-demo[data-code-editor-initialized=true]") }
+        fill "edit-code" { target = css("#code-editor-demo textarea") value = "const value = 1;\nreturn value;" }
+        expect "dirty-status" { visible = css("#code-editor-demo[data-dirty=true]") }
+        expect "line-count" { text = "2 lines" }
+        fill "break-json" { target = css("#code-editor-json textarea") value = "{\"enabled\": }" }
+        expect "json-invalid" { visible = css("#code-editor-json[data-validation-state=invalid] textarea[aria-invalid=true]") }
     }
 
     scenario "native-select" {
@@ -72,12 +111,13 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/native-select.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         select "choose-banana" {
             target = css(".a3s-preview[data-preview-component=native-select] select")
             values = ["banana"]
         }
         expect "banana-selected" { visible = css(".a3s-preview[data-preview-component=native-select] select:has(option[value=banana]:checked)") }
+        screenshot "native-select-ltr" { path = "components/native-select-ltr.png" }
     }
 
     scenario "select" {
@@ -86,7 +126,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/select.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-list" { target = css("#select-demo-trigger") }
         wait "list-visible" { visible = css("#select-demo [data-popover][aria-hidden=false]") }
         click "choose-banana" { target = css("#select-demo [role=option][data-value=banana]") }
@@ -95,48 +135,80 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "checkbox" {
-        name = "Checkbox preview toggles a labeled option"
+        name = "Checkbox preview toggles unchecked and prechecked options"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "accept-terms" { target = label("Accept terms and conditions") }
         expect "checked" { visible = css("#terms-checkbox:checked") }
+        click "clear-prechecked-option" { target = css("#terms-checkbox-2") }
+        expect "prechecked-option-cleared" { visible = css("#terms-checkbox-2:not(:checked)") }
     }
 
     scenario "radio-group" {
-        name = "Radio Group preview changes the selected density"
+        name = "Radio Group preview changes density in both directions"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/radio-group.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        check "choose-comfortable" { target = label("Comfortable") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        check "choose-default" { target = css("#r1") }
+        expect "default-selected" { visible = css("#r1:checked") }
+        expect "comfortable-cleared" { visible = css("#r2:not(:checked)") }
+        check "choose-comfortable" { target = css("#r2") }
         expect "comfortable-selected" { visible = css("#r2:checked") }
+        focus "focus-comfortable" { target = css("#r2") }
+        screenshot "radio-selected-focused" { path = "components/radio-selected-focused.png" }
+    }
+
+    scenario "radio-group-zh" {
+        name = "Chinese Field preview uses component terminology and keeps Radio interactive"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/field.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "monthly-selected" { visible = css("#plan-monthly:checked") }
+        check "choose-yearly" { target = label("按年（$99.99/年）") }
+        expect "yearly-selected" { visible = css("#plan-yearly:checked") }
+        expect "monthly-cleared" { visible = css("#plan-monthly:not(:checked)") }
+        focus "focus-yearly" { target = css("#plan-yearly") }
+        screenshot "field-radio-zh-phone" { path = "components/field-radio-zh-phone.png" }
     }
 
     scenario "switch" {
-        name = "Switch preview toggles airplane mode"
+        name = "Switch thumb moves in both directions on a phone viewport"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         check "enable-airplane-mode" { target = label("Airplane Mode") }
         expect "switch-checked" { visible = css("#airplane-mode:checked") }
+        screenshot "switch-checked-phone" { path = "components/switch-checked-phone.png" }
+        click "disable-airplane-mode" { target = label("Airplane Mode") }
+        expect "switch-unchecked" { visible = css("#airplane-mode:not(:checked)") }
+        screenshot "switch-unchecked-phone" { path = "components/switch-unchecked-phone.png" }
     }
 
     scenario "slider" {
-        name = "Slider preview supports keyboard adjustment"
+        name = "Slider thumb reaches both keyboard endpoints"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         focus "focus-range" { target = css(".a3s-preview[data-preview-component=slider] input[type=range]") }
-        press "increase" { key = "ArrowRight" }
+        press "move-to-start" { key = "Home" }
+        screenshot "slider-start-phone" { path = "components/slider-start-phone.png" }
+        press "move-to-end" { key = "End" }
         expect "slider-focused" { visible = css(".a3s-preview[data-preview-component=slider] input[type=range]:focus") }
+        screenshot "slider-end-phone" { path = "components/slider-end-phone.png" }
     }
 
     scenario "label" {
@@ -145,7 +217,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/label.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         check "accept-terms" { target = label("Accept terms and conditions") }
         expect "wrapped-control-checked" { visible = css(".a3s-preview[data-preview-component=label] input:checked") }
     }
@@ -156,7 +228,7 @@ suite "a3s-ui-actions-and-forms" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/combobox.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-frameworks" { target = css("#framework-combobox > input[role=combobox]") }
         wait "options-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
         fill "filter-frameworks" { target = css("#framework-combobox > input[role=combobox]") value = "Astro" }

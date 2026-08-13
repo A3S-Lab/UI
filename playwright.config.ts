@@ -1,7 +1,8 @@
 import { defineConfig } from "@playwright/test";
 
 const externalBaseUrl = process.env.A3S_UI_VISUAL_BASE_URL;
-const baseURL = externalBaseUrl ?? "http://127.0.0.1:4176/UI/";
+const localPort = process.env.A3S_UI_VISUAL_PORT ?? "4176";
+const baseURL = externalBaseUrl ?? `http://127.0.0.1:${localPort}/UI/`;
 const chromiumExecutablePath = process.env.A3S_UI_VISUAL_CHROMIUM_EXECUTABLE;
 const chromiumLaunchArgs =
   chromiumExecutablePath && process.platform === "win32"
@@ -60,8 +61,7 @@ export default defineConfig({
   webServer: externalBaseUrl
     ? undefined
     : {
-        command:
-          "npm --prefix site run build && npm --prefix site run preview -- --host 127.0.0.1 --port 4176",
+        command: `npm --prefix site run build && npm --prefix site run preview -- --host 127.0.0.1 --port ${localPort}`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         url: baseURL,

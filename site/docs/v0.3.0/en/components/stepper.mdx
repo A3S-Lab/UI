@@ -1,0 +1,93 @@
+# Stepper
+
+Stepper presents a bounded sequence of stages for setup, convergence, release, or another process with a known order. Use Timeline instead when timestamps and event history are the primary information.
+
+<Preview class="w-full">
+  <ol
+    class="stepper"
+    aria-label="Deployment convergence"
+    tabIndex={0}
+    style="--stepper-min:8rem"
+  >
+    <li data-state="success">
+      <span data-step-marker aria-hidden="true">
+        1
+      </span>
+      <section>
+        <h3>Desired state</h3>
+        <p>Committed</p>
+      </section>
+    </li>
+    <li data-state="success">
+      <span data-step-marker aria-hidden="true">
+        2
+      </span>
+      <section>
+        <h3>Runtime apply</h3>
+        <p>Complete</p>
+      </section>
+    </li>
+    <li data-state="active" aria-current="step">
+      <span data-step-marker aria-hidden="true">
+        3
+      </span>
+      <section>
+        <h3>Health proof</h3>
+        <p>Verifying</p>
+      </section>
+    </li>
+    <li>
+      <span data-step-marker aria-hidden="true">
+        4
+      </span>
+      <section>
+        <h3>Edge route</h3>
+        <p>Pending</p>
+      </section>
+    </li>
+  </ol>
+</Preview>
+
+## Usage
+
+Use a native ordered list and keep every stage label textual.
+
+```html
+<ol class="stepper" aria-label="Release progress" tabindex="0">
+  <li data-state="success">
+    <span data-step-marker aria-hidden="true">1</span>
+    <section>
+      <h3>Build</h3>
+      <p>Complete</p>
+    </section>
+  </li>
+  <li data-state="active" aria-current="step">
+    <span data-step-marker aria-hidden="true">2</span>
+    <section>
+      <h3>Publish</h3>
+      <p>In progress</p>
+    </section>
+  </li>
+</ol>
+```
+
+### Parameters
+
+| API                     | Values                                   | Purpose                                 |
+| ----------------------- | ---------------------------------------- | --------------------------------------- |
+| `class="stepper"`       | Required                                 | Ordered process root                    |
+| `data-step-marker`      | Required                                 | Number, short code, or icon marker      |
+| `data-state`            | `active`, `success`, `warning`, `danger` | Semantic stage state                    |
+| `aria-current`          | `step`                                   | Identifies the current stage            |
+| `tabindex`              | `0`                                      | Makes an overflowing sequence keyboard-scrollable |
+| `data-orientation`      | `vertical`                               | Stacks stages and connectors vertically |
+| `--stepper-min`         | CSS length                               | Minimum horizontal stage width          |
+| `--stepper-marker-size` | CSS length                               | Marker diameter                         |
+
+## States and variants
+
+The default horizontal layout remains scrollable when the sequence is wider than its container. Use `data-orientation="vertical"` in narrow panes or when stage descriptions need more room. Omit `data-state` for pending neutral stages; reserve warning and danger for real process conditions.
+
+## Accessibility
+
+Name the ordered list and keep every stage name and state in text. Apply `aria-current="step"` to exactly one current stage. When the horizontal sequence can overflow, add `tabindex="0"` so keyboard users can scroll it; the A3S recipe supplies a visible focus ring. Decorative numeric or icon markers may be hidden from assistive technology because the list already communicates order. Do not rely on connector or marker color alone.

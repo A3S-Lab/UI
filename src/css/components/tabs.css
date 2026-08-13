@@ -1,7 +1,7 @@
 /* Tabs */
 @layer components {
   .tabs {
-    @apply flex;
+    @apply flex min-w-0;
 
     &:has(> [role='tablist'][aria-orientation='horizontal']),
     &:not(:has(> [role='tablist'][aria-orientation='vertical'])) {
@@ -13,14 +13,27 @@
     }
 
     > [role='tablist'] {
-      @apply text-muted-foreground inline-flex w-fit items-center justify-center;
+      @apply text-muted-foreground inline-flex max-w-full min-w-0 w-fit items-center justify-center;
+
+      &[aria-orientation='horizontal'],
+      &:not([aria-orientation='vertical']) {
+        @apply justify-start overflow-x-auto overflow-y-hidden;
+        overscroll-behavior-inline: contain;
+        scroll-padding-inline: 0.25rem;
+        scrollbar-width: none;
+      }
+
+      &[aria-orientation='horizontal']::-webkit-scrollbar,
+      &:not([aria-orientation='vertical'])::-webkit-scrollbar {
+        display: none;
+      }
 
       &[aria-orientation='vertical'] {
-        @apply h-fit flex-col;
+        @apply h-fit flex-col overflow-visible;
       }
 
       > [role='tab'] {
-        @apply relative inline-flex flex-1 items-center justify-center whitespace-nowrap transition-all outline-none disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0;
+        @apply relative inline-flex flex-1 items-center justify-center whitespace-nowrap transition-all outline-none scroll-mx-1 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0;
       }
     }
 

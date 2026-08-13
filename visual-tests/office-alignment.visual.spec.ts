@@ -180,13 +180,61 @@ test("Office-derived workbench shell", async ({ page }) => {
 
   const shell = specimen.locator(".app-shell");
   const main = shell.locator(":scope > [data-app-main]");
-  const [shellBox, mainBox] = await Promise.all([
+  const ribbonTabs = specimen.locator(".ribbon > [role=tablist]");
+  const ribbonPanel = specimen.locator(
+    ".ribbon > [role=tabpanel]:not([hidden])",
+  );
+  const ribbonGroup = ribbonPanel.locator("[data-ribbon-group]").first();
+  const workspace = specimen.locator(".ui-office-workspace");
+  const taskPane = specimen.locator(".task-pane");
+  const statusBar = specimen.locator(".status-bar");
+  const [
+    shellBox,
+    mainBox,
+    ribbonTabsBox,
+    ribbonPanelBox,
+    ribbonGroupBox,
+    workspaceBox,
+    taskPaneBox,
+    statusBarBox,
+  ] = await Promise.all([
     shell.boundingBox(),
     main.boundingBox(),
+    ribbonTabs.boundingBox(),
+    ribbonPanel.boundingBox(),
+    ribbonGroup.boundingBox(),
+    workspace.boundingBox(),
+    taskPane.boundingBox(),
+    statusBar.boundingBox(),
   ]);
   expect(shellBox).not.toBeNull();
   expect(mainBox).not.toBeNull();
+  expect(ribbonTabsBox).not.toBeNull();
+  expect(ribbonPanelBox).not.toBeNull();
+  expect(ribbonGroupBox).not.toBeNull();
+  expect(workspaceBox).not.toBeNull();
+  expect(taskPaneBox).not.toBeNull();
+  expect(statusBarBox).not.toBeNull();
   expect(mainBox!.width).toBeGreaterThan(shellBox!.width * 0.75);
+  expect(ribbonTabsBox!.height).toBeGreaterThanOrEqual(35);
+  expect(ribbonTabsBox!.height).toBeLessThanOrEqual(37);
+  expect(ribbonPanelBox!.height).toBeGreaterThanOrEqual(73);
+  expect(ribbonPanelBox!.height).toBeLessThanOrEqual(75);
+  expect(ribbonGroupBox!.height).toBeGreaterThanOrEqual(64);
+  expect(ribbonGroupBox!.height).toBeLessThanOrEqual(66);
+  expect(statusBarBox!.height).toBeGreaterThanOrEqual(27);
+  expect(statusBarBox!.height).toBeLessThanOrEqual(29);
+
+  if (page.viewportSize()!.width > 900) {
+    expect(taskPaneBox!.width).toBeGreaterThanOrEqual(160);
+    expect(taskPaneBox!.width).toBeLessThan(workspaceBox!.width * 0.34);
+  } else {
+    await expect(taskPane).toHaveCSS("position", "absolute");
+    expect(taskPaneBox!.x + taskPaneBox!.width).toBeCloseTo(
+      workspaceBox!.x + workspaceBox!.width,
+      0,
+    );
+  }
   await expect(specimen).toHaveScreenshot("office-workbench.png");
 
   const resourceCards = specimen.locator(".resource-card");
@@ -374,7 +422,7 @@ test("mobile homepage reveals the catalog before an optional product preview", a
   await expect(preview).toBeVisible();
 });
 
-test("contained sidebar uses compositor-safe responsive motion", async ({
+test("contained sidebar overlays compact content without layout shift", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -393,6 +441,8 @@ test("contained sidebar uses compositor-safe responsive motion", async ({
       getComputedStyle(element).transitionProperty.split(", "),
     ),
   ).toEqual(["transform"]);
+  const closedContentBox = await content.boundingBox();
+  expect(closedContentBox).not.toBeNull();
 
   await demo.getByRole("button", { name: "Toggle sidebar" }).click();
   await expect(sidebar).toHaveAttribute("aria-hidden", "false");
@@ -410,7 +460,7 @@ test("contained sidebar uses compositor-safe responsive motion", async ({
         navigationBox.x >= demoBox.x - 1 &&
         navigationBox.x + navigationBox.width <=
           demoBox.x + demoBox.width + 1 &&
-        contentBox.x >= navigationBox.x + navigationBox.width,
+        Math.abs(contentBox.x - closedContentBox!.x) <= 1,
       );
     })
     .toBe(true);
@@ -432,10 +482,24 @@ for (const [name, route, selector] of [
     await expect(pattern).toBeVisible();
 
     if (name === "ribbon") {
-      await expect(pattern.locator(":scope > [role=tablist]")).toHaveCSS(
-        "display",
-        "flex",
-      );
+      const tablist = pattern.locator(":scope > [role=tablist]");
+      const panel = pattern.locator(":scope > [role=tabpanel]:not([hidden])");
+      const group = panel.locator(":scope > [data-ribbon-group]").first();
+      await expect(tablist).toHaveCSS("display", "flex");
+      const [tablistBox, panelBox, groupBox] = await Promise.all([
+        tablist.boundingBox(),
+        panel.boundingBox(),
+        group.boundingBox(),
+      ]);
+      expect(tablistBox).not.toBeNull();
+      expect(panelBox).not.toBeNull();
+      expect(groupBox).not.toBeNull();
+      expect(tablistBox!.height).toBeGreaterThanOrEqual(35);
+      expect(tablistBox!.height).toBeLessThanOrEqual(37);
+      expect(panelBox!.height).toBeGreaterThanOrEqual(73);
+      expect(panelBox!.height).toBeLessThanOrEqual(75);
+      expect(groupBox!.height).toBeGreaterThanOrEqual(64);
+      expect(groupBox!.height).toBeLessThanOrEqual(66);
       expect(
         await pattern
           .locator(":scope > [role=tablist] > [role=tab]")
@@ -446,7 +510,18 @@ for (const [name, route, selector] of [
       ).toBeGreaterThanOrEqual(8);
     }
     if (name === "task-pane") {
+      const host = preview.locator("[data-task-pane-host]");
       const heading = pattern.locator(":scope > header > h2");
+      const [hostBox, paneBox, headerBox] = await Promise.all([
+        host.boundingBox(),
+        pattern.boundingBox(),
+        pattern.locator(":scope > header").boundingBox(),
+      ]);
+      expect(hostBox).not.toBeNull();
+      expect(paneBox).not.toBeNull();
+      expect(headerBox).not.toBeNull();
+      expect(headerBox!.height).toBeGreaterThanOrEqual(51);
+      expect(headerBox!.height).toBeLessThanOrEqual(53);
       expect(
         await heading.evaluate((element) =>
           Number.parseFloat(getComputedStyle(element).fontSize),
@@ -460,11 +535,58 @@ for (const [name, route, selector] of [
             Number.parseFloat(getComputedStyle(element).paddingInlineStart),
           ),
       ).toBeGreaterThanOrEqual(8);
+
+      if (page.viewportSize()!.width > 900) {
+        await expect(pattern).toHaveCSS("position", "static");
+        expect(paneBox!.width).toBeGreaterThanOrEqual(320);
+        expect(paneBox!.width).toBeLessThanOrEqual(380);
+      } else {
+        await expect(pattern).toHaveCSS("position", "absolute");
+        expect(paneBox!.width).toBeLessThanOrEqual(380);
+        expect(
+          Math.abs(paneBox!.x + paneBox!.width - (hostBox!.x + hostBox!.width)),
+        ).toBeLessThanOrEqual(1);
+      }
     }
     if (name === "status-bar") {
-      expect((await pattern.boundingBox())!.height).toBeLessThanOrEqual(32);
+      const editor = preview.locator("[data-status-bar-host]");
+      const [editorBox, statusBox] = await Promise.all([
+        editor.boundingBox(),
+        pattern.boundingBox(),
+      ]);
+      expect(editorBox).not.toBeNull();
+      expect(statusBox).not.toBeNull();
+      expect(statusBox!.height).toBeGreaterThanOrEqual(27);
+      expect(statusBox!.height).toBeLessThanOrEqual(29);
+      expect(
+        Math.abs(
+          statusBox!.y + statusBox!.height - (editorBox!.y + editorBox!.height),
+        ),
+      ).toBeLessThanOrEqual(1);
     }
     await expect(preview).toHaveScreenshot(`${name}.png`);
+
+    if (name === "task-pane") {
+      await page.setViewportSize({ width: 390, height: 844 });
+      const host = preview.locator("[data-task-pane-host]");
+      const [hostBox, paneBox] = await Promise.all([
+        host.boundingBox(),
+        pattern.boundingBox(),
+      ]);
+      expect(hostBox).not.toBeNull();
+      expect(paneBox).not.toBeNull();
+      expect(Math.abs(paneBox!.width - hostBox!.width)).toBeLessThanOrEqual(2);
+      expect(Math.abs(paneBox!.x - hostBox!.x)).toBeLessThanOrEqual(1);
+    }
+
+    if (name === "status-bar") {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await expect(
+        pattern.locator('[data-status-priority="low"]').first(),
+      ).toBeHidden();
+      await expect(pattern.locator("[data-status-actions]")).toBeVisible();
+      expect((await pattern.boundingBox())!.height).toBeLessThanOrEqual(29);
+    }
   });
 }
 

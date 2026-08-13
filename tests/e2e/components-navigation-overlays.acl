@@ -2,21 +2,30 @@ suite "a3s-ui-navigation-and-overlays" {
     version = 1
 
     scenario "activity-bar" {
-        name = "Activity Bar preview exposes product navigation"
+        name = "Activity Bar preview updates its current workspace destination"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/activity-bar.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=activity-bar] .activity-bar nav") }
+        click "open-traces" { target = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces']") }
+        expect "traces-current" { visible = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces'][aria-current=page]") }
+        screenshot "activity-bar-current" { path = "components/activity-bar-current.png" }
     }
 
     scenario "breadcrumb" {
-        name = "Breadcrumb preview provides a named navigation landmark"
+        name = "Breadcrumb preview stays reachable as a compact navigation row"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/breadcrumb.html" }
         wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type") }
+        expect "last-ancestor-reachable" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type:focus") }
+        screenshot "breadcrumb-phone" { path = "components/breadcrumb-phone.png" }
     }
 
     scenario "tabs" {
@@ -25,19 +34,30 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "activate-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
         expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
         expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
+        viewport "compact-rtl" { width = 390 height = 844 }
+        focus "focus-first-rtl-tab" { target = css("#tabs-rtl-tab-overview") }
+        press "move-right-in-rtl" { key = "ArrowRight" }
+        expect "rtl-last-tab-active" { visible = css("#tabs-rtl-tab-settings[aria-selected=true]:focus") }
+        expect "rtl-last-panel-visible" { visible = css("#tabs-rtl-panel-settings:not([hidden])") }
+        screenshot "tabs-compact-rtl" { path = "components/tabs-compact-rtl.png" }
     }
 
     scenario "pagination" {
-        name = "Pagination preview identifies the current page"
+        name = "Pagination preview updates its current page without compact overflow"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/pagination.html" }
         wait "loaded" { load = "networkidle" }
-        expect "current-page-visible" { visible = css(".a3s-preview[data-preview-component=pagination] [aria-current=page]") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "component-visible" { visible = css(".a3s-preview[data-preview-component=pagination] nav.pagination") }
+        click "select-page-three" { target = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][data-size=icon]") }
+        expect "page-three-current" { visible = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][aria-current=page]") }
+        screenshot "pagination-phone" { path = "components/pagination-phone.png" }
     }
 
     scenario "sidebar" {
@@ -46,47 +66,66 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sidebar.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
         click "toggle-sidebar" { target = role("button", "Toggle sidebar") }
         expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
-        screenshot "contained-sidebar" { path = "components/sidebar.png" }
+        viewport "phone" { width = 390 height = 844 }
+        click "open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
+        expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
+        expect "mobile-navigation-focused" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
+        screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
+        press "close-mobile-sidebar" { key = "Escape" }
+        expect "mobile-sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true]") }
+        expect "mobile-toggle-restored" { visible = css("#demo-sidebar + main button:focus") }
     }
 
     scenario "alert-dialog" {
-        name = "Alert Dialog preview opens a modal confirmation"
+        name = "Alert Dialog preserves semantics, action focus, and trigger return"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert-dialog.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Show Dialog") }
-        expect "dialog-open" { visible = css("#demo-alert-dialog[open]") }
-        screenshot "alert-dialog" { path = "components/alert-dialog.png" }
+        expect "dialog-open" { visible = css("#demo-alert-dialog[open][role=alertdialog]") }
+        expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
+        screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
+        click "cancel-dialog" { target = role("button", "Cancel") }
+        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "dialog" {
-        name = "Dialog preview opens its edit profile surface"
+        name = "Dialog accepts edits and restores trigger focus after Escape"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dialog.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Open Dialog") }
         expect "dialog-open" { visible = css("#demo-dialog-edit-profile[open]") }
-        screenshot "dialog" { path = "components/dialog.png" }
+        fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
+        screenshot "dialog-phone" { path = "components/dialog-phone.png" }
+        press "close-dialog" { key = "Escape" }
+        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "drawer" {
-        name = "Drawer preview opens its native dialog surface"
+        name = "Drawer stays bounded on mobile and restores trigger focus"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/drawer.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         click "open-drawer" { target = role("button", "Open Drawer") }
         expect "drawer-open" { visible = css("#demo-drawer[open]") }
-        screenshot "drawer" { path = "components/drawer.png" }
+        screenshot "drawer-phone" { path = "components/drawer-phone.png" }
+        click "cancel-drawer" { target = role("button", "Cancel") }
+        wait "drawer-close-animation" { load = "networkidle" }
+        expect "drawer-trigger-restored" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button:focus") }
     }
 
     scenario "dropdown-menu" {
@@ -95,7 +134,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         click "open-menu" { target = css("#demo-dropdown-menu-trigger") }
         expect "menu-visible" { visible = css("#demo-dropdown-menu [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-overlay-open]") }
@@ -103,16 +142,21 @@ suite "a3s-ui-navigation-and-overlays" {
     }
 
     scenario "popover" {
-        name = "Popover preview opens above the following documentation"
+        name = "Popover focuses editable content and restores its trigger"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/popover.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        viewport "phone" { width = 390 height = 844 }
         click "open-popover" { target = css("#demo-popover-trigger") }
         expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
-        screenshot "popover" { path = "components/popover.png" }
+        expect "popover-input-focused" { visible = css("#demo-popover-width:focus") }
+        fill "edit-popover-width" { target = css("#demo-popover-width") value = "72%" }
+        screenshot "popover-phone" { path = "components/popover-phone.png" }
+        press "close-popover" { key = "Escape" }
+        expect "popover-trigger-restored" { visible = css("#demo-popover-trigger:focus") }
     }
 
     scenario "command" {
@@ -121,7 +165,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/command.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         fill "filter-commands" { target = placeholder("Type a command or search...") value = "Calendar" }
         expect "calendar-visible" { visible = css("#demo-command-standalone [role=menuitem][data-filter=Calendar]:not([aria-hidden=true])") }
     }
@@ -132,7 +176,7 @@ suite "a3s-ui-navigation-and-overlays" {
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tooltip.html" }
         wait "loaded" { load = "networkidle" }
-        wait "interactive-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         hover "show-tooltip" { target = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip]") }
         expect "tooltip-trigger-visible" { visible = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip='Add to library']") }
         screenshot "tooltip" { path = "components/tooltip.png" }

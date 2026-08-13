@@ -1,0 +1,91 @@
+# Property List
+
+Property List presents compact operational metadata with native description-list semantics. It is suited to revisions, build evidence, runtime facts, and other name-value projections.
+
+<Preview class="w-full">
+  <dl class="property-list" style="--property-list-min:9rem">
+    <div>
+      <dt>Provider</dt>
+      <dd>A3S Code</dd>
+    </div>
+    <div>
+      <dt>Release</dt>
+      <dd>v0.8.4</dd>
+    </div>
+    <div>
+      <dt>Source digest</dt>
+      <dd>
+        <code>sha256:8f3d…91ac</code>
+      </dd>
+    </div>
+    <div>
+      <dt>Target</dt>
+      <dd>linux/amd64</dd>
+    </div>
+  </dl>
+</Preview>
+
+## Usage
+
+Import Tailwind and one full A3S UI style bundle.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+Or import the base, Property List structure, and a style pack.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/property-list.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+Use one direct `<div>` for each `dt` and `dd` pair.
+
+```html
+<dl class="property-list">
+  <div>
+    <dt>Provider</dt>
+    <dd>A3S Code</dd>
+  </div>
+  <div>
+    <dt>Release</dt>
+    <dd>v0.8.4</dd>
+  </div>
+</dl>
+```
+
+### Parameters
+
+| API                     | Values         | Purpose                                       |
+| ----------------------- | -------------- | --------------------------------------------- |
+| `class="property-list"` | Required       | Root description list                         |
+| `data-layout`           | `grid`, `rows` | Automatic cards or aligned name-value rows    |
+| `data-size`             | `sm`           | Denser cell spacing                           |
+| `data-variant`          | `plain`        | Removes cell surfaces while preserving layout |
+| `--property-list-min`   | CSS length     | Minimum grid-cell width; defaults to `10rem`  |
+| `--property-list-gap`   | CSS length     | Gap between entries; defaults to `0.5rem`     |
+
+## States and variants
+
+Use the default grid for compact evidence. Use `data-layout="rows"` when values need to scan down one axis. Put identifiers and digests in `<code>`; keep ordinary labels and values in the interface typeface.
+
+```html
+<dl class="property-list" data-layout="rows" data-variant="plain">
+  <div>
+    <dt>Conversation</dt>
+    <dd><code>conv_01JY7K</code></dd>
+  </div>
+  <div>
+    <dt>Execution</dt>
+    <dd>Running</dd>
+  </div>
+</dl>
+```
+
+## Accessibility
+
+Keep the native `<dl>`, `<dt>`, and `<dd>` relationship. Do not replace it with a visual grid of generic elements. Values may wrap; do not truncate authoritative identifiers unless the complete value is available elsewhere.

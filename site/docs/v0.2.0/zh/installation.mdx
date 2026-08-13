@@ -1,0 +1,140 @@
+# 安装
+
+A3S UI 已发布到 npm。稳定版本应直接从 registry 安装；仅在验证尚未发布的源码变更时使用 GitHub 安装。
+
+## 安装组件包
+
+<Steps>
+  <Step title="安装包">
+
+<CodeGroup>
+```bash title="npm"
+npm install @a3s-lab/ui@0.2.0
+```
+
+```bash title="pnpm"
+pnpm add @a3s-lab/ui@0.2.0
+```
+
+```bash title="bun"
+bun add @a3s-lab/ui@0.2.0
+```
+</CodeGroup>
+
+  </Step>
+  <Step title="导入 Tailwind 和 A3S UI">
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui";
+```
+
+默认导出包含基础设计令牌、所有组件与 A3S 视觉风格。请在 Tailwind 之后加载，避免后续 Preflight 重置组件边界或控件样式。
+
+  </Step>
+  <Step title="加载交互组件">
+
+大多数组件只需要 CSS。当应用使用菜单、Select、Tabs、Split Pane 或其他交互式复合组件时，再导入完整运行时。
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+也可以只导入基础运行时与实际使用的控制器。
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/tabs";
+import "@a3s-lab/ui/split-pane";
+```
+
+  </Step>
+  <Step title="使用语义标记">
+
+```html
+<header class="workspace-header">
+  <div data-workspace-identity>
+    <h1>Production gateway</h1>
+    <span>Configuration saved</span>
+  </div>
+  <div data-workspace-actions>
+    <button type="button" class="btn">Deploy</button>
+  </div>
+</header>
+```
+
+  </Step>
+</Steps>
+
+## CSS 导入
+
+| 导入 | 内容 |
+| --- | --- |
+| `@a3s-lab/ui` | 默认的完整 A3S 样式包 |
+| `@a3s-lab/ui/a3s` | 显式指定的完整 A3S 样式包 |
+| `@a3s-lab/ui/{style}` | 完整的 `vega`、`nova`、`maia`、`lyra`、`mira`、`luma`、`sera` 或 `rhea` 样式包 |
+| `@a3s-lab/ui/base` | 基础令牌、语义工具类与组件结构，不包含视觉风格 |
+| `@a3s-lab/ui/components` | 所有组件结构，不包含基础令牌与视觉风格 |
+| `@a3s-lab/ui/components/button.css` | 单个组件的结构样式 |
+| `@a3s-lab/ui/styles/a3s.css` | A3S 视觉基础；与 `base` 组合使用 |
+| `@a3s-lab/ui/compat` | 可选的旧版本兼容别名 |
+
+### 拆分导入
+
+当应用 CSS 已经自行管理依赖关系时，可使用拆分导入。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/app-shell.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+## JavaScript 导入
+
+| 导入 | 控制器 |
+| --- | --- |
+| `@a3s-lab/ui/all` | 运行时和所有自动初始化控制器（图表除外） |
+| `@a3s-lab/ui/runtime` | 共享生命周期与组件注册机制 |
+| `@a3s-lab/ui/accordion` | 折叠面板增强 |
+| `@a3s-lab/ui/combobox` | 组合框 |
+| `@a3s-lab/ui/command` | 命令面板 |
+| `@a3s-lab/ui/drawer` | 抽屉 |
+| `@a3s-lab/ui/dropdown-menu` | 下拉菜单 |
+| `@a3s-lab/ui/popover` | 弹出窗口 |
+| `@a3s-lab/ui/range` | 范围输入视觉状态 |
+| `@a3s-lab/ui/select` | 选择 |
+| `@a3s-lab/ui/sidebar` | 侧边栏 |
+| `@a3s-lab/ui/split-pane` | 可调整大小的分割窗格 |
+| `@a3s-lab/ui/tabs` | 选项卡和功能区导航 |
+| `@a3s-lab/ui/toast` | Toast |
+| `@a3s-lab/ui/chart` | Chart 辅助 API；Chart.js 仍需单独安装 |
+
+公共运行时命名空间为 `window.a3sUI`。它会在页面加载时初始化已注册组件，并观察后续插入的 DOM。
+
+```js
+window.a3sUI.initAll();
+window.a3sUI.initAll({ force: true });
+window.a3sUI.refresh(document.querySelector(".split-pane"));
+```
+
+## 服务器渲染模板
+
+可选的 Nunjucks 和 Jinja 模板随软件包一起提供。
+
+<CodeGroup>
+```bash title="Nunjucks"
+cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
+```
+
+```bash title="Jinja"
+cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
+```
+</CodeGroup>
+
+宏参数请参阅[模板](/templates)。
+
+## 图标
+
+A3S UI 不捆绑图标。文档示例使用内联、兼容 Lucide 的 SVG，应用可以替换为任意图标系统。只有图标而没有文字的控件必须提供可访问名称。

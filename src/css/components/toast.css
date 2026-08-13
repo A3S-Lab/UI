@@ -1,51 +1,63 @@
 /* Toasts */
 @layer components {
   .toaster {
-    @apply pointer-events-none fixed bottom-0 z-50 flex w-full flex-col-reverse gap-4 p-4 sm:max-w-90;
+    @apply pointer-events-none fixed bottom-0 z-50 flex w-full flex-col-reverse gap-2 p-4;
+    max-width: 28.25rem;
 
     &:not([data-align]),
-    &[data-align='end'] {
+    &[data-align="end"] {
       @apply right-0;
     }
-    &[data-align='start'] {
+    &[data-align="start"] {
       @apply left-0;
     }
-    &[data-align='center'] {
+    &[data-align="center"] {
       @apply left-1/2 -translate-x-1/2;
     }
     .toast {
-      @apply pointer-events-auto grid w-full grid-rows-[1fr] animate-[toast-up_0.3s_ease-in-out] transition-[grid-template-rows,opacity] duration-300 ease-in-out;
-      
+      @apply pointer-events-auto grid w-full min-w-0 grid-rows-[1fr] animate-[toast-up_180ms_ease-out] transition-[grid-template-rows,opacity] duration-200 ease-out;
+
       .toast-content {
-        @apply flex items-center gap-2.5 overflow-hidden p-3 text-[13px];
+        @apply flex min-h-10 min-w-0 items-start gap-2 overflow-hidden px-3 py-2 text-[11px] leading-4;
 
         svg {
-          @apply size-4 shrink-0;
+          @apply mt-0.5 size-4 shrink-0;
         }
         section {
+          @apply flex min-w-0 flex-1 flex-col gap-px;
+
           h2 {
-            @apply font-medium tracking-tight;
+            @apply m-0 min-w-0 p-0 text-xs leading-4 font-semibold tracking-[-0.01em];
+            overflow-wrap: anywhere;
           }
           p {
-            @apply text-muted-foreground break-all;
+            @apply text-muted-foreground m-0 min-w-0 p-0 text-[11px] leading-4;
+            overflow-wrap: anywhere;
+            word-break: normal;
           }
         }
         footer {
-          @apply ms-auto flex flex-col gap-2;
+          @apply ms-auto flex shrink-0 flex-wrap items-center justify-end gap-1.5;
 
           [data-toast-action],
           [data-toast-cancel] {
-            @apply h-6 px-2.5 text-xs;
+            @apply h-7 min-h-7 px-2.5 text-[11px] leading-4;
           }
         }
       }
-      &[aria-hidden='true'] {
+      &[aria-hidden="true"] {
         @apply grid-rows-[0fr] overflow-hidden border-0 p-0 opacity-0;
 
         .toast-content {
           @apply border-0;
         }
       }
+    }
+  }
+
+  @media (max-width: 520px) {
+    .toaster {
+      max-width: none;
     }
   }
 }

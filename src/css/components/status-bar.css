@@ -4,8 +4,9 @@
     display: flex;
     width: 100%;
     min-width: 0;
-    min-height: var(--status-bar-height, 1.75rem);
-    flex: none;
+    min-height: var(--status-bar-height, var(--a3s-status-height, 1.75rem));
+    height: var(--status-bar-height, var(--a3s-status-height, 1.75rem));
+    flex: 0 0 var(--status-bar-height, var(--a3s-status-height, 1.75rem));
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
@@ -43,9 +44,7 @@
   }
 
   @media (max-width: 30rem) {
-    .status-bar
-      > [data-status-info]
-      > [data-status-priority="low"] {
+    .status-bar > [data-status-info] > [data-status-priority="low"] {
       display: none;
     }
   }

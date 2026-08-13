@@ -2,8 +2,9 @@
 @layer components {
   .task-pane {
     display: flex;
-    width: var(--task-pane-width, 18rem);
-    min-width: min(100%, var(--task-pane-min-width, 14rem));
+    width: min(100%, var(--task-pane-width, clamp(20rem, 28vw, 23.75rem)));
+    min-width: min(100%, var(--task-pane-min-width, 18.75rem));
+    max-width: 100%;
     min-height: 0;
     flex: none;
     flex-direction: column;
@@ -37,9 +38,25 @@
     margin-block-start: auto;
   }
 
-  @media (max-width: 48rem) {
-    .task-pane {
-      width: min(100%, var(--task-pane-width, 20rem));
+  @media (max-width: 56.25rem) {
+    .task-pane[data-responsive="overlay"] {
+      position: absolute;
+      z-index: var(--task-pane-overlay-z-index, 20);
+      inset-block: 0;
+      inset-inline-end: 0;
+      width: min(
+        var(--task-pane-overlay-width, 23.75rem),
+        calc(100% - 2.25rem)
+      );
+      min-width: 0;
+      max-height: 100%;
+    }
+  }
+
+  @media (max-width: 32.5rem) {
+    .task-pane[data-responsive="overlay"] {
+      inset-inline: 0;
+      width: 100%;
     }
   }
 }

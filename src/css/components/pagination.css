@@ -1,0 +1,44 @@
+/* Pagination */
+@layer components {
+  .pagination {
+    @apply flex w-full min-w-0 justify-center;
+  }
+
+  .pagination > :is(ol, ul) {
+    @apply m-0 flex max-w-full min-w-0 list-none items-center gap-1 overflow-x-auto overflow-y-hidden p-0;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .pagination > :is(ol, ul)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pagination li,
+  .pagination :is(a, button, [data-pagination-ellipsis]) {
+    @apply flex-none;
+  }
+
+  .pagination [data-pagination-ellipsis] {
+    @apply grid size-9 place-items-center;
+  }
+
+  .pagination [data-rtl-flip] {
+    @apply rtl:rotate-180;
+  }
+
+  @media (max-width: 40rem) {
+    .pagination [data-pagination-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+  }
+}
