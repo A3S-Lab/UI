@@ -1,0 +1,157 @@
+/* Workspace layout and responsive application visuals shared by every style pack. */
+@layer components {
+  .split-pane {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--background);
+  }
+
+  .split-pane > :not([role='separator']) {
+    padding: 1rem;
+  }
+
+  .split-pane > [role='separator'] {
+    background: transparent;
+  }
+
+  .split-pane > [role='separator']::before {
+    position: absolute;
+    background: var(--muted);
+    content: '';
+    pointer-events: none;
+  }
+
+  .split-pane:not([data-orientation='vertical']) > [role='separator']::before {
+    inset-block: 0;
+    inset-inline-start: 50%;
+    width: var(--split-handle-size);
+    transform: translateX(-50%);
+  }
+
+  .split-pane[data-orientation='vertical'] > [role='separator']::before {
+    inset-block-start: 50%;
+    inset-inline: 0;
+    height: var(--split-handle-size);
+    transform: translateY(-50%);
+  }
+
+  .split-pane > [role='separator']::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    border-radius: 999px;
+    background: var(--border);
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .split-pane:not([data-orientation='vertical']) > [role='separator']::after {
+    width: 2px;
+    height: 2.25rem;
+  }
+
+  .split-pane[data-orientation='vertical'] > [role='separator']::after {
+    width: 2.25rem;
+    height: 2px;
+  }
+
+  .split-pane > [role='separator']:hover,
+  .split-pane > [role='separator']:focus-visible,
+  .split-pane > [role='separator'][aria-valuenow] {
+    --split-handle-color: var(--ring);
+  }
+
+  .split-pane > [role='separator']:hover::after,
+  .split-pane > [role='separator']:focus-visible::after {
+    background: var(--split-handle-color, var(--ring));
+  }
+
+  .split-pane > [role='separator']:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .status-bar {
+    padding: 0 0.5625rem 0 0.75rem;
+    border-block-start: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+  }
+
+  .status-bar > [data-status-info],
+  .status-bar > [data-status-actions] {
+    gap: 0.75rem;
+  }
+
+  .status-bar hr[role='separator'] {
+    background: var(--border);
+  }
+
+  .status-bar .btn {
+    min-height: 1.375rem;
+  }
+
+  .task-pane {
+    border-inline-start: 1px solid var(--border);
+    background: var(--card);
+    box-shadow: -0.625rem 0 1.75rem
+      color-mix(in srgb, var(--foreground) 7%, transparent);
+    color: var(--card-foreground);
+  }
+
+  .task-pane > header {
+    min-height: 3.25rem;
+    padding: 0.5rem 0.625rem 0.5rem 0.875rem;
+  }
+
+  .task-pane > footer {
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .task-pane > header {
+    border-block-end: 1px solid var(--border);
+  }
+
+  .task-pane > header > :is(h2, h3, strong) {
+    margin: 0;
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    font-weight: 680;
+  }
+
+  .task-pane > section {
+    padding: 0.875rem;
+  }
+
+  .task-pane > footer {
+    border-block-start: 1px solid var(--border);
+    background: var(--muted);
+  }
+
+  @media (max-width: 56.25rem) {
+    .task-pane[data-responsive='overlay'] {
+      box-shadow: -1rem 0 2.25rem
+        color-mix(in srgb, var(--foreground) 18%, transparent);
+    }
+
+    .ribbon > [role='tablist'] > [role='tab'] {
+      padding-inline: 0.5625rem;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .settings-layout {
+      gap: 1rem;
+    }
+
+    .settings-layout > aside nav > :is(ul, ol) {
+      padding-block-end: 0.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .resource-card {
+      transition: none;
+    }
+  }
+}

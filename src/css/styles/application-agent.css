@@ -1,0 +1,351 @@
+/* Agent, execution, and approval visuals shared by every style pack. */
+@layer components {
+  .agent-composer {
+    padding: 0.75rem;
+    border: 1px solid var(--agent-composer-border-color, var(--border));
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+    box-shadow: var(--agent-composer-shadow, var(--shadow-xs));
+  }
+
+  .agent-composer:focus-within {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
+  }
+
+  .agent-composer > [data-composer-context] > li {
+    min-height: 1.625rem;
+    padding: 0.1875rem 0.25rem 0.1875rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--muted) 58%, var(--card));
+    color: var(--foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 1rem;
+  }
+
+  .agent-composer > textarea {
+    padding: 0.25rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    outline: 0;
+    background: transparent;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+
+  .agent-composer > textarea::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+
+  .agent-composer > footer {
+    padding-block-start: 0.125rem;
+  }
+
+  .agent-composer [data-composer-status] {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 1rem;
+  }
+
+  .agent-composer > [data-composer-queue] {
+    padding-block-start: 0.625rem;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .agent-composer > [data-composer-queue] > li {
+    min-height: 2rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--muted) 68%, var(--card));
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    line-height: 1rem;
+  }
+
+  .agent-composer:is([aria-disabled='true'], [data-state='disabled']) {
+    opacity: 0.65;
+  }
+
+  .agent-composer[data-state='error'] {
+    border-color: color-mix(in srgb, var(--destructive) 52%, var(--border));
+  }
+
+  .agent-transcript {
+    gap: 0.75rem;
+  }
+
+  .agent-transcript > header,
+  .agent-transcript > footer {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+  }
+
+  .agent-transcript > header {
+    border-block-end: 1px solid var(--border);
+  }
+
+  .agent-transcript > footer {
+    border-block-start: 1px solid var(--border);
+  }
+
+  .agent-transcript > :is(ol, [data-transcript-viewport]) {
+    padding: 0.75rem;
+  }
+
+  .agent-transcript > :is(ol, [data-transcript-viewport]) > li > article {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .agent-transcript
+    > :is(ol, [data-transcript-viewport])
+    > li[data-role='user']
+    > article {
+    border-color: color-mix(
+      in srgb,
+      var(--a3s-blue, var(--primary)) 22%,
+      var(--border)
+    );
+    background: color-mix(
+      in srgb,
+      var(--a3s-blue, var(--primary)) 7%,
+      var(--card)
+    );
+  }
+
+  .agent-transcript
+    > :is(ol, [data-transcript-viewport])
+    > li[data-role='system']
+    > article {
+    border-style: dashed;
+    background: color-mix(in srgb, var(--muted) 60%, var(--card));
+  }
+
+  .agent-transcript article > header {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 1rem;
+  }
+
+  .agent-transcript article > header > strong {
+    color: var(--foreground);
+    font-weight: 650;
+  }
+
+  .agent-transcript [data-message-content] {
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    line-height: 1.375rem;
+  }
+
+  .agent-transcript [data-message-content] code {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .agent-transcript [data-message-content] pre {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--muted);
+  }
+
+  .agent-transcript [data-transcript-status] {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+  }
+
+  .execution-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .execution-item > summary {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.625rem;
+    outline: none;
+  }
+
+  .execution-item > summary:hover {
+    background: color-mix(in srgb, var(--muted) 62%, var(--card));
+  }
+
+  .execution-item > summary:focus-visible {
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 2px var(--ring);
+  }
+
+  .execution-item > summary > [data-execution-icon] {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-md);
+    background: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .execution-item > summary > [data-execution-icon] > svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .execution-item > summary > [data-execution-identity] > strong {
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    line-height: 1rem;
+  }
+
+  .execution-item > summary > [data-execution-identity] > small {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 0.875rem;
+  }
+
+  .execution-item > summary > [data-execution-disclosure] {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+  }
+
+  .execution-item > section {
+    padding: 0.75rem;
+    border-block-start: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 42%, var(--card));
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+  }
+
+  .execution-item > section pre {
+    margin: 0;
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+  }
+
+  .execution-item > footer {
+    min-height: 2.5rem;
+    padding: 0.375rem 0.625rem;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .execution-item[data-state='running'] > summary > [data-execution-icon],
+  .execution-item[data-state='waiting'] > summary > [data-execution-icon] {
+    background: color-mix(
+      in srgb,
+      var(--a3s-blue, var(--primary)) 12%,
+      var(--card)
+    );
+    color: var(--a3s-blue, var(--primary));
+  }
+
+  .execution-item[data-state='success'] > summary > [data-execution-icon] {
+    background: color-mix(in srgb, var(--a3s-green, #159469) 12%, var(--card));
+    color: var(--a3s-green, #159469);
+  }
+
+  .execution-item[data-state='error'] > summary > [data-execution-icon] {
+    background: color-mix(in srgb, var(--destructive) 12%, var(--card));
+    color: var(--destructive);
+  }
+
+  .approval-request {
+    gap: 0;
+    border: 1px solid
+      color-mix(in srgb, var(--a3s-warning, #a85f0c) 36%, var(--border));
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .approval-request > header,
+  .approval-request > :is(section, form),
+  .approval-request > footer {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .approval-request > header {
+    background: color-mix(in srgb, var(--a3s-warning, #a85f0c) 8%, var(--card));
+  }
+
+  .approval-request > header :is(h2, h3) {
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1.25rem;
+  }
+
+  .approval-request > header p {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    line-height: 1.125rem;
+  }
+
+  .approval-request > :is(section, form),
+  .approval-request > footer {
+    border-block-start: 1px solid var(--border);
+  }
+
+  .approval-request > section {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+  }
+
+  .approval-request fieldset > legend {
+    margin-block-end: 0.5rem;
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .approval-request fieldset > label {
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--background);
+  }
+
+  .approval-request fieldset > label:has(input:checked) {
+    border-color: var(--ring);
+    background: color-mix(in srgb, var(--ring) 7%, var(--background));
+  }
+
+  .approval-request fieldset > label > strong {
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    line-height: 1rem;
+  }
+
+  .approval-request fieldset > label > small {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 1rem;
+  }
+
+  .approval-request:is(
+    [data-state='approved'],
+    [data-state='denied'],
+    [data-state='expired']
+  ) {
+    border-color: var(--border);
+  }
+
+  .approval-request[data-state='approved'] > header {
+    background: color-mix(in srgb, var(--a3s-green, #159469) 8%, var(--card));
+  }
+
+  .approval-request[data-state='denied'] > header {
+    background: color-mix(in srgb, var(--destructive) 8%, var(--card));
+  }
+}
