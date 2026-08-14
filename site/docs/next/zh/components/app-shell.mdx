@@ -60,3 +60,35 @@ App Shell 支持展开、折叠、隐藏、全视口与移动端打开状态。�
 ## 可访问性
 
 使用地标元素（`aside`、`nav`、`main`、`header`）并命名每个导航区域。控制器会同步 `aria-expanded`、触发器名称、`inert` 与 `aria-hidden`，关闭紧凑抽屉后恢复触发器焦点。导航应保持为 App Shell 的直接区域，避免局部遮罩覆盖无关页面内容。
+
+## React
+
+```tsx
+import { AppShell, useAppShell } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAppShell();
+  return (
+    <AppShell ref={control.ref}>组件内容</AppShell>
+  );
+}
+```
+
+`useAppShell` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { AppShell, useAppShell } from "@a3s-lab/ui/vue";
+
+const control = useAppShell();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AppShell ref="componentRef">组件内容</AppShell>
+</template>
+```
+
+`useAppShell` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

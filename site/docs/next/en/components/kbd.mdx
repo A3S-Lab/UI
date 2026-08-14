@@ -108,3 +108,32 @@ Keyboard labels are direction-neutral. Surrounding spacing should use logical ut
   </span>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Kbd } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Kbd>Component content</Kbd>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Kbd } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Kbd>Component content</Kbd>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

@@ -1,0 +1,43 @@
+/* Icon */
+@layer components {
+  .icon {
+    display: inline-flex;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    vertical-align: -0.125em;
+  }
+
+  .icon[data-size="sm"] {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+  }
+
+  .icon[data-size="lg"] {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+  }
+
+  .icon :is(svg, img, [data-icon-slot]) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  .icon svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.875;
+  }
+
+  .icon[data-filled] svg {
+    fill: currentColor;
+    stroke: none;
+  }
+}

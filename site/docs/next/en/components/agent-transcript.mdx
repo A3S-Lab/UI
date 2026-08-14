@@ -97,3 +97,32 @@ Assistant output remains open document content on the canvas; user Turns use the
 ## Accessibility
 
 Give the region an accessible name and preserve chronological DOM order. Make only an actually overflowing viewport focusable. Announce coarse state such as “Agent finished” or “Approval required”; do not place the token stream itself in a live region. New content must not steal focus or force the page to scroll when the reader has moved away from the latest Turn.
+
+## React
+
+```tsx
+import { AgentTranscript } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <AgentTranscript aria-label="Agent Transcript">Component content</AgentTranscript>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { AgentTranscript } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <AgentTranscript aria-label="Agent Transcript">Component content</AgentTranscript>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

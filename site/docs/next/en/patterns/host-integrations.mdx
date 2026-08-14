@@ -1,0 +1,133 @@
+# Host integration boundaries
+
+Provider identity, remote services, executable renderers, and pointer effects are host capabilities. A3S UI supplies stable slots and states; it does not copy third-party logos, credentials, network clients, or parsing engines into the design system.
+
+## Provider and product icons
+
+Use Icon for a host-supplied graphic and Brand Lockup only for approved A3S identity. The host registry maps a stable provider key to a licensed asset. A3S UI controls optical size and alignment, not the asset or its brand rules.
+
+```html
+<span class="icon" role="img" aria-label="Identity provider">
+  <span data-icon-slot data-provider="identity-provider">
+    <!-- Host registry inserts a licensed SVG or image. -->
+  </span>
+</span>
+```
+
+Decorative provider icons use `aria-hidden="true"` and sit beside visible text. Never derive a provider from color or filename, and never use a generic Unicode glyph as its logo.
+
+### React
+
+```tsx
+import { Icon } from "@a3s-lab/ui/react";
+
+export function ProviderIcon({ label, graphic }: { label: string; graphic: React.ReactNode }) {
+  return <Icon role="img" aria-label={label}><span data-icon-slot>{graphic}</span></Icon>;
+}
+```
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import { Icon } from "@a3s-lab/ui/vue";
+defineProps<{ label: string }>();
+</script>
+
+<template>
+  <Icon role="img" :aria-label="label"><span data-icon-slot><slot /></span></Icon>
+</template>
+```
+
+## Emoji and file assets
+
+Unicode emoji selected as message content may remain text. Illustrated emoji packs are remote media and belong in an Image or Avatar slot with host-provided alt text and fallback. File Type Icon accepts a text extension by default; a host registry may replace its graphic only after the actual filename and MIME policy are known.
+
+```js
+const fileIcons = new Map([
+  ["typescript", () => import("./icons/typescript.svg")],
+]);
+
+async function renderFileIcon(root, kind) {
+  const load = fileIcons.get(kind);
+  if (!load) return; // Keep the readable generic extension.
+  const asset = await load();
+  root.querySelector("[data-file-icon-slot]").replaceChildren(asset.default);
+}
+```
+
+The registry is application code because licenses, bundle size, file classification, and fallback policy vary by product.
+
+## Markdown renderer registry
+
+Markdown Surface accepts sanitized DOM from a host renderer. Diagrams, mathematics, citations, and media are explicit renderer slots; unknown nodes fall back to readable text. Never pass untrusted HTML directly to the component.
+
+```html
+<article class="markdown-surface">
+  <p>Deployment flow</p>
+  <figure data-markdown-renderer="diagram" aria-labelledby="deployment-flow-caption">
+    <div data-renderer-output role="img" aria-label="Deployment flow diagram"></div>
+    <figcaption id="deployment-flow-caption">Source, review, build, and release.</figcaption>
+  </figure>
+</article>
+```
+
+The host owns parser versions, worker isolation, sanitization, loading, timeout, and error recovery. A diagram failure keeps the source or a textual description available; a media failure keeps its caption and retry path.
+
+### React
+
+```tsx
+import { MarkdownSurface } from "@a3s-lab/ui/react";
+
+export function MarkdownResult({ children }: { children: React.ReactNode }) {
+  return <MarkdownSurface data-state="ready">{children}</MarkdownSurface>;
+}
+```
+
+### Vue
+
+```vue
+<script setup>
+import { MarkdownSurface } from "@a3s-lab/ui/vue";
+</script>
+
+<template><MarkdownSurface data-state="ready"><slot /></MarkdownSurface></template>
+```
+
+## Comment service slot
+
+A remote discussion service is a product integration, not a Card variant. Place its mount point in a named region and expose loading, authentication required, blocked, error, and ready states. The host owns consent, credentials, origin policy, and data retention.
+
+```html
+<section aria-labelledby="discussion-title" data-host-integration="comments" data-state="loading">
+  <h2 id="discussion-title">Discussion</h2>
+  <p role="status">Loading discussion…</p>
+  <div data-integration-mount></div>
+</section>
+```
+
+## Pointer spotlight
+
+A spotlight is admitted only on an optional showcase or landmark surface where pointer position carries deliberate visual meaning. It never changes hit targets, selection, contrast, or content order. Disable it for coarse pointers and reduced motion, and render the surface fully usable before JavaScript runs.
+
+```css
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-optional-spotlight]::before {
+    background: radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgb(91 87 217 / 12%), transparent 18rem);
+  }
+}
+```
+
+The host behavior may update CSS coordinates with `requestAnimationFrame`; the design system does not install a document-wide pointer listener.
+
+## Ownership matrix
+
+| Capability | A3S UI owns | Host owns |
+| --- | --- | --- |
+| Provider icon | size, alignment, accessible slot | asset, license, provider mapping |
+| Illustrated emoji | Image/Avatar presentation | pack, search data, fallback, network |
+| File graphic | generic extension and slot | classification and optional registry |
+| Diagram | labeled figure and error surface | parser, sandbox, sanitization, worker |
+| Markdown plugin | renderer slot and states | registry, trusted output, versioning |
+| Comments | named mount region and status | identity, consent, service lifecycle |
+| Spotlight | opt-in visual admission rules | pointer data and page-specific effect |

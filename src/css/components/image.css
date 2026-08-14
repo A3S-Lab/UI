@@ -1,0 +1,67 @@
+/* Image */
+@layer components {
+  figure.image {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  figure.image :is(picture, img) {
+    display: block;
+    max-inline-size: 100%;
+  }
+
+  figure.image > :is(picture, img) {
+    inline-size: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--muted);
+  }
+
+  figure.image img {
+    block-size: auto;
+    object-fit: cover;
+  }
+
+  figure.image[data-aspect="square"] img {
+    aspect-ratio: 1;
+  }
+
+  figure.image[data-aspect="video"] img {
+    aspect-ratio: 16 / 9;
+  }
+
+  figure.image figcaption,
+  figure.image [data-image-status] {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  figure.image[data-state="loading"] > :is(picture, img),
+  figure.image[data-state="error"] > :is(picture, img) {
+    min-block-size: 10rem;
+  }
+
+  figure.image[data-state="loading"] > :is(picture, img) {
+    opacity: 0.65;
+  }
+
+  figure.image[data-state="error"] > :is(picture, img) {
+    border: 1px dashed var(--border);
+    object-fit: contain;
+  }
+
+  figure.image img:is([tabindex], [data-action]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    figure.image img {
+      scroll-behavior: auto;
+    }
+  }
+}

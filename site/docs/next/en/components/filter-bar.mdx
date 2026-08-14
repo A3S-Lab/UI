@@ -3,9 +3,116 @@
 Filter Bar keeps search, facets, active conditions, result count, and clear actions in one stable region. It maintains control state and emits events while the host application owns result queries.
 
 <Preview class="w-full">
-  <form id="filter-bar-demo-en" class="filter-bar" role="search" aria-label="Filter projects" onsubmit="event.preventDefault()">
-    <div data-filter-controls><div data-filter-primary><div class="input-group" data-filter-search><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" name="query" aria-label="Search projects" placeholder="Search name or owner" /></div><div data-filter-group data-selection="single" data-required="true"><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="all" aria-pressed="false">All</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">Active</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="paused" aria-pressed="false">Paused</button></div></div><div data-filter-actions><output data-filter-count aria-live="polite">12 projects</output><button type="button" class="btn" data-size="sm" data-variant="ghost" data-filter-clear>Clear</button></div></div>
-    <div data-filter-active aria-label="Active filters"><span data-filter-chip data-filter-name="state" data-filter-value="active"><strong>State</strong> Active<button type="button" data-filter-remove aria-label="Remove state filter"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></div>
+  <form
+    id="filter-bar-demo-en"
+    class="filter-bar"
+    role="search"
+    aria-label="Filter projects"
+    onsubmit="event.preventDefault()"
+  >
+    <div data-filter-controls>
+      <div data-filter-primary>
+        <div class="input-group" data-filter-search>
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            type="search"
+            name="query"
+            aria-label="Search projects"
+            placeholder="Search name or owner"
+          />
+        </div>
+        <div
+          data-filter-group
+          data-selection="single"
+          data-required="true"
+          data-default-value="all"
+        >
+          <button
+            type="button"
+            data-filter-toggle
+            data-filter-name="state"
+            data-filter-value="all"
+            aria-pressed="false"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            data-filter-toggle
+            data-filter-name="state"
+            data-filter-value="active"
+            aria-pressed="true"
+          >
+            Active
+          </button>
+          <button
+            type="button"
+            data-filter-toggle
+            data-filter-name="state"
+            data-filter-value="paused"
+            aria-pressed="false"
+          >
+            Paused
+          </button>
+        </div>
+      </div>
+      <div data-filter-actions>
+        <output data-filter-count aria-live="polite">
+          12 projects
+        </output>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="ghost"
+          data-filter-clear
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+    <div data-filter-active aria-label="Active filters">
+      <span
+        data-filter-chip
+        data-filter-name="state"
+        data-filter-value="active"
+      >
+        <strong>State</strong> Active
+        <button
+          type="button"
+          data-filter-remove
+          aria-label="Remove state filter"
+        >
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+          >
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </span>
+    </div>
   </form>
 </Preview>
 
@@ -15,12 +122,28 @@ Filter Bar keeps search, facets, active conditions, result count, and clear acti
 <form class="filter-bar" role="search" aria-label="Filter projects">
   <div data-filter-controls>
     <div data-filter-primary>
-      <input class="input" type="search" data-filter-search aria-label="Search projects" />
+      <input
+        class="input"
+        type="search"
+        data-filter-search
+        aria-label="Search projects"
+      />
       <div data-filter-group data-selection="single">
-        <button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">Active</button>
+        <button
+          type="button"
+          data-filter-toggle
+          data-filter-name="state"
+          data-filter-value="active"
+          aria-pressed="true"
+        >
+          Active
+        </button>
       </div>
     </div>
-    <div data-filter-actions><output data-filter-count>12 projects</output><button type="button" data-filter-clear>Clear</button></div>
+    <div data-filter-actions>
+      <output data-filter-count>12 projects</output
+      ><button type="button" data-filter-clear>Clear</button>
+    </div>
   </div>
 </form>
 ```
@@ -29,25 +152,32 @@ After loading `filter-bar.js`, the controller synchronizes single- or multi-sele
 
 ### Parameters
 
-| API | Purpose |
-| --- | --- |
-| `data-filter-search` | Native search input or its compound field container |
-| `data-filter-group` | Related conditions; `data-selection` is `single` or `multiple` |
-| `data-required="true"` | Keeps one condition active in a single-select group |
-| `data-filter-toggle` | Expresses a condition with `data-filter-name`, `data-filter-value`, and `aria-pressed` |
-| `data-filter-chip` / `data-filter-remove` | Active condition and its remove action |
-| `data-filter-count` | Result count updated by the host |
+| API                                       | Purpose                                                                                |
+| ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| `data-filter-search`                      | Native search input or its compound field container                                    |
+| `data-filter-group`                       | Related conditions; `data-selection` is `single` or `multiple`                         |
+| `data-required="true"`                    | Keeps one condition active in a single-select group                                    |
+| `data-default-value="value"`              | Required-group fallback used by clear and controlled updates                           |
+| `data-filter-toggle`                      | Expresses a condition with `data-filter-name`, `data-filter-value`, and `aria-pressed` |
+| `data-filter-chip` / `data-filter-remove` | Active condition and its remove action                                                 |
+| `data-filter-count`                       | Result count updated by the host                                                       |
 
 ### JavaScript API
 
 ```js
 const filters = document.querySelector(".filter-bar");
-filters.clear();
-filters.refresh();
-filters.addEventListener("a3s:filter-change", ({ detail }) => updateQuery(detail));
+filters.setFilters([{ name: "state", value: "active" }]);
+filters.setSearch({ query: "release" });
+console.log(filters.getState());
+filters.resetFilters();
+filters.addEventListener("a3s:filter-change", ({ detail }) =>
+  updateQuery(detail),
+);
 ```
 
-Event detail contains the current `filters` array plus the triggering `kind`, `name`, `value`, and `pressed`. Search continues to emit the native `input` event.
+`getFilters()` and `getSearch()` return query snapshots. `setFilters()`, `setSearch()`, `clear()`, and `resetFilters()` keep segmented controls, active chips, and search values synchronized. Native `form.reset()` uses the same initial snapshot, while `requestSubmit()` keeps normal form submission semantics. `refresh({ preserve, resetInitial })` rebinds replaced controls.
+
+`a3s:filter-before-change` is cancelable and restores the previous query when rejected. `a3s:filter-change` contains `previous`, `current`, `source`, `kind`, and the compatibility `filters` fields. Programmatic search updates emit one native `input` event and one custom change event; user typing reuses its existing native event rather than duplicating it.
 
 ## States and variants
 
@@ -58,3 +188,35 @@ Keep input and active conditions visible while remote results load. No results b
 ## Accessibility
 
 Use a named search form. Toggle buttons maintain `aria-pressed`, and result-count changes use polite announcements. Keep focus near a removed condition, and do not move focus into the results after clearing all filters.
+
+## React
+
+```tsx
+import { FilterBar, useFilterBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useFilterBar();
+  return (
+    <FilterBar ref={control.ref} aria-label="Filter Bar"><label>Name<input name="name" /></label><button type="submit">Continue</button></FilterBar>
+  );
+}
+```
+
+`useFilterBar` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { FilterBar, useFilterBar } from "@a3s-lab/ui/vue";
+
+const control = useFilterBar();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <FilterBar ref="componentRef" aria-label="Filter Bar"><label>Name<input name="name" /></label><button type="submit">Continue</button></FilterBar>
+</template>
+```
+
+`useFilterBar` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

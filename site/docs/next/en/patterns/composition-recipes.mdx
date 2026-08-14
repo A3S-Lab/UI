@@ -1,0 +1,163 @@
+# Composition recipes
+
+A composition earns documentation when several existing contracts solve one repeatable task. It does not earn a new root class merely because another library packages the same markup under a name. These recipes keep ownership, keyboard behavior, and failure recovery visible.
+
+## Icon-only actions and groups
+
+An icon-only action is still a Button. Use an accessible name and the icon size variant; group related actions only when they share one scope. A navigation trigger also reports the controlled region and expanded state.
+
+```html
+<div class="button-group" role="group" aria-label="View controls">
+  <button type="button" class="btn" data-size="icon" aria-label="Refresh view">
+    <svg aria-hidden="true" viewBox="0 0 24 24">...</svg>
+  </button>
+  <button type="button" class="btn" data-size="icon" aria-label="Open navigation" aria-controls="workspace-navigation" aria-expanded="false">
+    <svg aria-hidden="true" viewBox="0 0 24 24">...</svg>
+  </button>
+</div>
+```
+
+Do not create an icon-action component that hides its label requirement. A tooltip may repeat the name for sighted pointer users, but it is not the accessible name.
+
+## Native download action
+
+A download is a link when the browser can navigate to a file. Style the anchor as a Button and keep filename, authorization, progress, and failure with the host. Blob creation or authenticated streaming belongs in an application hook because it depends on transport, not visual design.
+
+```html
+<a class="btn" href="/exports/release-report.pdf" download="release-report.pdf">
+  Download report
+</a>
+```
+
+Use a button only when activating it starts a host-owned asynchronous export. In that case expose pending, cancel, error, and retry; do not pretend an unfinished export is a native download.
+
+## Form dialog
+
+Combine Dialog and Form when a short, interruptible edit must be completed or cancelled as one unit. Long or multi-stage configuration belongs on a page. Validation occurs before close; a failed submit keeps input and focus inside the dialog.
+
+```html
+<dialog class="dialog" id="rename-dialog" aria-labelledby="rename-title">
+  <div>
+    <header><h2 id="rename-title">Rename workspace</h2></header>
+    <section>
+      <form class="form" id="rename-form">
+        <label class="field"><span class="label">Name</span><input class="input" name="name" required /></label>
+        <div data-form-error role="alert"></div>
+      </form>
+    </section>
+    <footer>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">Cancel</button>
+      <button type="submit" class="btn" form="rename-form">Save</button>
+    </footer>
+  </div>
+</dialog>
+```
+
+### React
+
+```tsx
+import { Dialog, Form, useDialog } from "@a3s-lab/ui/react";
+
+export function RenameWorkspace() {
+  const dialog = useDialog();
+  return (
+    <>
+      <button type="button" onClick={() => dialog.call("showModal")}>
+        Rename
+      </button>
+      <Dialog ref={dialog.ref} aria-labelledby="rename-title">
+        <div>
+          <header><h2 id="rename-title">Rename workspace</h2></header>
+          <section>
+            <Form id="rename-form">
+              <label className="field"><span className="label">Name</span><input className="input" name="name" required /></label>
+            </Form>
+          </section>
+          <footer><button type="submit" form="rename-form">Save</button></footer>
+        </div>
+      </Dialog>
+    </>
+  );
+}
+```
+
+### Vue
+
+```vue
+<script setup>
+import { Dialog, Form, useDialog } from "@a3s-lab/ui/vue";
+
+const dialog = useDialog();
+const dialogRef = dialog.componentRef;
+</script>
+
+<template>
+  <button type="button" @click="dialog.call('showModal')">Rename</button>
+  <Dialog ref="dialogRef" aria-labelledby="rename-title">
+    <div>
+      <header><h2 id="rename-title">Rename workspace</h2></header>
+      <section>
+        <Form id="rename-form">
+          <label class="field"><span class="label">Name</span><input class="input" name="name" required /></label>
+        </Form>
+      </section>
+      <footer><button type="submit" form="rename-form">Save</button></footer>
+    </div>
+  </Dialog>
+</template>
+```
+
+## Inert busy surface
+
+Use `aria-busy` for status and `inert` only while every control in a bounded region must be unavailable. Keep a readable status outside the inert subtree so assistive technology can hear progress. Preserve entered values and remove both attributes together on success or failure.
+
+```html
+<section aria-labelledby="import-title" aria-busy="true">
+  <h2 id="import-title">Importing records</h2>
+  <div inert>
+    <form class="form">...</form>
+  </div>
+  <div class="progress" role="progressbar" aria-label="Import progress" aria-valuenow="42"><div style="width:42%"></div></div>
+  <p role="status">42% complete. You may leave this page.</p>
+</section>
+```
+
+Skeleton replaces unknown content shape; Progress reports measurable work; Spinner marks a short indeterminate wait. Branded loading is reserved for a bounded application start, never ordinary data fetching.
+
+## Editor command menu
+
+An editor slash menu composes Command with a host-owned caret anchor. The editor owns text, selection, IME state, geometry, and undo. Command owns filtering and keyboard selection only. Escape returns focus without inserting text; choosing an item asks the editor to perform one transaction.
+
+```html
+<div class="command" data-editor-command aria-label="Insert block">
+  <input type="search" placeholder="Search blocks" aria-label="Search blocks" />
+  <div role="listbox"><button type="button" role="option" data-value="code">Code block</button></div>
+</div>
+```
+
+## Layout foundations and safe areas
+
+Flex and Grid are layout primitives, not product components. Use Flex for one-dimensional alignment and Grid when rows and columns share structure. Keep semantic order in the DOM and change only placement at breakpoints.
+
+```css
+.action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.resource-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); gap: 1rem; }
+.mobile-action-bar { padding-block-end: max(0.75rem, env(safe-area-inset-bottom)); }
+```
+
+Safe-area padding belongs on the edge-owning composer, sheet, viewer, or action bar. Do not add it to every nested card. At 200% zoom, layout must reflow rather than expose a second page-level horizontal scrollbar.
+
+## Reuse decisions
+
+| Need | Composition | Boundary |
+| --- | --- | --- |
+| Surface block | Card or Item | Choose by content versus action semantics |
+| Side navigation resizing | Sidebar inside Split Pane | Host persists width |
+| Generic menu | Dropdown Menu, Context Menu, or Command | Choose by trigger and selection task |
+| Segmented choice | Tabs or single-select Button Group | Tabs switch panels; buttons change a value |
+| Range plus exact value | Slider with Input/Field | Host validates and synchronizes one value |
+| Scroll edge cue | Scroll Area with non-interactive edge shadow | Shadow never blocks scrolling or focus |
+| Avatar stack | overlapping Avatars with a text remainder | Host owns membership and overflow count |
+| Transcript edit | Editable Text inside one transcript turn | Host owns history and persistence |
+| Token budget | Status Badge plus Progress | Always include the numeric value |
+| Native media | `video` in a labeled figure or Markdown media slot | Host owns source trust, captions, and controls |

@@ -1,0 +1,71 @@
+# 图像选择
+
+把少量视觉候选项表达为原生单选或复选任务，并在缩略图之外保留名称和选择状态。
+
+<Preview class="w-full">
+<fieldset class="image-select" aria-label="Cover treatment"><div data-image-option><input id="cover-light" type="radio" name="cover" defaultChecked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div></fieldset>
+</Preview>
+
+## 使用方式
+
+```html
+<fieldset class="image-select" aria-label="Cover treatment">
+  <div data-image-option><input id="cover-light" type="radio" name="cover" checked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div>
+</fieldset>
+```
+
+## React
+
+```tsx
+import { ImageSelect, useImageSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useImageSelect();
+  return (
+    <ImageSelect ref={control.ref} aria-label="Cover treatment">
+      <div data-image-option><input id="cover-light" type="radio" name="cover" defaultChecked /><label htmlFor="cover-light"><span data-image-preview style={{ background: "#f7f7f8" }}></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style={{ background: "#202024" }}></span>Dark surface</label></div>
+    </ImageSelect>
+  );
+}
+```
+
+`useImageSelect` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ImageSelect, useImageSelect } from "@a3s-lab/ui/vue";
+
+const control = useImageSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ImageSelect ref="componentRef" aria-label="Cover treatment">
+    <div data-image-option><input id="cover-light" type="radio" name="cover" checked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div>
+  </ImageSelect>
+</template>
+```
+
+`useImageSelect` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `.image-select` |
+| 原生根元素 | `<fieldset>` |
+| 状态 | `ready`, `disabled`, `invalid` |
+| 事件 | `change`, `input` |
+| 方法 | — |
+
+## 产品边界
+
+它不适合大型媒体库、上传管理或精细裁剪。候选超过一屏时应使用带搜索、分页和加载状态的宿主集合。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+每项由原生输入承载状态并具备文字名称。缩略图只是辅助信息，键盘焦点和选中轮廓清晰可见。

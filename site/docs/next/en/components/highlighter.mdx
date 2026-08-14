@@ -1,0 +1,68 @@
+# Highlighter
+
+Presents code already processed by a trusted renderer with keyboard focus, horizontal scrolling, and bounded emphasis.
+
+<Preview class="w-full">
+<pre class="highlighter" tabIndex="0"><code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code></pre>
+</Preview>
+
+## Usage
+
+```html
+<pre class="highlighter" tabindex="0">
+  <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+</pre>
+```
+
+## React
+
+```tsx
+import { Highlighter } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Highlighter tabIndex="0">
+      <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+    </Highlighter>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { Highlighter } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Highlighter tabindex="0">
+    <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+  </Highlighter>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.highlighter` |
+| Native root | `<pre>` |
+| States | `ready`, `loading`, `error` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+It never executes code, guesses a language, or accepts unsanitized HTML. Tokenization and the trust boundary belong to the host renderer.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Code remains left-to-right, colors meet contrast requirements, and highlighted regions use structure or background rather than color alone.

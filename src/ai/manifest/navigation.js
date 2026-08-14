@@ -45,6 +45,7 @@ export const navigationComponents = [
     actions: ["click", "focus", "press"],
     actionParts: { click: "tab", focus: "tab", press: "tab" },
     events: ["basecoat:initialized"],
+    methods: ["refresh", "select"],
     states: ["ready", "disabled"],
   }),
   defineComponent({
@@ -101,6 +102,7 @@ export const overlayComponents = [
     },
     actions: ["click", "focus", "press"],
     events: ["cancel", "close"],
+    methods: ["close", "showModal"],
     states: ["open", "closed"],
   }),
   defineComponent({
@@ -118,6 +120,7 @@ export const overlayComponents = [
     },
     actions: ["click", "fill", "focus", "press"],
     events: ["cancel", "close"],
+    methods: ["close", "showModal"],
     states: ["open", "closed"],
   }),
   defineComponent({
@@ -133,7 +136,8 @@ export const overlayComponents = [
       title: "[aria-labelledby]",
     },
     actions: ["click", "focus", "press"],
-    events: ["cancel", "close"],
+    events: ["basecoat:initialized", "cancel", "close"],
+    methods: ["close", "showModal"],
     states: ["open", "closed"],
   }),
   defineComponent({
@@ -150,6 +154,7 @@ export const overlayComponents = [
     actions: ["click", "focus", "press", "select"],
     actionParts: { select: "item" },
     events: ["basecoat:initialized"],
+    methods: ["close", "open", "refresh", "toggle"],
     states: ["expanded", "collapsed", "disabled"],
   }),
   defineComponent({
@@ -164,6 +169,7 @@ export const overlayComponents = [
     },
     actions: ["click", "focus", "press"],
     events: ["basecoat:initialized"],
+    methods: ["close", "open", "refresh", "toggle"],
     states: ["expanded", "collapsed"],
   }),
   defineComponent({
@@ -205,10 +211,28 @@ export const overlayComponents = [
       select: "item",
     },
     events: [
+      "a3s:context-menu-before-close",
+      "a3s:context-menu-before-open",
+      "a3s:context-menu-before-select",
       "a3s:context-menu-close",
       "a3s:context-menu-open",
       "a3s:context-menu-select",
       "basecoat:initialized",
+    ],
+    methods: [
+      "close",
+      "focusItem",
+      "getState",
+      "open",
+      "openAt",
+      "refresh",
+      "select",
+      "setChecked",
+    ],
+    hooks: [
+      "a3s:context-menu-before-close",
+      "a3s:context-menu-before-open",
+      "a3s:context-menu-before-select",
     ],
     states: ["open", "closed", "disabled"],
   }),

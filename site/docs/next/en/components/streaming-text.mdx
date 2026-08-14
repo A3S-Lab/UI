@@ -1,0 +1,83 @@
+# Streaming Text
+
+Maintains a stable reading region while content arrives incrementally and distinguishes streaming, paused, complete, and failure states.
+
+<Preview class="w-full">
+<output class="streaming-text" data-state="streaming" aria-live="polite"><span data-streaming-content>Checking package contracts and visual states</span><span data-streaming-status>Receiving verified output…</span></output>
+</Preview>
+
+## Usage
+
+```html
+<output class="streaming-text" data-state="streaming" aria-live="polite">
+  <span data-streaming-content>Checking package contracts and visual states</span><span data-streaming-status>Receiving verified output…</span>
+</output>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/streaming-text";
+
+const component = document.querySelector(".streaming-text");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { StreamingText, useStreamingText } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useStreamingText();
+  return (
+    <StreamingText ref={control.ref} data-state="streaming" aria-live="polite">
+      <span data-streaming-content>Checking package contracts and visual states</span><span data-streaming-status>Receiving verified output…</span>
+    </StreamingText>
+  );
+}
+```
+
+`useStreamingText` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { StreamingText, useStreamingText } from "@a3s-lab/ui/vue";
+
+const control = useStreamingText();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <StreamingText ref="componentRef" data-state="streaming" aria-live="polite">
+    <span data-streaming-content>Checking package contracts and visual states</span><span data-streaming-status>Receiving verified output…</span>
+  </StreamingText>
+</template>
+```
+
+`useStreamingText` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.streaming-text` |
+| Native root | `<output>` |
+| States | `streaming`, `complete`, `paused`, `error` |
+| Events | `a3s:streaming-text-complete`, `a3s:streaming-text-update` |
+| Methods | `append`, `complete`, `getState`, `setText` |
+
+## Product boundary
+
+It opens no network connection, parses no rich text, and never scrolls a parent automatically. Transport, abort, retry, and trusted rendering belong to the host.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Updates use a polite live region and reduced motion retains a static status cue. Completion and failure have readable text rather than relying on a blinking caret.

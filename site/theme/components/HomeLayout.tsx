@@ -683,7 +683,7 @@ export function HomeLayout() {
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const isCurrentContract = !version || version === defaultVersion;
-  const componentCount = isCurrentContract ? "89" : "64";
+  const componentCount = isCurrentContract ? "111" : "64";
   const homepageFamilies = isCurrentContract
     ? componentFamilies
     : legacyComponentFamilies;

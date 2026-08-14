@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/en/"><img alt="Documentation in English" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
+  <a href="https://a3s-lab.github.io/UI/playground.html"><img alt="A3S UI Playground" src="https://img.shields.io/badge/try-Playground-2864e8?style=flat-square"></a>
   <a href="https://github.com/A3S-Lab/UI/actions/workflows/pages.yml"><img alt="GitHub Pages deployment" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/UI/pages.yml?branch=main&style=flat-square&label=pages"></a>
   <a href="./LICENSE.md"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-28a978?style=flat-square"></a>
 </p>
@@ -17,7 +18,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system now exposes 89 public component contracts. Thirteen layout and workspace components cover product structure, while the 25-component Harness groups task, conversation, execution, review, evidence, file navigation, editing, terminal, log, and device-preview workflows for Coding Agents.
+The system now exposes 111 public component contracts. Eighty-six general components cover controls, navigation, content, overlays, and product structure, while the 25-component Harness groups task, conversation, execution, review, evidence, file navigation, editing, terminal, log, and device-preview workflows for Coding Agents.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -68,17 +69,17 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 
 ## Component families
 
-| Family               | Included patterns                                                                                                                                                                                                                                                                                                                                                                  |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Input and actions    | Button, Button Group, Bulk Action Bar, Field, Input, Input Group, Textarea, and Label                                                                                                                                                                                                                                                                                              |
-| Selection and search | Native Select, Select, Combobox, Filter Bar, Checkbox, Radio Group, Switch, and Slider                                                                                                                                                                                                                                                                                             |
-| Navigation           | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar                                                                                                                                                                                                                                                                                                                            |
-| Overlays             | Alert Dialog, Dialog, Drawer, Dropdown Menu, Context Menu, Popover, Command, and Tooltip                                                                                                                                                                                                                                                                                           |
-| Feedback and status  | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, and Toast                                                                                                                                                                                                                                                                                                          |
-| Data and content     | Accordion, Avatar, Card, Chart, Item, Kbd, Property List, Data Grid, Table, Stepper, Timeline, and Tree                                                                                                                                                                                                                                                                            |
-| Layout and workspace | App Shell, App Page, Catalog, Setting Row, Brand Lockup, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar                                                                                                                                                                                                                  |
+| Family               | Included patterns                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Input and actions    | Button, Button Group, Bulk Action Bar, Copy Button, Editable Text, Form, Field, Input, Input Group, Hotkey Input, Textarea, and Label                                                                                                                                                                                                                                                             |
+| Selection and search | Native Select, Select, Combobox, Filter Bar, Date Picker, Color Swatches, Image Select, Emoji Picker, Checkbox, Radio Group, Switch, and Slider                                                                                                                                                                                                                                                   |
+| Navigation           | Activity Bar, Breadcrumb, Back to Bottom, Tabs, Pagination, Sidebar, and Table of Contents                                                                                                                                                                                                                                                                                                        |
+| Overlays             | Alert Dialog, Dialog, Drawer, Dropdown Menu, Context Menu, Popover, Floating Panel, Image Viewer, Command, and Tooltip                                                                                                                                                                                                                                                                            |
+| Feedback and status  | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, Streaming Text, and Toast                                                                                                                                                                                                                                                                                                         |
+| Data and content     | Accordion, Collapsible, Avatar, Icon, File Type Icon, Image, Card, Item, Kbd, Markdown Surface, Highlighter, Code Diff, Snippet, Chart, Property List, Data Grid, Table, Sortable List, Stepper, Timeline, and Tree                                                                                                                                                                               |
+| Layout and workspace | App Shell, App Page, Catalog, Setting Row, Brand Lockup, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar                                                                                                                                                                                                                                 |
 | Harness              | Task Start, Task Workspace, Agent Composer, Agent Transcript, Agent Workbench, Context Selector, Message Status, Message Attachment, Message Citation, Follow-up Suggestions, Task Plan, Plan Step, Task Queue, Approval Request, Execution Item, Checkpoint, Tool Call, Change Review, Execution Evidence, Artifact Card, File Explorer, Code Editor, Terminal, Log Viewer, and Device Simulator |
-| Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                     |
+| Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                                    |
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
@@ -86,7 +87,7 @@ Every component guide includes a live preview, minimal usage, public parameters,
 
 The A3S theme is a complete design system rather than a palette layered over unrelated controls:
 
-- **Color** — blue-gray product surfaces with semantic success, warning, danger, and accent roles.
+- **Color** — white and near-black product surfaces with scarce iris focus, A3S brand blue, and reserved semantic states.
 - **Typography** — application-first hierarchy with dense labels and readable long-form documentation.
 - **Spacing** — a consistent rhythm for controls, panels, toolbars, and document canvases.
 - **Shape and elevation** — restrained radii, borders, and shadows that preserve information density.
@@ -120,6 +121,8 @@ These patterns are independently reusable, but their tokens and layout contracts
 
 The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations. Applications continue to own repository, terminal, browser, transport, scheduling, persistence, and policy logic.
 
+The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) exercises eight complete workspace compositions across device sizes, recovery states, inspectors, dark mode, and RTL. It is a separate application route and does not appear in the documentation chapter hierarchy.
+
 ## Documentation languages and versions
 
 The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation.
@@ -144,18 +147,20 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/runtime`               | Shared lifecycle and controller registry                                                                                     |
 | `@a3s-lab/ui/all`                   | Shared runtime plus all auto-initialized controllers except Chart                                                            |
 | `@a3s-lab/ui/{controller}`          | One JavaScript controller, such as `app-shell`, `task-workspace`, `tabs`, `split-pane`, `code-editor`, or `device-simulator` |
-| `@a3s-lab/ui/manifest`              | Machine-readable metadata for all 89 public components                                                                       |
+| `@a3s-lab/ui/manifest`              | Machine-readable metadata for all 111 public components                                                                      |
 | `@a3s-lab/ui/components.json`       | JSON component selectors, parts, actions, states, and test selectors                                                         |
 | `@a3s-lab/ui/ai`                    | DOM annotation, discovery, selector, and snapshot helpers                                                                    |
 | `@a3s-lab/ui/a3s-test`              | Ready-to-run deterministic workflow example                                                                                  |
 | `@a3s-lab/ui/a3s-test/selectors`    | Component, part, action, ready, and state selector helpers                                                                   |
-| `@a3s-lab/ui/react`                 | Optional thin React element adapters; React remains a peer dependency                                                        |
-| `@a3s-lab/ui/vue`                   | Optional thin Vue element adapters; Vue remains a peer dependency                                                            |
+| `@a3s-lab/ui/react`                 | Optional thin React adapters and typed controller hooks; React remains a peer dependency                                     |
+| `@a3s-lab/ui/vue`                   | Optional thin Vue adapters and typed controller composables; Vue remains a peer dependency                                   |
 | `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
 
 The optional semantic runtime annotates matching roots with `data-a3s-components`, parts with `data-a3s-parts`, exact part ownership with `data-a3s-part-owners`, and current state with `data-a3s-state`. It does not replace application behavior or introduce a framework runtime. See the bilingual [Integration guide](https://a3s-lab.github.io/UI/integration.html) for native HTML, React, Vue, and deterministic test examples.
+
+React and Vue also expose `useA3SLocale`, `useA3STheme`, and `useA3SMotion`. These hooks and composables observe the same root `lang`, `dir`, `data-theme`, `.dark`, and media-query contract as native HTML; translation resources, persistence, and server negotiation remain application-owned.
 
 The runtime also keeps open `[data-popover]` surfaces inside the visual viewport. Dropdown menus, popovers, selects, and comboboxes share collision flipping, constrained available height, live scroll/resize positioning, and logical RTL alignment.
 
@@ -165,6 +170,9 @@ The runtime also keeps open `[data-popover]` surfaces inside the visual viewport
 npm ci
 npm ci --prefix site
 npm run build
+npm run check:coverage:strict
+npm run check:framework-docs
+npm run check:boundaries
 npm run check:package
 npm run docs:build
 npm run test:e2e:a3s:check

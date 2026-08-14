@@ -225,3 +225,35 @@ Add `dir="rtl"` to the field group or an ancestor.
   </label>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCheckbox();
+  return (
+    <Checkbox ref={control.ref} aria-label="Name" />
+  );
+}
+```
+
+`useCheckbox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/vue";
+
+const control = useCheckbox();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Checkbox ref="componentRef" aria-label="Name" />
+</template>
+```
+
+`useCheckbox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

@@ -241,3 +241,32 @@ Add `class="btn"` to a `<button>` or `<a>`. Add `data-variant` and `data-size` w
   </button>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Button } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Button>组件内容</Button>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Button } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Button>组件内容</Button>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

@@ -1,0 +1,83 @@
+# 图像查看器
+
+在受保护的全屏阅读层中检查图像细节，并提供缩放、旋转、复位和明确关闭路径。
+
+<Preview class="w-full">
+<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0"><div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="../../../public/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p></dialog>
+</Preview>
+
+## 使用方式
+
+```html
+<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
+  <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+</dialog>
+```
+
+### 独立控制器
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/image-viewer";
+
+const component = document.querySelector("dialog.image-viewer");
+component.getState();
+```
+
+控制器是幂等的；完整包可改为一次导入 `@a3s-lab/ui/all`。宿主通过可取消的 `before-*` 事件执行权限与业务校验。
+
+## React
+
+```tsx
+import { ImageViewer, useImageViewer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useImageViewer();
+  return (
+    <ImageViewer ref={control.ref} open data-state="open" style={{ position: "relative", inlineSize: "100%", blockSize: "20rem", margin: "0" }}>
+      <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+    </ImageViewer>
+  );
+}
+```
+
+`useImageViewer` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ImageViewer, useImageViewer } from "@a3s-lab/ui/vue";
+
+const control = useImageViewer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ImageViewer ref="componentRef" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
+    <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+  </ImageViewer>
+</template>
+```
+
+`useImageViewer` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `dialog.image-viewer` |
+| 原生根元素 | `<dialog>` |
+| 状态 | `open`, `closed`, `loading`, `error` |
+| 事件 | `a3s:image-viewer-before-open`, `a3s:image-viewer-change`, `a3s:image-viewer-open`, `cancel`, `close` |
+| 方法 | `close`, `getState`, `open`, `reset`, `rotate`, `zoom` |
+
+## 产品边界
+
+查看器不编辑原文件、不保存变换，也不替代图库导航。资源授权、下载与可信来源由宿主负责。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+打开后焦点进入工具栏，Escape 关闭并返回开启者。缩放可由按钮完成，不依赖滚轮或多点触控。

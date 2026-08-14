@@ -52,3 +52,35 @@ Set `aria-disabled="true"` on the separator to disable resizing. Vertical layout
 ## Accessibility
 
 The controller adds separator orientation, value bounds, current value, percentage text, and keyboard focus. Arrow keys resize by `data-step`; Home and End move to bounds; double click restores the default.
+
+## React
+
+```tsx
+import { SplitPane, useSplitPane } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSplitPane();
+  return (
+    <SplitPane ref={control.ref}>Component content</SplitPane>
+  );
+}
+```
+
+`useSplitPane` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { SplitPane, useSplitPane } from "@a3s-lab/ui/vue";
+
+const control = useSplitPane();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <SplitPane ref="componentRef">Component content</SplitPane>
+</template>
+```
+
+`useSplitPane` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

@@ -30,3 +30,32 @@
 ## 无障碍
 
 导航名称应把后续建议与任务导航区分开。按钮名称直接说明将要发生的操作。
+
+## React
+
+```tsx
+import { FollowUpSuggestions } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <FollowUpSuggestions aria-label="Follow-up Suggestions"><a href="#current" aria-current="page">当前页面</a></FollowUpSuggestions>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { FollowUpSuggestions } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <FollowUpSuggestions aria-label="Follow-up Suggestions"><a href="#current" aria-current="page">当前页面</a></FollowUpSuggestions>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

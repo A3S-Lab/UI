@@ -1,0 +1,71 @@
+# 折叠内容
+
+使用原生 details 元素收纳次要说明，同时让标题、展开状态和无脚本降级路径保持清晰。
+
+<Preview class="w-full">
+<details class="collapsible" open><summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div></details>
+</Preview>
+
+## 使用方式
+
+```html
+<details class="collapsible" open>
+  <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+</details>
+```
+
+## React
+
+```tsx
+import { Collapsible, useCollapsible } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCollapsible();
+  return (
+    <Collapsible ref={control.ref} open>
+      <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+    </Collapsible>
+  );
+}
+```
+
+`useCollapsible` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Collapsible, useCollapsible } from "@a3s-lab/ui/vue";
+
+const control = useCollapsible();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Collapsible ref="componentRef" open>
+    <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+  </Collapsible>
+</template>
+```
+
+`useCollapsible` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `details.collapsible` |
+| 原生根元素 | `<details>` |
+| 状态 | `open`, `closed`, `disabled` |
+| 事件 | `toggle` |
+| 方法 | — |
+
+## 产品边界
+
+折叠内容适合补充信息，不应用来隐藏完成任务所必需的字段、错误或主要操作。多个互斥区段应使用 Accordion。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+summary 保持原生键盘行为和可见焦点。禁用状态必须同时阻止指针与键盘操作，内容顺序不随视觉折叠改变。

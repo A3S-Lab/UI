@@ -1,0 +1,83 @@
+# Copy Button
+
+Copies code, commands, or identifiers and reports pending, success, and failure in the same action location.
+
+<Preview class="w-full">
+<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed"><span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span></button>
+</Preview>
+
+## Usage
+
+```html
+<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
+  <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+</button>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/copy-button";
+
+const component = document.querySelector(".copy-button");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { CopyButton, useCopyButton } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCopyButton();
+  return (
+    <CopyButton ref={control.ref} data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
+      <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+    </CopyButton>
+  );
+}
+```
+
+`useCopyButton` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { CopyButton, useCopyButton } from "@a3s-lab/ui/vue";
+
+const control = useCopyButton();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <CopyButton ref="componentRef" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
+    <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+  </CopyButton>
+</template>
+```
+
+`useCopyButton` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.copy-button` |
+| Native root | `<button>` |
+| States | `ready`, `copying`, `copied`, `error`, `disabled` |
+| Events | `a3s:copy-before`, `a3s:copy-error`, `a3s:copy-success` |
+| Methods | `copy`, `getState`, `setSource` |
+
+## Product boundary
+
+Copy must not disguise download, sharing, or authorization. The host explicitly supplies sensitive values; the component never reads the clipboard or protected data on its own.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+The label keeps its action meaning while a live region reports the result. Failure copy explains that the browser rejected copying and leaves a retry or manual-selection path.

@@ -134,6 +134,10 @@ A3S UI maps shadcn/ui's Vaul Drawer to a native `<dialog>` element. This keeps m
   </dd>
 </dl>
 
+### JavaScript API
+
+React `useDrawer` and the equivalent Vue composable expose native `showModal()` and the enhanced `close(returnValue)`. `close()` waits for an exit transition no longer than 220ms and completes immediately under reduced motion.
+
 ## Examples
 
 ### Sides
@@ -310,3 +314,35 @@ Drawer sides are physical viewport sides. Content spacing and text alignment fol
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Drawer, useDrawer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDrawer();
+  return (
+    <Drawer ref={control.ref} aria-label="Drawer"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></Drawer>
+  );
+}
+```
+
+`useDrawer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Drawer, useDrawer } from "@a3s-lab/ui/vue";
+
+const control = useDrawer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Drawer ref="componentRef" aria-label="Drawer"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></Drawer>
+</template>
+```
+
+`useDrawer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

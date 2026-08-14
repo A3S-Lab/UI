@@ -45,6 +45,24 @@
     letter-spacing: -0.04em;
   }
 
+  .brand-lockup > [data-brand-mark]:has(> :is(img, svg)) {
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+  }
+
+  .brand-lockup > [data-brand-mark] > :is(img, svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: inherit;
+    object-fit: contain;
+  }
+
+  .brand-lockup[data-tone='mono'] > [data-brand-mark] > :is(img, svg) {
+    filter: grayscale(1);
+  }
+
   .brand-lockup > [data-brand-identity] {
     gap: 0.0625rem;
   }

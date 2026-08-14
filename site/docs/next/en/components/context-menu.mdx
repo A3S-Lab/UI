@@ -4,8 +4,167 @@ Context Menu exposes commands tied to a file, canvas node, or data row. It suppo
 
 <Preview class="w-full max-w-2xl">
   <div id="context-menu-demo-en" class="context-menu" data-context-surface>
-    <div class="item" data-variant="outline" data-context-trigger tabindex="0" aria-describedby="context-menu-help-en"><figure><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></figure><section><h3>deployment.acl</h3><p id="context-menu-help-en">Right-click, or focus and press Shift + F10.</p></section><aside><span class="status-badge" data-state="warning"><span data-indicator></span>Modified</span></aside></div>
-    <div data-context-content role="menu" aria-label="File actions" aria-hidden="true"><button type="button" role="menuitem" data-value="open">Open<kbd class="kbd">Enter</kbd></button><button type="button" role="menuitem" data-value="rename">Rename<kbd class="kbd">F2</kbd></button><div role="none" data-context-submenu><button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false">Open with<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-submenu-arrow aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button><div data-context-submenu-content role="menu" aria-label="Open with" aria-hidden="true"><button type="button" role="menuitemradio" aria-checked="true" data-value="editor"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>Text editor</button><button type="button" role="menuitemradio" aria-checked="false" data-value="diff"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>Diff view</button></div></div><hr role="separator" /><button type="button" role="menuitemcheckbox" aria-checked="true" data-value="watch"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>Watch changes</button><button type="button" role="menuitem" aria-disabled="true">Stage file</button><hr role="separator" /><button type="button" role="menuitem" data-value="delete" data-variant="destructive">Delete</button></div>
+    <div
+      class="item"
+      data-variant="outline"
+      data-context-trigger
+      tabindex="0"
+      aria-describedby="context-menu-help-en"
+    >
+      <figure>
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+        >
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+      </figure>
+      <section>
+        <h3>deployment.acl</h3>
+        <p id="context-menu-help-en">
+          {"Right-click, or focus and press Shift + F10."}
+        </p>
+      </section>
+      <aside>
+        <span class="status-badge" data-state="warning">
+          <span data-indicator></span>
+          <span>Modified</span>
+        </span>
+      </aside>
+    </div>
+    <div
+      data-context-content
+      role="menu"
+      aria-label="File actions"
+      aria-hidden="true"
+    >
+      <button type="button" role="menuitem" data-value="open">
+        <span>Open</span>
+        <kbd class="kbd">Enter</kbd>
+      </button>
+      <button type="button" role="menuitem" data-value="rename">
+        <span>Rename</span>
+        <kbd class="kbd">F2</kbd>
+      </button>
+      <div role="none" data-context-submenu>
+        <button
+          type="button"
+          role="menuitem"
+          aria-haspopup="menu"
+          aria-expanded="false"
+        >
+          <span>Open with</span>
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            data-context-submenu-arrow
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+          >
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+        </button>
+        <div
+          data-context-submenu-content
+          role="menu"
+          aria-label="Open with"
+          aria-hidden="true"
+        >
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked="true"
+            data-value="editor"
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              data-context-indicator
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <path d="m20 6-11 11-5-5"></path>
+            </svg>
+            <span>Text editor</span>
+          </button>
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked="false"
+            data-value="diff"
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              data-context-indicator
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <path d="m20 6-11 11-5-5"></path>
+            </svg>
+            <span>Diff view</span>
+          </button>
+        </div>
+      </div>
+      <hr role="separator" />
+      <button
+        type="button"
+        role="menuitemcheckbox"
+        aria-checked="true"
+        data-value="watch"
+      >
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-context-indicator
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+        >
+          <path d="m20 6-11 11-5-5"></path>
+        </svg>
+        <span>Watch changes</span>
+      </button>
+      <button type="button" role="menuitem" aria-disabled="true">
+        <span>Stage file</span>
+      </button>
+      <hr role="separator" />
+      <button
+        type="button"
+        role="menuitem"
+        data-value="delete"
+        data-variant="destructive"
+      >
+        <span>Delete</span>
+      </button>
+    </div>
   </div>
 </Preview>
 
@@ -14,7 +173,12 @@ Context Menu exposes commands tied to a file, canvas node, or data row. It suppo
 ```html
 <div class="context-menu">
   <div data-context-trigger tabindex="0">deployment.acl</div>
-  <div data-context-content role="menu" aria-label="File actions" aria-hidden="true">
+  <div
+    data-context-content
+    role="menu"
+    aria-label="File actions"
+    aria-hidden="true"
+  >
     <button type="button" role="menuitem" data-value="open">Open</button>
     <button type="button" role="menuitem" data-value="rename">Rename</button>
   </div>
@@ -25,31 +189,70 @@ Load `context-menu.js` after the shared runtime, or use the complete bundle.
 
 ### Parameters
 
-| API | Purpose |
-| --- | --- |
-| `data-context-trigger` | Direct child that receives pointer and keyboard menu requests |
-| `data-context-content[role="menu"]` | Direct-child root menu |
-| `data-context-submenu` | Structural owner containing one `aria-haspopup="menu"` item and its submenu |
-| `data-context-submenu-content` | Nested menu, also using `role="menu"` |
-| `data-value` | Stable command value returned by selection events |
-| `data-context-surface` | Makes the root fill its container for trees or canvases |
+| API                                 | Purpose                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| `data-context-trigger`              | Direct child that receives pointer and keyboard menu requests               |
+| `data-context-content[role="menu"]` | Direct-child root menu                                                      |
+| `data-context-submenu`              | Structural owner containing one `aria-haspopup="menu"` item and its submenu |
+| `data-context-submenu-content`      | Nested menu, also using `role="menu"`                                       |
+| `data-value`                        | Stable command value returned by selection events                           |
+| `data-context-surface`              | Makes the root fill its container for trees or canvases                     |
 
 ### JavaScript API
 
 ```js
 const menu = document.querySelector(".context-menu");
-menu.openAt(240, 160, selectedNode);
-menu.close();
-menu.refresh();
-menu.addEventListener("a3s:context-menu-select", ({ detail }) => run(detail.value, detail.target));
+menu.open({ target: selectedNode });
+menu.openAt(240, 160, selectedNode, { source: "api" });
+menu.focusItem("rename");
+console.log(menu.getState());
+menu.addEventListener("a3s:context-menu-select", ({ detail }) =>
+  run(detail.value, detail.target),
+);
 ```
 
-Open, selection, and close emit `a3s:context-menu-open`, `a3s:context-menu-select`, and `a3s:context-menu-close`. The controller constrains menus to the visual viewport and closes on viewport scroll or resize.
+`open()` anchors to a target; `openAt()` uses viewport coordinates. `focusItem()`, `select()`, and `setChecked()` control stable `data-value` commands. `close({ reason, restoreFocus, force })` reports why the menu left; the legacy `close(false)` signature remains valid. `getState()` returns open, target, position, and active-item state; `refresh()` rebinds replaced content.
+
+Cancelable `a3s:context-menu-before-open`, `a3s:context-menu-before-select`, and `a3s:context-menu-before-close` hooks let a host authorize or populate commands before state changes. Completed open, select, and close events include `source`, `reason`, target, stable value, and boolean checked state. The controller does not open a menu with no enabled commands. It constrains root and nested menus to the visual viewport, including zoomed viewports, and closes safely on viewport movement.
+
+React `useContextMenu` and the equivalent Vue composable listen to the same events and invoke manifest-declared controller methods through `call()`.
 
 ## States and variants
 
-Keep Context Menu commands short and directly related to the invocation target. Use Command for global navigation, Toolbar for persistent actions, and Alert Dialog for destructive confirmation. Do not open an empty menu when no contextual action applies.
+Keep Context Menu commands short and directly related to the invocation target. Use Command for global navigation, Toolbar for persistent actions, and Alert Dialog for destructive confirmation. Populate permission-dependent commands in the before-open hook; remove unavailable groups and separators rather than presenting an empty or mostly disabled menu.
 
 ## Accessibility
 
 Focusable trigger surfaces need a name or description. Use `aria-disabled="true"` for disabled items; arrow navigation skips them. Escape closes the complete menu and restores focus. Logical direction keys swap automatically in RTL.
+
+## React
+
+```tsx
+import { ContextMenu, useContextMenu } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useContextMenu();
+  return (
+    <ContextMenu ref={control.ref}>Component content</ContextMenu>
+  );
+}
+```
+
+`useContextMenu` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ContextMenu, useContextMenu } from "@a3s-lab/ui/vue";
+
+const control = useContextMenu();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ContextMenu ref="componentRef">Component content</ContextMenu>
+</template>
+```
+
+`useContextMenu` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

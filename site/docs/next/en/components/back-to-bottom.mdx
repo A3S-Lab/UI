@@ -1,0 +1,86 @@
+# Back to Bottom
+
+Returns people to the newest content in an append-only scroll region and exposes how many updates arrived while they were reading earlier content.
+
+<Preview class="w-full">
+<div data-scroll-owner style="position:relative;min-height:10rem;inline-size:100%;padding:1rem;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+  <p>You are reading earlier output while new content continues below.</p>
+  <button class="back-to-bottom" data-always-visible data-unread="3"><span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span></button>
+</div>
+</Preview>
+
+## Usage
+
+```html
+<button class="back-to-bottom" data-always-visible data-unread="3">
+  <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+</button>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/back-to-bottom";
+
+const component = document.querySelector(".back-to-bottom");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useBackToBottom();
+  return (
+    <BackToBottom ref={control.ref} data-always-visible data-unread="3">
+      <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+    </BackToBottom>
+  );
+}
+```
+
+`useBackToBottom` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/vue";
+
+const control = useBackToBottom();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <BackToBottom ref="componentRef" data-always-visible data-unread="3">
+    <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+  </BackToBottom>
+</template>
+```
+
+`useBackToBottom` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.back-to-bottom` |
+| Native root | `<button>` |
+| States | `hidden`, `visible`, `unread` |
+| Events | `a3s:back-to-bottom-activate`, `a3s:back-to-bottom-visibility-change` |
+| Methods | `getState`, `scrollToBottom`, `setUnread` |
+
+## Product boundary
+
+It owns scroll position and an unread count only. Transport, read receipts, and list virtualization remain with the host. Do not show it for short or non-streaming content.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Give the button a clear name and render the update count as text. Scrolling honors reduced-motion preferences and never drags a reader away when new content arrives.

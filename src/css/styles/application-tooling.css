@@ -5,11 +5,11 @@
   .context-menu [data-context-submenu-content] {
     gap: 0.125rem;
     padding: 0.375rem;
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--popover);
     color: var(--popover-foreground);
-    box-shadow: 0 0.75rem 2rem
-      color-mix(in srgb, var(--foreground) 18%, transparent);
+    box-shadow: var(--a3s-shadow-soft, 0 0.5rem 1rem -0.25rem rgb(0 0 0 / 20%));
   }
 
   .context-menu
@@ -34,11 +34,7 @@
       [role="menuitemcheckbox"],
       [role="menuitemradio"]
     ):is(:hover, :focus-visible, [data-active="true"]) {
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 9%,
-      var(--popover)
-    );
+    background: var(--muted);
     color: var(--foreground);
   }
 
@@ -85,6 +81,11 @@
     color: var(--muted-foreground);
     font-family: var(--font-mono);
     font-size: var(--a3s-font-size-micro, 0.6875rem);
+  }
+
+  .context-menu [role="menu"]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
   }
 
   /* File Explorer */
@@ -187,9 +188,39 @@
     font: inherit;
   }
 
+  .file-explorer [data-file-editor][aria-invalid="true"] {
+    border-color: var(--destructive);
+  }
+
   .file-explorer [data-file-editor]:focus-visible {
     outline: 2px solid color-mix(in srgb, var(--ring) 38%, transparent);
     outline-offset: 1px;
+  }
+
+  .file-explorer [data-file-editor][aria-invalid="true"]:focus-visible {
+    outline-color: color-mix(in srgb, var(--destructive) 42%, transparent);
+  }
+
+  .file-explorer [data-file-rename-error] {
+    padding: 0.1875rem 0.375rem 0.25rem;
+    color: var(--destructive);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 0.875rem;
+  }
+
+  .file-explorer [data-file-filter-empty] {
+    align-content: center;
+    justify-items: center;
+    gap: 0.625rem;
+    padding: 1.5rem 0.75rem;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    text-align: center;
+  }
+
+  .file-explorer[data-filter="empty"] [data-file-explorer-viewport] {
+    background: color-mix(in srgb, var(--muted) 18%, var(--card));
   }
 
   .file-explorer [data-file-explorer-state] {

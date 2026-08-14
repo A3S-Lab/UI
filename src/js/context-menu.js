@@ -13,12 +13,12 @@
   const getMenuItems = (menu) =>
     getAllMenuItems(menu).filter((item) => !isDisabled(item));
 
-  const directMenu = (root, selector) =>
+  const directChild = (root, selector) =>
     Array.from(root.children).find((child) => child.matches(selector)) || null;
 
   const getElements = (root) => ({
-    content: directMenu(root, '[data-context-content][role="menu"]'),
-    trigger: directMenu(root, "[data-context-trigger]"),
+    content: directChild(root, '[data-context-content][role="menu"]'),
+    trigger: directChild(root, "[data-context-trigger]"),
   });
 
   const parentMenuItem = (menu) => {
@@ -40,23 +40,57 @@
     );
   };
 
+  const itemValue = (item) =>
+    item.dataset.value ||
+    item.getAttribute("value") ||
+    item.textContent?.trim() ||
+    "";
+
   const setActiveItem = (menu, item, focus = false) => {
     getAllMenuItems(menu).forEach((candidate) => {
       candidate.tabIndex = candidate === item ? 0 : -1;
       if (candidate === item) candidate.dataset.active = "true";
       else delete candidate.dataset.active;
     });
-    if (focus && item) item.focus({ preventScroll: true });
+    if (focus) {
+      if (item) item.focus({ preventScroll: true });
+      else {
+        menu.tabIndex = -1;
+        menu.focus({ preventScroll: true });
+      }
+    }
+  };
+
+  const viewportBounds = () => {
+    const viewport = window.visualViewport;
+    if (!viewport) {
+      return {
+        bottom: window.innerHeight,
+        left: 0,
+        right: window.innerWidth,
+        top: 0,
+      };
+    }
+    return {
+      bottom: viewport.offsetTop + viewport.height,
+      left: viewport.offsetLeft,
+      right: viewport.offsetLeft + viewport.width,
+      top: viewport.offsetTop,
+    };
   };
 
   const clampPosition = (menu, x, y) => {
     const margin = 8;
     const rect = menu.getBoundingClientRect();
+    const bounds = viewportBounds();
     return {
-      x: Math.max(margin, Math.min(x, window.innerWidth - rect.width - margin)),
+      x: Math.max(
+        bounds.left + margin,
+        Math.min(x, bounds.right - rect.width - margin),
+      ),
       y: Math.max(
-        margin,
-        Math.min(y, window.innerHeight - rect.height - margin),
+        bounds.top + margin,
+        Math.min(y, bounds.bottom - rect.height - margin),
       ),
     };
   };
@@ -67,6 +101,7 @@
     const position = clampPosition(menu, x, y);
     menu.style.left = `${position.x}px`;
     menu.style.top = `${position.y}px`;
+    return position;
   };
 
   const closeSubmenu = (menu) => {
@@ -80,8 +115,7 @@
       submenu.setAttribute("aria-hidden", "true");
       submenu.style.removeProperty("left");
       submenu.style.removeProperty("top");
-      const ownerItem = parentMenuItem(submenu);
-      ownerItem?.setAttribute("aria-expanded", "false");
+      parentMenuItem(submenu)?.setAttribute("aria-expanded", "false");
       getAllMenuItems(submenu).forEach((item) => {
         item.tabIndex = -1;
         delete item.dataset.active;
@@ -91,7 +125,7 @@
 
   const openSubmenu = (root, item, focus = true) => {
     const submenu = submenuForItem(item);
-    if (!submenu) return false;
+    if (!submenu || getMenuItems(submenu).length === 0) return false;
     const menu = item.closest('[role="menu"]');
     if (menu) {
       Array.from(
@@ -116,16 +150,46 @@
       ? itemRect.left - menuRect.width + 4
       : itemRect.right - 4;
     placeMenu(submenu, preferredX, itemRect.top - 4);
-    const first = getMenuItems(submenu)[0] || null;
-    setActiveItem(submenu, first, focus);
+    setActiveItem(submenu, getMenuItems(submenu)[0] || null, focus);
     return true;
   };
 
-  const itemValue = (item) =>
-    item.dataset.value ||
-    item.getAttribute("value") ||
-    item.textContent?.trim() ||
-    "";
+  const checkedState = (item) => {
+    const role = item.getAttribute("role");
+    return role === "menuitemcheckbox" || role === "menuitemradio"
+      ? item.getAttribute("aria-checked") === "true"
+      : null;
+  };
+
+  const setItemChecked = (item, checked) => {
+    const role = item.getAttribute("role");
+    if (role === "menuitemcheckbox") {
+      item.setAttribute("aria-checked", String(Boolean(checked)));
+      return true;
+    }
+    if (role !== "menuitemradio") return false;
+    const menu = item.closest('[role="menu"]');
+    const group = item.closest('[role="group"]');
+    const radioItems =
+      group && group.closest('[role="menu"]') === menu
+        ? Array.from(group.querySelectorAll('[role="menuitemradio"]')).filter(
+            (candidate) =>
+              candidate.closest('[role="menu"]') === menu &&
+              candidate.closest('[role="group"]') === group,
+          )
+        : getAllMenuItems(menu).filter(
+            (candidate) =>
+              candidate.getAttribute("role") === "menuitemradio" &&
+              !candidate.closest('[role="group"]'),
+          );
+    radioItems.forEach((candidate) => {
+      candidate.setAttribute(
+        "aria-checked",
+        String(Boolean(checked) && candidate === item),
+      );
+    });
+    return true;
+  };
 
   const refreshContextMenu = (root) => {
     const state = states.get(root);
@@ -139,6 +203,49 @@
         items.find((item) => item.tabIndex === 0) || items[0] || null,
       );
     });
+  };
+
+  const selectItem = (root, state, item, options = {}) => {
+    if (!item || isDisabled(item) || submenuForItem(item)) return false;
+    const role = item.getAttribute("role");
+    const checked =
+      role === "menuitemcheckbox"
+        ? !checkedState(item)
+        : role === "menuitemradio"
+          ? true
+          : null;
+    const detail = {
+      checked,
+      item,
+      originalEvent: options.originalEvent || null,
+      reason: options.reason || "select",
+      source: options.source || "api",
+      target: state.invocationTarget,
+      value: itemValue(item),
+    };
+    const beforeEvent = new CustomEvent("a3s:context-menu-before-select", {
+      bubbles: true,
+      cancelable: true,
+      detail,
+    });
+    if (options.before !== false && !root.dispatchEvent(beforeEvent))
+      return false;
+
+    if (checked !== null) setItemChecked(item, checked);
+    root.dispatchEvent(
+      new CustomEvent("a3s:context-menu-select", {
+        bubbles: true,
+        detail: { ...detail, checked: checkedState(item) },
+      }),
+    );
+    if (options.close !== false) {
+      root.close({
+        reason: "select",
+        restoreFocus: options.restoreFocus !== false,
+        source: options.source || "api",
+      });
+    }
+    return true;
   };
 
   const initContextMenu = (root) => {
@@ -155,6 +262,7 @@
     const state = {
       ...elements,
       invocationTarget: null,
+      position: null,
       previousFocus: null,
       typeahead: "",
       typeaheadTimer: 0,
@@ -162,15 +270,43 @@
     states.set(root, state);
 
     root.refresh = () => refreshContextMenu(root);
-    root.close = (restoreFocus = true) => {
-      if (state.content.getAttribute("aria-hidden") === "true") return;
+    root.getState = () => {
+      const activeItem = root.querySelector(
+        '[role="menu"] [data-active="true"]',
+      );
+      return {
+        activeValue: activeItem ? itemValue(activeItem) : "",
+        open: state.content.getAttribute("aria-hidden") !== "true",
+        position: state.position ? { ...state.position } : null,
+        target: state.invocationTarget,
+      };
+    };
+    root.close = (value = {}) => {
+      const options =
+        typeof value === "boolean" ? { restoreFocus: value } : value || {};
+      if (state.content.getAttribute("aria-hidden") === "true") return true;
+      const detail = {
+        reason: options.reason || "api",
+        restoreFocus: options.restoreFocus !== false,
+        source: options.source || "api",
+        target: state.invocationTarget,
+      };
+      if (!options.force) {
+        const beforeEvent = new CustomEvent("a3s:context-menu-before-close", {
+          bubbles: true,
+          cancelable: true,
+          detail,
+        });
+        if (!root.dispatchEvent(beforeEvent)) return false;
+      }
+
       closeSubmenu(state.content);
       state.content.setAttribute("aria-hidden", "true");
       state.content.style.removeProperty("left");
       state.content.style.removeProperty("top");
       root.dataset.state = "closed";
       if (
-        restoreFocus &&
+        detail.restoreFocus &&
         state.previousFocus instanceof HTMLElement &&
         state.previousFocus.isConnected
       ) {
@@ -179,32 +315,110 @@
       root.dispatchEvent(
         new CustomEvent("a3s:context-menu-close", {
           bubbles: true,
-          detail: { target: state.invocationTarget },
+          detail,
         }),
       );
       state.invocationTarget = null;
+      state.position = null;
       state.previousFocus = null;
+      return true;
     };
-    root.openAt = (x, y, target = state.trigger) => {
+    root.openAt = (x, y, target = state.trigger, value = {}) => {
+      const options =
+        target && !(target instanceof Element) ? target : value || {};
+      const invocationTarget =
+        target instanceof Element
+          ? target
+          : options.target instanceof Element
+            ? options.target
+            : state.trigger;
+      const targetRect = invocationTarget.getBoundingClientRect();
+      const requestedX = Number(x);
+      const requestedY = Number(y);
+      const detail = {
+        menu: state.content,
+        reason: options.reason || "api",
+        source: options.source || "api",
+        target: invocationTarget,
+        x: Number.isFinite(requestedX) ? requestedX : targetRect.left,
+        y: Number.isFinite(requestedY) ? requestedY : targetRect.bottom,
+      };
+      const beforeEvent = new CustomEvent("a3s:context-menu-before-open", {
+        bubbles: true,
+        cancelable: true,
+        detail,
+      });
+      if (options.before !== false && !root.dispatchEvent(beforeEvent))
+        return false;
+
       const wasOpen = state.content.getAttribute("aria-hidden") !== "true";
+      root.refresh();
+      if (getMenuItems(state.content).length === 0) return false;
       document.dispatchEvent(
         new CustomEvent("basecoat:popover", { detail: { source: root } }),
       );
-      root.refresh();
       if (!wasOpen) state.previousFocus = document.activeElement;
-      state.invocationTarget = target;
+      state.invocationTarget = invocationTarget;
       state.content.setAttribute("aria-hidden", "false");
       root.dataset.state = "open";
       closeSubmenu(state.content);
-      placeMenu(state.content, x, y);
-      const first = getMenuItems(state.content)[0] || null;
-      setActiveItem(state.content, first, true);
+      state.position = placeMenu(state.content, detail.x, detail.y);
+      setActiveItem(
+        state.content,
+        getMenuItems(state.content)[0] || null,
+        options.focus !== false,
+      );
       root.dispatchEvent(
         new CustomEvent("a3s:context-menu-open", {
           bubbles: true,
-          detail: { menu: state.content, target, x, y },
+          detail: {
+            ...detail,
+            position: { ...state.position },
+            x: state.position.x,
+            y: state.position.y,
+          },
         }),
       );
+      return true;
+    };
+    root.open = (options = {}) => {
+      const target =
+        options.target instanceof Element ? options.target : state.trigger;
+      const rect = target.getBoundingClientRect();
+      const rtl = getComputedStyle(root).direction === "rtl";
+      return root.openAt(rtl ? rect.right : rect.left, rect.bottom, target, {
+        ...options,
+        reason: options.reason || "anchor",
+      });
+    };
+    root.focusItem = (value, options = {}) => {
+      const item = Array.from(
+        root.querySelectorAll(
+          '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
+        ),
+      ).find((candidate) => itemValue(candidate) === String(value));
+      if (!item || isDisabled(item)) return false;
+      const menu = item.closest('[role="menu"]');
+      const owner = parentMenuItem(menu);
+      if (owner) openSubmenu(root, owner, false);
+      setActiveItem(menu, item, options.focus !== false);
+      return true;
+    };
+    root.select = (value, options = {}) => {
+      const item = Array.from(
+        root.querySelectorAll(
+          '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
+        ),
+      ).find((candidate) => itemValue(candidate) === String(value));
+      return selectItem(root, state, item, options);
+    };
+    root.setChecked = (value, checked = true) => {
+      const item = Array.from(
+        root.querySelectorAll(
+          '[role="menuitemcheckbox"], [role="menuitemradio"]',
+        ),
+      ).find((candidate) => itemValue(candidate) === String(value));
+      return item ? setItemChecked(item, checked) : false;
     };
 
     const handleContextMenu = (event) => {
@@ -212,27 +426,10 @@
       if (!(target instanceof Element) || !state.trigger.contains(target))
         return;
       event.preventDefault();
-      root.openAt(event.clientX, event.clientY, target);
-    };
-
-    const handleTriggerKeydown = (event) => {
-      if (
-        !(event.target instanceof Element) ||
-        !state.trigger.contains(event.target)
-      )
-        return;
-      if (
-        event.key !== "ContextMenu" &&
-        !(event.shiftKey && event.key === "F10")
-      )
-        return;
-      event.preventDefault();
-      const rect = event.target.getBoundingClientRect();
-      root.openAt(
-        rect.left + Math.min(rect.width, 20),
-        rect.top + Math.min(rect.height, 20),
-        event.target,
-      );
+      root.openAt(event.clientX, event.clientY, target, {
+        reason: "contextmenu",
+        source: "pointer",
+      });
     };
 
     const move = (menu, direction) => {
@@ -281,12 +478,28 @@
       return false;
     };
 
-    const handleMenuKeydown = (event) => {
+    const handleKeydown = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (
+        state.trigger.contains(target) &&
+        (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10"))
+      ) {
+        event.preventDefault();
+        const rect = target.getBoundingClientRect();
+        root.openAt(
+          rect.left + Math.min(rect.width, 20),
+          rect.top + Math.min(rect.height, 20),
+          target,
+          { reason: "keyboard", source: "keyboard" },
+        );
+        return;
+      }
       if (state.content.getAttribute("aria-hidden") === "true") return;
-      const item = event.target.closest?.(
+      const item = target.closest(
         '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
       );
-      const menu = event.target.closest?.('[role="menu"]');
+      const menu = target.closest('[role="menu"]');
       if (!menu || !root.contains(menu)) return;
       const rtl = getComputedStyle(root).direction === "rtl";
       const openKey = rtl ? "ArrowLeft" : "ArrowRight";
@@ -294,9 +507,13 @@
 
       if (event.key === "Escape") {
         event.preventDefault();
-        root.close(true);
+        root.close({ reason: "escape", source: "keyboard" });
       } else if (event.key === "Tab") {
-        root.close(false);
+        root.close({
+          reason: "tab",
+          restoreFocus: false,
+          source: "keyboard",
+        });
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
         move(menu, 1);
@@ -320,7 +537,13 @@
         }
       } else if ((event.key === "Enter" || event.key === " ") && item) {
         event.preventDefault();
-        if (!openSubmenu(root, item, true)) item.click();
+        if (!openSubmenu(root, item, true)) {
+          selectItem(root, state, item, {
+            originalEvent: event,
+            reason: "keyboard",
+            source: "keyboard",
+          });
+        }
       } else if (handleTypeahead(event, menu)) {
         event.preventDefault();
       }
@@ -347,62 +570,37 @@
       }
     };
 
-    const handleMenuClick = (event) => {
+    const handleClick = (event) => {
       const item = event.target.closest?.(
         '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]',
       );
       if (!item || isDisabled(item) || !root.contains(item)) return;
       if (openSubmenu(root, item, true)) return;
-
-      const role = item.getAttribute("role");
-      if (role === "menuitemcheckbox") {
-        item.setAttribute(
-          "aria-checked",
-          String(item.getAttribute("aria-checked") !== "true"),
-        );
-      } else if (role === "menuitemradio") {
-        const menu = item.closest('[role="menu"]');
-        const group = item.closest('[role="group"]');
-        const radioItems =
-          group && group.closest('[role="menu"]') === menu
-            ? Array.from(
-                group.querySelectorAll('[role="menuitemradio"]'),
-              ).filter(
-                (candidate) =>
-                  candidate.closest('[role="menu"]') === menu &&
-                  candidate.closest('[role="group"]') === group,
-              )
-            : getMenuItems(menu).filter(
-                (candidate) =>
-                  candidate.getAttribute("role") === "menuitemradio" &&
-                  !candidate.closest('[role="group"]'),
-              );
-        radioItems.forEach((candidate) => {
-          if (candidate.getAttribute("role") === "menuitemradio") {
-            candidate.setAttribute("aria-checked", String(candidate === item));
-          }
-        });
-      }
-
-      root.dispatchEvent(
-        new CustomEvent("a3s:context-menu-select", {
-          bubbles: true,
-          detail: {
-            checked: item.getAttribute("aria-checked"),
-            item,
-            target: state.invocationTarget,
-            value: itemValue(item),
-          },
-        }),
-      );
-      root.close(true);
+      selectItem(root, state, item, {
+        originalEvent: event,
+        reason: event.detail === 0 ? "keyboard" : "pointer",
+        source: event.detail === 0 ? "keyboard" : "pointer",
+      });
     };
 
     const handleDocumentPointerDown = (event) => {
-      if (!root.contains(event.target)) root.close(false);
+      if (!root.contains(event.target)) {
+        root.close({
+          reason: "outside-pointer",
+          restoreFocus: false,
+          source: "pointer",
+        });
+      }
     };
     const handleDocumentPopover = (event) => {
-      if (event.detail.source !== root) root.close(false);
+      if (event.detail?.source !== root) {
+        root.close({
+          force: true,
+          reason: "another-overlay",
+          restoreFocus: false,
+          source: "system",
+        });
+      }
     };
     const handleViewportChange = (event) => {
       if (
@@ -412,34 +610,53 @@
       ) {
         return;
       }
-      root.close(false);
+      root.close({
+        force: true,
+        reason: "viewport-change",
+        restoreFocus: false,
+        source: "system",
+      });
     };
 
-    state.trigger.addEventListener("contextmenu", handleContextMenu);
-    state.trigger.addEventListener("keydown", handleTriggerKeydown);
-    state.content.addEventListener("keydown", handleMenuKeydown);
-    state.content.addEventListener("pointermove", handlePointerMove);
-    state.content.addEventListener("click", handleMenuClick);
+    root.addEventListener("contextmenu", handleContextMenu);
+    root.addEventListener("keydown", handleKeydown);
+    root.addEventListener("pointermove", handlePointerMove);
+    root.addEventListener("click", handleClick);
     document.addEventListener("pointerdown", handleDocumentPointerDown);
     document.addEventListener("basecoat:popover", handleDocumentPopover);
     window.addEventListener("resize", handleViewportChange);
     window.addEventListener("scroll", handleViewportChange, true);
+    window.visualViewport?.addEventListener("resize", handleViewportChange);
+    window.visualViewport?.addEventListener("scroll", handleViewportChange);
 
     root._destroy = () => {
       window.clearTimeout(state.typeaheadTimer);
-      state.trigger.removeEventListener("contextmenu", handleContextMenu);
-      state.trigger.removeEventListener("keydown", handleTriggerKeydown);
-      state.content.removeEventListener("keydown", handleMenuKeydown);
-      state.content.removeEventListener("pointermove", handlePointerMove);
-      state.content.removeEventListener("click", handleMenuClick);
+      root.close({ force: true, reason: "destroy", restoreFocus: false });
+      root.removeEventListener("contextmenu", handleContextMenu);
+      root.removeEventListener("keydown", handleKeydown);
+      root.removeEventListener("pointermove", handlePointerMove);
+      root.removeEventListener("click", handleClick);
       document.removeEventListener("pointerdown", handleDocumentPointerDown);
       document.removeEventListener("basecoat:popover", handleDocumentPopover);
       window.removeEventListener("resize", handleViewportChange);
       window.removeEventListener("scroll", handleViewportChange, true);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        handleViewportChange,
+      );
+      window.visualViewport?.removeEventListener(
+        "scroll",
+        handleViewportChange,
+      );
       states.delete(root);
       delete root.close;
+      delete root.focusItem;
+      delete root.getState;
+      delete root.open;
       delete root.openAt;
       delete root.refresh;
+      delete root.select;
+      delete root.setChecked;
     };
 
     state.content.setAttribute("aria-hidden", "true");

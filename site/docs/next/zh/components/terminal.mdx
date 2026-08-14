@@ -61,3 +61,32 @@
 ## 无障碍
 
 为终端区域命名。高吞吐输出不要使用实时区域，只播报有限状态变化。绝不渲染环境中的敏感信息。
+
+## React
+
+```tsx
+import { Terminal } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Terminal aria-label="Terminal">组件内容</Terminal>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Terminal } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Terminal aria-label="Terminal">组件内容</Terminal>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

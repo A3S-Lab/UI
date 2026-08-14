@@ -192,6 +192,8 @@ A3S UI 下拉菜单相对于 `.dropdown-menu` 包装器内联定位。这与 sha
 | `dropdown.toggle()` | 方法 | 切换菜单。 |
 | `dropdown.refresh()` | 方法 | 在现有 `role="menu"` 元素内的子项发生更改后重新扫描菜单项。 |
 
+React 的 `useDropdownMenu` 与 Vue 的同名 composable 通过 `call()` 暴露这四个方法。
+
 ## 示例
 
 ### 基本
@@ -508,3 +510,35 @@ A3S UI 下拉菜单相对于 `.dropdown-menu` 包装器内联定位。这与 sha
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { DropdownMenu, useDropdownMenu } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDropdownMenu();
+  return (
+    <DropdownMenu ref={control.ref}>组件内容</DropdownMenu>
+  );
+}
+```
+
+`useDropdownMenu` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { DropdownMenu, useDropdownMenu } from "@a3s-lab/ui/vue";
+
+const control = useDropdownMenu();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DropdownMenu ref="componentRef">组件内容</DropdownMenu>
+</template>
+```
+
+`useDropdownMenu` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -266,3 +266,35 @@ The Monaco example gives the editor, workspace navigation, panels, and command d
 The native fallback editing surface is a `textarea`, so selection, copy, undo, redo, screen-reader text editing, and browser form submission remain available without a JavaScript editor engine. Give it an explicit label or connect a visible `<label>` with `for`. Give the root `role="group"` when it has an accessible name. Keep only the save state inside an `aria-live="polite"` region so cursor movement and counts are not announced on every keystroke; validation messages manage their own status or alert role. The line-number gutter is decorative and is marked `aria-hidden`.
 
 The controller respects `readonly`, `disabled`, reduced motion, browser zoom, and RTL direction. Ctrl/Cmd+S is intercepted only while the editable textarea has focus; Tab and Shift+Tab indent the current line or selection, while other modifier combinations retain browser and assistive-technology shortcuts.
+
+## React
+
+```tsx
+import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCodeEditor();
+  return (
+    <CodeEditor ref={control.ref}>Component content</CodeEditor>
+  );
+}
+```
+
+`useCodeEditor` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/vue";
+
+const control = useCodeEditor();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <CodeEditor ref="componentRef">Component content</CodeEditor>
+</template>
+```
+
+`useCodeEditor` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

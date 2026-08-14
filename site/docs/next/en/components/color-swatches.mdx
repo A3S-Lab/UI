@@ -1,0 +1,71 @@
+# Color Swatches
+
+Expresses a finite, named color set with native radio or checkbox inputs and keeps selection understandable beyond hue alone.
+
+<Preview class="w-full">
+<fieldset class="color-swatches" aria-label="Accent color"><label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label></fieldset>
+</Preview>
+
+## Usage
+
+```html
+<fieldset class="color-swatches" aria-label="Accent color">
+  <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+</fieldset>
+```
+
+## React
+
+```tsx
+import { ColorSwatches, useColorSwatches } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useColorSwatches();
+  return (
+    <ColorSwatches ref={control.ref} aria-label="Accent color">
+      <label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style={{ "--swatch-color": "#5b57d9" }}></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style={{ "--swatch-color": "#249bf6" }}></span></label>
+    </ColorSwatches>
+  );
+}
+```
+
+`useColorSwatches` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { ColorSwatches, useColorSwatches } from "@a3s-lab/ui/vue";
+
+const control = useColorSwatches();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ColorSwatches ref="componentRef" aria-label="Accent color">
+    <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+  </ColorSwatches>
+</template>
+```
+
+`useColorSwatches` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.color-swatches` |
+| Native root | `<fieldset>` |
+| States | `ready`, `disabled`, `invalid` |
+| Events | `change`, `input` |
+| Methods | — |
+
+## Product boundary
+
+It is not an arbitrary color picker, theme preview, or a substitute for text status. Free-form color work belongs in a host-owned specialist tool.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Every swatch needs an accessible name. Selection combines an outline with native input state so people never need to identify a color by sight alone.

@@ -93,3 +93,35 @@ A3S UI 有意采用原生范围输入控件。与 shadcn/ui 的 Base UI Slider �
 <Preview class="w-full max-w-sm">
   <SliderDemo direction="rtl" />
 </Preview>
+
+## React
+
+```tsx
+import { Slider, useSlider } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSlider();
+  return (
+    <Slider ref={control.ref} aria-label="名称" />
+  );
+}
+```
+
+`useSlider` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Slider, useSlider } from "@a3s-lab/ui/vue";
+
+const control = useSlider();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Slider ref="componentRef" aria-label="名称" />
+</template>
+```
+
+`useSlider` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -39,3 +39,35 @@ Child controls own focus, disabled, loading, checked, and read-only state. The r
 ## Accessibility
 
 Associate the control with a native label or explicit ARIA labeling. Descriptions and error messages use `aria-describedby`; invalid controls also use `aria-invalid="true"`.
+
+## React
+
+```tsx
+import { SettingRow, useSettingRow } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSettingRow();
+  return (
+    <SettingRow ref={control.ref}>Component content</SettingRow>
+  );
+}
+```
+
+`useSettingRow` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { SettingRow, useSettingRow } from "@a3s-lab/ui/vue";
+
+const control = useSettingRow();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <SettingRow ref="componentRef">Component content</SettingRow>
+</template>
+```
+
+`useSettingRow` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

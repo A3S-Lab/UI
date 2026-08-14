@@ -1,0 +1,68 @@
+# Image
+
+Combines an image, alternative text, caption, and loading state into a stable reading unit that avoids layout shift.
+
+<Preview class="w-full">
+<figure class="image" data-state="ready" data-aspect="square"><img src="../../../public/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption></figure>
+</Preview>
+
+## Usage
+
+```html
+<figure class="image" data-state="ready" data-aspect="square">
+  <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+</figure>
+```
+
+## React
+
+```tsx
+import { Image } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Image data-state="ready" data-aspect="square">
+      <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+    </Image>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { Image } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Image data-state="ready" data-aspect="square">
+    <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+  </Image>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `figure.image` |
+| Native root | `<figure>` |
+| States | `loading`, `ready`, `error` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+It does not proxy remote media, moderate content, or edit pixels. Enlarged inspection belongs to Image Viewer and choice tasks belong to Image Select.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Informative images need accurate alt text; decorative images use empty alt. Declare dimensions or aspect ratio and provide textual recovery for failure.

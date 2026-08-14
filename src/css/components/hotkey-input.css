@@ -1,0 +1,82 @@
+/* Hotkey Input */
+@layer components {
+  .hotkey-input {
+    display: flex;
+    min-inline-size: 0;
+    min-block-size: 2.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding-inline: 0.625rem 0.375rem;
+    border: 1px solid var(--input, var(--border));
+    border-radius: 0.375rem;
+    background: var(--background);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  }
+
+  .hotkey-input:focus-within {
+    border-color: var(--ring);
+    outline: 2px solid color-mix(in srgb, var(--ring) 32%, transparent);
+    outline-offset: 1px;
+  }
+
+  .hotkey-input input {
+    min-inline-size: 4rem;
+    min-block-size: 1.75rem;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+  }
+
+  .hotkey-input [data-hotkey-preview] {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .hotkey-input [data-hotkey-preview] kbd {
+    min-inline-size: 1.5rem;
+    min-block-size: 1.5rem;
+  }
+
+  .hotkey-input [data-hotkey-clear] {
+    min-inline-size: 1.75rem;
+    min-block-size: 1.75rem;
+    flex: 0 0 auto;
+  }
+
+  .hotkey-input[data-state="recording"] {
+    border-color: var(--ring);
+    background: color-mix(in srgb, var(--accent) 45%, var(--background));
+  }
+
+  .hotkey-input[aria-invalid="true"],
+  .hotkey-input[data-state="invalid"] {
+    border-color: var(--destructive);
+  }
+
+  .hotkey-input[data-disabled],
+  .hotkey-input:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  @media (pointer: coarse) {
+    .hotkey-input {
+      min-block-size: 2.75rem;
+    }
+
+    .hotkey-input input {
+      font-size: 1rem;
+    }
+
+    .hotkey-input [data-hotkey-clear] {
+      min-inline-size: 2.25rem;
+      min-block-size: 2.25rem;
+    }
+  }
+}

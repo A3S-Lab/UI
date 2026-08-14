@@ -185,3 +185,35 @@ Inputs support right-to-left layouts through native browser direction handling. 
   <p>مفتاح API الخاص بك مشفر ومخزن بأمان.</p>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Input, useInput } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useInput();
+  return (
+    <Input ref={control.ref} aria-label="Name" />
+  );
+}
+```
+
+`useInput` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Input, useInput } from "@a3s-lab/ui/vue";
+
+const control = useInput();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Input ref="componentRef" aria-label="Name" />
+</template>
+```
+
+`useInput` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

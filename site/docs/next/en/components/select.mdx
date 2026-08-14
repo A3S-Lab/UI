@@ -294,3 +294,35 @@ A select with many items that scrolls.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Select, useSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSelect();
+  return (
+    <Select ref={control.ref}>Component content</Select>
+  );
+}
+```
+
+`useSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Select, useSelect } from "@a3s-lab/ui/vue";
+
+const control = useSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Select ref="componentRef">Component content</Select>
+</template>
+```
+
+`useSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

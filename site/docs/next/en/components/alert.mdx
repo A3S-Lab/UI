@@ -138,3 +138,32 @@ Add `dir="rtl"` to the alert or an ancestor.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Alert } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Alert>Component content</Alert>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Alert } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Alert>Component content</Alert>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

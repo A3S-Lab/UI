@@ -34,3 +34,32 @@ Preserve the item after upload failure so users can retry or remove it. A missin
 ## Accessibility
 
 Removal and retry labels include the attachment name. Decorative file-kind icons stay hidden from assistive technology.
+
+## React
+
+```tsx
+import { MessageAttachment } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <MessageAttachment>Component content</MessageAttachment>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { MessageAttachment } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <MessageAttachment>Component content</MessageAttachment>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

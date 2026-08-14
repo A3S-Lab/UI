@@ -387,3 +387,32 @@ Use `field` for form controls and validation. Use `item` for display content, ac
   </a>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Item } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Item>Component content</Item>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Item } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Item>Component content</Item>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

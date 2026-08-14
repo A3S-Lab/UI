@@ -189,6 +189,8 @@
 | `tabs.select(tab)` | 方法 | 选择选项卡列表中的选项卡按钮。 |
 | `tabs.refresh()` | 方法 | 在现有选项卡列表/面板结构内的子项发生更改后重新扫描选项卡和面板。 |
 
+React 的 `useTabs` 与 Vue 的同名 composable 通过 `call("select", tab, focus)` 和 `call("refresh")` 暴露相同契约。
+
 水平选项卡列表会将溢出限制在自身范围内，并自动滚动以显示当前选项卡。方向键遵循视觉顺序，在 RTL 中左右方向会反转；`Home` 和 `End` 分别选择第一个和最后一个可用选项卡。
 
 ## 示例
@@ -307,3 +309,35 @@
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Tabs, useTabs } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTabs();
+  return (
+    <Tabs ref={control.ref}>组件内容</Tabs>
+  );
+}
+```
+
+`useTabs` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Tabs, useTabs } from "@a3s-lab/ui/vue";
+
+const control = useTabs();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Tabs ref="componentRef">组件内容</Tabs>
+</template>
+```
+
+`useTabs` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

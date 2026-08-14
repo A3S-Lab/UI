@@ -34,3 +34,32 @@ Use `queued` only when the message is retained for later submission. Error state
 ## Accessibility
 
 Add a polite live region only while status changes asynchronously. Do not announce every streamed token.
+
+## React
+
+```tsx
+import { MessageStatus } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <MessageStatus>Component content</MessageStatus>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { MessageStatus } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <MessageStatus>Component content</MessageStatus>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

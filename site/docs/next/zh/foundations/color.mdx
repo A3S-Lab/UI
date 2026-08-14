@@ -1,49 +1,69 @@
 # 颜色
 
-A3S 调色板使用冷调中性色与刻意克制的单一蓝色。绿色、琥珀色和红色只报告语义状态，不作为页面主题或分类品牌色。
+A3S UI 以中性色承担结构，以虹膜色承担焦点与选择。品牌蓝只属于身份和信息提示；绿色、琥珀色与红色只表达结果，不能替代文本、图标或结构。
 
 <Preview>
-<div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
-  <div class="rounded-lg border border-border bg-background p-4"><div class="mb-3 h-12 rounded-md border border-border bg-background"></div><strong class="text-sm">背景</strong><code class="mt-1 block text-xs text-muted-foreground">--background</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md border border-border bg-card"></div><strong class="text-sm">表面</strong><code class="mt-1 block text-xs text-muted-foreground">--card</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-primary"></div><strong class="text-sm">主要操作</strong><code class="mt-1 block text-xs text-muted-foreground">--primary</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div><strong class="text-sm">A3S 蓝</strong><code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code></div>
-</div>
+  <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-lg border border-border bg-background p-4">
+      <div class="mb-3 h-12 rounded-md border border-border bg-background"></div>
+      <strong class="text-sm">画布</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--background</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-muted"></div>
+      <strong class="text-sm">弱化表面</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--muted</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-primary"></div>
+      <strong class="text-sm">中性主操作</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--primary</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div>
+      <strong class="text-sm">虹膜焦点色</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code>
+    </div>
+  </div>
 </Preview>
 
 ## 语义令牌
 
-| 角色 | 浅色 | 深色 | 用途 |
-| --- | --- | --- | --- |
-| `--background` | `#f8f9fb` | `#101118` | 应用画布 |
-| `--foreground` | `#17191d` | `#f2f3f5` | 主要内容 |
-| `--card` | `#ffffff` | `#171820` | 抬升或分组表面 |
-| `--muted` | `#f1f3f6` | `#1e2028` | 低强调填充与控件 |
-| `--muted-foreground` | `#667085` | `#a4a8b2` | 辅助文本 |
-| `--border` | `#e6e8ec` | `#2a2d35` | 分隔线与边界 |
-| `--primary` | `#2864e8` | `#6ca3ff` | 主要操作与选中 |
-| `--ring` | `#2864e8` | `#6ca3ff` | 键盘焦点 |
-| `--destructive` | `#c9363c` | `#f27777` | 错误与破坏性操作 |
+| 角色                    | 浅色      | 深色      | 用途             |
+| ----------------------- | --------- | --------- | ---------------- |
+| `--background`          | `#ffffff` | `#0d0d0f` | 应用画布         |
+| `--foreground`          | `#111113` | `#f4f4f5` | 主要内容         |
+| `--card`                | `#ffffff` | `#151518` | 稳定与抬升表面   |
+| `--muted`               | `#f7f7f8` | `#19191d` | 弱化表面         |
+| `--accent`              | `#f4f4f5` | `#202024` | 悬停表面         |
+| `--a3s-panel-strong`    | `#eeeeef` | `#26262b` | 激活表面         |
+| `--muted-foreground`    | `#52525b` | `#b4b4bc` | 辅助文本         |
+| `--a3s-subtle`          | `#71717a` | `#888891` | 非关键注释       |
+| `--border`              | `#dedee1` | `#333338` | 控件与浮层边界   |
+| `--input`               | `#c9c9ce` | `#45454b` | 强边界           |
+| `--primary`             | `#111113` | `#f4f4f5` | 默认主操作       |
+| `--ring` / `--a3s-blue` | `#5b57d9` | `#8378f0` | 焦点、链接与选择 |
+| `--a3s-brand-blue`      | `#249bf6` | `#38a8eb` | A3S 身份与信息   |
 
-## 语义保留色
+## 状态保留色
 
 <Preview>
-<div class="flex w-full flex-wrap gap-3">
-  <span class="badge bg-[var(--a3s-blue)] text-white">操作 / 选中</span>
-  <span class="badge bg-[var(--a3s-green)] text-white">成功</span>
-  <span class="badge bg-[var(--a3s-warning)] text-white">警告</span>
-  <span class="badge bg-destructive text-white">危险</span>
-</div>
+  <div class="flex w-full flex-wrap gap-3">
+    <span class="badge bg-[var(--a3s-blue)] text-white">焦点 / 选择</span>
+    <span class="badge bg-[var(--a3s-green)] text-white">成功</span>
+    <span class="badge bg-[var(--a3s-warning)] text-white">警告</span>
+    <span class="badge bg-destructive text-white">危险</span>
+  </div>
 </Preview>
 
-蓝色用于操作、选中、进度和焦点。绿色、琥珀色和红色只在状态确实需要时使用，不能铺满整个导航或页面区域。浅色与深色主题都必须保持足够对比度。
+浅色主题中的成功、警告和危险值分别是 `#16845b`、`#a86412` 与 `#c93d45`；深色主题分别是 `#57c795`、`#e7ad55` 与 `#ef7a82`。普通卡片、导航和工具栏不使用这些状态色装饰。
 
 ```css
-.my-resource {
-  --resource-accent: var(--a3s-blue);
+.selection-region {
+  --ring: var(--a3s-blue);
 }
 ```
 
 ## 参数
 
-主题切换通过 `<html>` 上的 `dark` 类完成。应用可以在 `:root`、`.dark` 或局部产品容器中覆盖语义令牌，但应保持令牌名称稳定，让组件与文档预览始终同步。
+主题切换通过 `<html>` 上的 `dark` 类完成。应用可以在 `:root`、`.dark` 或局部产品容器中覆盖语义令牌，但必须同时验证文本对比度、焦点可见性与状态含义。

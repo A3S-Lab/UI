@@ -108,3 +108,35 @@ Attachments and queue items are application data. A3S UI neither uploads files n
 ## Accessibility
 
 Give the form and textarea accessible names. Keep each removal button adjacent to the item it removes and include the item name in the button label. Put asynchronous status copy in a polite live region, but do not announce every streamed token. Preserve ordinary IME composition and multiline textarea behavior; product shortcuts must not intercept Enter while composition is active.
+
+## React
+
+```tsx
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAgentComposer();
+  return (
+    <AgentComposer ref={control.ref} aria-label="Agent Composer"><label>Name<input name="name" /></label><button type="submit">Continue</button></AgentComposer>
+  );
+}
+```
+
+`useAgentComposer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+
+const control = useAgentComposer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AgentComposer ref="componentRef" aria-label="Agent Composer"><label>Name<input name="name" /></label><button type="submit">Continue</button></AgentComposer>
+</template>
+```
+
+`useAgentComposer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

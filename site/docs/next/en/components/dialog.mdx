@@ -128,6 +128,10 @@ A3S UI uses the native `<dialog>` element and `showModal()`. This differs from s
   </dd>
 </dl>
 
+### JavaScript API
+
+Dialog preserves the native `HTMLDialogElement` contract. React `useDialog` and the equivalent Vue composable can call `showModal()` and `close(returnValue)`; `cancel` and `close` remain native DOM events.
+
 ## Examples
 
 ### Custom close button
@@ -256,3 +260,35 @@ Dialog positioning and close button placement use logical properties. Set `dir="
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Dialog, useDialog } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDialog();
+  return (
+    <Dialog ref={control.ref} aria-label="Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></Dialog>
+  );
+}
+```
+
+`useDialog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Dialog, useDialog } from "@a3s-lab/ui/vue";
+
+const control = useDialog();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Dialog ref="componentRef" aria-label="Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></Dialog>
+</template>
+```
+
+`useDialog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

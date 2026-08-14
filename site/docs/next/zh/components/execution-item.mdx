@@ -80,3 +80,35 @@
 ## 无障碍
 
 原生 `<details>` 与 `<summary>` 提供折叠语义和键盘行为。可见标题必须在不依赖图标的情况下说明操作。不要把 Summary 放入按钮中。普通输出使用文本或 `<pre>`；只有记录确实实时更新时才使用 Live Region，高吞吐流应组合日志查看器。
+
+## React
+
+```tsx
+import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useExecutionItem();
+  return (
+    <ExecutionItem ref={control.ref}><summary>查看详情</summary><div>组件内容</div></ExecutionItem>
+  );
+}
+```
+
+`useExecutionItem` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/vue";
+
+const control = useExecutionItem();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ExecutionItem ref="componentRef"><summary>查看详情</summary><div>组件内容</div></ExecutionItem>
+</template>
+```
+
+`useExecutionItem` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

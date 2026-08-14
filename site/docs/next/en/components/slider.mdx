@@ -93,3 +93,35 @@ A3S UI intentionally uses the native range input. Unlike shadcn/ui's Base UI sli
 <Preview class="w-full max-w-sm">
   <SliderDemo direction="rtl" />
 </Preview>
+
+## React
+
+```tsx
+import { Slider, useSlider } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSlider();
+  return (
+    <Slider ref={control.ref} aria-label="Name" />
+  );
+}
+```
+
+`useSlider` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Slider, useSlider } from "@a3s-lab/ui/vue";
+
+const control = useSlider();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Slider ref="componentRef" aria-label="Name" />
+</template>
+```
+
+`useSlider` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

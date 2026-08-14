@@ -166,3 +166,35 @@ Append server-rendered toast markup to the toaster, or create one from JavaScrip
   <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
   <dd>Secondary action. Supports <code>label</code> and an optional <code>onClick(event)</code> callback.</dd>
 </dl>
+
+## React
+
+```tsx
+import { Toast, useToast } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useToast();
+  return (
+    <Toast ref={control.ref}>Component content</Toast>
+  );
+}
+```
+
+`useToast` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Toast, useToast } from "@a3s-lab/ui/vue";
+
+const control = useToast();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Toast ref="componentRef">Component content</Toast>
+</template>
+```
+
+`useToast` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

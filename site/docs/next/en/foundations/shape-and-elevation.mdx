@@ -1,31 +1,49 @@
 # Shape and elevation
 
-Shape communicates hierarchy through a 6px control radius, 10px stable surface radius, and 14px elevated-surface radius. Shadows belong only to floating or overlapping surfaces.
+A3S UI uses four radii: 4, 6, 8, and 12px. Static surfaces stay flat. A surface earns a shadow only when it floats above content or remains anchored while content passes underneath it.
 
 <Preview>
-<div class="grid w-full gap-4 sm:grid-cols-3">
-  <div class="rounded-md border border-border bg-card p-5 text-center text-sm">Control<br/><code class="text-xs text-muted-foreground">--radius-md</code></div>
-  <div class="rounded-xl border border-border bg-card p-5 text-center text-sm">Surface<br/><code class="text-xs text-muted-foreground">--radius-xl</code></div>
-  <div class="rounded-[var(--a3s-radius)] bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">Overlay<br/><code class="text-xs text-muted-foreground">--a3s-radius</code></div>
-</div>
+  <div class="grid w-full gap-4 sm:grid-cols-4">
+    <div class="rounded-sm border border-border bg-card p-5 text-center text-sm">
+      Tiny
+      <br />
+      <code class="text-xs text-muted-foreground">4px</code>
+    </div>
+    <div class="rounded-md border border-border bg-card p-5 text-center text-sm">
+      Control
+      <br />
+      <code class="text-xs text-muted-foreground">6px</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-5 text-center text-sm">
+      Surface
+      <br />
+      <code class="text-xs text-muted-foreground">8px</code>
+    </div>
+    <div class="rounded-xl bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">
+      Overlay
+      <br />
+      <code class="text-xs text-muted-foreground">12px</code>
+    </div>
+  </div>
 </Preview>
 
 ## Radius
 
-| Token | Default | Use |
-| --- | ---: | --- |
-| `--radius-sm` | base minus 4px | Badges and tiny controls |
-| `--radius-md` | base minus 2px | Buttons, inputs, navigation items |
-| `--radius-lg` | base radius | Toolbars and side navigation |
-| `--radius-xl` | base plus 4px | Cards and panels |
-| `--a3s-radius` | `14px` | Major and elevated surfaces |
+| Token                             | Default | Use                                            |
+| --------------------------------- | ------: | ---------------------------------------------- |
+| `--radius-sm` / `--a3s-radius-xs` |   `4px` | Badge interiors and tiny controls              |
+| `--radius-md` / `--a3s-radius-sm` |   `6px` | Buttons, inputs, and navigation items          |
+| `--radius-lg` / `--a3s-radius-md` |   `8px` | Cards, toolbars, and stable surfaces           |
+| `--radius-xl` / `--a3s-radius-lg` |  `12px` | Dialogs, drawers, popovers, and preview frames |
 
-## Elevation
+Pills are reserved for status, compact filters, switch tracks, and circular actions. They are not the default shape for ordinary buttons or cards.
 
-| Token | Use |
-| --- | --- |
-| `--a3s-shadow-composer` | Docked or floating Task Composer |
-| `--a3s-shadow-soft` | Menus, popovers, drawers, and compact overlays |
-| `--a3s-shadow` | Modal dialogs and large floating panels |
+## Shadows
 
-Borders and tonal contrast are the default separators. Static cards, shells, catalogs, transcripts, and setting rows do not receive shadows. Use either a visible border or broad elevation for one edge, not both by default.
+| Token                  | Value                                                  | Use                                            |
+| ---------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| `--a3s-shadow-control` | `0 1px 2px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 3%)` | Selected controls and quiet preview boundaries |
+| `--a3s-shadow-soft`    | `0 8px 16px -4px rgb(0 0 0 / 20%)`                     | Menus, popovers, and floating panels           |
+| `--a3s-shadow`         | `0 20px 20px -8px rgb(0 0 0 / 24%)`                    | Modal dialogs                                  |
+
+Dark mode increases opacity instead of adding bright borders. Static cards, shells, catalogs, transcripts, and setting rows do not receive shadows. Use either a clear boundary or floating elevation on one edge by default, not both as duplicate emphasis.

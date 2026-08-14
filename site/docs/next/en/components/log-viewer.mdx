@@ -106,3 +106,32 @@ Render unavailable, connecting, empty, live, retrying, and failed states with ex
 ## Accessibility
 
 Give the root and focusable log viewport accessible names. Use `role="log"` and `aria-live="polite"` only for appended records; do not re-render the entire log on every message. Keep filters in a labeled `<fieldset>`, expose the selected filter with `aria-pressed`, preserve chronological DOM order, and avoid moving keyboard focus when new records arrive.
+
+## React
+
+```tsx
+import { LogViewer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <LogViewer aria-label="Log Viewer">Component content</LogViewer>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { LogViewer } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <LogViewer aria-label="Log Viewer">Component content</LogViewer>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

@@ -41,3 +41,32 @@
 ## 可访问性
 
 命名工具栏和每个不明确的组。原生按钮保留在文档选项卡序列中。在应用程序层提供键盘快捷键，并使用 [Kbd](/components/kbd) 或工具提示文本公开它们。
+
+## React
+
+```tsx
+import { Toolbar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Toolbar>组件内容</Toolbar>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Toolbar } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Toolbar>组件内容</Toolbar>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

@@ -102,6 +102,7 @@ import "@a3s-lab/ui/task-workspace";
 | `@a3s-lab/ui/runtime`          | 共享生命周期与组件注册机制               |
 | `@a3s-lab/ui/accordion`        | 折叠面板增强                             |
 | `@a3s-lab/ui/app-shell`        | 桌面导航与有边界的紧凑抽屉               |
+| `@a3s-lab/ui/bulk-action-bar`  | 已选范围、异步操作与完成反馈             |
 | `@a3s-lab/ui/code-editor`      | 原生代码编辑器回退                       |
 | `@a3s-lab/ui/combobox`         | 组合框                                   |
 | `@a3s-lab/ui/command`          | 命令面板                                 |
@@ -111,6 +112,7 @@ import "@a3s-lab/ui/task-workspace";
 | `@a3s-lab/ui/drawer`           | 抽屉                                     |
 | `@a3s-lab/ui/dropdown-menu`    | 下拉菜单                                 |
 | `@a3s-lab/ui/filter-bar`       | 分段筛选与当前条件                       |
+| `@a3s-lab/ui/file-explorer`    | 文件选择、筛选、命令与内联重命名         |
 | `@a3s-lab/ui/popover`          | 弹出窗口                                 |
 | `@a3s-lab/ui/range`            | 范围输入视觉状态                         |
 | `@a3s-lab/ui/select`           | 选择                                     |
@@ -155,7 +157,7 @@ import { a3sAI } from "@a3s-lab/ui/ai";
 import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
 
 a3sAI.scan(document);
-console.log(manifest.components.length); // 89
+console.log(manifest.components.length); // 111
 ```
 
 React 与 Vue 均为可选 peer dependency。宿主应用只需安装正在使用的框架，然后从 `@a3s-lab/ui/react` 或 `@a3s-lab/ui/vue` 导入组件。

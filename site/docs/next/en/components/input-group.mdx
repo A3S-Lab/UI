@@ -365,3 +365,32 @@ Use `data-align="start|end"` on addon wrappers to position them inline. Use `dat
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { InputGroup } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <InputGroup>Component content</InputGroup>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { InputGroup } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <InputGroup>Component content</InputGroup>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

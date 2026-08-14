@@ -10,12 +10,13 @@ type VersionDefaults = {
 };
 
 export function normalizeRoutePath(routePath: string) {
-  const normalized = routePath
+  const pathname = routePath
     .split(/[?#]/, 1)[0]
     .replace(/\.html$/, "")
     .replace(/\/+$/, "");
+  const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
 
-  return normalized.startsWith("/") ? normalized || "/" : `/${normalized}`;
+  return normalized.replace(/\/index$/, "") || "/";
 }
 
 export function getPureRoutePath(

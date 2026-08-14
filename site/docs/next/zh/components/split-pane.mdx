@@ -52,3 +52,35 @@ Split Pane 为编辑器、检查器、调用链详情与智能体对话创建可
 ## 可访问性
 
 控制器会设置分隔符方向、取值边界、当前值、百分比文本与键盘焦点。方向键按 `data-step` 调整；Home 与 End 移动到边界；双击恢复默认值。
+
+## React
+
+```tsx
+import { SplitPane, useSplitPane } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSplitPane();
+  return (
+    <SplitPane ref={control.ref}>组件内容</SplitPane>
+  );
+}
+```
+
+`useSplitPane` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { SplitPane, useSplitPane } from "@a3s-lab/ui/vue";
+
+const control = useSplitPane();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <SplitPane ref="componentRef">组件内容</SplitPane>
+</template>
+```
+
+`useSplitPane` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

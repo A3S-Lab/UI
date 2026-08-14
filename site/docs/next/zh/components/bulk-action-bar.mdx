@@ -3,39 +3,177 @@
 批量操作栏只在用户选中项目后出现，把选择范围、适用条件、批量命令和清除选择放在一个临时任务区域中。
 
 <Preview class="w-full">
-  <section class="bulk-action-bar" data-state="selected" role="region" aria-label="已选资源操作"><div data-bulk-selection>已选 <output data-selected-count>3</output> 项</div><span data-bulk-summary>其中 2 项可以归档</span><div data-bulk-actions><button type="button" class="btn" data-size="sm" data-variant="outline">移动</button><button type="button" class="btn" data-size="sm" data-variant="outline">归档 2 项</button><button type="button" class="btn" data-size="sm" data-variant="destructive">删除</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear data-demo-bulk-clear>清除选择</button></div></section>
+  <section
+    id="bulk-action-bar-demo-zh"
+    class="bulk-action-bar"
+    data-state="selected"
+    role="region"
+    aria-label="已选资源操作"
+  >
+    <div data-bulk-selection>
+      已选 <output data-selected-count>3</output> 项
+    </div>
+    <span data-bulk-summary aria-live="polite">
+      其中 2 项可以归档
+    </span>
+    <div data-bulk-actions>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="outline"
+        data-bulk-action="move"
+      >
+        移动
+      </button>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="outline"
+        data-bulk-action="archive"
+      >
+        归档 2 项
+      </button>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="destructive"
+        data-bulk-action="delete"
+      >
+        删除
+      </button>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="ghost"
+        data-bulk-action="clear"
+        data-bulk-clear
+      >
+        清除选择
+      </button>
+    </div>
+  </section>
 </Preview>
 
 ## 用法
 
 ```html
-<section class="bulk-action-bar" data-state="selected" role="region" aria-label="已选资源操作">
+<section
+  class="bulk-action-bar"
+  data-state="selected"
+  role="region"
+  aria-label="已选资源操作"
+>
   <div data-bulk-selection>已选 <output data-selected-count>3</output> 项</div>
   <span data-bulk-summary>其中 2 项可以归档</span>
   <div data-bulk-actions>
-    <button type="button" class="btn" data-size="sm" data-variant="outline">归档 2 项</button>
-    <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear>清除选择</button>
+    <button
+      type="button"
+      class="btn"
+      data-size="sm"
+      data-variant="outline"
+      data-bulk-action="archive"
+    >
+      归档 2 项
+    </button>
+    <button
+      type="button"
+      class="btn"
+      data-size="sm"
+      data-variant="ghost"
+      data-bulk-action="clear"
+      data-bulk-clear
+    >
+      清除选择
+    </button>
   </div>
 </section>
 ```
 
 ### 参数
 
-| API | 用途 |
-| --- | --- |
-| `data-bulk-selection` | 选中数量和范围 |
-| `data-selected-count` | 由宿主或 Data Grid 控制器同步的数量 |
-| `data-bulk-summary` | 可选的适用条件，例如“3 项中有 2 项可重试” |
-| `data-bulk-actions` | 对当前选择执行的命令 |
-| `data-bulk-clear` | 清除选择；行为由宿主或父级 Data Grid 负责 |
-| `data-position="sticky"` | 在所属滚动区域底部保持可见 |
+| API                          | 用途                                      |
+| ---------------------------- | ----------------------------------------- |
+| `data-bulk-selection`        | 选中数量和范围                            |
+| `data-selected-count`        | 由宿主或 Data Grid 控制器同步的数量       |
+| `data-bulk-summary`          | 可选的适用条件，例如“3 项中有 2 项可重试” |
+| `data-bulk-actions`          | 对当前选择执行的命令                      |
+| `data-bulk-action="command"` | 每个操作必需的稳定命令值                  |
+| `data-bulk-clear`            | 清除选择；行为由宿主或父级 Data Grid 负责 |
+| `data-position="sticky"`     | 在所属滚动区域底部保持可见                |
+
+### JavaScript API
+
+在共享运行时后加载 `bulk-action-bar.js`，或使用完整包。
+
+```js
+const bar = document.querySelector(".bulk-action-bar");
+bar.setSelection(["alpha", "beta", "gamma"]);
+
+bar.addEventListener("a3s:bulk-action", async ({ detail }) => {
+  bar.setPending(detail.action, { message: "正在归档已选项目…" });
+  try {
+    const processedCount = await archive(detail.selection.values);
+    bar.complete({
+      action: detail.action,
+      processedCount,
+      status: "success",
+      message: `已归档 ${processedCount} 项`,
+    });
+  } catch (error) {
+    bar.complete({
+      action: detail.action,
+      error,
+      status: "error",
+      message: "归档失败，请重试。",
+    });
+  }
+});
+```
+
+`getSelection()`、`setSelection()`、`clear()`、`setSummary()`、`setPending()`、`complete()` 与 `refresh()` 构成受控生命周期。等待期间会保存并恢复每个命令原来的禁用状态。`a3s:bulk-before-action` 可取消；`a3s:bulk-action`、`a3s:bulk-selection-change` 与 `a3s:bulk-action-complete` 提供命令、选择快照、来源、结果状态、实际处理数量和错误。
 
 ## 状态与变体
 
-没有选择时使用 `hidden`，不要保留一个禁用的空工具栏。进行批量请求时保留数量和命令标签，只禁用可能产生冲突的操作，并在同一区域显示进度或失败摘要。
+没有选择时控制器使用 `hidden`，不会保留一个禁用的空工具栏。进行批量请求时保留数量和命令标签，禁用冲突操作，并在同一个实时摘要中显示进度或失败结果。
 
 按钮标签应明确真实适用数量。选择了 5 项但只有 3 项可重试时，写“重试 3 项”，不要让后端静默跳过后才解释。
 
 ## 无障碍
 
 使用具名 `region`，但不要因为区域出现而移动焦点。删除等不可逆操作仍需 Alert Dialog。完成操作后播报实际处理数量，把焦点返回触发操作的按钮或仍存在的列表位置。
+
+## React
+
+```tsx
+import { BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useBulkActionBar();
+  return (
+    <BulkActionBar ref={control.ref} aria-label="Bulk Action Bar">组件内容</BulkActionBar>
+  );
+}
+```
+
+`useBulkActionBar` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/vue";
+
+const control = useBulkActionBar();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <BulkActionBar ref="componentRef" aria-label="Bulk Action Bar">组件内容</BulkActionBar>
+</template>
+```
+
+`useBulkActionBar` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

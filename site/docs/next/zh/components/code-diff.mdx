@@ -1,0 +1,68 @@
+# 代码差异
+
+以逐行、可滚动且可复制的方式呈现代码变更，让增加、删除和上下文在不依赖颜色的情况下可辨认。
+
+<Preview class="w-full">
+<figure class="code-diff"><figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre></figure>
+</Preview>
+
+## 使用方式
+
+```html
+<figure class="code-diff">
+  <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+</figure>
+```
+
+## React
+
+```tsx
+import { CodeDiff } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <CodeDiff>
+      <figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+    </CodeDiff>
+  );
+}
+```
+
+该组件没有额外行为控制器，React 适配器只渲染标准语义根。
+
+## Vue
+
+```vue
+<script setup>
+import { CodeDiff } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <CodeDiff>
+    <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+  </CodeDiff>
+</template>
+```
+
+Vue 适配器不包装额外容器，也不改变原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `.code-diff` |
+| 原生根元素 | `<figure>` |
+| 状态 | `ready`, `loading`, `empty`, `error` |
+| 事件 | — |
+| 方法 | — |
+
+## 产品边界
+
+代码差异负责阅读呈现，不负责生成补丁、解析版本库或决定变更是否可信。复杂审查流程应组合变更审查与审批组件。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+每行必须保留加减符号或文字含义。代码方向固定为从左到右，容器支持键盘聚焦和横向滚动。

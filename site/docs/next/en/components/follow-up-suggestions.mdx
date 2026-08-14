@@ -30,3 +30,32 @@ Show two to four specific actions. Hide the component when no suggestion is usef
 ## Accessibility
 
 The navigation label distinguishes suggestions from task navigation. Buttons describe the action that will occur.
+
+## React
+
+```tsx
+import { FollowUpSuggestions } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <FollowUpSuggestions aria-label="Follow-up Suggestions"><a href="#current" aria-current="page">Current page</a></FollowUpSuggestions>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { FollowUpSuggestions } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <FollowUpSuggestions aria-label="Follow-up Suggestions"><a href="#current" aria-current="page">Current page</a></FollowUpSuggestions>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

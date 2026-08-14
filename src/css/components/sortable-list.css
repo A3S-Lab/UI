@@ -1,0 +1,93 @@
+/* Sortable List */
+@layer components {
+  .sortable-list {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sortable-list [data-sortable-item] {
+    display: flex;
+    min-inline-size: 0;
+    min-block-size: 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .sortable-list [data-sortable-item] > :not([data-sortable-handle]) {
+    min-inline-size: 0;
+  }
+
+  .sortable-list [data-sortable-handle] {
+    display: inline-grid;
+    min-inline-size: 2rem;
+    min-block-size: 2rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--muted-foreground);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .sortable-list [data-sortable-handle]::before {
+    content: "";
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    background:
+      radial-gradient(circle, currentColor 1px, transparent 1.5px) 0 0 / 0.4375rem 0.4375rem;
+  }
+
+  .sortable-list [data-sortable-handle]:hover {
+    background: var(--accent);
+    color: var(--foreground);
+  }
+
+  .sortable-list [data-sortable-handle]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .sortable-list [data-sortable-item][data-dragging="true"],
+  .sortable-list[data-state="dragging"] [data-sortable-item][aria-grabbed="true"] {
+    opacity: 0.72;
+    box-shadow: 0 8px 16px -4px rgb(0 0 0 / 20%);
+  }
+
+  .sortable-list [data-sortable-item][data-drop-target="true"] {
+    border-color: var(--ring);
+  }
+
+  .sortable-list [data-sortable-status] {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+  }
+
+  .sortable-list[data-disabled],
+  .sortable-list[aria-disabled="true"] {
+    opacity: 0.55;
+  }
+
+  .sortable-list[data-disabled] [data-sortable-handle],
+  .sortable-list[aria-disabled="true"] [data-sortable-handle] {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (pointer: coarse) {
+    .sortable-list [data-sortable-handle] {
+      min-inline-size: 2.75rem;
+      min-block-size: 2.75rem;
+    }
+  }
+}

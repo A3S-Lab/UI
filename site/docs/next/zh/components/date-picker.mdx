@@ -1,0 +1,65 @@
+# 日期输入
+
+通过原生日期输入收集一个日历日期，并保留浏览器、语言环境与移动平台已经提供的选择体验。
+
+<Preview class="w-full">
+<input class="input date-picker" type="date" value="2026-08-14" aria-label="Target date" />
+</Preview>
+
+## 使用方式
+
+```html
+<input class="input date-picker" type="date" value="2026-08-14" aria-label="Target date" />
+```
+
+## React
+
+```tsx
+import { DatePicker, useDatePicker } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDatePicker();
+  return (
+    <DatePicker ref={control.ref} type="date" value="2026-08-14" aria-label="Target date" />
+  );
+}
+```
+
+`useDatePicker` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { DatePicker, useDatePicker } from "@a3s-lab/ui/vue";
+
+const control = useDatePicker();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DatePicker ref="componentRef" type="date" value="2026-08-14" aria-label="Target date" />
+</template>
+```
+
+`useDatePicker` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `input.date-picker` |
+| 原生根元素 | `<input>` |
+| 状态 | `ready`, `disabled`, `invalid`, `read-only` |
+| 事件 | `change`, `input` |
+| 方法 | — |
+
+## 产品边界
+
+日期输入不处理时区、日期范围、重复计划或自然语言解析。需要多个相互约束日期时，应由表单组合负责验证和说明。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+始终使用可见 label，并在字段旁说明格式、范围和错误原因。不要以占位符代替标签。

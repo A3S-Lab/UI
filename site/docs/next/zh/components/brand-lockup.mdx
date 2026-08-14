@@ -10,13 +10,13 @@
       aria-label="A3S OS 首页"
     >
       <span data-brand-mark aria-hidden="true">
-        A3
+        <img src="../../../public/logo.png" alt="" />
       </span>
       <span data-brand-name>A3S OS</span>
     </a>
-    <div class="brand-lockup" data-size="sm">
+    <div class="brand-lockup" data-size="sm" data-tone="mono">
       <span data-brand-mark aria-hidden="true">
-        A3
+        <img src="../../../public/logo.png" alt="" />
       </span>
       <span data-brand-identity>
         <strong data-brand-name>A3S Web</strong>
@@ -41,7 +41,7 @@
 
 ```html
 <a class="brand-lockup" href="/" aria-label="A3S OS 首页">
-  <span data-brand-mark aria-hidden="true">A3</span>
+  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
   <span data-brand-identity>
     <strong data-brand-name>A3S OS</strong>
     <small data-brand-description>Agent Factory</small>
@@ -59,12 +59,47 @@
 | `data-brand-name`        | 必填     | 可见的产品或组织名称             |
 | `data-brand-description` | 可选     | 紧凑的产品上下文                 |
 | `data-size`              | `sm`     | 更紧凑的标题栏样式               |
+| `data-tone`              | `mono`   | 官方图形的单色呈现                |
 | `--brand-lockup-accent`  | CSS 颜色 | 覆盖标记强调色                   |
 
 ## 状态与变体
 
-不需要说明时，名称可以直接放在标记旁边。密集的工作区标题栏使用 `data-size="sm"`。仅使用获准的品牌令牌覆盖 `--brand-lockup-accent`，不要用业务状态颜色装饰产品身份。
+不需要说明时，名称可以直接放在标记旁边。密集的工作区标题栏使用 `data-size="sm"`，只有无法使用彩色资产时才使用 `data-tone="mono"`。所有呈现都必须使用 A3S OS 官方资产，不能重画、裁切或虚构三维标识。仅使用获准的品牌令牌覆盖 `--brand-lockup-accent`，不要用业务状态颜色装饰产品身份。
 
 ## 可访问性
 
 产品名称必须保留为可见文本。装饰性的字母标记和 Logo 使用 `aria-hidden="true"`；当整个标识组是链接时，为链接提供能说明目标位置的可访问名称。不要让标记和名称在可访问性树中重复朗读同一产品名。
+
+## React
+
+```tsx
+import { BrandLockup } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <BrandLockup href="/" aria-label="A3S OS 首页">
+      <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+      <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+    </BrandLockup>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { BrandLockup } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <BrandLockup href="/" aria-label="A3S OS 首页">
+    <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+    <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+  </BrandLockup>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

@@ -1,0 +1,71 @@
+# Image Select
+
+Expresses a small visual choice set through native radio or checkbox inputs while preserving names and selection beyond the thumbnail.
+
+<Preview class="w-full">
+<fieldset class="image-select" aria-label="Cover treatment"><div data-image-option><input id="cover-light" type="radio" name="cover" defaultChecked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div></fieldset>
+</Preview>
+
+## Usage
+
+```html
+<fieldset class="image-select" aria-label="Cover treatment">
+  <div data-image-option><input id="cover-light" type="radio" name="cover" checked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div>
+</fieldset>
+```
+
+## React
+
+```tsx
+import { ImageSelect, useImageSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useImageSelect();
+  return (
+    <ImageSelect ref={control.ref} aria-label="Cover treatment">
+      <div data-image-option><input id="cover-light" type="radio" name="cover" defaultChecked /><label htmlFor="cover-light"><span data-image-preview style={{ background: "#f7f7f8" }}></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style={{ background: "#202024" }}></span>Dark surface</label></div>
+    </ImageSelect>
+  );
+}
+```
+
+`useImageSelect` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { ImageSelect, useImageSelect } from "@a3s-lab/ui/vue";
+
+const control = useImageSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ImageSelect ref="componentRef" aria-label="Cover treatment">
+    <div data-image-option><input id="cover-light" type="radio" name="cover" checked /><label htmlFor="cover-light"><span data-image-preview style="background:#f7f7f8"></span>Light surface</label></div><div data-image-option><input id="cover-dark" type="radio" name="cover" /><label htmlFor="cover-dark"><span data-image-preview style="background:#202024"></span>Dark surface</label></div>
+  </ImageSelect>
+</template>
+```
+
+`useImageSelect` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.image-select` |
+| Native root | `<fieldset>` |
+| States | `ready`, `disabled`, `invalid` |
+| Events | `change`, `input` |
+| Methods | — |
+
+## Product boundary
+
+It is not a media library, upload manager, or crop tool. Sets larger than one screen need a host collection with search, pagination, and loading states.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Native inputs carry state and every option has text. Thumbnails are supporting information, with clear keyboard focus and selected outlines.

@@ -1,0 +1,282 @@
+.a3s-playground-page {
+  width: min(100%, 92rem);
+  min-width: 0;
+  min-height: calc(100dvh - var(--rp-nav-height));
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) 4rem;
+}
+
+.a3s-workspace-playground {
+  --playground-control: color-mix(
+    in srgb,
+    var(--ui-paper) 94%,
+    var(--ui-panel)
+  );
+  --playground-control-hover: color-mix(
+    in srgb,
+    var(--ui-blue) 7%,
+    var(--ui-paper)
+  );
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin: 2rem 0 3.5rem;
+  gap: 1rem;
+  color: var(--ui-ink);
+}
+
+.a3s-workspace-playground *,
+.a3s-workspace-playground *::before,
+.a3s-workspace-playground *::after {
+  box-sizing: border-box;
+}
+
+.a3s-workspace-playground button,
+.a3s-workspace-playground input,
+.a3s-workspace-playground select,
+.a3s-workspace-playground textarea {
+  font: inherit;
+}
+
+.a3s-workspace-playground__header {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+  align-items: end;
+  gap: 1.5rem;
+}
+
+.a3s-workspace-playground__header > div {
+  min-width: 0;
+}
+
+.a3s-workspace-playground__header :is(h1, h2) {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 690;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.a3s-workspace-playground__header p {
+  max-width: 44rem;
+  margin: 0.5rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.a3s-workspace-playground__header output {
+  display: grid;
+  min-width: 0;
+  min-height: 4.25rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid color-mix(in srgb, var(--ui-blue) 18%, var(--ui-line));
+  border-radius: 0.625rem;
+  align-content: center;
+  gap: 0.2rem;
+  background: color-mix(in srgb, var(--ui-blue) 5%, transparent);
+}
+
+.a3s-workspace-playground__header output strong {
+  color: var(--ui-ink);
+  font-size: 0.8125rem;
+  font-weight: 680;
+}
+
+.a3s-workspace-playground__header output span {
+  overflow: hidden;
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+}
+
+.a3s-workspace-playground__controls {
+  display: grid;
+  min-width: 0;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: var(--ui-paper);
+}
+
+.a3s-workspace-playground__scenes {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(8, minmax(6.75rem, 1fr));
+  overflow-x: auto;
+  border-block-end: 1px solid var(--ui-line);
+  scrollbar-color: var(--ui-line-strong) transparent;
+  scrollbar-width: thin;
+}
+
+.a3s-workspace-playground__scenes button {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.625rem 0.75rem;
+  border: 0;
+  border-inline-end: 1px solid var(--ui-line);
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 610;
+  white-space: nowrap;
+}
+
+.a3s-workspace-playground__scenes button:last-child {
+  border-inline-end: 0;
+}
+
+.a3s-workspace-playground__scenes button:hover {
+  background: var(--playground-control-hover);
+  color: var(--ui-ink);
+}
+
+.a3s-workspace-playground__scenes button[aria-selected="true"] {
+  background: color-mix(in srgb, var(--ui-blue) 6%, var(--ui-paper));
+  color: var(--ui-blue-deep);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--ui-blue) 24%, transparent);
+}
+
+.a3s-workspace-playground__options {
+  display: flex;
+  min-width: 0;
+  padding: 0.625rem;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.a3s-workspace-playground__options fieldset {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  gap: 0.25rem;
+}
+
+.a3s-workspace-playground__options legend,
+.a3s-workspace-playground__options > label > span {
+  display: block;
+  padding: 0;
+  color: var(--ui-faint);
+  font-size: 0.625rem;
+  font-weight: 680;
+  letter-spacing: 0.07em;
+  line-height: 1rem;
+  text-transform: uppercase;
+}
+
+.a3s-workspace-playground__options fieldset > div {
+  display: flex;
+  padding: 0.125rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.625rem;
+  background: var(--ui-panel);
+}
+
+.a3s-workspace-playground__options fieldset button,
+.a3s-workspace-playground__utility {
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 620;
+}
+
+.a3s-workspace-playground__options fieldset button[aria-pressed="true"] {
+  border-color: var(--ui-line);
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: 0 1px 2px rgb(20 24 40 / 6%);
+}
+
+.a3s-workspace-playground__options > label {
+  display: grid;
+  min-width: 8rem;
+  gap: 0.25rem;
+}
+
+.a3s-workspace-playground__options select {
+  min-height: 2.5rem;
+  padding: 0 2rem 0 0.75rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  font-size: 0.75rem;
+}
+
+.a3s-workspace-playground__utility {
+  display: inline-flex;
+  min-height: 2.5rem;
+  border-color: var(--ui-line);
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--playground-control);
+}
+
+.a3s-workspace-playground__utility:hover,
+.a3s-workspace-playground__utility[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--ui-blue) 35%, var(--ui-line));
+  background: var(--playground-control-hover);
+  color: var(--ui-blue-deep);
+}
+
+.a3s-workspace-playground__utility:disabled {
+  border-color: var(--ui-line);
+  background: var(--ui-panel);
+  color: var(--ui-faint);
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.a3s-workspace-playground :is(button, select, input, textarea):focus-visible,
+.a3s-workspace-playground [contenteditable]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-blue) 34%, transparent);
+  outline-offset: 2px;
+}
+
+.a3s-workspace-playground__stage {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  border: 1px solid var(--ui-line);
+  border-radius: 1rem;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--ui-panel);
+}
+
+.a3s-workspace-playground__device {
+  display: grid;
+  width: 100%;
+  max-width: 80rem;
+  min-width: 0;
+  aspect-ratio: 1280 / 800;
+  grid-template-rows: 2.125rem minmax(0, 1fr);
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 1.5rem 4rem rgb(20 24 40 / 16%);
+  transition:
+    width 240ms ease,
+    max-width 240ms ease;
+}

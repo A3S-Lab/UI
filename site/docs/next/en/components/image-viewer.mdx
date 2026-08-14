@@ -1,0 +1,83 @@
+# Image Viewer
+
+Inspects image detail in a protected full-screen reading layer with zoom, rotate, reset, and an explicit close path.
+
+<Preview class="w-full">
+<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0"><div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="../../../public/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p></dialog>
+</Preview>
+
+## Usage
+
+```html
+<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
+  <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+</dialog>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/image-viewer";
+
+const component = document.querySelector("dialog.image-viewer");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { ImageViewer, useImageViewer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useImageViewer();
+  return (
+    <ImageViewer ref={control.ref} open data-state="open" style={{ position: "relative", inlineSize: "100%", blockSize: "20rem", margin: "0" }}>
+      <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+    </ImageViewer>
+  );
+}
+```
+
+`useImageViewer` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { ImageViewer, useImageViewer } from "@a3s-lab/ui/vue";
+
+const control = useImageViewer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ImageViewer ref="componentRef" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
+    <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+  </ImageViewer>
+</template>
+```
+
+`useImageViewer` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `dialog.image-viewer` |
+| Native root | `<dialog>` |
+| States | `open`, `closed`, `loading`, `error` |
+| Events | `a3s:image-viewer-before-open`, `a3s:image-viewer-change`, `a3s:image-viewer-open`, `cancel`, `close` |
+| Methods | `close`, `getState`, `open`, `reset`, `rotate`, `zoom` |
+
+## Product boundary
+
+The viewer never edits the source, persists transforms, or replaces gallery navigation. Authorization, download, and source trust remain with the host.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Focus enters the toolbar on open; Escape closes and returns to the opener. Zoom remains available through buttons without requiring a wheel or gesture.

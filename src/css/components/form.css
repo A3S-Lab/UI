@@ -7,3 +7,58 @@
 @import "./select.css";
 @import "./switch.css";
 @import "./textarea.css";
+
+/* Form composition */
+@layer components {
+  form.form {
+    display: grid;
+    min-inline-size: 0;
+    gap: 1rem;
+  }
+
+  form.form > :is(header, [data-form-summary]) {
+    min-inline-size: 0;
+  }
+
+  form.form > footer {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-block-start: 0.5rem;
+  }
+
+  form.form [data-form-error],
+  form.form [role="alert"] {
+    color: var(--destructive);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  form.form[aria-busy="true"],
+  form.form[data-state="submitting"] {
+    cursor: progress;
+  }
+
+  form.form[aria-busy="true"] :is(input, select, textarea, button),
+  form.form[data-state="submitting"] :is(input, select, textarea, button) {
+    pointer-events: none;
+  }
+
+  form.form[data-readonly] :is(input, select, textarea) {
+    background: var(--muted);
+  }
+
+  @media (max-width: 32.5rem) {
+    form.form > footer {
+      align-items: stretch;
+    }
+
+    form.form > footer .btn {
+      flex: 1 1 auto;
+    }
+  }
+}

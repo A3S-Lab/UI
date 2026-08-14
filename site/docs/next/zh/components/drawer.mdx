@@ -134,6 +134,10 @@ A3S UI未实现Vaul的拖动关闭呼吸、捕捉点或拖动手柄。滑块通�
   </dd>
 </dl>
 
+### JavaScript API
+
+React 的 `useDrawer` 与 Vue 的同名 composable 暴露原生 `showModal()` 与增强后的 `close(returnValue)`。`close()` 会等待不超过 220ms 的退出过渡，并在减少动效环境中立即完成。
+
 ## 示例
 
 ### 侧面
@@ -310,3 +314,35 @@ A3S UI未实现Vaul的拖动关闭呼吸、捕捉点或拖动手柄。滑块通�
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Drawer, useDrawer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDrawer();
+  return (
+    <Drawer ref={control.ref} aria-label="Drawer"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Drawer>
+  );
+}
+```
+
+`useDrawer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Drawer, useDrawer } from "@a3s-lab/ui/vue";
+
+const control = useDrawer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Drawer ref="componentRef" aria-label="Drawer"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Drawer>
+</template>
+```
+
+`useDrawer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

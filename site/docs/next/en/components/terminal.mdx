@@ -61,3 +61,32 @@ Keep partial output after cancellation and error. High-volume streams may compos
 ## Accessibility
 
 Name the terminal region. Do not make high-volume output a live region; announce only bounded state transitions. Never render secrets from the environment.
+
+## React
+
+```tsx
+import { Terminal } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Terminal aria-label="Terminal">Component content</Terminal>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Terminal } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Terminal aria-label="Terminal">Component content</Terminal>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

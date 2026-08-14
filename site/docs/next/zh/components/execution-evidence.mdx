@@ -12,11 +12,11 @@
       <span data-evidence-result>已验证</span>
     </header>
     <section>
-      <p>89 个组件页面都渲染了匹配的语义根与机器可读状态。</p>
+      <p>111 个组件页面都渲染了匹配的语义根与机器可读状态。</p>
       <dl class="property-list" data-layout="rows" data-size="sm">
         <div>
           <dt>结果</dt>
-          <dd>89 个通过</dd>
+          <dd>111 个通过</dd>
         </div>
         <div>
           <dt>视口</dt>
@@ -65,3 +65,32 @@
 ## 无障碍
 
 证据摘要使用文本和结构化数据。截图需要有用的替代文本或相邻的文本结果。
+
+## React
+
+```tsx
+import { ExecutionEvidence } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ExecutionEvidence>组件内容</ExecutionEvidence>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { ExecutionEvidence } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ExecutionEvidence>组件内容</ExecutionEvidence>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

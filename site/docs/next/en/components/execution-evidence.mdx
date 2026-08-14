@@ -13,13 +13,13 @@ Execution Evidence records one verifiable result such as a test run, screenshot,
     </header>
     <section>
       <p>
-        89 component pages rendered a matching semantic root and
+        111 component pages rendered a matching semantic root and
         machine-readable state.
       </p>
       <dl class="property-list" data-layout="rows" data-size="sm">
         <div>
           <dt>Result</dt>
-          <dd>89 passed</dd>
+          <dd>111 passed</dd>
         </div>
         <div>
           <dt>Viewport</dt>
@@ -68,3 +68,32 @@ Verified means the evidence supports the stated claim, not that the entire task 
 ## Accessibility
 
 Evidence summaries use text and structured data. Screenshots need useful alternative text or an adjacent textual result.
+
+## React
+
+```tsx
+import { ExecutionEvidence } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ExecutionEvidence>Component content</ExecutionEvidence>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { ExecutionEvidence } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ExecutionEvidence>Component content</ExecutionEvidence>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

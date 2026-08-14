@@ -18,6 +18,18 @@
     gap: 0.625rem;
   }
 
+  .file-explorer > [data-file-explorer-state],
+  .file-explorer > [data-file-filter-empty],
+  .file-explorer > .context-menu,
+  .file-explorer > [data-file-explorer-viewport] {
+    min-height: 0;
+    grid-row: 3;
+  }
+
+  .file-explorer > footer {
+    grid-row: 4;
+  }
+
   .file-explorer [data-file-explorer-identity] {
     display: grid;
     min-width: 0;
@@ -52,8 +64,20 @@
   }
 
   .file-explorer [data-file-editor] {
+    min-width: 4rem;
+    flex: 1 1 auto;
     width: 100%;
-    min-width: 0;
+  }
+
+  .file-explorer [data-tree-label][hidden],
+  .file-explorer [data-file-rename-error][hidden],
+  .file-explorer [data-file-filter-empty][hidden] {
+    display: none;
+  }
+
+  .file-explorer [data-file-rename-error] {
+    display: block;
+    margin-inline-start: 1.75rem;
   }
 
   .file-explorer [data-file-explorer-state] {
@@ -64,6 +88,16 @@
   }
 
   .file-explorer [data-file-explorer-state][hidden] {
+    display: none;
+  }
+
+  .file-explorer[data-filter="empty"] > .context-menu {
+    visibility: hidden;
+  }
+
+  .file-explorer [data-file-explorer-viewport][hidden],
+  .file-explorer [data-file-action][hidden],
+  .file-explorer [data-context-content] [data-value][hidden] {
     display: none;
   }
 }

@@ -1,0 +1,54 @@
+/* File Type Icon */
+@layer components {
+  .file-type-icon {
+    position: relative;
+    display: inline-grid;
+    inline-size: 2rem;
+    block-size: 2.5rem;
+    flex: 0 0 auto;
+    place-items: end center;
+    padding-block-end: 0.375rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--file-color, var(--muted-foreground)) 55%, var(--border));
+    border-radius: 0.25rem 0.5rem 0.25rem 0.25rem;
+    background: color-mix(in srgb, var(--file-color, var(--muted)) 10%, var(--background));
+    color: var(--file-color, var(--foreground));
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .file-type-icon::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -1px;
+    inset-inline-end: -1px;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    border-block-end: 1px solid var(--border);
+    border-inline-start: 1px solid var(--border);
+    background: var(--background);
+  }
+
+  .file-type-icon :is(svg, img) {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  .file-type-icon:has(:is(svg, img)) {
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .file-type-icon:has(:is(svg, img))::before,
+  .file-type-icon:has(:is(svg, img)) [data-file-extension] {
+    display: none;
+  }
+}

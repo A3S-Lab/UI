@@ -34,3 +34,32 @@ Restoring is a consequential action when it overwrites current work. Confirm the
 ## Accessibility
 
 The restore control names the checkpoint when several are visible. Saving and restore completion use one bounded status announcement.
+
+## React
+
+```tsx
+import { Checkpoint } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Checkpoint>Component content</Checkpoint>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Checkpoint } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Checkpoint>Component content</Checkpoint>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

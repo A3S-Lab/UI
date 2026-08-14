@@ -44,3 +44,32 @@ Use child Empty, Skeleton, Alert, Resource Card, Table, or form components for e
 ## Accessibility
 
 Use the heading level appropriate to the surrounding document. Keep actions after the identity in DOM order and preserve that order when the header stacks on narrow screens.
+
+## React
+
+```tsx
+import { AppPage } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <AppPage aria-label="App Page">Component content</AppPage>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { AppPage } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <AppPage aria-label="App Page">Component content</AppPage>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

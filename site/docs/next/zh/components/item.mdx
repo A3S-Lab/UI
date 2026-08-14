@@ -387,3 +387,32 @@ Add `class="item"` to a semantic element such as `<article>` or `<a>`. Use `clas
   </a>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Item } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Item>组件内容</Item>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Item } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Item>组件内容</Item>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

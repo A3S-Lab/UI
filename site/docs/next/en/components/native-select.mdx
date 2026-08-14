@@ -126,3 +126,35 @@ Set `dir="rtl"` on the select or a parent element.
   <option value="blueberry">توت</option>
 </select>
 </Preview>
+
+## React
+
+```tsx
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useNativeSelect();
+  return (
+    <NativeSelect ref={control.ref}><option value="ready">Ready</option></NativeSelect>
+  );
+}
+```
+
+`useNativeSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/vue";
+
+const control = useNativeSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <NativeSelect ref="componentRef"><option value="ready">Ready</option></NativeSelect>
+</template>
+```
+
+`useNativeSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

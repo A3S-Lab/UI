@@ -225,3 +225,35 @@ Pair the checkbox with `field` and a native `<label>` for proper layout and labe
   </label>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCheckbox();
+  return (
+    <Checkbox ref={control.ref} aria-label="名称" />
+  );
+}
+```
+
+`useCheckbox` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/vue";
+
+const control = useCheckbox();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Checkbox ref="componentRef" aria-label="名称" />
+</template>
+```
+
+`useCheckbox` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

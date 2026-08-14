@@ -1,0 +1,83 @@
+# Hotkey Input
+
+Records one normalized keyboard chord and makes the current value, conflict state, and clear path visible before submission.
+
+<Preview class="w-full">
+<div class="hotkey-input" data-hotkey-value="Meta+K"><input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button></div>
+</Preview>
+
+## Usage
+
+```html
+<div class="hotkey-input" data-hotkey-value="Meta+K">
+  <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
+</div>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/hotkey-input";
+
+const component = document.querySelector(".hotkey-input");
+component.getValue();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useHotkeyInput();
+  return (
+    <HotkeyInput ref={control.ref} data-hotkey-value="Meta+K">
+      <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" className="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
+    </HotkeyInput>
+  );
+}
+```
+
+`useHotkeyInput` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/vue";
+
+const control = useHotkeyInput();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <HotkeyInput ref="componentRef" data-hotkey-value="Meta+K">
+    <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
+  </HotkeyInput>
+</template>
+```
+
+`useHotkeyInput` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.hotkey-input` |
+| Native root | `<div>` |
+| States | `ready`, `recording`, `disabled`, `invalid` |
+| Events | `a3s:hotkey-before-change`, `a3s:hotkey-change`, `a3s:hotkey-recording-change` |
+| Methods | `clear`, `getValue`, `setValue`, `start`, `stop` |
+
+## Product boundary
+
+It does not register global shortcuts, resolve conflicts, or bypass operating-system reservations. Binding and authorization belong to the host.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Tab always leaves the control, Escape restores the pre-recording value, and Delete clears it. Visible keycaps stay aligned with aria-keyshortcuts.

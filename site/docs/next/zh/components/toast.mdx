@@ -166,3 +166,35 @@
   <dt><code>cancel</code> <span class="badge" data-variant="secondary">Optional</span></dt>
   <dd>次要操作。支持 <code>label</code> 和可选的 <code>onClick(event)</code> 回调。</dd>
 </dl>
+
+## React
+
+```tsx
+import { Toast, useToast } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useToast();
+  return (
+    <Toast ref={control.ref}>组件内容</Toast>
+  );
+}
+```
+
+`useToast` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Toast, useToast } from "@a3s-lab/ui/vue";
+
+const control = useToast();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Toast ref="componentRef">组件内容</Toast>
+</template>
+```
+
+`useToast` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

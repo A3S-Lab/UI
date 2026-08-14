@@ -479,3 +479,35 @@ tree.refresh();
 | `ArrowRight` / `ArrowLeft` | 展开、进入、折叠或返回父节点；RTL 中方向相反。 |
 | `Enter` / `Space`          | 选择当前焦点节点。                             |
 | 可打印字符                 | 移到下一个以输入文字开头的可见节点。           |
+
+## React
+
+```tsx
+import { Tree, useTree } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTree();
+  return (
+    <Tree ref={control.ref}>组件内容</Tree>
+  );
+}
+```
+
+`useTree` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Tree, useTree } from "@a3s-lab/ui/vue";
+
+const control = useTree();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Tree ref="componentRef">组件内容</Tree>
+</template>
+```
+
+`useTree` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

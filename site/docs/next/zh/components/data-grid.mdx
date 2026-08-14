@@ -3,11 +3,282 @@
 数据网格用于需要排序、选择、批量操作和远程分页的资源集合。它建立在表格、复选框、筛选栏和分页组件上，不接管查询、权限或数据获取。
 
 <Preview class="w-full">
-  <section id="data-grid-demo-zh" class="data-grid" data-responsive="stack" data-state="ready" aria-labelledby="data-grid-title-zh">
-    <header><div data-grid-identity><h2 id="data-grid-title-zh">运行环境</h2><p>管理项目的构建和发布目标。</p></div><div data-grid-actions><button type="button" class="btn" data-size="sm">新建环境</button></div></header>
-    <form class="filter-bar" role="search" aria-label="筛选运行环境"><div data-filter-controls><div data-filter-primary><div class="input-group" data-filter-search><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" aria-label="搜索运行环境" placeholder="搜索名称或区域" /></div><div data-filter-group data-selection="single" data-required="true"><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="all" aria-pressed="true">全部</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="false">运行中</button></div></div><div data-filter-actions><output data-filter-count>3 个环境</output></div></div></form>
-    <div data-grid-viewport tabindex="0" aria-label="运行环境数据"><table class="table"><thead><tr><th><input class="input" type="checkbox" data-grid-select-all aria-label="选择全部环境" /></th><th aria-sort="none"><button type="button" data-grid-sort="name">名称<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-sort-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4-4 4 4"></path><path d="m16 14-4 4-4-4"></path></svg></button></th><th aria-sort="none"><button type="button" data-grid-sort="state">状态<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-sort-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4-4 4 4"></path><path d="m16 14-4 4-4-4"></path></svg></button></th><th>区域</th><th>最近发布</th><th><span class="sr-only">操作</span></th></tr></thead><tbody><tr data-value="production"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="production" aria-label="选择生产环境" checked /></td><td data-label="名称"><strong>生产环境</strong></td><td data-label="状态"><span class="status-badge" data-state="success"><span data-indicator></span>正常</span></td><td data-label="区域">上海</td><td data-label="最近发布"><time datetime="2026-08-14T09:42:00+08:00">今天 09:42</time></td><td data-label="操作"><button type="button" class="btn" data-size="sm" data-variant="ghost">打开</button></td></tr><tr data-value="staging"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="staging" aria-label="选择预发布环境" /></td><td data-label="名称"><strong>预发布环境</strong></td><td data-label="状态"><span class="status-badge" data-state="active"><span data-indicator></span>部署中</span></td><td data-label="区域">东京</td><td data-label="最近发布"><time datetime="2026-08-13T18:12:00+08:00">昨天 18:12</time></td><td data-label="操作"><button type="button" class="btn" data-size="sm" data-variant="ghost">打开</button></td></tr><tr data-value="preview"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="preview" aria-label="选择预览环境" /></td><td data-label="名称"><strong>功能预览</strong></td><td data-label="状态"><span class="status-badge" data-state="neutral"><span data-indicator></span>已暂停</span></td><td data-label="区域">新加坡</td><td data-label="最近发布"><time datetime="2026-08-11T14:20:00+08:00">8 月 11 日</time></td><td data-label="操作"><button type="button" class="btn" data-size="sm" data-variant="ghost">打开</button></td></tr></tbody></table></div>
-    <section class="bulk-action-bar" data-position="sticky" data-state="selected" role="region" aria-label="已选环境操作"><div data-bulk-selection>已选 <output data-selected-count>1</output> 项</div><span data-bulk-summary>只会处理具备权限的环境</span><div data-bulk-actions><button type="button" class="btn" data-size="sm" data-variant="outline">暂停</button><button type="button" class="btn" data-size="sm" data-variant="destructive">删除</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear data-grid-clear-selection>清除选择</button></div></section>
+  <section
+    id="data-grid-demo-zh"
+    class="data-grid"
+    data-responsive="stack"
+    data-state="ready"
+    aria-labelledby="data-grid-title-zh"
+  >
+    <header>
+      <div data-grid-identity>
+        <h2 id="data-grid-title-zh">运行环境</h2>
+        <p>管理项目的构建和发布目标。</p>
+      </div>
+      <div data-grid-actions>
+        <button type="button" class="btn" data-size="sm">
+          新建环境
+        </button>
+      </div>
+    </header>
+    <form class="filter-bar" role="search" aria-label="筛选运行环境">
+      <div data-filter-controls>
+        <div data-filter-primary>
+          <div class="input-group" data-filter-search>
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <input
+              type="search"
+              aria-label="搜索运行环境"
+              placeholder="搜索名称或区域"
+            />
+          </div>
+          <div data-filter-group data-selection="single" data-required="true">
+            <button
+              type="button"
+              data-filter-toggle
+              data-filter-name="state"
+              data-filter-value="all"
+              aria-pressed="true"
+            >
+              全部
+            </button>
+            <button
+              type="button"
+              data-filter-toggle
+              data-filter-name="state"
+              data-filter-value="active"
+              aria-pressed="false"
+            >
+              运行中
+            </button>
+          </div>
+        </div>
+        <div data-filter-actions>
+          <output data-filter-count>3 个环境</output>
+        </div>
+      </div>
+    </form>
+    <div data-grid-viewport tabindex="0" aria-label="运行环境数据">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <input
+                class="input"
+                type="checkbox"
+                data-grid-select-all
+                aria-label="选择全部环境"
+              />
+            </th>
+            <th aria-sort="none">
+              <button type="button" data-grid-sort="name">
+                名称
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  data-sort-indicator
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m8 10 4-4 4 4"></path>
+                  <path d="m16 14-4 4-4-4"></path>
+                </svg>
+              </button>
+            </th>
+            <th aria-sort="none">
+              <button type="button" data-grid-sort="state">
+                状态
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  data-sort-indicator
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m8 10 4-4 4 4"></path>
+                  <path d="m16 14-4 4-4-4"></path>
+                </svg>
+              </button>
+            </th>
+            <th>区域</th>
+            <th>最近发布</th>
+            <th>
+              <span class="sr-only">操作</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-value="production">
+            <td data-grid-select-cell>
+              <input
+                class="input"
+                type="checkbox"
+                data-grid-select
+                value="production"
+                aria-label="选择生产环境"
+                checked
+              />
+            </td>
+            <td data-label="名称">
+              <strong>生产环境</strong>
+            </td>
+            <td data-label="状态">
+              <span class="status-badge" data-state="success">
+                <span data-indicator></span>正常
+              </span>
+            </td>
+            <td data-label="区域">上海</td>
+            <td data-label="最近发布">
+              <time datetime="2026-08-14T09:42:00+08:00">今天 09:42</time>
+            </td>
+            <td data-label="操作">
+              <button
+                type="button"
+                class="btn"
+                data-size="sm"
+                data-variant="ghost"
+              >
+                打开
+              </button>
+            </td>
+          </tr>
+          <tr data-value="staging">
+            <td data-grid-select-cell>
+              <input
+                class="input"
+                type="checkbox"
+                data-grid-select
+                value="staging"
+                aria-label="选择预发布环境"
+              />
+            </td>
+            <td data-label="名称">
+              <strong>预发布环境</strong>
+            </td>
+            <td data-label="状态">
+              <span class="status-badge" data-state="active">
+                <span data-indicator></span>部署中
+              </span>
+            </td>
+            <td data-label="区域">东京</td>
+            <td data-label="最近发布">
+              <time datetime="2026-08-13T18:12:00+08:00">昨天 18:12</time>
+            </td>
+            <td data-label="操作">
+              <button
+                type="button"
+                class="btn"
+                data-size="sm"
+                data-variant="ghost"
+              >
+                打开
+              </button>
+            </td>
+          </tr>
+          <tr data-value="preview">
+            <td data-grid-select-cell>
+              <input
+                class="input"
+                type="checkbox"
+                data-grid-select
+                value="preview"
+                aria-label="选择预览环境"
+              />
+            </td>
+            <td data-label="名称">
+              <strong>功能预览</strong>
+            </td>
+            <td data-label="状态">
+              <span class="status-badge" data-state="neutral">
+                <span data-indicator></span>已暂停
+              </span>
+            </td>
+            <td data-label="区域">新加坡</td>
+            <td data-label="最近发布">
+              <time datetime="2026-08-11T14:20:00+08:00">8 月 11 日</time>
+            </td>
+            <td data-label="操作">
+              <button
+                type="button"
+                class="btn"
+                data-size="sm"
+                data-variant="ghost"
+              >
+                打开
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <section
+      class="bulk-action-bar"
+      data-position="sticky"
+      data-state="selected"
+      role="region"
+      aria-label="已选环境操作"
+    >
+      <div data-bulk-selection>
+        已选 <output data-selected-count>1</output> 项
+      </div>
+      <span data-bulk-summary aria-live="polite">
+        只会处理具备权限的环境
+      </span>
+      <div data-bulk-actions>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="outline"
+          data-bulk-action="pause"
+        >
+          暂停
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="destructive"
+          data-bulk-action="delete"
+        >
+          删除
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="ghost"
+          data-bulk-action="clear"
+          data-bulk-clear
+          data-grid-clear-selection
+        >
+          清除选择
+        </button>
+      </div>
+    </section>
   </section>
 </Preview>
 
@@ -22,11 +293,34 @@
 
 ```html
 <section class="data-grid" data-responsive="stack" aria-labelledby="grid-title">
-  <header><div data-grid-identity><h2 id="grid-title">运行环境</h2></div></header>
+  <header>
+    <div data-grid-identity><h2 id="grid-title">运行环境</h2></div>
+  </header>
   <div data-grid-viewport tabindex="0">
     <table class="table">
-      <thead><tr><th><input type="checkbox" data-grid-select-all aria-label="选择全部" /></th><th aria-sort="none"><button type="button" data-grid-sort="name">名称</button></th></tr></thead>
-      <tbody><tr data-value="production"><td data-grid-select-cell><input type="checkbox" data-grid-select value="production" aria-label="选择生产环境" /></td><td data-label="名称">生产环境</td></tr></tbody>
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox" data-grid-select-all aria-label="选择全部" />
+          </th>
+          <th aria-sort="none">
+            <button type="button" data-grid-sort="name">名称</button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-value="production">
+          <td data-grid-select-cell>
+            <input
+              type="checkbox"
+              data-grid-select
+              value="production"
+              aria-label="选择生产环境"
+            />
+          </td>
+          <td data-label="名称">生产环境</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </section>
@@ -34,32 +328,70 @@
 
 ### 参数
 
-| API | 用途 |
-| --- | --- |
-| `data-grid-viewport` | 数据网格唯一的横向和纵向滚动区域 |
-| `data-grid-select` / `data-grid-select-all` | 行选择与全选复选框 |
-| `data-grid-sort="key"` | 更新表头 `aria-sort` 并请求宿主排序 |
-| `data-responsive="stack"` | 在 640px 以下把每行重排为带标签的记录；单元格需提供 `data-label` |
-| `--data-grid-max-height` | 可选的网格最大高度 |
+| API                                         | 用途                                                             |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| `data-grid-viewport`                        | 数据网格唯一的横向和纵向滚动区域                                 |
+| `data-grid-select` / `data-grid-select-all` | 行选择与全选复选框                                               |
+| `data-grid-sort="key"`                      | 更新表头 `aria-sort` 并请求宿主排序                              |
+| `data-grid-row-action="command"`            | 以稳定命令值发出行、行值与操作信息                               |
+| `data-grid-state="state"`                   | `loading`、`empty`、`error` 或 `permission-denied` 专用反馈区    |
+| `data-responsive="stack"`                   | 在 640px 以下把每行重排为带标签的记录；单元格需提供 `data-label` |
+| `--data-grid-max-height`                    | 可选的网格最大高度                                               |
 
 ### JavaScript API
 
 ```js
 const grid = document.querySelector(".data-grid");
-grid.selectAll();
-grid.clearSelection();
-grid.refresh();
+grid.setSelection(["production", "staging"]);
+grid.toggleSelection("preview", true);
+grid.setSort("name", "ascending");
+grid.setState("loading", { message: "正在刷新运行环境…" });
+console.log(grid.getState());
 grid.addEventListener("a3s:data-grid-sort", ({ detail }) => loadPage(detail));
 ```
 
-选择变化触发 `a3s:data-grid-selection-change`，详情包含 `values`、`rows` 和 `selectedCount`。排序触发 `a3s:data-grid-sort`，详情为 `{ key, direction }`；控制器不会擅自重排行或请求数据。
+`getSelection()`、`setSelection()`、`toggleSelection()`、`selectAll()` 和 `clearSelection()` 会同步行复选框、选中行、表头复选框与嵌套的批量操作栏。`getSort()` 与 `setSort()` 控制唯一排序列。`getState()` 返回视图、选择与排序快照，`setState()` 切换反馈区，`refresh({ preserveSelection, preserveSort })` 用于替换行后重新绑定。
+
+`a3s:data-grid-before-selection-change`、`a3s:data-grid-before-sort` 和 `a3s:data-grid-before-row-action` 是可取消前置钩子。完成事件为 `a3s:data-grid-selection-change`、`a3s:data-grid-sort`、`a3s:data-grid-row-action` 与 `a3s:data-grid-state-change`。详情包含 `previous`、`current`、`source` 和 `originalEvent`，并保留 `values`、`selectedCount`、`key`、`direction` 兼容字段。控制器不重排行、不请求数据，也不替宿主授权命令。
 
 ## 状态与变体
 
-客户端集合可以直接替换行；服务端集合应保持当前筛选和排序，并在加载时保留列宽。空白、错误和权限不足使用一个跨列的 `data-grid-state` 区域。行操作属于网格契约，不需要单独的公共组件。
+客户端集合可以直接替换行；服务端集合在后台加载时应保留当前筛选、排序、已有行与列宽。为空、错误和权限不足分别提供 `data-grid-state="empty"`、`error` 与 `permission-denied` 区域，让每种状态都说明问题与恢复动作。行操作属于网格契约，不需要单独的公共组件。
 
 默认模式在窄屏保留横向滚动；只有当记录字段仍能线性阅读时才使用 `data-responsive="stack"`。大量列、可编辑单元格或列间比较任务应继续使用滚动表格。
 
 ## 无障碍
 
 表头必须使用真实 `<th>`，可排序列把 `aria-sort` 放在表头而不是按钮上。每个复选框都需要包含行名称的标签；批量操作出现后不移动焦点。服务端更新结果数量时使用礼貌播报，加载期间不要清空当前选择而不解释原因。
+
+## React
+
+```tsx
+import { DataGrid, useDataGrid } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDataGrid();
+  return (
+    <DataGrid ref={control.ref} aria-label="Data Grid">组件内容</DataGrid>
+  );
+}
+```
+
+`useDataGrid` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { DataGrid, useDataGrid } from "@a3s-lab/ui/vue";
+
+const control = useDataGrid();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DataGrid ref="componentRef" aria-label="Data Grid">组件内容</DataGrid>
+</template>
+```
+
+`useDataGrid` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

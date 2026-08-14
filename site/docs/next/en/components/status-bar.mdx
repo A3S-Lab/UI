@@ -83,3 +83,32 @@ Keep status copy terse and stable. The default 28-pixel bar uses a fixed flex ba
 ## Accessibility
 
 Name the Status Bar when the page contains several landmark footers. Associate every range input and icon button with an accessible name, and announce asynchronous save failures through a separate live region.
+
+## React
+
+```tsx
+import { StatusBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <StatusBar>Component content</StatusBar>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { StatusBar } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <StatusBar>Component content</StatusBar>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

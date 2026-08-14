@@ -266,7 +266,7 @@ suite "a3s-ui-feedback-and-data" {
     }
 
     scenario "data-grid" {
-        name = "Data Grid synchronizes full selection, bulk actions, and sort direction"
+        name = "Data Grid synchronizes partial and full selection, bulk scope, and reversible sorting"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/data-grid.html" }
@@ -275,8 +275,14 @@ suite "a3s-ui-feedback-and-data" {
         expect "grid-ready" { visible = css("#data-grid-demo-en[data-data-grid-initialized=true][data-selection=some]") }
         check "select-all" { target = css("#data-grid-demo-en [data-grid-select-all]") }
         expect "all-selected" { visible = css("#data-grid-demo-en[data-selection=all] [data-selected-count]") }
+        uncheck "exclude-staging" { target = css("#data-grid-demo-en [data-grid-select][value=staging]") }
+        expect "partial-selection-restored" { visible = css("#data-grid-demo-en[data-selection=some] .bulk-action-bar:not([hidden])") }
+        check "restore-staging" { target = css("#data-grid-demo-en [data-grid-select][value=staging]") }
+        expect "full-selection-restored" { visible = css("#data-grid-demo-en[data-selection=all] [data-selected-count]") }
         click "sort-name" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
         expect "name-ascending" { visible = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
+        click "reverse-name-sort" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
+        expect "name-descending" { visible = css("#data-grid-demo-en th[aria-sort=descending] [data-grid-sort=name]") }
         click "clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
         expect "selection-cleared" { visible = css("#data-grid-demo-en[data-selection=none] .bulk-action-bar[hidden]") }
         viewport "phone" { width = 390 height = 844 }
@@ -284,13 +290,15 @@ suite "a3s-ui-feedback-and-data" {
     }
 
     scenario "bulk-action-bar" {
-        name = "Bulk Action Bar clears its temporary selection region"
+        name = "Bulk Action Bar initializes a controlled selection and exits the temporary action region"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/bulk-action-bar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "bulk-actions-visible" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar:not([hidden])") }
+        expect "bulk-actions-visible" { visible = css("#bulk-action-bar-demo-en[data-bulk-action-bar-initialized=true][data-state=selected]:not([hidden])") }
+        focus "focus-archive-action" { target = css("#bulk-action-bar-demo-en [data-bulk-action=archive]") }
+        expect "archive-action-focused" { visible = css("#bulk-action-bar-demo-en [data-bulk-action=archive]:focus") }
         click "clear-selection" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
         expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[hidden]") }
     }

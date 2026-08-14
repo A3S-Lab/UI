@@ -70,7 +70,7 @@ export function Root({ children }: RootProps) {
 
     document
       .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute("content", theme === "dark" ? "#101118" : "#f8f9fb");
+      ?.setAttribute("content", theme === "dark" ? "#0d0d0f" : "#ffffff");
   }, [theme]);
 
   useEffect(() => {

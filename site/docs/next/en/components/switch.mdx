@@ -147,3 +147,35 @@ Switch field layout uses document direction. Set `dir="rtl"` on the field or an 
   <input type="checkbox" id="switch-rtl" role="switch" class="input" aria-describedby="switch-rtl-description" defaultChecked />
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Switch, useSwitch } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSwitch();
+  return (
+    <Switch ref={control.ref} aria-label="Name" />
+  );
+}
+```
+
+`useSwitch` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Switch, useSwitch } from "@a3s-lab/ui/vue";
+
+const control = useSwitch();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Switch ref="componentRef" aria-label="Name" />
+</template>
+```
+
+`useSwitch` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

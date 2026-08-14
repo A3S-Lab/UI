@@ -480,3 +480,35 @@ Logical indentation, guide lines, and chevrons follow document direction. In RTL
 | `ArrowRight` / `ArrowLeft` | Expands, enters, collapses, or returns to a parent; directions reverse in RTL. |
 | `Enter` / `Space`          | Selects the focused node.                                                      |
 | Printable characters       | Moves to the next visible node whose label starts with the typed text.         |
+
+## React
+
+```tsx
+import { Tree, useTree } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTree();
+  return (
+    <Tree ref={control.ref}>Component content</Tree>
+  );
+}
+```
+
+`useTree` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Tree, useTree } from "@a3s-lab/ui/vue";
+
+const control = useTree();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Tree ref="componentRef">Component content</Tree>
+</template>
+```
+
+`useTree` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

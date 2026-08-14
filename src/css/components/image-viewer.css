@@ -1,0 +1,109 @@
+/* Image Viewer */
+@layer components {
+  dialog.image-viewer {
+    inline-size: min(72rem, calc(100vw - 2rem));
+    max-inline-size: none;
+    block-size: min(48rem, calc(100dvh - 2rem));
+    max-block-size: none;
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0.75rem;
+    background: #111113;
+    color: #f4f4f5;
+    box-shadow: 0 20px 20px -8px rgb(0 0 0 / 34%);
+  }
+
+  dialog.image-viewer::backdrop {
+    background: rgb(0 0 0 / 72%);
+  }
+
+  dialog.image-viewer[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .image-viewer [data-image-viewer-toolbar] {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-inline-size: 0;
+    min-block-size: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    background: #19191d;
+  }
+
+  .image-viewer [data-image-viewer-toolbar] > :is(div, nav) {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .image-viewer [data-image-viewer-toolbar] button {
+    color: #f4f4f5;
+  }
+
+  .image-viewer figure {
+    display: grid;
+    min-inline-size: 0;
+    min-block-size: 0;
+    margin: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    place-items: center;
+  }
+
+  .image-viewer img {
+    max-inline-size: none;
+    max-block-size: none;
+    transform: rotate(var(--image-viewer-rotation, 0deg)) scale(var(--image-viewer-zoom, 1));
+    transform-origin: center;
+    transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+  }
+
+  .image-viewer :is(figcaption, [data-image-viewer-caption]) {
+    min-inline-size: 0;
+    padding: 0.625rem 0.75rem;
+    overflow: hidden;
+    background: #19191d;
+    color: #b4b4bc;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .image-viewer[data-state="loading"] figure,
+  .image-viewer[data-state="error"] figure {
+    color: #b4b4bc;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 32.5rem) {
+    dialog.image-viewer {
+      inline-size: 100vw;
+      block-size: 100dvh;
+      border-radius: 0;
+    }
+
+    .image-viewer [data-image-viewer-toolbar] {
+      padding-block-start: max(0.5rem, env(safe-area-inset-top));
+    }
+
+    .image-viewer :is(figcaption, [data-image-viewer-caption]) {
+      padding-block-end: max(0.625rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image-viewer img {
+      transition: none;
+    }
+  }
+}

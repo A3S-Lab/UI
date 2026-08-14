@@ -32,3 +32,32 @@ Unavailable citations remain text with a clear unavailable label; do not leave b
 ## Accessibility
 
 The link name must make sense outside the surrounding sentence. Restore focus after closing a citation preview.
+
+## React
+
+```tsx
+import { MessageCitation } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <MessageCitation href="#example">Component content</MessageCitation>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { MessageCitation } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <MessageCitation href="#example">Component content</MessageCitation>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

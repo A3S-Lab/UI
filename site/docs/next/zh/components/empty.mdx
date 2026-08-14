@@ -208,3 +208,32 @@
   </footer>
 </section>
 </Preview>
+
+## React
+
+```tsx
+import { Empty } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Empty aria-label="Empty">组件内容</Empty>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Empty } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Empty aria-label="Empty">组件内容</Empty>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

@@ -1,0 +1,71 @@
+# 颜色样本
+
+以原生单选或复选输入表达有限、可命名的颜色集合，并让选择状态在色彩之外仍然清楚。
+
+<Preview class="w-full">
+<fieldset class="color-swatches" aria-label="Accent color"><label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label></fieldset>
+</Preview>
+
+## 使用方式
+
+```html
+<fieldset class="color-swatches" aria-label="Accent color">
+  <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+</fieldset>
+```
+
+## React
+
+```tsx
+import { ColorSwatches, useColorSwatches } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useColorSwatches();
+  return (
+    <ColorSwatches ref={control.ref} aria-label="Accent color">
+      <label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style={{ "--swatch-color": "#5b57d9" }}></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style={{ "--swatch-color": "#249bf6" }}></span></label>
+    </ColorSwatches>
+  );
+}
+```
+
+`useColorSwatches` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ColorSwatches, useColorSwatches } from "@a3s-lab/ui/vue";
+
+const control = useColorSwatches();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ColorSwatches ref="componentRef" aria-label="Accent color">
+    <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+  </ColorSwatches>
+</template>
+```
+
+`useColorSwatches` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `.color-swatches` |
+| 原生根元素 | `<fieldset>` |
+| 状态 | `ready`, `disabled`, `invalid` |
+| 事件 | `change`, `input` |
+| 方法 | — |
+
+## 产品边界
+
+颜色样本不适合任意颜色输入、主题预览或只靠色相区分的状态。任意取色应交给宿主的专业颜色工具。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+每个样本必须有可访问名称，选中态具有轮廓和原生输入状态，低视力用户不需要识别色名即可完成选择。

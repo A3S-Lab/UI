@@ -1,0 +1,31 @@
+/* Copy Button */
+@layer components {
+  .copy-button {
+    position: relative;
+    gap: 0.375rem;
+  }
+
+  .copy-button [data-copy-feedback] {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .copy-button[data-state="copying"] {
+    cursor: progress;
+  }
+
+  .copy-button[data-state="copied"] [data-copy-feedback] {
+    color: var(--success, #16845b);
+  }
+
+  .copy-button[data-state="error"] [data-copy-feedback] {
+    color: var(--destructive);
+  }
+
+  .copy-button[aria-disabled="true"],
+  .copy-button:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}

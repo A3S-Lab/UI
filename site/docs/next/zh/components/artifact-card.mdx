@@ -35,3 +35,32 @@
 ## 无障碍
 
 使用标题命名产物。预览是普通文档内容，不要在元数据中重复其完整可访问文本。
+
+## React
+
+```tsx
+import { ArtifactCard } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ArtifactCard>组件内容</ArtifactCard>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { ArtifactCard } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ArtifactCard>组件内容</ArtifactCard>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

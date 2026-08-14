@@ -448,3 +448,32 @@
   </div>
 </fieldset>
 </Preview>
+
+## React
+
+```tsx
+import { Field } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Field>组件内容</Field>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Field } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Field>组件内容</Field>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

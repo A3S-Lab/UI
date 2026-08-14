@@ -186,3 +186,35 @@ Desktop and mobile open states are tracked independently across `data-breakpoint
 | `sidebar.open()` | Method | Opens the sidebar. |
 | `sidebar.close()` | Method | Closes the sidebar. |
 | `sidebar.toggle()` | Method | Toggles the sidebar. |
+
+## React
+
+```tsx
+import { Sidebar, useSidebar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSidebar();
+  return (
+    <Sidebar ref={control.ref} aria-label="Sidebar">Component content</Sidebar>
+  );
+}
+```
+
+`useSidebar` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Sidebar, useSidebar } from "@a3s-lab/ui/vue";
+
+const control = useSidebar();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Sidebar ref="componentRef" aria-label="Sidebar">Component content</Sidebar>
+</template>
+```
+
+`useSidebar` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

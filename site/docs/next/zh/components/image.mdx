@@ -1,0 +1,68 @@
+# 图像
+
+将图像、替代文字、说明和加载状态组合成稳定的阅读单元，避免内容载入造成布局跳动。
+
+<Preview class="w-full">
+<figure class="image" data-state="ready" data-aspect="square"><img src="../../../public/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption></figure>
+</Preview>
+
+## 使用方式
+
+```html
+<figure class="image" data-state="ready" data-aspect="square">
+  <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+</figure>
+```
+
+## React
+
+```tsx
+import { Image } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Image data-state="ready" data-aspect="square">
+      <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+    </Image>
+  );
+}
+```
+
+该组件没有额外行为控制器，React 适配器只渲染标准语义根。
+
+## Vue
+
+```vue
+<script setup>
+import { Image } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Image data-state="ready" data-aspect="square">
+    <img src="/logo.png" alt="Official A3S OS mark" width="480" height="480" /><figcaption>Official identity asset rendered with a stable aspect ratio.</figcaption>
+  </Image>
+</template>
+```
+
+Vue 适配器不包装额外容器，也不改变原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `figure.image` |
+| 原生根元素 | `<figure>` |
+| 状态 | `loading`, `ready`, `error` |
+| 事件 | — |
+| 方法 | — |
+
+## 产品边界
+
+组件不做远程代理、内容审核或图片编辑。缩放查看属于 Image Viewer，选择任务属于 Image Select。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+信息图像需要准确 alt，装饰图像使用空 alt。尺寸或宽高比应预先声明，错误状态提供文字说明和恢复路径。

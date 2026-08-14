@@ -40,3 +40,32 @@ Buttons are used for in-place actions; anchors are used for navigation. Both shi
 ## Accessibility
 
 Preview artwork is decorative unless it conveys unique content; hide decorative SVGs with `aria-hidden="true"`. Keep the title and type in text. Avoid nesting interactive controls inside a card link or button.
+
+## React
+
+```tsx
+import { ResourceCard } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ResourceCard>Component content</ResourceCard>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { ResourceCard } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ResourceCard>Component content</ResourceCard>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

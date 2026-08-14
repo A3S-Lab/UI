@@ -99,3 +99,35 @@
 ## 无障碍
 
 使用标题并通过 `aria-labelledby` 关联。在控件之前说明具体资源与后果。范围选项使用 Fieldset 中的原生 Radio。只有请求确实阻塞当前任务时才把焦点移动到请求标题；其他情况下应播报请求到达而不抢焦点。不得只依赖颜色区分等待、批准和拒绝状态。
+
+## React
+
+```tsx
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useApprovalRequest();
+  return (
+    <ApprovalRequest ref={control.ref} aria-label="Approval Request">组件内容</ApprovalRequest>
+  );
+}
+```
+
+`useApprovalRequest` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/vue";
+
+const control = useApprovalRequest();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ApprovalRequest ref="componentRef" aria-label="Approval Request">组件内容</ApprovalRequest>
+</template>
+```
+
+`useApprovalRequest` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

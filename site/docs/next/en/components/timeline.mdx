@@ -75,3 +75,32 @@ Map domain statuses to the four semantic states in the host application. Do not 
 ## Accessibility
 
 Use `<ol>` when order matters and `<time datetime="…">` for timestamps. Keep the current state explicit with `aria-current="step"`. Timeline is CSS-only; focus, selection, and live announcements remain the host application's responsibility.
+
+## React
+
+```tsx
+import { Timeline } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Timeline aria-label="Timeline"><li>Component content</li></Timeline>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Timeline } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Timeline aria-label="Timeline"><li>Component content</li></Timeline>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

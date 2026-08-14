@@ -90,3 +90,32 @@ A3S UI 工具提示仅包含 CSS 和文本。这有意与 shadcn/ui 的组合工
   <button class="btn" data-variant="outline" data-tooltip="تلميح" data-side="inline-end">Inline End</button>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Tooltip } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Tooltip aria-label="Help">组件内容</Tooltip>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Tooltip } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Tooltip aria-label="Help">组件内容</Tooltip>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

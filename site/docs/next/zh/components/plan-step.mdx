@@ -35,3 +35,32 @@
 ## 无障碍
 
 有序列表已经表达位置时，索引标记应作为装饰。阻塞、错误和完成状态不能只靠颜色表达。
+
+## React
+
+```tsx
+import { PlanStep } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <PlanStep>组件内容</PlanStep>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { PlanStep } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <PlanStep>组件内容</PlanStep>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

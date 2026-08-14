@@ -1,0 +1,71 @@
+# 表单
+
+把相关字段、校验摘要和提交操作组织为一个可恢复的任务，并保留浏览器原生提交语义。
+
+<Preview class="w-full">
+<form class="form"><label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer></form>
+</Preview>
+
+## 使用方式
+
+```html
+<form class="form">
+  <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+</form>
+```
+
+## React
+
+```tsx
+import { Form, useForm } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useForm();
+  return (
+    <Form ref={control.ref}>
+      <label className="field"><span className="label">Workspace name</span><input className="input" name="name" value="Research" required /></label><footer><button type="submit" className="btn">Save workspace</button></footer>
+    </Form>
+  );
+}
+```
+
+`useForm` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Form, useForm } from "@a3s-lab/ui/vue";
+
+const control = useForm();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Form ref="componentRef">
+    <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+  </Form>
+</template>
+```
+
+`useForm` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `form.form` |
+| 原生根元素 | `<form>` |
+| 状态 | `ready`, `submitting`, `success`, `invalid`, `error`, `read-only` |
+| 事件 | `reset`, `submit` |
+| 方法 | — |
+
+## 产品边界
+
+表单负责交互结构，不负责网络请求、权限或业务校验。不要把不相关设置塞进同一表单，也不要用禁用按钮代替具体错误说明。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+错误靠近字段并可从摘要定位；提交中保留输入，失败后保持焦点上下文。所有字段都需要持久可见的标签。

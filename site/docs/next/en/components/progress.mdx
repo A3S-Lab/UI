@@ -80,3 +80,32 @@ Progress supports `dir="rtl"` on the root or a parent.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Progress } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Progress>Component content</Progress>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Progress } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Progress>Component content</Progress>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

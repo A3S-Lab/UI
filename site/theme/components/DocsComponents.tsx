@@ -3,6 +3,7 @@ import {
   cloneElement,
   isValidElement,
   useEffect,
+  useId,
   useRef,
   useState,
   type CSSProperties,
@@ -242,6 +243,7 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
   class?: string;
   children: ReactNode;
   source?: string;
+  title?: string;
 };
 
 const previewVoidElements = new Set([
@@ -405,21 +407,98 @@ function needsRenderedPreviewSource(source: string) {
   );
 }
 
+function PreviewCodeIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      width="16"
+      height="16"
+      fill="none"
+    >
+      <path
+        d="m7.25 5.5-4 4.5 4 4.5M12.75 5.5l4 4.5-4 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PreviewCopyIcon({ copied }: { copied: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      width="16"
+      height="16"
+      fill="none"
+    >
+      {copied ? (
+        <path
+          d="m4.5 10.25 3.25 3.25 7.75-7.75"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : (
+        <>
+          <rect
+            x="6.25"
+            y="6.25"
+            width="9"
+            height="9"
+            rx="1.75"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M13.25 6.25v-1.5c0-.97-.78-1.75-1.75-1.75H4.75C3.78 3 3 3.78 3 4.75v6.75c0 .97.78 1.75 1.75 1.75h1.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </>
+      )}
+    </svg>
+  );
+}
+
 export function Preview({
   children,
   className,
   class: htmlClass,
   source,
+  title,
 }: PreviewProps) {
   const location = useLocation();
   const language = useLang();
   const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const sourceRef = useRef<HTMLDetailsElement>(null);
+  const copyResetRef = useRef<number | null>(null);
+  const sourceId = useId();
   const [sourceText, setSourceText] = useState(source ?? "");
+  const [sourceOpen, setSourceOpen] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
   const componentName =
     location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
     (/\/components\/?$/.test(location.pathname) ? "index" : undefined);
   const isChinese = language === "zh";
+
+  useEffect(
+    () => () => {
+      if (copyResetRef.current !== null) {
+        window.clearTimeout(copyResetRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const preview = previewRef.current;
@@ -460,6 +539,44 @@ export function Preview({
     };
   }, [children, source]);
 
+  const toggleSource = () => {
+    if (!sourceRef.current) return;
+    sourceRef.current.open = !sourceRef.current.open;
+    setSourceOpen(sourceRef.current.open);
+  };
+
+  const copySource = async () => {
+    if (!sourceText) return;
+    if (copyResetRef.current !== null) {
+      window.clearTimeout(copyResetRef.current);
+    }
+
+    try {
+      await navigator.clipboard.writeText(sourceText);
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    }
+
+    copyResetRef.current = window.setTimeout(() => {
+      setCopyState("idle");
+      copyResetRef.current = null;
+    }, 1800);
+  };
+
+  const copyLabel =
+    copyState === "copied"
+      ? isChinese
+        ? "源码已复制"
+        : "Source copied"
+      : copyState === "error"
+        ? isChinese
+          ? "复制失败"
+          : "Copy failed"
+        : isChinese
+          ? "复制源码"
+          : "Copy source";
+
   return (
     <section
       ref={previewRef}
@@ -471,11 +588,36 @@ export function Preview({
       data-preview-source={sourceText ? "ready" : "pending"}
     >
       <header className="a3s-preview__header">
-        <span>
-          <i aria-hidden="true" />
-          {language === "zh" ? "实时预览" : "Live preview"}
-        </span>
-        <small>HTML · CSS · JavaScript</small>
+        <strong>{title ?? (isChinese ? "实时预览" : "Live preview")}</strong>
+        <div
+          className="a3s-preview__controls"
+          role="group"
+          aria-label={isChinese ? "预览工具" : "Preview tools"}
+        >
+          <button
+            type="button"
+            onClick={toggleSource}
+            aria-controls={sourceId}
+            aria-expanded={sourceOpen}
+            aria-label={isChinese ? "切换源码" : "Toggle source"}
+            title={isChinese ? "切换源码" : "Toggle source"}
+          >
+            <PreviewCodeIcon />
+          </button>
+          <button
+            type="button"
+            onClick={copySource}
+            disabled={!sourceText}
+            aria-label={copyLabel}
+            title={copyLabel}
+            data-state={copyState}
+          >
+            <PreviewCopyIcon copied={copyState === "copied"} />
+            <span className="a3s-preview__feedback" aria-live="polite">
+              {copyState === "idle" ? "" : copyLabel}
+            </span>
+          </button>
+        </div>
       </header>
       <div className="a3s-preview__stage">
         <div
@@ -488,7 +630,13 @@ export function Preview({
           {normalizePreviewNode(children)}
         </div>
       </div>
-      <details className="a3s-preview__source" data-preview-source-panel>
+      <details
+        ref={sourceRef}
+        id={sourceId}
+        className="a3s-preview__source"
+        data-preview-source-panel
+        onToggle={(event) => setSourceOpen(event.currentTarget.open)}
+      >
         <summary>
           <span>{isChinese ? "查看源码" : "View source"}</span>
           <small>{isChinese ? "语义化 HTML" : "Semantic HTML"}</small>

@@ -10,13 +10,13 @@ Brand Lockup keeps a product mark, name, and optional description aligned across
       aria-label="A3S OS home"
     >
       <span data-brand-mark aria-hidden="true">
-        A3
+        <img src="../../../public/logo.png" alt="" />
       </span>
       <span data-brand-name>A3S OS</span>
     </a>
-    <div class="brand-lockup" data-size="sm">
+    <div class="brand-lockup" data-size="sm" data-tone="mono">
       <span data-brand-mark aria-hidden="true">
-        A3
+        <img src="../../../public/logo.png" alt="" />
       </span>
       <span data-brand-identity>
         <strong data-brand-name>A3S Web</strong>
@@ -41,7 +41,7 @@ Use an anchor when the lockup navigates home and a neutral container when it onl
 
 ```html
 <a class="brand-lockup" href="/" aria-label="A3S OS home">
-  <span data-brand-mark aria-hidden="true">A3</span>
+  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
   <span data-brand-identity>
     <strong data-brand-name>A3S OS</strong>
     <small data-brand-description>Agent Factory</small>
@@ -59,12 +59,47 @@ Use an anchor when the lockup navigates home and a neutral container when it onl
 | `data-brand-name`        | Required  | Visible product or organization name |
 | `data-brand-description` | Optional  | Compact product context              |
 | `data-size`              | `sm`      | Denser header treatment              |
+| `data-tone`              | `mono`    | Monochrome treatment of official art |
 | `--brand-lockup-accent`  | CSS color | Mark accent override                 |
 
 ## States and variants
 
-The name may sit directly beside the mark when no description is needed. Use `data-size="sm"` in dense workspace headers. Override `--brand-lockup-accent` only with an approved brand token; keep operational state colors out of product identity.
+The name may sit directly beside the mark when no description is needed. Use `data-size="sm"` in dense workspace headers and `data-tone="mono"` only where color is unavailable. Every presentation uses the official A3S OS asset; do not redraw, crop, or fabricate a three-dimensional mark. Override `--brand-lockup-accent` only with an approved brand token; keep operational state colors out of product identity.
 
 ## Accessibility
 
 Keep the visible product name in text. Mark decorative monograms and logos with `aria-hidden="true"`; if the whole lockup is a link, give the link a destination-specific accessible name. Do not repeat the product name in both the mark and the accessibility tree.
+
+## React
+
+```tsx
+import { BrandLockup } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <BrandLockup href="/" aria-label="A3S OS home">
+      <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+      <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+    </BrandLockup>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { BrandLockup } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <BrandLockup href="/" aria-label="A3S OS home">
+    <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+    <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+  </BrandLockup>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

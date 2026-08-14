@@ -138,3 +138,32 @@ Use an inline loading icon with `data-icon="inline-start"` or `data-icon="inline
   </span>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Badge } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Badge>Component content</Badge>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Badge } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Badge>Component content</Badge>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

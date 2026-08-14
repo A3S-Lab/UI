@@ -99,3 +99,35 @@ The component emits no policy events. Use native `submit` for the selected scope
 ## Accessibility
 
 Use a heading referenced by `aria-labelledby`. Explain the concrete resource and consequence before the controls. Scope options use native radio inputs in a Fieldset. Move focus to the request heading only when the request blocks the current task; otherwise announce its arrival without stealing focus. Never use color as the only distinction between pending, approved, and denied states.
+
+## React
+
+```tsx
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useApprovalRequest();
+  return (
+    <ApprovalRequest ref={control.ref} aria-label="Approval Request">Component content</ApprovalRequest>
+  );
+}
+```
+
+`useApprovalRequest` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/vue";
+
+const control = useApprovalRequest();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ApprovalRequest ref="componentRef" aria-label="Approval Request">Component content</ApprovalRequest>
+</template>
+```
+
+`useApprovalRequest` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

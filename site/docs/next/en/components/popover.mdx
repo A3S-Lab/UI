@@ -123,10 +123,21 @@ Using CDN or bundler imports? See the [Installation page](/installation).
       <dt><code>&lt;button type="button" aria-expanded="false" aria-controls="&#123; POPOVER_ID &#125;"&gt;</code></dt>
       <dd>Trigger button. The script toggles <code>aria-expanded</code> and opens or closes the content.</dd>
       <dt><code>&lt;div data-popover id="&#123; POPOVER_ID &#125;" aria-hidden="true"&gt;</code></dt>
-      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>. Open popovers use a 4-pixel side offset and 8-pixel viewport collision padding by default. Override them with <code>data-side-offset</code> and <code>data-collision-padding</code>, or set <code>data-collision="none"</code> to keep static CSS positioning. While positioned, the runtime publishes <code>--available-height</code>, <code>data-resolved-side</code>, <code>data-resolved-align</code>, and <code>data-a3s-positioned="true"</code>.</dd>
+      <dd>Popover content. Supports <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> and <code>data-align="start|center|end"</code>. Open popovers use an 8-pixel side offset and 8-pixel viewport collision padding by default. Override them with <code>data-side-offset</code> and <code>data-collision-padding</code>, or set <code>data-collision="none"</code> to keep static CSS positioning. While positioned, the runtime publishes <code>--available-height</code>, <code>data-resolved-side</code>, <code>data-resolved-align</code>, and <code>data-a3s-positioned="true"</code>.</dd>
     </dl>
   </dd>
 </dl>
+
+### JavaScript API
+
+| API | Type | Description |
+| --- | --- | --- |
+| `popover.open(focus = true)` | Method | Opens the surface and focuses `[autofocus]` when present. |
+| `popover.close(focusOnTrigger = true)` | Method | Closes the surface and optionally restores trigger focus. |
+| `popover.toggle(focus = true)` | Method | Toggles from the current `aria-expanded` state. |
+| `popover.refresh()` | Method | Rescans replaced direct trigger or content children. |
+
+React `usePopover` and the equivalent Vue composable expose the same methods through `call()`. The controller does not own form data, remote requests, or product permissions.
 
 ## Examples
 
@@ -261,3 +272,35 @@ Popover alignment uses logical start and end offsets. Set `dir="rtl"` on a paren
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Popover, usePopover } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = usePopover();
+  return (
+    <Popover ref={control.ref}>Component content</Popover>
+  );
+}
+```
+
+`usePopover` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Popover, usePopover } from "@a3s-lab/ui/vue";
+
+const control = usePopover();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Popover ref="componentRef">Component content</Popover>
+</template>
+```
+
+`usePopover` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

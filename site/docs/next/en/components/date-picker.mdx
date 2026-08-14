@@ -1,0 +1,65 @@
+# Date Picker
+
+Collects one calendar date through the native input, preserving the browser, locale, and mobile platform selection experience.
+
+<Preview class="w-full">
+<input class="input date-picker" type="date" value="2026-08-14" aria-label="Target date" />
+</Preview>
+
+## Usage
+
+```html
+<input class="input date-picker" type="date" value="2026-08-14" aria-label="Target date" />
+```
+
+## React
+
+```tsx
+import { DatePicker, useDatePicker } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDatePicker();
+  return (
+    <DatePicker ref={control.ref} type="date" value="2026-08-14" aria-label="Target date" />
+  );
+}
+```
+
+`useDatePicker` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { DatePicker, useDatePicker } from "@a3s-lab/ui/vue";
+
+const control = useDatePicker();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DatePicker ref="componentRef" type="date" value="2026-08-14" aria-label="Target date" />
+</template>
+```
+
+`useDatePicker` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `input.date-picker` |
+| Native root | `<input>` |
+| States | `ready`, `disabled`, `invalid`, `read-only` |
+| Events | `change`, `input` |
+| Methods | — |
+
+## Product boundary
+
+It does not own time zones, date ranges, recurrence, or natural-language parsing. A form composition validates and explains relationships between multiple dates.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Always provide a visible label and explain format, bounds, and errors beside the field. A placeholder is never the label.

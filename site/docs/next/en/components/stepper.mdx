@@ -91,3 +91,32 @@ The default horizontal layout remains scrollable when the sequence is wider than
 ## Accessibility
 
 Name the ordered list and keep every stage name and state in text. Apply `aria-current="step"` to exactly one current stage. When the horizontal sequence can overflow, add `tabindex="0"` so keyboard users can scroll it; the A3S recipe supplies a visible focus ring. Decorative numeric or icon markers may be hidden from assistive technology because the list already communicates order. Do not rely on connector or marker color alone.
+
+## React
+
+```tsx
+import { Stepper } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Stepper aria-label="Stepper"><li>Component content</li></Stepper>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Stepper } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Stepper aria-label="Stepper"><li>Component content</li></Stepper>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

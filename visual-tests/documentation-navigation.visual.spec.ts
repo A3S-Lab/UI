@@ -18,6 +18,42 @@ async function openResponsiveNavigation(page: Page) {
   return navigation;
 }
 
+test("index routes hydrate with complete desktop navigation", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const hydrationWarnings: string[] = [];
+  page.on("console", (message) => {
+    if (
+      message.type() === "warning" &&
+      /hydrateRoot recoverable error|React error #418/.test(message.text())
+    ) {
+      hydrationWarnings.push(message.text());
+    }
+  });
+
+  await openDocumentationPage(page, "components/index.html");
+
+  const switchers = page.locator(".rp-nav__others > .docs-switchers");
+  await expect(switchers).toBeVisible();
+  await expect(
+    switchers.locator('[data-switcher="language"] > summary'),
+  ).toContainText("简体中文");
+  await expect(
+    switchers.locator('[data-switcher="version"] > summary'),
+  ).toContainText("开发版");
+
+  const titleBox = await page.locator(".rp-nav__title").boundingBox();
+  const menuBox = await page.locator(".rp-nav-menu--left").boundingBox();
+  expect(titleBox).not.toBeNull();
+  expect(menuBox).not.toBeNull();
+  expect(menuBox!.x - (titleBox!.x + titleBox!.width)).toBeGreaterThanOrEqual(
+    24,
+  );
+  expect(hydrationWarnings).toEqual([]);
+});
+
 test("documentation header has no responsive dead zone at 1280px", async ({
   page,
 }, testInfo) => {

@@ -238,3 +238,35 @@ window.a3sUI.chart("#custom-chart", {
 | `color` | Base color for the series stroke, fill, legend marker, and tooltip marker. |
 | `surface` | Derives a fill from `color`. Use `true` for a translucent fill, `"gradient"` for an upstream-style vertical fade, or `{ from, to }` for custom opacity stops. |
 | `dataset` | Raw Chart.js dataset options. |
+
+## React
+
+```tsx
+import { Chart, useChart } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useChart();
+  return (
+    <Chart ref={control.ref}>Component content</Chart>
+  );
+}
+```
+
+`useChart` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Chart, useChart } from "@a3s-lab/ui/vue";
+
+const control = useChart();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Chart ref="componentRef">Component content</Chart>
+</template>
+```
+
+`useChart` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

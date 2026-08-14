@@ -178,3 +178,32 @@ Add `dir="rtl"` to the card or an ancestor.
   </footer>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Card } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Card>Component content</Card>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Card } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Card>Component content</Card>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

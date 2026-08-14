@@ -1,0 +1,53 @@
+/* Streaming Text */
+@layer components {
+  .streaming-text {
+    display: block;
+    min-inline-size: 0;
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .streaming-text [data-streaming-content] {
+    display: inline;
+  }
+
+  .streaming-text[data-state="streaming"] [data-streaming-content]::after {
+    content: "";
+    display: inline-block;
+    inline-size: 0.125rem;
+    block-size: 1em;
+    margin-inline-start: 0.1875rem;
+    border-radius: 1px;
+    background: currentColor;
+    vertical-align: -0.12em;
+    animation: a3s-streaming-caret 900ms steps(1, end) infinite;
+  }
+
+  .streaming-text [data-streaming-status] {
+    display: block;
+    margin-block-start: 0.375rem;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .streaming-text[data-state="error"] [data-streaming-status] {
+    color: var(--destructive);
+  }
+
+  @keyframes a3s-streaming-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .streaming-text[data-state="streaming"] [data-streaming-content]::after {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}

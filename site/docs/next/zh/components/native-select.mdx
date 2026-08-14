@@ -126,3 +126,35 @@ Add `class="select"` to a native `<select>`. Use standard `<option>` and `<optgr
   <option value="blueberry">توت</option>
 </select>
 </Preview>
+
+## React
+
+```tsx
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useNativeSelect();
+  return (
+    <NativeSelect ref={control.ref}><option value="ready">已就绪</option></NativeSelect>
+  );
+}
+```
+
+`useNativeSelect` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/vue";
+
+const control = useNativeSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <NativeSelect ref="componentRef"><option value="ready">已就绪</option></NativeSelect>
+</template>
+```
+
+`useNativeSelect` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

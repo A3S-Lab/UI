@@ -1,0 +1,71 @@
+# Form
+
+Organizes related fields, validation summary, and submission into one recoverable task while preserving native browser semantics.
+
+<Preview class="w-full">
+<form class="form"><label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer></form>
+</Preview>
+
+## Usage
+
+```html
+<form class="form">
+  <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+</form>
+```
+
+## React
+
+```tsx
+import { Form, useForm } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useForm();
+  return (
+    <Form ref={control.ref}>
+      <label className="field"><span className="label">Workspace name</span><input className="input" name="name" value="Research" required /></label><footer><button type="submit" className="btn">Save workspace</button></footer>
+    </Form>
+  );
+}
+```
+
+`useForm` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { Form, useForm } from "@a3s-lab/ui/vue";
+
+const control = useForm();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Form ref="componentRef">
+    <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+  </Form>
+</template>
+```
+
+`useForm` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `form.form` |
+| Native root | `<form>` |
+| States | `ready`, `submitting`, `success`, `invalid`, `error`, `read-only` |
+| Events | `reset`, `submit` |
+| Methods | — |
+
+## Product boundary
+
+Form owns interaction structure, not requests, permission, or business validation. Do not group unrelated settings or replace specific errors with a permanently disabled submit button.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Errors sit beside their field and can be reached from the summary. Submission preserves input, failure preserves focus context, and every field has a persistent label.

@@ -8,6 +8,7 @@ const siteRoot = path.resolve(
   "..",
 );
 const docsRoot = path.join(siteRoot, "docs");
+const standalonePagesRoot = path.join(siteRoot, "pages");
 const outputRoot = path.join(siteRoot, "doc_build");
 const base = "/UI/";
 
@@ -20,6 +21,8 @@ const requiredFiles = [
   "v0.1.0/en/index.html",
   "installation.html",
   "en/installation.html",
+  "playground.html",
+  "en/playground.html",
   "v0.2.0/installation.html",
   "v0.2.0/en/installation.html",
   "v0.1.0/installation.html",
@@ -159,7 +162,6 @@ const requiredFiles = [
   "llms-full.txt",
   "en/llms.txt",
   "en/llms-full.txt",
-  "a3s-ui-mark.svg",
   "social-card.svg",
   "logo.png",
   "device-preview.html",
@@ -184,7 +186,7 @@ const homepageExpectations = [
       'data-mobile-expanded="false"',
       'aria-live="polite"',
       'aria-pressed="true"',
-      "<dt>89</dt>",
+      "<dt>111</dt>",
       "v0.2.0",
       "v0.1.0",
     ],
@@ -202,7 +204,7 @@ const homepageExpectations = [
       "PUBLIC COMPONENT COMPOSITION",
       "data-a3s-customizer",
       'aria-live="polite"',
-      "<dt>89</dt>",
+      "<dt>111</dt>",
       "v0.2.0",
     ],
   },
@@ -808,6 +810,50 @@ const nextTaskPatternExpectations = [
     ],
   },
 ];
+const playgroundExpectations = [
+  {
+    file: "playground.html",
+    markers: [
+      'lang="zh"',
+      "工作区 Playground",
+      'class="a3s-playground-page"',
+      'class="a3s-workspace-playground rp-not-doc"',
+      'aria-label="工作区场景"',
+      'data-playground-viewport="desktop"',
+      'data-app-shell-initialized="playground"',
+      'role="tabpanel"',
+      ">代码<",
+      ">设计<",
+      ">写作<",
+      ">工作流<",
+      ">自动化<",
+      ">能力目录<",
+      ">连接<",
+      ">设置<",
+    ],
+  },
+  {
+    file: "en/playground.html",
+    markers: [
+      'lang="en"',
+      "Workspace playground",
+      'class="a3s-playground-page"',
+      'class="a3s-workspace-playground rp-not-doc"',
+      'aria-label="Workspace scenes"',
+      'data-playground-viewport="desktop"',
+      'data-app-shell-initialized="playground"',
+      'role="tabpanel"',
+      ">Code<",
+      ">Design<",
+      ">Write<",
+      ">Workflow<",
+      ">Automations<",
+      ">Catalog<",
+      ">Connections<",
+      ">Settings<",
+    ],
+  },
+];
 const disallowedPublicProductNames = [
   ["cod", "ex"].join(""),
   ["work", "buddy"].join(""),
@@ -881,6 +927,14 @@ const switchExpectations = [
       "/UI/v0.2.0/en/components/app-shell.html",
       "/UI/v0.1.0/components/app-shell.html",
     ],
+  },
+  {
+    file: "playground.html",
+    links: ["/UI/en/playground.html"],
+  },
+  {
+    file: "en/playground.html",
+    links: ["/UI/playground.html"],
   },
 ];
 
@@ -1012,7 +1066,7 @@ if (!homepageHtml.includes(runtimePreloadMarkup)) {
   );
 }
 
-if (!homepageHtml.includes("document.addEventListener('a3s:themechange'")) {
+if (!/document\.addEventListener\(["']a3s:themechange["']/u.test(homepageHtml)) {
   throw new Error("The pre-hydration documentation theme bridge is missing.");
 }
 
@@ -1044,6 +1098,7 @@ for (const { file, markers } of [
   ...nextCodeEditorExpectations,
   ...nextExtractedComponentExpectations,
   ...nextTaskPatternExpectations,
+  ...playgroundExpectations,
   ...nextExtractedComponentHistoricalExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), "utf8");
@@ -1073,12 +1128,18 @@ const styleExpectations = [
     matches: compiledStyles.startsWith("@layer rp-base;"),
   },
   {
-    label: "A3S light primary action token is present",
-    matches: compiledStyles.includes("--primary:#2864e8"),
+    label: "A3S light neutral action token is present",
+    matches: compiledStyles.includes("--primary:#111113"),
   },
   {
-    label: "A3S dark primary action token is present",
-    matches: compiledStyles.includes("--primary:#6ca3ff"),
+    label: "A3S dark neutral action token is present",
+    matches: compiledStyles.includes("--primary:#f4f4f5"),
+  },
+  {
+    label: "A3S light and dark iris accent tokens are present",
+    matches:
+      compiledStyles.includes("--a3s-accent:#5b57d9") &&
+      compiledStyles.includes("--a3s-accent:#8378f0"),
   },
   {
     label: "primary button contract is present",
@@ -1103,6 +1164,7 @@ for (const expectation of styleExpectations) {
 const brokenReferences = [];
 const publicBrandingLeaks = [];
 const chineseTerminologyLeaks = [];
+const invalidHtmlNesting = [];
 const disallowedChineseTerms = [
   "收音机",
   "无线电组",
@@ -1116,9 +1178,38 @@ const disallowedChineseTerms = [
 ];
 const htmlFiles = await collectHtmlFiles(outputRoot);
 const mdxFiles = await collectMdxFiles(docsRoot);
+const standalonePageFiles = await collectMdxFiles(standalonePagesRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
 const previewSourceViolations = [];
 let mdxPreviewCount = 0;
+
+const documentationPlaygroundPages = mdxFiles.filter(
+  (file) => path.basename(file, path.extname(file)) === "playground",
+);
+if (documentationPlaygroundPages.length > 0) {
+  throw new Error(
+    `Playground must be registered as a standalone route, not documentation: ${documentationPlaygroundPages
+      .map((file) => path.relative(docsRoot, file))
+      .join(", ")}`,
+  );
+}
+
+const standalonePageNames = standalonePageFiles
+  .map((file) =>
+    path.relative(standalonePagesRoot, file).split(path.sep).join("/"),
+  )
+  .sort();
+const expectedStandalonePageNames = ["playground.en.mdx", "playground.zh.mdx"];
+if (
+  standalonePageNames.length !== expectedStandalonePageNames.length ||
+  standalonePageNames.some(
+    (file, index) => file !== expectedStandalonePageNames[index],
+  )
+) {
+  throw new Error(
+    `Standalone route sources do not match the expected page set: ${standalonePageNames.join(", ")}`,
+  );
+}
 
 for (const mdxFile of mdxFiles) {
   const source = await readFile(mdxFile, "utf8");
@@ -1149,10 +1240,20 @@ let builtPreviewCount = 0;
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
   const relativeHtmlFile = path.relative(outputRoot, htmlFile);
+  const documentMarkup = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+  const invalidParagraphContent =
+    /<p\b[^>]*>(?:(?!<\/p>)[\s\S])*?<(?:address|article|aside|blockquote|div|dl|fieldset|footer|form|h[1-6]|header|hr|menu|nav|ol|p|pre|section|table|ul)\b/giu;
+  for (const match of documentMarkup.matchAll(invalidParagraphContent)) {
+    invalidHtmlNesting.push(
+      `${relativeHtmlFile}: ${match[0].replace(/\s+/g, " ").slice(0, 160)}`,
+    );
+  }
   const previewCount = (html.match(/class="a3s-preview"/g) ?? []).length;
   builtPreviewCount += previewCount;
   const previewDetailsCount = (
-    html.match(/<details class="a3s-preview__source"/g) ?? []
+    html.match(/<details\b[^>]*class="a3s-preview__source"/g) ?? []
   ).length;
   const previewSourcePanelCount = (
     html.match(/data-preview-source-panel="true"/g) ?? []
@@ -1253,6 +1354,14 @@ if (brokenReferences.length > 0) {
 if (previewSourceViolations.length > 0) {
   throw new Error(
     `Preview source-view coverage failed:\n${previewSourceViolations
+      .map((violation) => `  - ${violation}`)
+      .join("\n")}`,
+  );
+}
+
+if (invalidHtmlNesting.length > 0) {
+  throw new Error(
+    `Built-site HTML nesting check failed:\n${invalidHtmlNesting
       .map((violation) => `  - ${violation}`)
       .join("\n")}`,
   );

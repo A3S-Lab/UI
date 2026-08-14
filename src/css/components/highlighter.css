@@ -1,0 +1,60 @@
+/* Highlighter */
+@layer components {
+  pre.highlighter {
+    position: relative;
+    max-inline-size: 100%;
+    max-block-size: 32rem;
+    margin: 0;
+    padding: 0.75rem 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--background);
+    color: var(--foreground);
+    direction: ltr;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    tab-size: 2;
+    text-align: start;
+  }
+
+  pre.highlighter > code {
+    display: block;
+    min-inline-size: max-content;
+  }
+
+  .highlighter [data-code-line] {
+    display: block;
+    min-block-size: 1.375rem;
+    padding-inline: 1rem;
+    white-space: pre;
+  }
+
+  .highlighter :is(mark, [data-highlighted]) {
+    margin-inline: -0.125rem;
+    padding-inline: 0.125rem;
+    border-radius: 0.1875rem;
+    background: color-mix(in srgb, var(--warning, #a86412) 18%, transparent);
+    color: inherit;
+  }
+
+  pre.highlighter:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  pre.highlighter[data-state="loading"],
+  pre.highlighter[data-state="error"] {
+    min-block-size: 8rem;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    color: var(--muted-foreground);
+    direction: inherit;
+    font-family: inherit;
+    text-align: center;
+    white-space: normal;
+  }
+}

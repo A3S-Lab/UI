@@ -66,6 +66,7 @@ try {
 
   const fixtureScript = `
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import * as ReactAdapters from '@a3s-lab/ui/react';
@@ -91,6 +92,61 @@ const {
 const pascalName = (slug) =>
   slug.split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join('');
 
+const collectionContracts = {
+  'bulk-action-bar': {
+    hooks: ['a3s:bulk-before-action'],
+    methods: ['clear', 'complete', 'getSelection', 'refresh', 'setPending', 'setSelection', 'setSummary'],
+  },
+  'context-menu': {
+    hooks: ['a3s:context-menu-before-close', 'a3s:context-menu-before-open', 'a3s:context-menu-before-select'],
+    methods: ['close', 'focusItem', 'getState', 'open', 'openAt', 'refresh', 'select', 'setChecked'],
+  },
+  'data-grid': {
+    hooks: ['a3s:data-grid-before-row-action', 'a3s:data-grid-before-selection-change', 'a3s:data-grid-before-sort'],
+    methods: ['clearSelection', 'getSelection', 'getSort', 'getState', 'refresh', 'selectAll', 'setSelection', 'setSort', 'setState', 'toggleSelection'],
+  },
+  'file-explorer': {
+    hooks: ['a3s:file-before-action', 'a3s:file-before-filter-change', 'a3s:file-before-rename', 'a3s:file-before-selection-change'],
+    methods: ['beginRename', 'cancelRename', 'clearFilter', 'commitRename', 'getFilter', 'getSelection', 'getState', 'refresh', 'runAction', 'select', 'setFilter', 'setReadonly', 'setRenameError', 'setState'],
+  },
+  'filter-bar': {
+    hooks: ['a3s:filter-before-change'],
+    methods: ['clear', 'getFilters', 'getSearch', 'getState', 'refresh', 'resetFilters', 'setFilters', 'setSearch'],
+  },
+};
+
+const controllerContracts = {
+  'alert-dialog': ['close', 'showModal'],
+  'dialog': ['close', 'showModal'],
+  'drawer': ['close', 'showModal'],
+  'dropdown-menu': ['close', 'open', 'refresh', 'toggle'],
+  'popover': ['close', 'open', 'refresh', 'toggle'],
+  'tabs': ['refresh', 'select'],
+};
+
+for (const [slug, methods] of Object.entries(controllerContracts)) {
+  const component = manifest.components.find((candidate) => candidate.slug === slug);
+  assert.ok(component, 'Missing controller contract for ' + slug);
+  assert.deepEqual(component.methods, methods);
+}
+
+for (const [slug, contract] of Object.entries(collectionContracts)) {
+  const component = manifest.components.find((candidate) => candidate.slug === slug);
+  assert.ok(component, 'Missing component contract for ' + slug);
+  assert.deepEqual(component.methods, contract.methods);
+  assert.deepEqual(component.hooks, contract.hooks);
+}
+
+for (const slug of ['bulk-action-bar', 'file-explorer']) {
+  const entryUrl = import.meta.resolve('@a3s-lab/ui/' + slug);
+  const source = await readFile(new URL(entryUrl), 'utf8');
+  assert.equal(
+    source.includes('window.basecoat.register("' + slug + '"'),
+    true,
+    'Split controller entry did not register ' + slug,
+  );
+}
+
 assert.equal(Object.keys(ReactAdapters.components).length, manifest.components.length);
 assert.equal(Object.keys(VueAdapters.components).length, manifest.components.length);
 for (const component of manifest.components) {
@@ -99,6 +155,14 @@ for (const component of manifest.components) {
   assert.equal(VueAdapters[exportName], VueAdapters.components[component.slug]);
   assert.equal(ReactAdapters[exportName].a3s.slug, component.slug);
   assert.equal(VueAdapters[exportName].a3s.slug, component.slug);
+  const hookName = 'use' + exportName;
+  if (component.events.length > 0 || component.methods.length > 0) {
+    assert.equal(typeof ReactAdapters[hookName], 'function');
+    assert.equal(typeof VueAdapters[hookName], 'function');
+  } else {
+    assert.equal(ReactAdapters[hookName], undefined);
+    assert.equal(VueAdapters[hookName], undefined);
+  }
 
   const reactProps = component.framework.attributes.value === undefined
     ? {}
@@ -153,7 +217,7 @@ for (const markup of [reactMarkup, vueMarkup]) {
   assert.match(markup, /class="agent-composer"/);
   assert.match(markup, /<button type="submit" class="btn">Send<\\/button>/);
 }
-assert.equal(manifest.components.length, 89);
+assert.equal(manifest.components.length, 111);
 assert.equal(Object.keys(selectors).length, manifest.components.length);
 assert.equal(componentSelector('task-workspace'), selectors['task-workspace'].root);
 assert.equal(readySelector('task-workspace'), selectors['task-workspace'].ready);
@@ -172,7 +236,7 @@ console.log(JSON.stringify({ reactMarkup, vueMarkup, components: manifest.compon
     },
   );
   const result = JSON.parse(stdout);
-  assert.equal(result.components, 89);
+  assert.equal(result.components, 111);
   assert.match(result.reactMarkup, /task-workspace/);
   assert.match(result.vueMarkup, /task-workspace/);
 
@@ -185,9 +249,43 @@ import {
   MessageCitation,
   NativeSelect,
   Textarea,
+  useDialog,
+  useDropdownMenu,
+  usePopover,
+  useTabs,
+  useDataGrid,
+  useA3SLocale,
+  useA3SMotion,
+  useA3STheme,
+  type A3SDirection,
+  type A3STheme,
   type A3SComponentProps,
+  type DataGridEvent,
+  type DataGridMethod,
+  type DialogMethod,
+  type DropdownMenuMethod,
+  type PopoverMethod,
+  type TabsMethod,
 } from '@a3s-lab/ui/react';
-import { TaskWorkspace as VueTaskWorkspace } from '@a3s-lab/ui/vue';
+import {
+  TaskWorkspace as VueTaskWorkspace,
+  useDialog as useVueDialog,
+  useDropdownMenu as useVueDropdownMenu,
+  usePopover as useVuePopover,
+  useTabs as useVueTabs,
+  useDataGrid as useVueDataGrid,
+  useA3SLocale as useVueA3SLocale,
+  useA3SMotion as useVueA3SMotion,
+  useA3STheme as useVueA3STheme,
+  type A3SDirection as VueA3SDirection,
+  type A3STheme as VueA3STheme,
+  type DataGridEvent as VueDataGridEvent,
+  type DataGridMethod as VueDataGridMethod,
+  type DialogMethod as VueDialogMethod,
+  type DropdownMenuMethod as VueDropdownMenuMethod,
+  type PopoverMethod as VuePopoverMethod,
+  type TabsMethod as VueTabsMethod,
+} from '@a3s-lab/ui/vue';
 import { actionSelector, selectors } from '@a3s-lab/ui/a3s-test/selectors';
 
 const ref = createRef<HTMLElement>();
@@ -202,6 +300,44 @@ const nodes = [
 ];
 void nodes;
 void VueTaskWorkspace;
+void [useDataGrid, useDialog, useDropdownMenu, usePopover, useTabs];
+void [useVueDataGrid, useVueDialog, useVueDropdownMenu, useVuePopover, useVueTabs];
+void [useA3SLocale, useA3SMotion, useA3STheme];
+void [useVueA3SLocale, useVueA3SMotion, useVueA3STheme];
+const direction: A3SDirection = 'rtl';
+const theme: A3STheme = 'system';
+const vueDirection: VueA3SDirection = direction;
+const vueTheme: VueA3STheme = theme;
+const reactEvent: DataGridEvent = 'a3s:data-grid-sort';
+const reactMethod: DataGridMethod = 'setSort';
+const vueEvent: VueDataGridEvent = reactEvent;
+const vueMethod: VueDataGridMethod = reactMethod;
+const dialogMethod: DialogMethod = 'showModal';
+const dropdownMethod: DropdownMenuMethod = 'toggle';
+const popoverMethod: PopoverMethod = 'refresh';
+const tabsMethod: TabsMethod = 'select';
+const vueDialogMethod: VueDialogMethod = dialogMethod;
+const vueDropdownMethod: VueDropdownMenuMethod = dropdownMethod;
+const vuePopoverMethod: VuePopoverMethod = popoverMethod;
+const vueTabsMethod: VueTabsMethod = tabsMethod;
+void [
+  reactEvent,
+  reactMethod,
+  vueEvent,
+  vueMethod,
+  dialogMethod,
+  dropdownMethod,
+  popoverMethod,
+  tabsMethod,
+  vueDialogMethod,
+  vueDropdownMethod,
+  vuePopoverMethod,
+  vueTabsMethod,
+  direction,
+  theme,
+  vueDirection,
+  vueTheme,
+];
 void actionSelector('agent-composer', 'fill');
 void selectors['task-workspace'].ready;
 `;
@@ -227,24 +363,38 @@ void selectors['task-workspace'].ready;
   );
 
   const clientSource = `
-import React, { createRef } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   AppShell as ReactAppShell,
   Tabs as ReactTabs,
   TaskWorkspace as ReactTaskWorkspace,
+  useTabs as useReactTabs,
+  useA3SLocale as useReactLocale,
+  useA3SMotion as useReactMotion,
+  useA3STheme as useReactTheme,
 } from '@a3s-lab/ui/react';
-import { createApp, h, ref as createVueRef } from 'vue';
+import { createApp, h } from 'vue';
 import {
   AppShell as VueAppShell,
   Tabs as VueTabs,
   TaskWorkspace as VueTaskWorkspace,
+  useTabs as useVueTabs,
+  useA3SLocale as useVueLocale,
+  useA3SMotion as useVueMotion,
+  useA3STheme as useVueTheme,
 } from '@a3s-lab/ui/vue';
 
 let reactReadyCalls = 0;
 let vueReadyCalls = 0;
-const reactRef = createRef();
-const vueRef = createVueRef(null);
+let reactHookReadyCalls = 0;
+let vueHookReadyCalls = 0;
+let reactHookEventCalls = 0;
+let vueHookEventCalls = 0;
+let reactTabsHook;
+let vueTabsHook;
+let reactConfigHooks;
+let vueConfigHooks;
 
 function reactTabChildren(prefix) {
   return [
@@ -364,14 +514,29 @@ function vueWorkspace(prefix) {
   );
 }
 
-createRoot(document.getElementById('react-root')).render(
-  React.createElement(
+function ReactFixture() {
+  const locale = useReactLocale();
+  const motion = useReactMotion();
+  const theme = useReactTheme();
+  const tabs = useReactTabs({
+    events: {
+      'basecoat:initialized'() {
+        reactHookEventCalls += 1;
+      },
+    },
+    onReady() {
+      reactHookReadyCalls += 1;
+    },
+  });
+  reactTabsHook = tabs;
+  reactConfigHooks = { locale, motion, theme };
+  return React.createElement(
     React.Fragment,
     null,
     React.createElement(
       ReactTabs,
       {
-        ref: reactRef,
+        ref: tabs.ref,
         id: 'react-tabs',
         'aria-label': 'React tabs',
         onReady(element) {
@@ -382,16 +547,35 @@ createRoot(document.getElementById('react-root')).render(
       reactTabChildren('react'),
     ),
     reactWorkspace('react'),
-  ),
+  );
+}
+
+createRoot(document.getElementById('react-root')).render(
+  React.createElement(ReactFixture),
 );
 
 createApp({
   setup() {
+    const locale = useVueLocale();
+    const motion = useVueMotion();
+    const theme = useVueTheme();
+    const tabs = useVueTabs({
+      events: {
+        'basecoat:initialized'() {
+          vueHookEventCalls += 1;
+        },
+      },
+      onReady() {
+        vueHookReadyCalls += 1;
+      },
+    });
+    vueTabsHook = tabs;
+    vueConfigHooks = { locale, motion, theme };
     return () => h('div', null, [
       h(
         VueTabs,
         {
-          ref: vueRef,
+          ref: tabs.componentRef,
           id: 'vue-tabs',
           'aria-label': 'Vue tabs',
           onReady(element) {
@@ -409,17 +593,50 @@ createApp({
 window.frameworkStatus = () => ({
   react: {
     readyCalls: reactReadyCalls,
-    refMatches: reactRef.current === document.getElementById('react-tabs'),
+    hookReadyCalls: reactHookReadyCalls,
+    hookEventCalls: reactHookEventCalls,
+    hookReady: reactTabsHook?.ready === true,
+    refMatches: reactTabsHook?.element === document.getElementById('react-tabs'),
   },
   vue: {
     readyCalls: vueReadyCalls,
-    refMatches: vueRef.value?.element === document.getElementById('vue-tabs'),
+    hookReadyCalls: vueHookReadyCalls,
+    hookEventCalls: vueHookEventCalls,
+    hookReady: vueTabsHook?.ready.value === true,
+    refMatches: vueTabsHook?.element.value === document.getElementById('vue-tabs'),
   },
 });
+window.frameworkSelectSecondTab = (prefix) => {
+  const hook = prefix === 'react' ? reactTabsHook : vueTabsHook;
+  const tab = document.getElementById(prefix + '-two-tab');
+  hook.call('refresh');
+  hook.call('select', tab, true);
+};
+window.frameworkConfigStatus = () => ({
+  react: {
+    direction: reactConfigHooks?.locale.direction,
+    locale: reactConfigHooks?.locale.locale,
+    reducedMotion: reactConfigHooks?.motion.reducedMotion,
+    resolvedTheme: reactConfigHooks?.theme.resolvedTheme,
+    theme: reactConfigHooks?.theme.theme,
+  },
+  vue: {
+    direction: vueConfigHooks?.locale.direction.value,
+    locale: vueConfigHooks?.locale.locale.value,
+    reducedMotion: vueConfigHooks?.motion.reducedMotion.value,
+    resolvedTheme: vueConfigHooks?.theme.resolvedTheme.value,
+    theme: vueConfigHooks?.theme.theme.value,
+  },
+});
+window.frameworkConfigure = (prefix, locale, theme) => {
+  const hooks = prefix === 'react' ? reactConfigHooks : vueConfigHooks;
+  hooks.locale.setLocale(locale);
+  hooks.theme.setTheme(theme);
+};
 `;
   await writeFile(
     path.join(fixtureRoot, "index.html"),
-    '<!doctype html><html><body><div id="react-root"></div><div id="vue-root"></div><script type="module" src="/client.mjs"></script></body></html>',
+    '<!doctype html><html lang="zh-CN" dir="ltr" data-theme="light"><body><div id="react-root"></div><div id="vue-root"></div><script type="module" src="/client.mjs"></script></body></html>',
   );
   await writeFile(path.join(fixtureRoot, "client.mjs"), clientSource);
   const vitePath = path.join(
@@ -506,14 +723,95 @@ window.frameworkStatus = () => ({
     await page.goto(previewUrl);
     await page.waitForFunction(() => {
       const status = window.frameworkStatus?.();
-      return status?.react.readyCalls === 1 && status?.vue.readyCalls === 1;
+      return (
+        status?.react.readyCalls === 1 &&
+        status?.vue.readyCalls === 1 &&
+        status?.react.hookReadyCalls === 1 &&
+        status?.vue.hookReadyCalls === 1 &&
+        status?.react.hookEventCalls === 1 &&
+        status?.vue.hookEventCalls === 1
+      );
     });
 
     const status = await page.evaluate(() => window.frameworkStatus());
     assert.deepEqual(status, {
-      react: { readyCalls: 1, refMatches: true },
-      vue: { readyCalls: 1, refMatches: true },
+      react: {
+        readyCalls: 1,
+        hookReadyCalls: 1,
+        hookEventCalls: 1,
+        hookReady: true,
+        refMatches: true,
+      },
+      vue: {
+        readyCalls: 1,
+        hookReadyCalls: 1,
+        hookEventCalls: 1,
+        hookReady: true,
+        refMatches: true,
+      },
     });
+    assert.deepEqual(
+      await page.evaluate(() => window.frameworkConfigStatus()),
+      {
+        react: {
+          direction: "ltr",
+          locale: "zh-CN",
+          reducedMotion: false,
+          resolvedTheme: "light",
+          theme: "light",
+        },
+        vue: {
+          direction: "ltr",
+          locale: "zh-CN",
+          reducedMotion: false,
+          resolvedTheme: "light",
+          theme: "light",
+        },
+      },
+    );
+    await page.evaluate(() =>
+      window.frameworkConfigure("react", "ar-EG", "dark"),
+    );
+    await page.waitForFunction(() => {
+      const config = window.frameworkConfigStatus?.();
+      return (
+        config?.react.locale === "ar-EG" &&
+        config?.vue.locale === "ar-EG" &&
+        config?.react.theme === "dark" &&
+        config?.vue.theme === "dark"
+      );
+    });
+    assert.equal(await page.locator("html").getAttribute("dir"), "rtl");
+    assert.equal(await page.locator("html").getAttribute("lang"), "ar-EG");
+    assert.equal(await page.locator("html").getAttribute("data-theme"), "dark");
+    assert.match(
+      await page.locator("html").getAttribute("class"),
+      /(?:^|\s)dark(?:\s|$)/,
+    );
+    await page.evaluate(() =>
+      window.frameworkConfigure("vue", "en-US", "light"),
+    );
+    await page.waitForFunction(() => {
+      const config = window.frameworkConfigStatus?.();
+      return (
+        config?.react.locale === "en-US" &&
+        config?.vue.locale === "en-US" &&
+        config?.react.theme === "light" &&
+        config?.vue.theme === "light"
+      );
+    });
+    assert.equal(await page.locator("html").getAttribute("dir"), "ltr");
+    assert.equal(await page.locator("html").getAttribute("lang"), "en-US");
+    assert.equal(
+      await page.locator("html").getAttribute("data-theme"),
+      "light",
+    );
+    assert.equal(
+      await page
+        .locator("html")
+        .evaluate((element) => element.classList.contains("dark")),
+      false,
+    );
     for (const prefix of ["react", "vue"]) {
       const root = page.locator(`#${prefix}-tabs`);
       await root.waitFor();
@@ -524,8 +822,17 @@ window.frameworkStatus = () => ({
         /(?:^|\\s)tabs(?:\\s|$)/,
       );
       const secondTab = root.getByRole("tab", { name: "Two" });
-      await secondTab.click();
+      await page.evaluate(
+        (framework) => window.frameworkSelectSecondTab(framework),
+        prefix,
+      );
       assert.equal(await secondTab.getAttribute("aria-selected"), "true");
+      assert.equal(
+        await secondTab.evaluate(
+          (element) => element === document.activeElement,
+        ),
+        true,
+      );
       assert.equal(
         await root.locator(`#${prefix}-two-panel`).isVisible(),
         true,
@@ -621,7 +928,7 @@ window.frameworkStatus = () => ({
   );
   assert.equal(packageManifest.peerDependenciesMeta.react.optional, true);
   assert.equal(packageManifest.peerDependenciesMeta.vue.optional, true);
-  assert.equal(sourceComponents.length, 89);
+  assert.equal(sourceComponents.length, 111);
   console.log(
     "Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.",
   );

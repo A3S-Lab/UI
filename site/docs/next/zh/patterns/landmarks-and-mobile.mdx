@@ -1,0 +1,119 @@
+# 地标与移动端组合
+
+地标表面可以比日常操作工作区承载更多品牌识别，但装饰仍需服务具体产品任务。移动端适配保留同一任务和状态模型，不为每一种紧凑排列另造组件家族。
+
+## 视觉效果准入
+
+| 效果 | 可以使用 | 应当拒绝 |
+| --- | --- | --- |
+| 环境色场 | 单个首页、空白起点或品牌加载地标需要建立方向感 | 重复铺在卡片、控件、表格或代码背后 |
+| 光谱渐变操作 | 一个有边界的品牌操作确实高于中性操作 | 作为默认 Button 或业务状态 |
+| 网格背景 | 表面确实是画布、地图、测量或空间编辑器 | 只为了让技术页面看起来更“技术” |
+| Hero | 文档首页或空白起点需要明确身份和下一步 | 放在已经清楚的应用任务上方 |
+| 功能列表 | 每项帮助用户选择或理解能力 | 同构图标卡片重复营销文案 |
+| 聚光卡片 | 可选展示中指针位置揭示真实空间细节 | 只做装饰、粗指针丢失信息或改变对比度 |
+
+环境色场面积大、透明度低，只位于单个地标背后。文字始终处在稳定画布色上。减弱动态效果或对比度条件下移除效果时，内容不发生变化。
+
+```css
+.product-landmark {
+  background:
+    radial-gradient(circle at 18% 10%, rgb(91 87 217 / 10%), transparent 28rem),
+    radial-gradient(circle at 82% 16%, rgb(36 155 246 / 8%), transparent 24rem),
+    var(--background);
+}
+```
+
+这套方案有意不新增公共 `Aurora`、`GradientButton`、`GridBackground` 或 `SpotlightCard` 根。它们是否成立取决于页面主题，必须随具体表面一起审查。
+
+## 功能列表与品牌操作
+
+可扫描的能力列表使用 Item。普通工作区的主操作保持中性。页面可以为一个地标操作提供自有的光谱处理，但必须保留 Button 几何、焦点对比度、禁用状态和可读文本。
+
+```html
+<section class="product-landmark" aria-labelledby="start-title">
+  <h1 id="start-title">建立专注工作区</h1>
+  <p>围绕一个任务整理证据、工具和结果。</p>
+  <a class="btn" href="/tasks/new">创建工作区</a>
+  <ul aria-label="工作区能力">
+    <li class="item"><div data-item-content><strong>持续上下文</strong><small>文件和决定始终与任务关联。</small></div></li>
+    <li class="item"><div data-item-content><strong>可审查变更</strong><small>每项重要更新都有证据。</small></div></li>
+  </ul>
+</section>
+```
+
+静态主张不使用打字机动画。只有内容确实逐步到达时才使用 Streaming Text，并始终提供暂停、完成和错误状态。
+
+## 官方身份与加载
+
+Brand Lockup 使用 A3S OS 官方标识。平面、单色和紧凑呈现都使用同一官方资产；颜色处理通过 CSS 或获准资产变体完成，不虚构新 Logo。有边界的应用启动可以组合 Lockup、Spinner 或 Progress，并提供可读状态。
+
+```html
+<div class="brand-lockup" aria-label="A3S OS 正在启动">
+  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+  <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>正在准备工作区…</small></span>
+  <span class="animate-spin" role="status" aria-label="正在加载"></span>
+</div>
+```
+
+不要把标识重画为 3D 图形，不要替换成其他产品 Logo，也不要在应用就绪后继续循环身份动画。动态品牌媒体只能是带静态回退的可选宿主资产。
+
+## 移动端工作区组合
+
+响应式 Workspace Header 与 Agent Composer 保持同一 DOM 契约。紧凑宽度下，次要导航变为关闭时 inert 的可消除层，非必要标题栏操作进入溢出菜单，Inspector 变为 Sheet，Composer 负责底部安全区。
+
+```html
+<section class="task-workspace" data-inspector="closed">
+  <header class="workspace-header">
+    <div data-workspace-identity><h1>发布审查</h1></div>
+    <div data-workspace-actions><button type="button" class="btn" data-task-inspector-trigger aria-expanded="false">文件</button></div>
+  </header>
+  <div data-task-body><main data-task-main>...</main><aside data-task-inspector inert aria-hidden="true">...</aside></div>
+  <form class="agent-composer"><textarea aria-label="指令"></textarea><footer><button type="submit" class="btn">发送</button></footer></form>
+</section>
+```
+
+底部标签栏只适合三到五个同级目的地。路由目的地使用 Activity Bar 导航，面板切换使用 Tabs；保留可见文本与 `aria-current`，并由贴边容器使用 `env(safe-area-inset-bottom)`。
+
+## React
+
+```tsx
+import { AgentComposer, TaskWorkspace, WorkspaceHeader, useTaskWorkspace } from "@a3s-lab/ui/react";
+
+export function MobileWorkspace() {
+  const workspace = useTaskWorkspace();
+  return (
+    <TaskWorkspace ref={workspace.ref}>
+      <WorkspaceHeader><div data-workspace-identity><h1>发布审查</h1></div></WorkspaceHeader>
+      <div data-task-body><main data-task-main>任务内容</main><aside data-task-inspector>已更改文件</aside></div>
+      <AgentComposer><textarea aria-label="指令" /></AgentComposer>
+    </TaskWorkspace>
+  );
+}
+```
+
+## Vue
+
+```vue
+<script setup>
+import { AgentComposer, TaskWorkspace, WorkspaceHeader, useTaskWorkspace } from "@a3s-lab/ui/vue";
+const workspace = useTaskWorkspace();
+const workspaceRef = workspace.componentRef;
+</script>
+
+<template>
+  <TaskWorkspace ref="workspaceRef">
+    <WorkspaceHeader><div data-workspace-identity><h1>发布审查</h1></div></WorkspaceHeader>
+    <div data-task-body><main data-task-main>任务内容</main><aside data-task-inspector>已更改文件</aside></div>
+    <AgentComposer><textarea aria-label="指令" /></AgentComposer>
+  </TaskWorkspace>
+</template>
+```
+
+## 紧凑布局发布检查
+
+- 验证 320px、中间平板宽度和宽屏桌面，语义顺序不得变化。
+- 验证浏览器工具栏与屏幕开孔，只有贴边表面获得安全区间距。
+- 粗指针命中区域至少 44px；紧凑视觉控件仍可保持 28–36px。
+- 使用键盘、触摸、Escape 和焦点返回验证导航与 Inspector 的打开和关闭。
+- 验证中英文长标签、RTL、200% 缩放、离线状态，以及屏幕键盘遮挡 Composer 的情况。

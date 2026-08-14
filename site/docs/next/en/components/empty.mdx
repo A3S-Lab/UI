@@ -208,3 +208,32 @@ Add `class="empty"` to a semantic container. The component styles common childre
   </footer>
 </section>
 </Preview>
+
+## React
+
+```tsx
+import { Empty } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Empty aria-label="Empty">Component content</Empty>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Empty } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Empty aria-label="Empty">Component content</Empty>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

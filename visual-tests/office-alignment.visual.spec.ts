@@ -623,8 +623,8 @@ test("theme switcher updates Rspress and component previews together", async ({
     .toEqual({
       a3s: "dark",
       rspress: "dark",
-      background: "#101118",
-      themeColor: "#101118",
+      background: "#0d0d0f",
+      themeColor: "#0d0d0f",
     });
 
   const visibleThemeToggle = page.locator(".rp-switch-appearance:visible");
@@ -642,7 +642,7 @@ test("theme switcher updates Rspress and component previews together", async ({
           .trim(),
       })),
     )
-    .toEqual({ a3s: "light", background: "#f8f9fb" });
+    .toEqual({ a3s: "light", background: "#ffffff" });
 });
 
 test("homepage theme customizer applies and persists product choices", async ({
@@ -774,6 +774,21 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   await expect(navigationPanel).toHaveAttribute("aria-hidden", "false");
   await expect(navigationButton).toHaveAccessibleName("Close navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "true");
+  const navigationPanelBox = await navigationPanel.boundingBox();
+  expect(navigationPanelBox).not.toBeNull();
+  expect(navigationPanelBox!.x).toBeGreaterThanOrEqual(0);
+  expect(navigationPanelBox!.x + navigationPanelBox!.width).toBeLessThanOrEqual(
+    391,
+  );
+  const firstNavigationLinkBox = await navigationPanel
+    .getByRole("link")
+    .first()
+    .boundingBox();
+  expect(firstNavigationLinkBox).not.toBeNull();
+  expect(firstNavigationLinkBox!.x).toBeGreaterThanOrEqual(0);
+  expect(
+    firstNavigationLinkBox!.x + firstNavigationLinkBox!.width,
+  ).toBeLessThanOrEqual(391);
 
   await page.keyboard.press("Escape");
   await expect(navigation).not.toHaveAttribute("open", "");
@@ -959,7 +974,7 @@ test("theme bootstrap works before Rspress hydration", async ({ page }) => {
           ?.getAttribute("content"),
       })),
     )
-    .toEqual({ a3s: "dark", rspress: "dark", themeColor: "#101118" });
+    .toEqual({ a3s: "dark", rspress: "dark", themeColor: "#0d0d0f" });
 
   const runtimePreload = page.locator(
     'link[rel="preload"][as="script"][href$="/assets/a3s-ui.min.js"]',

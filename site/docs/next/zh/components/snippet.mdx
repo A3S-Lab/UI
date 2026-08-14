@@ -1,0 +1,68 @@
+# 代码片段
+
+把一个可复用的短命令或标识符与复制操作放在同一边界中，兼顾扫描和窄屏滚动。
+
+<Preview class="w-full">
+<div class="snippet"><code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button></div>
+</Preview>
+
+## 使用方式
+
+```html
+<div class="snippet">
+  <code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+</div>
+```
+
+## React
+
+```tsx
+import { Snippet } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Snippet>
+      <code>npm install @a3s-lab/ui</code><button type="button" className="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+    </Snippet>
+  );
+}
+```
+
+该组件没有额外行为控制器，React 适配器只渲染标准语义根。
+
+## Vue
+
+```vue
+<script setup>
+import { Snippet } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Snippet>
+    <code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+  </Snippet>
+</template>
+```
+
+Vue 适配器不包装额外容器，也不改变原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `.snippet` |
+| 原生根元素 | `<div>` |
+| 状态 | `ready`, `copied`, `error` |
+| 事件 | — |
+| 方法 | — |
+
+## 产品边界
+
+Snippet 不承担多行语法高亮、执行或下载。长代码使用 Highlighter，差异使用 Code Diff，实际执行由宿主处理。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+代码保持从左到右并可横向滚动；复制按钮有清楚名称和结果反馈，键盘用户无需选择文本即可复用。

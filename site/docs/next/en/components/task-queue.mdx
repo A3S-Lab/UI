@@ -37,3 +37,32 @@ Order must match execution order. Reordering requires an explicit handle and imm
 ## Accessibility
 
 Use an ordered list and textual states. Announce only meaningful queue changes, not timer updates.
+
+## React
+
+```tsx
+import { TaskQueue } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <TaskQueue aria-label="Task Queue">Component content</TaskQueue>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { TaskQueue } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <TaskQueue aria-label="Task Queue">Component content</TaskQueue>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

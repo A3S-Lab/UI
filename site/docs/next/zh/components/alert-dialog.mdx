@@ -100,6 +100,10 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
   </dd>
 </dl>
 
+### JavaScript API
+
+Alert Dialog 保留原生 `HTMLDialogElement` 契约。React 的 `useAlertDialog` 与 Vue 的同名 composable 可调用 `showModal()` 和 `close(returnValue)`；`cancel` 与 `close` 仍是原生 DOM 事件。
+
 ## 示例
 
 ### 基本
@@ -206,3 +210,35 @@ Use a `<figure>` in the header to add a media element such as an icon or image t
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAlertDialog();
+  return (
+    <AlertDialog ref={control.ref} aria-label="Alert Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></AlertDialog>
+  );
+}
+```
+
+`useAlertDialog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/vue";
+
+const control = useAlertDialog();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AlertDialog ref="componentRef" aria-label="Alert Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></AlertDialog>
+</template>
+```
+
+`useAlertDialog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

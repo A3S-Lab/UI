@@ -154,3 +154,32 @@ Breadcrumb items stay on one command row. When the available width is smaller th
   </ol>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+import { Breadcrumb } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Breadcrumb aria-label="Breadcrumb"><a href="#current" aria-current="page">Current page</a></Breadcrumb>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Breadcrumb } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Breadcrumb aria-label="Breadcrumb"><a href="#current" aria-current="page">Current page</a></Breadcrumb>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

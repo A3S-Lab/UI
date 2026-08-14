@@ -351,3 +351,35 @@ Auto highlight makes the first visible option active when the list opens or filt
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Combobox, useCombobox } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCombobox();
+  return (
+    <Combobox ref={control.ref}>Component content</Combobox>
+  );
+}
+```
+
+`useCombobox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Combobox, useCombobox } from "@a3s-lab/ui/vue";
+
+const control = useCombobox();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Combobox ref="componentRef">Component content</Combobox>
+</template>
+```
+
+`useCombobox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

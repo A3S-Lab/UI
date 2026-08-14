@@ -1,31 +1,49 @@
-# 形状与阴影
+# 形状与层级
 
-形状通过 6px 控件圆角、10px 稳定表面圆角和 14px 抬升表面圆角表达层级。阴影只属于浮动或重叠表面。
+A3S UI 使用 4、6、8 与 12px 四级圆角。静态表面保持平坦；只有真正浮在内容上方或内容会从其下方经过的表面才获得阴影。
 
 <Preview>
-<div class="grid w-full gap-4 sm:grid-cols-3">
-  <div class="rounded-md border border-border bg-card p-5 text-center text-sm">控件<br/><code class="text-xs text-muted-foreground">--radius-md</code></div>
-  <div class="rounded-xl border border-border bg-card p-5 text-center text-sm">表面<br/><code class="text-xs text-muted-foreground">--radius-xl</code></div>
-  <div class="rounded-[var(--a3s-radius)] bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">浮层<br/><code class="text-xs text-muted-foreground">--a3s-radius</code></div>
-</div>
+  <div class="grid w-full gap-4 sm:grid-cols-4">
+    <div class="rounded-sm border border-border bg-card p-5 text-center text-sm">
+      微型
+      <br />
+      <code class="text-xs text-muted-foreground">4px</code>
+    </div>
+    <div class="rounded-md border border-border bg-card p-5 text-center text-sm">
+      控件
+      <br />
+      <code class="text-xs text-muted-foreground">6px</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-5 text-center text-sm">
+      表面
+      <br />
+      <code class="text-xs text-muted-foreground">8px</code>
+    </div>
+    <div class="rounded-xl bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">
+      浮层
+      <br />
+      <code class="text-xs text-muted-foreground">12px</code>
+    </div>
+  </div>
 </Preview>
 
 ## 圆角
 
-| 令牌 | 默认值 | 用途 |
-| --- | ---: | --- |
-| `--radius-sm` | 基础值减 4px | Badge 与微型控件 |
-| `--radius-md` | 基础值减 2px | Button、Input 与导航项 |
-| `--radius-lg` | 基础圆角 | Toolbar 与侧边导航 |
-| `--radius-xl` | 基础值加 4px | Card 与 Panel |
-| `--a3s-radius` | `14px` | 主要与抬升表面 |
+| 令牌                              | 默认值 | 用途                             |
+| --------------------------------- | -----: | -------------------------------- |
+| `--radius-sm` / `--a3s-radius-xs` |  `4px` | Badge 内部、微型控件             |
+| `--radius-md` / `--a3s-radius-sm` |  `6px` | Button、Input 与导航项           |
+| `--radius-lg` / `--a3s-radius-md` |  `8px` | 卡片、工具栏与稳定表面           |
+| `--radius-xl` / `--a3s-radius-lg` | `12px` | Dialog、Drawer、Popover 与预览框 |
 
-## 阴影层级
+药丸形只用于状态、紧凑筛选器、开关轨道和圆形操作，不能成为普通按钮或卡片的默认形状。
 
-| 令牌 | 用途 |
-| --- | --- |
-| `--a3s-shadow-composer` | 固定或浮动的任务输入器 |
-| `--a3s-shadow-soft` | 菜单、弹出框、抽屉与紧凑浮层 |
-| `--a3s-shadow` | 模态 Dialog 与大型浮动面板 |
+## 阴影
 
-边框与色调差是默认分隔方式。静态卡片、外壳、目录、任务记录和设置行不使用阴影。默认只用可见边框或宽柔阴影表达一条边，不叠加两者。
+| 令牌                   | 值                                                     | 用途                     |
+| ---------------------- | ------------------------------------------------------ | ------------------------ |
+| `--a3s-shadow-control` | `0 1px 2px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 3%)` | 选中控件与轻量预览边界   |
+| `--a3s-shadow-soft`    | `0 8px 16px -4px rgb(0 0 0 / 20%)`                     | 菜单、Popover 与浮动面板 |
+| `--a3s-shadow`         | `0 20px 20px -8px rgb(0 0 0 / 24%)`                    | 模态 Dialog              |
+
+深色主题增加不透明度，不添加发亮边框。静态卡片、外壳、目录、任务记录和设置行不使用阴影。同一条边默认只使用清晰边界或浮动阴影，不重复强调。

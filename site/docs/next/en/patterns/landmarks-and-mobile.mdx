@@ -1,0 +1,119 @@
+# Landmark and mobile compositions
+
+Landmark surfaces may carry more identity than operational workspaces, but decoration still needs a product job. Mobile adaptation preserves that job and the same state model; it does not create a separate component family for every compact arrangement.
+
+## Visual-effect admission
+
+| Effect | Admit when | Reject when |
+| --- | --- | --- |
+| Ambient color field | one home, empty-start, or branded loading landmark needs orientation | repeated behind cards, controls, tables, or code |
+| Spectral gradient action | one bounded branded action is more important than neutral actions | used as the default Button or semantic status |
+| Grid background | the surface represents a canvas, map, measurement, or spatial editor | added merely to make a technical page look technical |
+| Hero | a documentation home or empty start needs one clear identity and next action | inserted above an already obvious application task |
+| Feature list | each item helps users choose or understand a capability | identical icon cards repeat marketing claims |
+| Spotlight card | pointer position reveals real spatial detail on an optional showcase | motion is decorative, coarse-pointer users lose information, or contrast changes |
+
+Ambient fields are large, low-opacity, and behind a single landmark. Text sits on a stable canvas color. The effect disappears under reduced motion or contrast constraints without changing content.
+
+```css
+.product-landmark {
+  background:
+    radial-gradient(circle at 18% 10%, rgb(91 87 217 / 10%), transparent 28rem),
+    radial-gradient(circle at 82% 16%, rgb(36 155 246 / 8%), transparent 24rem),
+    var(--background);
+}
+```
+
+This recipe is intentionally not a public `Aurora`, `GradientButton`, `GridBackground`, or `SpotlightCard` root. Its admission depends on the page subject and is reviewed with that surface.
+
+## Feature list and branded action
+
+Use Item for a scannable capability list. Keep the primary action neutral in ordinary workspaces. A page-owned spectral treatment may wrap one landmark action, but it must preserve Button geometry, focus contrast, disabled state, and readable text.
+
+```html
+<section class="product-landmark" aria-labelledby="start-title">
+  <h1 id="start-title">Start a focused workspace</h1>
+  <p>Choose a task and keep its evidence, tools, and results together.</p>
+  <a class="btn" href="/tasks/new">Create workspace</a>
+  <ul aria-label="Workspace capabilities">
+    <li class="item"><div data-item-content><strong>Persistent context</strong><small>Files and decisions stay with the task.</small></div></li>
+    <li class="item"><div data-item-content><strong>Reviewable changes</strong><small>Every material update has evidence.</small></div></li>
+  </ul>
+</section>
+```
+
+Animated typewriter copy is not used for static claims. Streaming Text is admitted only while content is genuinely arriving and always exposes paused, complete, and error states.
+
+## Official identity and loading
+
+Brand Lockup uses the official A3S OS mark. Flat, monochrome, and compact presentations all use that asset; color treatment changes through CSS or an approved asset variant rather than a fabricated logo. A bounded application start may combine the lockup with Spinner or Progress and a readable status.
+
+```html
+<div class="brand-lockup" aria-label="A3S OS is starting">
+  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+  <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Preparing your workspace…</small></span>
+  <span class="animate-spin" role="status" aria-label="Loading"></span>
+</div>
+```
+
+Do not redraw the mark in 3D, substitute another product logo, or loop an identity animation after the application is ready. Animated brand media remains an optional host asset with a static fallback.
+
+## Mobile workspace composition
+
+Responsive Workspace Header and Agent Composer keep one DOM contract. At compact widths, secondary navigation becomes an inert dismissible layer, nonessential header actions move into an overflow menu, the inspector becomes a sheet, and the composer owns bottom safe-area spacing.
+
+```html
+<section class="task-workspace" data-inspector="closed">
+  <header class="workspace-header">
+    <div data-workspace-identity><h1>Release review</h1></div>
+    <div data-workspace-actions><button type="button" class="btn" data-task-inspector-trigger aria-expanded="false">Files</button></div>
+  </header>
+  <div data-task-body><main data-task-main>...</main><aside data-task-inspector inert aria-hidden="true">...</aside></div>
+  <form class="agent-composer"><textarea aria-label="Instruction"></textarea><footer><button type="submit" class="btn">Send</button></footer></form>
+</section>
+```
+
+A bottom tab bar is admitted only for three to five peer destinations. Use Activity Bar navigation or Tabs according to whether destinations change routes or panels; keep visible text and `aria-current`, and pad the edge owner with `env(safe-area-inset-bottom)`.
+
+## React
+
+```tsx
+import { AgentComposer, TaskWorkspace, WorkspaceHeader, useTaskWorkspace } from "@a3s-lab/ui/react";
+
+export function MobileWorkspace() {
+  const workspace = useTaskWorkspace();
+  return (
+    <TaskWorkspace ref={workspace.ref}>
+      <WorkspaceHeader><div data-workspace-identity><h1>Release review</h1></div></WorkspaceHeader>
+      <div data-task-body><main data-task-main>Task content</main><aside data-task-inspector>Changed files</aside></div>
+      <AgentComposer><textarea aria-label="Instruction" /></AgentComposer>
+    </TaskWorkspace>
+  );
+}
+```
+
+## Vue
+
+```vue
+<script setup>
+import { AgentComposer, TaskWorkspace, WorkspaceHeader, useTaskWorkspace } from "@a3s-lab/ui/vue";
+const workspace = useTaskWorkspace();
+const workspaceRef = workspace.componentRef;
+</script>
+
+<template>
+  <TaskWorkspace ref="workspaceRef">
+    <WorkspaceHeader><div data-workspace-identity><h1>Release review</h1></div></WorkspaceHeader>
+    <div data-task-body><main data-task-main>Task content</main><aside data-task-inspector>Changed files</aside></div>
+    <AgentComposer><textarea aria-label="Instruction" /></AgentComposer>
+  </TaskWorkspace>
+</template>
+```
+
+## Compact release checks
+
+- Test 320px width, an intermediate tablet, and a wide desktop without changing semantic order.
+- Test browser chrome and display cutouts; only the edge-owning surface receives safe-area padding.
+- Keep coarse-pointer targets at least 44px while compact visual controls may remain 28–36px.
+- Verify opening and dismissing navigation and inspectors with keyboard, touch, Escape, and focus return.
+- Verify long Chinese and English labels, RTL, 200% zoom, offline state, and the on-screen keyboard covering the composer.

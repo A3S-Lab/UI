@@ -259,3 +259,35 @@ Ribbon behavior comes from the [Tabs](/components/tabs) controller. `window.a3sU
 ## Accessibility
 
 Use the complete Tabs keyboard contract. Group commands with `<fieldset>` and a visible or screen-reader-only `<legend>`. If a ribbon becomes too dense, allow horizontal scrolling rather than shrinking labels below a readable size.
+
+## React
+
+```tsx
+import { Ribbon, useRibbon } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useRibbon();
+  return (
+    <Ribbon ref={control.ref}>Component content</Ribbon>
+  );
+}
+```
+
+`useRibbon` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Ribbon, useRibbon } from "@a3s-lab/ui/vue";
+
+const control = useRibbon();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Ribbon ref="componentRef">Component content</Ribbon>
+</template>
+```
+
+`useRibbon` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

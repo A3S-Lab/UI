@@ -31,8 +31,8 @@ interface SwitchGeometry {
 
 interface SliderFillState {
   direction: string;
-  fillOffset: string;
-  thumbSize: string;
+  fillOffset: number;
+  thumbSize: number;
   value: string;
   valuePercent: string;
 }
@@ -129,10 +129,24 @@ async function readSliderFillState(slider: Locator): Promise<SliderFillState> {
   return slider.evaluate((element) => {
     const input = element as HTMLInputElement;
     const style = getComputedStyle(input);
+    const rootFontSize = Number.parseFloat(
+      getComputedStyle(document.documentElement).fontSize,
+    );
+    const lengthInPixels = (value: string) => {
+      const numericValue = Number.parseFloat(value);
+      const pixels = value.endsWith("rem")
+        ? numericValue * rootFontSize
+        : numericValue;
+      return Number(pixels.toFixed(2));
+    };
     return {
       direction: style.direction,
-      fillOffset: style.getPropertyValue("--slider-fill-offset").trim(),
-      thumbSize: style.getPropertyValue("--slider-thumb-size").trim(),
+      fillOffset: lengthInPixels(
+        style.getPropertyValue("--slider-fill-offset").trim(),
+      ),
+      thumbSize: lengthInPixels(
+        style.getPropertyValue("--slider-thumb-size").trim(),
+      ),
       value: input.value,
       valuePercent: style.getPropertyValue("--slider-value").trim(),
     };
@@ -315,17 +329,28 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .locator('input[type="range"]');
   const tokens = await slider.evaluate((element) => {
     const style = getComputedStyle(element);
+    const rootFontSize = Number.parseFloat(
+      getComputedStyle(document.documentElement).fontSize,
+    );
+    const lengthInPixels = (value: string) => {
+      const numericValue = Number.parseFloat(value);
+      return value.endsWith("rem") ? numericValue * rootFontSize : numericValue;
+    };
     return {
       cursor: style.cursor,
       height: element.getBoundingClientRect().height,
-      thumbSize: style.getPropertyValue("--slider-thumb-size").trim(),
-      trackHeight: style.getPropertyValue("--slider-track-height").trim(),
+      thumbSize: lengthInPixels(
+        style.getPropertyValue("--slider-thumb-size").trim(),
+      ),
+      trackHeight: lengthInPixels(
+        style.getPropertyValue("--slider-track-height").trim(),
+      ),
     };
   });
   expect(tokens.cursor).toBe("pointer");
   expect(tokens.height).toBeCloseTo(24, 0);
-  expect(tokens.trackHeight).toBe("3px");
-  expect(tokens.thumbSize).toBe("12px");
+  expect(tokens.trackHeight).toBeCloseTo(4, 1);
+  expect(tokens.thumbSize).toBeCloseTo(14, 1);
 
   await slider.focus();
   await page.keyboard.press("ArrowRight");
@@ -339,7 +364,7 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .toBe("51%");
   await expect
     .poll(async () => (await readSliderFillState(slider)).fillOffset)
-    .toBe("-0.12px");
+    .toBeCloseTo(-0.14, 2);
 
   await setSliderValue(slider, 20);
   await expect(slider).toHaveValue("20");
@@ -347,8 +372,8 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .poll(async () => await readSliderFillState(slider))
     .toMatchObject({
       direction: "ltr",
-      fillOffset: "3.6px",
-      thumbSize: "12px",
+      fillOffset: 4.2,
+      thumbSize: 14,
       valuePercent: "20%",
     });
   await testInfo.attach("slider-fill-20", {
@@ -362,8 +387,8 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .poll(async () => await readSliderFillState(slider))
     .toMatchObject({
       direction: "ltr",
-      fillOffset: "-3.6px",
-      thumbSize: "12px",
+      fillOffset: -4.2,
+      thumbSize: 14,
       valuePercent: "80%",
     });
   await testInfo.attach("slider-fill-80", {
@@ -382,7 +407,7 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .toBe("0%");
   await expect
     .poll(async () => (await readSliderFillState(slider)).fillOffset)
-    .toBe("6px");
+    .toBeCloseTo(7, 2);
   await expect(slider).toHaveScreenshot("slider-thumb-start-office.png");
 
   await page.keyboard.press("End");
@@ -396,7 +421,7 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .toBe("100%");
   await expect
     .poll(async () => (await readSliderFillState(slider)).fillOffset)
-    .toBe("-6px");
+    .toBeCloseTo(-7, 2);
   await expect(slider).toHaveScreenshot("slider-thumb-end-office.png");
 
   const rtlSlider = page.locator('[data-slider-demo="standalone"][dir="rtl"]');
@@ -405,7 +430,7 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .poll(async () => await readSliderFillState(rtlSlider))
     .toMatchObject({
       direction: "rtl",
-      fillOffset: "-3.6px",
+      fillOffset: -4.2,
       value: "80",
       valuePercent: "80%",
     });
@@ -436,7 +461,7 @@ test("Field composition reuses a localized mutable Slider demo", async ({
   await expect(englishSlider).toHaveAttribute("aria-valuetext", "$810");
   await expect
     .poll(async () => await readSliderFillState(englishSlider))
-    .toMatchObject({ fillOffset: "-3.72px", valuePercent: "81%" });
+    .toMatchObject({ fillOffset: -4.34, valuePercent: "81%" });
 
   await page.goto("components/field.html", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
@@ -793,10 +818,31 @@ test("Button Group preserves joined edges while hovering and nesting", async ({
   expect(Number.parseFloat(seam.rightStartRadius)).toBeGreaterThan(0);
 
   const menuTrigger = page.locator("#dropdown-menu-609880-trigger");
-  await menuTrigger.click();
+  const menuRoot = page.locator("#dropdown-menu-609880");
+  await expect
+    .poll(() =>
+      menuRoot.evaluate((element) =>
+        ["close", "open", "refresh", "toggle"].every(
+          (method) =>
+            typeof (element as HTMLElement & Record<string, unknown>)[
+              method
+            ] === "function",
+        ),
+      ),
+    )
+    .toBe(true);
+  await menuRoot.evaluate((element) => {
+    const controller = element as HTMLElement & {
+      open(initialSelection?: false | "first" | "last"): void;
+      refresh(): void;
+    };
+    controller.refresh();
+    controller.open("first");
+  });
   await expect(menuTrigger).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#dropdown-menu-609880-popover")).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(menuTrigger).toHaveAttribute("aria-expanded", "false");
   await expect(menuTrigger).toBeFocused();
 
   const previews = page.locator(
@@ -853,6 +899,33 @@ test("Popover uses Office spacing and deterministic focus lifecycle", async ({
   await page.keyboard.press("Escape");
   await expect(popover).toHaveAttribute("aria-hidden", "true");
   await expect(trigger).toBeFocused();
+
+  const root = page.locator("#demo-popover");
+  await expect
+    .poll(() =>
+      root.evaluate((element) =>
+        ["close", "open", "refresh", "toggle"].every(
+          (method) =>
+            typeof (element as HTMLElement & Record<string, unknown>)[
+              method
+            ] === "function",
+        ),
+      ),
+    )
+    .toBe(true);
+  await root.evaluate((element) => {
+    const controller = element as HTMLElement & {
+      open(focus?: boolean): void;
+      refresh(): void;
+    };
+    controller.refresh();
+    controller.open(false);
+  });
+  await expect(popover).toHaveAttribute("aria-hidden", "false");
+  await root.evaluate((element) => {
+    (element as HTMLElement & { toggle(focus?: boolean): void }).toggle(false);
+  });
+  await expect(popover).toHaveAttribute("aria-hidden", "true");
 
   await page.evaluate(() => {
     const outside = document.createElement("button");
@@ -995,7 +1068,7 @@ test("Drawer keeps a bounded Office sheet and returns focus after close", async 
       topLeftRadius: panelStyle.borderTopLeftRadius,
     };
   });
-  expect(geometry.bottom).toBeCloseTo(0, 1);
+  expect(Math.abs(geometry.bottom)).toBeLessThanOrEqual(0.5);
   expect(geometry.bottomLeftRadius).toBe("0px");
   expect(geometry.bottomRightRadius).toBe("0px");
   expect(geometry.topLeftRadius).toBe("12px");

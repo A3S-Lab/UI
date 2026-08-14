@@ -1,0 +1,68 @@
+# Snippet
+
+Places one reusable short command or identifier beside its copy action in a boundary that scans well and survives narrow screens.
+
+<Preview class="w-full">
+<div class="snippet"><code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button></div>
+</Preview>
+
+## Usage
+
+```html
+<div class="snippet">
+  <code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+</div>
+```
+
+## React
+
+```tsx
+import { Snippet } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Snippet>
+      <code>npm install @a3s-lab/ui</code><button type="button" className="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+    </Snippet>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { Snippet } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Snippet>
+    <code>npm install @a3s-lab/ui</code><button type="button" class="btn copy-button" data-size="sm" data-copy-text="npm install @a3s-lab/ui"><span data-copy-label>Copy</span><span data-copy-feedback aria-live="polite"></span></button>
+  </Snippet>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.snippet` |
+| Native root | `<div>` |
+| States | `ready`, `copied`, `error` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+Snippet does not own multiline highlighting, execution, or download. Use Highlighter for long code, Code Diff for changes, and the host for execution.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Code stays left-to-right and horizontally scrollable. The copy action has a clear name and result feedback so keyboard users need not select text manually.

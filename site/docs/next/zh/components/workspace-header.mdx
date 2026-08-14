@@ -28,7 +28,7 @@
 | `data-workspace-identity` | 是 | 可伸缩的标题与元数据区域 |
 | `data-workspace-actions` | 可选 | 右对齐上下文操作 |
 | `data-collapse="mobile"` | 可选 | 隐藏低于 640 像素的次要内容 |
-| `--workspace-header-height` | 可选 | 稳定的标题栏高度，默认 `3.125rem`（50px） |
+| `--workspace-header-height` | 可选 | 稳定的标题栏高度，默认 `3.5rem`（56px） |
 
 ## 状态
 
@@ -37,3 +37,32 @@
 ## 可访问性
 
 将一页级 `<h1>` 保留在标识区域内。图标按钮需要可访问的名称。可编辑的名称应在生产中使用带标签的输入； `contenteditable` 仅用于在预览中演示实时文本。
+
+## React
+
+```tsx
+import { WorkspaceHeader } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <WorkspaceHeader>组件内容</WorkspaceHeader>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { WorkspaceHeader } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <WorkspaceHeader>组件内容</WorkspaceHeader>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

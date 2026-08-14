@@ -230,3 +230,35 @@
   </table>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Table, useTable } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTable();
+  return (
+    <Table ref={control.ref}><table><caption>组件摘要</caption><tbody><tr><th scope="row">名称</th><td>组件内容</td></tr></tbody></table></Table>
+  );
+}
+```
+
+`useTable` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Table, useTable } from "@a3s-lab/ui/vue";
+
+const control = useTable();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Table ref="componentRef"><table><caption>组件摘要</caption><tbody><tr><th scope="row">名称</th><td>组件内容</td></tr></tbody></table></Table>
+</template>
+```
+
+`useTable` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

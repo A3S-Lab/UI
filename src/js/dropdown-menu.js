@@ -62,6 +62,7 @@
     state.popover.setAttribute('aria-hidden', 'false');
 
     if (state.items.length > 0 && initialSelection) {
+      state.trigger.focus();
       setActiveItem(state, initialSelection === 'last' ? state.items.length - 1 : 0);
     }
   };

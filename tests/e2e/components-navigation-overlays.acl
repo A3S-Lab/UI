@@ -183,7 +183,7 @@ suite "a3s-ui-navigation-and-overlays" {
     }
 
     scenario "context-menu" {
-        name = "Context Menu supports keyboard invocation, submenu navigation, and focus return"
+        name = "Context Menu completes keyboard invocation, nested selection, checked state, and focus return"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/context-menu.html" }
@@ -197,6 +197,13 @@ suite "a3s-ui-navigation-and-overlays" {
         press "move-to-open-with" { key = "ArrowDown" }
         press "open-submenu" { key = "ArrowRight" }
         expect "submenu-open" { visible = css("#context-menu-demo-en [data-context-submenu-content][aria-hidden=false]") }
+        click "choose-diff-view" { target = css("#context-menu-demo-en [data-context-submenu-content] [data-value=diff]") }
+        expect "diff-selection-closed-menu" { visible = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]:focus") }
+        press "reopen-context-menu" { key = "Shift+F10" }
+        click "disable-watch" { target = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch]") }
+        expect "watch-selection-closed-menu" { visible = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]:focus") }
+        press "reopen-to-check-state" { key = "Shift+F10" }
+        expect "watch-state-preserved" { visible = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch][aria-checked=false]") }
         press "close-context-menu" { key = "Escape" }
         expect "trigger-restored" { visible = css("#context-menu-demo-en [data-context-trigger]:focus") }
     }

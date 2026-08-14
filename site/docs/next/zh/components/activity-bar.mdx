@@ -47,3 +47,32 @@
 ## 可访问性
 
 折叠时将标签保留在 DOM 中。每个仅包含图标的链接或按钮仍然需要一个可访问的名称。当前页面使用 `aria-current`，而不是单独使用颜色。
+
+## React
+
+```tsx
+import { ActivityBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ActivityBar aria-label="Activity Bar">组件内容</ActivityBar>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { ActivityBar } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ActivityBar aria-label="Activity Bar">组件内容</ActivityBar>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

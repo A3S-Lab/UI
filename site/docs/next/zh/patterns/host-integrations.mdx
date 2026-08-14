@@ -1,0 +1,133 @@
+# 宿主集成边界
+
+供应商身份、远程服务、可执行渲染器和指针效果都属于宿主能力。A3S UI 提供稳定槽位和状态，不会把第三方 Logo、凭据、网络客户端或解析引擎复制进设计系统。
+
+## 供应商与产品图标
+
+宿主图形使用 Icon，只有获准的 A3S 身份使用 Brand Lockup。宿主注册表把稳定的供应商键映射到具有授权的资产。A3S UI 只控制视觉尺寸和对齐，不拥有资产和品牌规则。
+
+```html
+<span class="icon" role="img" aria-label="身份供应商">
+  <span data-icon-slot data-provider="identity-provider">
+    <!-- 宿主注册表插入具有授权的 SVG 或图像。 -->
+  </span>
+</span>
+```
+
+装饰性供应商图标使用 `aria-hidden="true"` 并与可见文本并列。不要根据颜色或文件名推断供应商，也不要用通用 Unicode 字符充当 Logo。
+
+### React
+
+```tsx
+import { Icon } from "@a3s-lab/ui/react";
+
+export function ProviderIcon({ label, graphic }: { label: string; graphic: React.ReactNode }) {
+  return <Icon role="img" aria-label={label}><span data-icon-slot>{graphic}</span></Icon>;
+}
+```
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import { Icon } from "@a3s-lab/ui/vue";
+defineProps<{ label: string }>();
+</script>
+
+<template>
+  <Icon role="img" :aria-label="label"><span data-icon-slot><slot /></span></Icon>
+</template>
+```
+
+## 表情与文件资产
+
+作为消息内容选中的 Unicode 表情可以保留为文本。插画表情包是远程媒体，应放入 Image 或 Avatar 槽位，并由宿主提供替代文本和回退。File Type Icon 默认显示文字扩展名；只有确定真实文件名与 MIME 策略后，宿主注册表才能替换图形。
+
+```js
+const fileIcons = new Map([
+  ["typescript", () => import("./icons/typescript.svg")],
+]);
+
+async function renderFileIcon(root, kind) {
+  const load = fileIcons.get(kind);
+  if (!load) return; // 保留可读的通用扩展名。
+  const asset = await load();
+  root.querySelector("[data-file-icon-slot]").replaceChildren(asset.default);
+}
+```
+
+授权、包体积、文件分类和回退策略因产品而异，所以注册表属于应用代码。
+
+## Markdown 渲染器注册表
+
+Markdown Surface 接收宿主渲染器生成且已经净化的 DOM。图表、数学公式、引用和媒体都是显式渲染槽；未知节点回退为可读文本。绝不能把不可信 HTML 直接交给组件。
+
+```html
+<article class="markdown-surface">
+  <p>部署流程</p>
+  <figure data-markdown-renderer="diagram" aria-labelledby="deployment-flow-caption">
+    <div data-renderer-output role="img" aria-label="部署流程图"></div>
+    <figcaption id="deployment-flow-caption">源码、审查、构建和发布。</figcaption>
+  </figure>
+</article>
+```
+
+宿主拥有解析器版本、Worker 隔离、净化、加载、超时和错误恢复。图表失败时保留源码或文字说明；媒体失败时保留说明和重试路径。
+
+### React
+
+```tsx
+import { MarkdownSurface } from "@a3s-lab/ui/react";
+
+export function MarkdownResult({ children }: { children: React.ReactNode }) {
+  return <MarkdownSurface data-state="ready">{children}</MarkdownSurface>;
+}
+```
+
+### Vue
+
+```vue
+<script setup>
+import { MarkdownSurface } from "@a3s-lab/ui/vue";
+</script>
+
+<template><MarkdownSurface data-state="ready"><slot /></MarkdownSurface></template>
+```
+
+## 评论服务槽位
+
+远程讨论服务是产品集成，不是 Card 变体。把挂载点放在有名称的区域，并提供加载、需要登录、被阻止、错误和就绪状态。宿主拥有用户同意、凭据、来源策略和数据保留。
+
+```html
+<section aria-labelledby="discussion-title" data-host-integration="comments" data-state="loading">
+  <h2 id="discussion-title">讨论</h2>
+  <p role="status">正在加载讨论…</p>
+  <div data-integration-mount></div>
+</section>
+```
+
+## 指针聚光效果
+
+只有可选展示区或地标表面中，指针位置确实具有视觉意义时，才能使用聚光效果。它不能改变命中区域、选择、对比度或内容顺序。粗指针和减弱动态效果环境中必须禁用，且无 JavaScript 时表面已经完整可用。
+
+```css
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-optional-spotlight]::before {
+    background: radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgb(91 87 217 / 12%), transparent 18rem);
+  }
+}
+```
+
+宿主行为可以通过 `requestAnimationFrame` 更新 CSS 坐标；设计系统不会安装全局指针监听器。
+
+## 所有权矩阵
+
+| 能力 | A3S UI 拥有 | 宿主拥有 |
+| --- | --- | --- |
+| 供应商图标 | 尺寸、对齐、可访问槽位 | 资产、授权、供应商映射 |
+| 插画表情 | Image/Avatar 呈现 | 资源包、搜索数据、回退、网络 |
+| 文件图形 | 通用扩展名与槽位 | 分类和可选注册表 |
+| 图表 | 带名称的 figure 与错误表面 | 解析器、沙箱、净化、Worker |
+| Markdown 插件 | 渲染槽与状态 | 注册表、可信输出、版本 |
+| 评论 | 带名称的挂载区和状态 | 身份、同意、服务生命周期 |
+| 聚光效果 | 可选视觉准入规则 | 指针数据和页面专属效果 |

@@ -56,3 +56,32 @@ Status Badge is distinct from Badge: use Badge for categories, counts, and immut
 ## Accessibility
 
 Always include visible state text so color and the optional indicator are redundant. Do not add `role="status"` to every badge; add a live-region role only when the host application must announce a state transition. When a status controls another region, keep that relationship and its loading or error semantics on the owning control or region.
+
+## React
+
+```tsx
+import { StatusBadge } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <StatusBadge>Component content</StatusBadge>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { StatusBadge } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <StatusBadge>Component content</StatusBadge>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

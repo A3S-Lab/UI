@@ -238,3 +238,35 @@ window.a3sUI.chart("#custom-chart", {
 | `color` | 系列描边、填充、图例标记和工具提示标记的基色。 |
 | `surface` | 从 `color` 派生填充。使用 `true` 进行半透明填充，使用 `"gradient"` 进行上游式垂直淡入淡出，或使用 `{ from, to }` 进行自定义不透明度停止。 |
 | `dataset` | 原始 Chart.js 数据集选项。 |
+
+## React
+
+```tsx
+import { Chart, useChart } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useChart();
+  return (
+    <Chart ref={control.ref}>组件内容</Chart>
+  );
+}
+```
+
+`useChart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Chart, useChart } from "@a3s-lab/ui/vue";
+
+const control = useChart();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Chart ref="componentRef">组件内容</Chart>
+</template>
+```
+
+`useChart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -34,3 +34,32 @@
 ## 无障碍
 
 同时显示多个检查点时，恢复控件名称包含检查点标题。保存和恢复完成使用一个有限状态播报。
+
+## React
+
+```tsx
+import { Checkpoint } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Checkpoint>组件内容</Checkpoint>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Checkpoint } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Checkpoint>组件内容</Checkpoint>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

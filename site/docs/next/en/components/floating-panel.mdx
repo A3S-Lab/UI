@@ -1,0 +1,83 @@
+# Floating Panel
+
+Keeps an inspector, helper, or temporary context beside the primary task and naturally becomes a bottom sheet on narrow screens.
+
+<Preview class="w-full">
+<aside class="floating-panel" data-position="docked" data-state="open"><header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section></aside>
+</Preview>
+
+## Usage
+
+```html
+<aside class="floating-panel" data-position="docked" data-state="open">
+  <header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+</aside>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/floating-panel";
+
+const component = document.querySelector(".floating-panel");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { FloatingPanel, useFloatingPanel } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useFloatingPanel();
+  return (
+    <FloatingPanel ref={control.ref} data-position="docked" data-state="open">
+      <header><strong>Inspector</strong><button type="button" className="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+    </FloatingPanel>
+  );
+}
+```
+
+`useFloatingPanel` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { FloatingPanel, useFloatingPanel } from "@a3s-lab/ui/vue";
+
+const control = useFloatingPanel();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <FloatingPanel ref="componentRef" data-position="docked" data-state="open">
+    <header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+  </FloatingPanel>
+</template>
+```
+
+`useFloatingPanel` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.floating-panel` |
+| Native root | `<aside>` |
+| States | `open`, `closed`, `floating`, `docked`, `sheet` |
+| Events | `a3s:floating-panel-before-close`, `a3s:floating-panel-before-open`, `a3s:floating-panel-close`, `a3s:floating-panel-open` |
+| Methods | `close`, `getState`, `open`, `toggle` |
+
+## Product boundary
+
+It is not a generic card or a protected confirmation surface. The host owns persisted position, size, and workspace layout.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Escape can close the panel and restore focus to its opener. Docked, floating, and mobile presentations preserve content order and action meaning.

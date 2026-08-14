@@ -41,3 +41,32 @@ Use `aria-pressed` for toggle buttons and `disabled` for unavailable commands. T
 ## Accessibility
 
 Name the toolbar and each ambiguous group. Native buttons remain in the document tab sequence. Provide keyboard shortcuts at the application layer and expose them with [Kbd](/components/kbd) or tooltip text.
+
+## React
+
+```tsx
+import { Toolbar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Toolbar>Component content</Toolbar>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Toolbar } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Toolbar>Component content</Toolbar>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

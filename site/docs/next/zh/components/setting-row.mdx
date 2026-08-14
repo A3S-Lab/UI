@@ -39,3 +39,35 @@
 ## 无障碍
 
 用原生标签或明确的 ARIA 名称关联控件。说明和错误信息通过 `aria-describedby` 关联，无效控件同时设置 `aria-invalid="true"`。
+
+## React
+
+```tsx
+import { SettingRow, useSettingRow } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSettingRow();
+  return (
+    <SettingRow ref={control.ref}>组件内容</SettingRow>
+  );
+}
+```
+
+`useSettingRow` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { SettingRow, useSettingRow } from "@a3s-lab/ui/vue";
+
+const control = useSettingRow();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <SettingRow ref="componentRef">组件内容</SettingRow>
+</template>
+```
+
+`useSettingRow` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

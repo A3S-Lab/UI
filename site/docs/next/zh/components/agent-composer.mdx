@@ -108,3 +108,35 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 ## 无障碍
 
 为表单和文本区域提供可访问名称。移除按钮应紧邻对应条目，标签中应包含条目名称。异步状态使用礼貌型实时区域，但不要逐 Token 播报流式内容。保留普通的输入法组合和多行输入行为；产品快捷键不得在输入法组合期间拦截 Enter。
+
+## React
+
+```tsx
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAgentComposer();
+  return (
+    <AgentComposer ref={control.ref} aria-label="Agent Composer"><label>名称<input name="name" /></label><button type="submit">继续</button></AgentComposer>
+  );
+}
+```
+
+`useAgentComposer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+
+const control = useAgentComposer();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AgentComposer ref="componentRef" aria-label="Agent Composer"><label>名称<input name="name" /></label><button type="submit">继续</button></AgentComposer>
+</template>
+```
+
+`useAgentComposer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

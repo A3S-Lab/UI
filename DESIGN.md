@@ -1,296 +1,382 @@
 ---
 name: A3S UI
-description: A calm, framework-agnostic interface system for task-centered A3S products.
+description: A precise, framework-independent interface system for intelligent work.
+reference:
+  publicSite: "https://ui.lobehub.com/"
+  repository: "https://github.com/lobehub/lobe-ui"
+  version: "5.29.3"
+  revision: "f1d2a7e7b342f76ffc64602e32f3cb47ae96e0aa"
 colors:
-  canvas: "#f8f9fb"
-  paper: "#ffffff"
-  ink: "#17191d"
-  muted-ink: "#667085"
-  hairline: "#e6e8ec"
-  primary: "#2864e8"
-  primary-soft: "#eef4ff"
-  success: "#15815a"
-  warning: "#a85f0c"
-  danger: "#c9363c"
+  light:
+    canvas: "#ffffff"
+    surface: "#ffffff"
+    surfaceMuted: "#f7f7f8"
+    surfaceHover: "#f4f4f5"
+    surfaceActive: "#eeeeef"
+    code: "#fafafa"
+    text: "#111113"
+    textSecondary: "#52525b"
+    textSubtle: "#71717a"
+    borderSubtle: "#e9e9eb"
+    border: "#dedee1"
+    borderStrong: "#c9c9ce"
+    accent: "#5b57d9"
+    accentHover: "#4f4bc4"
+    accentContrast: "#ffffff"
+    brandBlue: "#249bf6"
+    success: "#16845b"
+    warning: "#a86412"
+    danger: "#c93d45"
+  dark:
+    canvas: "#0d0d0f"
+    surface: "#151518"
+    surfaceMuted: "#19191d"
+    surfaceHover: "#202024"
+    surfaceActive: "#26262b"
+    code: "#121214"
+    text: "#f4f4f5"
+    textSecondary: "#b4b4bc"
+    textSubtle: "#888891"
+    borderSubtle: "#26262b"
+    border: "#333338"
+    borderStrong: "#45454b"
+    accent: "#8378f0"
+    accentHover: "#978df5"
+    accentContrast: "#0d0d0f"
+    brandBlue: "#38a8eb"
+    success: "#57c795"
+    warning: "#e7ad55"
+    danger: "#ef7a82"
 typography:
-  display:
-    fontFamily: '"Geist Sans", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "clamp(1.75rem, 3vw, 2.5rem)"
-    fontWeight: 650
-    lineHeight: 1.15
-    letterSpacing: "-0.035em"
-  headline:
-    fontFamily: '"Geist Sans", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "1.5rem"
-    fontWeight: 650
-    lineHeight: 1.25
-    letterSpacing: "-0.025em"
-  body:
-    fontFamily: '"Geist Sans", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "0.875rem"
-    fontWeight: 400
-    lineHeight: 1.55
-  label:
-    fontFamily: '"Geist Sans", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "0.8125rem"
-    fontWeight: 600
-    lineHeight: 1.25
-  mono:
-    fontFamily: '"Geist Mono", ui-monospace, monospace'
-    fontSize: "0.8125rem"
-    fontWeight: 500
-    lineHeight: 1.5
-  scale:
-    micro: "0.6875rem"
-    annotation: "0.75rem"
-    ui: "0.8125rem"
-    body: "0.875rem"
-    section: "1rem"
-    page: "1.5rem"
-rounded:
-  control: "6px"
-  surface: "10px"
-  elevated: "14px"
+  sans: '"Geist", "HarmonyOS Sans SC", "PingFang SC", ui-sans-serif, system-ui, sans-serif'
+  mono: '"Geist Mono", "SFMono-Regular", Consolas, ui-monospace, monospace'
+  display: "clamp(2rem, 4vw, 2.5rem) / 1.08 / 680"
+  pageTitle: "1.5rem / 1.2 / 660"
+  sectionTitle: "1.25rem / 1.3 / 650"
+  body: "0.9375rem / 1.7 / 400"
+  ui: "0.875rem / 1.4 / 520"
+  annotation: "0.8125rem / 1.45 / 450"
+  micro: "0.75rem / 1.4 / 560"
+radii:
+  xs: "4px"
+  sm: "6px"
+  md: "8px"
+  lg: "12px"
 spacing:
   unit: "4px"
-  control-height: "36px"
-  touch-target: "44px"
-  navigation-width: "248px"
-  reading-width: "760px"
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.paper}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "0 13px"
-    height: "{spacing.control-height}"
-  button-secondary:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "0 13px"
-    height: "{spacing.control-height}"
-  input:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.control}"
-    padding: "0 10px"
-    height: "{spacing.control-height}"
-  navigation-item:
-    backgroundColor: "{colors.primary-soft}"
-    textColor: "{colors.primary}"
-    typography: "{typography.label}"
-    rounded: "{rounded.control}"
-    padding: "0 9px"
-    height: "38px"
-  card:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.surface}"
-    padding: "16px"
+  controlHeight: "36px"
+  compactControlHeight: "28px"
+  touchTarget: "44px"
+  headerHeight: "56px"
+  sidebarWidth: "248px"
+  readingWidth: "752px"
+  shellMaxWidth: "1440px"
+motion:
+  fast: "120ms"
+  normal: "160ms"
+  slow: "220ms"
 ---
 
-# Design System: A3S UI
+# A3S UI Design System
 
-## Overview
+## 1. Direction
 
-**Creative North Star: "The Clear Workbench"**
+### Creative north star: Focused Intelligence
 
-A3S UI is a task-centered work surface. It gives durable context a quiet fixed home, lets the current task occupy an open canvas, and raises only the controls that need immediate attention. The system feels calm, exact, and familiar under long sessions; hierarchy comes from position, whitespace, type, and one-pixel boundaries rather than decorative containers.
+A3S UI is a quiet, exact surface for intelligent work. It combines the restraint of a professional developer tool with the clarity of an editorial document. The interface starts with white or near-black space, establishes hierarchy with type and alignment, and introduces color only for identity, focus, state, or a deliberate moment of emphasis.
 
-The visual language is original to A3S: cool neutral surfaces, a deliberately scarce A3S blue, Geist typography, and semantic status colors used only when state matters. It does not use promotional modules, mascots, ornamental gradients, or a green product palette. Application patterns preserve semantic HTML, native controls, and small idempotent JavaScript controllers.
+The visual direction is grounded in the pinned public reference and its v5.29.3 source, while the result remains an A3S product. Preserve the official A3S OS logo, semantic HTML API, framework independence, product vocabulary, and blue-to-violet brand relationship. Do not copy reference branding, mascots, product names, or React-specific DOM.
 
-**Key Characteristics:**
+The system must feel recognizably related to the reference through mechanics that users can perceive:
 
-- Fixed task context beside an open primary canvas.
-- One elevated input surface; most content remains flat.
-- Cool daylight neutrals with blue reserved for action, selection, and focus.
-- Compact controls inside generous page and section spacing.
-- Complete interaction states across light, dark, narrow, RTL, and reduced-motion contexts.
+- A 56px, low-contrast top bar and a narrow persistent documentation rail.
+- Geist typography, strong compact headings, generous reading space, and short secondary copy.
+- White and near-black canvases with four tonal surface steps instead of gray card grids.
+- Small 4/6/8/12px radii, thin boundaries, 36px controls, and precise icon sizing.
+- Framed component demos with a quiet title bar, live preview, highlighted source, and copy action.
+- A restrained iris accent, subtle ambient color near landmark surfaces, and neutral primary controls.
+- Dense capability without visual noise: controls appear where the task needs them and recede at rest.
 
-## Colors
+### Product invariants
 
-The palette is a cool neutral field with one precise blue voice. Semantic colors report state; they never become page themes.
+Visual fidelity never removes the properties that make A3S UI usable as infrastructure:
 
-### Primary
+1. Public markup is semantic HTML with one stable root class.
+2. CSS owns appearance; a small idempotent controller owns only behavior that native HTML cannot provide.
+3. React and Vue adapters render the same contract and expose matching controller hooks.
+4. Light, dark, RTL, reduced motion, coarse pointers, 200% zoom, and 320px layouts are release targets.
+5. Documentation examples use the same package assets and runtime that consumers receive.
+6. Every stateful action has a complete path through pending, success, failure, cancellation, and recovery.
 
-- **A3S Signal Blue:** The only product accent. Use it for the primary action, selected navigation, links, progress, and focus. It should occupy no more than about 10% of a typical screen.
-- **Blue Mist:** The selected or user-authored surface. Use it for active navigation backgrounds, selected rows, and restrained user messages; never stack it behind another blue surface.
+## 2. Visual language
 
-### Secondary
+### 2.1 Color architecture
 
-- **Completion Green:** Successful execution, availability, and completed steps only.
-- **Attention Amber:** Pending approval or recoverable caution only.
-- **Blocking Red:** Destructive actions, invalid fields, and failed execution only.
+The neutral scale carries the interface. In light mode the canvas and raised surface are both white; spacing and borders decide whether they need separation. Muted, hover, and active surfaces advance through `#f7f7f8`, `#f4f4f5`, and `#eeeeef`. In dark mode the same roles advance through `#0d0d0f`, `#151518`, `#19191d`, `#202024`, and `#26262b`.
 
-### Neutral
+Text has three durable roles:
 
-- **Cool Canvas:** The application background. It separates the product from paper surfaces without appearing gray or heavy.
-- **Working Paper:** Composer, overlays, menus, inspector, and other surfaces that must stand above the canvas.
-- **Workbench Ink:** Primary copy and icons.
-- **Slate Annotation:** Secondary copy, timestamps, descriptions, and inactive navigation.
-- **Hairline:** Separators and structural borders. Prefer tonal contrast when a boundary is not needed.
+- Primary text names the task, value, or decision.
+- Secondary text explains it and must retain at least 4.5:1 contrast at body size.
+- Subtle text is reserved for timestamps, metadata, and nonessential annotations.
 
-**The Ten Percent Rule.** A3S Signal Blue is rare enough that its appearance always means action, selection, progress, or focus.
+Borders also have three roles:
 
-**The Semantic Reserve Rule.** Green, amber, and red may describe state but may not brand navigation, whole cards, or page regions.
+- Subtle borders separate regions that already differ by spacing or tone.
+- Default borders define controls, preview frames, tables, and overlays.
+- Strong borders indicate a selected edge or a boundary that must survive dense content.
 
-**The Dark Theme Rule.** Dark mode preserves the same hierarchy with a near-black canvas, charcoal paper, cool light text, and a lighter A3S blue; it does not invert every neutral mechanically.
+The A3S accent is an iris tone aligned with the official blue-to-violet logo. Use it for focus rings, current navigation, links, selection, and the primary action in a bounded region. A3S blue may appear in identity and information. Neither color may flood ordinary cards or whole application panes.
 
-## Typography
+Success, warning, and danger colors communicate outcomes only. Every semantic state also needs text, an icon, or structure. Never use color as the only status channel.
 
-**Display Font:** Geist Sans with the established CJK and system fallbacks
-**Body Font:** Geist Sans with the established CJK and system fallbacks
-**Label/Mono Font:** Geist Mono for code, paths, commands, measurements, and tabular data only
+### 2.2 Ambient color and gradients
 
-**Character:** Geist supplies a compact, neutral work voice without looking like browser defaults. Weight and spacing, rather than font switching, create hierarchy. Chinese and English share equivalent visual roles and do not depend on all-caps labels.
+Ambient color belongs to landmark surfaces: the documentation home, an empty start surface, a branded loading moment, or an optional showcase background. Use large, low-opacity violet, cyan, and rose radial fields that dissolve into the canvas. They must not reduce text contrast or sit behind dense controls.
 
-### Hierarchy
+A spectral gradient may appear in the official mark, a single showcase accent, or a deliberately branded action. It is not a default button fill, heading treatment, card border, or technical decoration. Product workspaces remain neutral so state colors keep their meaning.
 
-- **Display** (650, `clamp(1.75rem, 3vw, 2.5rem)`, 1.15): empty and start surfaces only; keep to one or two lines.
-- **Page headline** (650, 1.5rem, 1.25): catalog, project, automation, and settings titles.
-- **Section title** (650, 1rem, 1.35): content groups and inspector regions.
-- **Body** (400, 0.875rem, 1.55): task content and descriptions; readable content stays within 65–75 characters per line.
-- **UI label** (550–650, 0.8125rem, 1.25): controls, navigation, compact cards, and field labels.
-- **Annotation** (400–550, 0.75rem, 1.35): timestamps and secondary metadata; never use low contrast to simulate hierarchy.
-- **Micro** (500, 0.6875rem, 1.35): rare dense metadata and code labels, not primary controls.
+### 2.3 Typography
 
-**The Open Transcript Rule.** Assistant output reads as document content on the canvas. Do not put every response inside a bordered message card.
+Use Geist first, followed by high-quality CJK and system fallbacks. Use Geist Mono only for code, commands, file paths, shortcuts, identifiers, and measurements.
 
-**The Mono Means Data Rule.** Monospace communicates code, commands, paths, or measurement; it is never decorative technical styling.
+| Role          | Size and line height            | Weight | Use                                     |
+| ------------- | ------------------------------- | ------ | --------------------------------------- |
+| Display       | `clamp(32px, 4vw, 40px)` / 1.08 | 680    | Documentation and empty-state landmarks |
+| Page title    | 24px / 1.2                      | 660    | Product page identity                   |
+| Section title | 20px / 1.3                      | 650    | Major document and application sections |
+| Subsection    | 16px / 1.4                      | 620    | Bounded groups and inspector regions    |
+| Body          | 15px / 1.7                      | 400    | Documentation and long-form task output |
+| UI            | 14px / 1.4                      | 520    | Controls, navigation, tables, and menus |
+| Annotation    | 13px / 1.45                     | 450    | Metadata and descriptions               |
+| Micro         | 12px / 1.4                      | 560    | Rare dense labels and measurements      |
 
-## Layout
+Display tracking stays between `-0.035em` and `-0.02em`; UI labels use normal tracking. Headings receive more space above than below. Documentation body measure stays between 65 and 75 characters. Chinese and English use equivalent roles without forced uppercase. Section labels in a navigation rail may use uppercase English only when they are genuinely metadata rather than the primary name.
 
-The spatial system uses a 4px base rhythm and three scales: 4–8px inside tight controls, 12–16px inside components, and 24–40px between page regions. Headings receive more space above than below. Desktop task applications use a fixed 248px navigation region, a flexible main canvas, and an optional 320–380px inspector. Primary task content is centered within a maximum 760px reading column; catalogs may expand to a 1200–1280px content region.
+### 2.4 Spacing and layout
 
-The application shell fills its bounded host with `min-height: 100dvh` only when it owns the viewport. Navigation and inspectors scroll independently from the task transcript. The composer follows the transcript in DOM order and may become sticky at the bottom of the main region. Start surfaces place one large composer near the visual center with substantial empty canvas around it.
+Use a 4px base. Common internal gaps are 4, 6, 8, 12, and 16px. Region gaps are 24, 32, 48, 64, and 96px. Do not invent intermediate values without a measured layout need.
 
-At 900px and below, inspectors become contained overlays. At 768px and below, primary navigation becomes an inert off-canvas drawer when closed. At 520px and below, the header exposes only task identity and essential actions, inspectors open as bottom drawers, the composer uses the full available width, and controls maintain 44px hit targets. No breakpoint may change meaningful reading or keyboard order, and no public pattern may create document-level horizontal overflow.
+Product controls are 36px high by default and 28px when explicitly compact. Every coarse-pointer target is at least 44px even when the visible control is smaller. Page padding is 16px on phones, 24px on tablets, and 32–48px on desktop.
 
-RTL uses logical properties throughout. Navigation and inspectors exchange physical sides naturally; only directional icons flip. Dense strings, long paths, German labels, Chinese copy, 200% zoom, and a 320px viewport are required stress cases.
+Documentation uses a maximum 1440px shell, a 248px sidebar, a 752px reading column, and an optional 216px outline. Product applications use stable context at an edge, an open central task canvas, and an optional inspector. A pane must declare its scroll owner; document and transcript scrolling may not compete.
 
-**The Context-and-Canvas Rule.** Persistent context owns a stable edge; the current task owns the open center. Do not turn navigation, transcript, and inspector into equal floating cards.
+At 900px, secondary inspectors become overlays or drawers. At 768px, persistent navigation becomes a dismissible sheet and is inert while closed. At 520px, headers keep only identity and essential actions, controls expand to touch targets, and safe-area padding protects bottom actions.
 
-**The One Scroll Owner Rule.** Every application region declares its scroll owner. Avoid nested transcript and page scrolling.
+### 2.5 Shape, boundaries, and depth
 
-## Elevation & Depth
+Use 4px for tiny internal controls, 6px for buttons and fields, 8px for ordinary surfaces, and 12px for overlays and major preview frames. Pills are reserved for status, compact filters, switch tracks, and circular actions.
 
-The system is flat by default. Canvas, navigation, transcript, catalogs, and setting rows use tonal layers or one-pixel hairlines. Elevation is structural and limited to the composer, menus, command panels, dialogs, drawers, toasts, and overlay inspectors.
+Static layout surfaces are flat. A component earns a shadow only when it floats above content or remains anchored while content passes underneath it.
 
-### Shadow Vocabulary
+- Control shadow: `0 1px 2px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 3%)`.
+- Floating panel shadow: `0 8px 16px -4px rgb(0 0 0 / 20%)`.
+- Dialog shadow: `0 20px 20px -8px rgb(0 0 0 / 24%)`.
+- Dark mode increases shadow opacity instead of adding bright borders.
 
-- **Control:** no shadow at rest; border and tone define the control.
-- **Composer:** a low ambient shadow with downward offset, used only when the composer is docked or floating over scrolling content.
-- **Overlay:** a medium ambient shadow for menus, popovers, command panels, and drawers.
-- **Dialog:** the strongest bounded shadow in the system, paired with a neutral scrim.
+Avoid a visible border plus a generic shadow on the same edge. Preview frames may use a default border and a nearly imperceptible downward shadow because they represent an embedded surface.
 
-**The Earned Elevation Rule.** A surface receives shadow only when it floats above content or must remain perceptually anchored while the content scrolls beneath it.
+### 2.6 Iconography
 
-**The Single Boundary Rule.** Use a border or a broad shadow to express one edge. Do not combine a visible card border with a generic shadow by default.
+Use a coherent outline icon set with 1.75–2px strokes, round joins, and optical sizes of 14, 16, 18, or 20px. The official A3S OS logo is the only site and product mark. Do not substitute emoji, Unicode glyphs, or third-party product logos for interface icons. Provider logos remain host-owned assets rendered through the generic Icon or Avatar contract.
 
-Motion lasts 120–180ms for local feedback and up to 220ms for contained drawers. Use transform, opacity, and clip-path; preserve the final state with motion removed. Pressed controls may translate by 1px. Cards do not hop upward on hover.
+## 3. Interaction language
 
-## Shapes
+### 3.1 Motion
 
-The radius system has three primary roles: gently curved controls (6px), stable surfaces (10px), and elevated or major surfaces (14px). Small status dots, switch tracks, avatars, and circular icon actions may be fully round because their geometry carries meaning. Tags and ordinary buttons do not become pills by default.
+Local feedback lasts 120–160ms. Menus, popovers, and contained sheets may take up to 220ms. Use exponential ease-out and begin from a usable visible state. Motion explains origin, continuity, or completion; it does not make static cards hover upward.
 
-Borders are one pixel. Iconography uses a consistent 1.75–2px outline with rounded joins, normally 16–20px inside a 36px control or 44px hit area. Avoid emoji and Unicode symbols as interface icons. Directional glyphs mirror in RTL; object glyphs do not.
+Reduced motion removes travel, blur animation, and looping decoration while preserving state changes. Streaming and loading states must still be understandable with all animation disabled.
 
-**The Radius Follows Hierarchy Rule.** Inner controls are never rounder than the surface containing them unless the control is explicitly circular.
+### 3.2 Focus and keyboard
 
-## Components
+Every operable element receives a visible 2px accent outline with a 2–3px offset. Compound controls use `:focus-within` without suppressing the focused descendant. Roving-tabindex components support Home, End, and orientation-aware arrows. Escape closes only the topmost dismissible layer and returns focus to its trigger.
 
-### Buttons
+Native reading order is the keyboard order. Responsive CSS may change placement but never the meaningful DOM sequence. RTL reverses directional navigation and physical placement through logical properties; object icons do not mirror.
 
-- **Shape:** Gently curved rectangle (6px) with a 36px default height and 44px coarse-pointer target.
-- **Primary:** A3S Signal Blue with white text; reserve for the main action in the current region.
-- **Secondary:** Neutral tonal surface with clear ink; use for adjacent alternatives.
-- **Outline:** Hairline boundary on paper; use when surface distinction is necessary.
-- **Ghost / text:** No resting container; use for navigation utilities and low-priority actions.
-- **Hover / focus / active:** Shift tone on hover, use a visible blue focus ring, and translate 1px on press. Never remove focus in favor of hover.
-- **Disabled / loading:** Preserve label width and purpose. Disabled state lowers emphasis while maintaining readable text; loading replaces only the leading icon or adds inline status without changing layout.
+### 3.3 State and recovery
 
-### Chips
+Each component implements only the states its job can reach, but it implements those states completely.
 
-- **Style:** Compact 28–32px segmented or filter controls with 6px corners. Tags are quiet annotations rather than miniature buttons.
-- **State:** Selected filters use Blue Mist plus blue ink or a subtle boundary. Unselected filters use transparent or neutral surfaces. Wrap or scroll intentionally; never squeeze labels.
+| Family         | Required states                                                |
+| -------------- | -------------------------------------------------------------- |
+| Actions        | default, hover, focus-visible, active, disabled, loading       |
+| Fields         | empty, populated, focus, invalid, disabled, read-only, loading |
+| Choice         | unchecked, checked, indeterminate when valid, focus, disabled  |
+| Navigation     | default, hover, current, expanded, collapsed, unavailable      |
+| Overlay        | closed, opening, open, loading, empty, error, closing          |
+| Collection     | ready, loading, empty, partial, error, selected, read-only     |
+| Task execution | queued, running, waiting, approval, success, cancelled, error  |
+| Remote surface | loading, offline, permission denied, retrying, recovered       |
 
-### Cards / Containers
+Errors name the problem and the recovery. Empty states explain what belongs in the region and offer an action only when one is valid. Loading preserves layout and does not erase user input. A rejected optimistic action restores the prior state and focus context.
 
-- **Corner Style:** Stable surface radius (10–14px).
-- **Background:** Working Paper or a deliberate pale category tint.
-- **Shadow Strategy:** Flat at rest. Interactive catalog cards shift border and tone, not vertical position.
-- **Border:** Hairline when separation is needed; omit when spacing and tone already define the group.
-- **Internal Padding:** 16–20px for catalog resources, 12–16px for compact project and automation rows.
-- **States:** Selected, installed, unavailable, loading, error, and empty states remain legible without depending on color alone.
+## 4. Component architecture
 
-### Inputs / Fields
+### 4.1 Public contract
 
-- **Style:** 36px control height, Working Paper or transparent background, hairline input boundary, 6px corners, and concise labels above or inline on stable setting rows.
-- **Focus:** Blue border plus a clearly visible outer ring; `:focus-visible` for individual controls and `:focus-within` for compound controls.
-- **Error / disabled:** Error includes a direct message and recovery; disabled controls keep their reason nearby. Placeholders meet body-text contrast requirements.
+Every public component has one canonical contract:
 
-### Navigation
+- A stable kebab-case slug and one root class.
+- A meaningful native root element whenever the platform provides one.
+- Documented parts expressed through semantic descendants or `data-*` attributes.
+- ARIA that describes actual behavior rather than compensating for the wrong element.
+- An idempotent controller only for composite interaction.
+- `before-*` cancelable events for host authorization and completed events for observation.
+- Snapshot and controlled-update methods for stateful controllers.
+- No hidden transport, persistence, permissions, routing, or business entities.
 
-- **Desktop:** Fixed 248px task navigation with product lockup, primary destinations, contextual task/project groups, and account/settings actions at the bottom.
-- **Rows:** 36–40px high with a 6px active tonal surface. Active state uses `aria-current` or `aria-pressed` plus visible blue or strong ink.
-- **Mobile:** Contained drawer with scrim, focus return, Escape dismissal, and `inert` while closed. A compact top bar replaces the permanently visible rail.
+React and Vue adapters are generated from the manifest. They must expose the same root, attributes, events, controller methods, and `use<Component>` hook when the component has behavior. Framework adapters must not invent props that cannot be expressed by the canonical DOM contract.
 
-### Task Composer
+### 4.2 Coverage decisions
 
-The composer is the most visually prominent control. It uses one paper surface, a multiline text area, a clear tool row, and exactly one submit action. Model, permission, and workspace menus are anchored overlays. Attachments and queued instructions stay inside the same root without introducing nested cards. Error, streaming, queued, disabled, and offline states preserve the input and explain the next action.
+The pinned reference catalog is an inventory, not a license to import unsuitable architecture. Every public reference page must appear exactly once in `LOBEUI_COVERAGE.md` under one of these decisions:
 
-### Task Transcript
+- **Direct**: the same durable job exists as an A3S component.
+- **Adapt**: the job exists, but its contract is redesigned for semantic HTML and A3S product needs.
+- **Compose**: existing primitives express the job; publish and test the composition instead of adding a duplicate root.
+- **Foundation**: the reference item is a token, provider, motion, typography, or localization capability.
+- **Brand substitute**: replace reference-specific identity with the official A3S asset and Brand Lockup contract.
+- **Host integration**: provider logos, comments, remote renderers, and other externally owned behavior remain host integrations with a documented slot.
 
-The transcript is a chronological document. User messages align to the inline end on Blue Mist; assistant messages align to the inline start on the canvas. System notices, execution evidence, approvals, citations, and artifacts are structured blocks within the corresponding turn. Do not make the whole transcript a live region; announce only bounded status updates.
+Coverage is incomplete when any reference document is missing, mapped to `TBD`, or points only to a visual placeholder. A Direct or Adapt mapping is complete only when source, package export, manifest entry, bilingual docs, React/Vue usage, relevant hook, and tests agree. A Compose or Host integration mapping requires a documented, tested example with an explicit ownership boundary.
 
-### Command Panel and Anchored Menus
+### 4.3 Primitive families
 
-Global search uses a centered command dialog with a search field, grouped results, recent items, keyboard hints, empty, loading, and error states. Filters, model choice, permission choice, and workspace selection use anchored menus sized to their content and constrained to the viewport. Escape closes the topmost layer and restores focus.
+#### Actions
 
-### Settings Center
+Buttons use neutral ink for the default primary treatment and the A3S accent when a region needs one unmistakable action. Filled, tonal, outlined, ghost, danger, link, icon-only, split, copy, and download actions share the same height, focus, loading, and disabled rules. Icon-only actions always have an accessible name.
 
-Settings use a wide native dialog with fixed secondary navigation and an independently scrolling content panel. Setting rows align labels, descriptions, controls, and validation on a stable grid. At narrow widths, navigation becomes a horizontally scrollable section list or a separate drawer before content becomes cramped.
+#### Fields and choice controls
 
-### Catalogs, Projects, and Automations
+Inputs use a white or raised surface, a default border, 6px radius, and concise labels. Focus increases border contrast and adds the accent ring. Compound fields align prefix, value, suffix, validation, and loading without nested borders. Date, shortcut, color, image, and emoji selection extend the same field grammar rather than inventing standalone visual worlds.
 
-Capability catalogs share one page skeleton: title, tab set, search, optional featured strip, category filters, result count, sort, and a resource grid. Card content changes by resource type without changing fundamental rhythm. Project pages combine existing project management with template-based creation. Automation pages cover template empty state, schedules, run history, execution status, and a full-page creation form.
+#### Navigation
 
-### State Matrix
+Navigation is quiet at rest. Current rows use the active tonal surface, stronger text, and `aria-current`; accent may appear as a small icon or focus signal. Tabs, segmented controls, side navigation, breadcrumbs, pagination, table of contents, and mobile tab bars share explicit current, disabled, overflow, and keyboard behavior.
 
-| Family | Required states |
-| --- | --- |
-| Actions | default, hover, focus-visible, active, disabled, loading |
-| Fields | empty, populated, focus, invalid, disabled, read-only, loading |
-| Choice controls | unchecked, checked, indeterminate where valid, focus, disabled |
-| Navigation | default, hover, current, expanded, collapsed, unavailable |
-| Overlays | closed, opening, open, empty, loading, error, closing |
-| Resources | default, hover, selected, installed, unavailable, loading, error |
-| Task execution | queued, running, waiting, approval, success, cancelled, error |
-| Surfaces | normal, empty, partial data, offline, permission denied |
+#### Overlays
 
-## Do's and Don'ts
+Menus, context menus, popovers, tooltips, drawers, floating panels, and dialogs share one layer stack, viewport collision rules, Escape semantics, focus restoration, and reduced-motion policy. A sheet is a responsive presentation of an existing task, not a new component job.
 
-### Do:
+#### Feedback
 
-- **Do** keep the task, its transcript, and its input in one continuous workspace.
-- **Do** use whitespace and stable regions before adding another container.
-- **Do** keep one obvious primary action per region and use blue consistently for it.
-- **Do** preserve semantic landmarks, native elements, logical properties, and predictable keyboard behavior.
-- **Do** document and test empty, loading, error, disabled, selected, open, narrow, dark, and RTL states.
-- **Do** let cards differ by content and status while sharing one catalog skeleton.
-- **Do** use exact A3S product language and real workflow-shaped example data.
+Alerts, toasts, badges, progress, skeletons, loading dots, empty states, and branded loading moments state what changed. Avoid decorative loading metaphors when a spinner, skeleton, or progress value communicates more clearly.
 
-### Don't:
+#### Content and media
 
-- **Don't** mention or imitate another product's brand, palette, copy, mascot, promotional modules, or illustrations.
-- **Don't** wrap assistant messages, settings sections, page regions, and cards inside progressively larger cards.
-- **Don't** use green, purple, gradients, or glow as a general technology aesthetic.
-- **Don't** add shadow to static containers or lift cards on hover.
-- **Don't** use pills for ordinary buttons, tags, tabs, and navigation rows.
-- **Don't** hide selection, error, approval, or focus state behind color alone.
-- **Don't** let compact desktop controls fall below 44px hit targets on coarse pointers.
-- **Don't** make mobile a scaled-down desktop; close navigation, collapse inspectors, and keep the composer usable above the safe area.
+Cards, blocks, lists, tables, diffs, code, Markdown, diagrams, images, video, file icons, snippets, and document callouts use the same neutral surfaces and typography. Code is left-to-right, syntax highlighted, scrollable, and paired with a copy action when users are expected to reuse it.
+
+#### Layout and collections
+
+Flex and grid are layout utilities, not semantic components. App Shell, Split Pane, Data Grid, Sortable List, File Explorer, Catalog, Settings Layout, and other task-scale contracts own real interaction boundaries. Collections expose loading, empty, partial, error, selection, bulk action, filter, and recovery states without replacing host data ownership.
+
+#### Harness
+
+Harness components support authoring, conversation, execution, review, evidence, files, terminal output, and device preview. They are provider-neutral. The host owns models, transport, authorization, persistence, remote execution, and trusted results.
+
+## 5. Key component specifications
+
+### Component preview
+
+A preview is evidence, not decoration. It has one 12px frame, a compact title bar, a live stage, and a source region. The toolbar includes only meaningful controls: viewport, appearance, direction, source, copy, and optional external open. Source uses real syntax highlighting and a working copy action. Preview height adapts to content and names loading or runtime failure.
+
+### Button and Action Icon
+
+Default height is 36px, compact height is 28px, horizontal padding is 12–14px, and icon gaps are 6–8px. Pressed state moves no more than 1px. Loading preserves label width. Action Icon is the icon-only Button composition, not a separate behavioral contract.
+
+### Form and Field
+
+Form owns grouping, submission state, and summary-level validation. Field owns label, description, control, and local error association. Form Modal composes Dialog and Form. Inline editing exposes explicit edit, save, cancel, pending, and error states and never commits merely because focus moved.
+
+### Menus and command surfaces
+
+Dropdown Menu and Context Menu share menu semantics; Command adds search and grouped results. Editor Slash Menu is a Command composition anchored to an editor caret. Menus support disabled and checked items, nested paths, typeahead, collision handling, and focus return.
+
+### Chat and task transcript
+
+The transcript is a chronological list, not a stack of generic cards. User content may use a quiet tinted bubble; assistant content reads on the canvas. Actions appear on focus or hover without becoming inaccessible to touch. Editing, regeneration, citations, attachments, tool calls, and status stay inside the owning turn. Back to Bottom appears only after the reading position leaves the live edge and announces unread additions without forcing scroll.
+
+### Composer
+
+Composer combines a growing text area, context, attachments, tools, status, queue, and one send/stop action in a single 12px surface. It preserves drafts through loading, offline, rejection, and responsive transitions. Mobile uses safe-area padding and keeps the primary action reachable above the virtual keyboard.
+
+### Code, Markdown, and preview content
+
+Highlighter and Snippet use the code surface, Geist Mono, theme-aware syntax tokens, copy feedback, and horizontal scrolling. Markdown establishes safe typography and delegates diagrams, math, raw HTML, media, and remote links to explicit host renderers. HTML Preview is sandboxed and belongs in Device Simulator when viewport controls or remote navigation are required.
+
+### Data Grid and Sortable List
+
+Data Grid owns navigation, sort intent, selection, and local presentation state; the host owns data queries and mutations. Sortable List provides pointer and keyboard reordering, a visible destination, cancel, and a completed reorder event. Both preserve selection and scroll context after rejected remote actions.
+
+### Brand and provider identity
+
+Brand Lockup renders the official A3S OS logo, product name, and optional description. Monochrome and compact treatments derive from the same asset contract. Third-party provider marks are host-supplied images or SVGs in Icon, Avatar, or Brand Lockup slots; A3S UI does not redistribute unrelated brand libraries.
+
+## 6. Documentation system
+
+Documentation and product experience are separate information architectures.
+
+- `site/docs/` contains guides, foundations, component contracts, Harness documentation, and composition patterns only.
+- Playground is a standalone custom route under `site/pages/`, linked from top navigation and absent from documentation sidebars, section indexes, search grouping, and previous/next ordering.
+- Simplified Chinese is the default locale; English mirrors every public contract.
+- Version switching retains the same route when that version contains it and falls back transparently when it does not.
+
+Every component document follows this order:
+
+1. Name and one-sentence job.
+2. Install or import path.
+3. Live default example.
+4. Variants that correspond to real decisions.
+5. Loading, empty, error, disabled, selected, narrow, dark, and RTL states where applicable.
+6. Native HTML contract.
+7. JavaScript controller and events when present.
+8. React usage and hook.
+9. Vue usage and hook.
+10. Accessibility and ownership boundaries.
+
+Do not publish an inert control, fabricated API, or visual-only state. Code examples must be highlighted and copyable.
+
+## 7. Accessibility and resilience
+
+Release checks include WCAG AA contrast, keyboard completion, screen-reader names and relationships, focus containment and restoration, touch targets, reduced motion, RTL, 200% zoom, 320px width, long German labels, Chinese copy, long paths, empty data, partial data, offline state, and permission denial.
+
+Use `aria-live` only for bounded status changes. Do not make whole transcripts, tables, or application shells live regions. Hidden navigation and overlays are inert. Scroll shadows are supplemental and never the only indication that content continues.
+
+## 8. Delivery contract
+
+A component or composition is finished only when all applicable evidence exists:
+
+- Authored CSS and optional controller source.
+- Package build inclusion and stable export.
+- Manifest definition with selector, parts, actions, states, methods, hooks, and events.
+- Generated React and Vue adapters with equivalent hooks and types.
+- Aligned Chinese and English documentation.
+- Semantic, interaction, visual, dark, RTL, responsive, and accessibility tests.
+- Inclusion in the standalone Playground when it participates in an application composition.
+- No stale generated files edited by hand.
+
+The release audit compares the pinned 160-page reference inventory with `LOBEUI_COVERAGE.md`, then compares every A3S mapping with source, exports, manifest, docs, adapters, and tests. Strict evidence uses one of six explicit kinds: component, composition, foundation, brand, integration, or standalone route. `check:framework-docs` verifies React and Vue parity, while `check:boundaries` verifies applicable hooks, ownership, official identity, prohibited public references, and the separate Playground information architecture. Passing a narrow build does not prove full coverage.
+
+## 9. Do and do not
+
+### Do
+
+- Use neutral space, precise type, and alignment before adding a container.
+- Keep one obvious primary action in each bounded task region.
+- Use the A3S iris accent for focus, current state, links, and deliberate action.
+- Keep controls compact while preserving 44px coarse-pointer targets.
+- Give every mutation a complete state and recovery cycle.
+- Make framework adapters thin reflections of the semantic contract.
+- Test real content and failure states in every supported layout direction and theme.
+
+### Do not
+
+- Do not copy another product's logo, mascot, name, provider assumptions, or React DOM.
+- Do not use a grid of identical cards as the default page structure.
+- Do not nest cards to create hierarchy that spacing and typography should provide.
+- Do not use gradients, glow, glass, or monospace as generic technology decoration.
+- Do not make every button a pill or every surface float.
+- Do not hide focus, selection, validation, or recovery behind color alone.
+- Do not put Playground inside documentation chapters or sidebars.
+- Do not call a mapping complete until its public contract and evidence agree.

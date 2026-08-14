@@ -90,3 +90,32 @@
 ## Accessibility
 
 窗格作为编辑器补充内容时使用 `<aside>`，并通过标题提供稳定名称。关闭后应把焦点返回打开窗格的控件。
+
+## React
+
+```tsx
+import { TaskPane } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <TaskPane aria-label="Task Pane">组件内容</TaskPane>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { TaskPane } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <TaskPane aria-label="Task Pane">组件内容</TaskPane>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

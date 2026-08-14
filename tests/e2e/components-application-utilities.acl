@@ -616,7 +616,7 @@ suite "a3s-ui-application-and-utilities" {
     }
 
     scenario "file-explorer" {
-        name = "File Explorer composes tree selection with contextual file actions"
+        name = "File Explorer preserves selection through filtering and recovers an invalid inline rename"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-explorer.html" }
@@ -624,12 +624,22 @@ suite "a3s-ui-application-and-utilities" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "explorer-ready" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer[data-state=ready]") }
         expect "tree-ready" { visible = css(".a3s-preview[data-preview-component=file-explorer] .tree[data-tree-initialized=true]") }
+        fill "filter-status-files" { target = css("#file-explorer-demo-en [data-file-explorer-search]") value = "status" }
+        expect "filter-result-visible" { visible = css("#file-explorer-demo-en[data-filter=results] [data-value='src/components/Status.tsx']:not([hidden])") }
+        fill "clear-status-filter" { target = css("#file-explorer-demo-en [data-file-explorer-search]") value = "" }
+        expect "collapsed-branch-restored" { visible = css("#file-explorer-demo-en [data-value=tests][aria-expanded=false]:not([hidden])") }
         click "select-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'] > [data-tree-row]") }
         expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]") }
         focus "focus-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']") }
         press "open-file-menu" { key = "Shift+F10" }
         expect "file-menu-open" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-context-content][aria-hidden=false]") }
-        press "close-file-menu" { key = "Escape" }
+        click "rename-status-file" { target = css("#file-explorer-demo-en [data-context-content] [data-value=rename]") }
+        fill "enter-invalid-name" { target = css("#file-explorer-demo-en [data-file-editor]") value = "bad/name.tsx" }
+        press "reject-invalid-name" { key = "Enter" }
+        expect "rename-error-visible" { visible = css("#file-explorer-demo-en [data-rename-state=error] [data-file-editor][aria-invalid=true]") }
+        fill "recover-valid-name" { target = css("#file-explorer-demo-en [data-file-editor]") value = "Health.tsx" }
+        press "commit-valid-name" { key = "Enter" }
+        expect "renamed-file-visible" { text = "Health.tsx" }
         expect "file-focus-restored" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']:focus") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-explorer-visible" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer") }

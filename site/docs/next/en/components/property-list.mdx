@@ -89,3 +89,32 @@ Use the default grid for compact evidence. Use `data-layout="rows"` when values 
 ## Accessibility
 
 Keep the native `<dl>`, `<dt>`, and `<dd>` relationship. Do not replace it with a visual grid of generic elements. Values may wrap; do not truncate authoritative identifiers unless the complete value is available elsewhere.
+
+## React
+
+```tsx
+import { PropertyList } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <PropertyList><div><dt>Name</dt><dd>Component content</dd></div></PropertyList>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { PropertyList } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <PropertyList><div><dt>Name</dt><dd>Component content</dd></div></PropertyList>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

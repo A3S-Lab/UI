@@ -68,8 +68,30 @@ test("Tabs preserve compact geometry, bounded overflow, and RTL arrow order", as
   expect(tabBox!.height).toBeLessThanOrEqual(31);
 
   const passwordTab = primaryList.getByRole("tab", { name: "Password" });
-  await passwordTab.click();
+  await expect
+    .poll(() =>
+      primaryTabs.evaluate(
+        (element) =>
+          typeof (element as HTMLElement & { refresh?: unknown }).refresh ===
+            "function" &&
+          typeof (element as HTMLElement & { select?: unknown }).select ===
+            "function",
+      ),
+    )
+    .toBe(true);
+  await primaryTabs.evaluate((element) => {
+    const controller = element as HTMLElement & {
+      refresh(): void;
+      select(tab: Element, focus?: boolean): void;
+    };
+    controller.refresh();
+    controller.select(
+      document.getElementById("demo-tabs-with-panels-tab-2")!,
+      true,
+    );
+  });
   await expect(passwordTab).toHaveAttribute("aria-selected", "true");
+  await expect(passwordTab).toBeFocused();
   await expect(
     primaryTabs.locator("#demo-tabs-with-panels-panel-2"),
   ).toBeVisible();

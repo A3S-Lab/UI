@@ -47,3 +47,35 @@ Below 900px the inspector leaves the grid and opens only when `data-inspector="o
 ## Accessibility
 
 Name the transcript, inspector, and controls. Return focus to the inspector trigger when it closes. Announce bounded execution status changes rather than making the whole transcript live.
+
+## React
+
+```tsx
+import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTaskWorkspace();
+  return (
+    <TaskWorkspace ref={control.ref} aria-label="Task Workspace">Component content</TaskWorkspace>
+  );
+}
+```
+
+`useTaskWorkspace` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/vue";
+
+const control = useTaskWorkspace();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <TaskWorkspace ref="componentRef" aria-label="Task Workspace">Component content</TaskWorkspace>
+</template>
+```
+
+`useTaskWorkspace` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

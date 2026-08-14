@@ -35,3 +35,35 @@
 ## 无障碍
 
 为建议导航和输入器提供名称。DOM 顺序中建议位于输入器之前。窄屏改为起始边对齐，并保留 44 像素粗指针目标。
+
+## React
+
+```tsx
+import { TaskStart, useTaskStart } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTaskStart();
+  return (
+    <TaskStart ref={control.ref} aria-label="Task Start">组件内容</TaskStart>
+  );
+}
+```
+
+`useTaskStart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { TaskStart, useTaskStart } from "@a3s-lab/ui/vue";
+
+const control = useTaskStart();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <TaskStart ref="componentRef" aria-label="Task Start">组件内容</TaskStart>
+</template>
+```
+
+`useTaskStart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -307,3 +307,35 @@ Accordion spacing uses logical properties. Set `dir="rtl"` on the accordion or a
   </details>
 </section>
 </Preview>
+
+## React
+
+```tsx
+import { Accordion, useAccordion } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAccordion();
+  return (
+    <Accordion ref={control.ref} aria-label="Accordion">Component content</Accordion>
+  );
+}
+```
+
+`useAccordion` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Accordion, useAccordion } from "@a3s-lab/ui/vue";
+
+const control = useAccordion();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Accordion ref="componentRef" aria-label="Accordion">Component content</Accordion>
+</template>
+```
+
+`useAccordion` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

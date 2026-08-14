@@ -194,3 +194,32 @@ Use Card, Tree, Code Editor, Field, Property List, Status Badge, Timeline, and L
 ## Accessibility
 
 Name the workbench and every navigation or live region. Keep one page-level heading outside or inside the primary canvas, use landmarks that match the content, and preserve a logical DOM order: context, primary work, inspector, then activity. Responsive reflow must not change keyboard order. The host application owns focus after navigation, streaming announcements, validation, and destructive-action confirmation.
+
+## React
+
+```tsx
+import { AgentWorkbench } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <AgentWorkbench aria-label="Agent Workbench">Component content</AgentWorkbench>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { AgentWorkbench } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <AgentWorkbench aria-label="Agent Workbench">Component content</AgentWorkbench>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

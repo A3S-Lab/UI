@@ -100,6 +100,10 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
   </dd>
 </dl>
 
+### JavaScript API
+
+Alert Dialog preserves the native `HTMLDialogElement` contract. React `useAlertDialog` and the equivalent Vue composable can call `showModal()` and `close(returnValue)`; `cancel` and `close` remain native DOM events.
+
 ## Examples
 
 ### Basic
@@ -206,3 +210,35 @@ Alert Dialog supports document direction. Set `dir="rtl"` on the dialog or a par
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAlertDialog();
+  return (
+    <AlertDialog ref={control.ref} aria-label="Alert Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></AlertDialog>
+  );
+}
+```
+
+`useAlertDialog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/vue";
+
+const control = useAlertDialog();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AlertDialog ref="componentRef" aria-label="Alert Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></AlertDialog>
+</template>
+```
+
+`useAlertDialog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

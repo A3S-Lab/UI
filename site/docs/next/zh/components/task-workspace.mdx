@@ -47,3 +47,35 @@
 ## 无障碍
 
 为任务记录、检查器和控件提供名称。关闭检查器时把焦点还给触发器。只播报有边界的执行状态变化，不把整段任务记录设为实时区域。
+
+## React
+
+```tsx
+import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTaskWorkspace();
+  return (
+    <TaskWorkspace ref={control.ref} aria-label="Task Workspace">组件内容</TaskWorkspace>
+  );
+}
+```
+
+`useTaskWorkspace` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/vue";
+
+const control = useTaskWorkspace();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <TaskWorkspace ref="componentRef" aria-label="Task Workspace">组件内容</TaskWorkspace>
+</template>
+```
+
+`useTaskWorkspace` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

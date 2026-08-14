@@ -1,0 +1,81 @@
+/* Table of Contents */
+@layer components {
+  .table-of-contents {
+    min-inline-size: 0;
+    padding-inline-start: 0.75rem;
+    border-inline-start: 1px solid var(--border);
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .table-of-contents :is(ol, ul) {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.125rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .table-of-contents :is(ol, ul) :is(ol, ul) {
+    margin-block-start: 0.125rem;
+    padding-inline-start: 0.75rem;
+  }
+
+  .table-of-contents a {
+    display: block;
+    min-inline-size: 0;
+    padding: 0.3125rem 0.5rem;
+    border-radius: 0.375rem;
+    color: inherit;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  .table-of-contents a:hover {
+    background: var(--accent);
+    color: var(--foreground);
+  }
+
+  .table-of-contents a:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .table-of-contents a[aria-current="location"] {
+    background: var(--muted);
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  @media (max-width: 56.25rem) {
+    .table-of-contents {
+      padding: 0;
+      border-inline-start: 0;
+    }
+
+    .table-of-contents > :is(ol, ul) {
+      display: flex;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+    }
+
+    .table-of-contents > :is(ol, ul) > li {
+      flex: 0 0 auto;
+    }
+
+    .table-of-contents > :is(ol, ul) :is(ol, ul) {
+      display: none;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .table-of-contents a {
+      min-block-size: 2.75rem;
+      display: flex;
+      align-items: center;
+    }
+  }
+}

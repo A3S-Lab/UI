@@ -1,0 +1,68 @@
+# Code Diff
+
+Presents code changes as readable, scrollable lines so additions, removals, and context remain distinguishable without relying on color alone.
+
+<Preview class="w-full">
+<figure class="code-diff"><figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre></figure>
+</Preview>
+
+## Usage
+
+```html
+<figure class="code-diff">
+  <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+</figure>
+```
+
+## React
+
+```tsx
+import { CodeDiff } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <CodeDiff>
+      <figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+    </CodeDiff>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { CodeDiff } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <CodeDiff>
+    <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+  </CodeDiff>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.code-diff` |
+| Native root | `<figure>` |
+| States | `ready`, `loading`, `empty`, `error` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+Code Diff owns reading presentation. It does not generate patches, inspect repositories, or decide whether a change is trusted. Compose it with review and approval surfaces for full workflows.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Keep a visible plus, minus, or textual meaning on every changed line. Code remains left-to-right, keyboard focusable, and horizontally scrollable.

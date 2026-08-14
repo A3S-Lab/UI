@@ -86,3 +86,32 @@
 ## 可访问性
 
 为有序列表提供名称，并用文字表达每个阶段的名称和状态。只给一个当前阶段设置 `aria-current="step"`。横向序列可能溢出时添加 `tabindex="0"`，让键盘用户可以滚动；A3S 样式会提供清晰的焦点环。列表本身已经表达顺序，因此装饰性的数字或图标标记可以对辅助技术隐藏。不要只依赖连接线或标记颜色传达状态。
+
+## React
+
+```tsx
+import { Stepper } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Stepper aria-label="Stepper"><li>组件内容</li></Stepper>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Stepper } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Stepper aria-label="Stepper"><li>组件内容</li></Stepper>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

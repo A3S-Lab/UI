@@ -1,0 +1,261 @@
+suite "a3s-ui-expanded-contracts" {
+    version = 1
+
+    scenario "back-to-bottom" {
+        name = "Back to Bottom exposes unread context and a reachable return action"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/back-to-bottom.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "updates-visible" { visible = css(".a3s-preview[data-preview-component=back-to-bottom] .back-to-bottom[data-state=unread] [data-unread-count]") }
+        click "return-to-latest" { target = css(".a3s-preview[data-preview-component=back-to-bottom] .back-to-bottom") }
+        expect "return-action-stays-available" { visible = css(".a3s-preview[data-preview-component=back-to-bottom] .back-to-bottom[data-always-visible]") }
+    }
+
+    scenario "code-diff" {
+        name = "Code Diff preserves explicit addition and removal markers"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-diff.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "addition-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='+']") }
+        expect "removal-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='-']") }
+    }
+
+    scenario "collapsible" {
+        name = "Collapsible keeps native keyboard disclosure behavior"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/collapsible.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "close-details" { target = css(".a3s-preview[data-preview-component=collapsible] summary") }
+        expect "closed-root-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible:not([open])") }
+        press "reopen-details" { key = "Enter" }
+        expect "content-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible[open] [data-collapsible-content]") }
+    }
+
+    scenario "color-swatches" {
+        name = "Color Swatches changes a named native choice"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/color-swatches.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        check "choose-blue" { target = label("Blue") }
+        expect "blue-selected" { visible = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label=Blue]:checked") }
+    }
+
+    scenario "copy-button" {
+        name = "Copy Button reports the result in its live feedback"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/copy-button.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "copy-command" { target = role("button", "Copy command") }
+        wait "copy-result" { text = "Copied" }
+        expect "copied-state" { visible = css(".a3s-preview[data-preview-component=copy-button] .copy-button[data-state=copied]") }
+    }
+
+    scenario "date-picker" {
+        name = "Date Picker accepts an ISO calendar date through the native input"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/date-picker.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        fill "set-target-date" { target = css(".a3s-preview[data-preview-component=date-picker] input[type=date]") value = "2026-09-01" }
+        expect "date-input-visible" { visible = css(".a3s-preview[data-preview-component=date-picker] input.date-picker") }
+    }
+
+    scenario "editable-text" {
+        name = "Editable Text commits a keyboard edit and returns to display mode"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/editable-text.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "begin-edit" { target = role("button", "Edit") }
+        fill "change-title" { target = label("Title") value = "Release plan" }
+        press "commit-title" { key = "Enter" }
+        expect "title-committed" { text = "Release plan" }
+        expect "display-mode" { visible = css(".a3s-preview[data-preview-component=editable-text] .editable-text[data-state=display]") }
+    }
+
+    scenario "emoji-picker" {
+        name = "Emoji Picker filters and selects a named result"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/emoji-picker.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        fill "filter-reactions" { target = label("Search reactions") value = "celebrate" }
+        click "choose-celebrate" { target = role("button", "Celebrate") }
+        expect "celebrate-selected" { visible = css(".a3s-preview[data-preview-component=emoji-picker] [data-emoji-value='🎉'][aria-selected=true]") }
+    }
+
+    scenario "file-type-icon" {
+        name = "File Type Icon keeps a textual type cue"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-type-icon.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "typescript-cue-visible" { visible = css(".a3s-preview[data-preview-component=file-type-icon] .file-type-icon[aria-label='TypeScript file'] [data-file-extension]") }
+    }
+
+    scenario "floating-panel" {
+        name = "Floating Panel exposes a docked inspector and explicit close action"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/floating-panel.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "panel-open" { visible = css(".a3s-preview[data-preview-component=floating-panel] .floating-panel[data-state=open]") }
+        focus "focus-close" { target = css(".a3s-preview[data-preview-component=floating-panel] [data-floating-panel-action=close]") }
+        expect "close-focused" { visible = css(".a3s-preview[data-preview-component=floating-panel] [data-floating-panel-action=close]:focus") }
+    }
+
+    scenario "form" {
+        name = "Form keeps labeled input and submission in one task boundary"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/form.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        fill "rename-workspace" { target = label("Workspace name") value = "Evaluation" }
+        focus "focus-submit" { target = css(".a3s-preview[data-preview-component=form] form.form button[type=submit]") }
+        expect "submit-focused" { visible = css(".a3s-preview[data-preview-component=form] form.form button[type=submit]:focus") }
+    }
+
+    scenario "highlighter" {
+        name = "Highlighter keeps code focusable and marked text explicit"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/highlighter.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        focus "focus-code" { target = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter") }
+        expect "marked-code-visible" { visible = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter:focus mark") }
+    }
+
+    scenario "hotkey-input" {
+        name = "Hotkey Input records a normalized chord without trapping Tab"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/hotkey-input.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        focus "start-recording" { target = css(".a3s-preview[data-preview-component=hotkey-input] .hotkey-input input") }
+        press "record-chord" { key = "Control+Shift+P" }
+        expect "chord-recorded" { visible = css(".a3s-preview[data-preview-component=hotkey-input] .hotkey-input[data-hotkey-value='Control+Shift+P']") }
+        press "leave-control" { key = "Tab" }
+    }
+
+    scenario "icon" {
+        name = "Icon exposes a named graphic without a wrapper control"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/icon.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "named-icon-visible" { visible = css(".a3s-preview[data-preview-component=icon] .icon[role=img][aria-label=Verified] svg") }
+    }
+
+    scenario "image" {
+        name = "Image reserves geometry and supplies alternative text"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "image-visible" { visible = css(".a3s-preview[data-preview-component=image] figure.image[data-state=ready] img[alt]") }
+        expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=image] figure.image figcaption") }
+    }
+
+    scenario "image-select" {
+        name = "Image Select changes a named native option"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image-select.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        check "choose-dark" { target = label("Dark surface") }
+        expect "dark-selected" { visible = css(".a3s-preview[data-preview-component=image-select] #cover-dark:checked") }
+    }
+
+    scenario "image-viewer" {
+        name = "Image Viewer offers button-driven zoom inside the bounded dialog"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image-viewer.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "zoom-in" { target = role("button", "Zoom in") }
+        expect "zoom-applied" { visible = css(".a3s-preview[data-preview-component=image-viewer] dialog.image-viewer[style*='--image-viewer-zoom: 1.25']") }
+        screenshot "viewer-zoomed" { path = "components/image-viewer-zoomed.png" }
+    }
+
+    scenario "markdown-surface" {
+        name = "Markdown Surface keeps headings, code, and callouts in one reading flow"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/markdown-surface.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "heading-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface h2") }
+        expect "code-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre code") }
+        expect "callout-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface blockquote") }
+    }
+
+    scenario "snippet" {
+        name = "Snippet keeps a short command beside its copy action"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/snippet.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "command-visible" { visible = css(".a3s-preview[data-preview-component=snippet] .snippet > code") }
+        click "copy-snippet" { target = role("button", "Copy") }
+        expect "copy-action-visible" { visible = css(".a3s-preview[data-preview-component=snippet] .snippet .copy-button") }
+    }
+
+    scenario "sortable-list" {
+        name = "Sortable List supports keyboard pickup, move, and drop"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sortable-list.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        focus "focus-research" { target = css(".a3s-preview[data-preview-component=sortable-list] [data-sortable-id=research] [data-sortable-handle]") }
+        press "pick-up" { key = "Space" }
+        press "move-down" { key = "ArrowDown" }
+        press "drop" { key = "Enter" }
+        expect "review-now-first" { visible = css(".a3s-preview[data-preview-component=sortable-list] .sortable-list > [data-sortable-id=review]:first-child") }
+    }
+
+    scenario "streaming-text" {
+        name = "Streaming Text exposes a readable in-progress state without layout replacement"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/streaming-text.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "streaming-visible" { visible = css(".a3s-preview[data-preview-component=streaming-text] .streaming-text[data-state=streaming][aria-busy=true]") }
+        expect "status-visible" { visible = css(".a3s-preview[data-preview-component=streaming-text] [data-streaming-status]") }
+    }
+
+    scenario "table-of-contents" {
+        name = "Table of Contents updates the current real anchor"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/table-of-contents.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "open-contract" { target = css(".a3s-preview[data-preview-component=table-of-contents] a[href='#contract']") }
+        expect "contract-current" { visible = css(".a3s-preview[data-preview-component=table-of-contents] a[href='#contract'][aria-current=location]") }
+    }
+}

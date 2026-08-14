@@ -1,0 +1,39 @@
+/* Date Picker */
+@layer components {
+  input.date-picker {
+    min-block-size: 2.25rem;
+    min-inline-size: 0;
+    color-scheme: light dark;
+    font-variant-numeric: tabular-nums;
+  }
+
+  input.date-picker::-webkit-calendar-picker-indicator {
+    inline-size: 1rem;
+    block-size: 1rem;
+    margin-inline-start: 0.5rem;
+    cursor: pointer;
+    opacity: 0.65;
+  }
+
+  input.date-picker:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+  }
+
+  input.date-picker:read-only::-webkit-calendar-picker-indicator,
+  input.date-picker:disabled::-webkit-calendar-picker-indicator {
+    cursor: default;
+    opacity: 0.35;
+  }
+
+  input.date-picker[aria-invalid="true"],
+  input.date-picker:invalid:not(:placeholder-shown) {
+    border-color: var(--destructive);
+  }
+
+  @media (pointer: coarse) {
+    input.date-picker {
+      min-block-size: 2.75rem;
+      font-size: 1rem;
+    }
+  }
+}

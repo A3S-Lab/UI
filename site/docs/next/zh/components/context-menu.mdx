@@ -4,8 +4,167 @@
 
 <Preview class="w-full max-w-2xl">
   <div id="context-menu-demo-zh" class="context-menu" data-context-surface>
-    <div class="item" data-variant="outline" data-context-trigger tabindex="0" aria-describedby="context-menu-help-zh"><figure><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></figure><section><h3>deployment.acl</h3><p id="context-menu-help-zh">右键单击，或聚焦后按 Shift + F10。</p></section><aside><span class="status-badge" data-state="warning"><span data-indicator></span>已修改</span></aside></div>
-    <div data-context-content role="menu" aria-label="文件操作" aria-hidden="true"><button type="button" role="menuitem" data-value="open">打开<kbd class="kbd">Enter</kbd></button><button type="button" role="menuitem" data-value="rename">重命名<kbd class="kbd">F2</kbd></button><div role="none" data-context-submenu><button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false">打开方式<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-submenu-arrow aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button><div data-context-submenu-content role="menu" aria-label="打开方式" aria-hidden="true"><button type="button" role="menuitemradio" aria-checked="true" data-value="editor"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>文本编辑器</button><button type="button" role="menuitemradio" aria-checked="false" data-value="diff"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>差异对比</button></div></div><hr role="separator" /><button type="button" role="menuitemcheckbox" aria-checked="true" data-value="watch"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>监听变更</button><button type="button" role="menuitem" aria-disabled="true">暂存文件</button><hr role="separator" /><button type="button" role="menuitem" data-value="delete" data-variant="destructive">删除</button></div>
+    <div
+      class="item"
+      data-variant="outline"
+      data-context-trigger
+      tabindex="0"
+      aria-describedby="context-menu-help-zh"
+    >
+      <figure>
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+        >
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+      </figure>
+      <section>
+        <h3>deployment.acl</h3>
+        <p id="context-menu-help-zh">
+          {"右键单击，或聚焦后按 Shift + F10。"}
+        </p>
+      </section>
+      <aside>
+        <span class="status-badge" data-state="warning">
+          <span data-indicator></span>
+          <span>已修改</span>
+        </span>
+      </aside>
+    </div>
+    <div
+      data-context-content
+      role="menu"
+      aria-label="文件操作"
+      aria-hidden="true"
+    >
+      <button type="button" role="menuitem" data-value="open">
+        <span>打开</span>
+        <kbd class="kbd">Enter</kbd>
+      </button>
+      <button type="button" role="menuitem" data-value="rename">
+        <span>重命名</span>
+        <kbd class="kbd">F2</kbd>
+      </button>
+      <div role="none" data-context-submenu>
+        <button
+          type="button"
+          role="menuitem"
+          aria-haspopup="menu"
+          aria-expanded="false"
+        >
+          <span>打开方式</span>
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            data-context-submenu-arrow
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+          >
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+        </button>
+        <div
+          data-context-submenu-content
+          role="menu"
+          aria-label="打开方式"
+          aria-hidden="true"
+        >
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked="true"
+            data-value="editor"
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              data-context-indicator
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <path d="m20 6-11 11-5-5"></path>
+            </svg>
+            <span>文本编辑器</span>
+          </button>
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked="false"
+            data-value="diff"
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              data-context-indicator
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <path d="m20 6-11 11-5-5"></path>
+            </svg>
+            <span>差异对比</span>
+          </button>
+        </div>
+      </div>
+      <hr role="separator" />
+      <button
+        type="button"
+        role="menuitemcheckbox"
+        aria-checked="true"
+        data-value="watch"
+      >
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-context-indicator
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+        >
+          <path d="m20 6-11 11-5-5"></path>
+        </svg>
+        <span>监听变更</span>
+      </button>
+      <button type="button" role="menuitem" aria-disabled="true">
+        <span>暂存文件</span>
+      </button>
+      <hr role="separator" />
+      <button
+        type="button"
+        role="menuitem"
+        data-value="delete"
+        data-variant="destructive"
+      >
+        <span>删除</span>
+      </button>
+    </div>
   </div>
 </Preview>
 
@@ -14,7 +173,12 @@
 ```html
 <div class="context-menu">
   <div data-context-trigger tabindex="0">deployment.acl</div>
-  <div data-context-content role="menu" aria-label="文件操作" aria-hidden="true">
+  <div
+    data-context-content
+    role="menu"
+    aria-label="文件操作"
+    aria-hidden="true"
+  >
     <button type="button" role="menuitem" data-value="open">打开</button>
     <button type="button" role="menuitem" data-value="rename">重命名</button>
   </div>
@@ -25,31 +189,70 @@
 
 ### 参数
 
-| API | 用途 |
-| --- | --- |
-| `data-context-trigger` | 接收右键和键盘菜单请求的直接子元素 |
-| `data-context-content[role="menu"]` | 根菜单直接子元素 |
-| `data-context-submenu` | 包含一个 `aria-haspopup="menu"` 菜单项和子菜单的结构容器 |
-| `data-context-submenu-content` | 嵌套菜单；同样使用 `role="menu"` |
-| `data-value` | 选择事件返回的稳定命令值 |
-| `data-context-surface` | 让根节点占满容器，适合文件树或画布 |
+| API                                 | 用途                                                     |
+| ----------------------------------- | -------------------------------------------------------- |
+| `data-context-trigger`              | 接收右键和键盘菜单请求的直接子元素                       |
+| `data-context-content[role="menu"]` | 根菜单直接子元素                                         |
+| `data-context-submenu`              | 包含一个 `aria-haspopup="menu"` 菜单项和子菜单的结构容器 |
+| `data-context-submenu-content`      | 嵌套菜单；同样使用 `role="menu"`                         |
+| `data-value`                        | 选择事件返回的稳定命令值                                 |
+| `data-context-surface`              | 让根节点占满容器，适合文件树或画布                       |
 
 ### JavaScript API
 
 ```js
 const menu = document.querySelector(".context-menu");
-menu.openAt(240, 160, selectedNode);
-menu.close();
-menu.refresh();
-menu.addEventListener("a3s:context-menu-select", ({ detail }) => run(detail.value, detail.target));
+menu.open({ target: selectedNode });
+menu.openAt(240, 160, selectedNode, { source: "api" });
+menu.focusItem("rename");
+console.log(menu.getState());
+menu.addEventListener("a3s:context-menu-select", ({ detail }) =>
+  run(detail.value, detail.target),
+);
 ```
 
-打开、选择和关闭分别触发 `a3s:context-menu-open`、`a3s:context-menu-select` 和 `a3s:context-menu-close`。控制器把菜单限制在可视窗口内，并在窗口滚动或缩放时关闭。
+`open()` 锚定目标打开，`openAt()` 使用视口坐标。`focusItem()`、`select()` 与 `setChecked()` 控制带稳定 `data-value` 的命令。`close({ reason, restoreFocus, force })` 说明关闭原因，同时兼容原来的 `close(false)`。`getState()` 返回打开状态、目标、位置与当前项，`refresh()` 用于替换内容后重新绑定。
+
+`a3s:context-menu-before-open`、`a3s:context-menu-before-select` 与 `a3s:context-menu-before-close` 是可取消钩子，宿主可在状态变化前授权或填充命令。完成事件包含 `source`、`reason`、目标、稳定命令值与布尔选中状态。没有可用命令时控制器不会打开菜单；根菜单与子菜单都会限制在缩放后的可视视口内，并在视口移动时安全关闭。
+
+React 的 `useContextMenu` 与 Vue 的同名 composable 监听同一组事件，并通过 `call()` 调用清单中的控制器方法。
 
 ## 状态与变体
 
-上下文菜单只放与触发目标直接相关的短命令。全局导航使用 Command，持续可见操作使用 Toolbar，破坏性确认使用 Alert Dialog。没有上下文命令时不要显示空菜单。
+上下文菜单只放与触发目标直接相关的短命令。全局导航使用 Command，持续可见操作使用 Toolbar，破坏性确认使用 Alert Dialog。依赖权限的命令在打开前钩子中生成；不可用分组及相邻分隔线应一起移除，不展示空菜单或大面积禁用项。
 
 ## 无障碍
 
 可聚焦触发面必须提供名称或说明。禁用项使用 `aria-disabled="true"` 并从方向键导航中跳过。Escape 关闭整个菜单并恢复焦点；逻辑方向键在 RTL 中自动交换。
+
+## React
+
+```tsx
+import { ContextMenu, useContextMenu } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useContextMenu();
+  return (
+    <ContextMenu ref={control.ref}>组件内容</ContextMenu>
+  );
+}
+```
+
+`useContextMenu` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ContextMenu, useContextMenu } from "@a3s-lab/ui/vue";
+
+const control = useContextMenu();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ContextMenu ref="componentRef">组件内容</ContextMenu>
+</template>
+```
+
+`useContextMenu` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -186,3 +186,35 @@ A3S UI maps shadcn/ui's sidebar composition to regular navigation HTML: an `<asi
 | `sidebar.open()` | 方法 | 打开侧边栏。 |
 | `sidebar.close()` | 方法 | 关闭侧边栏。 |
 | `sidebar.toggle()` | 方法 | 切换侧边栏。 |
+
+## React
+
+```tsx
+import { Sidebar, useSidebar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSidebar();
+  return (
+    <Sidebar ref={control.ref} aria-label="Sidebar">组件内容</Sidebar>
+  );
+}
+```
+
+`useSidebar` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Sidebar, useSidebar } from "@a3s-lab/ui/vue";
+
+const control = useSidebar();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Sidebar ref="componentRef" aria-label="Sidebar">组件内容</Sidebar>
+</template>
+```
+
+`useSidebar` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

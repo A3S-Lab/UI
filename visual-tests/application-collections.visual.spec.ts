@@ -44,7 +44,11 @@ test("Data Grid synchronizes partial, full, cleared, and sorted state", async ({
       });
     });
     root.addEventListener("a3s:data-grid-sort", (event) => {
-      root.__sortEvents?.push((event as CustomEvent).detail);
+      const detail = (event as CustomEvent).detail;
+      root.__sortEvents?.push({
+        direction: detail.direction,
+        key: detail.key,
+      });
     });
   });
 
@@ -274,4 +278,45 @@ test("File Explorer composes Tree and Context Menu without page overflow", async
   }));
   expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth);
   await expect(explorer).toBeVisible();
+});
+
+test("Collection components remain bounded at 320px in dark RTL", async ({
+  page,
+}) => {
+  const routes = {
+    "bulk-action-bar": ".bulk-action-bar",
+    "context-menu": ".context-menu",
+    "data-grid": ".data-grid",
+    "file-explorer": ".file-explorer",
+    "filter-bar": ".filter-bar",
+  } as const;
+
+  await page.setViewportSize({ width: 320, height: 844 });
+
+  for (const [route, selector] of Object.entries(routes)) {
+    await test.step(route, async () => {
+      await openComponent(page, route);
+      const preview = page.locator(
+        `.a3s-preview[data-preview-component="${route}"]`,
+      );
+      const root = preview.locator(selector).first();
+      await root.evaluate((element) => {
+        document.documentElement.classList.add("dark", "rp-dark");
+        document.documentElement.dir = "rtl";
+        element.dir = "rtl";
+      });
+
+      const metrics = await root.evaluate((element) => ({
+        direction: getComputedStyle(element).direction,
+        documentOverflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+        rootOverflow: element.scrollWidth - element.clientWidth,
+      }));
+
+      expect(metrics.direction).toBe("rtl");
+      expect(metrics.documentOverflow).toBeLessThanOrEqual(0);
+      expect(metrics.rootOverflow).toBeLessThanOrEqual(0);
+    });
+  }
 });

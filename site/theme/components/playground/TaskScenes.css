@@ -1,0 +1,549 @@
+.a3s-workspace-playground [data-playground-scene] {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  color: var(--foreground);
+}
+
+.a3s-workspace-playground [data-playground-scene] :is(h1, h2, h3, p) {
+  margin: 0;
+}
+
+.a3s-workspace-playground [data-playground-scene] :is(h1, h2, h3) {
+  color: var(--foreground);
+  letter-spacing: -0.025em;
+}
+
+.a3s-workspace-playground [data-playground-scene] p {
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.a3s-workspace-playground .playground-inspector {
+  --task-pane-width: 16rem;
+  --task-pane-min-width: 0;
+  min-width: 0;
+  box-shadow: none;
+}
+
+.a3s-workspace-playground[data-playground-inspector="closed"]
+  .playground-inspector {
+  display: none;
+}
+
+.playground-code-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 16rem);
+  overflow: hidden;
+}
+
+.a3s-workspace-playground[data-playground-inspector="closed"]
+  .playground-code-scene {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.playground-code-main {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.75rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.625rem;
+  overflow: hidden;
+}
+
+.playground-code-main .agent-transcript {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.playground-code-main .agent-transcript [data-transcript-viewport] {
+  height: 100%;
+  padding: 0.25rem 0.5rem 0.75rem;
+  overflow-y: auto;
+}
+
+.playground-code-main .agent-transcript article {
+  font-size: 0.6875rem;
+}
+
+.playground-code-main .agent-transcript [data-role="user"] article {
+  max-width: 78%;
+}
+
+.playground-code-main .execution-item {
+  margin-block: 0.5rem;
+}
+
+.playground-code-main .execution-item pre {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-family: var(--ui-mono);
+  font-size: 0.5625rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-workspace-playground .agent-composer {
+  flex: none;
+}
+
+.a3s-workspace-playground .agent-composer textarea {
+  min-height: 3.25rem;
+  max-height: 5.5rem;
+  font-size: 0.6875rem;
+  resize: vertical;
+}
+
+.playground-inspector .change-review {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.playground-inspector .change-review [data-review-files] {
+  border-block-end: 1px solid var(--border);
+}
+
+.playground-inspector .change-review [data-review-files] li {
+  display: grid;
+  padding: 0.5rem 0.625rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.playground-inspector
+  .change-review
+  [data-review-files]
+  li[data-state="selected"] {
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.playground-inspector .change-review [data-review-files] code {
+  overflow: hidden;
+  font-size: 0.5625rem;
+  text-overflow: ellipsis;
+}
+
+.playground-diff {
+  display: grid;
+  padding: 0.625rem 0;
+  background: color-mix(in srgb, var(--muted) 58%, var(--background));
+}
+
+.playground-diff code {
+  display: block;
+  min-width: 0;
+  padding: 0.25rem 0.625rem;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-family: var(--ui-mono);
+  font-size: 0.5625rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playground-diff code::before {
+  display: inline-block;
+  width: 1rem;
+  color: var(--muted-foreground);
+  content: attr(data-line);
+}
+
+.playground-diff code[data-line="+"] {
+  background: color-mix(in srgb, var(--a3s-green, #14a675) 9%, transparent);
+}
+
+.playground-diff code[data-line="−"] {
+  background: color-mix(in srgb, var(--destructive) 8%, transparent);
+}
+
+.playground-design-scene {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) minmax(13rem, 15rem);
+  overflow: hidden;
+}
+
+.a3s-workspace-playground[data-playground-inspector="closed"]
+  .playground-design-scene {
+  grid-template-columns: 10rem minmax(0, 1fr);
+}
+
+.playground-layers,
+.playground-document-tree {
+  min-width: 0;
+  min-height: 0;
+  border-inline-end: 1px solid var(--border);
+  overflow: auto;
+  background: var(--card);
+}
+
+.playground-layers > header,
+.playground-document-tree > header {
+  display: flex;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  align-items: center;
+  border-block-end: 1px solid var(--border);
+  font-size: 0.6875rem;
+}
+
+.playground-layers .tree {
+  padding: 0.5rem;
+  font-size: 0.625rem;
+}
+
+.playground-canvas,
+.playground-flow-canvas {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--muted) 54%, var(--background));
+}
+
+.playground-canvas {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.playground-canvas > .toolbar {
+  z-index: 2;
+  justify-self: center;
+  margin-block-start: 0.5rem;
+}
+
+.playground-canvas > .toolbar output {
+  min-width: 2.5rem;
+  padding-inline: 0.375rem;
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  text-align: center;
+}
+
+.playground-canvas-viewport {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 1rem;
+  place-items: center;
+  overflow: auto;
+}
+
+.playground-artboard {
+  display: grid;
+  width: min(100%, 26rem);
+  min-height: 14rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  grid-template-rows: auto 1fr auto;
+  gap: 1.25rem;
+  background: var(--background);
+  box-shadow: 0 1rem 2rem rgb(20 24 40 / 12%);
+}
+
+.playground-artboard > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.playground-artboard > header small {
+  color: var(--muted-foreground);
+  font-size: 0.5rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.playground-artboard > header button {
+  min-height: 1.625rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.5625rem;
+}
+
+.playground-artboard > section {
+  display: grid;
+  max-width: 18rem;
+  align-content: center;
+  gap: 0.5rem;
+}
+
+.playground-artboard > section h2 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1.02;
+}
+
+.playground-artboard > section p {
+  font-size: 0.625rem;
+}
+
+.playground-artboard > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.playground-artboard > div span {
+  height: 2.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--muted);
+}
+
+.playground-canvas > footer {
+  display: flex;
+  min-height: 1.75rem;
+  padding: 0 0.625rem;
+  align-items: center;
+  justify-content: space-between;
+  border-block-start: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 0.5625rem;
+}
+
+.playground-design-scene .playground-inspector > section {
+  display: grid;
+  gap: 0.75rem;
+  overflow-y: auto;
+  font-size: 0.625rem;
+}
+
+.playground-design-scene .playground-inspector .agent-composer {
+  margin: auto 0.625rem 0.625rem;
+}
+
+.playground-write-scene {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr) minmax(13rem, 16rem);
+  overflow: hidden;
+}
+
+.a3s-workspace-playground[data-playground-inspector="closed"]
+  .playground-write-scene {
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+}
+
+.playground-document-tree nav {
+  display: grid;
+  padding: 0.5rem;
+  gap: 0.1875rem;
+}
+
+.playground-document-tree nav button {
+  display: flex;
+  min-width: 0;
+  min-height: 1.875rem;
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  align-items: center;
+  gap: 0.4375rem;
+  overflow: hidden;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playground-document-tree nav button[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--primary) 14%, var(--border));
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  color: var(--primary);
+}
+
+.playground-document {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.75rem;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.625rem;
+  overflow: hidden;
+}
+
+.playground-document > .toolbar {
+  width: 100%;
+}
+
+.playground-document > article {
+  min-width: 0;
+  padding: clamp(1rem, 5vw, 2.75rem);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+  outline: 0;
+}
+
+.playground-document > article h1 {
+  max-width: 28rem;
+  font-size: clamp(1.2rem, 3vw, 1.9rem);
+  line-height: 1.08;
+}
+
+.playground-document > article h2 {
+  margin-block-start: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.playground-document > article p,
+.playground-document > article li {
+  max-width: 34rem;
+  font-size: 0.6875rem;
+  line-height: 1.65;
+}
+
+.playground-document > article ul {
+  padding-inline-start: 1rem;
+}
+
+.playground-write-scene .playground-inspector {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.playground-write-scene .playground-inspector > section {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  overflow-y: auto;
+}
+
+.playground-write-scene [data-playground-suggestions] {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.playground-write-scene [data-playground-suggestions] .item {
+  width: 100%;
+  text-align: start;
+}
+
+.playground-workflow-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 17rem);
+  overflow: hidden;
+}
+
+.a3s-workspace-playground[data-playground-inspector="closed"]
+  .playground-workflow-scene {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.playground-flow-canvas {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.playground-flow-canvas > .toolbar {
+  z-index: 3;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.playground-flow-canvas [data-flow-viewport] {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.playground-flow-node {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: 9.5rem;
+  min-height: 4.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  align-content: center;
+  gap: 0.25rem;
+  background: var(--card);
+  box-shadow: 0 0.5rem 1rem rgb(20 24 40 / 8%);
+}
+
+.playground-flow-node[data-kind="trigger"] {
+  inset-block-start: 12%;
+  inset-inline-start: 4%;
+}
+
+.playground-flow-node[data-kind="agent"] {
+  inset-block-start: 38%;
+  inset-inline-start: 40%;
+  border-color: color-mix(in srgb, var(--primary) 42%, var(--border));
+}
+
+.playground-flow-node[data-kind="approval"] {
+  inset-block-start: 68%;
+  inset-inline-start: 72%;
+}
+
+.playground-flow-node small {
+  color: var(--muted-foreground);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.playground-flow-node strong {
+  font-size: 0.6875rem;
+}
+
+.playground-flow-node p {
+  font-size: 0.5625rem;
+}
+
+.playground-flow-node [data-port] {
+  position: absolute;
+  inset-block-start: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid var(--background);
+  border-radius: 50%;
+  background: var(--primary);
+  transform: translateY(-50%);
+}
+
+.playground-flow-node [data-port="input"] {
+  inset-inline-start: -0.25rem;
+}
+
+.playground-flow-node [data-port="output"] {
+  inset-inline-end: -0.25rem;
+}
+
+.playground-flow-canvas svg {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: color-mix(in srgb, var(--primary) 48%, var(--border));
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.a3s-workspace-playground[dir="rtl"] .playground-flow-canvas svg {
+  transform: scaleX(-1);
+}
+
+.playground-workflow-scene .playground-inspector > section {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  overflow-y: auto;
+}
+
+.playground-workflow-scene .timeline {
+  margin-block-start: 0.25rem;
+}

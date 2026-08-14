@@ -40,3 +40,32 @@ Resource Card 表示文件、模板、助理、配置与其他工作台资源。
 ## 可访问性
 
 预览图稿件是装饰性的，除非它传达了独特的内容；使用 `aria-hidden="true"` 隐藏装饰性 SVG。保留标题文本并输入。避免在交互链接或按钮内交互式控件。
+
+## React
+
+```tsx
+import { ResourceCard } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ResourceCard>组件内容</ResourceCard>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { ResourceCard } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ResourceCard>组件内容</ResourceCard>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

@@ -106,3 +106,35 @@ Add `dir="rtl"` to the textarea, field, or an ancestor.
   <p>شاركنا أفكارك حول الخدمة.</p>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Textarea, useTextarea } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTextarea();
+  return (
+    <Textarea ref={control.ref} aria-label="Name" defaultValue="Component content" />
+  );
+}
+```
+
+`useTextarea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Textarea, useTextarea } from "@a3s-lab/ui/vue";
+
+const control = useTextarea();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Textarea ref="componentRef" aria-label="Name" value="Component content" />
+</template>
+```
+
+`useTextarea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

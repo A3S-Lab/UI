@@ -230,3 +230,35 @@ Set `dir="rtl"` on the table container when needed. Use logical alignment utilit
   </table>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Table, useTable } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTable();
+  return (
+    <Table ref={control.ref}><table><caption>Component summary</caption><tbody><tr><th scope="row">Name</th><td>Component content</td></tr></tbody></table></Table>
+  );
+}
+```
+
+`useTable` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Table, useTable } from "@a3s-lab/ui/vue";
+
+const control = useTable();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Table ref="componentRef"><table><caption>Component summary</caption><tbody><tr><th scope="row">Name</th><td>Component content</td></tr></tbody></table></Table>
+</template>
+```
+
+`useTable` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

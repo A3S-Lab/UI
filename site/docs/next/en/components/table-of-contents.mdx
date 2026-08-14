@@ -1,0 +1,83 @@
+# Table of Contents
+
+Turns a long page heading hierarchy into scannable navigation and follows the current section as reading progresses.
+
+<Preview class="w-full">
+<nav class="table-of-contents" aria-label="On this page"><ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol></nav>
+</Preview>
+
+## Usage
+
+```html
+<nav class="table-of-contents" aria-label="On this page">
+  <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+</nav>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/table-of-contents";
+
+const component = document.querySelector(".table-of-contents");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { TableOfContents, useTableOfContents } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTableOfContents();
+  return (
+    <TableOfContents ref={control.ref} aria-label="On this page">
+      <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+    </TableOfContents>
+  );
+}
+```
+
+`useTableOfContents` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { TableOfContents, useTableOfContents } from "@a3s-lab/ui/vue";
+
+const control = useTableOfContents();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <TableOfContents ref="componentRef" aria-label="On this page">
+    <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+  </TableOfContents>
+</template>
+```
+
+`useTableOfContents` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.table-of-contents` |
+| Native root | `<nav>` |
+| States | `ready`, `current` |
+| Events | `a3s:table-of-contents-change` |
+| Methods | `getState`, `refresh`, `setCurrent` |
+
+## Product boundary
+
+It does not repair an invalid heading outline or replace site navigation. The host owns stable IDs, content hierarchy, and route scroll offsets.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Links use real anchors and aria-current, with focus order matching the document. Narrow screens may scroll the list horizontally without changing reading order.

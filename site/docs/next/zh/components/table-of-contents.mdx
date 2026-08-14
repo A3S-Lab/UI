@@ -1,0 +1,83 @@
+# 页内目录
+
+把长页面的标题层级转为可扫描导航，并在阅读过程中同步当前区段。
+
+<Preview class="w-full">
+<nav class="table-of-contents" aria-label="On this page"><ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol></nav>
+</Preview>
+
+## 使用方式
+
+```html
+<nav class="table-of-contents" aria-label="On this page">
+  <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+</nav>
+```
+
+### 独立控制器
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/table-of-contents";
+
+const component = document.querySelector(".table-of-contents");
+component.getState();
+```
+
+控制器是幂等的；完整包可改为一次导入 `@a3s-lab/ui/all`。宿主通过可取消的 `before-*` 事件执行权限与业务校验。
+
+## React
+
+```tsx
+import { TableOfContents, useTableOfContents } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTableOfContents();
+  return (
+    <TableOfContents ref={control.ref} aria-label="On this page">
+      <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+    </TableOfContents>
+  );
+}
+```
+
+`useTableOfContents` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { TableOfContents, useTableOfContents } from "@a3s-lab/ui/vue";
+
+const control = useTableOfContents();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <TableOfContents ref="componentRef" aria-label="On this page">
+    <ol><li><a href="#overview" aria-current="location">Overview</a></li><li><a href="#contract">Contract</a></li><li><a href="#accessibility">Accessibility</a></li></ol>
+  </TableOfContents>
+</template>
+```
+
+`useTableOfContents` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+
+## 契约
+
+| 接口 | 值 |
+| --- | --- |
+| 根选择器 | `.table-of-contents` |
+| 原生根元素 | `<nav>` |
+| 状态 | `ready`, `current` |
+| 事件 | `a3s:table-of-contents-change` |
+| 方法 | `getState`, `refresh`, `setCurrent` |
+
+## 产品边界
+
+页内目录不生成错误的标题结构，也不替代站点导航。宿主负责稳定 ID、内容层级和路由滚动偏移。
+
+组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+
+## 可访问性
+
+链接使用真实锚点和 aria-current，焦点顺序遵循文档。窄屏可横向滚动，但不会改变标题的阅读顺序。

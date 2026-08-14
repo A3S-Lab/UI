@@ -36,3 +36,35 @@ Unavailable choices remain visible with their reason when that helps users recov
 ## Accessibility
 
 Use a native label and control name. Anchored menus restore focus to their trigger and constrain themselves to the viewport.
+
+## React
+
+```tsx
+import { ContextSelector, useContextSelector } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useContextSelector();
+  return (
+    <ContextSelector ref={control.ref}>Component content</ContextSelector>
+  );
+}
+```
+
+`useContextSelector` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ContextSelector, useContextSelector } from "@a3s-lab/ui/vue";
+
+const control = useContextSelector();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ContextSelector ref="componentRef">Component content</ContextSelector>
+</template>
+```
+
+`useContextSelector` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

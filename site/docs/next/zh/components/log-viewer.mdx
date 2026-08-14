@@ -106,3 +106,32 @@ Log Viewer 是用于构建输出、Workload 日志和 Agent 执行流的有界�
 ## 可访问性
 
 为根元素和可聚焦的日志视口提供可访问名称。只有追加记录的区域才使用 `role="log"` 与 `aria-live="polite"`；不要在每条消息到达时重渲染整个日志。过滤器放入带标签的 `<fieldset>`，用 `aria-pressed` 暴露当前筛选项，保持 DOM 时间顺序，新记录到达时不要移动键盘焦点。
+
+## React
+
+```tsx
+import { LogViewer } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <LogViewer aria-label="Log Viewer">组件内容</LogViewer>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { LogViewer } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <LogViewer aria-label="Log Viewer">组件内容</LogViewer>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

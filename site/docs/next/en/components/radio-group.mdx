@@ -223,3 +223,35 @@ Set `dir="rtl"` on the radio group or an ancestor.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useRadioGroup();
+  return (
+    <RadioGroup ref={control.ref}><label><input type="radio" name="choice" /> Ready</label></RadioGroup>
+  );
+}
+```
+
+`useRadioGroup` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/vue";
+
+const control = useRadioGroup();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <RadioGroup ref="componentRef"><label><input type="radio" name="choice" /> Ready</label></RadioGroup>
+</template>
+```
+
+`useRadioGroup` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

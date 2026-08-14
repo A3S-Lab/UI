@@ -1,26 +1,36 @@
 # 动效
 
-动效用于解释状态变化，不应拖慢操作。A3S UI 为悬停、焦点、导航与可调整布局提供短时过渡，不使用纯装饰性的页面动画。
+动效只解释来源、连续性或完成，不延迟操作，也不让静态卡片悬浮。元素从可用、可见的初始状态进入最终状态，因此低性能设备不会先看到空白界面。
 
 <Preview>
-<div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
-  <button type="button" class="btn">悬停或聚焦</button>
-  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>资源反馈</strong><small>160ms 色调与边界变化</small></section></a>
-</div>
+  <div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
+    <button type="button" class="btn">
+      悬停或聚焦
+    </button>
+    <a href="#motion-guidance" class="resource-card w-48">
+      <figure class="min-h-20! text-2xl font-semibold">A3S</figure>
+      <section>
+        <strong>资源反馈</strong>
+        <small>160ms 色调与边界</small>
+      </section>
+    </a>
+  </div>
 </Preview>
 
 ## 时长
 
-| 时长 | 用途 |
-| ---: | --- |
-| `120ms` | 颜色与焦点反馈 |
-| `160ms` | 悬停色调、选中与小范围布局反馈 |
-| `220ms` | Dialog、Drawer 或有边界浮层进入 |
+| 令牌                   |    时长 | 用途                            |
+| ---------------------- | ------: | ------------------------------- |
+| `--a3s-motion-fast`    | `120ms` | 按下、焦点与短颜色反馈          |
+| `--a3s-motion-normal`  | `160ms` | 悬停、选择与小范围布局反馈      |
+| `--a3s-motion-overlay` | `220ms` | Menu、Popover、Dialog 与 Drawer |
+
+连续指针交互，例如 Split Pane 调整和 Slider 拖动，直接跟随输入，不添加追赶动画。按下控件最多移动 1px；卡片悬停不上移。
 
 ## 缓动
 
-可逆界面反馈使用标准 `ease`。表面进入视口使用 `ease-out`，离开视口使用 `ease-in`。按下控件可向下移动 1px，卡片悬停不上移。Split Pane 调整等连续指针交互应直接更新，不添加过渡。
+进入与可逆反馈使用指数型缓出曲线 `--a3s-ease-out: cubic-bezier(0.16, 1, 0.3, 1)`。退出可以复用同一曲线缩短时长，但不能超过 220ms。避免同时对大量布局属性、模糊和阴影做长时间过渡。
 
 ## 减少动效
 
-包含非必要过渡或布局变化的组件会在 `prefers-reduced-motion: reduce` 下禁用动效。产品不能只依赖动画表达状态。
+在 `prefers-reduced-motion: reduce` 下移除位移、缩放、模糊动画与循环装饰，同时保留即时状态变化。加载、流式输出和进度不能只依赖动画表达。

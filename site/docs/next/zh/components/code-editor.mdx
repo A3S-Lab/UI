@@ -282,3 +282,35 @@ Monaco 示例为编辑器、工作区导航、面板和命令对话框提供独�
 原生回退的编辑表面是 `textarea`，因此无需 JavaScript 编辑器引擎即可使用选择、复制、撤销、重做、屏幕阅读器文本编辑与浏览器表单提交。为它提供明确的 `aria-label`，或通过 `for` 关联可见 `<label>`；根节点有可访问名称时应设置 `role="group"`。只把保存状态放入 `aria-live="polite"` 区域，避免每次按键都播报光标位置和统计信息；校验消息会自行管理 status 或 alert 角色。行号槽是装饰内容，控制器会将其标记为 `aria-hidden`。
 
 控制器遵循 `readonly`、`disabled`、减少动态效果、浏览器缩放与 RTL 方向。只有当可编辑 textarea 获得焦点时才会拦截 Ctrl/Cmd+S；Tab 与 Shift+Tab 缩进当前行或选区，其他修饰键组合仍交给浏览器和辅助技术处理。
+
+## React
+
+```tsx
+import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCodeEditor();
+  return (
+    <CodeEditor ref={control.ref}>组件内容</CodeEditor>
+  );
+}
+```
+
+`useCodeEditor` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/vue";
+
+const control = useCodeEditor();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <CodeEditor ref="componentRef">组件内容</CodeEditor>
+</template>
+```
+
+`useCodeEditor` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

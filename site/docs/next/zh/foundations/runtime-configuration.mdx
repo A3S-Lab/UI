@@ -1,0 +1,101 @@
+# 运行时配置
+
+语言、阅读方向、颜色模式和动态效果偏好属于应用根元素。A3S UI 不要求框架 Provider，也不会在组件状态中复制这些值；原生 HTML、React 与 Vue 观察同一套 DOM 契约。
+
+```html
+<html lang="zh-CN" dir="ltr" data-theme="system">
+```
+
+## 语言与方向
+
+`lang` 指定文档语言，`dir` 控制双向布局。翻译资源、数字和日期格式、语言路由继续由宿主负责。组件使用逻辑方向 CSS 属性，不自行推断翻译文案。
+
+切换语言时同时设置这两个值。未显式提供方向时，阿拉伯语、波斯语、希伯来语、普什图语和乌尔都语默认使用 RTL；显式方向始终优先。
+
+## 主题
+
+`data-theme` 保存 `light`、`dark` 或 `system` 偏好。最终的深色外观由 `dark` 类表达，因此 CSS 不依赖框架运行时。宿主可以持久化偏好，但应在首次绘制前设置类名，避免主题闪烁。
+
+```html
+<script>
+  const preference = localStorage.getItem("theme") || "system";
+  const dark =
+    preference === "dark" ||
+    (preference === "system" &&
+      matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = preference;
+  document.documentElement.classList.toggle("dark", dark);
+</script>
+```
+
+## 动态效果
+
+动态效果是用户偏好，不是应用内部开关。组件响应 `prefers-reduced-motion: reduce`；移除位移和循环动画后，加载、流式输出与进度仍保留可读的静态状态。
+
+## React hooks
+
+```tsx
+import {
+  useA3SLocale,
+  useA3SMotion,
+  useA3STheme,
+} from "@a3s-lab/ui/react";
+
+export function Preferences() {
+  const locale = useA3SLocale();
+  const motion = useA3SMotion();
+  const theme = useA3STheme();
+
+  return (
+    <form aria-label="界面偏好">
+      <button type="button" onClick={() => locale.setLocale("ar-EG")}>
+        العربية
+      </button>
+      <button type="button" onClick={() => theme.setTheme("system")}>
+        跟随系统主题
+      </button>
+      <output>
+        {locale.direction} · {theme.resolvedTheme} ·{" "}
+        {motion.reducedMotion ? "减弱动态效果" : "完整动态效果"}
+      </output>
+    </form>
+  );
+}
+```
+
+Hooks 会观察 `document.documentElement` 的外部变化，由自身 setter 更新时发出 `a3s:locale-change` 或 `a3s:theme-change`，并在卸载时清理媒体查询和属性观察器。
+
+## Vue composables
+
+```vue
+<script setup lang="ts">
+import {
+  useA3SLocale,
+  useA3SMotion,
+  useA3STheme,
+} from "@a3s-lab/ui/vue";
+
+const locale = useA3SLocale();
+const motion = useA3SMotion();
+const theme = useA3STheme();
+</script>
+
+<template>
+  <form aria-label="界面偏好">
+    <button type="button" @click="locale.setLocale('ar-EG')">العربية</button>
+    <button type="button" @click="theme.setTheme('system')">
+      跟随系统主题
+    </button>
+    <output>
+      {{ locale.direction.value }} · {{ theme.resolvedTheme.value }} ·
+      {{ motion.reducedMotion.value ? "减弱动态效果" : "完整动态效果" }}
+    </output>
+  </form>
+</template>
+```
+
+Vue 暴露只读 ref，并与 React 使用相同的 setter 和 DOM 事件。两个适配器都不拥有翻译、持久化、授权或服务端协商。
+
+## 服务端渲染
+
+服务端直接输出正确的 `lang` 与 `dir`。在首次绘制前通过小型脚本应用已保存或系统主题，再由任一框架观察这个根元素。不要先输出一种语言再在水合后修补，这会在用户开始操作后改变阅读顺序、可访问名称和布局。

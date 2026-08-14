@@ -96,3 +96,35 @@ Theme Switcher 由 Button 和 Tooltip 组件 CSS 组成。
 | `window.a3sUI.theme.get()` | 方法 | 返回 `"dark"` 或 `"light"`。 |
 | `window.a3sUI.theme.set(mode)` | 方法 | 将模式设置为 `"dark"` 或 `"light"` 并将其存储在 `localStorage.themeMode` 中。 |
 | `window.a3sUI.theme.toggle()` | 方法 | 在深色和浅色模式之间切换。 |
+
+## React
+
+```tsx
+import { ThemeSwitcher, useThemeSwitcher } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useThemeSwitcher();
+  return (
+    <ThemeSwitcher ref={control.ref}>组件内容</ThemeSwitcher>
+  );
+}
+```
+
+`useThemeSwitcher` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ThemeSwitcher, useThemeSwitcher } from "@a3s-lab/ui/vue";
+
+const control = useThemeSwitcher();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ThemeSwitcher ref="componentRef">组件内容</ThemeSwitcher>
+</template>
+```
+
+`useThemeSwitcher` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -110,3 +110,32 @@ Pagination uses document direction and logical spacing. Set `dir="rtl"` on the p
   </ul>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+import { Pagination } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Pagination aria-label="Pagination"><a href="#current" aria-current="page">Current page</a></Pagination>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Pagination } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Pagination aria-label="Pagination"><a href="#current" aria-current="page">Current page</a></Pagination>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

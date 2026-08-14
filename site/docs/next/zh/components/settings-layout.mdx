@@ -36,3 +36,32 @@ Settings Layout 提供可导航的配置分区与真实表单控件，适用于�
 ## 可访问性
 
 使用真实表单控件与字段标签，不要用未结构化的源码编辑器代替配置界面。原始配置源码可作为高级入口保留。每个分区都需要唯一标题与 ID，供导航直接定位。
+
+## React
+
+```tsx
+import { SettingsLayout } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <SettingsLayout>组件内容</SettingsLayout>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { SettingsLayout } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <SettingsLayout>组件内容</SettingsLayout>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

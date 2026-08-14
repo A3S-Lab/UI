@@ -189,6 +189,8 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 | `tabs.select(tab)` | Method | Selects a tab button in the tablist. |
 | `tabs.refresh()` | Method | Rescans tabs and panels after children change inside the existing tablist/panel structure. |
 
+React `useTabs` and the equivalent Vue composable expose the same contract through `call("select", tab, focus)` and `call("refresh")`.
+
 Horizontal tablists keep their own overflow boundary and scroll the selected tab into view. Arrow keys follow visual order, including reversed left/right movement in RTL; `Home` and `End` select the first and last enabled tabs.
 
 ## Examples
@@ -307,3 +309,35 @@ To enable RTL support, set `dir="rtl"` on the tabs root or a parent element.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Tabs, useTabs } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useTabs();
+  return (
+    <Tabs ref={control.ref}>Component content</Tabs>
+  );
+}
+```
+
+`useTabs` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Tabs, useTabs } from "@a3s-lab/ui/vue";
+
+const control = useTabs();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Tabs ref="componentRef">Component content</Tabs>
+</template>
+```
+
+`useTabs` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

@@ -83,3 +83,32 @@
 ## Accessibility
 
 页面包含多个页脚地标时，应为状态栏提供名称。每个滑块和图标按钮都需要无障碍名称；异步保存失败应通过独立实时区域播报。
+
+## React
+
+```tsx
+import { StatusBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <StatusBar>组件内容</StatusBar>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { StatusBar } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <StatusBar>组件内容</StatusBar>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

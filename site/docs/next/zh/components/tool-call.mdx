@@ -35,3 +35,35 @@
 ## 无障碍
 
 可见标题在不依赖提供方或图标的情况下说明操作。渲染输入或输出前必须移除敏感信息。
+
+## React
+
+```tsx
+import { ToolCall, useToolCall } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useToolCall();
+  return (
+    <ToolCall ref={control.ref}><summary>查看详情</summary><div>组件内容</div></ToolCall>
+  );
+}
+```
+
+`useToolCall` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { ToolCall, useToolCall } from "@a3s-lab/ui/vue";
+
+const control = useToolCall();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ToolCall ref="componentRef"><summary>查看详情</summary><div>组件内容</div></ToolCall>
+</template>
+```
+
+`useToolCall` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

@@ -259,3 +259,35 @@ Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 
 ## 可访问性
 
 使用完整的标签键盘合约。使用 `<fieldset>` 和可见或仅屏幕阅读器的 `<legend>` 对命令进行分组。如果色带变得太密，请允许水平滚动，而不是将标签缩小到可见尺寸以下。
+
+## React
+
+```tsx
+import { Ribbon, useRibbon } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useRibbon();
+  return (
+    <Ribbon ref={control.ref}>组件内容</Ribbon>
+  );
+}
+```
+
+`useRibbon` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Ribbon, useRibbon } from "@a3s-lab/ui/vue";
+
+const control = useRibbon();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Ribbon ref="componentRef">组件内容</Ribbon>
+</template>
+```
+
+`useRibbon` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

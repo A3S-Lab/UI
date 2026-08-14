@@ -1,0 +1,68 @@
+# Icon
+
+Provides a consistent size, stroke, and alignment slot for decorative cues or independently named graphics supplied by the host.
+
+<Preview class="w-full">
+<span class="icon" role="img" aria-label="Verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg></span>
+</Preview>
+
+## Usage
+
+```html
+<span class="icon" role="img" aria-label="Verified">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+</span>
+```
+
+## React
+
+```tsx
+import { Icon } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Icon role="img" aria-label="Verified">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+    </Icon>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { Icon } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Icon role="img" aria-label="Verified">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+  </Icon>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.icon` |
+| Native root | `<span>` |
+| States | `ready`, `decorative`, `labeled`, `host-provided` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+It contains no provider branding and never replaces button labels or status text. Official identity uses Brand Lockup instead of masquerading as a generic icon.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Decorative icons use aria-hidden; informative icons use role=img and a name. Unicode characters are not substitutes for a coherent icon asset.

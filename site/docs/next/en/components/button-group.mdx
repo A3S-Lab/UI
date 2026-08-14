@@ -305,3 +305,32 @@ Add `dir="rtl"` to the group or an ancestor. Flip directional icons explicitly.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { ButtonGroup } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ButtonGroup>Component content</ButtonGroup>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { ButtonGroup } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ButtonGroup>Component content</ButtonGroup>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

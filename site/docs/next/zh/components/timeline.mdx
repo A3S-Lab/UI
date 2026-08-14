@@ -75,3 +75,32 @@ Timeline 按顺序组织持久操作、部署与 Agent 语义事件，不限定�
 ## 可访问性
 
 顺序有意义时使用 `<ol>`，时间戳使用 `<time datetime="…">`。当前状态通过 `aria-current="step"` 明确表达。Timeline 仅提供 CSS；焦点、选择与实时播报仍由宿主应用负责。
+
+## React
+
+```tsx
+import { Timeline } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Timeline aria-label="Timeline"><li>组件内容</li></Timeline>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Timeline } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Timeline aria-label="Timeline"><li>组件内容</li></Timeline>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

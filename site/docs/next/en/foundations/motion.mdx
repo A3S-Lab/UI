@@ -1,26 +1,36 @@
 # Motion
 
-Motion explains state change without delaying work. A3S UI uses short transitions for hover, focus, navigation, and resizable layouts; it does not use decorative page animation.
+Motion explains origin, continuity, or completion. It does not delay work or make static cards float. Elements begin in a usable, visible state so lower-performance devices never reveal an empty interface first.
 
 <Preview>
-<div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
-  <button type="button" class="btn">Hover or focus</button>
-  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>Resource feedback</strong><small>160ms tone and boundary</small></section></a>
-</div>
+  <div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
+    <button type="button" class="btn">
+      Hover or focus
+    </button>
+    <a href="#motion-guidance" class="resource-card w-48">
+      <figure class="min-h-20! text-2xl font-semibold">A3S</figure>
+      <section>
+        <strong>Resource feedback</strong>
+        <small>160ms tone and boundary</small>
+      </section>
+    </a>
+  </div>
 </Preview>
 
 ## Durations
 
-| Duration | Use |
-| ---: | --- |
-| `120ms` | Color and focus feedback |
-| `160ms` | Hover tone, selection, and small layout feedback |
-| `220ms` | Dialog, drawer, or contained overlay entry |
+| Token                  | Duration | Use                                         |
+| ---------------------- | -------: | ------------------------------------------- |
+| `--a3s-motion-fast`    |  `120ms` | Press, focus, and short color feedback      |
+| `--a3s-motion-normal`  |  `160ms` | Hover, selection, and small layout feedback |
+| `--a3s-motion-overlay` |  `220ms` | Menus, popovers, dialogs, and drawers       |
+
+Continuous pointer interactions such as Split Pane resizing and Slider dragging follow input directly without a catch-up transition. Pressed controls may move by at most 1px; cards do not lift on hover.
 
 ## Easing
 
-Use standard `ease` for reversible interface feedback. Use `ease-out` for surfaces entering the viewport and `ease-in` when they leave. Pressed controls may move down by 1px; cards do not lift on hover. Continuous pointer interactions such as Split Pane resizing update without transition.
+Entry and reversible feedback use the exponential ease-out token `--a3s-ease-out: cubic-bezier(0.16, 1, 0.3, 1)`. Exit may reuse the curve at a shorter duration, but never exceeds 220ms. Avoid long simultaneous transitions across layout, blur, and shadow.
 
 ## Reduced motion
 
-Components with nonessential transform or layout transitions disable them under `prefers-reduced-motion: reduce`. Products must not rely on animation alone to explain state.
+Under `prefers-reduced-motion: reduce`, remove travel, scale, blur animation, and looping decoration while preserving immediate state changes. Loading, streaming, and progress must remain understandable without animation.

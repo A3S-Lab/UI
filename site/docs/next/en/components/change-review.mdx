@@ -35,3 +35,32 @@ A conflict preserves the proposed changes and explains the competing revision. F
 ## Accessibility
 
 Decision buttons name their consequence. Counts and filenames remain text; additions and deletions do not depend on red and green alone.
+
+## React
+
+```tsx
+import { ChangeReview } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ChangeReview aria-label="Change Review">Component content</ChangeReview>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { ChangeReview } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ChangeReview aria-label="Change Review">Component content</ChangeReview>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

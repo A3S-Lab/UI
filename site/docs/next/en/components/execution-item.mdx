@@ -80,3 +80,35 @@ Map backend-specific states into the six public states and retain detailed wordi
 ## Accessibility
 
 Native `<details>` and `<summary>` provide disclosure semantics and keyboard behavior. The visible title must identify the action without relying on its icon. Do not put the Summary inside a button. Keep output in ordinary text or `<pre>` unless records are genuinely live; use Log Viewer for high-volume streams.
+
+## React
+
+```tsx
+import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useExecutionItem();
+  return (
+    <ExecutionItem ref={control.ref}><summary>View details</summary><div>Component content</div></ExecutionItem>
+  );
+}
+```
+
+`useExecutionItem` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/vue";
+
+const control = useExecutionItem();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ExecutionItem ref="componentRef"><summary>View details</summary><div>Component content</div></ExecutionItem>
+</template>
+```
+
+`useExecutionItem` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

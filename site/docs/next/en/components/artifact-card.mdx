@@ -35,3 +35,32 @@ Generating state keeps the future title and format visible. Stale state explains
 ## Accessibility
 
 Use a heading for the artifact name. Preview content is ordinary document content; do not duplicate its entire accessible text in the metadata.
+
+## React
+
+```tsx
+import { ArtifactCard } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ArtifactCard>Component content</ArtifactCard>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { ArtifactCard } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <ArtifactCard>Component content</ArtifactCard>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

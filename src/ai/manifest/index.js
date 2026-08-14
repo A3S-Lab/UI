@@ -1,6 +1,8 @@
 import { applicationComponents } from "./application.js";
+import { contentComponents } from "./content.js";
 import { dataComponents, feedbackComponents } from "./display.js";
 import { harnessComponents } from "./harness.js";
+import { interactionComponents } from "./interaction.js";
 import { navigationComponents, overlayComponents } from "./navigation.js";
 import {
   actionComponents,
@@ -15,6 +17,8 @@ export const components = Object.freeze([
   ...overlayComponents,
   ...feedbackComponents,
   ...dataComponents,
+  ...contentComponents,
+  ...interactionComponents,
   ...applicationComponents,
   ...harnessComponents,
   ...utilityComponents,

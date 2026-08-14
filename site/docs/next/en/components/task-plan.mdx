@@ -44,3 +44,32 @@ Keep completed work visible and preserve the active step when execution pauses. 
 ## Accessibility
 
 Name the section with a heading. Use `aria-current="step"` once. Progress text must remain available when a visual progressbar is omitted.
+
+## React
+
+```tsx
+import { TaskPlan } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <TaskPlan aria-label="Task Plan">Component content</TaskPlan>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { TaskPlan } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <TaskPlan aria-label="Task Plan">Component content</TaskPlan>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

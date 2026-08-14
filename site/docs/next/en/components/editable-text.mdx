@@ -1,0 +1,83 @@
+# Editable Text
+
+Moves safely between reading and editing a short value while retaining save, cancel, validation, and focus-return paths.
+
+<Preview class="w-full">
+<div class="editable-text"><div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form></div>
+</Preview>
+
+## Usage
+
+```html
+<div class="editable-text">
+  <div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+</div>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/editable-text";
+
+const component = document.querySelector(".editable-text");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { EditableText, useEditableText } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useEditableText();
+  return (
+    <EditableText ref={control.ref}>
+      <div data-editable-display><span data-editable-value>Release notes</span><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input className="input" value="Release notes" aria-label="Title" /><button type="submit" className="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+    </EditableText>
+  );
+}
+```
+
+`useEditableText` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { EditableText, useEditableText } from "@a3s-lab/ui/vue";
+
+const control = useEditableText();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <EditableText ref="componentRef">
+    <div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+  </EditableText>
+</template>
+```
+
+`useEditableText` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.editable-text` |
+| Native root | `<div>` |
+| States | `display`, `editing`, `saving`, `error`, `disabled` |
+| Events | `a3s:editable-text-before-commit`, `a3s:editable-text-cancel`, `a3s:editable-text-change`, `a3s:editable-text-edit` |
+| Methods | `beginEdit`, `cancel`, `commit`, `getState`, `setValue` |
+
+## Product boundary
+
+Inline editing suits one low-risk value. Multi-field changes, long content, protected actions, and approval work belong in a full form or dialog flow.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Editing, saving, and cancelling are keyboard reachable. Escape restores the prior value, failure preserves input and focus, and state changes avoid layout jumps.

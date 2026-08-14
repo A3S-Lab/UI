@@ -1,64 +1,72 @@
 # Spacing
 
-The spacing system uses a 4px base unit. Tight controls use 4–8px gaps, components use 12–16px, and page regions use 24–40px. Headings receive more space above than below.
+A3S UI uses a 4px base. Tight relationships use 4, 6, 8, 12, and 16px; region relationships use 24, 32, 48, 64, and 96px. Headings receive more space above than below, and grouping must not depend on extra cards.
 
 <Preview>
-<div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
-  {[1, 2, 3, 4, 6, 8].map((step) => (
+  <div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
     <div class="flex items-center gap-4">
-      <code class="w-16 text-xs text-muted-foreground">{step * 4}px</code>
-      <span class="h-3 rounded-full bg-[var(--a3s-blue)]" style={`width:${step * 16}px`}></span>
-      <span class="text-xs text-muted-foreground">space-{step}</span>
+      <code class="w-16 text-xs text-muted-foreground">4px</code>
+      <span class="h-3 w-4 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Micro gap</span>
     </div>
-  ))}
-</div>
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">8px</code>
+      <span class="h-3 w-8 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Adjacent controls</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">12px</code>
+      <span class="h-3 w-12 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Component interior</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">16px</code>
+      <span class="h-3 w-16 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Surface padding</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">24px</code>
+      <span class="h-3 w-24 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Section gap</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <code class="w-16 text-xs text-muted-foreground">32px</code>
+      <span class="h-3 w-32 rounded-full bg-[var(--a3s-blue)]"></span>
+      <span class="text-xs text-muted-foreground">Page region</span>
+    </div>
+  </div>
 </Preview>
 
-## Scale
+## Layout benchmarks
 
-| Step | Value | Typical use |
-| --- | ---: | --- |
-| `1` | 4px | Icon-to-label micro gap |
-| `2` | 8px | Adjacent controls |
-| `3` | 12px | Toolbar and field gaps |
-| `4` | 16px | Card padding and grid gaps |
-| `6` | 24px | Section spacing |
-| `8` | 32px | Page regions |
+| Role                  |  Default | Notes                                     |
+| --------------------- | -------: | ----------------------------------------- |
+| Standard control      |   `36px` | Buttons, fields, and compound controls    |
+| Compact control       |   `28px` | Ribbon and explicitly compact contexts    |
+| Coarse-pointer target |   `44px` | Minimum touch and coarse-pointer hit area |
+| Header                |   `56px` | Documentation and workspace header        |
+| Documentation sidebar |  `248px` | Persistent documentation navigation       |
+| Reading column        |  `752px` | Approximately 65–75 characters            |
+| Documentation shell   | `1440px` | Maximum content width                     |
 
-## Layout parameters
+Page padding is 16px on phones, 24px on tablets, and 32–48px on desktop. Below 900px, secondary inspectors become overlays. Below 768px, persistent navigation becomes dismissible. Below 520px, headers retain identity and essential actions while bottom actions protect the safe area.
 
-Application components expose continuous values as CSS variables:
+## Application parameters
 
-| Variable | Default | Component |
-| --- | ---: | --- |
-| `--app-shell-navigation-size` | `15.5rem` | App Shell and task navigation |
-| `--a3s-task-reading-size` | `47.5rem` | Task transcript and composer |
-| `--a3s-task-inspector-size` | `21rem` | Task inspector |
-| `--a3s-touch-target` | `2.75rem` | Coarse-pointer hit target |
-| `--settings-navigation-size` | `14rem` | Settings Layout |
-| `--resource-grid-min` | `12rem` | Resource Grid |
-| `--resource-grid-gap` | `1rem` | Resource Grid |
-| `--split-pane-min-height` | `18rem` | Split Pane |
-| `--task-pane-width` | `18rem` | Task Pane |
-| `--task-pane-min-width` | `14rem` | Task Pane |
+| Variable                        |     Default | Component                     |
+| ------------------------------- | ----------: | ----------------------------- |
+| `--a3s-control-height`          |   `2.25rem` | Standard controls             |
+| `--a3s-control-height-sm`       |   `1.75rem` | Compact controls              |
+| `--a3s-touch-target`            |   `2.75rem` | Coarse-pointer hit target     |
+| `--a3s-task-navigation-size`    |   `15.5rem` | App Shell and task navigation |
+| `--a3s-task-reading-size`       |   `47.5rem` | Task transcript and composer  |
+| `--a3s-task-inspector-size`     |     `21rem` | Task inspector                |
+| `--a3s-activity-rail-size`      |  `2.875rem` | Collapsed navigation rail     |
+| `--a3s-workspace-header-height` |    `3.5rem` | Workspace Header              |
+| `--a3s-toolbar-height`          | `2.6875rem` | Standalone Toolbar row        |
+| `--a3s-toolbar-control-height`  | `1.8125rem` | Toolbar commands              |
+| `--a3s-ribbon-tabs-height`      |   `2.25rem` | Ribbon tabs                   |
+| `--a3s-ribbon-panel-height`     |  `4.625rem` | Ribbon command panel          |
+| `--a3s-status-height`           |   `1.75rem` | Status Bar                    |
 
-Use these parameters instead of overriding internal grid selectors.
-
-## Application density contract
-
-The A3S style pack applies compact controls inside generous task and page spacing. Override these semantic tokens only when the entire product needs a different density:
-
-| Token                           |    Default | Used by                              |
-| ------------------------------- | ---------: | ------------------------------------ |
-| `--a3s-control-height`          |  `2.25rem` | Standard controls                    |
-| `--a3s-control-height-sm`       |  `1.75rem` | Compact buttons and ribbon commands  |
-| `--a3s-control-height-xs`       |   `1.5rem` | Micro and icon controls              |
-| `--a3s-activity-rail-size`      | `2.875rem` | Collapsed App Shell / Activity Bar   |
-| `--a3s-workspace-header-height` | `3.125rem` | Workspace Header                     |
-| `--a3s-toolbar-height`          | `2.6875rem` | Standalone Toolbar row               |
-| `--a3s-toolbar-control-height`  | `1.8125rem` | Toolbar commands                     |
-| `--a3s-ribbon-tabs-height`      |  `2.25rem` | Ribbon tabs                          |
-| `--a3s-ribbon-panel-height`     | `4.625rem` | Ribbon command panel                 |
-| `--a3s-status-height`           |  `1.75rem` | Status Bar                           |
-
-Keep the 4px baseline when changing a token and validate the complete shell at desktop and compact widths.
+Override public variables before internal grid selectors. Keep the 4px baseline and validate desktop, 320px width, 200% zoom, and coarse pointers whenever density changes.

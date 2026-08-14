@@ -394,3 +394,35 @@ The web controller never executes a local process directly. Without a trusted ho
 ## Accessibility
 
 Give the root, preset selector, orientation group, URL input, and iframe accessible names. Orientation buttons use `aria-pressed`, and status output uses `aria-live="polite"`. The workspace remains an independent scroll owner, and scaling the visual frame does not reorder keyboard focus inside the iframe. Custom dimension controls must retain numeric `min`, `max`, and clear labels.
+
+## React
+
+```tsx
+import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDeviceSimulator();
+  return (
+    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">Component content</DeviceSimulator>
+  );
+}
+```
+
+`useDeviceSimulator` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/vue";
+
+const control = useDeviceSimulator();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DeviceSimulator ref="componentRef" aria-label="Device Simulator">Component content</DeviceSimulator>
+</template>
+```
+
+`useDeviceSimulator` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

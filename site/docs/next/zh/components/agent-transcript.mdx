@@ -97,3 +97,32 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
 ## 无障碍
 
 为区域提供可访问名称并保持时间顺序。只有实际发生溢出的视口才需要可聚焦。播报“Agent 已完成”或“需要审批”等粗粒度状态，不要把 Token 流本身放入实时区域。读者离开最新 Turn 后，新内容不得抢夺焦点或强制滚动页面。
+
+## React
+
+```tsx
+import { AgentTranscript } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <AgentTranscript aria-label="Agent Transcript">组件内容</AgentTranscript>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { AgentTranscript } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <AgentTranscript aria-label="Agent Transcript">组件内容</AgentTranscript>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

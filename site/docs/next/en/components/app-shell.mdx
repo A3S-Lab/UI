@@ -60,3 +60,35 @@ The shell has expanded, collapsed, hidden, full-viewport, and mobile-open states
 ## Accessibility
 
 Use landmark elements (`aside`, `nav`, `main`, `header`) and name each navigation region. The controller keeps `aria-expanded`, the trigger label, `inert`, and `aria-hidden` synchronized and restores trigger focus after dismissing the compact drawer. Keep navigation DOM-adjacent to the shell so the contained backdrop cannot cover unrelated page content.
+
+## React
+
+```tsx
+import { AppShell, useAppShell } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAppShell();
+  return (
+    <AppShell ref={control.ref}>Component content</AppShell>
+  );
+}
+```
+
+`useAppShell` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { AppShell, useAppShell } from "@a3s-lab/ui/vue";
+
+const control = useAppShell();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <AppShell ref="componentRef">Component content</AppShell>
+</template>
+```
+
+`useAppShell` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

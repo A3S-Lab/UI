@@ -164,3 +164,35 @@ Set `dir="rtl"` on the scrollable element or one of its ancestors to use right-t
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { ScrollArea, useScrollArea } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useScrollArea();
+  return (
+    <ScrollArea ref={control.ref}>Component content</ScrollArea>
+  );
+}
+```
+
+`useScrollArea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ScrollArea, useScrollArea } from "@a3s-lab/ui/vue";
+
+const control = useScrollArea();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ScrollArea ref="componentRef">Component content</ScrollArea>
+</template>
+```
+
+`useScrollArea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

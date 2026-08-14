@@ -54,3 +54,32 @@ Add `dir="rtl"` to the label or an ancestor.
   <input class="input" id="email-rtl" type="email" placeholder="name@example.com" />
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Label } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Label>Component content</Label>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Label } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Label>Component content</Label>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

@@ -96,3 +96,35 @@ Add this inline script before loading your styles so the stored mode is applied 
 | `window.a3sUI.theme.get()` | Method | Returns `"dark"` or `"light"`. |
 | `window.a3sUI.theme.set(mode)` | Method | Sets the mode to `"dark"` or `"light"` and stores it in `localStorage.themeMode`. |
 | `window.a3sUI.theme.toggle()` | Method | Toggles between dark and light mode. |
+
+## React
+
+```tsx
+import { ThemeSwitcher, useThemeSwitcher } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useThemeSwitcher();
+  return (
+    <ThemeSwitcher ref={control.ref}>Component content</ThemeSwitcher>
+  );
+}
+```
+
+`useThemeSwitcher` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ThemeSwitcher, useThemeSwitcher } from "@a3s-lab/ui/vue";
+
+const control = useThemeSwitcher();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ThemeSwitcher ref="componentRef">Component content</ThemeSwitcher>
+</template>
+```
+
+`useThemeSwitcher` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

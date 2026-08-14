@@ -294,3 +294,35 @@
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Select, useSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSelect();
+  return (
+    <Select ref={control.ref}>组件内容</Select>
+  );
+}
+```
+
+`useSelect` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Select, useSelect } from "@a3s-lab/ui/vue";
+
+const control = useSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Select ref="componentRef">组件内容</Select>
+</template>
+```
+
+`useSelect` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

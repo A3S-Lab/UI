@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { defineConfig, type UserConfig } from "@rspress/core";
+import { normalizeMdxHtmlPlugin } from "./plugins/normalize-mdx-html";
 import { previewSourcePlugin } from "./plugins/preview-source";
+import { standalonePagesPlugin } from "./plugins/standalone-pages";
 import { versionAwareLinksPlugin } from "./plugins/version-aware-links";
 
 const base = process.env.DOCS_BASE ?? "/UI/";
@@ -31,7 +33,10 @@ const config: UserConfig = {
     default: "next",
     versions: ["next", "v0.3.0", "v0.2.0", "v0.1.0"],
   },
-  plugins: [versionAwareLinksPlugin(__dirname)],
+  plugins: [
+    standalonePagesPlugin(__dirname),
+    versionAwareLinksPlugin(__dirname),
+  ],
   locales: [
     {
       lang: "zh",
@@ -49,7 +54,7 @@ const config: UserConfig = {
     },
   ],
   markdown: {
-    remarkPlugins: [previewSourcePlugin],
+    remarkPlugins: [previewSourcePlugin, normalizeMdxHtmlPlugin],
     globalComponents: [
       path.join(__dirname, "theme/mdx/A3SAssetImage.tsx"),
       path.join(__dirname, "theme/mdx/Callout.tsx"),
@@ -64,8 +69,9 @@ const config: UserConfig = {
   },
   head: [
     `<script>${themeBridgeScript}</script>`,
+    ["link", { rel: "icon", type: "image/png", href: `${base}logo.png` }],
     ["link", { rel: "apple-touch-icon", href: `${base}logo.png` }],
-    ["meta", { name: "theme-color", content: "#f8f9fb" }],
+    ["meta", { name: "theme-color", content: "#ffffff" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "A3S UI" }],
     [

@@ -90,3 +90,32 @@ The host application owns whether the pane is mounted or placed in a Split Pane.
 ## Accessibility
 
 Use `<aside>` when the pane is complementary to the editor and give its heading a stable accessible name. Return focus to the control that opened the pane when it closes.
+
+## React
+
+```tsx
+import { TaskPane } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <TaskPane aria-label="Task Pane">Component content</TaskPane>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { TaskPane } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <TaskPane aria-label="Task Pane">Component content</TaskPane>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

@@ -36,3 +36,32 @@ The layout uses a fixed secondary navigation boundary and an independently scrol
 ## Accessibility
 
 Use real form controls and field labels; do not replace configuration with an unstructured source editor. Keep advanced raw configuration as an optional escape hatch. Each section needs a unique heading and ID so navigation can deep-link to it.
+
+## React
+
+```tsx
+import { SettingsLayout } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <SettingsLayout>Component content</SettingsLayout>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { SettingsLayout } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <SettingsLayout>Component content</SettingsLayout>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

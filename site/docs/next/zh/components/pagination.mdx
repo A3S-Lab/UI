@@ -110,3 +110,32 @@ Pagination 组件将专用布局契约与 Button 控件组合使用。
   </ul>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+import { Pagination } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Pagination aria-label="Pagination"><a href="#current" aria-current="page">当前页面</a></Pagination>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { Pagination } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Pagination aria-label="Pagination"><a href="#current" aria-current="page">当前页面</a></Pagination>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

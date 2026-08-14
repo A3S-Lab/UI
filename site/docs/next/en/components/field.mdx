@@ -448,3 +448,32 @@ Add `dir="rtl"` to the field, fieldset, or an ancestor.
   </div>
 </fieldset>
 </Preview>
+
+## React
+
+```tsx
+import { Field } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Field>Component content</Field>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Field } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Field>Component content</Field>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

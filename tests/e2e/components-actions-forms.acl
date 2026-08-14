@@ -238,16 +238,19 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "filter-bar" {
-        name = "Filter Bar preserves its required choice and clears compound search input"
+        name = "Filter Bar restores required selection after removal and clears the complete query"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/filter-bar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "filter-ready" { visible = css("#filter-bar-demo-en[data-filter-bar-initialized=true]") }
+        click "remove-active-state" { target = css("#filter-bar-demo-en [data-filter-chip] [data-filter-remove]") }
+        expect "required-fallback-selected" { visible = css("#filter-bar-demo-en [data-filter-value=all][aria-pressed=true]") }
         click "choose-paused" { target = css("#filter-bar-demo-en [data-filter-value=paused]") }
         expect "paused-selected" { visible = css("#filter-bar-demo-en [data-filter-value=paused][aria-pressed=true]") }
         fill "search-projects" { target = css("#filter-bar-demo-en input[type=search]") value = "release" }
+        expect "compound-query-active" { visible = css("#filter-bar-demo-en[data-filters=active] input[type=search]:not(:placeholder-shown)") }
         click "clear-filters" { target = css("#filter-bar-demo-en [data-filter-clear]") }
         expect "required-default-restored" { visible = css("#filter-bar-demo-en [data-filter-value=all][aria-pressed=true]") }
         expect "search-cleared" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }

@@ -241,3 +241,32 @@ Add `dir="rtl"` to the button or an ancestor. Flip directional icons explicitly.
   </button>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { Button } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <Button>Component content</Button>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup>
+import { Button } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <Button>Component content</Button>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

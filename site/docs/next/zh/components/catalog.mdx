@@ -39,3 +39,35 @@
 ## 无障碍
 
 使用真实搜索输入框，切换型筛选使用按下状态。筛选后播报结果数量，但不要移动焦点。精选内容可以横向滚动，文档本身不能溢出。
+
+## React
+
+```tsx
+import { Catalog, useCatalog } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCatalog();
+  return (
+    <Catalog ref={control.ref} aria-label="Catalog">组件内容</Catalog>
+  );
+}
+```
+
+`useCatalog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Catalog, useCatalog } from "@a3s-lab/ui/vue";
+
+const control = useCatalog();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Catalog ref="componentRef" aria-label="Catalog">组件内容</Catalog>
+</template>
+```
+
+`useCatalog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。

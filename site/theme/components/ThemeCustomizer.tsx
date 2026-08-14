@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
+import { withBase } from "@rspress/core/runtime";
 
 type Locale = "zh" | "en";
 type Appearance = "light" | "dark" | "system";
@@ -7,7 +8,7 @@ type Radius = "sharp" | "balanced" | "rounded";
 type Density = "compact" | "comfortable";
 
 const accentOptions: Array<{ color: string; id: Accent; label: string }> = [
-  { id: "blue", label: "Blue", color: "#2864e8" },
+  { id: "blue", label: "Iris", color: "#5b57d9" },
   { id: "violet", label: "Violet", color: "#6d4aff" },
   { id: "emerald", label: "Emerald", color: "#0c9970" },
   { id: "amber", label: "Amber", color: "#c27216" },
@@ -333,7 +334,9 @@ export function ThemeCustomizer({ locale }: { locale: Locale }) {
         </div>
         <div className="ui-theme-product" aria-hidden="true">
           <header>
-            <span className="ui-theme-product__mark">A</span>
+            <span className="ui-theme-product__mark">
+              <img src={withBase("/logo.png")} alt="" />
+            </span>
             <strong>{labels.workspace}</strong>
             <span data-status>{labels.status}</span>
           </header>

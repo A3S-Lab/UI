@@ -44,10 +44,14 @@ const requiredFiles = [
   "dist/js/all.js",
   "dist/js/app-shell.js",
   "dist/js/app-shell.min.js",
+  "dist/js/bulk-action-bar.js",
+  "dist/js/bulk-action-bar.min.js",
   "dist/js/code-editor.js",
   "dist/js/code-editor.min.js",
   "dist/js/device-simulator.js",
   "dist/js/device-simulator.min.js",
+  "dist/js/file-explorer.js",
+  "dist/js/file-explorer.min.js",
   "dist/js/tree.js",
   "dist/js/task-workspace.js",
   "dist/js/task-workspace.min.js",
@@ -93,7 +97,7 @@ const componentManifest = JSON.parse(
 if (
   componentManifest.name !== manifest.name ||
   componentManifest.version !== 2 ||
-  componentManifest.components.length !== 89
+  componentManifest.components.length !== 111
 ) {
   throw new Error("AI component manifest metadata or coverage is invalid.");
 }

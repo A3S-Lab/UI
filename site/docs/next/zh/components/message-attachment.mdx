@@ -34,3 +34,32 @@
 ## 无障碍
 
 移除和重试按钮标签包含附件名。文件类型图标作为装饰并对辅助技术隐藏。
+
+## React
+
+```tsx
+import { MessageAttachment } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <MessageAttachment>组件内容</MessageAttachment>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { MessageAttachment } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <MessageAttachment>组件内容</MessageAttachment>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

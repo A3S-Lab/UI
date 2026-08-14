@@ -1,49 +1,69 @@
 # Color
 
-The A3S palette uses cool neutral surfaces and one deliberately scarce blue. Green, amber, and red report semantic state; they do not become page themes or category branding.
+A3S UI uses neutrals for structure and iris for focus and selection. Brand blue belongs to identity and information. Green, amber, and red report outcomes and never replace text, icons, or structure.
 
 <Preview>
-<div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
-  <div class="rounded-lg border border-border bg-background p-4"><div class="mb-3 h-12 rounded-md border border-border bg-background"></div><strong class="text-sm">Background</strong><code class="mt-1 block text-xs text-muted-foreground">--background</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md border border-border bg-card"></div><strong class="text-sm">Surface</strong><code class="mt-1 block text-xs text-muted-foreground">--card</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-primary"></div><strong class="text-sm">Primary</strong><code class="mt-1 block text-xs text-muted-foreground">--primary</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div><strong class="text-sm">A3S blue</strong><code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code></div>
-</div>
+  <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-lg border border-border bg-background p-4">
+      <div class="mb-3 h-12 rounded-md border border-border bg-background"></div>
+      <strong class="text-sm">Canvas</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--background</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-muted"></div>
+      <strong class="text-sm">Muted surface</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--muted</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-primary"></div>
+      <strong class="text-sm">Neutral primary</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--primary</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-4">
+      <div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div>
+      <strong class="text-sm">Iris focus</strong>
+      <code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code>
+    </div>
+  </div>
 </Preview>
 
 ## Semantic tokens
 
-| Role | Light | Dark | Use |
-| --- | --- | --- | --- |
-| `--background` | `#f8f9fb` | `#101118` | Application canvas |
-| `--foreground` | `#17191d` | `#f2f3f5` | Primary content |
-| `--card` | `#ffffff` | `#171820` | Raised or grouped surfaces |
-| `--muted` | `#f1f3f6` | `#1e2028` | Subtle fills and controls |
-| `--muted-foreground` | `#667085` | `#a4a8b2` | Supporting text |
-| `--border` | `#e6e8ec` | `#2a2d35` | Dividers and boundaries |
-| `--primary` | `#2864e8` | `#6ca3ff` | Primary actions and selection |
-| `--ring` | `#2864e8` | `#6ca3ff` | Keyboard focus |
-| `--destructive` | `#c9363c` | `#f27777` | Destructive actions and errors |
+| Role                    | Light     | Dark      | Use                            |
+| ----------------------- | --------- | --------- | ------------------------------ |
+| `--background`          | `#ffffff` | `#0d0d0f` | Application canvas             |
+| `--foreground`          | `#111113` | `#f4f4f5` | Primary content                |
+| `--card`                | `#ffffff` | `#151518` | Stable and raised surfaces     |
+| `--muted`               | `#f7f7f8` | `#19191d` | Muted surface                  |
+| `--accent`              | `#f4f4f5` | `#202024` | Hover surface                  |
+| `--a3s-panel-strong`    | `#eeeeef` | `#26262b` | Active surface                 |
+| `--muted-foreground`    | `#52525b` | `#b4b4bc` | Supporting text                |
+| `--a3s-subtle`          | `#71717a` | `#888891` | Nonessential annotation        |
+| `--border`              | `#dedee1` | `#333338` | Control and overlay boundaries |
+| `--input`               | `#c9c9ce` | `#45454b` | Strong boundary                |
+| `--primary`             | `#111113` | `#f4f4f5` | Default primary action         |
+| `--ring` / `--a3s-blue` | `#5b57d9` | `#8378f0` | Focus, links, and selection    |
+| `--a3s-brand-blue`      | `#249bf6` | `#38a8eb` | A3S identity and information   |
 
-## Semantic reserve
+## Reserved state colors
 
 <Preview>
-<div class="flex w-full flex-wrap gap-3">
-  <span class="badge bg-[var(--a3s-blue)] text-white">Action / selection</span>
-  <span class="badge bg-[var(--a3s-green)] text-white">Success</span>
-  <span class="badge bg-[var(--a3s-warning)] text-white">Warning</span>
-  <span class="badge bg-destructive text-white">Danger</span>
-</div>
+  <div class="flex w-full flex-wrap gap-3">
+    <span class="badge bg-[var(--a3s-blue)] text-white">Focus / selection</span>
+    <span class="badge bg-[var(--a3s-green)] text-white">Success</span>
+    <span class="badge bg-[var(--a3s-warning)] text-white">Warning</span>
+    <span class="badge bg-destructive text-white">Danger</span>
+  </div>
 </Preview>
 
-Use blue for action, selection, progress, and focus. Use green, amber, and red only when status requires them; none of these colors should fill a whole navigation or page region. Text still needs sufficient contrast in both themes.
+Success, warning, and danger resolve to `#16845b`, `#a86412`, and `#c93d45` in light mode, then `#57c795`, `#e7ad55`, and `#ef7a82` in dark mode. Do not use these colors to decorate ordinary cards, navigation, or toolbars.
 
 ```css
-.my-resource {
-  --resource-accent: var(--a3s-blue);
+.selection-region {
+  --ring: var(--a3s-blue);
 }
 ```
 
 ## Parameters
 
-Theme switching uses the `dark` class on `<html>`. Consumers can override any semantic token at `:root`, within `.dark`, or inside a scoped product container. Keep the token names stable so components and documentation previews stay synchronized.
+Theme switching uses the `dark` class on `<html>`. Consumers may override semantic tokens at `:root`, within `.dark`, or inside a scoped product container, but must revalidate text contrast, visible focus, and state meaning together.

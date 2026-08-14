@@ -35,3 +35,35 @@ Use Tool Call when input/output structure matters. Use Execution Item for a high
 ## Accessibility
 
 The visible title names the action without relying on the provider or icon. Redact secrets before rendering input or output.
+
+## React
+
+```tsx
+import { ToolCall, useToolCall } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useToolCall();
+  return (
+    <ToolCall ref={control.ref}><summary>View details</summary><div>Component content</div></ToolCall>
+  );
+}
+```
+
+`useToolCall` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { ToolCall, useToolCall } from "@a3s-lab/ui/vue";
+
+const control = useToolCall();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ToolCall ref="componentRef"><summary>View details</summary><div>Component content</div></ToolCall>
+</template>
+```
+
+`useToolCall` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

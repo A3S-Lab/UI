@@ -56,3 +56,32 @@
 ## 可访问性
 
 始终提供可见状态文本，让颜色和可选圆点只作为冗余提示。不要为每个徽章都添加 `role="status"`；只有宿主应用确实需要播报状态变化时才使用实时区域。若状态属于某个控件或区域，其加载、错误和关联语义应保留在对应控件或区域上。
+
+## React
+
+```tsx
+import { StatusBadge } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <StatusBadge>组件内容</StatusBadge>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup>
+import { StatusBadge } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <StatusBadge>组件内容</StatusBadge>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

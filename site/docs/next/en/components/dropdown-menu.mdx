@@ -192,6 +192,8 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 | `dropdown.toggle()` | Method | Toggles the menu. |
 | `dropdown.refresh()` | Method | Rescans menu items after children change inside the existing `role="menu"` element. |
 
+React `useDropdownMenu` and the equivalent Vue composable expose all four methods through `call()`.
+
 ## Examples
 
 ### Basic
@@ -508,3 +510,35 @@ Dropdown menus support document direction. Set `dir="rtl"` on the dropdown root 
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+import { DropdownMenu, useDropdownMenu } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useDropdownMenu();
+  return (
+    <DropdownMenu ref={control.ref}>Component content</DropdownMenu>
+  );
+}
+```
+
+`useDropdownMenu` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { DropdownMenu, useDropdownMenu } from "@a3s-lab/ui/vue";
+
+const control = useDropdownMenu();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <DropdownMenu ref="componentRef">Component content</DropdownMenu>
+</template>
+```
+
+`useDropdownMenu` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

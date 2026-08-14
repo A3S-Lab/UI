@@ -39,3 +39,35 @@ Keep the page skeleton stable while card content distinguishes assistants, skill
 ## Accessibility
 
 Use a real search input and pressed state for toggle filters. Announce result counts after filtering without moving focus. Featured content may scroll horizontally, but the document must not overflow.
+
+## React
+
+```tsx
+import { Catalog, useCatalog } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCatalog();
+  return (
+    <Catalog ref={control.ref} aria-label="Catalog">Component content</Catalog>
+  );
+}
+```
+
+`useCatalog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { Catalog, useCatalog } from "@a3s-lab/ui/vue";
+
+const control = useCatalog();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Catalog ref="componentRef" aria-label="Catalog">Component content</Catalog>
+</template>
+```
+
+`useCatalog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
