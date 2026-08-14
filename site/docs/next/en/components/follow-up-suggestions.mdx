@@ -1,0 +1,32 @@
+# Follow-up Suggestions
+
+Follow-up Suggestions offers a small set of relevant next actions after a stable result. Suggestions never replace the primary composer.
+
+<Preview class="w-full max-w-3xl">
+  <nav class="follow-up-suggestions" aria-label="Suggested follow-up actions"><strong>Continue with</strong><ul><li><button type="button">Review the changed files</button></li><li><button type="button">Run the full release checks</button></li><li><button type="button">Draft a release summary</button></li></ul></nav>
+</Preview>
+
+## Usage
+
+```html
+<nav class="follow-up-suggestions" aria-label="Suggested follow-up actions">
+  <strong>Continue with</strong>
+  <ul><li><button type="button">Review the changed files</button></li></ul>
+</nav>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| Named `<nav>` | Required | Groups next-action controls |
+| Direct `<ul>` | Required | Unordered suggestion list |
+| Native button or link | Required per item | Submit text or navigate |
+
+## States and variants
+
+Show two to four specific actions. Hide the component when no suggestion is useful instead of filling space with generic prompts.
+
+## Accessibility
+
+The navigation label distinguishes suggestions from task navigation. Buttons describe the action that will occur.

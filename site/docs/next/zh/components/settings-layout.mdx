@@ -25,13 +25,13 @@ Settings Layout 提供可导航的配置分区与真实表单控件，适用于�
 | 参数 | 默认 | 目的 |
 | --- | --- | --- |
 | `--settings-navigation-size` | `14rem` | 导航栏宽度 |
-| `--settings-sticky-offset` | `1rem` | 粘性导航顶部偏移 |
+| `--settings-layout-height` | `auto` | 可选有界高度，导航与内容独立滚动 |
 | `--settings-section-gap` | `1.5rem` | 配置部分之间的间隙 |
 | `aria-current="page"` | — | 标记活动设置目标 |
 
 ## 变体和状态
 
-布局变成 768px 以下的水平滚动部分列表。 表单状态属于子基元：`required`、`disabled`、`aria-invalid`、验证消息、内部状态授权和保存反馈。
+布局使用固定的二级导航边界和独立滚动内容区。低于 768px 时，导航变成有边界的横向分区列表。表单状态属于子组件：`required`、`disabled`、`aria-invalid`、验证消息、脏状态和保存反馈。需要稳定的“名称—控件”网格时，组合[设置行](/components/setting-row)。
 
 ## 可访问性
 

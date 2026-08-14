@@ -1,0 +1,41 @@
+# 设置行
+
+设置行在稳定网格中对齐设置名称、直接说明、控件和可选验证信息。多个设置行放在设置列表中，再组合进设置布局。
+
+<Preview class="w-full">
+  <div class="setting-list w-full">
+    <div class="setting-row"><div data-setting-identity><strong>语言</strong><p>选择界面显示语言。</p></div><div data-setting-control><select class="select" aria-label="语言"><option>简体中文</option><option>English</option></select></div></div>
+    <div class="setting-row"><div data-setting-identity><strong>跟随系统主题</strong><p>使用操作系统的外观设置。</p></div><div data-setting-control><input class="input" type="checkbox" role="switch" defaultChecked aria-label="跟随系统主题" /></div></div>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<div class="setting-list">
+  <div class="setting-row">
+    <div data-setting-identity><strong>语言</strong><p>选择界面显示语言。</p></div>
+    <div data-setting-control><select class="select">...</select></div>
+    <p data-setting-message>...</p>
+  </div>
+</div>
+```
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `class="setting-list"` | 组合相邻设置行和共享边界 |
+| `class="setting-row"` | 稳定的名称与控件网格 |
+| `data-setting-identity` | 设置名称和直接说明 |
+| `data-setting-control` | 原生或复合控件 |
+| `data-setting-message` | 可选验证或恢复信息 |
+| `data-state="invalid"` | 无效设置行样式 |
+
+## 状态和变体
+
+焦点、禁用、加载、选中和只读状态由子控件承担。设置行负责建立名称、控件和错误恢复之间的关系。低于 640 像素时按 DOM 顺序堆叠。
+
+## 无障碍
+
+用原生标签或明确的 ARIA 名称关联控件。说明和错误信息通过 `aria-describedby` 关联，无效控件同时设置 `aria-invalid="true"`。

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-13T16:19:48Z",
+  "title": "Design System: A3S UI",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Cool Canvas",
+        "canonical": "#f8f9fb",
+        "tonalRamp": ["#20242b", "#3d424c", "#5c626d", "#7c838e", "#9da3ad", "#bec3ca", "#dfe2e7", "#f8f9fb"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Working Paper",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#202124", "#404145", "#606267", "#818388", "#a2a4a9", "#c4c5c9", "#e5e6e8", "#ffffff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Workbench Ink",
+        "canonical": "#17191d",
+        "tonalRamp": ["#17191d", "#34373d", "#52555d", "#71747c", "#91949b", "#b1b3b9", "#d2d3d6", "#f3f3f4"]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Slate Annotation",
+        "canonical": "#667085",
+        "tonalRamp": ["#1f2632", "#364154", "#4e5c76", "#667085", "#8690a2", "#a7aebb", "#c9cdd5", "#eef0f3"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e6e8ec",
+        "tonalRamp": ["#24272d", "#43474f", "#626770", "#82868f", "#a3a6ad", "#c3c6cb", "#e6e8ec", "#f7f8fa"]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "A3S Signal Blue",
+        "canonical": "#2864e8",
+        "tonalRamp": ["#09205c", "#103893", "#1850c4", "#2864e8", "#5686ef", "#86a8f5", "#b9ccfa", "#eef4ff"]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Blue Mist",
+        "canonical": "#eef4ff",
+        "tonalRamp": ["#0b245e", "#163c91", "#2b59bd", "#5278d8", "#7c9ae8", "#a7bbf3", "#d1ddfa", "#eef4ff"]
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "Completion Green",
+        "canonical": "#16835b",
+        "tonalRamp": ["#082a20", "#0b4934", "#106846", "#16835b", "#45a17c", "#78bea0", "#b0d9c6", "#edf8f2"]
+      },
+      "warning": {
+        "role": "secondary",
+        "displayName": "Attention Amber",
+        "canonical": "#a85f0c",
+        "tonalRamp": ["#341b04", "#5a3005", "#824708", "#a85f0c", "#c78335", "#dea86a", "#efcfaa", "#fff5e7"]
+      },
+      "danger": {
+        "role": "secondary",
+        "displayName": "Blocking Red",
+        "canonical": "#c9363c",
+        "tonalRamp": ["#3d0c12", "#68151d", "#951f29", "#c9363c", "#df6165", "#ee9294", "#f7c3c4", "#fff0f0"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Start and empty surfaces only." },
+      "headline": { "displayName": "Page headline", "purpose": "Catalog, project, automation, and settings titles." },
+      "body": { "displayName": "Body", "purpose": "Task content and descriptions." },
+      "label": { "displayName": "UI label", "purpose": "Controls, navigation, and compact cards." },
+      "mono": { "displayName": "Data mono", "purpose": "Code, commands, paths, and measurements." }
+    },
+    "shadows": [
+      { "name": "composer", "value": "0 8px 24px rgb(27 39 67 / 8%)", "purpose": "Anchors a docked or floating task composer." },
+      { "name": "overlay", "value": "0 12px 32px rgb(27 39 67 / 11%)", "purpose": "Menus, popovers, drawers, and overlay inspectors." },
+      { "name": "dialog", "value": "0 24px 64px rgb(27 39 67 / 18%)", "purpose": "Modal dialogs and major floating panels." }
+    ],
+    "motion": [
+      { "name": "fast", "value": "120ms ease", "purpose": "Color and focus feedback." },
+      { "name": "normal", "value": "160ms ease", "purpose": "Hover, selection, and local state feedback." },
+      { "name": "overlay", "value": "220ms ease-out", "purpose": "Contained drawers, dialogs, and inspectors." }
+    ],
+    "breakpoints": [
+      { "name": "inspector-overlay", "value": "900px" },
+      { "name": "navigation-drawer", "value": "768px" },
+      { "name": "inspector-bottom-drawer", "value": "520px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single primary action in the current region.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Start task</button>",
+      "css": ".ds-btn-primary{height:36px;padding:0 13px;border:1px solid #2864e8;border-radius:6px;background:#2864e8;color:#fff;font:600 13px/1.25 \"Geist Sans\",system-ui,sans-serif;transition:background-color 160ms ease,transform 160ms ease}.ds-btn-primary:hover{background:#1f55cc}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid #2864e8;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A quiet adjacent action with a hairline boundary.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Review changes</button>",
+      "css": ".ds-btn-secondary{height:36px;padding:0 13px;border:1px solid #d7dae0;border-radius:6px;background:#fff;color:#17191d;font:600 13px/1.25 \"Geist Sans\",system-ui,sans-serif;transition:background-color 160ms ease,border-color 160ms ease}.ds-btn-secondary:hover{border-color:#9eb6ee;background:#f1f3f6}.ds-btn-secondary:focus-visible{outline:2px solid #2864e8;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Paper input with a one-pixel boundary and clear focus ring.",
+      "html": "<input class=\"ds-input\" aria-label=\"Task name\" value=\"Release readiness review\">",
+      "css": ".ds-input{box-sizing:border-box;width:280px;height:36px;padding:0 10px;border:1px solid #d7dae0;border-radius:6px;background:#fff;color:#17191d;font:400 14px/1.55 \"Geist Sans\",system-ui,sans-serif}.ds-input:hover{border-color:#9eb6ee}.ds-input:focus-visible{border-color:#2864e8;outline:2px solid rgb(40 100 232 / 18%);outline-offset:1px}"
+    },
+    {
+      "name": "Current Navigation Item",
+      "kind": "nav",
+      "refersTo": "navigation-item",
+      "description": "A tonal current row for durable task context.",
+      "html": "<a class=\"ds-nav-item\" href=\"#\" aria-current=\"page\">Release readiness review</a>",
+      "css": ".ds-nav-item{display:flex;align-items:center;width:224px;height:38px;padding:0 9px;border-radius:6px;background:#eef4ff;color:#1749ad;text-decoration:none;font:600 13px/1.25 \"Geist Sans\",system-ui,sans-serif}.ds-nav-item:hover{background:#e2ecff}.ds-nav-item:focus-visible{outline:2px solid #2864e8;outline-offset:2px}"
+    },
+    {
+      "name": "Resource Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A flat catalog surface that changes tone, never height.",
+      "html": "<button class=\"ds-resource-card\" type=\"button\"><strong>Code review</strong><small>A3S Lab</small><span>Review focused changes and evidence.</span></button>",
+      "css": ".ds-resource-card{display:grid;gap:5px;width:250px;padding:16px;border:1px solid #e6e8ec;border-radius:10px;background:#fff;color:#17191d;text-align:left;font-family:\"Geist Sans\",system-ui,sans-serif;transition:background-color 160ms ease,border-color 160ms ease}.ds-resource-card strong{font-size:14px}.ds-resource-card small,.ds-resource-card span{color:#667085;font-size:12px;line-height:1.45}.ds-resource-card:hover{border-color:#a9bdea;background:#f7f9ff}.ds-resource-card:focus-visible{outline:2px solid #2864e8;outline-offset:2px}"
+    },
+    {
+      "name": "Task Composer",
+      "kind": "custom",
+      "description": "The one intentionally elevated authoring surface.",
+      "html": "<form class=\"ds-composer\"><textarea aria-label=\"Instruction\" placeholder=\"Describe the task…\"></textarea><footer><button type=\"button\">Attach</button><button type=\"submit\">Send</button></footer></form>",
+      "css": ".ds-composer{box-sizing:border-box;display:grid;gap:10px;width:520px;max-width:100%;padding:14px;border:1px solid #e6e8ec;border-radius:14px;background:#fff;box-shadow:0 8px 24px rgb(27 39 67 / 8%)}.ds-composer textarea{min-height:64px;border:0;outline:0;resize:vertical;color:#17191d;font:400 15px/1.5 \"Geist Sans\",system-ui,sans-serif}.ds-composer footer{display:flex;justify-content:space-between}.ds-composer button{height:32px;padding:0 10px;border:0;border-radius:6px;background:#f1f3f6;color:#17191d}.ds-composer button[type=submit]{background:#2864e8;color:#fff}.ds-composer:focus-within{border-color:#2864e8;box-shadow:0 8px 24px rgb(27 39 67 / 8%),0 0 0 3px rgb(40 100 232 / 18%)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clear Workbench",
+    "overview": "A3S UI is a task-centered work surface. It gives durable context a quiet fixed home, lets the current task occupy an open canvas, and raises only the controls that need immediate attention. The system feels calm, exact, and familiar under long sessions; hierarchy comes from position, whitespace, type, and one-pixel boundaries rather than decorative containers.\n\nThe visual language is original to A3S: cool neutral surfaces, a deliberately scarce A3S blue, Geist typography, and semantic status colors used only when state matters. It does not use promotional modules, mascots, ornamental gradients, or a green product palette. Application patterns preserve semantic HTML, native controls, and small idempotent JavaScript controllers.",
+    "keyCharacteristics": [
+      "Fixed task context beside an open primary canvas.",
+      "One elevated input surface; most content remains flat.",
+      "Cool daylight neutrals with blue reserved for action, selection, and focus.",
+      "Compact controls inside generous page and section spacing.",
+      "Complete interaction states across light, dark, narrow, RTL, and reduced-motion contexts."
+    ],
+    "rules": [
+      { "name": "The Ten Percent Rule", "body": "A3S Signal Blue is rare enough that its appearance always means action, selection, progress, or focus.", "section": "colors" },
+      { "name": "The Semantic Reserve Rule", "body": "Green, amber, and red may describe state but may not brand navigation, whole cards, or page regions.", "section": "colors" },
+      { "name": "The Dark Theme Rule", "body": "Dark mode preserves the same hierarchy with a near-black canvas, charcoal paper, cool light text, and a lighter A3S blue; it does not invert every neutral mechanically.", "section": "colors" },
+      { "name": "The Open Transcript Rule", "body": "Assistant output reads as document content on the canvas. Do not put every response inside a bordered message card.", "section": "typography" },
+      { "name": "The Mono Means Data Rule", "body": "Monospace communicates code, commands, paths, or measurement; it is never decorative technical styling.", "section": "typography" },
+      { "name": "The Context-and-Canvas Rule", "body": "Persistent context owns a stable edge; the current task owns the open center. Do not turn navigation, transcript, and inspector into equal floating cards.", "section": "layout" },
+      { "name": "The One Scroll Owner Rule", "body": "Every application region declares its scroll owner. Avoid nested transcript and page scrolling.", "section": "layout" },
+      { "name": "The Earned Elevation Rule", "body": "A surface receives shadow only when it floats above content or must remain perceptually anchored while the content scrolls beneath it.", "section": "elevation" },
+      { "name": "The Single Boundary Rule", "body": "Use a border or a broad shadow to express one edge. Do not combine a visible card border with a generic shadow by default.", "section": "elevation" },
+      { "name": "The Radius Follows Hierarchy Rule", "body": "Inner controls are never rounder than the surface containing them unless the control is explicitly circular.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep the task, its transcript, and its input in one continuous workspace.",
+      "Do use whitespace and stable regions before adding another container.",
+      "Do keep one obvious primary action per region and use blue consistently for it.",
+      "Do preserve semantic landmarks, native elements, logical properties, and predictable keyboard behavior.",
+      "Do document and test empty, loading, error, disabled, selected, open, narrow, dark, and RTL states.",
+      "Do let cards differ by content and status while sharing one catalog skeleton.",
+      "Do use exact A3S product language and real workflow-shaped example data."
+    ],
+    "donts": [
+      "Don't mention or imitate another product's brand, palette, copy, mascot, promotional modules, or illustrations.",
+      "Don't wrap assistant messages, settings sections, page regions, and cards inside progressively larger cards.",
+      "Don't use green, purple, gradients, or glow as a general technology aesthetic.",
+      "Don't add shadow to static containers or lift cards on hover.",
+      "Don't use pills for ordinary buttons, tags, tabs, and navigation rows.",
+      "Don't hide selection, error, approval, or focus state behind color alone.",
+      "Don't let compact desktop controls fall below 44px hit targets on coarse pointers.",
+      "Don't make mobile a scaled-down desktop; close navigation, collapse inspectors, and keep the composer usable above the safe area."
+    ]
+  }
+}

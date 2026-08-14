@@ -1,0 +1,37 @@
+# 任务启动页
+
+任务启动页在宽松画布中集中展示第一条指令、克制的建议操作和任务输入器。它用于尚未创建任务的起始界面。
+
+<Preview class="w-full">
+  <section class="task-start min-h-[32rem] rounded-xl border border-border">
+    <header><h2>这次要完成什么？</h2><p>描述结果，并选择任务运行位置。</p></header>
+    <nav data-task-suggestions aria-label="任务建议"><ul><li><button type="button">分析代码仓库</button></li><li><button type="button">起草项目计划</button></li><li><button type="button">审查近期变更</button></li></ul></nav>
+    <form class="agent-composer" aria-label="新建任务"><textarea aria-label="任务指令" placeholder="描述任务…"></textarea><footer><div data-composer-tools><button type="button" class="btn" data-variant="ghost" data-size="sm">附件</button><button type="button" class="btn" data-variant="ghost" data-size="sm">自动</button></div><div data-composer-actions><button type="submit" class="btn" data-size="sm">开始</button></div></footer></form>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="task-start">
+  <header><h1>这次要完成什么？</h1></header>
+  <nav data-task-suggestions aria-label="任务建议">...</nav>
+  <form class="agent-composer" aria-label="新建任务">...</form>
+</section>
+```
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `class="task-start"` | 居中任务启动界面 |
+| `data-task-suggestions` | 可选且有边界的起始操作 |
+| `--task-start-content-width` | 建议和输入器的共享宽度，默认 `47.5rem` |
+
+## 状态和变体
+
+空白、已输入、无效、禁用、离线、排队和加载状态由输入器承担。建议操作可以省略，展示时必须执行真实操作，例如填入任务指令。
+
+## 无障碍
+
+为建议导航和输入器提供名称。DOM 顺序中建议位于输入器之前。窄屏改为起始边对齐，并保留 44 像素粗指针目标。

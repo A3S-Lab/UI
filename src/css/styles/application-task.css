@@ -1,0 +1,242 @@
+/* Task, catalog, settings, project, and automation visuals shared by every style pack. */
+@layer components {
+  .app-page {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    gap: 2rem;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .app-page > header {
+    padding-block-end: 0.25rem;
+  }
+
+  .app-page > header > [data-page-identity] > :is(h1, h2, p) {
+    margin: 0;
+  }
+
+  .app-page > header > [data-page-identity] > :is(h1, h2) {
+    font-size: clamp(1.375rem, 2vw, 1.75rem);
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .app-page > header > [data-page-identity] > p {
+    max-width: 65ch;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .task-start {
+    padding: clamp(1.25rem, 4vw, 3rem);
+    gap: 1.25rem;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .task-start > header {
+    gap: 0.5rem;
+  }
+
+  .task-start > header > :is(h1, h2, p) {
+    margin: 0;
+  }
+
+  .task-start > header > :is(h1, h2) {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 650;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .task-start > header > p,
+  .task-start > footer {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .task-start > [data-task-suggestions] {
+    padding-block: 0.125rem;
+  }
+
+  .task-start > [data-task-suggestions] :is(a, button) {
+    min-height: 2.25rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition:
+      border-color var(--a3s-motion-normal, 160ms) ease,
+      background-color var(--a3s-motion-normal, 160ms) ease,
+      color var(--a3s-motion-normal, 160ms) ease;
+  }
+
+  .task-start > [data-task-suggestions] :is(a, button):hover {
+    border-color: color-mix(in srgb, var(--a3s-blue, var(--primary)) 24%, var(--border));
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .task-start > [data-task-suggestions] :is(a, button):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .task-workspace {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .task-workspace > [data-task-body] > [data-task-inspector] {
+    border-inline-start: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  @media (max-width: 56.25rem) {
+    .task-workspace[data-inspector='open'] [data-task-inspector] {
+      border-inline-start: 0;
+      box-shadow: var(--a3s-shadow-soft, 0 12px 32px rgb(27 39 67 / 11%));
+    }
+  }
+
+  .task-workspace [data-task-main] > .agent-composer {
+    margin-block-end: 1rem;
+  }
+
+  .catalog {
+    gap: 1.75rem;
+  }
+
+  .catalog > header {
+    padding-block-end: 0.875rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .catalog > header > [data-catalog-identity] {
+    gap: 0.25rem;
+  }
+
+  .catalog > header > [data-catalog-identity] > :is(h1, h2, p) {
+    margin: 0;
+  }
+
+  .catalog > header > [data-catalog-identity] > :is(h1, h2) {
+    font-size: 1.5rem;
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+
+  .catalog > header > [data-catalog-identity] > p {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .catalog > [data-catalog-featured] > :is(ul, ol) > li {
+    min-height: 9rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: color-mix(in srgb, var(--a3s-blue, var(--primary)) 4%, var(--card));
+  }
+
+  .catalog > [data-catalog-featured] > :is(ul, ol) > li:nth-child(3n + 2) {
+    background: color-mix(in srgb, var(--muted) 62%, var(--card));
+  }
+
+  .catalog > [data-catalog-toolbar] {
+    min-height: 2.25rem;
+  }
+
+  .catalog [data-catalog-count] {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .setting-list {
+    border-block-start: 1px solid var(--border);
+  }
+
+  .setting-row {
+    min-height: 4.75rem;
+    padding: 1rem 1.125rem;
+    gap: 1rem 1.5rem;
+    border-block-end: 1px solid var(--border);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .setting-row > [data-setting-identity] {
+    gap: 0.1875rem;
+  }
+
+  .setting-row > [data-setting-identity] > :is(h2, h3, strong, p),
+  .setting-row > [data-setting-message] {
+    margin: 0;
+  }
+
+  .setting-row > [data-setting-identity] > :is(h2, h3, strong) {
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1.25rem;
+  }
+
+  .setting-row > [data-setting-identity] > p,
+  .setting-row > [data-setting-message] {
+    max-width: 65ch;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.35rem;
+  }
+
+  .setting-row[data-state='invalid'] > [data-setting-message] {
+    color: var(--destructive);
+  }
+
+  .activity-bar [data-navigation-group] {
+    padding-block-start: 0.25rem;
+  }
+
+  .activity-bar [data-navigation-group] > header {
+    min-height: 1.75rem;
+    padding-inline: 0.625rem;
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    font-weight: 600;
+    line-height: 1rem;
+  }
+
+  @media (max-width: 40rem) {
+    .app-page,
+    .task-start {
+      padding: 1rem;
+    }
+
+    .setting-row {
+      padding-inline: 1rem;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .task-start > [data-task-suggestions] :is(a, button) {
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .task-start > [data-task-suggestions] :is(a, button) {
+      transition: none;
+    }
+  }
+}

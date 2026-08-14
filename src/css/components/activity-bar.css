@@ -33,6 +33,27 @@
     list-style: none;
   }
 
+  .activity-bar [data-navigation-group] {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .activity-bar [data-navigation-group] > header {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .activity-bar [data-navigation-group] > header > :is(h2, h3, strong, span) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .activity-bar li > :is(a, button) {
     position: relative;
     display: flex;

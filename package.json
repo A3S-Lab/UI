@@ -66,10 +66,34 @@
     "./basecoat.min": "./dist/js/basecoat.min.js",
     "./runtime": "./dist/js/runtime.js",
     "./runtime.min": "./dist/js/runtime.min.js",
+    "./ai": {
+      "types": "./dist/ai/runtime.d.ts",
+      "import": "./dist/ai/runtime.js"
+    },
+    "./manifest": {
+      "types": "./dist/ai/manifest.d.ts",
+      "import": "./dist/ai/manifest.js"
+    },
+    "./components.json": "./dist/ai/components.json",
+    "./a3s-test": "./dist/ai/a3s-test.acl",
+    "./a3s-test/selectors": {
+      "types": "./dist/ai/a3s-test/selectors.d.ts",
+      "import": "./dist/ai/a3s-test/selectors.js"
+    },
+    "./react": {
+      "types": "./dist/frameworks/react.d.ts",
+      "import": "./dist/frameworks/react.js"
+    },
+    "./vue": {
+      "types": "./dist/frameworks/vue.d.ts",
+      "import": "./dist/frameworks/vue.js"
+    },
     "./all": "./dist/js/all.js",
     "./all.min": "./dist/js/all.min.js",
     "./accordion": "./dist/js/accordion.js",
     "./accordion.min": "./dist/js/accordion.min.js",
+    "./app-shell": "./dist/js/app-shell.js",
+    "./app-shell.min": "./dist/js/app-shell.min.js",
     "./chart": "./dist/js/chart.js",
     "./chart.min": "./dist/js/chart.min.js",
     "./code-editor": "./dist/js/code-editor.js",
@@ -94,6 +118,8 @@
     "./sidebar.min": "./dist/js/sidebar.min.js",
     "./tabs": "./dist/js/tabs.js",
     "./tabs.min": "./dist/js/tabs.min.js",
+    "./task-workspace": "./dist/js/task-workspace.js",
+    "./task-workspace.min": "./dist/js/task-workspace.min.js",
     "./tree": "./dist/js/tree.js",
     "./tree.min": "./dist/js/tree.min.js",
     "./toast": "./dist/js/toast.js",
@@ -158,14 +184,28 @@
     "prepack": "node ./scripts/build.js",
     "prepublishOnly": "npm run build && npm run check:package",
     "check:package": "node ./scripts/check-package.mjs",
-    "release:check": "npm run build && npm run check:package && npm run docs:build && npm run test:e2e:a3s:check",
+    "check:frameworks": "node ./tests/framework-adapters.mjs",
+    "release:check": "npm run build && npm run check:package && npm run check:frameworks && npm run docs:build && npm run test:e2e:a3s:check",
     "docs:build": "npm run build && npm --prefix site clean-install --registry=https://registry.npmjs.org/ --replace-registry-host=never --progress=false && npm --prefix site run build && npm --prefix site run check:site",
     "docs:dev": "npm run build && npm --prefix site run dev",
     "docs:preview": "npm run docs:build && npm --prefix site run preview",
     "test:e2e:a3s": "npm run docs:build && node ./scripts/run-a3s-e2e.mjs",
     "test:e2e:a3s:check": "node ./scripts/run-a3s-e2e.mjs --check-only",
     "test:visual": "npm run build && playwright test --config playwright.config.ts",
+    "test:components:semantic": "npm run build && playwright test visual-tests/component-ai-contracts.visual.spec.ts --config playwright.config.ts --project desktop-1280",
     "test:visual:update": "npm run build && playwright test --config playwright.config.ts --update-snapshots"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "vue": ">=3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",

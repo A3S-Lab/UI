@@ -1,5 +1,11 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+declare global {
+  interface Window {
+    __previewCopiedSource?: string;
+  }
+}
+
 interface SwitchGeometry {
   checked: boolean;
   control: { height: number; width: number };
@@ -438,6 +444,75 @@ test("Field composition reuses a localized mutable Slider demo", async ({
   );
   await expect(chineseSlider).toHaveAttribute("aria-valuetext", "US$800");
   await expect(chinesePreview.locator("output")).toHaveText("US$800");
+});
+
+test("every Preview exposes keyboard-operable semantic source and copy feedback", async ({
+  context,
+  page,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        readText: async () => window.__previewCopiedSource ?? "",
+        writeText: async (value: string) => {
+          window.__previewCopiedSource = value;
+        },
+      },
+    });
+  });
+  await openComponent(page, "button");
+
+  const htmlPreview = page
+    .locator(".a3s-preview[data-preview-component=button]")
+    .first();
+  const previewTab = htmlPreview.getByRole("tab", { name: "Preview" });
+  const codeTab = htmlPreview.getByRole("tab", { name: "Code" });
+  await expect(htmlPreview).toHaveAttribute("data-preview-source", "ready");
+  await expect(previewTab).toHaveAttribute("aria-selected", "true");
+  await codeTab.click();
+  await expect(codeTab).toHaveAttribute("aria-selected", "true");
+  await expect(
+    htmlPreview.getByRole("tabpanel", { name: "Code" }),
+  ).toContainText('<button type="button" data-variant="outline" class="btn"');
+  await expect(htmlPreview.locator("[data-reactroot]")).toHaveCount(0);
+
+  const copyButton = htmlPreview.locator("[data-preview-copy]");
+  await expect(copyButton).toHaveAccessibleName("Copy code");
+  await copyButton.click();
+  await expect(copyButton).toHaveAccessibleName("Copied");
+  await expect
+    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+    .toContain('class="btn"');
+
+  await codeTab.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(previewTab).toBeFocused();
+  await expect(previewTab).toHaveAttribute("aria-selected", "true");
+  await expect(
+    htmlPreview.getByRole("button", { name: "Button", exact: true }),
+  ).toBeVisible();
+
+  await openComponent(page, "slider");
+  const reactPreview = page
+    .locator(
+      '.a3s-preview[data-preview-component=slider]:has([data-slider-demo="standalone"])',
+    )
+    .first();
+  await reactPreview.getByRole("tab", { name: "Code" }).click();
+  const reactSource = reactPreview.getByRole("tabpanel", { name: "Code" });
+  await expect(reactSource).toContainText('type="range"');
+  await expect(reactSource).not.toContainText("SliderDemo");
+  await expect(reactSource).not.toContainText("data-range-initialized");
+
+  await page.goto("components/button.html", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  const chinesePreview = page
+    .locator(".a3s-preview[data-preview-component=button]")
+    .first();
+  await expect(chinesePreview.getByRole("tab", { name: "预览" })).toBeVisible();
+  await expect(chinesePreview.getByRole("tab", { name: "代码" })).toBeVisible();
 });
 
 test("Button Group preserves joined edges while hovering and nesting", async ({

@@ -47,9 +47,10 @@
       }
       &[aria-hidden="true"] {
         @apply grid-rows-[0fr] overflow-hidden border-0 p-0 opacity-0;
+        visibility: hidden;
 
         .toast-content {
-          @apply border-0;
+          @apply min-h-0 border-0 py-0;
         }
       }
     }

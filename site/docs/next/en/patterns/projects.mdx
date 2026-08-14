@@ -1,0 +1,25 @@
+# Projects
+
+Projects combines existing project management with template-based creation. A project is durable context for related tasks, files, instructions, and collaborators; it is not another task list.
+
+<Preview class="w-full">
+  <section class="app-page min-h-[38rem] rounded-xl border border-border" data-width="wide">
+    <header><div data-page-identity><h2>Projects</h2><p>Keep related tasks, files, and instructions in one durable context.</p></div><div data-page-actions><button type="button" class="btn">New project</button></div></header>
+    <div data-page-content class="grid gap-8">
+      <section><div class="mb-3 flex items-center justify-between"><h3 class="font-semibold">Your projects</h3><input class="input" type="search" aria-label="Search projects" placeholder="Search projects" /></div><div class="resource-grid" style="--resource-grid-min:18rem"><article class="resource-card" data-orientation="horizontal"><figure class="text-xl font-semibold">UI</figure><section><strong>A3S UI</strong><small>3 active tasks · updated today</small></section></article><article class="resource-card" data-orientation="horizontal"><figure class="text-xl font-semibold">RT</figure><section><strong>Runtime release</strong><small>2 active tasks · updated yesterday</small></section></article></div></section>
+      <section><h3 class="mb-3 font-semibold">Start from a template</h3><div class="resource-grid" style="--resource-grid-min:16rem"><button type="button" class="resource-card"><section><strong>Product delivery</strong><small>Plan, implement, review, and ship</small></section></button><button type="button" class="resource-card"><section><strong>Research and comparison</strong><small>Sources, synthesis, and review</small></section></button><button type="button" class="resource-card"><section><strong>Team knowledge</strong><small>Guides, decisions, and references</small></section></button></div></section>
+    </div>
+  </section>
+</Preview>
+
+## Composition
+
+Use App Page, Input, Resource Grid, Resource Card, menus, Empty, and Dialog or a page-level creation form. Project templates create initial structure; existing project cards navigate to detail views.
+
+## Responsive behavior
+
+Search moves below the section heading when necessary. Grids collapse without forcing equal heights. Long project names and paths truncate within their own row, never the document.
+
+## Accessibility
+
+Use anchors for project navigation and buttons for template actions. Give search a label. Menus must not be nested inside a card link; place project actions in a sibling control or dedicated row. Project names, activity counts, update times, and templates in the preview are illustrative data.

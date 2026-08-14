@@ -8,20 +8,37 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
+        click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
         viewport "compact" { width = 768 height = 900 }
-        expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
+        expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
         navigate "reopen-compact" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "compact-loaded" { load = "networkidle" }
         wait "compact-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle][aria-expanded=false][aria-label='Open navigation']") }
-        click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-demo-shell-toggle]") }
+        expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
+        expect "compact-navigation-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation][inert][aria-hidden=true]") }
+        click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
         press "close-compact-navigation" { key = "Escape" }
-        expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-demo-shell-toggle]:focus") }
+        expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-app-navigation-trigger]:focus") }
         screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
+    }
+
+    scenario "task-workspace-overlays" {
+        name = "Task Workspace keeps compact navigation and inspector outside the keyboard path while closed"
+        surface = "web"
+        timeout_ms = 45000
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/task-workspace.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "navigation-inert" { visible = css(".a3s-preview .app-shell [data-app-navigation][inert][aria-hidden=true]") }
+        expect "inspector-inert" { visible = css(".a3s-preview .task-workspace [data-task-inspector][inert][aria-hidden=true]") }
+        click "open-inspector" { target = css(".a3s-preview [data-task-inspector-trigger]") }
+        expect "inspector-open" { visible = css(".a3s-preview .task-workspace[data-inspector=open] [data-task-inspector]:not([inert])") }
+        press "close-inspector" { key = "Escape" }
+        expect "inspector-focus-restored" { visible = css(".a3s-preview .task-workspace:not([data-inspector=open]) [data-task-inspector-trigger]:focus") }
     }
 
     scenario "agent-workbench" {
@@ -100,38 +117,42 @@ suite "a3s-ui-application-and-utilities" {
         expect "waiting-item-focused" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary:focus") }
     }
 
-    scenario "codex-workbench" {
-        name = "Codex Workbench keeps conversation, execution, approval, and context in one responsive workspace"
+    scenario "task-workspace" {
+        name = "Task Workspace keeps transcript, execution, approval, and changes in one responsive surface"
         surface = "web"
         timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/codex-workbench.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/task-workspace.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "shell-visible" { visible = css(".a3s-preview .app-shell") }
-        expect "conversation-visible" { visible = css(".a3s-preview .agent-transcript[aria-label=Conversation]") }
+        expect "transcript-visible" { visible = css(".a3s-preview .agent-transcript[aria-label='Task transcript']") }
+        expect "plan-visible" { visible = css(".a3s-preview .task-plan[data-state=active]") }
+        expect "attachment-visible" { visible = css(".a3s-preview .message-attachment[data-state=complete]") }
+        expect "tool-call-visible" { visible = css(".a3s-preview details.tool-call[data-state=success]") }
         expect "execution-visible" { visible = css(".a3s-preview details.execution-item") }
         expect "approval-visible" { visible = css(".a3s-preview .approval-request[data-state=pending]") }
+        expect "evidence-visible" { visible = css(".a3s-preview .execution-evidence[data-state=verified]") }
+        expect "artifact-visible" { visible = css(".a3s-preview .artifact-card[data-state=complete]") }
         expect "composer-visible" { visible = css(".a3s-preview form.agent-composer") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-main-visible" { visible = css(".a3s-preview .app-shell > [data-app-main]") }
-        expect "phone-queue-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
-        screenshot "codex-workbench-phone" { path = "patterns/codex-workbench-phone.png" }
+        expect "phone-send-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
+        screenshot "task-workspace-phone" { path = "patterns/task-workspace-phone.png" }
     }
 
-    scenario "new-agent-thread" {
-        name = "New Agent Thread keeps environment choices and first instruction in one submit boundary"
+    scenario "new-task" {
+        name = "New Task keeps suggestions and the first instruction in one submit boundary"
         surface = "web"
         timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/new-agent-thread.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/new-task.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "thread-form-visible" { visible = css(".a3s-preview form[aria-labelledby=new-thread-title]") }
-        expect "local-environment-selected" { visible = css(".a3s-preview input[name=new-thread-environment][value=local]:checked") }
-        expect "composer-section-visible" { visible = css(".a3s-preview form > div section.agent-composer:not(:has(form))") }
-        expect "instruction-visible" { visible = css(".a3s-preview section.agent-composer textarea[aria-label='First instruction']") }
+        expect "task-form-visible" { visible = css(".a3s-preview form.agent-composer[aria-label='Start a new task']") }
+        expect "suggestions-visible" { visible = css(".a3s-preview [data-task-suggestions] button") }
+        expect "instruction-visible" { visible = css(".a3s-preview form.agent-composer textarea[aria-label=Instruction]") }
         viewport "phone" { width = 390 height = 844 }
-        expect "phone-submit-visible" { visible = css(".a3s-preview form > div section.agent-composer button[type=submit]") }
-        screenshot "new-agent-thread-phone" { path = "patterns/new-agent-thread-phone.png" }
+        expect "phone-submit-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
+        screenshot "new-task-phone" { path = "patterns/new-task-phone.png" }
     }
 
     scenario "brand-lockup" {
@@ -279,6 +300,275 @@ suite "a3s-ui-application-and-utilities" {
             delta_y = 240
         }
         expect "scroll-area-visible" { visible = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar") }
+    }
+
+    scenario "app-page" {
+        name = "App Page keeps identity, actions, and page content in one responsive frame"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-page.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-identity]") }
+        expect "actions-visible" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions]") }
+        expect "content-visible" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-content]") }
+        viewport "phone" { width = 390 height = 844 }
+        focus "focus-primary-action" { target = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions] button") }
+        expect "primary-action-focused" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions] button:focus") }
+        screenshot "app-page-phone" { path = "components/app-page-phone.png" }
+    }
+
+    scenario "catalog" {
+        name = "Catalog keeps search, filters, featured resources, and results reachable"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/catalog.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "featured-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-featured]") }
+        expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-filters] button[aria-pressed=true]") }
+        expect "results-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-results] .resource-card") }
+        focus "focus-search" { target = css(".a3s-preview[data-preview-component=catalog] .catalog input[type=search]") }
+        expect "search-focused" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog input[type=search]:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-results-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-results]") }
+        screenshot "catalog-phone" { path = "components/catalog-phone.png" }
+    }
+
+    scenario "setting-row" {
+        name = "Setting Row preserves identity and native controls when the grid stacks"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/setting-row.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "identity-visible" { visible = css(".a3s-preview[data-preview-component=setting-row] .setting-row [data-setting-identity]") }
+        expect "controls-visible" { visible = css(".a3s-preview[data-preview-component=setting-row] .setting-row [data-setting-control]") }
+        expect "system-theme-selected" { visible = css(".a3s-preview[data-preview-component=setting-row] input[role=switch]:checked") }
+        focus "focus-language" { target = css(".a3s-preview[data-preview-component=setting-row] select[aria-label=Language]") }
+        expect "language-focused" { visible = css(".a3s-preview[data-preview-component=setting-row] select[aria-label=Language]:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-control-visible" { visible = css(".a3s-preview[data-preview-component=setting-row] .setting-row [data-setting-control]") }
+        screenshot "setting-row-phone" { path = "components/setting-row-phone.png" }
+    }
+
+    scenario "task-start" {
+        name = "Task Start keeps suggestions and the first instruction in one responsive flow"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-start.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "suggestions-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start [data-task-suggestions] button") }
+        expect "composer-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start form.agent-composer") }
+        focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=task-start] .task-start textarea[aria-label=Instruction]") }
+        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start textarea[aria-label=Instruction]:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-submit-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start button[type=submit]") }
+        screenshot "task-start-phone" { path = "components/task-start-phone.png" }
+    }
+
+    scenario "task-plan" {
+        name = "Task Plan exposes ordered progress and keeps its active step readable on phones"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-plan.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "plan-active" { visible = css(".a3s-preview[data-preview-component=task-plan] .task-plan[data-state=active]") }
+        expect "progress-bounded" { visible = css(".a3s-preview[data-preview-component=task-plan] [role=progressbar][aria-valuenow='50']") }
+        expect "active-step-current" { visible = css(".a3s-preview[data-preview-component=task-plan] .plan-step[data-state=active][aria-current=step]") }
+        focus "focus-pause" { target = css(".a3s-preview[data-preview-component=task-plan] .task-plan > footer button") }
+        expect "pause-focused" { visible = css(".a3s-preview[data-preview-component=task-plan] .task-plan > footer button:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-plan-visible" { visible = css(".a3s-preview[data-preview-component=task-plan] .task-plan") }
+    }
+
+    scenario "plan-step" {
+        name = "Plan Step distinguishes active and blocked work with text and state"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/plan-step.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "active-step-visible" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active][aria-current=step]") }
+        expect "blocked-step-visible" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=blocked] [data-plan-step-status]") }
+        focus "focus-open-checks" { target = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active] button") }
+        expect "open-checks-focused" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active] button:focus") }
+    }
+
+    scenario "message-status" {
+        name = "Message Status exposes streaming, sent, and recoverable error states"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/message-status.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "streaming-status-live" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=streaming][aria-live=polite]") }
+        expect "sent-status-visible" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=sent]") }
+        expect "error-status-visible" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error]") }
+        focus "focus-retry" { target = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error] button") }
+        expect "retry-focused" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error] button:focus") }
+    }
+
+    scenario "message-attachment" {
+        name = "Message Attachment keeps completed and uploading files actionable"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/message-attachment.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "completed-file-visible" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=complete]") }
+        expect "uploading-file-busy" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=uploading][aria-busy=true]") }
+        focus "focus-remove" { target = css(".a3s-preview[data-preview-component=message-attachment] button[aria-label='Remove release-notes.md']") }
+        expect "remove-focused" { visible = css(".a3s-preview[data-preview-component=message-attachment] button[aria-label='Remove release-notes.md']:focus") }
+        viewport "phone" { width = 320 height = 720 }
+        expect "phone-upload-visible" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=uploading]") }
+    }
+
+    scenario "message-citation" {
+        name = "Message Citation remains a named keyboard link within prose"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/message-citation.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "citation-source-visible" { visible = css(".a3s-preview[data-preview-component=message-citation] .message-citation [data-citation-source]") }
+        focus "focus-citation" { target = css(".a3s-preview[data-preview-component=message-citation] a.message-citation") }
+        expect "citation-focused" { visible = css(".a3s-preview[data-preview-component=message-citation] a.message-citation:focus") }
+    }
+
+    scenario "artifact-card" {
+        name = "Artifact Card preserves the output preview and both final actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/artifact-card.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "artifact-complete" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card[data-state=complete]") }
+        expect "artifact-preview-visible" { visible = css(".a3s-preview[data-preview-component=artifact-card] [data-artifact-preview]") }
+        focus "focus-open" { target = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card > footer button:last-child") }
+        expect "open-focused" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card > footer button:last-child:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-artifact-visible" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card") }
+    }
+
+    scenario "context-selector" {
+        name = "Context Selector keeps model, access, and workspace choices native and named"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/context-selector.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "model-selector-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=model]") }
+        expect "permission-selector-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=permission]") }
+        expect "workspace-selector-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=workspace]") }
+        focus "focus-model" { target = css(".a3s-preview[data-preview-component=context-selector] select[aria-label=Model]") }
+        expect "model-focused" { visible = css(".a3s-preview[data-preview-component=context-selector] select[aria-label=Model]:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-workspace-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=workspace]") }
+    }
+
+    scenario "task-queue" {
+        name = "Task Queue preserves execution order and explicit running and blocked states"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-queue.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "queue-running" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue[data-state=running]") }
+        expect "running-item-first" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue > ol > li:first-child[data-state=running]") }
+        expect "blocked-item-visible" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked]") }
+        focus "focus-review" { target = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked] button") }
+        expect "review-focused" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked] button:focus") }
+    }
+
+    scenario "checkpoint" {
+        name = "Checkpoint exposes restorable scope and a focused restore action"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkpoint.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "checkpoint-saved" { visible = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint[data-state=saved]") }
+        expect "checkpoint-meta-visible" { visible = css(".a3s-preview[data-preview-component=checkpoint] [data-checkpoint-meta]") }
+        focus "focus-restore" { target = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint > footer button") }
+        expect "restore-focused" { visible = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint > footer button:focus") }
+    }
+
+    scenario "follow-up-suggestions" {
+        name = "Follow-up Suggestions exposes a compact named action group"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/follow-up-suggestions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "suggestions-named" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] nav.follow-up-suggestions[aria-label]") }
+        expect "three-suggestions-visible" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(3) button") }
+        focus "focus-release-checks" { target = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(2) button") }
+        expect "release-checks-focused" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(2) button:focus") }
+        viewport "phone" { width = 320 height = 720 }
+        expect "phone-suggestions-visible" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions") }
+    }
+
+    scenario "tool-call" {
+        name = "Tool Call opens and closes structured input and output through native disclosure"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tool-call.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "tool-call-open" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call[data-state=success][open]") }
+        expect "tool-output-visible" { visible = css(".a3s-preview[data-preview-component=tool-call] [data-tool-output]") }
+        click "close-tool-call" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
+        expect "tool-call-closed" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call:not([open])") }
+        focus "focus-summary" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
+        expect "summary-focused" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary:focus") }
+    }
+
+    scenario "change-review" {
+        name = "Change Review keeps file scope and both review decisions adjacent"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/change-review.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "reviewing-state-visible" { visible = css(".a3s-preview[data-preview-component=change-review] .change-review[data-state=reviewing]") }
+        expect "third-file-visible" { visible = css(".a3s-preview[data-preview-component=change-review] [data-review-files] > li:nth-child(3)") }
+        focus "focus-accept" { target = css(".a3s-preview[data-preview-component=change-review] .change-review > footer button:last-child") }
+        expect "accept-focused" { visible = css(".a3s-preview[data-preview-component=change-review] .change-review > footer button:last-child:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-files-visible" { visible = css(".a3s-preview[data-preview-component=change-review] [data-review-files]") }
+    }
+
+    scenario "terminal" {
+        name = "Terminal preserves command, bounded output, and successful exit status"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/terminal.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "terminal-success" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal[data-state=success]") }
+        expect "command-visible" { visible = css(".a3s-preview[data-preview-component=terminal] [data-terminal-command]") }
+        expect "output-visible" { visible = css(".a3s-preview[data-preview-component=terminal] [data-terminal-output]") }
+        focus "focus-copy" { target = css(".a3s-preview[data-preview-component=terminal] .terminal > header button") }
+        expect "copy-focused" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal > header button:focus") }
+        viewport "phone" { width = 320 height = 720 }
+        expect "phone-terminal-visible" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal") }
+    }
+
+    scenario "execution-evidence" {
+        name = "Execution Evidence exposes verified result, provenance, and structured facts"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/execution-evidence.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "evidence-verified" { visible = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence[data-state=verified]") }
+        expect "result-visible" { visible = css(".a3s-preview[data-preview-component=execution-evidence] [data-evidence-result]") }
+        expect "facts-visible" { visible = css(".a3s-preview[data-preview-component=execution-evidence] .property-list") }
+        focus "focus-report" { target = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence > footer button") }
+        expect "report-focused" { visible = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence > footer button:focus") }
     }
 
     scenario "theme-switcher" {

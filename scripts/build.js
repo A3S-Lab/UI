@@ -68,6 +68,7 @@ async function copyDirRecursive(src, dest) {
 async function build() {
   console.log('Starting build process...');
   await generateCssEntrypoints();
+  await execPromise(`node ${path.join(projectRoot, 'scripts', 'generate-ai-assets.mjs')}`);
 
   // Define all necessary paths
   const cssDistDir = path.join(projectRoot, 'dist');
@@ -80,6 +81,7 @@ async function build() {
   const srcJsDir = path.join(srcDir, 'js');
   const srcNunjucksDir = path.join(srcDir, 'templates', 'nunjucks');
   const srcJinjaDir = path.join(srcDir, 'templates', 'jinja');
+  const generatedAiDir = path.join(projectRoot, 'generated', 'ai');
 
   // Clean previous build artifacts
   console.log('Cleaning distribution directories...');
@@ -113,7 +115,7 @@ async function build() {
 
   // Create combined component files
   console.log('Creating combined component files...');
-  const componentsToCombine = ['basecoat.js', 'accordion.js', 'code-editor.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'split-pane.js', 'tabs.js', 'tree.js', 'toast.js'];
+  const componentsToCombine = ['basecoat.js', 'accordion.js', 'app-shell.js', 'code-editor.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'split-pane.js', 'tabs.js', 'task-workspace.js', 'tree.js', 'toast.js'];
   const componentPaths = componentsToCombine.map(f => path.join(srcJsDir, f));
 
   // Create non-minified bundle
@@ -154,12 +156,30 @@ async function build() {
   const cssComponentsSrcDir = path.join(srcCssDir, 'components');
   const cssBaseDistDir = path.join(cssDistDir, 'base');
   const cssComponentsDistDir = path.join(cssDistDir, 'components');
+  const aiDistDir = path.join(cssDistDir, 'ai');
+  const frameworksDistDir = path.join(cssDistDir, 'frameworks');
   const cssStylesDistDir = path.join(cssDistDir, 'styles');
   const cssCompatDistDir = path.join(cssDistDir, 'compat');
   await copyDirRecursive(cssBaseSrcDir, cssBaseDistDir);
   await copyDirRecursive(cssComponentsSrcDir, cssComponentsDistDir);
   await copyDirRecursive(srcCssStylesDir, cssStylesDistDir);
   await copyDirRecursive(srcCssCompatDir, cssCompatDistDir);
+  await ensureDir(aiDistDir);
+  for (const fileName of await fs.readdir(generatedAiDir)) {
+    const sourcePath = path.join(generatedAiDir, fileName);
+    const sourceStat = await fs.stat(sourcePath);
+    if (sourceStat.isFile()) {
+      await fs.copyFile(sourcePath, path.join(aiDistDir, fileName));
+    }
+  }
+  await copyDirRecursive(
+    path.join(generatedAiDir, 'a3s-test'),
+    path.join(aiDistDir, 'a3s-test'),
+  );
+  await copyDirRecursive(
+    path.join(generatedAiDir, 'frameworks'),
+    frameworksDistDir,
+  );
   console.log(`Copied split CSS folders to ${cssDistDir}`);
 
   await copyDirRecursive(srcNunjucksDir, path.join(cssTemplatesDir, 'nunjucks'));

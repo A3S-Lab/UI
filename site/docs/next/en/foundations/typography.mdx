@@ -1,12 +1,12 @@
 # Typography
 
-A3S UI uses the operating system UI stack for fast loading and native text rendering across macOS, Windows, Linux, and CJK environments. Monospace content uses the platform code stack.
+A3S UI uses Geist Sans with established system and CJK fallbacks. Geist Mono is reserved for code, commands, paths, measurements, and tabular data.
 
 <Preview>
 <div class="grid w-full gap-5 rounded-xl border border-border bg-card p-6">
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Display / 36</span><p class="mt-2 text-4xl font-semibold tracking-tight">Agent workspaces, made coherent.</p></div>
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Heading / 20</span><h2 class="mt-2 text-xl font-semibold">Workspace configuration</h2></div>
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Body / 14</span><p class="mt-2 text-sm text-muted-foreground">Readable density for operational tools, document editors, and long-running agent sessions.</p></div>
+  <div><span class="text-xs font-medium text-muted-foreground">Display · 28–40</span><p class="mt-2 text-4xl font-semibold tracking-tight">Keep task work coherent.</p></div>
+  <div><span class="text-xs font-medium text-muted-foreground">Page headline · 24</span><h2 class="mt-2 text-2xl font-semibold">Workspace configuration</h2></div>
+  <div><span class="text-xs font-medium text-muted-foreground">Body · 14</span><p class="mt-2 max-w-[70ch] text-sm text-muted-foreground">Readable density for operational tools, document editors, and long-running task sessions.</p></div>
   <code class="rounded-md bg-muted px-3 py-2 text-sm">gateway.routing.strategy = "balanced"</code>
 </div>
 </Preview>
@@ -15,18 +15,18 @@ A3S UI uses the operating system UI stack for fast loading and native text rende
 
 | Token | Stack | Use |
 | --- | --- | --- |
-| `--font-sans` | System UI, PingFang SC, Microsoft YaHei, Noto Sans CJK SC | Interface and documentation text |
-| `--font-mono` | SFMono-Regular, Consolas, Liberation Mono, Menlo | Code, identifiers, metrics, shortcuts |
+| `--font-sans` | Geist Sans, System UI, PingFang SC, Microsoft YaHei, Noto Sans CJK SC | Interface and documentation text |
+| `--font-mono` | Geist Mono, SFMono-Regular, Consolas, Liberation Mono, Menlo | Code, commands, paths, measurements |
 
 ## Scale
 
 | Role | Size / line height | Weight | Notes |
 | --- | --- | --- | --- |
-| Display | `36 / 40px` | `600` | Marketing or empty-state statement |
-| Page title | `24 / 32px` | `600` | One per view |
-| Section title | `16 / 24px` | `600–650` | Settings cards and panels |
+| Display | `28–40 / 32–46px` | `650` | Start and empty surfaces only |
+| Page title | `24 / 30px` | `650` | One per view |
+| Section title | `16 / 22px` | `650` | Settings and inspector regions |
 | Control | `13 / 20px` | `500–600` | Dense application chrome |
-| Body | `14 / 22px` | `400` | Default documentation copy |
+| Body | `14 / 22px` | `400` | Default copy, limited to 65–75 characters per line |
 | Caption | `12 / 16px` | `400–500` | Metadata and status |
 
 ## Parameters

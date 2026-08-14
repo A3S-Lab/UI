@@ -1,0 +1,39 @@
+---
+pageType: doc-wide
+sidebar: false
+outline: false
+---
+
+# Capability Catalog
+
+Capability Catalog reuses one searchable skeleton for assistants, skills, and connectors while preserving the information each resource type needs.
+
+<Preview>
+  <section class="app-page min-h-[42rem] rounded-xl border border-border" data-width="wide">
+    <div data-page-content class="catalog">
+      <header><div data-catalog-identity><h2>Capabilities</h2><div class="tabs mt-3" id="capability-catalog-tabs-en"><nav role="tablist" aria-label="Capability type" data-variant="line"><button type="button" role="tab" id="capability-tab-assistants-en" aria-controls="capability-panel-assistants-en" aria-selected="true" tabindex="0">Assistants</button><button type="button" role="tab" id="capability-tab-skills-en" aria-controls="capability-panel-skills-en" aria-selected="false" tabindex="-1">Skills</button><button type="button" role="tab" id="capability-tab-connectors-en" aria-controls="capability-panel-connectors-en" aria-selected="false" tabindex="-1">Connectors</button></nav><div role="tabpanel" id="capability-panel-assistants-en" aria-labelledby="capability-tab-assistants-en" tabindex="-1"></div><div role="tabpanel" id="capability-panel-skills-en" aria-labelledby="capability-tab-skills-en" tabindex="-1" hidden></div><div role="tabpanel" id="capability-panel-connectors-en" aria-labelledby="capability-tab-connectors-en" tabindex="-1" hidden></div></div></div><div data-catalog-actions><input class="input" type="search" aria-label="Search capabilities" placeholder="Search capabilities" /></div></header>
+      <div data-catalog-featured><ul><li><h3 class="font-semibold">Release steward</h3><p class="mt-2 text-sm text-muted-foreground">Coordinate checks, approvals, and release evidence.</p></li><li><h3 class="font-semibold">Research workspace</h3><p class="mt-2 text-sm text-muted-foreground">Find, compare, and synthesize source material.</p></li><li><h3 class="font-semibold">Repository review</h3><p class="mt-2 text-sm text-muted-foreground">Inspect changes and quality signals.</p></li></ul></div>
+      <div data-catalog-toolbar><div data-catalog-filters><button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">All</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Development</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Research</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Operations</button></div><div data-catalog-actions><span data-catalog-count>6 capabilities</span><select class="select" aria-label="Sort capabilities"><option>Most relevant</option></select></div></div>
+      <div class="resource-grid" data-catalog-results style="--resource-grid-min:18rem">
+        <article class="resource-card" data-selected="true"><section><strong>Code reviewer</strong><small>A3S Lab</small><p>Review focused changes and supporting evidence.</p><footer><span class="status-badge" data-state="success">Installed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></footer></section></article>
+        <article class="resource-card"><section><strong>Documentation planner</strong><small>A3S Lab</small><p>Plan documentation changes and coverage.</p><footer><span>Add when needed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Add</button></footer></section></article>
+        <article class="resource-card"><section><strong>Data analyst</strong><small>A3S Lab</small><p>Inspect structured data and produce clear findings.</p><footer><span class="status-badge" data-state="success">Installed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></footer></section></article>
+        <article class="resource-card"><section><strong>Browser testing</strong><small>A3S Lab</small><p>Exercise web workflows and capture evidence.</p><footer><span>Add when needed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Add</button></footer></section></article>
+        <article class="resource-card" data-state="unavailable" aria-disabled="true"><section><strong>Issue triage</strong><small>A3S Lab</small><p>Route issues using project-owned rules.</p><footer><span>Unavailable</span><button type="button" class="btn" data-size="sm" disabled>Unavailable</button></footer></section></article>
+        <article class="resource-card" data-state="loading" aria-busy="true"><section><strong>Release notes</strong><small>A3S Lab</small><p>Generate release notes from reviewed changes.</p><footer><span>Loading</span></footer></section><span data-resource-loading class="skeleton m-4 h-24"></span></article>
+      </div>
+    </div>
+  </section>
+</Preview>
+
+## Composition
+
+Use App Page, Catalog, Tabs, Input, Select, buttons, Resource Grid, Resource Card, Status Badge, Skeleton, and Empty. Search, ownership, installation, pagination, and catalog data remain application state.
+
+## Responsive behavior
+
+Featured items scroll inside their own row. Header and toolbar controls stack below 768px. Resource Grid reduces columns without forcing equal card heights or creating document overflow.
+
+## Accessibility
+
+Use a real tab interface when tabs change resource type. Search and sort controls need labels. Selected, installed, unavailable, and loading state must use semantics and text, not color alone. Names, publishers, categories, counts, and availability in the preview are illustrative data.

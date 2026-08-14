@@ -1,0 +1,32 @@
+@layer components {
+  .follow-up-suggestions {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .follow-up-suggestions > :is(h2, h3, strong) {
+    margin: 0;
+  }
+
+  .follow-up-suggestions > ul {
+    display: flex;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    list-style: none;
+    scrollbar-width: thin;
+  }
+
+  .follow-up-suggestions > ul > li {
+    display: flex;
+    flex: none;
+  }
+
+  .follow-up-suggestions > ul > li > :is(button, a) {
+    max-width: min(22rem, 78vw);
+    white-space: normal;
+  }
+}

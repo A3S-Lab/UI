@@ -1,0 +1,37 @@
+# 产物卡
+
+产物卡展示报告、文档、图片、补丁或数据集等持久输出。它比目录资源卡更扁平、更紧凑。
+
+<Preview class="w-full max-w-2xl">
+  <article class="artifact-card" data-state="complete">
+    <header><div><h3>发布就绪报告</h3><span data-artifact-meta>Markdown · 刚刚更新</span></div><span class="status-badge" data-state="success">已就绪</span></header>
+    <section><div data-artifact-preview># 发布就绪\n\n所有包与文档检查均已通过。</div></section>
+    <footer><span>24 行 · 3 条引用</span><div><button type="button" class="btn" data-size="sm" data-variant="outline">下载</button> <button type="button" class="btn" data-size="sm">打开</button></div></footer>
+  </article>
+</Preview>
+
+## 用法
+
+```html
+<article class="artifact-card" data-state="complete">
+  <header><h3>发布就绪报告</h3><span data-artifact-meta>Markdown</span></header>
+  <section><div data-artifact-preview>...</div></section>
+  <footer>...</footer>
+</article>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `ready`、`generating`、`complete`、`stale`、`error` | 产物生命周期 |
+| `data-artifact-preview` | 可选 | 紧凑内容预览 |
+| `data-artifact-meta` | 推荐 | 类型、大小或修订版本 |
+
+## 状态与变体
+
+生成中状态保留未来的标题与格式。过期状态说明发生了什么变化以及如何重新生成。
+
+## 无障碍
+
+使用标题命名产物。预览是普通文档内容，不要在元数据中重复其完整可访问文本。

@@ -4,14 +4,17 @@
     display: grid;
     grid-template-columns: minmax(11rem, var(--settings-navigation-size)) minmax(0, 1fr);
     width: 100%;
+    height: var(--settings-layout-height, auto);
     min-width: 0;
-    align-items: start;
+    align-items: stretch;
+    overflow: hidden;
   }
 
   .settings-layout > aside {
-    position: sticky;
-    inset-block-start: var(--settings-sticky-offset, 1rem);
     min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .settings-layout > aside nav,
@@ -33,6 +36,9 @@
     display: grid;
     min-width: 0;
     gap: var(--settings-section-gap, 1.5rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .settings-layout > main > section {
@@ -46,12 +52,13 @@
     }
 
     .settings-layout > aside {
-      position: static;
+      overflow: hidden;
     }
 
     .settings-layout > aside nav > :is(ul, ol) {
       display: flex;
       overflow-x: auto;
+      overscroll-behavior-inline: contain;
     }
 
     .settings-layout > aside li {

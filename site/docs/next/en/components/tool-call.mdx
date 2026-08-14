@@ -1,0 +1,37 @@
+# Tool Call
+
+Tool Call is a native disclosure for one named integration invocation. It separates structured input from structured output while keeping provider details optional.
+
+<Preview class="w-full max-w-3xl">
+  <details class="tool-call" data-state="success" open>
+    <summary><span data-tool-kind aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.9 7.9l-5.7 5.7a2.1 2.1 0 0 1-3-3l5.7-5.7a6 6 0 0 1 7.9-7.9z"/></svg></span><span data-tool-identity><strong>Read repository status</strong><small>shell · git status --short</small></span><span class="status-badge" data-state="success" data-tool-status>Success</span><span aria-hidden="true">›</span></summary>
+    <section><div><strong>Input</strong><pre data-tool-input>{`{"workdir":"/workspace/a3s-ui"}`}</pre></div><div><strong>Output</strong><pre data-tool-output>M src/css/styles/application.css\n?? src/css/components/task-plan.css</pre></div></section>
+    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Copy output</button></footer>
+  </details>
+</Preview>
+
+## Usage
+
+```html
+<details class="tool-call" data-state="success">
+  <summary><span data-tool-identity><strong>Read repository status</strong><small>shell</small></span><span data-tool-status>Success</span></summary>
+  <section><pre data-tool-input>...</pre><pre data-tool-output>...</pre></section>
+</details>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| Root `<details>` | Required | Native disclosure behavior |
+| `data-state` | `queued`, `running`, `waiting`, `success`, `cancelled`, `error` | Invocation state |
+| `data-tool-input` | Optional | Structured parameters |
+| `data-tool-output` | Optional | Structured result or error |
+
+## States and variants
+
+Use Tool Call when input/output structure matters. Use Execution Item for a higher-level action and Terminal for continuous command output.
+
+## Accessibility
+
+The visible title names the action without relying on the provider or icon. Redact secrets before rendering input or output.

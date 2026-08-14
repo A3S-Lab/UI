@@ -5,10 +5,20 @@
 ### Added
 
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
-- Added complete Codex Workbench and New Agent Thread composition guides while keeping project, Git, transport, environment, and policy state in the host application.
+- Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts plus complete Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations composition guides.
+- Added Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, and Execution Evidence contracts.
+- Added the root `DESIGN.md` contract for task-centered application geometry, typography, color, elevation, responsive behavior, and component states.
+- Added a machine-readable 83-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
+- Added owned-part, per-action, per-state, and ready selectors plus an importable selector helper for deterministic browser tests.
+- Added preview/code switching, clean semantic HTML generation, clipboard feedback, and keyboard operation to every bilingual MDX preview.
+- Added all-export SSR, TypeScript consumer, and isolated client-mount checks for the React and Vue adapters, including refs, readiness callbacks, semantic annotations, and controller initialization.
 - Added route-level geometry, state, and browser diagnostic regression coverage for every public component guide.
+- Added package-owned App Shell navigation and Task Workspace inspector controllers with responsive ARIA/inert synchronization, Escape and backdrop dismissal, focus return, public methods, events, and split imports.
 
 ### Fixed
+
+- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 83-component contract while preserving historical version counts.
+- Made component-specific browser scenarios serial by default to prevent shared-browser resource contention from introducing nondeterministic control-state failures.
 
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
 

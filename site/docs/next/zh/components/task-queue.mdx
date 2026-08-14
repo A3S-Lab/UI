@@ -1,0 +1,39 @@
+# 任务队列
+
+任务队列展示在当前任务之后或并行等待的工作。调度、并发、优先级和取消仍由宿主应用负责。
+
+<Preview class="w-full max-w-3xl">
+  <section class="task-queue" data-state="running" aria-labelledby="task-queue-title-zh">
+    <header><div><h2 id="task-queue-title-zh">任务队列</h2><p>一个运行中 · 两个等待中</p></div><span data-queue-status>运行中</span></header>
+    <ol>
+      <li data-state="running"><span data-queue-position>01</span><div data-queue-identity><strong>审阅发布变更</strong><small>A3S UI · 2 分钟前开始</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="outline">打开</button></div></li>
+      <li data-state="queued"><span data-queue-position>02</span><div data-queue-identity><strong>更新组件文档</strong><small>A3S UI · 等待中</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">移除</button></div></li>
+      <li data-state="blocked"><span data-queue-position>03</span><div data-queue-identity><strong>发布版本</strong><small>等待审批</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">审阅</button></div></li>
+    </ol>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="task-queue" data-state="running" aria-labelledby="queue-title">
+  <header><h2 id="queue-title">任务队列</h2><span data-queue-status>运行中</span></header>
+  <ol><li data-state="queued">...</li></ol>
+</section>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `idle`、`running`、`paused`、`blocked`、`complete`、`error` | 队列总体状态 |
+| 条目 `data-state` | `queued`、`running`、`blocked`、`complete`、`error` | 单个任务状态 |
+| `data-queue-actions` | 可选 | 打开、重试、取消或调整优先级 |
+
+## 状态与变体
+
+列表顺序必须与执行顺序一致。重排需要显式手柄和即时确认，默认不要让整行可拖动。
+
+## 无障碍
+
+使用有序列表和文本状态。只播报有意义的队列变化，不播报计时器更新。

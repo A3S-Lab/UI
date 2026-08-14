@@ -1,0 +1,46 @@
+# 应用页面
+
+应用页面为 App Shell 内的项目、自动化、目录、表单和详情页提供开放且有宽度约束的页面框架。它稳定放置页面身份与操作，不会给整个视图再套一层卡片。
+
+<Preview class="w-full">
+  <section class="app-page min-h-80 rounded-xl border border-border" data-width="wide">
+    <header>
+      <div data-page-identity><h2>项目</h2><p>集中管理长期上下文、模板和任务历史。</p></div>
+      <div data-page-actions><button type="button" class="btn">新建项目</button></div>
+    </header>
+    <div data-page-content class="grid gap-3 sm:grid-cols-2">
+      <article class="item" data-variant="outline"><section><h3>A3S UI</h3><p>3 个进行中任务 · 今天更新</p></section></article>
+      <article class="item" data-variant="outline"><section><h3>Runtime 发布</h3><p>2 个进行中任务 · 昨天更新</p></section></article>
+    </div>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="app-page" data-width="wide">
+  <header>
+    <div data-page-identity><h1>项目</h1><p>长期工作上下文。</p></div>
+    <div data-page-actions>...</div>
+  </header>
+  <div data-page-content>...</div>
+</section>
+```
+
+### 参数
+
+| API | 可选值 | 用途 |
+| --- | --- | --- |
+| `class="app-page"` | 必填 | 开放式应用页面框架 |
+| `data-page-identity` | 必填 | 标题和简短说明 |
+| `data-page-actions` | 可选 | 页面级主要和次要操作 |
+| `data-page-content` | 必填 | 页面内容 |
+| `data-width` | `reading`、`wide`、省略 | 内容阅读宽度 |
+
+## 状态和变体
+
+空状态、加载、错误、部分数据和权限状态由 Empty、Skeleton、Alert、Resource Card、Table 或表单组件承担。不要再增加通用页面卡片。
+
+## 无障碍
+
+使用符合外层文档结构的标题级别。操作在 DOM 中位于页面身份之后，窄屏堆叠时保持同一顺序。

@@ -1,0 +1,37 @@
+# Task Start
+
+Task Start centers the first instruction, a restrained suggestion row, and Task Composer on a spacious canvas. Use it as the start surface before a task exists.
+
+<Preview class="w-full">
+  <section class="task-start min-h-[32rem] rounded-xl border border-border">
+    <header><h2>What should we work on?</h2><p>Describe the outcome and choose where it should run.</p></header>
+    <nav data-task-suggestions aria-label="Task suggestions"><ul><li><button type="button">Analyze a repository</button></li><li><button type="button">Draft a project plan</button></li><li><button type="button">Review recent changes</button></li></ul></nav>
+    <form class="agent-composer" aria-label="Start a task"><textarea aria-label="Instruction" placeholder="Describe the task…"></textarea><footer><div data-composer-tools><button type="button" class="btn" data-variant="ghost" data-size="sm">Attach</button><button type="button" class="btn" data-variant="ghost" data-size="sm">Auto</button></div><div data-composer-actions><button type="submit" class="btn" data-size="sm">Start</button></div></footer></form>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="task-start">
+  <header><h1>What should we work on?</h1></header>
+  <nav data-task-suggestions aria-label="Task suggestions">...</nav>
+  <form class="agent-composer" aria-label="Start a task">...</form>
+</section>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `class="task-start"` | Centers the start surface |
+| `data-task-suggestions` | Optional bounded starter actions |
+| `--task-start-content-width` | Shared suggestion and composer measure; defaults to `47.5rem` |
+
+## States and variants
+
+The composer owns empty, populated, invalid, disabled, offline, queued, and loading states. Suggestions are optional and must perform real actions, such as populating the instruction.
+
+## Accessibility
+
+Name the suggestion navigation and composer. Keep suggestions before the composer in DOM order. On narrow screens the layout aligns to the start edge and retains 44px coarse-pointer targets.

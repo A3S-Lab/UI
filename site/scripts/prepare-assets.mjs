@@ -18,6 +18,13 @@ const tailwindExecutable = path.join(
   'index.mjs',
 );
 const runtimeSource = path.join(projectRoot, 'dist', 'js', 'all.min.js');
+const aiRuntimeSource = path.join(projectRoot, 'dist', 'ai', 'runtime.js');
+const componentManifestSource = path.join(
+  projectRoot,
+  'dist',
+  'ai',
+  'components.json',
+);
 const compiledStyles = path.join(publicAssets, 'a3s-ui.css');
 
 await mkdir(publicAssets, { recursive: true });
@@ -50,3 +57,8 @@ const styles = await readFile(compiledStyles, 'utf8');
 await writeFile(compiledStyles, `@layer rp-base;${styles}`, 'utf8');
 
 await copyFile(runtimeSource, path.join(publicAssets, 'a3s-ui.min.js'));
+await copyFile(aiRuntimeSource, path.join(publicAssets, 'a3s-ui.ai.js'));
+await copyFile(
+  componentManifestSource,
+  path.join(publicAssets, 'a3s-ui.components.json'),
+);

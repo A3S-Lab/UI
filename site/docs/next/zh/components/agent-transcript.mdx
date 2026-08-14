@@ -86,12 +86,13 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
 | 子项 `<article>`                            | 推荐                      | 单条消息或 Turn 表面             |
 | `data-message-content`                      | 推荐                      | 富文本、代码、执行项、审批和证据 |
 | `data-transcript-status`                    | 可选                      | 粗粒度异步状态                   |
+| `--agent-transcript-content-width`          | CSS 长度，默认 `47.5rem`  | 阅读列最大宽度                   |
 | `--agent-transcript-gap`                    | CSS 长度，默认 `1rem`     | Turn 间距                        |
 | `--agent-message-max-width`                 | CSS 长度，默认 `48rem`    | 可读消息宽度                     |
 
 ## 状态与变体
 
-加载中、空、已中断和失败历史应通过明确内容呈现，并在适用时组合 Empty 或 Alert。流式执行期间，追加或更新当前 Agent Turn，不要重建之前的 Turn。长历史由宿主应用窗口化；已知总量时，通过 `aria-posinset` 和 `aria-setsize` 保留有序列表位置。
+助理输出作为画布上的开放文档内容；用户 Turn 使用克制的蓝色输入表面，系统消息使用有边界的通知。执行、审批、引用和产物块留在所属 Turn 内，但不要再给整个助理回复增加边框。加载中、空、已中断和失败历史应通过明确内容呈现，并在适用时组合 Empty 或 Alert。流式执行期间，追加或更新当前 Agent Turn，不要重建之前的 Turn。长历史由宿主应用窗口化；已知总量时，通过 `aria-posinset` 和 `aria-setsize` 保留有序列表位置。
 
 ## 无障碍
 

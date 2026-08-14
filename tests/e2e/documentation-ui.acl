@@ -27,20 +27,36 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("[data-a3s-customizer]")
         }
 
-        click "choose-violet" {
+        focus "choose-violet" {
             target = css("[data-theme-accent=violet]")
         }
 
-        click "choose-rounded" {
+        press "confirm-violet" {
+            key = "Enter"
+        }
+
+        focus "choose-rounded" {
             target = css("[data-theme-radius=rounded]")
         }
 
-        click "choose-comfortable" {
+        press "confirm-rounded" {
+            key = "Enter"
+        }
+
+        focus "choose-comfortable" {
             target = css("[data-theme-density=comfortable]")
         }
 
-        click "choose-dark" {
+        press "confirm-comfortable" {
+            key = "Enter"
+        }
+
+        focus "choose-dark" {
             target = css("[data-theme-appearance=dark]")
+        }
+
+        press "confirm-dark" {
+            key = "Enter"
         }
 
         expect "customization-applied" {

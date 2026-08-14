@@ -1,0 +1,37 @@
+# 计划步骤
+
+计划步骤是任务计划中的一个可观察工作单元，包含稳定标题、可选描述、状态和一个有限操作。
+
+<Preview class="w-full max-w-2xl">
+  <ol class="task-plan border-0 bg-transparent">
+    <li class="plan-step" data-state="active" aria-current="step"><span data-plan-marker aria-hidden="true">2</span><div data-step-identity><h3>验证响应式行为</h3><p data-step-description>覆盖桌面、手机、RTL 与减少动态效果。</p></div><button type="button" class="btn" data-size="sm" data-variant="outline">打开检查</button></li>
+    <li class="plan-step" data-state="blocked"><span data-plan-marker aria-hidden="true">3</span><div data-step-identity><h3>发布包</h3><p data-step-description>发布前需要获得发布审批。</p></div><span data-plan-step-status>已阻塞</span></li>
+  </ol>
+</Preview>
+
+## 用法
+
+```html
+<li class="plan-step" data-state="active" aria-current="step">
+  <span data-plan-marker aria-hidden="true">2</span>
+  <div data-step-identity><h3>验证响应式行为</h3><p data-step-description>...</p></div>
+  <span data-plan-step-status>进行中</span>
+</li>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `pending`、`active`、`complete`、`blocked`、`error`、`skipped` | 步骤状态 |
+| `data-plan-marker` | 可选 | 紧凑索引或图标 |
+| `data-step-identity` | 必须 | 标题和可选描述 |
+| `data-plan-step-status` | 推荐 | 文本状态 |
+
+## 状态与变体
+
+等待外部输入或审批且之后可恢复时使用 `blocked`。执行失败且需要恢复操作时使用 `error`。
+
+## 无障碍
+
+有序列表已经表达位置时，索引标记应作为装饰。阻塞、错误和完成状态不能只靠颜色表达。

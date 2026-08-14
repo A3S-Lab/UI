@@ -1,6 +1,6 @@
 # Spacing
 
-The spacing system uses a 4px base unit. Dense application chrome uses 4–12px gaps; content and page regions use 16–32px gaps.
+The spacing system uses a 4px base unit. Tight controls use 4–8px gaps, components use 12–16px, and page regions use 24–40px. Headings receive more space above than below.
 
 <Preview>
 <div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
@@ -31,7 +31,10 @@ Application components expose continuous values as CSS variables:
 
 | Variable | Default | Component |
 | --- | ---: | --- |
-| `--app-shell-navigation-size` | `15rem` | App Shell |
+| `--app-shell-navigation-size` | `15.5rem` | App Shell and task navigation |
+| `--a3s-task-reading-size` | `47.5rem` | Task transcript and composer |
+| `--a3s-task-inspector-size` | `21rem` | Task inspector |
+| `--a3s-touch-target` | `2.75rem` | Coarse-pointer hit target |
 | `--settings-navigation-size` | `14rem` | Settings Layout |
 | `--resource-grid-min` | `12rem` | Resource Grid |
 | `--resource-grid-gap` | `1rem` | Resource Grid |
@@ -41,9 +44,9 @@ Application components expose continuous values as CSS variables:
 
 Use these parameters instead of overriding internal grid selectors.
 
-## Office density contract
+## Application density contract
 
-The A3S style pack applies the same compact chrome rhythm used by A3S Office. Override these semantic tokens only when the entire product needs a different density:
+The A3S style pack applies compact controls inside generous task and page spacing. Override these semantic tokens only when the entire product needs a different density:
 
 | Token                           |    Default | Used by                              |
 | ------------------------------- | ---------: | ------------------------------------ |

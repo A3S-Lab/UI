@@ -1,0 +1,32 @@
+# 后续建议
+
+后续建议在获得稳定结果后提供少量相关下一步操作，但不会替代主输入框。
+
+<Preview class="w-full max-w-3xl">
+  <nav class="follow-up-suggestions" aria-label="建议的后续操作"><strong>继续处理</strong><ul><li><button type="button">审阅已变更文件</button></li><li><button type="button">运行完整发布检查</button></li><li><button type="button">起草发布摘要</button></li></ul></nav>
+</Preview>
+
+## 用法
+
+```html
+<nav class="follow-up-suggestions" aria-label="建议的后续操作">
+  <strong>继续处理</strong>
+  <ul><li><button type="button">审阅已变更文件</button></li></ul>
+</nav>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| 具名 `<nav>` | 必须 | 分组下一步操作 |
+| 直接子 `<ul>` | 必须 | 无序建议列表 |
+| 每项原生按钮或链接 | 必须 | 提交文本或导航 |
+
+## 状态与变体
+
+展示两到四个具体操作。没有有价值建议时隐藏组件，不使用泛化提示占位。
+
+## 无障碍
+
+导航名称应把后续建议与任务导航区分开。按钮名称直接说明将要发生的操作。

@@ -1,6 +1,6 @@
 # 间距
 
-间距系统以 4px 为基础单位。紧凑应用工具栏使用 4–12px 间距，内容与页面区域使用 16–32px 间距。
+间距系统以 4px 为基础单位。紧密控件使用 4–8px，组件内部使用 12–16px，页面区域使用 24–40px；标题上方间距大于下方。
 
 <Preview>
 <div class="grid w-full gap-4 rounded-xl border border-border bg-card p-6">
@@ -30,7 +30,10 @@
 
 | 变量 | 默认值 | 组件 |
 | --- | ---: | --- |
-| `--app-shell-navigation-size` | `15rem` | App Shell |
+| `--app-shell-navigation-size` | `15.5rem` | App Shell 与任务导航 |
+| `--a3s-task-reading-size` | `47.5rem` | 任务记录与输入器 |
+| `--a3s-task-inspector-size` | `21rem` | 任务检查器 |
+| `--a3s-touch-target` | `2.75rem` | 粗指针点击目标 |
 | `--settings-navigation-size` | `14rem` | Settings Layout |
 | `--resource-grid-min` | `12rem` | Resource Grid |
 | `--resource-grid-gap` | `1rem` | Resource Grid |
@@ -40,9 +43,9 @@
 
 优先调整这些参数，不要覆盖组件内部网格选择器。
 
-## Office 密度契约
+## 应用密度契约
 
-A3S 视觉包采用与 A3S Office 相同的紧凑应用框架节奏。只有当整个产品确实需要不同密度时，才覆盖以下语义化变量：
+A3S 视觉包在宽松的任务与页面间距中使用紧凑控件。只有当整个产品确实需要不同密度时，才覆盖以下语义化变量：
 
 | 变量                            |     默认值 | 使用位置                       |
 | ------------------------------- | ---------: | ------------------------------ |

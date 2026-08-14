@@ -1,6 +1,6 @@
 @layer components {
   .app-shell {
-    --app-shell-navigation-size: 15rem;
+    --app-shell-navigation-size: var(--a3s-task-navigation-size, 15.5rem);
     --app-shell-navigation-collapsed-size: var(
       --a3s-activity-rail-size,
       2.875rem
@@ -36,6 +36,10 @@
     overflow: hidden;
   }
 
+  .app-shell > [data-app-navigation] > :only-child {
+    height: 100%;
+  }
+
   .app-shell[data-navigation='hidden'] > [data-app-navigation] {
     display: none;
   }
@@ -55,6 +59,11 @@
     overflow: auto;
   }
 
+  .app-shell[data-viewport='window'] {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
   @media (max-width: 48rem) {
     .app-shell,
     .app-shell[data-navigation='collapsed'] {
@@ -72,9 +81,13 @@
       pointer-events: none;
       visibility: hidden;
       transition:
-        clip-path 180ms ease,
-        opacity 180ms ease,
-        visibility 0s linear 180ms;
+        clip-path var(--a3s-motion-overlay, 220ms) ease,
+        opacity var(--a3s-motion-overlay, 220ms) ease,
+        visibility 0s linear var(--a3s-motion-overlay, 220ms);
+    }
+
+    .app-shell:not([data-mobile-navigation='open']) > [data-app-navigation] {
+      visibility: hidden;
     }
 
     .app-shell::after {
@@ -87,8 +100,8 @@
       pointer-events: none;
       visibility: hidden;
       transition:
-        opacity 180ms ease,
-        visibility 0s linear 180ms;
+        opacity var(--a3s-motion-overlay, 220ms) ease,
+        visibility 0s linear var(--a3s-motion-overlay, 220ms);
     }
 
     [dir='rtl'] .app-shell > [data-app-navigation] {

@@ -1,0 +1,47 @@
+@layer components {
+  .change-review {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .change-review > :is(header, footer) {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .change-review :is(h2, h3, p),
+  .change-review [data-review-summary] {
+    margin: 0;
+  }
+
+  .change-review [data-review-files] {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .change-review [data-review-files] > li {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .change-review [data-review-files] code {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .change-review > footer {
+    flex-wrap: wrap;
+  }
+}

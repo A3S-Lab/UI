@@ -1,0 +1,41 @@
+# Catalog
+
+Catalog provides one reusable page skeleton for assistants, skills, connectors, templates, and other searchable capability collections.
+
+<Preview class="w-full">
+  <section class="catalog">
+    <header><div data-catalog-identity><h2>Capabilities</h2><p>Choose reusable assistants, skills, and connectors.</p></div><div data-catalog-actions><input class="input" type="search" aria-label="Search capabilities" placeholder="Search capabilities" /></div></header>
+    <div data-catalog-featured><ul><li><h3>Release steward</h3><p>Coordinate checks and release evidence.</p></li><li><h3>Research workspace</h3><p>Find and synthesize source material.</p></li><li><h3>Repository review</h3><p>Inspect changes and quality signals.</p></li></ul></div>
+    <div data-catalog-toolbar><div data-catalog-filters><button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">All</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Development</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Research</button></div><div data-catalog-actions><span data-catalog-count>3 capabilities</span></div></div>
+    <div class="resource-grid" data-catalog-results><article class="resource-card"><section><strong>Code reviewer</strong><small>A3S Lab</small><p>Review focused changes and evidence.</p><footer><span class="status-badge" data-state="success">Installed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></footer></section></article><article class="resource-card"><section><strong>Documentation planner</strong><small>A3S Lab</small><p>Plan bilingual documentation changes.</p><footer><span>Add when needed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Add</button></footer></section></article></div>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="catalog">
+  <header>...</header>
+  <div data-catalog-featured>...</div>
+  <div data-catalog-toolbar>...</div>
+  <div class="resource-grid" data-catalog-results>...</div>
+</section>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `data-catalog-identity` | Title and description |
+| `data-catalog-actions` | Search, sort, view, and ownership actions |
+| `data-catalog-featured` | Optional horizontal featured collection |
+| `data-catalog-toolbar` | Filters, result count, sort, and view controls |
+| `data-catalog-results` | Resource Grid, list, table, or Empty state |
+
+## States and variants
+
+Keep the page skeleton stable while card content distinguishes assistants, skills, and connectors. Results must cover loading, empty, error, selected, installed, unavailable, and pagination states.
+
+## Accessibility
+
+Use a real search input and pressed state for toggle filters. Announce result counts after filtering without moving focus. Featured content may scroll horizontally, but the document must not overflow.

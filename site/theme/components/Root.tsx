@@ -31,6 +31,15 @@ export function Root({ children }: RootProps) {
       window.a3sUI?.start();
       window.a3sUI?.initAll();
       document.documentElement.removeAttribute("data-a3s-defer-init");
+      const existingAiScript = document.querySelector<HTMLScriptElement>(
+        "script[data-a3s-ui-ai-runtime]",
+      );
+      if (existingAiScript) return;
+      const aiScript = document.createElement("script");
+      aiScript.type = "module";
+      aiScript.src = withBase("/assets/a3s-ui.ai.js");
+      aiScript.dataset.a3sUiAiRuntime = "true";
+      document.head.append(aiScript);
     };
     const existingScript = document.querySelector<HTMLScriptElement>(
       "script[data-a3s-ui-runtime]",
@@ -65,7 +74,7 @@ export function Root({ children }: RootProps) {
 
     document
       .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute("content", theme === "dark" ? "#101118" : "#f7f7f8");
+      ?.setAttribute("content", theme === "dark" ? "#101118" : "#f8f9fb");
   }, [theme]);
 
   useEffect(() => {

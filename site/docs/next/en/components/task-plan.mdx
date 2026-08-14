@@ -1,0 +1,46 @@
+# Task Plan
+
+Task Plan exposes a bounded sequence of work without turning internal reasoning into interface copy. The host owns plan creation, step transitions, persistence, and cancellation.
+
+<Preview class="w-full max-w-3xl">
+  <section class="task-plan" data-state="active" aria-labelledby="release-plan-title">
+    <header><div><h2 id="release-plan-title">Release plan</h2><p>Two of four steps complete</p></div><div><span data-plan-status>In progress</span><div role="progressbar" aria-label="Plan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--plan-progress:50"><span></span></div></div></header>
+    <ol>
+      <li class="plan-step" data-state="complete"><span data-plan-marker aria-hidden="true">1</span><div data-step-identity><strong>Inspect package changes</strong><p data-step-description>Review exports and release metadata.</p></div><span data-plan-step-status>Complete</span></li>
+      <li class="plan-step" data-state="complete"><span data-plan-marker aria-hidden="true">2</span><div data-step-identity><strong>Run focused checks</strong><p data-step-description>Validate package and documentation contracts.</p></div><span data-plan-step-status>Complete</span></li>
+      <li class="plan-step" data-state="active" aria-current="step"><span data-plan-marker aria-hidden="true">3</span><div data-step-identity><strong>Review interface states</strong><p data-step-description>Check narrow, dark, and keyboard behavior.</p></div><span data-plan-step-status>Active</span></li>
+      <li class="plan-step" data-state="pending"><span data-plan-marker aria-hidden="true">4</span><div data-step-identity><strong>Prepare the handoff</strong><p data-step-description>Summarize verified results and remaining risk.</p></div><span data-plan-step-status>Pending</span></li>
+    </ol>
+    <footer><p>Plan steps describe observable work and results.</p><button type="button" class="btn" data-size="sm" data-variant="outline">Pause plan</button></footer>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="task-plan" data-state="active" aria-labelledby="plan-title">
+  <header><h2 id="plan-title">Release plan</h2>...</header>
+  <ol>
+    <li class="plan-step" data-state="complete">...</li>
+    <li class="plan-step" data-state="active" aria-current="step">...</li>
+  </ol>
+  <footer>...</footer>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `draft`, `active`, `paused`, `complete`, `error` | Plan lifecycle |
+| Direct `<ol>` | Required | Ordered plan steps |
+| `data-plan-status` | Recommended | Visible lifecycle label |
+| Native progressbar | Optional | Bounded aggregate progress |
+
+## States and variants
+
+Keep completed work visible and preserve the active step when execution pauses. An error belongs to the affected Plan Step unless the entire plan cannot continue.
+
+## Accessibility
+
+Name the section with a heading. Use `aria-current="step"` once. Progress text must remain available when a visual progressbar is omitted.

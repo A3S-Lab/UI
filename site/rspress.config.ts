@@ -16,7 +16,7 @@ const config: UserConfig = {
   siteOrigin,
   title: 'A3S UI',
   description:
-    'The framework-agnostic design system for A3S products, agent workspaces, operational consoles, and document tools.',
+    'The framework-agnostic design system for A3S products, task workspaces, operational consoles, and document tools.',
   lang: 'zh',
   icon: '/a3s-ui-mark.svg',
   logo: '/a3s-ui-mark.svg',
@@ -37,14 +37,14 @@ const config: UserConfig = {
       label: '简体中文',
       title: 'A3S UI',
       description:
-        '面向 A3S 产品、智能体工作区、运维控制台与文档工具的框架无关设计系统。',
+        '面向 A3S 产品、任务工作区、运维控制台与文档工具的框架无关设计系统。',
     },
     {
       lang: 'en',
       label: 'English',
       title: 'A3S UI',
       description:
-        'The framework-agnostic design system for A3S products, agent workspaces, operational consoles, and document tools.',
+        'The framework-agnostic design system for A3S products, task workspaces, operational consoles, and document tools.',
     },
   ],
   markdown: {
@@ -62,7 +62,7 @@ const config: UserConfig = {
   },
   head: [
     `<script>${themeBridgeScript}</script>`,
-    ['meta', { name: 'theme-color', content: '#f7f7f8' }],
+    ['meta', { name: 'theme-color', content: '#f8f9fb' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'A3S UI' }],
     [
@@ -81,6 +81,21 @@ const config: UserConfig = {
         rel: 'preload',
         as: 'script',
         href: `${base}assets/a3s-ui.min.js`,
+      },
+    ],
+    [
+      'link',
+      {
+        rel: 'component-manifest',
+        type: 'application/json',
+        href: `${base}assets/a3s-ui.components.json`,
+      },
+    ],
+    [
+      'meta',
+      {
+        name: 'a3s-ui:ai-runtime',
+        content: `${base}assets/a3s-ui.ai.js`,
       },
     ],
     (route) => [

@@ -1,0 +1,40 @@
+# Terminal
+
+Terminal presents one bounded command session with a stable title, command, output viewport, and execution state. Shell transport and process control remain application logic.
+
+<Preview class="w-full max-w-3xl">
+  <section class="terminal" data-state="success" aria-labelledby="terminal-title">
+    <header><div><strong id="terminal-title">Release checks</strong><span data-terminal-status>Exited 0 · 18.4s</span></div><button type="button" class="btn" data-size="sm" data-variant="ghost">Copy</button></header>
+    <code data-terminal-command>$ npm run check:package</code>
+    <pre data-terminal-output>Validated @a3s-lab/ui: package exports complete.\n83 public component contracts verified.\nProcess finished successfully.</pre>
+    <footer><span>zsh · /workspace/a3s-ui</span><button type="button" class="btn" data-size="sm" data-variant="ghost">Open full output</button></footer>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="terminal" data-state="success" aria-labelledby="terminal-title">
+  <header><strong id="terminal-title">Release checks</strong><span data-terminal-status>Exited 0</span></header>
+  <code data-terminal-command>$ npm run check:package</code>
+  <pre data-terminal-output>...</pre>
+  <footer>...</footer>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `idle`, `running`, `waiting`, `success`, `cancelled`, `error` | Session state |
+| `data-terminal-command` | Recommended | Exact command |
+| `data-terminal-output` | Required | Bounded output viewport |
+| `data-terminal-status` | Recommended | Exit, running, or wait state |
+
+## States and variants
+
+Keep partial output after cancellation and error. High-volume streams may compose Log Viewer when filtering, gaps, and pause behavior are needed.
+
+## Accessibility
+
+Name the terminal region. Do not make high-volume output a live region; announce only bounded state transitions. Never render secrets from the environment.

@@ -48,7 +48,7 @@
   const updateThemeColor = (mode) => {
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', mode === 'dark' ? '#101118' : '#f7f7f8');
+      ?.setAttribute('content', mode === 'dark' ? '#101118' : '#f8f9fb');
   };
 
   const applyTheme = (mode, syncRspressPreference = false) => {

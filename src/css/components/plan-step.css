@@ -1,0 +1,36 @@
+@layer components {
+  .plan-step {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .plan-step > [data-plan-marker] {
+    display: inline-grid;
+    position: relative;
+    z-index: 1;
+    flex: none;
+    place-items: center;
+  }
+
+  .plan-step > [data-step-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .plan-step > [data-step-identity] > :is(h3, h4, strong, p),
+  .plan-step > [data-plan-step-status] {
+    margin: 0;
+  }
+
+  .plan-step [data-step-description] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .plan-step > :is(button, a) {
+    align-self: center;
+  }
+}

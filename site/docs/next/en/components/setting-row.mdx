@@ -1,0 +1,41 @@
+# Setting Row
+
+Setting Row aligns a setting label, direct description, control, and optional validation message on a stable grid. Group rows in Setting List inside Settings Layout.
+
+<Preview class="w-full">
+  <div class="setting-list w-full">
+    <div class="setting-row"><div data-setting-identity><strong>Language</strong><p>Choose the interface language.</p></div><div data-setting-control><select class="select" aria-label="Language"><option>English</option><option>简体中文</option></select></div></div>
+    <div class="setting-row"><div data-setting-identity><strong>Follow system theme</strong><p>Use the operating system appearance setting.</p></div><div data-setting-control><input class="input" type="checkbox" role="switch" defaultChecked aria-label="Follow system theme" /></div></div>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<div class="setting-list">
+  <div class="setting-row">
+    <div data-setting-identity><strong>Language</strong><p>Choose the interface language.</p></div>
+    <div data-setting-control><select class="select">...</select></div>
+    <p data-setting-message>...</p>
+  </div>
+</div>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `class="setting-list"` | Groups adjacent rows and shared boundaries |
+| `class="setting-row"` | Stable label-control grid |
+| `data-setting-identity` | Name and direct description |
+| `data-setting-control` | Native or composite control |
+| `data-setting-message` | Optional validation or recovery message |
+| `data-state="invalid"` | Invalid row styling |
+
+## States and variants
+
+Child controls own focus, disabled, loading, checked, and read-only state. The row owns the relationship between identity, control, and error recovery. It stacks without changing DOM order below 640px.
+
+## Accessibility
+
+Associate the control with a native label or explicit ARIA labeling. Descriptions and error messages use `aria-describedby`; invalid controls also use `aria-invalid="true"`.

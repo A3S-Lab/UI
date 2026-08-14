@@ -1,0 +1,49 @@
+# Task Workspace
+
+Task Workspace keeps the title, chronological transcript, bottom composer, and optional artifact inspector in one bounded application region.
+
+<Preview class="w-full">
+  <section class="task-workspace h-[34rem] rounded-xl border border-border">
+    <header class="workspace-header"><div data-workspace-identity><h2>Release readiness review</h2></div><div data-workspace-actions><button type="button" class="btn" data-size="sm" data-variant="ghost" data-task-inspector-trigger aria-expanded="true" aria-controls="task-workspace-changes-en">Files</button></div></header>
+    <div data-task-body><main data-task-main><section class="agent-transcript" aria-label="Task transcript"><ol data-transcript-viewport><li data-role="user"><article><div data-message-content><p>Review the release changes and call out blocking risks.</p></div></article></li><li data-role="agent"><article><div data-message-content><p>I reviewed the package, documentation, and release checks.</p></div><details class="execution-item" data-state="success"><summary><span data-execution-identity><strong>3 steps completed</strong><small>Release checks</small></span></summary></details></article></li></ol></section><form class="agent-composer" data-layout="compact" aria-label="Follow up"><textarea aria-label="Follow-up instruction" placeholder="Ask a follow-up"></textarea><footer><div data-composer-tools><button type="button" class="btn" data-size="sm" data-variant="ghost">Attach</button></div><div data-composer-actions><button type="submit" class="btn" data-size="sm">Send</button></div></footer></form></main><aside id="task-workspace-changes-en" class="task-pane" data-task-inspector aria-label="Changed files"><header><h3>Changes</h3></header><section><div class="item-group"><article class="item" data-size="xs"><section><h4>README.md</h4><p>12 additions · 3 deletions</p></section></article><article class="item" data-size="xs"><section><h4>CHANGELOG.md</h4><p>8 additions · 1 deletion</p></section></article></div></section></aside></div>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="task-workspace">
+  <header class="workspace-header">
+    <button type="button" data-task-inspector-trigger>Open files</button>
+  </header>
+  <div data-task-body>
+    <main data-task-main>
+      <section class="agent-transcript">...</section>
+      <form class="agent-composer">...</form>
+    </main>
+    <aside id="task-files" class="task-pane" data-task-inspector>...</aside>
+  </div>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-task-body` | required | Owns main and inspector columns |
+| `data-task-main` | required | Transcript and composer scroll contract |
+| `data-task-inspector` | optional | Artifact, file, citation, or context inspector |
+| `data-task-inspector-trigger` | optional | Opens or closes the responsive inspector and receives restored focus |
+| `data-inspector` | `hidden`, `open`, omitted | Inspector visibility and responsive overlay state |
+
+### JavaScript API
+
+Import `@a3s-lab/ui/all`, or import `@a3s-lab/ui/runtime` before `@a3s-lab/ui/task-workspace`. The controller initializes each workspace once and exposes `openInspector()`, `closeInspector()`, `toggleInspector()`, and `refresh()` on the root. It dispatches `a3s:task-inspector-change` with `{ open, mode, source }` after a transition.
+
+## States and variants
+
+Below 900px the inspector leaves the grid and opens only when `data-inspector="open"`. Below 520px it becomes a bottom overlay. The controller marks a closed inspector `inert` and `aria-hidden="true"`, removes those attributes on open, closes on Escape or backdrop activation, and restores focus to the trigger. The transcript and composer keep their DOM order in every state. Use `data-inspector="hidden"` when the product intentionally removes the inspector at every width.
+
+## Accessibility
+
+Name the transcript, inspector, and controls. Return focus to the inspector trigger when it closes. Announce bounded execution status changes rather than making the whole transcript live.

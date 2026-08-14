@@ -238,7 +238,7 @@ Load the Tabs controller and combine `ribbon` with `tabs`.
 
 | Parameter                           | Values                              | Default     | Purpose                                |
 | ----------------------------------- | ----------------------------------- | ----------- | -------------------------------------- |
-| `data-accent`                       | `blue`, `green`, `orange`, `purple` | `blue`      | Product or document-kind accent        |
+| `data-accent`                       | `blue`, `green`, `orange`, `purple` | `blue`      | Legacy product accent; `purple` resolves to A3S blue      |
 | `role="tablist"`                    | —                                   | Required    | Tab navigation container               |
 | `aria-selected`                     | `true`, `false`                     | Required    | Active tab state                       |
 | `aria-controls` / `aria-labelledby` | Element IDs                         | Required    | Associates tabs and panels             |
@@ -250,7 +250,7 @@ Load the Tabs controller and combine `ribbon` with `tabs`.
 
 ## States and variants
 
-Blue suits documents and general workspaces, green suits spreadsheets or healthy operations, orange suits presentations, and purple suits agent workflows. Disabled tabs and commands use native `disabled`. The default 36-pixel tab strip and 74-pixel command panel match A3S Office; compact viewports keep tabs unshrunk and scroll them horizontally.
+Use blue for current A3S workspaces. Green and orange remain available for legacy document-specific integrations, while the retained `purple` compatibility value resolves to A3S blue. Disabled tabs and commands use native `disabled`. The default 36-pixel tab strip and 74-pixel command panel remain compact; narrow viewports keep tabs unshrunk and scroll them horizontally.
 
 ### JavaScript API
 

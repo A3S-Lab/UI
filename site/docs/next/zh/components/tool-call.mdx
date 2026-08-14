@@ -1,0 +1,37 @@
+# 工具调用
+
+工具调用使用原生折叠结构展示一次具名集成调用，将结构化输入与输出分开，同时让提供方细节保持可选。
+
+<Preview class="w-full max-w-3xl">
+  <details class="tool-call" data-state="success" open>
+    <summary><span data-tool-kind aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.9 7.9l-5.7 5.7a2.1 2.1 0 0 1-3-3l5.7-5.7a6 6 0 0 1 7.9-7.9z"/></svg></span><span data-tool-identity><strong>读取仓库状态</strong><small>shell · git status --short</small></span><span class="status-badge" data-state="success" data-tool-status>成功</span><span aria-hidden="true">›</span></summary>
+    <section><div><strong>输入</strong><pre data-tool-input>{`{"workdir":"/workspace/a3s-ui"}`}</pre></div><div><strong>输出</strong><pre data-tool-output>M src/css/styles/application.css\n?? src/css/components/task-plan.css</pre></div></section>
+    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">复制输出</button></footer>
+  </details>
+</Preview>
+
+## 用法
+
+```html
+<details class="tool-call" data-state="success">
+  <summary><span data-tool-identity><strong>读取仓库状态</strong><small>shell</small></span><span data-tool-status>成功</span></summary>
+  <section><pre data-tool-input>...</pre><pre data-tool-output>...</pre></section>
+</details>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| 根 `<details>` | 必须 | 原生折叠行为 |
+| `data-state` | `queued`、`running`、`waiting`、`success`、`cancelled`、`error` | 调用状态 |
+| `data-tool-input` | 可选 | 结构化参数 |
+| `data-tool-output` | 可选 | 结构化结果或错误 |
+
+## 状态与变体
+
+输入输出结构本身重要时使用工具调用。更高层操作使用执行项，持续命令输出使用终端。
+
+## 无障碍
+
+可见标题在不依赖提供方或图标的情况下说明操作。渲染输入或输出前必须移除敏感信息。

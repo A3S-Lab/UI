@@ -1,14 +1,17 @@
 /* Agent Workbench */
 @layer components {
   .agent-workbench {
-    --agent-workbench-gap: 1rem;
-    --agent-workbench-context-basis: 13.5rem;
+    --agent-workbench-gap: 0.75rem;
+    --agent-workbench-context-size: var(--a3s-task-navigation-size, 15.5rem);
+    --agent-workbench-context-basis: var(--agent-workbench-context-size);
     --agent-workbench-canvas-basis: 19rem;
-    --agent-workbench-inspector-basis: 15rem;
+    --agent-workbench-inspector-size: var(--a3s-task-inspector-size, 21rem);
+    --agent-workbench-inspector-basis: var(--agent-workbench-inspector-size);
     display: flex;
     min-width: 0;
+    min-height: var(--agent-workbench-min-height, auto);
     flex-wrap: wrap;
-    align-items: start;
+    align-items: flex-start;
     gap: var(--agent-workbench-gap);
   }
 
@@ -37,5 +40,10 @@
     ) {
     min-width: 0;
     min-height: 0;
+  }
+
+  .agent-workbench[data-context='hidden'] > [data-agent-context],
+  .agent-workbench[data-inspector='hidden'] > [data-agent-inspector] {
+    display: none;
   }
 }

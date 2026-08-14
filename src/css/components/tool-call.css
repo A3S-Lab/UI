@@ -1,0 +1,44 @@
+@layer components {
+  .tool-call {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .tool-call > summary {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .tool-call > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tool-call [data-tool-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .tool-call [data-tool-identity] > :is(strong, small) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tool-call > :is(section, footer) {
+    min-width: 0;
+  }
+
+  .tool-call [data-tool-input],
+  .tool-call [data-tool-output] {
+    max-width: 100%;
+    overflow: auto;
+    overflow-wrap: anywhere;
+  }
+}

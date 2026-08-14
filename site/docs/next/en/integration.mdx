@@ -1,0 +1,152 @@
+# Integration
+
+A3S UI has one public contract: semantic HTML plus CSS and the small controllers required by composite interactions. Native markup, React, and Vue integrations render that same contract. The host remains responsible for data, routing, task state, transport, permissions, and persistence.
+
+## Native HTML
+
+Load the complete style bundle and interactive controller bundle once.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui";
+```
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+```html
+<section class="task-workspace" aria-label="Release task">
+  <form class="agent-composer" aria-label="Follow up">
+    <textarea aria-label="Instruction"></textarea>
+    <footer>
+      <div data-composer-actions>
+        <button type="submit" class="btn">Send</button>
+      </div>
+    </footer>
+  </form>
+</section>
+```
+
+## Machine-readable component contract
+
+`@a3s-lab/ui/components.json` and `@a3s-lab/ui/manifest` expose all 83 public components. Each definition includes its root selector, semantic parts, supported actions, states, framework root element, and stable test selectors.
+
+```js
+import { getComponent, listComponents } from "@a3s-lab/ui/manifest";
+
+const workspace = getComponent("task-workspace");
+console.log(workspace.selector); // .task-workspace
+console.log(workspace.test.parts.composer);
+console.log(workspace.test.actions.click);
+console.log(workspace.test.states.complete);
+console.log(listComponents("application").length); // 34
+```
+
+The optional semantic runtime annotates matching roots and parts. It observes relevant state attributes without owning application behavior.
+
+```js
+import { a3sAI } from "@a3s-lab/ui/ai";
+
+a3sAI.scan(document);
+const composerInput = document.querySelector(
+  a3sAI.selector("agent-composer", "input"),
+);
+const snapshot = a3sAI.snapshot(document);
+```
+
+Roots receive `data-a3s-components` and `data-a3s-state`; semantic parts receive `data-a3s-parts` and exact `<component>.<part>` ownership tokens in `data-a3s-part-owners`. Ownership keeps nested components with similarly named parts unambiguous. These generated annotations are stable integration and test hooks. Applications should continue to style the documented component classes and attributes.
+
+## React
+
+Install React in the host application, then import the thin adapters. Adapters merge the public root class, forward refs and attributes, initialize interactive controllers after mount, and support `as` when another semantic root is required.
+
+```tsx
+import {
+  AgentComposer,
+  Button,
+  TaskWorkspace,
+} from "@a3s-lab/ui/react";
+
+export function ReleaseTask() {
+  return (
+    <TaskWorkspace aria-label="Release task">
+      <AgentComposer aria-label="Follow up">
+        <textarea aria-label="Instruction" />
+        <footer>
+          <div data-composer-actions>
+            <Button as="button" type="submit">Send</Button>
+          </div>
+        </footer>
+      </AgentComposer>
+    </TaskWorkspace>
+  );
+}
+```
+
+Adapters do not synthesize component interiors. Children use the same semantic markup shown in each component guide, so SSR output, native HTML, and hydrated output stay aligned.
+
+## Vue
+
+Install Vue in the host application, then import the equivalent adapters.
+
+```vue
+<script setup>
+import {
+  AgentComposer,
+  Button,
+  TaskWorkspace,
+} from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <TaskWorkspace aria-label="Release task">
+    <AgentComposer aria-label="Follow up">
+      <textarea aria-label="Instruction" />
+      <footer>
+        <div data-composer-actions>
+          <Button as="button" type="submit">Send</Button>
+        </div>
+      </footer>
+    </AgentComposer>
+  </TaskWorkspace>
+</template>
+```
+
+## Deterministic testing
+
+Prefer named roles and labels for user-facing behavior, then use generated selectors for structural parts and machine states. The package ships a small A3S Test example at `@a3s-lab/ui/a3s-test` and importable selector helpers at `@a3s-lab/ui/a3s-test/selectors`.
+
+```js
+import {
+  actionSelector,
+  partSelector,
+  readySelector,
+  stateSelector,
+} from "@a3s-lab/ui/a3s-test/selectors";
+
+const input = actionSelector("agent-composer", "fill");
+const submit = partSelector("agent-composer", "submit");
+const ready = readySelector("task-workspace");
+const complete = stateSelector("task-workspace", "complete");
+```
+
+```text
+expect "workspace-ready" {
+    visible = css("[data-a3s-components~=task-workspace][data-a3s-state]")
+}
+
+fill "instruction" {
+    target = css("[data-a3s-components~=agent-composer] [data-a3s-part-owners~=agent-composer.input]")
+    value = "Run the release checks"
+}
+```
+
+The repository validates every public component guide with one deterministic scenario. Scenarios run serially by default so stateful previews do not compete for browser resources; isolated environments may opt into bounded parallelism. The repository also installs the packed package in isolation and verifies all 83 React and Vue exports, SSR roots, TypeScript consumption, client refs, one-time readiness callbacks, semantic annotations, controller initialization, and a real interaction.
+
+## Boundaries
+
+- The manifest describes UI structure and supported interaction vocabulary; it is not a workflow engine.
+- The semantic runtime discovers and annotates DOM; it does not grant permissions or execute actions.
+- Framework adapters render root elements and initialize public controllers; they do not replace product-specific components, stores, or routers.
+- CSS classes, documented ARIA, and documented `data-*` attributes remain the source-facing API.

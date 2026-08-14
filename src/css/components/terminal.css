@@ -1,0 +1,39 @@
+@layer components {
+  .terminal {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .terminal > :is(header, footer) {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .terminal > header > :first-child {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .terminal [data-terminal-command],
+  .terminal [data-terminal-output] {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .terminal [data-terminal-output] {
+    min-height: 4rem;
+    overscroll-behavior: contain;
+  }
+}

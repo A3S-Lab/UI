@@ -1,0 +1,36 @@
+# 检查点
+
+检查点记录可恢复的任务状态，并提供足够上下文说明保存时间与原因。
+
+<Preview class="w-full max-w-2xl">
+  <article class="checkpoint" data-state="saved">
+    <header><div><h3>响应式 CSS 变更之前</h3><span data-checkpoint-meta>4 分钟前保存 · 18 个文件</span></div><span class="status-badge" data-state="success">已保存</span></header>
+    <section><p>包检查已通过。工作区可以回到此处，而不会丢失任务记录。</p></section>
+    <footer><span>第 3 / 5 个检查点</span><button type="button" class="btn" data-size="sm" data-variant="outline">恢复</button></footer>
+  </article>
+</Preview>
+
+## 用法
+
+```html
+<article class="checkpoint" data-state="saved">
+  <header><h3>响应式 CSS 变更之前</h3><span data-checkpoint-meta>4 分钟前保存</span></header>
+  <section>...</section>
+  <footer><button type="button">恢复</button></footer>
+</article>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `saving`、`saved`、`restoring`、`restored`、`expired`、`error` | 检查点生命周期 |
+| `data-checkpoint-meta` | 推荐 | 时间、范围和大小 |
+
+## 状态与变体
+
+恢复会覆盖当前工作时属于重要操作，应确认确切范围，并尽可能先保存恢复前检查点。
+
+## 无障碍
+
+同时显示多个检查点时，恢复控件名称包含检查点标题。保存和恢复完成使用一个有限状态播报。

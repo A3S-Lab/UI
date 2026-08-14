@@ -1,0 +1,40 @@
+# 终端
+
+终端展示一个有界命令会话，包含稳定标题、命令、输出视口与执行状态。Shell 传输与进程控制由宿主应用负责。
+
+<Preview class="w-full max-w-3xl">
+  <section class="terminal" data-state="success" aria-labelledby="terminal-title-zh">
+    <header><div><strong id="terminal-title-zh">发布检查</strong><span data-terminal-status>退出码 0 · 18.4 秒</span></div><button type="button" class="btn" data-size="sm" data-variant="ghost">复制</button></header>
+    <code data-terminal-command>$ npm run check:package</code>
+    <pre data-terminal-output>已验证 @a3s-lab/ui，包导出完整。\n83 个公开组件契约已验证。\n进程成功结束。</pre>
+    <footer><span>zsh · /workspace/a3s-ui</span><button type="button" class="btn" data-size="sm" data-variant="ghost">打开完整输出</button></footer>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="terminal" data-state="success" aria-labelledby="terminal-title">
+  <header><strong id="terminal-title">发布检查</strong><span data-terminal-status>退出码 0</span></header>
+  <code data-terminal-command>$ npm run check:package</code>
+  <pre data-terminal-output>...</pre>
+  <footer>...</footer>
+</section>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `idle`、`running`、`waiting`、`success`、`cancelled`、`error` | 会话状态 |
+| `data-terminal-command` | 推荐 | 确切命令 |
+| `data-terminal-output` | 必须 | 有界输出视口 |
+| `data-terminal-status` | 推荐 | 退出、运行或等待状态 |
+
+## 状态与变体
+
+取消和错误后保留部分输出。需要筛选、缺口提示与暂停行为时，高吞吐流可以组合日志查看器。
+
+## 无障碍
+
+为终端区域命名。高吞吐输出不要使用实时区域，只播报有限状态变化。绝不渲染环境中的敏感信息。

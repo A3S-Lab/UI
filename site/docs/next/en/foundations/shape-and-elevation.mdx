@@ -1,12 +1,12 @@
 # Shape and elevation
 
-Shape communicates hierarchy: controls use compact radii, content surfaces use medium radii, and complete application shells use the largest radius. Shadows are reserved for floating or overlapping surfaces.
+Shape communicates hierarchy through a 6px control radius, 10px stable surface radius, and 14px elevated-surface radius. Shadows belong only to floating or overlapping surfaces.
 
 <Preview>
 <div class="grid w-full gap-4 sm:grid-cols-3">
   <div class="rounded-md border border-border bg-card p-5 text-center text-sm">Control<br/><code class="text-xs text-muted-foreground">--radius-md</code></div>
-  <div class="rounded-xl border border-border bg-card p-5 text-center text-sm shadow-sm">Surface<br/><code class="text-xs text-muted-foreground">--radius-xl</code></div>
-  <div class="rounded-[var(--a3s-radius)] border border-border bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">Shell<br/><code class="text-xs text-muted-foreground">--a3s-radius</code></div>
+  <div class="rounded-xl border border-border bg-card p-5 text-center text-sm">Surface<br/><code class="text-xs text-muted-foreground">--radius-xl</code></div>
+  <div class="rounded-[var(--a3s-radius)] bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">Overlay<br/><code class="text-xs text-muted-foreground">--a3s-radius</code></div>
 </div>
 </Preview>
 
@@ -18,14 +18,14 @@ Shape communicates hierarchy: controls use compact radii, content surfaces use m
 | `--radius-md` | base minus 2px | Buttons, inputs, navigation items |
 | `--radius-lg` | base radius | Toolbars and side navigation |
 | `--radius-xl` | base plus 4px | Cards and panels |
-| `--a3s-radius` | `16px` | App shells and product frames |
+| `--a3s-radius` | `14px` | Major and elevated surfaces |
 
 ## Elevation
 
 | Token | Use |
 | --- | --- |
-| `--shadow-xs` | Input and card edge separation |
-| `--a3s-shadow-soft` | Hovering resource cards and compact overlays |
+| `--a3s-shadow-composer` | Docked or floating Task Composer |
+| `--a3s-shadow-soft` | Menus, popovers, drawers, and compact overlays |
 | `--a3s-shadow` | Modal dialogs and large floating panels |
 
-Borders are the default separator. Do not add shadows to every card; elevation must correspond to an actual layering change.
+Borders and tonal contrast are the default separators. Static cards, shells, catalogs, transcripts, and setting rows do not receive shadows. Use either a visible border or broad elevation for one edge, not both by default.

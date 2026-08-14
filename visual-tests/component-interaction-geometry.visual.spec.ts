@@ -159,6 +159,11 @@ test("switch, slider, toolbar, and tooltip effects change without layout shift",
   );
   await bold.click();
   await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect
+    .poll(() =>
+      bold.evaluate((element) => getComputedStyle(element).backgroundColor),
+    )
+    .not.toBe(backgroundBefore);
   const boldAfter = await requiredBox(bold);
   const backgroundAfter = await bold.evaluate(
     (element) => getComputedStyle(element).backgroundColor,
@@ -210,21 +215,34 @@ test("app shell and split pane update layout without changing their outer bounds
   const shell = shellPreview.locator(".app-shell").first();
   const shellMain = shell.locator(":scope > [data-app-main]");
   const shellNavigation = shell.locator(":scope > [data-app-navigation]");
-  const shellToggle = shell.locator("[data-demo-shell-toggle]");
+  const shellToggle = shell.locator("[data-app-navigation-trigger]");
   const shellBefore = await requiredBox(shell);
   const mainBefore = await requiredBox(shellMain);
   const navigationBefore = await requiredBox(shellNavigation);
+  const compact = (page.viewportSize()?.width ?? 0) <= 768;
 
   await expect(shell).toHaveAttribute("data-navigation", "expanded");
   await shellToggle.click();
-  await expect(shell).toHaveAttribute("data-navigation", "collapsed");
-  await expect(shellToggle).toHaveAttribute("aria-expanded", "false");
-  await expect(shellToggle).toHaveAccessibleName("Expand navigation");
+  if (compact) {
+    await expect(shell).toHaveAttribute("data-mobile-navigation", "open");
+    await expect(shell).toHaveAttribute("data-navigation", "expanded");
+    await expect(shellToggle).toHaveAttribute("aria-expanded", "true");
+    await expect(shellToggle).toHaveAccessibleName("Close navigation");
+  } else {
+    await expect(shell).toHaveAttribute("data-navigation", "collapsed");
+    await expect(shellToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(shellToggle).toHaveAccessibleName("Expand navigation");
+  }
   const shellAfter = await requiredBox(shell);
   const mainAfter = await requiredBox(shellMain);
   const navigationAfter = await requiredBox(shellNavigation);
   expectStableSize(shellBefore, shellAfter);
-  if ((page.viewportSize()?.width ?? 0) > 768) {
+  if (compact) {
+    expectStableSize(mainBefore, mainAfter);
+    expectStableSize(navigationBefore, navigationAfter);
+    await page.keyboard.press("Escape");
+    await expect(shell).not.toHaveAttribute("data-mobile-navigation", "open");
+  } else {
     expect(mainAfter.width).toBeGreaterThan(mainBefore.width);
     expect(navigationAfter.width).toBeLessThan(navigationBefore.width);
   }

@@ -25,13 +25,13 @@ Settings Layout provides navigable configuration sections with real form control
 | Parameter | Default | Purpose |
 | --- | --- | --- |
 | `--settings-navigation-size` | `14rem` | Navigation column width |
-| `--settings-sticky-offset` | `1rem` | Sticky navigation top offset |
+| `--settings-layout-height` | `auto` | Optional bounded layout height with independent region scrolling |
 | `--settings-section-gap` | `1.5rem` | Gap between configuration sections |
 | `aria-current="page"` | — | Marks the active settings destination |
 
 ## Variants and states
 
-The layout becomes a horizontally scrollable section list below 768px. Form state belongs to child primitives: `required`, `disabled`, `aria-invalid`, validation messages, dirty-state badges, and save feedback.
+The layout uses a fixed secondary navigation boundary and an independently scrolling content pane. Below 768px, navigation becomes a bounded horizontal section list. Form state belongs to child primitives: `required`, `disabled`, `aria-invalid`, validation messages, dirty-state badges, and save feedback. Compose [Setting Row](/components/setting-row) when controls should align on a stable label-control grid.
 
 ## Accessibility
 

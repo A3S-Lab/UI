@@ -1,0 +1,33 @@
+@layer components {
+  .execution-evidence {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .execution-evidence > :is(header, footer) {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .execution-evidence :is(h3, h4, p),
+  .execution-evidence [data-evidence-meta],
+  .execution-evidence [data-evidence-result] {
+    margin: 0;
+  }
+
+  .execution-evidence > section {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .execution-evidence [data-evidence-result] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.375rem;
+  }
+}

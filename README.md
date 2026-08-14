@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A framework-agnostic design system for agent workspaces, document tools, and operational consoles.
+  A framework-agnostic design system for task workspaces, document tools, and operational consoles.
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system covers both familiar primitives and application-scale composition: App Shell, Agent Workbench, Agent Composer, Agent Transcript, Approval Request, Execution Item, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Cards, resizable Split Panes, Task Panes, Steppers, and Status Bars all share the same tokens, density, and state model.
+The system now exposes 83 public component contracts. The 34 application patterns include task planning, message state, attachments and citations, artifacts, model/access/workspace context, queues, checkpoints, follow-ups, tool calls, change review, terminals, execution evidence, and complete task workspaces.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -76,7 +76,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
 | Feedback | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, and Toast |
 | Data display | Accordion, Avatar, Card, Chart, Item, Kbd, Log Viewer, Property List, Table, Stepper, Timeline, and Tree |
-| Application patterns | Agent Composer, Agent Transcript, Agent Workbench, Approval Request, Execution Item, App Shell, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
+| Application patterns | App Shell, App Page, Task Start, Task Workspace, Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, Execution Evidence, Catalog, Setting Row, Agent Composer, Agent Transcript, Agent Workbench, Approval Request, Execution Item, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
 | Utilities | Scroll Area and Theme Switcher |
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
@@ -94,23 +94,30 @@ The A3S theme is a complete design system rather than a palette layered over unr
 
 ## Application-scale patterns
 
-The Office Workbench layer is where A3S UI differs from a primitive-only kit:
+The task application layer is where A3S UI differs from a primitive-only kit:
 
 ```text
 App Shell
 ├── Activity Bar
 ├── Workspace Header
-├── Toolbar or Ribbon
-├── Resource Grid
-├── Settings Layout
-├── Split Pane
-│   └── Task Pane
+├── Task Workspace
+│   ├── Task Plan + Plan Step
+│   ├── Agent Transcript
+│   │   ├── Message Status, Attachment, and Citation
+│   │   ├── Tool Call, Terminal, and Execution Evidence
+│   │   └── Artifact Card, Checkpoint, and Follow-up Suggestions
+│   ├── Agent Composer + Context Selector
+│   └── Task Pane + Change Review
+├── Task Queue
+├── App Page
+│   ├── Catalog
+│   └── Settings Layout + Setting Row
 └── Status Bar
 ```
 
-These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, coding-agent workspaces, and observability consoles. The default Office geometry uses a 46-pixel collapsed activity rail, a 50-pixel Workspace Header, a 43-pixel Toolbar with 29-pixel commands, 36-pixel Ribbon tabs, a 74-pixel Ribbon command panel, and a 28-pixel Status Bar. Breadcrumbs and horizontal tablists stay on one bounded, scrollable row, while Pagination uses 32-pixel desktop commands with touch-safe coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; Task Panes share width above 900 pixels, overlay below it, and fill the workspace below 520 pixels.
+These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320–380-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
 
-The Codex Workbench composition combines project and thread navigation with Agent Transcript, Agent Composer, Execution Item, Approval Request, Split Pane, Task Pane, and Status Bar. A separate New Agent Thread composition keeps environment and permission selection beside the first instruction. Applications continue to own Git, PTY, browser, transport, scheduling, and policy logic.
+The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations. Applications continue to own repository, terminal, browser, transport, scheduling, persistence, and policy logic.
 
 ## Documentation languages and versions
 
@@ -135,10 +142,19 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/styles/a3s.css` | A3S visual foundation for split-import builds |
 | `@a3s-lab/ui/runtime` | Shared lifecycle and controller registry |
 | `@a3s-lab/ui/all` | Shared runtime plus all auto-initialized controllers except Chart |
-| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `tabs`, `split-pane`, or `code-editor` |
+| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `app-shell`, `task-workspace`, `tabs`, `split-pane`, or `code-editor` |
+| `@a3s-lab/ui/manifest` | Machine-readable metadata for all 83 public components |
+| `@a3s-lab/ui/components.json` | JSON component selectors, parts, actions, states, and test selectors |
+| `@a3s-lab/ui/ai` | DOM annotation, discovery, selector, and snapshot helpers |
+| `@a3s-lab/ui/a3s-test` | Ready-to-run deterministic workflow example |
+| `@a3s-lab/ui/a3s-test/selectors` | Component, part, action, ready, and state selector helpers |
+| `@a3s-lab/ui/react` | Optional thin React element adapters; React remains a peer dependency |
+| `@a3s-lab/ui/vue` | Optional thin Vue element adapters; Vue remains a peer dependency |
 | `@a3s-lab/ui/templates/*` | Nunjucks and Jinja templates for server-rendered applications |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
+
+The optional semantic runtime annotates matching roots with `data-a3s-components`, parts with `data-a3s-parts`, exact part ownership with `data-a3s-part-owners`, and current state with `data-a3s-state`. It does not replace application behavior or introduce a framework runtime. See the bilingual [Integration guide](https://a3s-lab.github.io/UI/integration.html) for native HTML, React, Vue, and deterministic test examples.
 
 The runtime also keeps open `[data-popover]` surfaces inside the visual viewport. Dropdown menus, popovers, selects, and comboboxes share collision flipping, constrained available height, live scroll/resize positioning, and logical RTL alignment.
 
@@ -157,7 +173,7 @@ npm run test:visual
 
 Run the documentation site locally with `npm run docs:dev`. The static build is written to `site/doc_build` and deployed to GitHub Pages from `main`.
 
-Run the component-specific browser suites with `npm run test:e2e:a3s`. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
+Run the component-specific browser suites with `npm run test:e2e:a3s`. Scenarios run serially by default so stateful previews stay deterministic; set `A3S_TEST_MAX_PARALLEL` only when the browser adapter has enough isolated capacity. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
 Visual checks use Playwright with platform-specific desktop and compact baselines. Every public component route also has a component-root geometry and state contract plus browser diagnostic coverage. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
 

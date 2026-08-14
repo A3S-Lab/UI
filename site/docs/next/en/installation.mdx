@@ -44,8 +44,10 @@ Or import the runtime once and only the controllers you use.
 
 ```js
 import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/app-shell";
 import "@a3s-lab/ui/tabs";
 import "@a3s-lab/ui/split-pane";
+import "@a3s-lab/ui/task-workspace";
 ```
 
   </Step>
@@ -98,6 +100,7 @@ Use split imports when application CSS already owns its dependency graph.
 | `@a3s-lab/ui/all` | Runtime and all auto-initialized controllers except Chart |
 | `@a3s-lab/ui/runtime` | Shared lifecycle and registry |
 | `@a3s-lab/ui/accordion` | Accordion enhancement |
+| `@a3s-lab/ui/app-shell` | Desktop navigation and contained compact drawer |
 | `@a3s-lab/ui/combobox` | Combobox |
 | `@a3s-lab/ui/command` | Command palette |
 | `@a3s-lab/ui/drawer` | Drawer |
@@ -108,6 +111,7 @@ Use split imports when application CSS already owns its dependency graph.
 | `@a3s-lab/ui/sidebar` | Sidebar |
 | `@a3s-lab/ui/split-pane` | Resizable Split Pane |
 | `@a3s-lab/ui/tabs` | Tabs and Ribbon navigation |
+| `@a3s-lab/ui/task-workspace` | Responsive task inspector and focus return |
 | `@a3s-lab/ui/toast` | Toast |
 | `@a3s-lab/ui/chart` | Chart helper; Chart.js remains separate |
 
@@ -134,6 +138,22 @@ cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
 </CodeGroup>
 
 See [Templates](/templates) for macro parameters.
+
+## Semantic and framework adapters
+
+The package also ships a machine-readable component manifest, a small DOM annotation runtime, and optional React and Vue element adapters. These entrypoints preserve the same semantic HTML contract; they do not contain application state, task transport, or product logic.
+
+```js
+import { a3sAI } from "@a3s-lab/ui/ai";
+import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
+
+a3sAI.scan(document);
+console.log(manifest.components.length); // 83
+```
+
+React and Vue are optional peer dependencies. Install only the framework used by the host application, then import components from `@a3s-lab/ui/react` or `@a3s-lab/ui/vue`.
+
+See [Integration](/integration) for native HTML, React, Vue, manifest, selector, snapshot, and deterministic test examples.
 
 ## Icons
 

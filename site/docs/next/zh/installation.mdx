@@ -44,8 +44,10 @@ import "@a3s-lab/ui/all";
 
 ```js
 import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/app-shell";
 import "@a3s-lab/ui/tabs";
 import "@a3s-lab/ui/split-pane";
+import "@a3s-lab/ui/task-workspace";
 ```
 
   </Step>
@@ -98,6 +100,7 @@ import "@a3s-lab/ui/split-pane";
 | `@a3s-lab/ui/all` | 运行时和所有自动初始化控制器（图表除外） |
 | `@a3s-lab/ui/runtime` | 共享生命周期与组件注册机制 |
 | `@a3s-lab/ui/accordion` | 折叠面板增强 |
+| `@a3s-lab/ui/app-shell` | 桌面导航与有边界的紧凑抽屉 |
 | `@a3s-lab/ui/combobox` | 组合框 |
 | `@a3s-lab/ui/command` | 命令面板 |
 | `@a3s-lab/ui/drawer` | 抽屉 |
@@ -108,6 +111,7 @@ import "@a3s-lab/ui/split-pane";
 | `@a3s-lab/ui/sidebar` | 侧边栏 |
 | `@a3s-lab/ui/split-pane` | 可调整大小的分割窗格 |
 | `@a3s-lab/ui/tabs` | 选项卡和功能区导航 |
+| `@a3s-lab/ui/task-workspace` | 响应式任务检查器与焦点归还 |
 | `@a3s-lab/ui/toast` | Toast |
 | `@a3s-lab/ui/chart` | Chart 辅助 API；Chart.js 仍需单独安装 |
 
@@ -134,6 +138,22 @@ cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
 </CodeGroup>
 
 宏参数请参阅[模板](/templates)。
+
+## 语义与框架适配器
+
+包中还包含机器可读组件清单、小型 DOM 标注运行时，以及可选的 React 与 Vue 元素适配器。这些入口保持同一套语义 HTML 契约，不包含应用状态、任务传输或产品逻辑。
+
+```js
+import { a3sAI } from "@a3s-lab/ui/ai";
+import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
+
+a3sAI.scan(document);
+console.log(manifest.components.length); // 83
+```
+
+React 与 Vue 均为可选 peer dependency。宿主应用只需安装正在使用的框架，然后从 `@a3s-lab/ui/react` 或 `@a3s-lab/ui/vue` 导入组件。
+
+原生 HTML、React、Vue、组件清单、选择器、快照与确定性测试示例见[集成](/integration)。
 
 ## 图标
 

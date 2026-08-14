@@ -1,0 +1,46 @@
+@layer components {
+  .task-queue {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: 0;
+  }
+
+  .task-queue > header,
+  .task-queue > ol > li {
+    display: grid;
+    min-width: 0;
+    align-items: center;
+  }
+
+  .task-queue > header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .task-queue > header :is(h2, h3, p),
+  .task-queue > ol > li :is(h3, h4, strong, p) {
+    margin: 0;
+  }
+
+  .task-queue > ol {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .task-queue > ol > li {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .task-queue [data-queue-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .task-queue [data-queue-actions] {
+    display: flex;
+    align-items: center;
+  }
+}

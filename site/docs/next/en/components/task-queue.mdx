@@ -1,0 +1,39 @@
+# Task Queue
+
+Task Queue presents work waiting behind or alongside the active task. Scheduling, concurrency, prioritization, and cancellation remain application logic.
+
+<Preview class="w-full max-w-3xl">
+  <section class="task-queue" data-state="running" aria-labelledby="task-queue-title">
+    <header><div><h2 id="task-queue-title">Task queue</h2><p>One running · two waiting</p></div><span data-queue-status>Running</span></header>
+    <ol>
+      <li data-state="running"><span data-queue-position>01</span><div data-queue-identity><strong>Review release changes</strong><small>A3S UI · started 2m ago</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></div></li>
+      <li data-state="queued"><span data-queue-position>02</span><div data-queue-identity><strong>Update component documentation</strong><small>A3S UI · waiting</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">Remove</button></div></li>
+      <li data-state="blocked"><span data-queue-position>03</span><div data-queue-identity><strong>Publish release</strong><small>Waiting for approval</small></div><div data-queue-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">Review</button></div></li>
+    </ol>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="task-queue" data-state="running" aria-labelledby="queue-title">
+  <header><h2 id="queue-title">Task queue</h2><span data-queue-status>Running</span></header>
+  <ol><li data-state="queued">...</li></ol>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `idle`, `running`, `paused`, `blocked`, `complete`, `error` | Aggregate queue state |
+| Item `data-state` | `queued`, `running`, `blocked`, `complete`, `error` | Per-task state |
+| `data-queue-actions` | Optional | Open, retry, cancel, or reprioritize |
+
+## States and variants
+
+Order must match execution order. Reordering requires an explicit handle and immediate confirmation; do not make the entire row draggable by default.
+
+## Accessibility
+
+Use an ordered list and textual states. Announce only meaningful queue changes, not timer updates.

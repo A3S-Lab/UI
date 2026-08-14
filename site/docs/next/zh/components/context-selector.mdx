@@ -1,0 +1,38 @@
+# 上下文选择器
+
+上下文选择器为模型、权限和工作区提供一套紧凑契约。选项符合普通选择行为时优先使用原生 Select。
+
+<Preview class="w-full max-w-3xl">
+  <div class="grid w-full gap-3 sm:grid-cols-3">
+    <label class="context-selector" data-kind="model"><span data-context-label>模型 <small>必选</small></span><select aria-label="模型"><option>自动</option><option>快速</option><option>深度分析</option></select><span data-context-description>在响应速度与任务复杂度之间平衡。</span></label>
+    <label class="context-selector" data-kind="permission"><span data-context-label>访问权限</span><select aria-label="权限配置"><option>标准访问</option><option>只读</option><option>扩展访问</option></select><span data-context-description>策略仍由宿主应用强制执行。</span></label>
+    <label class="context-selector" data-kind="workspace"><span data-context-label>工作区</span><select aria-label="工作区"><option>A3S UI</option><option>Runtime release</option></select><span data-context-description>文件和任务历史限定在此范围。</span></label>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<label class="context-selector" data-kind="workspace">
+  <span data-context-label>工作区</span>
+  <select aria-label="工作区"><option>A3S UI</option></select>
+  <span data-context-description>文件和任务历史限定在此范围。</span>
+</label>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-kind` | `model`、`permission`、`workspace` | 选择语义 |
+| 原生 `<select>` | 优先 | 普通有限选择 |
+| `button[aria-haspopup]` | 可选 | 可搜索的丰富锚定菜单 |
+| `data-context-description` | 推荐 | 说明选择后果 |
+
+## 状态与变体
+
+当原因能帮助恢复时，保留不可用选项并说明原因。视觉选中状态不能暗示权限已经授予。
+
+## 无障碍
+
+使用原生标签与控件名称。锚定菜单关闭后恢复触发器焦点，并限制在视口内。

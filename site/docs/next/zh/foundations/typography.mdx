@@ -1,12 +1,12 @@
 # 排版
 
-A3S UI 使用系统 UI 字体栈，在 macOS、Windows、Linux 与 CJK 环境中快速加载并保持原生文本质感。代码、标识符与指标使用平台等宽字体栈。
+A3S UI 使用 Geist Sans，并保留系统与 CJK 回退字体。Geist Mono 只用于代码、命令、路径、测量值和表格数据。
 
 <Preview>
 <div class="grid w-full gap-5 rounded-xl border border-border bg-card p-6">
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Display / 36</span><p class="mt-2 text-4xl font-semibold tracking-tight">让智能体工作区保持一致。</p></div>
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Heading / 20</span><h2 class="mt-2 text-xl font-semibold">工作区配置</h2></div>
-  <div><span class="text-xs font-medium tracking-widest text-muted-foreground uppercase">Body / 14</span><p class="mt-2 text-sm text-muted-foreground">适合运维工具、文档编辑器和长时间智能体会话的可读密度。</p></div>
+  <div><span class="text-xs font-medium text-muted-foreground">展示 · 28–40</span><p class="mt-2 text-4xl font-semibold tracking-tight">让任务工作保持清晰。</p></div>
+  <div><span class="text-xs font-medium text-muted-foreground">页面标题 · 24</span><h2 class="mt-2 text-2xl font-semibold">工作区配置</h2></div>
+  <div><span class="text-xs font-medium text-muted-foreground">正文 · 14</span><p class="mt-2 max-w-[70ch] text-sm text-muted-foreground">适合运维工具、文档编辑器和长时间任务会话的可读密度。</p></div>
   <code class="rounded-md bg-muted px-3 py-2 text-sm">gateway.routing.strategy = "balanced"</code>
 </div>
 </Preview>
@@ -15,18 +15,18 @@ A3S UI 使用系统 UI 字体栈，在 macOS、Windows、Linux 与 CJK 环境中
 
 | 令牌 | 字体栈 | 用途 |
 | --- | --- | --- |
-| `--font-sans` | System UI、PingFang SC、Microsoft YaHei、Noto Sans CJK SC | 界面与文档文本 |
-| `--font-mono` | SFMono-Regular、Consolas、Liberation Mono、Menlo | 代码、标识符、指标与快捷键 |
+| `--font-sans` | Geist Sans、System UI、PingFang SC、Microsoft YaHei、Noto Sans CJK SC | 界面与文档文本 |
+| `--font-mono` | Geist Mono、SFMono-Regular、Consolas、Liberation Mono、Menlo | 代码、命令、路径与测量值 |
 
 ## 字号层级
 
 | 角色 | 字号 / 行高 | 字重 | 说明 |
 | --- | ---: | ---: | --- |
-| 展示标题 | `36 / 40px` | `600` | 首页或空状态主张 |
-| 页面标题 | `24 / 32px` | `600` | 每个视图一个 |
-| 分区标题 | `16 / 24px` | `600–650` | 设置卡片与面板 |
+| 展示标题 | `28–40 / 32–46px` | `650` | 仅起始页与空状态 |
+| 页面标题 | `24 / 30px` | `650` | 每个视图一个 |
+| 分区标题 | `16 / 22px` | `650` | 设置与检查器区域 |
 | 控件 | `13 / 20px` | `500–600` | 紧凑应用工具栏 |
-| 正文 | `14 / 22px` | `400` | 默认文档正文 |
+| 正文 | `14 / 22px` | `400` | 默认正文，每行控制在 65–75 个字符 |
 | 说明文字 | `12 / 16px` | `400–500` | 元数据与状态 |
 
 ## 参数

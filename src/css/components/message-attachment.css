@@ -1,0 +1,31 @@
+@layer components {
+  .message-attachment {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .message-attachment > figure {
+    display: grid;
+    flex: none;
+    place-items: center;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .message-attachment > [data-attachment-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .message-attachment > [data-attachment-identity] > :is(h3, h4, strong, p),
+  .message-attachment [data-attachment-meta] {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

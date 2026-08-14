@@ -1,0 +1,49 @@
+# 任务工作区
+
+任务工作区把标题、按时间排序的记录、底部输入器和可选产物检查器放在同一个有边界的应用区域中。
+
+<Preview class="w-full">
+  <section class="task-workspace h-[34rem] rounded-xl border border-border">
+    <header class="workspace-header"><div data-workspace-identity><h2>发布就绪审查</h2></div><div data-workspace-actions><button type="button" class="btn" data-size="sm" data-variant="ghost" data-task-inspector-trigger aria-expanded="true" aria-controls="task-workspace-changes-zh">文件</button></div></header>
+    <div data-task-body><main data-task-main><section class="agent-transcript" aria-label="任务记录"><ol data-transcript-viewport><li data-role="user"><article><div data-message-content><p>审查发布变更并指出阻塞风险。</p></div></article></li><li data-role="agent"><article><div data-message-content><p>已审查包、文档和发布检查。</p></div><details class="execution-item" data-state="success"><summary><span data-execution-identity><strong>已完成 3 个步骤</strong><small>发布检查</small></span></summary></details></article></li></ol></section><form class="agent-composer" data-layout="compact" aria-label="继续提问"><textarea aria-label="后续指令" placeholder="继续提问"></textarea><footer><div data-composer-tools><button type="button" class="btn" data-size="sm" data-variant="ghost">附件</button></div><div data-composer-actions><button type="submit" class="btn" data-size="sm">发送</button></div></footer></form></main><aside id="task-workspace-changes-zh" class="task-pane" data-task-inspector aria-label="变更文件"><header><h3>变更</h3></header><section><div class="item-group"><article class="item" data-size="xs"><section><h4>README.md</h4><p>新增 12 行 · 删除 3 行</p></section></article><article class="item" data-size="xs"><section><h4>CHANGELOG.md</h4><p>新增 8 行 · 删除 1 行</p></section></article></div></section></aside></div>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="task-workspace">
+  <header class="workspace-header">
+    <button type="button" data-task-inspector-trigger>打开文件</button>
+  </header>
+  <div data-task-body>
+    <main data-task-main>
+      <section class="agent-transcript">...</section>
+      <form class="agent-composer">...</form>
+    </main>
+    <aside id="task-files" class="task-pane" data-task-inspector>...</aside>
+  </div>
+</section>
+```
+
+### 参数
+
+| API | 可选值 | 用途 |
+| --- | --- | --- |
+| `data-task-body` | 必填 | 管理主区域和检查器列 |
+| `data-task-main` | 必填 | 任务记录和输入器的滚动约定 |
+| `data-task-inspector` | 可选 | 产物、文件、引用或上下文检查器 |
+| `data-task-inspector-trigger` | 可选 | 打开或关闭响应式检查器，并接收关闭后的焦点 |
+| `data-inspector` | `hidden`、`open`、省略 | 检查器可见性和响应式浮层状态 |
+
+### JavaScript API
+
+导入 `@a3s-lab/ui/all`，或者先导入 `@a3s-lab/ui/runtime`，再导入 `@a3s-lab/ui/task-workspace`。控制器只初始化一次，并在根元素上提供 `openInspector()`、`closeInspector()`、`toggleInspector()` 与 `refresh()`。状态变化后会派发 `a3s:task-inspector-change`，详情为 `{ open, mode, source }`。
+
+## 状态和变体
+
+低于 900 像素时，检查器退出网格，只在 `data-inspector="open"` 时覆盖显示。低于 520 像素时改为底部浮层。控制器会为关闭状态设置 `inert` 与 `aria-hidden="true"`，打开时移除这些属性，并支持 Escape、遮罩关闭和焦点归还。所有状态下任务记录与输入器的 DOM 顺序保持不变。产品若需要在所有宽度彻底移除检查器，可使用 `data-inspector="hidden"`。
+
+## 无障碍
+
+为任务记录、检查器和控件提供名称。关闭检查器时把焦点还给触发器。只播报有边界的执行状态变化，不把整段任务记录设为实时区域。

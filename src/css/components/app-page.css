@@ -1,0 +1,64 @@
+@layer components {
+  .app-page {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
+    flex-direction: column;
+  }
+
+  .app-page > header {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .app-page > header > [data-page-identity] {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .app-page > header > [data-page-actions] {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .app-page > [data-page-content] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-page > [data-page-content] > * {
+    min-width: 0;
+  }
+
+  .app-page[data-width='reading'] > :is(header, [data-page-content]) {
+    max-width: var(--app-page-reading-width, var(--a3s-task-reading-size, 47.5rem));
+    margin-inline: auto;
+  }
+
+  .app-page[data-width='wide'] > :is(header, [data-page-content]) {
+    max-width: var(--app-page-wide-width, 80rem);
+    margin-inline: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .app-page > header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .app-page > header > [data-page-actions] {
+      justify-content: flex-start;
+    }
+  }
+}

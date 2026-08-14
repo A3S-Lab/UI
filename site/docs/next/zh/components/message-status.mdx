@@ -1,0 +1,36 @@
+# 消息状态
+
+消息状态在单条消息旁报告有限的发送或生成状态，不把整个对话记录设为实时区域。
+
+<Preview class="w-full max-w-xl">
+  <div class="flex flex-wrap items-center gap-4">
+    <output class="message-status" data-state="streaming" aria-live="polite"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>正在生成回复</span><time datetime="2026-08-14T01:32:00Z">1:32</time></output>
+    <output class="message-status" data-state="sent"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>已发送</span></output>
+    <output class="message-status" data-state="error"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>发送失败</span><button type="button" class="btn" data-size="xs" data-variant="ghost">重试</button></output>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<output class="message-status" data-state="streaming" aria-live="polite">
+  <span data-message-status-indicator aria-hidden="true"></span>
+  <span data-message-status-label>正在生成回复</span>
+</output>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `sending`、`streaming`、`sent`、`queued`、`stopped`、`error` | 有限消息状态 |
+| `data-message-status-label` | 必须 | 文本状态 |
+| `data-message-status-meta` 或 `<time>` | 可选 | 时间或紧凑元数据 |
+
+## 状态与变体
+
+只有消息确实保留并等待稍后提交时才使用 `queued`。错误状态应在可恢复时提供直接重试操作。
+
+## 无障碍
+
+仅在状态异步变化期间使用礼貌实时区域，不要播报每个流式字符。

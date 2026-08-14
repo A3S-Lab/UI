@@ -6,6 +6,7 @@ const siteRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
 );
+const docsRoot = path.join(siteRoot, 'docs');
 const outputRoot = path.join(siteRoot, 'doc_build');
 const base = '/UI/';
 
@@ -121,18 +122,34 @@ const requiredFiles = [
   'v0.1.0/components/slider.html',
   'v0.1.0/en/components/slider.html',
   'components/app-shell.html',
+  'components/app-page.html',
+  'en/components/app-page.html',
+  'components/task-start.html',
+  'en/components/task-start.html',
+  'components/task-workspace.html',
+  'en/components/task-workspace.html',
+  'components/catalog.html',
+  'en/components/catalog.html',
+  'components/setting-row.html',
+  'en/components/setting-row.html',
   'components/split-pane.html',
   'components/status-bar.html',
   'components/task-pane.html',
   'en/components/status-bar.html',
   'en/components/task-pane.html',
   'foundations/color.html',
-  'patterns/resource-workbench.html',
-  'en/patterns/resource-workbench.html',
-  'patterns/codex-workbench.html',
-  'en/patterns/codex-workbench.html',
-  'patterns/new-agent-thread.html',
-  'en/patterns/new-agent-thread.html',
+  'patterns/task-workspace.html',
+  'en/patterns/task-workspace.html',
+  'patterns/new-task.html',
+  'en/patterns/new-task.html',
+  'patterns/capability-catalog.html',
+  'en/patterns/capability-catalog.html',
+  'patterns/settings-center.html',
+  'en/patterns/settings-center.html',
+  'patterns/projects.html',
+  'en/patterns/projects.html',
+  'patterns/automations.html',
+  'en/patterns/automations.html',
   'llms.txt',
   'llms-full.txt',
   'en/llms.txt',
@@ -160,7 +177,7 @@ const homepageExpectations = [
       'data-mobile-expanded="false"',
       'aria-live="polite"',
       'aria-pressed="true"',
-      '<dt>64</dt>',
+      '<dt>83</dt>',
       'v0.2.0',
       'v0.1.0',
     ],
@@ -178,7 +195,7 @@ const homepageExpectations = [
       'PUBLIC COMPONENT COMPOSITION',
       'data-a3s-customizer',
       'aria-live="polite"',
-      '<dt>64</dt>',
+      '<dt>83</dt>',
       'v0.2.0',
     ],
   },
@@ -189,6 +206,7 @@ const homepageExpectations = [
       'A3S 产品界面系统',
       '复杂界面，',
       'npm install @a3s-lab/ui@0.2.0',
+      '<dt>64</dt>',
       'v0.2.0',
     ],
   },
@@ -199,6 +217,7 @@ const homepageExpectations = [
       'A3S PRODUCT INTERFACE SYSTEM',
       'Complex UI.',
       'npm install @a3s-lab/ui@0.2.0',
+      '<dt>64</dt>',
       'v0.2.0',
     ],
   },
@@ -209,6 +228,7 @@ const homepageExpectations = [
       'A3S 产品界面系统',
       '复杂界面，',
       'npm install @a3s-lab/ui@0.1.0',
+      '<dt>64</dt>',
       'v0.1.0',
     ],
   },
@@ -219,6 +239,7 @@ const homepageExpectations = [
       'A3S PRODUCT INTERFACE SYSTEM',
       'Complex UI.',
       'npm install @a3s-lab/ui@0.1.0',
+      '<dt>64</dt>',
       'v0.1.0',
     ],
   },
@@ -665,45 +686,65 @@ const nextExtractedComponentExpectations = [
   },
 ];
 
-const nextAgentPatternExpectations = [
+const nextTaskPatternExpectations = [
   {
-    file: 'patterns/codex-workbench.html',
+    file: 'patterns/task-workspace.html',
     markers: [
       'lang="zh"',
       'class="app-shell"',
-      'class="agent-transcript min-h-0 flex-1"',
+      'class="task-workspace"',
       'class="approval-request"',
-      'data-demo-shell-toggle',
+      'data-app-navigation-trigger',
     ],
   },
   {
-    file: 'en/patterns/codex-workbench.html',
+    file: 'en/patterns/task-workspace.html',
     markers: [
       'lang="en"',
-      '>Codex Workbench<',
-      'aria-label="Resize conversation and context"',
-      'aria-valuenow="70"',
+      '>Task Workspace<',
+      'aria-label="Task transcript"',
+      'data-task-inspector',
       'illustrative data',
     ],
   },
   {
-    file: 'patterns/new-agent-thread.html',
+    file: 'patterns/new-task.html',
     markers: [
       'lang="zh"',
-      'aria-labelledby="new-thread-title"',
+      'class="task-start',
       'class="agent-composer"',
-      'name="new-thread-environment"',
+      'data-task-suggestions',
     ],
   },
   {
-    file: 'en/patterns/new-agent-thread.html',
+    file: 'en/patterns/new-task.html',
     markers: [
       'lang="en"',
-      '>New Agent Thread<',
-      'aria-label="First instruction"',
-      'illustrative data',
+      '>New Task<',
+      'aria-label="Instruction"',
+      'aria-label="Start a new task"',
     ],
   },
+  {
+    file: 'en/patterns/capability-catalog.html',
+    markers: ['>Capability Catalog<', 'role="tablist"', 'data-catalog-results'],
+  },
+  {
+    file: 'en/patterns/settings-center.html',
+    markers: ['>Settings Center<', 'class="settings-layout', 'class="setting-row"'],
+  },
+  {
+    file: 'en/patterns/projects.html',
+    markers: ['>Projects<', 'class="app-page', 'class="resource-grid"'],
+  },
+  {
+    file: 'en/patterns/automations.html',
+    markers: ['>Automations<', 'class="table-container"', 'Recent automation runs'],
+  },
+];
+const disallowedPublicProductNames = [
+  ['cod', 'ex'].join(''),
+  ['work', 'buddy'].join(''),
 ];
 const nextExtractedComponentHistoricalExpectations = [
   'agent-workbench',
@@ -791,6 +832,36 @@ async function collectHtmlFiles(directory) {
   }
 
   return files;
+}
+
+async function collectMdxFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const absolutePath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await collectMdxFiles(absolutePath)));
+    } else if (entry.name.endsWith('.mdx')) {
+      files.push(absolutePath);
+    }
+  }
+
+  return files;
+}
+
+function builtPathForMdx(mdxFile) {
+  const [version, locale, ...routeParts] = path
+    .relative(docsRoot, mdxFile)
+    .split(path.sep);
+  const outputParts = [];
+
+  if (version !== 'next') outputParts.push(version);
+  if (locale === 'en') outputParts.push(locale);
+  outputParts.push(...routeParts);
+
+  const outputFile = outputParts.join(path.sep).replace(/\.mdx$/, '.html');
+  return path.join(outputRoot, outputFile);
 }
 
 async function resolvesToBuiltFile(relativeReference) {
@@ -895,7 +966,7 @@ for (const { file, markers } of [
   ...nextTreeExpectations,
   ...nextCodeEditorExpectations,
   ...nextExtractedComponentExpectations,
-  ...nextAgentPatternExpectations,
+  ...nextTaskPatternExpectations,
   ...nextExtractedComponentHistoricalExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), 'utf8');
@@ -925,12 +996,12 @@ const styleExpectations = [
     matches: compiledStyles.startsWith('@layer rp-base;'),
   },
   {
-    label: 'Office light primary action token is present',
-    matches: compiledStyles.includes('--primary:#242424'),
+    label: 'A3S light primary action token is present',
+    matches: compiledStyles.includes('--primary:#2864e8'),
   },
   {
-    label: 'Office dark primary action token is present',
-    matches: compiledStyles.includes('--primary:#f2f3f5'),
+    label: 'A3S dark primary action token is present',
+    matches: compiledStyles.includes('--primary:#6ca3ff'),
   },
   {
     label: 'primary button contract is present',
@@ -961,17 +1032,80 @@ const disallowedChineseTerms = [
   '选择卡',
 ];
 const htmlFiles = await collectHtmlFiles(outputRoot);
+const mdxFiles = await collectMdxFiles(docsRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
+const previewSourceViolations = [];
+let mdxPreviewCount = 0;
+
+for (const mdxFile of mdxFiles) {
+  const source = await readFile(mdxFile, 'utf8');
+  const sourcePreviewCount = (source.match(/<Preview\b/g) ?? []).length;
+  const builtFile = builtPathForMdx(mdxFile);
+  let html;
+
+  try {
+    html = await readFile(builtFile, 'utf8');
+  } catch {
+    previewSourceViolations.push(
+      `${path.relative(docsRoot, mdxFile)}: corresponding built page is missing`,
+    );
+    continue;
+  }
+
+  const builtPreviewCount = (html.match(/class="a3s-preview"/g) ?? []).length;
+  mdxPreviewCount += sourcePreviewCount;
+  if (sourcePreviewCount !== builtPreviewCount) {
+    previewSourceViolations.push(
+      `${path.relative(docsRoot, mdxFile)}: ${sourcePreviewCount} MDX previews, ${builtPreviewCount} built previews`,
+    );
+  }
+}
+
+let builtPreviewCount = 0;
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, 'utf8');
   const relativeHtmlFile = path.relative(outputRoot, htmlFile);
+  const previewCount = (html.match(/class="a3s-preview"/g) ?? []).length;
+  builtPreviewCount += previewCount;
+  const previewTablistCount = (
+    html.match(/aria-label="(?:预览显示模式|Preview display mode)"/g) ?? []
+  ).length;
+  const previewViewCount = (
+    html.match(/data-preview-view="preview"/g) ?? []
+  ).length;
+  const previewCodeTabCount = (
+    html.match(/data-preview-view="code"/g) ?? []
+  ).length;
+  const previewCopyCount = (html.match(/data-preview-copy="true"/g) ?? [])
+    .length;
+  const previewStageCount = (html.match(/class="a3s-preview__stage"/g) ?? [])
+    .length;
+  const previewSourceCount = (html.match(/class="a3s-preview__source"/g) ?? [])
+    .length;
+  if (
+    previewCount !== previewTablistCount ||
+    previewCount !== previewViewCount ||
+    previewCount !== previewCodeTabCount ||
+    previewCount !== previewCopyCount ||
+    previewCount !== previewStageCount ||
+    previewCount !== previewSourceCount
+  ) {
+    previewSourceViolations.push(
+      `${relativeHtmlFile}: ${previewCount} previews, ${previewTablistCount} tablists, ${previewViewCount} preview tabs, ${previewCodeTabCount} code tabs, ${previewCopyCount} copy controls, ${previewStageCount} stages, ${previewSourceCount} source panels`,
+    );
+  }
   const visibleText = html
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
   if (/basecoat/i.test(visibleText)) {
     publicBrandingLeaks.push(relativeHtmlFile);
+  }
+  for (const productName of disallowedPublicProductNames) {
+    if (visibleText.toLowerCase().includes(productName)) {
+      publicBrandingLeaks.push(`${relativeHtmlFile} -> ${productName}`);
+    }
   }
   if (!relativeHtmlFile.split(path.sep).includes('en')) {
     for (const term of disallowedChineseTerms) {
@@ -1024,10 +1158,24 @@ for (const htmlFile of htmlFiles) {
   }
 }
 
+if (mdxPreviewCount !== builtPreviewCount) {
+  previewSourceViolations.push(
+    `site total: ${mdxPreviewCount} MDX previews, ${builtPreviewCount} built previews`,
+  );
+}
+
 if (brokenReferences.length > 0) {
   throw new Error(
     `Built-site reference check failed:\n${brokenReferences
       .map((reference) => `  - ${reference}`)
+      .join('\n')}`,
+  );
+}
+
+if (previewSourceViolations.length > 0) {
+  throw new Error(
+    `Preview source-view coverage failed:\n${previewSourceViolations
+      .map((violation) => `  - ${violation}`)
       .join('\n')}`,
   );
 }
@@ -1049,5 +1197,5 @@ if (chineseTerminologyLeaks.length > 0) {
 }
 
 console.log(
-  `Verified ${requiredFiles.length} required files, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${mdxPreviewCount} MDX preview contracts, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
 );

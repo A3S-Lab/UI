@@ -26,6 +26,10 @@
 - [x] Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
 - [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S Web's Agent Factory and operational evidence surfaces.
 - [x] Extracted Brand Lockup and Stepper contracts from repeated A3S Web identity and bounded process-path surfaces.
-- [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Codex Workbench and New Agent Thread compositions.
+- [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Task Workspace and New Task compositions.
+- [x] Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts with bilingual Capability Catalog, Settings Center, Projects, and Automations patterns.
+- [x] Added the 14 detailed task-workflow contracts for plans, message state, artifacts, context, queues, checkpoints, follow-ups, tools, change review, terminal output, and execution evidence.
+- [x] Added the 83-component machine manifest, semantic DOM runtime, optional React and Vue adapters, isolated package checks, and deterministic per-component A3S Test coverage.
+- [x] Added owned-part/action/state selector helpers, all-component framework export and type checks, real client mounting, and preview/code switching for every bilingual component example.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.

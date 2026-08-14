@@ -1,11 +1,11 @@
 # Color
 
-The A3S palette separates semantic roles from product accents. Components consume semantic tokens, while Office-like resources use blue, green, orange, or purple accents to communicate document and agent types.
+The A3S palette uses cool neutral surfaces and one deliberately scarce blue. Green, amber, and red report semantic state; they do not become page themes or category branding.
 
 <Preview>
 <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
   <div class="rounded-lg border border-border bg-background p-4"><div class="mb-3 h-12 rounded-md border border-border bg-background"></div><strong class="text-sm">Background</strong><code class="mt-1 block text-xs text-muted-foreground">--background</code></div>
-  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-card shadow-sm"></div><strong class="text-sm">Surface</strong><code class="mt-1 block text-xs text-muted-foreground">--card</code></div>
+  <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md border border-border bg-card"></div><strong class="text-sm">Surface</strong><code class="mt-1 block text-xs text-muted-foreground">--card</code></div>
   <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-primary"></div><strong class="text-sm">Primary</strong><code class="mt-1 block text-xs text-muted-foreground">--primary</code></div>
   <div class="rounded-lg border border-border bg-card p-4"><div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div><strong class="text-sm">A3S blue</strong><code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code></div>
 </div>
@@ -15,33 +15,32 @@ The A3S palette separates semantic roles from product accents. Components consum
 
 | Role | Light | Dark | Use |
 | --- | --- | --- | --- |
-| `--background` | `#f7f7f8` | `#101118` | Application canvas |
-| `--foreground` | `#17181a` | `#f2f3f5` | Primary content |
+| `--background` | `#f8f9fb` | `#101118` | Application canvas |
+| `--foreground` | `#17191d` | `#f2f3f5` | Primary content |
 | `--card` | `#ffffff` | `#171820` | Raised or grouped surfaces |
-| `--muted` | `#f2f3f5` | `#1e2028` | Subtle fills and controls |
-| `--muted-foreground` | `#71757d` | `#a4a8b2` | Supporting text |
-| `--border` | `#e2e4e8` | `#2a2d35` | Dividers and boundaries |
-| `--primary` | `#242424` | `#f2f3f5` | Primary actions |
+| `--muted` | `#f1f3f6` | `#1e2028` | Subtle fills and controls |
+| `--muted-foreground` | `#667085` | `#a4a8b2` | Supporting text |
+| `--border` | `#e6e8ec` | `#2a2d35` | Dividers and boundaries |
+| `--primary` | `#2864e8` | `#6ca3ff` | Primary actions and selection |
 | `--ring` | `#2864e8` | `#6ca3ff` | Keyboard focus |
-| `--destructive` | `#d84b4f` | `#f27777` | Destructive actions and errors |
+| `--destructive` | `#c9363c` | `#f27777` | Destructive actions and errors |
 
-## Product accents
+## Semantic reserve
 
 <Preview>
 <div class="flex w-full flex-wrap gap-3">
-  <span class="badge bg-[var(--a3s-blue)] text-white">Document / primary</span>
-  <span class="badge bg-[var(--a3s-green)] text-white">Spreadsheet / success</span>
-  <span class="badge bg-[var(--a3s-orange)] text-white">Presentation</span>
-  <span class="badge bg-[var(--a3s-purple)] text-white">Agent / intelligence</span>
+  <span class="badge bg-[var(--a3s-blue)] text-white">Action / selection</span>
+  <span class="badge bg-[var(--a3s-green)] text-white">Success</span>
+  <span class="badge bg-[var(--a3s-warning)] text-white">Warning</span>
   <span class="badge bg-destructive text-white">Danger</span>
 </div>
 </Preview>
 
-Use product accents as local component variables, not as hard-coded foreground colors. Text still needs sufficient contrast in both themes.
+Use blue for action, selection, progress, and focus. Use green, amber, and red only when status requires them; none of these colors should fill a whole navigation or page region. Text still needs sufficient contrast in both themes.
 
 ```css
 .my-resource {
-  --resource-accent: var(--a3s-green);
+  --resource-accent: var(--a3s-blue);
 }
 ```
 

@@ -8,7 +8,7 @@
   --rp-nav-height: 64px;
   --rp-content-max-width: 920px;
   --ui-home-width: 1280px;
-  --ui-canvas: #f7f7f8;
+  --ui-canvas: #f8f9fb;
   --ui-paper: #ffffff;
   --ui-panel: #f2f3f5;
   --ui-panel-raised: #ffffff;
@@ -348,6 +348,61 @@ html .rp-doc-layout__doc {
   font-size: 11px;
 }
 
+.a3s-preview__header-actions,
+.a3s-preview__view-tabs,
+.a3s-preview__source-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.a3s-preview__header-actions {
+  min-width: 0;
+  gap: 12px;
+}
+
+.a3s-preview__view-tabs {
+  padding: 2px;
+  border: 1px solid var(--ui-line);
+  border-radius: 6px;
+  background: var(--ui-paper);
+  gap: 2px;
+}
+
+.a3s-preview__view-tabs > button,
+.a3s-preview__source-toolbar > button {
+  min-height: 28px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font: 600 12px/1 var(--ui-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.a3s-preview__view-tabs > button {
+  padding: 0 9px;
+}
+
+.a3s-preview__view-tabs > button:hover,
+.a3s-preview__source-toolbar > button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.a3s-preview__view-tabs > button[aria-selected="true"] {
+  background: var(--ui-blue);
+  color: #ffffff;
+}
+
+.a3s-preview__view-tabs > button:focus-visible,
+.a3s-preview__source-toolbar > button:focus-visible,
+.a3s-preview__source pre:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
 .a3s-preview__stage {
   display: grid;
   min-height: 150px;
@@ -355,6 +410,58 @@ html .rp-doc-layout__doc {
   border-radius: 0 0 11px 11px;
   background: var(--ui-canvas);
   place-items: center;
+}
+
+.a3s-preview__source {
+  overflow: hidden;
+  border-radius: 0 0 11px 11px;
+  background: var(--ui-paper);
+}
+
+.a3s-preview__stage[hidden],
+.a3s-preview__source[hidden] {
+  display: none;
+}
+
+.a3s-preview__source-toolbar {
+  min-height: 40px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--ui-line);
+  justify-content: space-between;
+  color: var(--ui-muted);
+  font: 500 12px/1 var(--ui-mono);
+}
+
+.a3s-preview__source-toolbar > button {
+  padding: 0 10px;
+}
+
+.a3s-preview__source-toolbar > button[data-copy-state="copied"] {
+  color: var(--ui-green);
+}
+
+.a3s-preview__source-toolbar > button[data-copy-state="error"] {
+  color: var(--ui-red);
+}
+
+.a3s-preview__source pre {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: min(32rem, 65vh);
+  margin: 0;
+  overflow: auto;
+  padding: 18px 20px 22px;
+  border: 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--ui-panel) 72%, var(--ui-paper));
+  color: var(--ui-ink);
+  tab-size: 2;
+  white-space: pre;
+}
+
+.a3s-preview__source code {
+  color: inherit;
+  font: 500 12px/1.65 var(--ui-mono);
 }
 
 .a3s-preview__canvas {
@@ -1697,6 +1804,24 @@ html .rp-doc-layout__doc {
 
   .a3s-preview__header small {
     display: none;
+  }
+
+  .a3s-preview__header {
+    padding-inline: 10px;
+  }
+
+  .a3s-preview__header > span {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .a3s-preview__view-tabs > button,
+  .a3s-preview__source-toolbar > button {
+    min-height: 36px;
+  }
+
+  .a3s-preview__source pre {
+    padding-inline: 14px;
   }
 
   .a3s-callout {

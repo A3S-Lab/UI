@@ -380,11 +380,13 @@ test("homepage copy failure is explicit and recoverable", async ({ page }) => {
   const copyButton = page.locator(".ui-install-command button");
   await expect(copyButton).toHaveAccessibleName("Copy install command");
   await copyButton.click();
-  await expect(copyButton).toHaveAccessibleName("Copy failed. Try again");
+  await expect(copyButton).toHaveAccessibleName(
+    "Couldn’t copy. Select the command manually.",
+  );
   await expect(copyButton).toHaveAttribute("data-copy-state", "error");
 
   await copyButton.click();
-  await expect(copyButton).toHaveAccessibleName("Copied");
+  await expect(copyButton).toHaveAccessibleName("Install command copied");
   await expect(copyButton).toHaveAttribute("data-copy-state", "copied");
 });
 
@@ -642,7 +644,7 @@ test("theme switcher updates Rspress and component previews together", async ({
           .trim(),
       })),
     )
-    .toEqual({ a3s: "light", background: "#f7f7f8" });
+    .toEqual({ a3s: "light", background: "#f8f9fb" });
 });
 
 test("homepage theme customizer applies and persists product choices", async ({
@@ -967,12 +969,22 @@ test("theme bootstrap works before Rspress hydration", async ({ page }) => {
     )
     .toEqual({ a3s: "dark", rspress: "dark", themeColor: "#101118" });
 
-  const runtimeScript = page.locator('script[src$="/assets/a3s-ui.min.js"]');
-  await expect(runtimeScript).toHaveCount(1);
-  expect(await runtimeScript.textContent()).toBe("");
+  const runtimePreload = page.locator(
+    'link[rel="preload"][as="script"][href$="/assets/a3s-ui.min.js"]',
+  );
+  await expect(runtimePreload).toHaveCount(1);
+  await expect(
+    page.locator('script[src$="/assets/a3s-ui.min.js"]'),
+  ).toHaveCount(0);
   await expect(page.locator('head link[rel="canonical"]')).toHaveCount(1);
 
-  await page.evaluate(() => window.a3sUI?.theme.toggle());
+  await page.evaluate(() => {
+    document.dispatchEvent(
+      new CustomEvent("a3s:themechange", {
+        detail: { mode: "light", preference: "light" },
+      }),
+    );
+  });
   await expect(html).not.toHaveClass(/\bdark\b/);
   await expect(html).not.toHaveClass(/\brp-dark\b/);
   await expect

@@ -86,12 +86,13 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
 | Child `<article>`                           | Recommended                 | One message or Turn surface                               |
 | `data-message-content`                      | Recommended                 | Rich text, code, execution items, approvals, and evidence |
 | `data-transcript-status`                    | Optional                    | Coarse asynchronous status                                |
-| `--agent-transcript-gap`                    | CSS length, default `1rem`  | Gap between Turns                                         |
-| `--agent-message-max-width`                 | CSS length, default `48rem` | Readable message width                                    |
+| `--agent-transcript-content-width`          | CSS length, default `47.5rem` | Maximum reading-column width                            |
+| `--agent-transcript-gap`                    | CSS length, default `1rem`    | Gap between Turns                                       |
+| `--agent-message-max-width`                 | CSS length, default `48rem`   | Readable message width                                  |
 
 ## States and variants
 
-Loading, empty, interrupted, and failed histories should remain explicit content, using Empty or Alert when appropriate. During streaming, append or update the active Agent Turn without rebuilding earlier Turns. Window long histories in the host application while preserving the logical ordered-list position with `aria-posinset` and `aria-setsize` when known.
+Assistant output remains open document content on the canvas; user Turns use the restrained blue authored surface, and system notices use a bounded notice. Execution, approval, citation, and artifact blocks stay inside the owning Turn without adding a border around the whole assistant response. Loading, empty, interrupted, and failed histories should remain explicit content, using Empty or Alert when appropriate. During streaming, append or update the active Agent Turn without rebuilding earlier Turns. Window long histories in the host application while preserving the logical ordered-list position with `aria-posinset` and `aria-setsize` when known.
 
 ## Accessibility
 

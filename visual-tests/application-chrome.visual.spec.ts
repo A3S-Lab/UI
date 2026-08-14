@@ -23,7 +23,7 @@ test('App Shell keeps Office navigation geometry and a contained mobile drawer',
   const shell = preview.locator('.app-shell');
   const navigation = shell.locator(':scope > [data-app-navigation]');
   const main = shell.locator(':scope > [data-app-main]');
-  const toggle = shell.locator('[data-demo-shell-toggle]');
+  const toggle = shell.locator('[data-app-navigation-trigger]');
   const [shellBox, navigationBox, mainBox] = await Promise.all([
     readBox(page, '.a3s-preview[data-preview-component=app-shell] .app-shell'),
     navigation.boundingBox(),
@@ -57,16 +57,20 @@ test('App Shell keeps Office navigation geometry and a contained mobile drawer',
     await expect(navigation).toHaveCSS('position', 'absolute');
     await expect(navigation).toHaveCSS('visibility', 'hidden');
     await expect(navigation).toHaveCSS('pointer-events', 'none');
+    await expect(navigation).toHaveAttribute('inert', '');
+    await expect(navigation).toHaveAttribute('aria-hidden', 'true');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(toggle).toHaveAccessibleName('Open navigation');
-    expect(navigationBox!.y).toBeCloseTo(shellBox.y + 1, 0);
-    expect(navigationBox!.height).toBeCloseTo(shellBox.height - 2, 0);
+    expect(navigationBox!.y).toBeCloseTo(shellBox.y, 0);
+    expect(navigationBox!.height).toBeCloseTo(shellBox.height, 0);
 
     await toggle.click();
     await expect(shell).toHaveAttribute('data-mobile-navigation', 'open');
     await expect(navigation).toHaveCSS('visibility', 'visible');
     await expect(navigation).toHaveCSS('pointer-events', 'auto');
-    await expect(navigation).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)');
+    await expect(navigation).not.toHaveAttribute('inert', '');
+    await expect(navigation).not.toHaveAttribute('aria-hidden', 'true');
+    await expect(navigation).toHaveCSS('opacity', '1');
     await expect(toggle).toHaveAccessibleName('Close navigation');
     await expect(navigation.getByRole('link').first()).toBeFocused();
     const [openShellBox, openNavigationBox] = await Promise.all([
@@ -75,8 +79,8 @@ test('App Shell keeps Office navigation geometry and a contained mobile drawer',
     ]);
     expect(openShellBox).not.toBeNull();
     expect(openNavigationBox).not.toBeNull();
-    expect(openNavigationBox!.x).toBeCloseTo(openShellBox!.x + 1, 0);
-    expect(openNavigationBox!.height).toBeCloseTo(shellBox.height - 2, 0);
+    expect(openNavigationBox!.x).toBeCloseTo(openShellBox!.x, 0);
+    expect(openNavigationBox!.height).toBeCloseTo(shellBox.height, 0);
     await expect(preview).toHaveScreenshot('app-shell-office.png');
 
     await page.keyboard.press('Escape');
@@ -109,25 +113,29 @@ test('Activity Bar keeps a compact command rhythm and updates its current item',
   expect(headerBox).not.toBeNull();
   expect(footerBox).not.toBeNull();
   expect(overviewBox).not.toBeNull();
-  expect(headerBox!.height).toBeGreaterThanOrEqual(33);
-  expect(headerBox!.height).toBeLessThanOrEqual(35);
-  expect(overviewBox!.height).toBeGreaterThanOrEqual(33);
-  expect(overviewBox!.height).toBeLessThanOrEqual(35);
+  expect(headerBox!.height).toBeGreaterThanOrEqual(39);
+  expect(headerBox!.height).toBeLessThanOrEqual(41);
+  expect(overviewBox!.height).toBeGreaterThanOrEqual(37);
+  expect(overviewBox!.height).toBeLessThanOrEqual(39);
   const footerInset =
     barBox!.y + barBox!.height - (footerBox!.y + footerBox!.height);
-  expect(footerInset).toBeGreaterThanOrEqual(9);
-  expect(footerInset).toBeLessThanOrEqual(11);
+  expect(footerInset).toBeGreaterThanOrEqual(11);
+  expect(footerInset).toBeLessThanOrEqual(13);
 
-  const indicator = await overview.evaluate((element) => {
-    const style = getComputedStyle(element, '::before');
-    return { content: style.content, width: style.width };
+  const currentTreatment = await overview.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      fontWeight: Number.parseInt(style.fontWeight, 10),
+    };
   });
-  expect(indicator.content).not.toBe('none');
-  expect(indicator.width).toBe('2px');
+  expect(currentTreatment.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+  expect(currentTreatment.fontWeight).toBeGreaterThanOrEqual(600);
 
   await traces.click();
   await expect(traces).toHaveAttribute('aria-current', 'page');
   await expect(overview).not.toHaveAttribute('aria-current', 'page');
+  await expect(traces).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(preview).toHaveScreenshot('activity-bar-office.png');
 });
 

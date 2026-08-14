@@ -27,7 +27,7 @@
   color: var(--workbench-ink);
   container-name: monaco-workbench;
   container-type: inline-size;
-  font-family: "Geist Sans", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: "Geist Sans", Inter, ui-sans-serif, system-ui, sans-serif; /* impeccable-disable-line overused-font -- DESIGN.md specifies Geist Sans for application UI. */
   grid-template-rows: 38px minmax(0, 1fr) 25px;
   isolation: isolate;
 }
@@ -183,7 +183,6 @@ html.dark .monaco-workbench {
   height: 43px;
   padding: 0;
   border: 0;
-  border-left: 2px solid transparent;
   background: transparent;
   place-items: center;
   color: var(--workbench-faint);
@@ -196,7 +195,7 @@ html.dark .monaco-workbench {
 }
 
 .monaco-workbench__activity > button[data-active] {
-  border-left-color: var(--workbench-blue);
+  background: var(--workbench-active);
   color: var(--workbench-ink);
 }
 

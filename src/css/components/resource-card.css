@@ -28,6 +28,30 @@
     gap: 0.25rem;
   }
 
+  .resource-card > section > footer,
+  .resource-card > footer {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .resource-card [data-resource-tags] {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .resource-card:is([aria-disabled='true'], [data-state='unavailable']) {
+    opacity: 0.62;
+  }
+
+  .resource-card[data-state='loading'] > :not([data-resource-loading]) {
+    visibility: hidden;
+  }
+
   .resource-card > section > :is(h2, h3, strong, p, small) {
     min-width: 0;
     overflow: hidden;

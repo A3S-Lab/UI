@@ -7,6 +7,10 @@
     gap: 0.625rem;
   }
 
+  .agent-composer[data-layout='compact'] > textarea {
+    min-height: var(--agent-composer-compact-min-height, 3.5rem);
+  }
+
   .agent-composer > [data-composer-context] {
     display: flex;
     min-width: 0;
@@ -99,12 +103,11 @@
 
   @media (max-width: 36rem) {
     .agent-composer > footer {
-      align-items: stretch;
-      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .agent-composer > footer > [data-composer-actions] {
-      justify-content: space-between;
+    .agent-composer > footer > [data-composer-tools] {
+      flex: 1;
     }
   }
 }

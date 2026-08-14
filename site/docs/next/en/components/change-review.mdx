@@ -1,0 +1,37 @@
+# Change Review
+
+Change Review summarizes a bounded set of proposed file changes and keeps review decisions adjacent to their scope.
+
+<Preview class="w-full max-w-3xl">
+  <section class="change-review" data-state="reviewing" aria-labelledby="change-review-title">
+    <header><div><h2 id="change-review-title">Review changes</h2><p data-review-summary>3 files · 44 additions · 9 deletions</p></div><span class="status-badge" data-state="active">Reviewing</span></header>
+    <ul data-review-files><li><code>src/css/styles/application.css</code><span data-review-delta>+2 −0</span></li><li><code>src/css/components/task-plan.css</code><span data-review-delta>+31 −0</span></li><li><code>site/docs/next/en/components/task-plan.mdx</code><span data-review-delta>+11 −9</span></li></ul>
+    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Request changes</button><button type="button" class="btn" data-size="sm">Accept changes</button></footer>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="change-review" data-state="reviewing" aria-labelledby="review-title">
+  <header><h2 id="review-title">Review changes</h2><p data-review-summary>3 files</p></header>
+  <ul data-review-files><li><code>src/app.css</code><span data-review-delta>+4 −1</span></li></ul>
+  <footer>...</footer>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `pending`, `reviewing`, `accepted`, `rejected`, `conflict`, `error` | Review lifecycle |
+| `data-review-files` | Required | Files within the decision scope |
+| `data-review-summary` | Recommended | Aggregate count and delta |
+
+## States and variants
+
+A conflict preserves the proposed changes and explains the competing revision. File-level acceptance belongs in a richer inspector, not a hidden checkbox list.
+
+## Accessibility
+
+Decision buttons name their consequence. Counts and filenames remain text; additions and deletions do not depend on red and green alone.

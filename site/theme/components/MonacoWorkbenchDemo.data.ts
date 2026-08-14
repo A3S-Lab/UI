@@ -10,7 +10,7 @@ export type WorkbenchFile = {
 
 const agentConfiguration = `# Release review agent
 agent "release-auditor" {
-  model = "openai/gpt-4o"
+  model = "a3s/default"
 
   skills {
     path = ".a3s/skills"

@@ -6,7 +6,7 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
   <section
     class="agent-workbench"
     aria-label="Coding Agent 工作台"
-    style="--agent-workbench-gap:0.75rem"
+    style="--agent-workbench-context-size:13.5rem;--agent-workbench-inspector-size:15rem"
   >
     <aside class="card" data-size="sm" data-agent-context>
       <header>
@@ -177,14 +177,17 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
 | `data-agent-canvas`                 | 是   | 主要编写或执行表面                           |
 | `data-agent-inspector`              | 否   | Skill、MCP、Provider、策略和证据控件         |
 | `data-agent-activity`               | 否   | Timeline、日志、Trace 与执行证据             |
-| `--agent-workbench-gap`             | 否   | 区域间距，默认 `1rem`                        |
-| `--agent-workbench-context-basis`   | 否   | 上下文区域首选宽度，默认 `13.5rem`           |
-| `--agent-workbench-canvas-basis`    | 否   | 主画布首选宽度，默认 `19rem`                 |
-| `--agent-workbench-inspector-basis` | 否   | 检查器首选宽度，默认 `15rem`                 |
+| `data-context`                      | 否   | `hidden` 时移除上下文导航                     |
+| `data-inspector`                    | 否   | `hidden` 时移除检查器                         |
+| `--agent-workbench-gap`             | 否   | 区域间距，默认 `0.75rem`                      |
+| `--agent-workbench-context-size`    | 否   | 上下文宽度，默认 `15.5rem`                   |
+| `--agent-workbench-canvas-basis`    | 否   | 主画布首选宽度，默认 `19rem`                  |
+| `--agent-workbench-inspector-size`  | 否   | 检查器宽度，默认 `21rem`                     |
+| `--agent-workbench-min-height`      | 否   | 可选的工作台最小高度                         |
 
 ## 状态与变体
 
-工作流没有次要配置时可以省略 Inspector。区域会依据工作台自身可用的行内宽度，从三列换行成“上下文 + Canvas”双列，再变成单列，而不是依赖浏览器视口宽度。
+工作流没有次要配置时可以省略检查器；宿主控制的检查器关闭时，也可以设置 `data-inspector="hidden"`。各区域会根据工作台自身的可用行内宽度，从三列折行为成对行，再折为单列，因此组件在文档预览、分栏、对话框和完整应用画布中都能保持可用。应用外壳需要抽屉时，可由宿主把上下文或检查器内容提升为符合可访问性要求的抽屉。
 
 区域内部组合 Card、Tree、Code Editor、Field、Property List、状态徽章、Timeline 与 Log Viewer。加载、空、不可用、错误和只读状态应由这些子组件明确呈现。
 

@@ -1,0 +1,41 @@
+# 能力目录
+
+能力目录为助理、技能、连接器、模板和其他可搜索能力集合提供一套可复用页面骨架。
+
+<Preview class="w-full">
+  <section class="catalog">
+    <header><div data-catalog-identity><h2>能力</h2><p>选择可复用的助理、技能和连接器。</p></div><div data-catalog-actions><input class="input" type="search" aria-label="搜索能力" placeholder="搜索能力" /></div></header>
+    <div data-catalog-featured><ul><li><h3>发布管家</h3><p>协调检查和发布证据。</p></li><li><h3>研究工作区</h3><p>查找并整理来源材料。</p></li><li><h3>代码仓库审查</h3><p>检查变更和质量信号。</p></li></ul></div>
+    <div data-catalog-toolbar><div data-catalog-filters><button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">全部</button><button type="button" class="btn" data-size="sm" data-variant="ghost">开发</button><button type="button" class="btn" data-size="sm" data-variant="ghost">研究</button></div><div data-catalog-actions><span data-catalog-count>3 项能力</span></div></div>
+    <div class="resource-grid" data-catalog-results><article class="resource-card"><section><strong>代码审查</strong><small>A3S Lab</small><p>审查聚焦变更和相关证据。</p><footer><span class="status-badge" data-state="success">已安装</span><button type="button" class="btn" data-size="sm" data-variant="outline">打开</button></footer></section></article><article class="resource-card"><section><strong>文档规划</strong><small>A3S Lab</small><p>规划双语文档变更。</p><footer><span>按需添加</span><button type="button" class="btn" data-size="sm" data-variant="outline">添加</button></footer></section></article></div>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="catalog">
+  <header>...</header>
+  <div data-catalog-featured>...</div>
+  <div data-catalog-toolbar>...</div>
+  <div class="resource-grid" data-catalog-results>...</div>
+</section>
+```
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `data-catalog-identity` | 标题和说明 |
+| `data-catalog-actions` | 搜索、排序、视图和所有权操作 |
+| `data-catalog-featured` | 可选的横向精选集合 |
+| `data-catalog-toolbar` | 筛选、结果数、排序和视图控件 |
+| `data-catalog-results` | 资源网格、列表、表格或空状态 |
+
+## 状态和变体
+
+页面骨架保持稳定，卡片内容用于区分助理、技能和连接器。结果区域必须覆盖加载、空白、错误、选中、已安装、不可用和分页状态。
+
+## 无障碍
+
+使用真实搜索输入框，切换型筛选使用按下状态。筛选后播报结果数量，但不要移动焦点。精选内容可以横向滚动，文档本身不能溢出。

@@ -1,0 +1,46 @@
+# App Page
+
+App Page provides an open, width-bounded page frame for projects, automations, catalogs, forms, and detail views inside App Shell. It keeps page identity and actions stable without adding a card around the whole view.
+
+<Preview class="w-full">
+  <section class="app-page min-h-80 rounded-xl border border-border" data-width="wide">
+    <header>
+      <div data-page-identity><h2>Projects</h2><p>Keep durable context, templates, and task history together.</p></div>
+      <div data-page-actions><button type="button" class="btn">New project</button></div>
+    </header>
+    <div data-page-content class="grid gap-3 sm:grid-cols-2">
+      <article class="item" data-variant="outline"><section><h3>A3S UI</h3><p>3 active tasks · updated today</p></section></article>
+      <article class="item" data-variant="outline"><section><h3>Runtime release</h3><p>2 active tasks · updated yesterday</p></section></article>
+    </div>
+  </section>
+</Preview>
+
+## Usage
+
+```html
+<section class="app-page" data-width="wide">
+  <header>
+    <div data-page-identity><h1>Projects</h1><p>Durable work context.</p></div>
+    <div data-page-actions>...</div>
+  </header>
+  <div data-page-content>...</div>
+</section>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `class="app-page"` | required | Open application page frame |
+| `data-page-identity` | required | Heading and concise description |
+| `data-page-actions` | optional | Page-level primary and secondary actions |
+| `data-page-content` | required | Page-owned content |
+| `data-width` | `reading`, `wide`, omitted | Content measure |
+
+## States and variants
+
+Use child Empty, Skeleton, Alert, Resource Card, Table, or form components for empty, loading, error, partial-data, and permission states. Do not add another generic page card.
+
+## Accessibility
+
+Use the heading level appropriate to the surrounding document. Keep actions after the identity in DOM order and preserve that order when the header stacks on narrow screens.

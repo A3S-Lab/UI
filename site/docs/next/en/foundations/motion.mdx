@@ -5,7 +5,7 @@ Motion explains state change without delaying work. A3S UI uses short transition
 <Preview>
 <div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
   <button type="button" class="btn">Hover or focus</button>
-  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>Resource motion</strong><small>160ms lift and boundary</small></section></a>
+  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>Resource feedback</strong><small>160ms tone and boundary</small></section></a>
 </div>
 </Preview>
 
@@ -14,12 +14,12 @@ Motion explains state change without delaying work. A3S UI uses short transition
 | Duration | Use |
 | ---: | --- |
 | `120ms` | Color and focus feedback |
-| `160–180ms` | Card lift, navigation reveal, small layout changes |
-| `200–240ms` | Dialog or drawer entry |
+| `160ms` | Hover tone, selection, and small layout feedback |
+| `220ms` | Dialog, drawer, or contained overlay entry |
 
 ## Easing
 
-Use standard `ease` for reversible interface feedback. Use `ease-out` for surfaces entering the viewport and `ease-in` when they leave. Continuous pointer interactions such as Split Pane resizing update without transition.
+Use standard `ease` for reversible interface feedback. Use `ease-out` for surfaces entering the viewport and `ease-in` when they leave. Pressed controls may move down by 1px; cards do not lift on hover. Continuous pointer interactions such as Split Pane resizing update without transition.
 
 ## Reduced motion
 

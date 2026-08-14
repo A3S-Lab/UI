@@ -1,0 +1,38 @@
+# Context Selector
+
+Context Selector provides one compact contract for model, permission, and workspace choices. Native Select is preferred when options fit ordinary selection behavior.
+
+<Preview class="w-full max-w-3xl">
+  <div class="grid w-full gap-3 sm:grid-cols-3">
+    <label class="context-selector" data-kind="model"><span data-context-label>Model <small>Required</small></span><select aria-label="Model"><option>Auto</option><option>Fast</option><option>Deep analysis</option></select><span data-context-description>Balances latency and task complexity.</span></label>
+    <label class="context-selector" data-kind="permission"><span data-context-label>Access</span><select aria-label="Permission profile"><option>Standard access</option><option>Read only</option><option>Expanded access</option></select><span data-context-description>Policy remains enforced by the host.</span></label>
+    <label class="context-selector" data-kind="workspace"><span data-context-label>Workspace</span><select aria-label="Workspace"><option>A3S UI</option><option>Runtime release</option></select><span data-context-description>Files and task history stay scoped here.</span></label>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<label class="context-selector" data-kind="workspace">
+  <span data-context-label>Workspace</span>
+  <select aria-label="Workspace"><option>A3S UI</option></select>
+  <span data-context-description>Files and task history stay scoped here.</span>
+</label>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-kind` | `model`, `permission`, `workspace` | Choice semantics |
+| Native `<select>` | Preferred | Ordinary finite choice |
+| `button[aria-haspopup]` | Optional | Rich searchable anchored menu |
+| `data-context-description` | Recommended | Consequence of the choice |
+
+## States and variants
+
+Unavailable choices remain visible with their reason when that helps users recover. Do not imply that a visual selection grants permission.
+
+## Accessibility
+
+Use a native label and control name. Anchored menus restore focus to their trigger and constrain themselves to the viewport.

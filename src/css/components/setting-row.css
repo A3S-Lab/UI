@@ -1,0 +1,56 @@
+@layer components {
+  .setting-list {
+    display: grid;
+    min-width: 0;
+  }
+
+  .setting-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(
+        min-content,
+        var(--setting-control-size, 18rem)
+      );
+    min-width: 0;
+    align-items: center;
+  }
+
+  .setting-row > [data-setting-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .setting-row > [data-setting-control] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .setting-row > [data-setting-control] > :is(input, select, textarea, .select, .input-group) {
+    max-width: 100%;
+  }
+
+  .setting-row > [data-setting-control] > .button-group {
+    max-width: 100%;
+  }
+
+  .setting-row > [data-setting-message] {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 40rem) {
+    .setting-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .setting-row > [data-setting-control] {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .setting-row > [data-setting-control] > .button-group {
+      flex-wrap: wrap;
+    }
+  }
+}

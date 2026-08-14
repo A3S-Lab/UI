@@ -1,0 +1,37 @@
+# Artifact Card
+
+Artifact Card presents a durable output such as a report, document, image, patch, or dataset. It stays flatter and denser than a catalog resource card.
+
+<Preview class="w-full max-w-2xl">
+  <article class="artifact-card" data-state="complete">
+    <header><div><h3>Release readiness report</h3><span data-artifact-meta>Markdown · updated just now</span></div><span class="status-badge" data-state="success">Ready</span></header>
+    <section><div data-artifact-preview># Release readiness\n\nAll package and documentation checks passed.</div></section>
+    <footer><span>24 lines · 3 references</span><div><button type="button" class="btn" data-size="sm" data-variant="outline">Download</button> <button type="button" class="btn" data-size="sm">Open</button></div></footer>
+  </article>
+</Preview>
+
+## Usage
+
+```html
+<article class="artifact-card" data-state="complete">
+  <header><h3>Release readiness report</h3><span data-artifact-meta>Markdown</span></header>
+  <section><div data-artifact-preview>...</div></section>
+  <footer>...</footer>
+</article>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `ready`, `generating`, `complete`, `stale`, `error` | Artifact lifecycle |
+| `data-artifact-preview` | Optional | Compact content preview |
+| `data-artifact-meta` | Recommended | Type, size, or revision |
+
+## States and variants
+
+Generating state keeps the future title and format visible. Stale state explains what changed and how to regenerate.
+
+## Accessibility
+
+Use a heading for the artifact name. Preview content is ordinary document content; do not duplicate its entire accessible text in the metadata.

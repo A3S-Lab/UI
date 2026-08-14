@@ -5,7 +5,7 @@
     border-radius: var(--a3s-radius, var(--radius-xl));
     background: var(--background);
     color: var(--foreground);
-    box-shadow: var(--a3s-shadow-soft, var(--shadow-sm));
+    box-shadow: none;
   }
 
   .app-shell > [data-app-navigation] {
@@ -146,17 +146,6 @@
     font-weight: 600;
   }
 
-  .activity-bar li > :is(a, button)[aria-current='page']::before,
-  .activity-bar li > :is(a, button)[aria-pressed='true']::before {
-    position: absolute;
-    inset-block: 0.3125rem;
-    inset-inline-start: -1px;
-    width: 2px;
-    border-radius: 999px;
-    background: currentcolor;
-    content: '';
-  }
-
   :is(
     .app-shell[data-navigation='collapsed'] .activity-bar,
     .activity-bar[data-labels='hidden']
@@ -241,7 +230,7 @@
   }
 
   .ribbon[data-accent='purple'] {
-    --ribbon-accent: var(--a3s-purple, var(--chart-3));
+    --ribbon-accent: var(--a3s-blue, var(--primary));
   }
 
   .ribbon > [role='tablist'] {
@@ -319,14 +308,15 @@
   }
 
   .settings-layout {
-    gap: 2rem;
+    gap: 0;
   }
 
   .settings-layout > aside {
     padding: 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--card);
+    border: 0;
+    border-inline-end: 1px solid var(--border);
+    border-radius: 0;
+    background: color-mix(in srgb, var(--muted) 62%, var(--card));
   }
 
   .settings-layout > aside a {
@@ -352,8 +342,9 @@
   .settings-layout > main > section {
     gap: 1rem;
     padding: 1.25rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
+    border: 0;
+    border-block-end: 1px solid var(--border);
+    border-radius: 0;
     background: var(--card);
     color: var(--card-foreground);
   }
@@ -385,11 +376,11 @@
     border-radius: var(--radius-xl);
     background: var(--card);
     color: var(--card-foreground);
-    box-shadow: var(--shadow-xs);
+    box-shadow: none;
     transition:
+      background-color 160ms ease,
       border-color 160ms ease,
-      box-shadow 160ms ease,
-      transform 160ms ease;
+      color 160ms ease;
   }
 
   .resource-card:is(a, button) {
@@ -398,8 +389,7 @@
 
   .resource-card:is(a, button):hover {
     border-color: color-mix(in srgb, var(--resource-accent) 35%, var(--border));
-    box-shadow: var(--a3s-shadow-soft, var(--shadow-sm));
-    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--resource-accent) 4%, var(--card));
   }
 
   .resource-card:is(a, button):focus-visible {
@@ -417,7 +407,7 @@
   }
 
   .resource-card[data-kind='agent'] {
-    --resource-accent: var(--a3s-purple, #6d4aff);
+    --resource-accent: var(--a3s-blue, var(--primary));
   }
 
   .resource-card[data-kind='danger'] {
@@ -426,13 +416,7 @@
 
   .resource-card > figure {
     border-block-end: 1px solid var(--border);
-    background:
-      linear-gradient(
-        145deg,
-        color-mix(in srgb, var(--resource-accent) 12%, transparent),
-        transparent 60%
-      ),
-      var(--muted);
+    background: color-mix(in srgb, var(--resource-accent) 7%, var(--card));
     color: var(--resource-accent);
   }
 

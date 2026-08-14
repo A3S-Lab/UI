@@ -1,13 +1,13 @@
 # 资源卡
 
-Resource Card 表示文件、模板、智能体、配置与其他工作台资源。强调色和预览区域用于传达类型，文本仍是信息的事实来源。
+Resource Card 表示文件、模板、助理、配置与其他工作台资源。克制的预览与明确文案共同传达类型和状态；静态卡片保持扁平。
 
 <Preview>
 <div class="resource-grid w-full" style="--resource-grid-min:10rem">
-<button type="button" class="resource-card" data-kind="document"><figure><span class="grid h-20 w-14 place-content-center rounded-md border border-border bg-card text-xl shadow-sm">A</span></figure><section><strong>空白文档</strong><small>开始写入</small></section></button>
+<button type="button" class="resource-card" data-kind="document"><figure><span class="grid h-20 w-14 place-content-center rounded-md border border-border bg-card text-xl">A</span></figure><section><strong>空白文档</strong><small>开始写入</small></section></button>
 <button type="button" class="resource-card" data-kind="spreadsheet"><figure><span class="grid h-20 w-20 grid-cols-4 gap-px rounded-md border border-border bg-card p-2"><i class="bg-[var(--a3s-green)]/30"></i><i class="bg-[var(--a3s-green)]/30"></i><i class="bg-[var(--a3s-green)]/30"></i><i class="bg-[var(--a3s-green)]/30"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i><i class="bg-muted"></i></span></figure><section><strong>预算模型</strong><small>电子表格模板</small></section></button>
-<button type="button" class="resource-card" data-kind="presentation"><figure><span class="grid h-16 w-24 place-content-center rounded-md border border-border bg-card shadow-sm"><b class="text-sm">季度计划</b></span></figure><section><strong>项目审查</strong><small>演示模板</small></section></button>
-<button type="button" class="resource-card" data-kind="agent"><figure><span class="grid size-16 place-content-center rounded-2xl border border-[color-mix(in_srgb,var(--a3s-purple)_30%,var(--border))] bg-card text-2xl">◇</span></figure><section><strong>Coding Agent</strong><small>CLI + 6 个 Skill</small></section></button>
+<button type="button" class="resource-card" data-kind="presentation"><figure><span class="grid h-16 w-24 place-content-center rounded-md border border-border bg-card"><b class="text-sm">季度计划</b></span></figure><section><strong>项目审查</strong><small>演示模板</small></section></button>
+<button type="button" class="resource-card" data-kind="agent"><figure><span class="grid size-16 place-content-center rounded-xl border border-[color-mix(in_srgb,var(--a3s-blue)_22%,var(--border))] bg-card text-[var(--a3s-blue)]"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span></figure><section><strong>代码审查</strong><small>助理 · 6 项能力</small></section></button>
 </div>
 </Preview>
 
@@ -26,7 +26,7 @@ Resource Card 表示文件、模板、智能体、配置与其他工作台资源
 
 | 参数 | 可选值 | 默认 | 目的 |
 | --- | --- | --- | --- |
-| `data-kind` | `document`、`spreadsheet`、`presentation`、`agent`、`danger` | `document` | 强调色家族 |
+| `data-kind` | `document`、`spreadsheet`、`presentation`、`agent`、`danger` | `document` | 语义资源类型；`agent` 使用 A3S 蓝 |
 | `data-orientation` | `horizontal` 或省略 | 省略 | 预览与文本布局 |
 | `--resource-grid-min` | CSS 长度 | `12rem` | 最小网格轨道宽度 |
 | `--resource-grid-gap` | CSS 长度 | `1rem` | 网格间距 |
@@ -35,7 +35,7 @@ Resource Card 表示文件、模板、智能体、配置与其他工作台资源
 
 ## 状态和变体
 
-按钮用于就地操作；链接用于导航。两者都提供悬停和焦点可见状态。 `disabled` 仅与按钮根一起使用。水平方向对于最近的文件列表和搜索结果非常有用。
+按钮用于就地操作；链接用于导航。两者在悬停时只改变边界与底色，不上移。`disabled` 仅与按钮根一起使用。`data-state="loading"`、`data-state="unavailable"` 和 `data-selected="true"` 用于目录状态；水平方向适合最近文件和搜索结果。
 
 ## 可访问性
 

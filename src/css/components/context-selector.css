@@ -1,0 +1,25 @@
+@layer components {
+  .context-selector {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .context-selector > [data-context-label] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .context-selector > :is(select, button[aria-haspopup]) {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .context-selector [data-context-description] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}

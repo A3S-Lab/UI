@@ -1,64 +1,65 @@
-/* A3S foundations, extracted from the Office workbench and normalized to Basecoat tokens. */
+/* A3S foundations for task-centered product surfaces. */
 :root {
   color-scheme: light;
-  --background: #f7f7f8;
-  --foreground: #17181a;
+  --background: #f8f9fb;
+  --foreground: #17191d;
   --card: #ffffff;
-  --card-foreground: #17181a;
+  --card-foreground: #17191d;
   --popover: #ffffff;
-  --popover-foreground: #17181a;
-  --primary: #242424;
+  --popover-foreground: #17191d;
+  --primary: #2864e8;
   --primary-foreground: #ffffff;
-  --secondary: #f2f3f5;
-  --secondary-foreground: #17181a;
-  --muted: #f2f3f5;
-  --muted-foreground: #62666f;
-  --accent: #e9ebef;
-  --accent-foreground: #17181a;
+  --secondary: #f1f3f6;
+  --secondary-foreground: #17191d;
+  --muted: #f1f3f6;
+  --muted-foreground: #667085;
+  --accent: #eef4ff;
+  --accent-foreground: #1749ad;
   --destructive: #c9363c;
-  --border: #e2e4e8;
-  --input: #d3d6dc;
+  --border: #e6e8ec;
+  --input: #d7dae0;
   --ring: #2864e8;
   --chart-1: #8db4ff;
   --chart-2: #2864e8;
-  --chart-3: #5420bd;
+  --chart-3: #64748b;
   --chart-4: #14a675;
   --chart-5: #db663b;
-  --sidebar: #f2f3f5;
-  --sidebar-foreground: #17181a;
+  --sidebar: #f3f4f6;
+  --sidebar-foreground: #17191d;
   --sidebar-primary: #2864e8;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e9ebef;
-  --sidebar-accent-foreground: #17181a;
-  --sidebar-border: #e2e4e8;
+  --sidebar-accent: #e9edf3;
+  --sidebar-accent-foreground: #17191d;
+  --sidebar-border: #e6e8ec;
   --sidebar-ring: #2864e8;
-  --radius: 0.6875rem;
+  --radius: 0.625rem;
   --a3s-bg: var(--background);
   --a3s-panel: var(--card);
   --a3s-panel-soft: var(--muted);
-  --a3s-panel-strong: #e9ebef;
+  --a3s-panel-strong: #e9edf3;
   --a3s-ink: var(--foreground);
   --a3s-muted: var(--muted-foreground);
-  --a3s-subtle: #686d76;
-  --a3s-faint: #6d727b;
+  --a3s-subtle: #667085;
+  --a3s-faint: #667085;
   --a3s-line: var(--border);
-  --a3s-line-strong: #d3d6dc;
-  --a3s-action: var(--primary);
-  --a3s-action-hover: #111111;
+  --a3s-line-strong: #d7dae0;
+  --a3s-action: var(--a3s-blue);
+  --a3s-action-hover: #1f55cc;
   --a3s-action-ink: var(--primary-foreground);
   --a3s-blue: #2864e8;
-  --a3s-purple: #5420bd;
-  --a3s-green: #087f58;
+  --a3s-purple: #64748b;
+  --a3s-green: #15815a;
   --a3s-orange: #b94e27;
   --a3s-red: var(--destructive);
   --a3s-warning: #a85f0c;
-  --a3s-radius: 1rem;
-  --a3s-radius-sm: 0.5625rem;
+  --a3s-radius: 0.875rem;
+  --a3s-radius-sm: 0.375rem;
   --a3s-overlay-radius: 0.625rem;
   --a3s-overlay-border: var(--a3s-line-strong);
   --a3s-overlay-surface: color-mix(in srgb, var(--a3s-panel) 98%, transparent);
-  --a3s-shadow: 0 24px 64px rgb(20 24 40 / 18%);
-  --a3s-shadow-soft: 0 14px 36px rgb(20 24 40 / 12%);
+  --a3s-shadow: 0 24px 64px rgb(27 39 67 / 18%);
+  --a3s-shadow-soft: 0 12px 32px rgb(27 39 67 / 11%);
+  --a3s-shadow-composer: 0 8px 24px rgb(27 39 67 / 8%);
   --a3s-shadow-control: none;
   --a3s-shadow-focus: 0 0 0 2px var(--a3s-panel), 0 0 0 4px var(--a3s-blue);
   --a3s-shadow-error: 0 0 0 2px var(--a3s-panel), 0 0 0 4px var(--a3s-red);
@@ -67,6 +68,10 @@
   --a3s-control-height-xs: 1.5rem;
   --a3s-control-height-lg: 2.5rem;
   --a3s-icon-button-size: 2.125rem;
+  --a3s-touch-target: 2.75rem;
+  --a3s-task-navigation-size: 15.5rem;
+  --a3s-task-reading-size: 47.5rem;
+  --a3s-task-inspector-size: 21rem;
   --a3s-activity-rail-size: 2.875rem;
   --a3s-workspace-header-height: 3.125rem;
   --a3s-toolbar-height: 2.6875rem;
@@ -78,7 +83,8 @@
   --a3s-font-size-compact: 0.75rem;
   --a3s-font-size-micro: 0.6875rem;
   --a3s-motion-fast: 120ms;
-  --a3s-motion-normal: 150ms;
+  --a3s-motion-normal: 160ms;
+  --a3s-motion-overlay: 220ms;
   --a3s-scrollbar-size: 0.625rem;
   --a3s-scrollbar-track: transparent;
   --a3s-scrollbar-thumb: color-mix(in srgb, var(--a3s-muted) 38%, transparent);
@@ -91,9 +97,13 @@
   --scrollbar-thumb: var(--a3s-scrollbar-thumb);
   --scrollbar-width: var(--a3s-scrollbar-size);
   --a3s-ui-font:
-    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Geist Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --a3s-mono-font:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", monospace;
   --font-sans: var(--a3s-ui-font);
+  --font-mono: var(--a3s-mono-font);
 }
 
 .dark {
@@ -104,21 +114,21 @@
   --card-foreground: #f2f3f5;
   --popover: #171820;
   --popover-foreground: #f2f3f5;
-  --primary: #f2f3f5;
-  --primary-foreground: #17181a;
+  --primary: #6ca3ff;
+  --primary-foreground: #101118;
   --secondary: #1e2028;
   --secondary-foreground: #f2f3f5;
   --muted: #1e2028;
   --muted-foreground: #a4a8b2;
-  --accent: #282b35;
-  --accent-foreground: #f2f3f5;
+  --accent: #1d2d4a;
+  --accent-foreground: #c6d9ff;
   --destructive: #f27777;
   --border: #2a2d35;
   --input: #3a3d48;
   --ring: #6ca3ff;
   --chart-1: #a9c8ff;
   --chart-2: #6ca3ff;
-  --chart-3: #a883ff;
+  --chart-3: #a5adba;
   --chart-4: #3ccf91;
   --chart-5: #f08a61;
   --sidebar: #171820;
@@ -135,10 +145,11 @@
   --a3s-line-strong: #3a3d48;
   --a3s-action-hover: #ffffff;
   --a3s-blue: #6ca3ff;
-  --a3s-purple: #a883ff;
+  --a3s-purple: #a5adba;
   --a3s-green: #3ccf91;
   --a3s-orange: #f08a61;
   --a3s-warning: #eda94c;
   --a3s-shadow: 0 22px 70px rgb(0 0 0 / 35%);
   --a3s-shadow-soft: 0 9px 30px rgb(0 0 0 / 24%);
+  --a3s-shadow-composer: 0 8px 28px rgb(0 0 0 / 22%);
 }

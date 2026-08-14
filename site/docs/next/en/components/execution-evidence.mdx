@@ -1,0 +1,37 @@
+# Execution Evidence
+
+Execution Evidence records one verifiable result such as a test run, screenshot, report, trace, or accessibility snapshot.
+
+<Preview class="w-full max-w-2xl">
+  <article class="execution-evidence" data-state="verified">
+    <header><div><h3>Component semantic coverage</h3><span data-evidence-meta>Browser check · 2026-08-14 01:42</span></div><span data-evidence-result>Verified</span></header>
+    <section><p>83 component pages rendered a matching semantic root and machine-readable state.</p><dl class="property-list" data-layout="rows" data-size="sm"><div><dt>Result</dt><dd>83 passed</dd></div><div><dt>Viewport</dt><dd>1280 × 900</dd></div><div><dt>Browser</dt><dd>Chromium</dd></div></dl></section>
+    <footer><span>Evidence retained locally</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open report</button></footer>
+  </article>
+</Preview>
+
+## Usage
+
+```html
+<article class="execution-evidence" data-state="verified">
+  <header><h3>Component semantic coverage</h3><span data-evidence-result>Verified</span></header>
+  <section>Observable result and provenance.</section>
+  <footer>...</footer>
+</article>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `capturing`, `verified`, `unverified`, `expired`, `error` | Evidence lifecycle |
+| `data-evidence-result` | Required | Textual verification result |
+| `data-evidence-meta` | Recommended | Time, source, and environment |
+
+## States and variants
+
+Verified means the evidence supports the stated claim, not that the entire task is correct. Expired evidence stays visible with the condition that invalidated it.
+
+## Accessibility
+
+Evidence summaries use text and structured data. Screenshots need useful alternative text or an adjacent textual result.

@@ -1,0 +1,37 @@
+# 变更审阅
+
+变更审阅汇总一组有界文件变更，并让审阅决定紧邻其作用范围。
+
+<Preview class="w-full max-w-3xl">
+  <section class="change-review" data-state="reviewing" aria-labelledby="change-review-title-zh">
+    <header><div><h2 id="change-review-title-zh">审阅变更</h2><p data-review-summary>3 个文件 · 新增 44 行 · 删除 9 行</p></div><span class="status-badge" data-state="active">审阅中</span></header>
+    <ul data-review-files><li><code>src/css/styles/application.css</code><span data-review-delta>+2 −0</span></li><li><code>src/css/components/task-plan.css</code><span data-review-delta>+31 −0</span></li><li><code>site/docs/next/zh/components/task-plan.mdx</code><span data-review-delta>+11 −9</span></li></ul>
+    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">要求修改</button><button type="button" class="btn" data-size="sm">接受变更</button></footer>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="change-review" data-state="reviewing" aria-labelledby="review-title">
+  <header><h2 id="review-title">审阅变更</h2><p data-review-summary>3 个文件</p></header>
+  <ul data-review-files><li><code>src/app.css</code><span data-review-delta>+4 −1</span></li></ul>
+  <footer>...</footer>
+</section>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `pending`、`reviewing`、`accepted`、`rejected`、`conflict`、`error` | 审阅生命周期 |
+| `data-review-files` | 必须 | 决策范围内的文件 |
+| `data-review-summary` | 推荐 | 总计数量与增删行数 |
+
+## 状态与变体
+
+冲突状态保留拟议变更并说明竞争修订。逐文件接受属于更丰富的检查器，不应藏在复选框列表中。
+
+## 无障碍
+
+决策按钮直接说明后果。计数与文件名保留为文本，增删内容不能只依赖红绿颜色。

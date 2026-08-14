@@ -1,0 +1,36 @@
+# Message Attachment
+
+Message Attachment presents a file, image, source range, or URL associated with one message. Upload and persistence remain application responsibilities.
+
+<Preview class="w-full max-w-xl">
+  <div class="grid w-full gap-2">
+    <article class="message-attachment" data-state="complete"><figure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v6h6"/></svg></figure><div data-attachment-identity><strong>release-notes.md</strong><span data-attachment-meta>Markdown · 12 KB</span></div><button type="button" class="btn" data-size="icon-xs" data-variant="ghost" aria-label="Remove release-notes.md">×</button></article>
+    <article class="message-attachment" data-state="uploading" aria-busy="true"><figure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/></svg></figure><div data-attachment-identity><strong>workspace.png</strong><span data-attachment-meta>Uploading · 72%</span></div><button type="button" class="btn" data-size="xs" data-variant="ghost">Cancel</button></article>
+  </div>
+</Preview>
+
+## Usage
+
+```html
+<article class="message-attachment" data-state="complete">
+  <figure aria-hidden="true">...</figure>
+  <div data-attachment-identity><strong>release-notes.md</strong><span data-attachment-meta>Markdown · 12 KB</span></div>
+  <button type="button" aria-label="Remove release-notes.md">...</button>
+</article>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `ready`, `uploading`, `complete`, `missing`, `error` | Attachment lifecycle |
+| `data-attachment-identity` | Required | Name and type or source range |
+| `data-attachment-meta` | Optional | Size, upload progress, or path |
+
+## States and variants
+
+Preserve the item after upload failure so users can retry or remove it. A missing source range names the unavailable file and recovery.
+
+## Accessibility
+
+Removal and retry labels include the attachment name. Decorative file-kind icons stay hidden from assistive technology.

@@ -42,14 +42,75 @@ const requiredFiles = [
   'dist/components/code-editor.css',
   'dist/js/runtime.js',
   'dist/js/all.js',
+  'dist/js/app-shell.js',
+  'dist/js/app-shell.min.js',
   'dist/js/code-editor.js',
   'dist/js/code-editor.min.js',
   'dist/js/tree.js',
+  'dist/js/task-workspace.js',
+  'dist/js/task-workspace.min.js',
+  'dist/ai/components.json',
+  'dist/ai/manifest.js',
+  'dist/ai/manifest.d.ts',
+  'dist/ai/runtime.js',
+  'dist/ai/runtime.d.ts',
+  'dist/ai/a3s-test.acl',
+  'dist/ai/a3s-test/selectors.js',
+  'dist/ai/a3s-test/selectors.d.ts',
+  'dist/frameworks/react.js',
+  'dist/frameworks/react.d.ts',
+  'dist/frameworks/vue.js',
+  'dist/frameworks/vue.d.ts',
 ];
 
 for (const requiredFile of requiredFiles) {
   if (!packedFiles.has(requiredFile)) {
     throw new Error(`Published tarball is missing ${requiredFile}.`);
+  }
+}
+
+for (const duplicateFrameworkFile of [
+  'dist/ai/frameworks/react.js',
+  'dist/ai/frameworks/react.d.ts',
+  'dist/ai/frameworks/vue.js',
+  'dist/ai/frameworks/vue.d.ts',
+]) {
+  if (packedFiles.has(duplicateFrameworkFile)) {
+    throw new Error(
+      `Duplicate framework adapter must not be published: ${duplicateFrameworkFile}`,
+    );
+  }
+}
+
+const componentManifest = JSON.parse(
+  await readFile(path.join(projectRoot, 'dist', 'ai', 'components.json'), 'utf8'),
+);
+if (
+  componentManifest.name !== manifest.name ||
+  componentManifest.version !== 2 ||
+  componentManifest.components.length !== 83
+) {
+  throw new Error('AI component manifest metadata or coverage is invalid.');
+}
+const manifestSlugs = componentManifest.components.map(({ slug }) => slug);
+if (new Set(manifestSlugs).size !== manifestSlugs.length) {
+  throw new Error('AI component manifest contains duplicate component slugs.');
+}
+for (const component of componentManifest.components) {
+  if (
+    !component.selector ||
+    !component.test?.selector ||
+    !component.framework?.tag ||
+    !Array.isArray(component.actions) ||
+    !Array.isArray(component.states) ||
+    component.states.length === 0 ||
+    component.actions.some((action) => !component.test.actions?.[action]) ||
+    component.actions.some(
+      (action) => !component.test.actionTargets?.[action]?.selector,
+    ) ||
+    component.states.some((state) => !component.test.states?.[state])
+  ) {
+    throw new Error(`Incomplete AI contract for ${component.slug}.`);
   }
 }
 

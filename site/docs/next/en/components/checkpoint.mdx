@@ -1,0 +1,36 @@
+# Checkpoint
+
+Checkpoint records a restorable task state with enough context to explain when and why it was saved.
+
+<Preview class="w-full max-w-2xl">
+  <article class="checkpoint" data-state="saved">
+    <header><div><h3>Before responsive CSS changes</h3><span data-checkpoint-meta>Saved 4 minutes ago · 18 files</span></div><span class="status-badge" data-state="success">Saved</span></header>
+    <section><p>Package checks passed. The workspace can return to this point without losing the task transcript.</p></section>
+    <footer><span>Checkpoint 3 of 5</span><button type="button" class="btn" data-size="sm" data-variant="outline">Restore</button></footer>
+  </article>
+</Preview>
+
+## Usage
+
+```html
+<article class="checkpoint" data-state="saved">
+  <header><h3>Before responsive CSS changes</h3><span data-checkpoint-meta>Saved 4 minutes ago</span></header>
+  <section>...</section>
+  <footer><button type="button">Restore</button></footer>
+</article>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `saving`, `saved`, `restoring`, `restored`, `expired`, `error` | Checkpoint lifecycle |
+| `data-checkpoint-meta` | Recommended | Time, scope, and size |
+
+## States and variants
+
+Restoring is a consequential action when it overwrites current work. Confirm the exact scope and preserve a recovery checkpoint when possible.
+
+## Accessibility
+
+The restore control names the checkpoint when several are visible. Saving and restore completion use one bounded status announcement.

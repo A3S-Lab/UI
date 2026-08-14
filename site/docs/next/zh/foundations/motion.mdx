@@ -5,7 +5,7 @@
 <Preview>
 <div class="flex w-full flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-6">
   <button type="button" class="btn">悬停或聚焦</button>
-  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>资源动效</strong><small>160ms 抬升与边框反馈</small></section></a>
+  <a href="#motion-guidance" class="resource-card w-48"><figure class="min-h-20! text-2xl font-semibold">A3S</figure><section><strong>资源反馈</strong><small>160ms 色调与边界变化</small></section></a>
 </div>
 </Preview>
 
@@ -14,12 +14,12 @@
 | 时长 | 用途 |
 | ---: | --- |
 | `120ms` | 颜色与焦点反馈 |
-| `160–180ms` | 卡片抬升、导航显示与小范围布局变化 |
-| `200–240ms` | Dialog 或 Drawer 进入 |
+| `160ms` | 悬停色调、选中与小范围布局反馈 |
+| `220ms` | Dialog、Drawer 或有边界浮层进入 |
 
 ## 缓动
 
-可逆界面反馈使用标准 `ease`。表面进入视口使用 `ease-out`，离开视口使用 `ease-in`。Split Pane 调整等连续指针交互应直接更新，不添加过渡。
+可逆界面反馈使用标准 `ease`。表面进入视口使用 `ease-out`，离开视口使用 `ease-in`。按下控件可向下移动 1px，卡片悬停不上移。Split Pane 调整等连续指针交互应直接更新，不添加过渡。
 
 ## 减少动效
 

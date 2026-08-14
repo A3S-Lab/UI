@@ -70,10 +70,10 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "应用组合", en: "Application composition" },
-    count: "12",
+    count: "34",
     description: {
-      zh: "应用外壳、Agent 工作台、品牌标识组、分割面板与资源网格。",
-      en: "Application shells, Agent workbenches, brand lockups, split panes, and resource grids.",
+      zh: "任务画布、计划、执行证据、审阅、应用外壳与资源目录。",
+      en: "Task canvases, plans, execution evidence, reviews, app shells, and catalogs.",
     },
     href: "/components/app-shell",
     title: { zh: "应用模式", en: "Application patterns" },
@@ -169,7 +169,7 @@ const homeCopy = {
     titleLead: "Complex UI.",
     titleAccent: "Clear grammar.",
     subtitle:
-      "A3S Office patterns—app shells, ribbons, split panes, and state models—delivered as semantic HTML, Tailwind CSS, and small vanilla JavaScript controllers. No React. No framework runtime.",
+      "A3S task patterns for app shells, ribbons, split panes, and state models, delivered as semantic HTML with React and Vue adapters plus small vanilla JavaScript controllers.",
     start: "Install A3S UI",
     github: "View source",
     copy: "Copy install command",
@@ -643,6 +643,15 @@ export function HomeLayout() {
   const version = useVersion();
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
+  const isCurrentContract = !version || version === defaultVersion;
+  const componentCount = isCurrentContract ? "83" : "64";
+  const homepageFamilies = isCurrentContract
+    ? componentFamilies
+    : componentFamilies.map((family) =>
+        family.href === "/components/app-shell"
+          ? { ...family, count: "12" }
+          : family,
+      );
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
   );
@@ -747,7 +756,7 @@ export function HomeLayout() {
           </div>
           <dl className="ui-hero__facts">
             <div>
-              <dt>64</dt>
+              <dt>{componentCount}</dt>
               <dd>{labels.componentGuides}</dd>
             </div>
             <div>
@@ -775,7 +784,7 @@ export function HomeLayout() {
           <p>{labels.catalogBody}</p>
         </header>
         <div className="ui-family-grid">
-          {componentFamilies.map((family) => (
+          {homepageFamilies.map((family) => (
             <a key={family.href} href={route(family.href)}>
               <strong>{localeValue(family.title, locale)}</strong>
               <p>{localeValue(family.description, locale)}</p>

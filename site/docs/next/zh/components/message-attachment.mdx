@@ -1,0 +1,36 @@
+# 消息附件
+
+消息附件展示与单条消息关联的文件、图片、源码范围或 URL。上传和持久化由宿主应用负责。
+
+<Preview class="w-full max-w-xl">
+  <div class="grid w-full gap-2">
+    <article class="message-attachment" data-state="complete"><figure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v6h6"/></svg></figure><div data-attachment-identity><strong>release-notes.md</strong><span data-attachment-meta>Markdown · 12 KB</span></div><button type="button" class="btn" data-size="icon-xs" data-variant="ghost" aria-label="移除 release-notes.md">×</button></article>
+    <article class="message-attachment" data-state="uploading" aria-busy="true"><figure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/></svg></figure><div data-attachment-identity><strong>workspace.png</strong><span data-attachment-meta>正在上传 · 72%</span></div><button type="button" class="btn" data-size="xs" data-variant="ghost">取消</button></article>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<article class="message-attachment" data-state="complete">
+  <figure aria-hidden="true">...</figure>
+  <div data-attachment-identity><strong>release-notes.md</strong><span data-attachment-meta>Markdown · 12 KB</span></div>
+  <button type="button" aria-label="移除 release-notes.md">...</button>
+</article>
+```
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `ready`、`uploading`、`complete`、`missing`、`error` | 附件生命周期 |
+| `data-attachment-identity` | 必须 | 名称、类型或源码范围 |
+| `data-attachment-meta` | 可选 | 大小、上传进度或路径 |
+
+## 状态与变体
+
+上传失败后保留附件，以便重试或移除。源码范围不存在时应说明不可用文件和恢复方式。
+
+## 无障碍
+
+移除和重试按钮标签包含附件名。文件类型图标作为装饰并对辅助技术隐藏。

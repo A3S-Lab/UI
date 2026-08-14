@@ -1,0 +1,34 @@
+# Message Citation
+
+Message Citation links one claim to a named source without interrupting the reading flow. Source retrieval and preview behavior belong to the application.
+
+<Preview class="w-full max-w-2xl">
+  <p class="m-0 leading-7">The package exposes stable semantic selectors for every public component <a class="message-citation" href="#citation-source"><span data-citation-index>1</span><span data-citation-title>Component manifest</span><span data-citation-source>components.json</span></a>.</p>
+</Preview>
+
+## Usage
+
+```html
+<a class="message-citation" href="#source-1">
+  <span data-citation-index>1</span>
+  <span data-citation-title>Component manifest</span>
+  <span data-citation-source>components.json</span>
+</a>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| Root `<a>` | Required | Native navigation to the source |
+| `data-citation-index` | Optional | Compact reference index |
+| `data-citation-title` | Required | Human-readable source title |
+| `data-citation-source` | Optional | Host, file, or publisher |
+
+## States and variants
+
+Unavailable citations remain text with a clear unavailable label; do not leave broken links active.
+
+## Accessibility
+
+The link name must make sense outside the surrounding sentence. Restore focus after closing a citation preview.

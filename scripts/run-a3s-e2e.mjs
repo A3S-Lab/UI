@@ -108,7 +108,7 @@ const browserDriver =
 const browserExecutable =
   options.browserExecutable ?? process.env.A3S_TEST_BROWSER_EXECUTABLE;
 const maxParallel =
-  options.maxParallel ?? process.env.A3S_TEST_MAX_PARALLEL ?? '2';
+  options.maxParallel ?? process.env.A3S_TEST_MAX_PARALLEL ?? '1';
 const allSuites = (await readdir(suiteRoot))
   .filter((file) => file.endsWith('.acl'))
   .sort()

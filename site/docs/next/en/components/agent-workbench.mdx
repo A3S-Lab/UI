@@ -6,7 +6,7 @@ Agent Workbench provides the responsive regions needed to author, configure, run
   <section
     class="agent-workbench"
     aria-label="Coding Agent workbench"
-    style="--agent-workbench-gap:0.75rem"
+    style="--agent-workbench-context-size:13.5rem;--agent-workbench-inspector-size:15rem"
   >
     <aside class="card" data-size="sm" data-agent-context>
       <header>
@@ -177,14 +177,17 @@ Import the complete A3S bundle, then compose the regions from the components you
 | `data-agent-canvas`                 | Yes      | Primary authoring or execution surface                   |
 | `data-agent-inspector`              | No       | Skill, MCP, provider, policy, and evidence controls      |
 | `data-agent-activity`               | No       | Timeline, logs, traces, and execution evidence           |
-| `--agent-workbench-gap`             | No       | Gap between regions; defaults to `1rem`                  |
-| `--agent-workbench-context-basis`   | No       | Preferred context width; defaults to `13.5rem`           |
-| `--agent-workbench-canvas-basis`    | No       | Preferred canvas width; defaults to `19rem`              |
-| `--agent-workbench-inspector-basis` | No       | Preferred inspector width; defaults to `15rem`           |
+| `data-context`                      | No       | `hidden` removes contextual navigation                    |
+| `data-inspector`                    | No       | `hidden` removes the inspector                            |
+| `--agent-workbench-gap`             | No       | Region gap; defaults to `0.75rem`                         |
+| `--agent-workbench-context-size`    | No       | Context width; defaults to `15.5rem`                      |
+| `--agent-workbench-canvas-basis`    | No       | Preferred canvas width; defaults to `19rem`               |
+| `--agent-workbench-inspector-size`  | No       | Inspector width; defaults to `21rem`                      |
+| `--agent-workbench-min-height`      | No       | Optional minimum workbench height                         |
 
 ## States and variants
 
-Omit the inspector when the workflow has no secondary configuration. Regions wrap from three columns, to a context/canvas pair, to one column according to the workbench's own available inline width rather than the browser viewport.
+Omit the inspector when the workflow has no secondary configuration, or set `data-inspector="hidden"` while a host-controlled inspector is closed. Regions wrap from three columns to paired rows and then one column according to the workbench's own available inline width, so the component remains usable inside documentation previews, split panes, dialogs, and full application canvases. A host application may promote context or inspector content into an accessible drawer when its own shell requires one.
 
 Use Card, Tree, Code Editor, Field, Property List, Status Badge, Timeline, and Log Viewer inside the regions. Keep loading, empty, unavailable, error, and read-only states explicit in those child components.
 

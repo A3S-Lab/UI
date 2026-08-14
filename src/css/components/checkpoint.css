@@ -1,0 +1,25 @@
+@layer components {
+  .checkpoint {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .checkpoint > :is(header, footer) {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .checkpoint :is(h3, h4, p),
+  .checkpoint [data-checkpoint-meta] {
+    margin: 0;
+  }
+
+  .checkpoint > section {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
