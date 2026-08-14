@@ -1,0 +1,396 @@
+---
+pageType: doc-wide
+outline: false
+---
+
+# 设备模拟器
+
+设备模拟器在一个有边界的工作台中切换手机、平板和桌面视口。浏览器模式使用真实尺寸的 `iframe`，原生模式则把安全参数交给可信宿主启动 `a3s-webview`。
+
+<Preview class="w-full">
+  <section
+    class="device-simulator"
+    aria-label="响应式设备预览"
+    data-device="iphone-15-pro"
+    data-device-kind="phone"
+    data-device-title="A3S 响应式预览"
+    data-orientation="portrait"
+    data-state="ready"
+    style="--device-simulator-workspace-min-height:36rem"
+  >
+    <header>
+      <div data-device-simulator-toolbar>
+        <label data-device-simulator-control>
+          <span>设备</span>
+          <select
+            class="select"
+            data-device-simulator-select
+            aria-label="设备预设"
+          >
+            <optgroup label="手机">
+              <option
+                value="iphone-15-pro"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="393"
+                data-height="852"
+              >
+                iPhone 15 Pro · 393 × 852
+              </option>
+              <option
+                value="pixel-8"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="412"
+                data-height="915"
+              >
+                Pixel 8 · 412 × 915
+              </option>
+              <option
+                value="compact-phone"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="360"
+                data-height="800"
+              >
+                紧凑手机 · 360 × 800
+              </option>
+            </optgroup>
+            <optgroup label="平板">
+              <option
+                value="ipad-mini"
+                data-kind="tablet"
+                data-orientation="portrait"
+                data-width="768"
+                data-height="1024"
+              >
+                iPad mini · 768 × 1024
+              </option>
+              <option
+                value="ipad-pro"
+                data-kind="tablet"
+                data-orientation="portrait"
+                data-width="1024"
+                data-height="1366"
+              >
+                iPad Pro · 1024 × 1366
+              </option>
+            </optgroup>
+            <optgroup label="电脑">
+              <option
+                value="laptop"
+                data-kind="desktop"
+                data-orientation="landscape"
+                data-width="1440"
+                data-height="900"
+              >
+                笔记本 · 1440 × 900
+              </option>
+              <option
+                value="desktop"
+                data-kind="desktop"
+                data-orientation="landscape"
+                data-width="1920"
+                data-height="1080"
+              >
+                桌面显示器 · 1920 × 1080
+              </option>
+            </optgroup>
+            <option value="custom">自定义尺寸</option>
+          </select>
+        </label>
+        <div data-device-simulator-dimensions aria-label="自定义视口尺寸">
+          <label>
+            <span>宽</span>
+            <input
+              class="input"
+              type="number"
+              min="240"
+              max="4000"
+              value="393"
+              inputMode="numeric"
+              data-device-simulator-width
+            />
+          </label>
+          <span aria-hidden="true">×</span>
+          <label>
+            <span>高</span>
+            <input
+              class="input"
+              type="number"
+              min="180"
+              max="3000"
+              value="852"
+              inputMode="numeric"
+              data-device-simulator-height
+            />
+          </label>
+        </div>
+        <div
+          role="group"
+          aria-label="屏幕方向"
+          data-device-simulator-orientation
+        >
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            aria-pressed="true"
+            data-device-simulator-orientation-value="portrait"
+          >
+            竖屏
+          </button>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            aria-pressed="false"
+            data-device-simulator-orientation-value="landscape"
+          >
+            横屏
+          </button>
+        </div>
+        <div data-device-simulator-actions>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="outline"
+            data-device-simulator-native
+          >
+            原生预览
+          </button>
+        </div>
+      </div>
+      <form data-device-simulator-navigation>
+        <label>
+          <span class="sr-only">预览地址</span>
+          <input
+            class="input"
+            type="text"
+            inputMode="url"
+            value="../device-preview.html?lang=zh"
+            spellCheck="false"
+            data-device-simulator-url
+          />
+        </label>
+        <div data-device-simulator-actions>
+          <button type="submit" class="btn" data-size="sm">
+            打开
+          </button>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            data-device-simulator-refresh
+          >
+            刷新
+          </button>
+        </div>
+      </form>
+    </header>
+    <div data-device-simulator-workspace>
+      <div data-device-simulator-canvas>
+        <div data-device-simulator-frame>
+          <iframe
+            title="A3S 响应式预览夹具"
+            src="../device-preview.html?lang=zh"
+            loading="eager"
+            sandbox="allow-scripts"
+            data-device-simulator-preview
+          ></iframe>
+          <span hidden data-device-simulator-screen-status>
+            正在加载预览…
+          </span>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <output aria-live="polite" data-device-simulator-status>
+        预览尺寸 393 × 852。
+      </output>
+      <code data-device-simulator-command>a3s-webview --url …</code>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="ghost"
+        data-device-simulator-copy-command
+      >
+        复制命令
+      </button>
+    </footer>
+  </section>
+</Preview>
+
+模拟器只改变 iframe 的 CSS viewport 宽高。它不会伪装 User-Agent、设备像素比、触控能力，也不会模拟网络限速或系统浏览器差异。目标页面还必须允许被 iframe 嵌入；受 `X-Frame-Options` 或 CSP `frame-ancestors` 限制的页面应改用原生预览。
+
+## 用法
+
+加载运行时与设备模拟器控制器。完整样式包已包含结构层和 Harness 视觉层。
+
+```html
+<section
+  class="device-simulator"
+  data-device="phone"
+  data-orientation="portrait"
+>
+  <header>
+    <select data-device-simulator-select aria-label="Device preset">
+      <option
+        value="phone"
+        data-kind="phone"
+        data-orientation="portrait"
+        data-width="393"
+        data-height="852"
+      >
+        Phone · 393 × 852
+      </option>
+      <option
+        value="desktop"
+        data-kind="desktop"
+        data-orientation="landscape"
+        data-width="1440"
+        data-height="900"
+      >
+        Desktop · 1440 × 900
+      </option>
+      <option value="custom">Custom</option>
+    </select>
+    <input
+      type="number"
+      min="240"
+      max="4000"
+      value="393"
+      data-device-simulator-width
+    />
+    <input
+      type="number"
+      min="180"
+      max="3000"
+      value="852"
+      data-device-simulator-height
+    />
+    <div
+      role="group"
+      aria-label="Orientation"
+      data-device-simulator-orientation
+    >
+      <button
+        type="button"
+        aria-pressed="true"
+        data-device-simulator-orientation-value="portrait"
+      >
+        Portrait
+      </button>
+      <button
+        type="button"
+        aria-pressed="false"
+        data-device-simulator-orientation-value="landscape"
+      >
+        Landscape
+      </button>
+    </div>
+    <form data-device-simulator-navigation>
+      <input
+        type="text"
+        inputmode="url"
+        value="https://example.com"
+        data-device-simulator-url
+      />
+      <button type="submit">Open</button>
+      <button type="button" data-device-simulator-refresh>Refresh</button>
+    </form>
+  </header>
+  <div data-device-simulator-workspace>
+    <div data-device-simulator-canvas>
+      <div data-device-simulator-frame>
+        <iframe
+          title="Application preview"
+          src="https://example.com"
+          data-device-simulator-preview
+        ></iframe>
+        <span hidden data-device-simulator-screen-status></span>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <output aria-live="polite" data-device-simulator-status></output>
+    <code data-device-simulator-command></code>
+    <button type="button" data-device-simulator-copy-command>
+      Copy native command
+    </button>
+    <button type="button" data-device-simulator-native>
+      Open native preview
+    </button>
+  </footer>
+</section>
+<script type="module">
+  import "@a3s-lab/ui/runtime";
+  import "@a3s-lab/ui/device-simulator";
+</script>
+```
+
+使用完整运行时包时，写法等价于 `import "@a3s-lab/ui/all"`。
+
+### 参数
+
+| 参数                                      | 可选值                       | 默认值       | 用途                            |
+| ----------------------------------------- | ---------------------------- | ------------ | ------------------------------- |
+| 预设 `data-width`                         | `240`–`4000`                 | —            | 预设的 CSS viewport 宽度        |
+| 预设 `data-height`                        | `180`–`3000`                 | —            | 预设的 CSS viewport 高度        |
+| 预设 `data-kind`                          | `phone`、`tablet`、`desktop` | 按宽度推断   | 控制设备框圆角                  |
+| 预设 `data-orientation`                   | `portrait`、`landscape`      | 保持当前方向 | 选择预设时同步其自然方向        |
+| 根 `data-orientation`                     | `portrait`、`landscape`      | `portrait`   | 当前屏幕方向                    |
+| 根 `data-fit`                             | `actual` 或省略              | 自动适配     | 使用 1:1 比例或自动缩小到工作区 |
+| 根 `data-device-title`                    | 字符串                       | iframe 标题  | 原生窗口标题                    |
+| `--device-simulator-workspace-min-height` | CSS 长度                     | `31rem`      | 工作区最小高度                  |
+| `--device-simulator-workspace-max-height` | CSS 长度                     | `44rem`      | 工作区最大高度                  |
+
+自定义宽高会限制在和 `a3s-webview` 一致的范围内。修改自定义输入后，控制器会选择值为 `custom` 的选项并派发尺寸变化事件。
+
+### JavaScript API
+
+初始化后，根元素提供以下方法：
+
+| 方法                     | 用途                                    |
+| ------------------------ | --------------------------------------- |
+| `setDevice(value)`       | 选择一个预设；不存在时返回 `false`      |
+| `setSize(width, height)` | 切换到自定义尺寸并限制输入范围          |
+| `setOrientation(value)`  | 设置 `portrait` 或 `landscape`          |
+| `navigate(url?)`         | 验证并打开 HTTP、HTTPS、file 或相对 URL |
+| `refreshPreview()`       | 重新加载当前 iframe URL                 |
+| `openNativePreview()`    | 派发原生预览请求；无人接管时复制命令    |
+
+尺寸变化会派发 `a3s:device-change`，URL 导航会派发 `a3s:device-navigate`。原生预览使用可取消、可冒泡且可跨 Shadow DOM 的 `a3s:device-preview-request` 事件，`detail` 包含 `{ executable, args, url, width, height, title, command }`。
+
+可信宿主应调用 `preventDefault()` 表示已经接管，并直接使用结构化 `args`。不要重新解析仅供显示和复制的 `command` 字符串。
+
+```js
+const simulator = document.querySelector(".device-simulator");
+
+simulator.addEventListener("a3s:device-preview-request", async (event) => {
+  if (!window.trustedPreviewHost) return;
+  event.preventDefault();
+
+  const { executable, args } = event.detail;
+  await window.trustedPreviewHost.launch({ executable, args });
+});
+```
+
+网页控制器不会直接执行本机程序。没有可信宿主时，“原生预览”只会把等价命令复制到剪贴板。
+
+## 状态与变体
+
+- `data-state="loading"` 在 iframe 导航期间显示加载状态。
+- `data-state="ready"` 表示尺寸或预览已经同步。
+- `data-state="error"` 表示 URL 无效或复制失败，并在状态输出中说明恢复方式。
+- 手机、平板和桌面只改变框体外观；iframe 始终使用输入框中的真实 CSS 像素尺寸。
+- `file:` URL 可交给原生宿主；浏览器是否允许 iframe 打开本地文件由浏览器安全策略决定。
+
+## 可访问性
+
+为根组件、预设选择器、方向按钮组、URL 输入和 iframe 提供可访问名称。方向按钮使用 `aria-pressed`，状态输出使用 `aria-live="polite"`。工作区保持独立滚动，键盘焦点不会被缩放后的 iframe 框体重排。自定义尺寸必须保留数值输入的 `min`、`max` 与清楚标签。

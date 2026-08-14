@@ -1,76 +1,148 @@
 # Component catalog
 
-A3S UI combines semantic primitives with reusable application patterns. Every component page includes a live preview, minimal HTML, supported parameters, meaningful states, and accessibility guidance.
+A3S UI provides 84 public component contracts. Sixty general components are organized by interface responsibility, while 24 components for building Coding Agent workflows live in [Harness](/harness/). Every guide includes a live preview, minimal HTML, parameters, states, and accessibility guidance.
 
 <Preview>
-<div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5">
-  <article class="card" data-size="sm"><header><span class="badge">02</span><h2>Actions</h2><p>Buttons and grouped commands.</p></header></article>
-  <article class="card" data-size="sm"><header><span class="badge" data-variant="secondary">13</span><h2>Forms</h2><p>Fields, inputs, choices, and selection.</p></header></article>
-  <article class="card" data-size="sm"><header><span class="badge" data-variant="outline">32</span><h2>Primitives</h2><p>Navigation, overlays, feedback, and data.</p></header></article>
-  <article class="card" data-size="sm"><header><span class="badge">34</span><h2>Patterns</h2><p>Task canvases, execution, evidence, catalogs, settings, and panes.</p></header></article>
-  <article class="card" data-size="sm"><header><span class="badge" data-variant="secondary">02</span><h2>Utilities</h2><p>Scrolling and theme controls.</p></header></article>
-</div>
+  <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge">07</span>
+        <h2>Input and actions</h2>
+        <p>Buttons, fields, inputs, and text editing.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge" data-variant="secondary">
+          07
+        </span>
+        <h2>Selection and search</h2>
+        <p>Selects, comboboxes, and choice state.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge" data-variant="outline">
+          05
+        </span>
+        <h2>Navigation</h2>
+        <p>Orientation, switching, and page paths.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge">13</span>
+        <h2>Layout and workspace</h2>
+        <p>Shells, toolbars, panes, and resource layout.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge" data-variant="secondary">
+          07
+        </span>
+        <h2>Overlays</h2>
+        <p>Dialogs, menus, commands, and contextual help.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge" data-variant="outline">
+          08
+        </span>
+        <h2>Feedback and status</h2>
+        <p>Progress, alerts, empty states, and transient feedback.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge">11</span>
+        <h2>Data and content</h2>
+        <p>Cards, charts, tables, and structured information.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge" data-variant="secondary">
+          02
+        </span>
+        <h2>Utilities</h2>
+        <p>Scroll regions and theme control.</p>
+      </header>
+    </article>
+    <article class="card" data-size="sm">
+      <header>
+        <span class="badge">24</span>
+        <h2>Harness</h2>
+        <p>Tasks, conversation, execution, review, and developer tools.</p>
+      </header>
+    </article>
+  </div>
 </Preview>
 
 ## API model
 
 A3S UI keeps parameters close to the browser platform:
 
-| API surface | Purpose | Example |
-| --- | --- | --- |
-| Root class | Selects the component | `class="resource-card"` |
-| Native attributes | Behavior and accessibility | `disabled`, `checked`, `aria-current="page"` |
-| `data-*` attributes | Finite visual or behavioral variants | `data-size="sm"`, `data-orientation="vertical"` |
-| CSS custom properties | Continuous layout values and theme decisions | `--split-position: 40%` |
-| Vanilla JavaScript | Behavior the browser does not provide | Split-pane pointer and keyboard resizing |
+| API surface           | Purpose                                      | Example                                                                 |
+| --------------------- | -------------------------------------------- | ----------------------------------------------------------------------- |
+| Root class            | Selects the component                        | `class="resource-card"`                                                 |
+| Native attributes     | Behavior and accessibility                   | `disabled`, `checked`, `aria-current="page"`                            |
+| `data-*` attributes   | Finite visual or behavioral variants         | `data-size="sm"`, `data-orientation="vertical"`                         |
+| CSS custom properties | Continuous layout values and theme decisions | `--split-position: 40%`                                                 |
+| Vanilla JavaScript    | Behavior the browser does not provide        | Split-pane resizing, device preview, and composite keyboard interaction |
 
-Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a library-specific boolean. State reflected with ARIA is both accessible and styleable.
+Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a library-specific boolean.
 
 ## Groups
 
-### Actions
+### Input and actions
 
-[Button](/components/button) · [Button Group](/components/button-group)
+[Button](/components/button) · [Button Group](/components/button-group) · [Field](/components/field) · [Input](/components/input) · [Input Group](/components/input-group) · [Textarea](/components/textarea) · [Label](/components/label)
 
-### Forms
+### Selection and search
 
-[Field](/components/field) · [Input](/components/input) · [Input Group](/components/input-group) · [Textarea](/components/textarea) · [Code Editor](/components/code-editor) · [Native Select](/components/native-select) · [Select](/components/select) · [Checkbox](/components/checkbox) · [Radio Group](/components/radio-group) · [Switch](/components/switch) · [Slider](/components/slider) · [Label](/components/label) · [Combobox](/components/combobox)
+[Native Select](/components/native-select) · [Select](/components/select) · [Combobox](/components/combobox) · [Checkbox](/components/checkbox) · [Radio Group](/components/radio-group) · [Switch](/components/switch) · [Slider](/components/slider)
 
 ### Navigation
 
 [Activity Bar](/components/activity-bar) · [Breadcrumb](/components/breadcrumb) · [Tabs](/components/tabs) · [Pagination](/components/pagination) · [Sidebar](/components/sidebar)
 
+### Layout and workspace
+
+[App Shell](/components/app-shell) · [App Page](/components/app-page) · [Catalog](/components/catalog) · [Setting Row](/components/setting-row) · [Brand Lockup](/components/brand-lockup) · [Workspace Header](/components/workspace-header) · [Toolbar](/components/toolbar) · [Ribbon](/components/ribbon) · [Settings Layout](/components/settings-layout) · [Resource Card](/components/resource-card) · [Split Pane](/components/split-pane) · [Task Pane](/components/task-pane) · [Status Bar](/components/status-bar)
+
 ### Overlays
 
 [Alert Dialog](/components/alert-dialog) · [Dialog](/components/dialog) · [Drawer](/components/drawer) · [Dropdown Menu](/components/dropdown-menu) · [Popover](/components/popover) · [Command](/components/command) · [Tooltip](/components/tooltip)
 
-### Feedback
+### Feedback and status
 
 [Alert](/components/alert) · [Badge](/components/badge) · [Status Badge](/components/status-badge) · [Empty](/components/empty) · [Progress](/components/progress) · [Skeleton](/components/skeleton) · [Spinner](/components/spinner) · [Toast](/components/toast)
 
-### Data display
+### Data and content
 
-[Accordion](/components/accordion) · [Avatar](/components/avatar) · [Card](/components/card) · [Chart](/components/chart) · [Item](/components/item) · [Kbd](/components/kbd) · [Log Viewer](/components/log-viewer) · [Property List](/components/property-list) · [Table](/components/table) · [Stepper](/components/stepper) · [Timeline](/components/timeline) · [Tree](/components/tree)
-
-### Application patterns
-
-[App Shell](/components/app-shell) · [App Page](/components/app-page) · [Task Start](/components/task-start) · [Task Workspace](/components/task-workspace) · [Task Plan](/components/task-plan) · [Plan Step](/components/plan-step) · [Message Status](/components/message-status) · [Message Attachment](/components/message-attachment) · [Message Citation](/components/message-citation) · [Artifact Card](/components/artifact-card) · [Context Selector](/components/context-selector) · [Task Queue](/components/task-queue) · [Checkpoint](/components/checkpoint) · [Follow-up Suggestions](/components/follow-up-suggestions) · [Tool Call](/components/tool-call) · [Change Review](/components/change-review) · [Terminal](/components/terminal) · [Execution Evidence](/components/execution-evidence) · [Catalog](/components/catalog) · [Setting Row](/components/setting-row) · [Agent Composer](/components/agent-composer) · [Agent Transcript](/components/agent-transcript) · [Agent Workbench](/components/agent-workbench) · [Approval Request](/components/approval-request) · [Execution Item](/components/execution-item) · [Brand Lockup](/components/brand-lockup) · [Workspace Header](/components/workspace-header) · [Toolbar](/components/toolbar) · [Ribbon](/components/ribbon) · [Settings Layout](/components/settings-layout) · [Resource Card](/components/resource-card) · [Split Pane](/components/split-pane) · [Task Pane](/components/task-pane) · [Status Bar](/components/status-bar)
-
-Full-page compositions: [Task Workspace](/patterns/task-workspace) · [New Task](/patterns/new-task) · [Capability Catalog](/patterns/capability-catalog) · [Settings Center](/patterns/settings-center) · [Projects](/patterns/projects) · [Automations](/patterns/automations)
+[Accordion](/components/accordion) · [Avatar](/components/avatar) · [Card](/components/card) · [Chart](/components/chart) · [Item](/components/item) · [Kbd](/components/kbd) · [Property List](/components/property-list) · [Table](/components/table) · [Stepper](/components/stepper) · [Timeline](/components/timeline) · [Tree](/components/tree)
 
 ### Utilities
 
 [Scroll Area](/components/scroll-area) · [Theme Switcher](/components/theme-switcher)
 
+### Harness
+
+[Harness](/harness/) organizes 24 Coding Agent components into Task and Conversation, Execution and Review, and Tooling while preserving each component's stable `/components/*` route.
+
+Full-page compositions: [Task Workspace](/patterns/task-workspace) · [New Task](/patterns/new-task) · [Capability Catalog](/patterns/capability-catalog) · [Settings Center](/patterns/settings-center) · [Projects](/patterns/projects) · [Automations](/patterns/automations)
+
 ## Support matrix
 
-| Capability | Primitives | Application patterns |
-| --- | --- | --- |
-| Semantic HTML | Required | Required |
-| Light and dark themes | Yes | Yes |
-| RTL logical layout | Yes | Yes |
-| Responsive layout | Component-specific | Built in |
-| Nunjucks and Jinja | Existing primitive templates | HTML composition |
-| JavaScript dependency | Only interactive composites | Split Pane only |
+| Capability            | General components          | Layout and workspace     | Harness                               |
+| --------------------- | --------------------------- | ------------------------ | ------------------------------------- |
+| Semantic HTML         | Required                    | Required                 | Required                              |
+| Light and dark themes | Yes                         | Yes                      | Yes                                   |
+| RTL logical layout    | Yes                         | Yes                      | Yes                                   |
+| Responsive layout     | Component-specific          | Built in                 | Workflow-specific                     |
+| Nunjucks and Jinja    | Existing templates          | HTML composition         | HTML composition                      |
+| JavaScript dependency | Interactive composites only | Interactive layouts only | Execution, editing, and preview tools |
 
-Choose the A3S style pack for the Office-derived visual language. The inherited Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea packs remain available for A3S UI-compatible applications.
+Choose the A3S style pack for new products. The inherited Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea packs remain available for applications that require their established appearance.

@@ -105,8 +105,83 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-preview[data-preview-component=index] .card")
         }
 
-        expect "application-family-visible" {
-            visible = css("h3#application-patterns")
+        expect "harness-family-visible" {
+            visible = css("h3#harness")
+        }
+    }
+
+    scenario "responsive-documentation-navigation" {
+        name = "Responsive documentation navigation preserves language and version routes"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open-device-simulator" {
+            url = "http://127.0.0.1:4178/UI/components/device-simulator.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
+        viewport "responsive-boundary" {
+            width = 1280
+            height = 900
+        }
+
+        expect "responsive-menu-visible" {
+            visible = css(".docs-mobile-navigation > summary")
+        }
+
+        click "open-navigation" {
+            target = css(".docs-mobile-navigation > summary")
+        }
+
+        expect "navigation-open" {
+            visible = css(".docs-mobile-navigation[open] .docs-mobile-navigation__panel")
+        }
+
+        click "open-language-switcher" {
+            target = css(".docs-switchers[data-compact] [data-switcher=language] > summary")
+        }
+
+        click "switch-to-english" {
+            target = css(".docs-switchers[data-compact] [data-switcher=language] a[lang=en]")
+        }
+
+        wait "english-route-loaded" {
+            url = "http://127.0.0.1:4178/UI/en/components/device-simulator.html"
+        }
+
+        navigate "open-versioned-component" {
+            url = "http://127.0.0.1:4178/UI/en/components/button.html"
+        }
+
+        wait "component-loaded" {
+            load = "networkidle"
+        }
+
+        click "open-component-navigation" {
+            target = css(".docs-mobile-navigation > summary")
+        }
+
+        click "open-version-switcher" {
+            target = css(".docs-switchers[data-compact] [data-switcher=version] > summary")
+        }
+
+        focus "focus-v0-1" {
+            target = css(".docs-switchers[data-compact] [data-switcher=version] a[href='/UI/v0.1.0/en/components/button.html']")
+        }
+
+        press "switch-to-v0-1" {
+            key = "Enter"
+        }
+
+        wait "version-route-loaded" {
+            url = "http://127.0.0.1:4178/UI/v0.1.0/en/components/button.html"
         }
     }
 
@@ -125,6 +200,11 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "interactive-ready" {
             visible = css("html:not([data-a3s-defer-init])")
+        }
+
+        viewport "desktop-navigation" {
+            width = 1440
+            height = 900
         }
 
         expect "visible-site-theme-control" {

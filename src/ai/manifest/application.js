@@ -38,7 +38,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "task-start",
     name: "Task Start",
-    category: "application",
+    category: "harness",
     selector: ".task-start",
     tag: "section",
     className: "task-start",
@@ -55,7 +55,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "task-workspace",
     name: "Task Workspace",
-    category: "application",
+    category: "harness",
     selector: ".task-workspace",
     tag: "section",
     className: "task-workspace",
@@ -69,7 +69,14 @@ export const applicationComponents = [
     actions: ["click", "fill", "focus", "press", "type", "wheel"],
     actionParts: { click: "inspectorTrigger", press: "inspectorTrigger" },
     events: ["a3s:task-inspector-change", "basecoat:initialized", "submit"],
-    states: ["ready", "streaming", "waiting", "complete", "error", "inspector-open"],
+    states: [
+      "ready",
+      "streaming",
+      "waiting",
+      "complete",
+      "error",
+      "inspector-open",
+    ],
   }),
   defineComponent({
     slug: "catalog",
@@ -100,7 +107,8 @@ export const applicationComponents = [
     selector: ".setting-row",
     className: "setting-row",
     parts: {
-      control: "[data-setting-control] input, [data-setting-control] select, [data-setting-control] textarea, [data-setting-control] button",
+      control:
+        "[data-setting-control] input, [data-setting-control] select, [data-setting-control] textarea, [data-setting-control] button",
       controlRegion: "[data-setting-control]",
       identity: "[data-setting-identity]",
       message: "[data-setting-message]",
@@ -112,7 +120,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "agent-composer",
     name: "Agent Composer",
-    category: "application",
+    category: "harness",
     selector: ".agent-composer",
     tag: "form",
     className: "agent-composer",
@@ -130,12 +138,20 @@ export const applicationComponents = [
     },
     actions: ["click", "fill", "focus", "press", "type"],
     events: ["input", "submit"],
-    states: ["ready", "streaming", "queued", "loading", "offline", "disabled", "invalid"],
+    states: [
+      "ready",
+      "streaming",
+      "queued",
+      "loading",
+      "offline",
+      "disabled",
+      "invalid",
+    ],
   }),
   defineComponent({
     slug: "agent-transcript",
     name: "Agent Transcript",
-    category: "application",
+    category: "harness",
     selector: ".agent-transcript",
     tag: "section",
     className: "agent-transcript",
@@ -150,7 +166,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "agent-workbench",
     name: "Agent Workbench",
-    category: "application",
+    category: "harness",
     selector: ".agent-workbench",
     tag: "section",
     className: "agent-workbench",
@@ -161,12 +177,20 @@ export const applicationComponents = [
       inspector: "[data-agent-inspector]",
     },
     actions: ["click", "fill", "focus", "press", "select", "type", "wheel"],
-    states: ["ready", "running", "waiting", "complete", "error", "inspector-open", "context-open"],
+    states: [
+      "ready",
+      "running",
+      "waiting",
+      "complete",
+      "error",
+      "inspector-open",
+      "context-open",
+    ],
   }),
   defineComponent({
     slug: "approval-request",
     name: "Approval Request",
-    category: "application",
+    category: "harness",
     selector: ".approval-request",
     tag: "section",
     className: "approval-request",
@@ -184,7 +208,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "execution-item",
     name: "Execution Item",
-    category: "application",
+    category: "harness",
     selector: ".execution-item",
     tag: "details",
     className: "execution-item",
@@ -221,7 +245,8 @@ export const applicationComponents = [
     tag: "header",
     className: "workspace-header",
     parts: {
-      action: "[data-workspace-actions] button, [data-workspace-actions] a[href]",
+      action:
+        "[data-workspace-actions] button, [data-workspace-actions] a[href]",
       actions: "[data-workspace-actions]",
       identity: "[data-workspace-identity]",
       leading: "[data-workspace-leading]",
@@ -284,7 +309,14 @@ export const applicationComponents = [
       status: ".status-badge, [data-resource-status]",
     },
     actions: ["click", "focus", "press"],
-    states: ["ready", "selected", "installed", "unavailable", "loading", "error"],
+    states: [
+      "ready",
+      "selected",
+      "installed",
+      "unavailable",
+      "loading",
+      "error",
+    ],
   }),
   defineComponent({
     slug: "split-pane",
@@ -334,7 +366,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "task-plan",
     name: "Task Plan",
-    category: "application",
+    category: "harness",
     selector: ".task-plan",
     tag: "section",
     className: "task-plan",
@@ -352,7 +384,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "plan-step",
     name: "Plan Step",
-    category: "application",
+    category: "harness",
     selector: ".plan-step",
     tag: "li",
     className: "plan-step",
@@ -369,7 +401,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "message-status",
     name: "Message Status",
-    category: "application",
+    category: "harness",
     selector: ".message-status",
     tag: "output",
     className: "message-status",
@@ -383,7 +415,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "message-attachment",
     name: "Message Attachment",
-    category: "application",
+    category: "harness",
     selector: ".message-attachment",
     tag: "article",
     className: "message-attachment",
@@ -399,7 +431,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "message-citation",
     name: "Message Citation",
-    category: "application",
+    category: "harness",
     selector: ".message-citation",
     tag: "a",
     className: "message-citation",
@@ -415,7 +447,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "artifact-card",
     name: "Artifact Card",
-    category: "application",
+    category: "harness",
     selector: ".artifact-card",
     tag: "article",
     className: "artifact-card",
@@ -432,7 +464,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "context-selector",
     name: "Context Selector",
-    category: "application",
+    category: "harness",
     selector: ".context-selector",
     tag: "label",
     className: "context-selector",
@@ -448,7 +480,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "task-queue",
     name: "Task Queue",
-    category: "application",
+    category: "harness",
     selector: ".task-queue",
     tag: "section",
     className: "task-queue",
@@ -465,7 +497,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "checkpoint",
     name: "Checkpoint",
-    category: "application",
+    category: "harness",
     selector: ".checkpoint",
     tag: "article",
     className: "checkpoint",
@@ -481,7 +513,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "follow-up-suggestions",
     name: "Follow-up Suggestions",
-    category: "application",
+    category: "harness",
     selector: ".follow-up-suggestions",
     tag: "nav",
     className: "follow-up-suggestions",
@@ -497,7 +529,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "tool-call",
     name: "Tool Call",
-    category: "application",
+    category: "harness",
     selector: ".tool-call",
     tag: "details",
     className: "tool-call",
@@ -515,7 +547,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "change-review",
     name: "Change Review",
-    category: "application",
+    category: "harness",
     selector: ".change-review",
     tag: "section",
     className: "change-review",
@@ -527,12 +559,19 @@ export const applicationComponents = [
       title: ":scope > header :is(h2, h3)",
     },
     actions: ["click", "focus", "press", "wheel"],
-    states: ["pending", "reviewing", "accepted", "rejected", "conflict", "error"],
+    states: [
+      "pending",
+      "reviewing",
+      "accepted",
+      "rejected",
+      "conflict",
+      "error",
+    ],
   }),
   defineComponent({
     slug: "terminal",
     name: "Terminal",
-    category: "application",
+    category: "harness",
     selector: ".terminal",
     tag: "section",
     className: "terminal",
@@ -549,7 +588,7 @@ export const applicationComponents = [
   defineComponent({
     slug: "execution-evidence",
     name: "Execution Evidence",
-    category: "application",
+    category: "harness",
     selector: ".execution-evidence",
     tag: "article",
     className: "execution-evidence",

@@ -3,16 +3,15 @@ import {
   cloneElement,
   isValidElement,
   useEffect,
-  useId,
   useRef,
   useState,
   type CSSProperties,
   type HTMLAttributes,
-  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type ReactNode,
 } from "react";
+import { CodeBlockRuntime } from "@rspress/core/theme";
 import {
   useLang,
   useLocation,
@@ -238,8 +237,6 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
   source?: string;
 };
 
-type PreviewView = "preview" | "code";
-
 const previewVoidElements = new Set([
   "area",
   "base",
@@ -395,31 +392,10 @@ function previewSourceFromCanvas(canvas: HTMLElement) {
     .join("\n");
 }
 
-async function writePreviewSource(source: string) {
-  let clipboardError: unknown;
-  if (navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(source);
-      return;
-    } catch (error) {
-      clipboardError = error;
-    }
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = source;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.append(textarea);
-  textarea.select();
-  const copied = document.execCommand("copy");
-  textarea.remove();
-  if (!copied) {
-    throw (
-      clipboardError ?? new Error("The browser rejected the copy operation.")
-    );
-  }
+function needsRenderedPreviewSource(source: string) {
+  return /<(?:A3SAssetImage|ChartDemo|MonacoWorkbenchDemo|SliderDemo)\b/.test(
+    source,
+  );
 }
 
 export function Preview({
@@ -432,60 +408,11 @@ export function Preview({
   const language = useLang();
   const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const copyResetRef = useRef<number | null>(null);
-  const panelId = useId();
-  const [activeView, setActiveView] = useState<PreviewView>("preview");
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
-    "idle",
-  );
   const [sourceText, setSourceText] = useState(source ?? "");
   const componentName =
     location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
     (/\/components\/?$/.test(location.pathname) ? "index" : undefined);
   const isChinese = language === "zh";
-  const previewTabId = `${panelId}-preview-tab`;
-  const previewPanelId = `${panelId}-preview-panel`;
-  const codeTabId = `${panelId}-code-tab`;
-  const codePanelId = `${panelId}-code-panel`;
-
-  const selectView = (view: PreviewView, focus = false) => {
-    setActiveView(view);
-    if (focus) {
-      requestAnimationFrame(() => {
-        previewRef.current
-          ?.querySelector<HTMLElement>(`[data-preview-view="${view}"]`)
-          ?.focus();
-      });
-    }
-    if (view === "preview") {
-      requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
-    }
-  };
-
-  const handleViewKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
-    const nextView =
-      event.key === "ArrowLeft" || event.key === "Home"
-        ? "preview"
-        : event.key === "ArrowRight" || event.key === "End"
-          ? "code"
-          : null;
-    if (!nextView) return;
-    event.preventDefault();
-    selectView(nextView, true);
-  };
-
-  const handleCopySource = async () => {
-    try {
-      await writePreviewSource(sourceText);
-      setCopyState("copied");
-    } catch {
-      setCopyState("error");
-    }
-    if (copyResetRef.current !== null) {
-      window.clearTimeout(copyResetRef.current);
-    }
-    copyResetRef.current = window.setTimeout(() => setCopyState("idle"), 2000);
-  };
 
   useEffect(() => {
     const preview = previewRef.current;
@@ -507,7 +434,12 @@ export function Preview({
 
     syncOverlayState();
     if (canvasRef.current) {
-      setSourceText(source ?? previewSourceFromCanvas(canvasRef.current));
+      const renderedSource = previewSourceFromCanvas(canvasRef.current);
+      setSourceText(
+        source && !needsRenderedPreviewSource(source)
+          ? source
+          : renderedSource || source || "",
+      );
       initializeDocumentationDemos(canvasRef.current);
       window.a3sAI?.scan(canvasRef.current);
     }
@@ -517,15 +449,6 @@ export function Preview({
     };
   }, [children, source]);
 
-  useEffect(
-    () => () => {
-      if (copyResetRef.current !== null) {
-        window.clearTimeout(copyResetRef.current);
-      }
-    },
-    [],
-  );
-
   return (
     <section
       ref={previewRef}
@@ -534,7 +457,6 @@ export function Preview({
         language === "zh" ? "交互式组件预览" : "Interactive component preview"
       }
       data-preview-component={componentName}
-      data-preview-active-view={activeView}
       data-preview-source={sourceText ? "ready" : "pending"}
     >
       <header className="a3s-preview__header">
@@ -542,49 +464,9 @@ export function Preview({
           <i aria-hidden="true" />
           {language === "zh" ? "实时预览" : "Live preview"}
         </span>
-        <div className="a3s-preview__header-actions">
-          <small>HTML · CSS · JavaScript</small>
-          <div
-            className="a3s-preview__view-tabs"
-            role="tablist"
-            aria-label={isChinese ? "预览显示模式" : "Preview display mode"}
-          >
-            <button
-              id={previewTabId}
-              type="button"
-              role="tab"
-              aria-controls={previewPanelId}
-              aria-selected={activeView === "preview"}
-              data-preview-view="preview"
-              tabIndex={activeView === "preview" ? 0 : -1}
-              onClick={() => selectView("preview")}
-              onKeyDown={handleViewKeyDown}
-            >
-              {isChinese ? "预览" : "Preview"}
-            </button>
-            <button
-              id={codeTabId}
-              type="button"
-              role="tab"
-              aria-controls={codePanelId}
-              aria-selected={activeView === "code"}
-              data-preview-view="code"
-              tabIndex={activeView === "code" ? 0 : -1}
-              onClick={() => selectView("code")}
-              onKeyDown={handleViewKeyDown}
-            >
-              {isChinese ? "代码" : "Code"}
-            </button>
-          </div>
-        </div>
+        <small>HTML · CSS · JavaScript</small>
       </header>
-      <div
-        id={previewPanelId}
-        className="a3s-preview__stage"
-        role="tabpanel"
-        aria-labelledby={previewTabId}
-        hidden={activeView !== "preview"}
-      >
+      <div className="a3s-preview__stage">
         <div
           ref={canvasRef}
           onClick={handleDocumentationDemoClick}
@@ -595,41 +477,22 @@ export function Preview({
           {normalizePreviewNode(children)}
         </div>
       </div>
-      <div
-        id={codePanelId}
-        className="a3s-preview__source"
-        role="tabpanel"
-        aria-labelledby={codeTabId}
-        hidden={activeView !== "code"}
-      >
-        <div className="a3s-preview__source-toolbar">
-          <span>{isChinese ? "语义化 HTML" : "Semantic HTML"}</span>
-          <button
-            type="button"
-            data-preview-copy
-            data-copy-state={copyState}
-            onClick={handleCopySource}
-          >
-            {copyState === "copied"
-              ? isChinese
-                ? "已复制"
-                : "Copied"
-              : copyState === "error"
-                ? isChinese
-                  ? "复制失败，请重试"
-                  : "Copy failed. Try again"
-                : isChinese
-                  ? "复制代码"
-                  : "Copy code"}
-          </button>
+      <details className="a3s-preview__source" data-preview-source-panel>
+        <summary>
+          <span>{isChinese ? "查看源码" : "View source"}</span>
+          <small>{isChinese ? "语义化 HTML" : "Semantic HTML"}</small>
+        </summary>
+        <div className="a3s-preview__source-content">
+          <CodeBlockRuntime
+            lang="html"
+            code={
+              sourceText ||
+              (isChinese ? "正在生成预览源码…" : "Preparing preview source…")
+            }
+            containerElementClassName="a3s-preview__codeblock"
+          />
         </div>
-        <pre tabIndex={0}>
-          <code>
-            {sourceText ||
-              (isChinese ? "正在生成预览源码…" : "Preparing preview source…")}
-          </code>
-        </pre>
-      </div>
+      </details>
     </section>
   );
 }

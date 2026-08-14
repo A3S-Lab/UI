@@ -19,6 +19,7 @@ pnpm add @a3s-lab/ui@0.3.0
 ```bash title="bun"
 bun add @a3s-lab/ui@0.3.0
 ```
+
 </CodeGroup>
 
   </Step>
@@ -70,16 +71,16 @@ import "@a3s-lab/ui/task-workspace";
 
 ## CSS 导入
 
-| 导入 | 内容 |
-| --- | --- |
-| `@a3s-lab/ui` | 默认的完整 A3S 样式包 |
-| `@a3s-lab/ui/a3s` | 显式指定的完整 A3S 样式包 |
-| `@a3s-lab/ui/{style}` | 完整的 `vega`、`nova`、`maia`、`lyra`、`mira`、`luma`、`sera` 或 `rhea` 样式包 |
-| `@a3s-lab/ui/base` | 基础令牌、语义工具类与组件结构，不包含视觉风格 |
-| `@a3s-lab/ui/components` | 所有组件结构，不包含基础令牌与视觉风格 |
-| `@a3s-lab/ui/components/button.css` | 单个组件的结构样式 |
-| `@a3s-lab/ui/styles/a3s.css` | A3S 视觉基础；与 `base` 组合使用 |
-| `@a3s-lab/ui/compat` | 可选的旧版本兼容别名 |
+| 导入                                | 内容                                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| `@a3s-lab/ui`                       | 默认的完整 A3S 样式包                                                          |
+| `@a3s-lab/ui/a3s`                   | 显式指定的完整 A3S 样式包                                                      |
+| `@a3s-lab/ui/{style}`               | 完整的 `vega`、`nova`、`maia`、`lyra`、`mira`、`luma`、`sera` 或 `rhea` 样式包 |
+| `@a3s-lab/ui/base`                  | 基础令牌、语义工具类与组件结构，不包含视觉风格                                 |
+| `@a3s-lab/ui/components`            | 所有组件结构，不包含基础令牌与视觉风格                                         |
+| `@a3s-lab/ui/components/button.css` | 单个组件的结构样式                                                             |
+| `@a3s-lab/ui/styles/a3s.css`        | A3S 视觉基础；与 `base` 组合使用                                               |
+| `@a3s-lab/ui/compat`                | 可选的旧版本兼容别名                                                           |
 
 ### 拆分导入
 
@@ -95,25 +96,27 @@ import "@a3s-lab/ui/task-workspace";
 
 ## JavaScript 导入
 
-| 导入 | 控制器 |
-| --- | --- |
-| `@a3s-lab/ui/all` | 运行时和所有自动初始化控制器（图表除外） |
-| `@a3s-lab/ui/runtime` | 共享生命周期与组件注册机制 |
-| `@a3s-lab/ui/accordion` | 折叠面板增强 |
-| `@a3s-lab/ui/app-shell` | 桌面导航与有边界的紧凑抽屉 |
-| `@a3s-lab/ui/combobox` | 组合框 |
-| `@a3s-lab/ui/command` | 命令面板 |
-| `@a3s-lab/ui/drawer` | 抽屉 |
-| `@a3s-lab/ui/dropdown-menu` | 下拉菜单 |
-| `@a3s-lab/ui/popover` | 弹出窗口 |
-| `@a3s-lab/ui/range` | 范围输入视觉状态 |
-| `@a3s-lab/ui/select` | 选择 |
-| `@a3s-lab/ui/sidebar` | 侧边栏 |
-| `@a3s-lab/ui/split-pane` | 可调整大小的分割窗格 |
-| `@a3s-lab/ui/tabs` | 选项卡和功能区导航 |
-| `@a3s-lab/ui/task-workspace` | 响应式任务检查器与焦点归还 |
-| `@a3s-lab/ui/toast` | Toast |
-| `@a3s-lab/ui/chart` | Chart 辅助 API；Chart.js 仍需单独安装 |
+| 导入                           | 控制器                                   |
+| ------------------------------ | ---------------------------------------- |
+| `@a3s-lab/ui/all`              | 运行时和所有自动初始化控制器（图表除外） |
+| `@a3s-lab/ui/runtime`          | 共享生命周期与组件注册机制               |
+| `@a3s-lab/ui/accordion`        | 折叠面板增强                             |
+| `@a3s-lab/ui/app-shell`        | 桌面导航与有边界的紧凑抽屉               |
+| `@a3s-lab/ui/code-editor`      | 原生代码编辑器回退                       |
+| `@a3s-lab/ui/combobox`         | 组合框                                   |
+| `@a3s-lab/ui/command`          | 命令面板                                 |
+| `@a3s-lab/ui/device-simulator` | 响应式 iframe 与原生设备预览桥接         |
+| `@a3s-lab/ui/drawer`           | 抽屉                                     |
+| `@a3s-lab/ui/dropdown-menu`    | 下拉菜单                                 |
+| `@a3s-lab/ui/popover`          | 弹出窗口                                 |
+| `@a3s-lab/ui/range`            | 范围输入视觉状态                         |
+| `@a3s-lab/ui/select`           | 选择                                     |
+| `@a3s-lab/ui/sidebar`          | 侧边栏                                   |
+| `@a3s-lab/ui/split-pane`       | 可调整大小的分割窗格                     |
+| `@a3s-lab/ui/tabs`             | 选项卡和功能区导航                       |
+| `@a3s-lab/ui/task-workspace`   | 响应式任务检查器与焦点归还               |
+| `@a3s-lab/ui/toast`            | Toast                                    |
+| `@a3s-lab/ui/chart`            | Chart 辅助 API；Chart.js 仍需单独安装    |
 
 公共运行时命名空间为 `window.a3sUI`。它会在页面加载时初始化已注册组件，并观察后续插入的 DOM。
 
@@ -135,6 +138,7 @@ cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
 ```bash title="Jinja"
 cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
 ```
+
 </CodeGroup>
 
 宏参数请参阅[模板](/templates)。
@@ -148,7 +152,7 @@ import { a3sAI } from "@a3s-lab/ui/ai";
 import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
 
 a3sAI.scan(document);
-console.log(manifest.components.length); // 83
+console.log(manifest.components.length); // 84
 ```
 
 React 与 Vue 均为可选 peer dependency。宿主应用只需安装正在使用的框架，然后从 `@a3s-lab/ui/react` 或 `@a3s-lab/ui/vue` 导入组件。

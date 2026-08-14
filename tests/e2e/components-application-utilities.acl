@@ -557,6 +557,33 @@ suite "a3s-ui-application-and-utilities" {
         expect "phone-terminal-visible" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal") }
     }
 
+    scenario "device-simulator" {
+        name = "Device Simulator keeps real preset dimensions, rotation, and relative preview URLs"
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/device-simulator.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "simulator-ready" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device-simulator-initialized=true][data-width='393'][data-height='852']") }
+        select "choose-pixel-8" {
+            target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]")
+            values = ["pixel-8"]
+        }
+        expect "pixel-dimensions-applied" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device=pixel-8][data-device-kind=phone][data-width='412'][data-height='915']") }
+        click "rotate-landscape" { target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-orientation-value=landscape]") }
+        expect "landscape-dimensions-applied" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-orientation=landscape][data-width='915'][data-height='412'] [data-device-simulator-orientation-value=landscape][aria-pressed=true]") }
+        fill "set-relative-url" {
+            target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-url]")
+            value = "../../device-preview.html?lang=en&acl=1"
+        }
+        click "open-relative-url" { target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-navigation] button[type=submit]") }
+        wait "relative-preview-ready" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-state=ready]") }
+        expect "relative-url-accepted" { visible = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-url]:not(:invalid)") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-controls-visible" { visible = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]") }
+        screenshot "device-simulator-phone" { path = "components/device-simulator-phone.png" }
+    }
+
     scenario "execution-evidence" {
         name = "Execution Evidence exposes verified result, provenance, and structured facts"
         surface = "web"

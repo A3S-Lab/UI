@@ -68,6 +68,30 @@ export function resolveVersionRoutePath<T extends VersionedPage>(
   return fallbackParts.length > 0 ? `/${fallbackParts.join("/")}/` : "/";
 }
 
+export function resolveLanguageRoutePath<T extends VersionedPage>(
+  pages: T[],
+  currentPage: T,
+  targetLang: string,
+  defaults: VersionDefaults,
+) {
+  const pureRoutePath = getPureRoutePath(currentPage, defaults);
+  const exactPage = pages.find(
+    (page) =>
+      page.version === currentPage.version &&
+      page.lang === targetLang &&
+      getPureRoutePath(page, defaults) === pureRoutePath,
+  );
+
+  if (exactPage) return exactPage.routePath;
+
+  const fallbackParts = [
+    currentPage.version !== defaults.defaultVersion ? currentPage.version : "",
+    targetLang !== defaults.defaultLang ? targetLang : "",
+  ].filter(Boolean);
+
+  return fallbackParts.length > 0 ? `/${fallbackParts.join("/")}/` : "/";
+}
+
 export function withDocsBase(base: string, routePath: string) {
   const baseSegment = base.replace(/^\/+|\/+$/g, "");
   const normalizedBase = baseSegment ? `/${baseSegment}/` : "/";

@@ -17,7 +17,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system now exposes 83 public component contracts. The 34 application patterns include task planning, message state, attachments and citations, artifacts, model/access/workspace context, queues, checkpoints, follow-ups, tool calls, change review, terminals, execution evidence, and complete task workspaces.
+The system now exposes 84 public component contracts. Thirteen layout and workspace components cover product structure, while the 24-component Harness groups task, conversation, execution, review, evidence, editing, terminal, log, and device-preview workflows for Coding Agents.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -68,16 +68,17 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 
 ## Component families
 
-| Family | Included patterns |
-| --- | --- |
-| Actions | Button and Button Group |
-| Forms | Fields, inputs, textareas, code editors, selects, checkboxes, radio groups, switches, sliders, labels, and comboboxes |
-| Navigation | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar |
-| Overlays | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip |
-| Feedback | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, and Toast |
-| Data display | Accordion, Avatar, Card, Chart, Item, Kbd, Log Viewer, Property List, Table, Stepper, Timeline, and Tree |
-| Application patterns | App Shell, App Page, Task Start, Task Workspace, Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, Execution Evidence, Catalog, Setting Row, Agent Composer, Agent Transcript, Agent Workbench, Approval Request, Execution Item, Brand Lockup, Activity Bar, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar |
-| Utilities | Scroll Area and Theme Switcher |
+| Family               | Included patterns                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Input and actions    | Button, Button Group, Field, Input, Input Group, Textarea, and Label                                                                                                                                                                                                                                                                                                               |
+| Selection and search | Native Select, Select, Combobox, Checkbox, Radio Group, Switch, and Slider                                                                                                                                                                                                                                                                                                         |
+| Navigation           | Activity Bar, Breadcrumb, Tabs, Pagination, and Sidebar                                                                                                                                                                                                                                                                                                                            |
+| Overlays             | Alert Dialog, Dialog, Drawer, Dropdown Menu, Popover, Command, and Tooltip                                                                                                                                                                                                                                                                                                         |
+| Feedback and status  | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, and Toast                                                                                                                                                                                                                                                                                                          |
+| Data and content     | Accordion, Avatar, Card, Chart, Item, Kbd, Property List, Table, Stepper, Timeline, and Tree                                                                                                                                                                                                                                                                                       |
+| Layout and workspace | App Shell, App Page, Catalog, Setting Row, Brand Lockup, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar                                                                                                                                                                                                                  |
+| Harness              | Task Start, Task Workspace, Agent Composer, Agent Transcript, Agent Workbench, Context Selector, Message Status, Message Attachment, Message Citation, Follow-up Suggestions, Task Plan, Plan Step, Task Queue, Approval Request, Execution Item, Checkpoint, Tool Call, Change Review, Execution Evidence, Artifact Card, Code Editor, Terminal, Log Viewer, and Device Simulator |
+| Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                     |
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
@@ -92,7 +93,7 @@ The A3S theme is a complete design system rather than a palette layered over unr
 - **Motion** — short, purposeful transitions with reduced-motion support.
 - **Accessibility** — semantic elements, explicit ARIA state, keyboard interactions, RTL-aware layout, and light/dark themes.
 
-## Application-scale patterns
+## Application-scale patterns and Harness
 
 The task application layer is where A3S UI differs from a primitive-only kit:
 
@@ -100,19 +101,19 @@ The task application layer is where A3S UI differs from a primitive-only kit:
 App Shell
 ├── Activity Bar
 ├── Workspace Header
-├── Task Workspace
-│   ├── Task Plan + Plan Step
-│   ├── Agent Transcript
-│   │   ├── Message Status, Attachment, and Citation
-│   │   ├── Tool Call, Terminal, and Execution Evidence
-│   │   └── Artifact Card, Checkpoint, and Follow-up Suggestions
-│   ├── Agent Composer + Context Selector
-│   └── Task Pane + Change Review
-├── Task Queue
 ├── App Page
 │   ├── Catalog
 │   └── Settings Layout + Setting Row
+├── Resource Card + Split Pane + Task Pane
 └── Status Bar
+
+Harness
+├── Task Start + Task Workspace
+├── Agent Composer + Agent Transcript + Agent Workbench
+├── Task Plan + Plan Step + Task Queue
+├── Approval Request + Execution Item + Tool Call
+├── Change Review + Execution Evidence + Artifact Card + Checkpoint
+└── Code Editor + Terminal + Log Viewer + Device Simulator
 ```
 
 These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320–380-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
@@ -123,9 +124,9 @@ The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog,
 
 The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation.
 
-| Version | 简体中文 | English |
-| --- | --- | --- |
-| `next` | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| Version  | 简体中文                                               | English                                                   |
+| -------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `next`   | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
 | `v0.3.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.3.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.3.0/en/) |
 | `v0.2.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.2.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.2.0/en/) |
 | `v0.1.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.1.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.1.0/en/) |
@@ -134,23 +135,23 @@ Language and version switches preserve the current page whenever that route exis
 
 ## Package entrypoints
 
-| Import | Purpose |
-| --- | --- |
-| `@a3s-lab/ui` | Complete default A3S CSS bundle |
-| `@a3s-lab/ui/base` | Tokens, utilities, and structural component CSS without a visual style |
-| `@a3s-lab/ui/components/{name}.css` | One component's structural CSS |
-| `@a3s-lab/ui/styles/a3s.css` | A3S visual foundation for split-import builds |
-| `@a3s-lab/ui/runtime` | Shared lifecycle and controller registry |
-| `@a3s-lab/ui/all` | Shared runtime plus all auto-initialized controllers except Chart |
-| `@a3s-lab/ui/{controller}` | One JavaScript controller, such as `app-shell`, `task-workspace`, `tabs`, `split-pane`, or `code-editor` |
-| `@a3s-lab/ui/manifest` | Machine-readable metadata for all 83 public components |
-| `@a3s-lab/ui/components.json` | JSON component selectors, parts, actions, states, and test selectors |
-| `@a3s-lab/ui/ai` | DOM annotation, discovery, selector, and snapshot helpers |
-| `@a3s-lab/ui/a3s-test` | Ready-to-run deterministic workflow example |
-| `@a3s-lab/ui/a3s-test/selectors` | Component, part, action, ready, and state selector helpers |
-| `@a3s-lab/ui/react` | Optional thin React element adapters; React remains a peer dependency |
-| `@a3s-lab/ui/vue` | Optional thin Vue element adapters; Vue remains a peer dependency |
-| `@a3s-lab/ui/templates/*` | Nunjucks and Jinja templates for server-rendered applications |
+| Import                              | Purpose                                                                                                                      |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `@a3s-lab/ui`                       | Complete default A3S CSS bundle                                                                                              |
+| `@a3s-lab/ui/base`                  | Tokens, utilities, and structural component CSS without a visual style                                                       |
+| `@a3s-lab/ui/components/{name}.css` | One component's structural CSS                                                                                               |
+| `@a3s-lab/ui/styles/a3s.css`        | A3S visual foundation for split-import builds                                                                                |
+| `@a3s-lab/ui/runtime`               | Shared lifecycle and controller registry                                                                                     |
+| `@a3s-lab/ui/all`                   | Shared runtime plus all auto-initialized controllers except Chart                                                            |
+| `@a3s-lab/ui/{controller}`          | One JavaScript controller, such as `app-shell`, `task-workspace`, `tabs`, `split-pane`, `code-editor`, or `device-simulator` |
+| `@a3s-lab/ui/manifest`              | Machine-readable metadata for all 84 public components                                                                       |
+| `@a3s-lab/ui/components.json`       | JSON component selectors, parts, actions, states, and test selectors                                                         |
+| `@a3s-lab/ui/ai`                    | DOM annotation, discovery, selector, and snapshot helpers                                                                    |
+| `@a3s-lab/ui/a3s-test`              | Ready-to-run deterministic workflow example                                                                                  |
+| `@a3s-lab/ui/a3s-test/selectors`    | Component, part, action, ready, and state selector helpers                                                                   |
+| `@a3s-lab/ui/react`                 | Optional thin React element adapters; React remains a peer dependency                                                        |
+| `@a3s-lab/ui/vue`                   | Optional thin Vue element adapters; Vue remains a peer dependency                                                            |
+| `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
 

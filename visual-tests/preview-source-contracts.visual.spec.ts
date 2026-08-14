@@ -8,8 +8,8 @@ declare global {
 }
 
 const locales = [
-  { code: "en", path: "en/", previewLabel: "Preview", codeLabel: "Code" },
-  { code: "zh", path: "", previewLabel: "预览", codeLabel: "代码" },
+  { code: "en", path: "en/", sourceLabel: "View source" },
+  { code: "zh", path: "", sourceLabel: "查看源码" },
 ] as const;
 
 const runtimeAttributePattern =
@@ -32,7 +32,7 @@ test.describe("component preview source contracts", () => {
 
   for (const locale of locales) {
     for (const component of components) {
-      test(`${locale.code}/${component.slug} exposes clean, switchable, copyable source`, async ({
+      test(`${locale.code}/${component.slug} exposes clean, collapsible, copyable source`, async ({
         page,
       }) => {
         await page.goto(`${locale.path}components/${component.slug}.html`);
@@ -64,13 +64,10 @@ test.describe("component preview source contracts", () => {
           .toBe(true);
 
         const previewCount = await previews.count();
-        await expect(previews.locator('[data-preview-view="preview"]')).toHaveCount(
-          previewCount,
-        );
-        await expect(previews.locator('[data-preview-view="code"]')).toHaveCount(
-          previewCount,
-        );
-        await expect(previews.locator("[data-preview-copy]")).toHaveCount(
+        await expect(
+          previews.locator("details[data-preview-source-panel]"),
+        ).toHaveCount(previewCount);
+        await expect(previews.locator(".rp-code-copy-button")).toHaveCount(
           previewCount,
         );
 
@@ -90,27 +87,32 @@ test.describe("component preview source contracts", () => {
         });
 
         const firstPreview = previews.first();
-        const previewTab = firstPreview.getByRole("tab", {
-          name: locale.previewLabel,
+        const sourceDetails = firstPreview.locator(
+          "details[data-preview-source-panel]",
+        );
+        const sourceSummary = sourceDetails.getByText(locale.sourceLabel, {
           exact: true,
         });
-        const codeTab = firstPreview.getByRole("tab", {
-          name: locale.codeLabel,
-          exact: true,
-        });
-        await codeTab.click();
-        await expect(codeTab).toHaveAttribute("aria-selected", "true");
-        await expect(firstPreview.locator(".a3s-preview__source")).toBeVisible();
-
-        const copyButton = firstPreview.locator("[data-preview-copy]");
-        await copyButton.click();
-        await expect(copyButton).toHaveAttribute("data-copy-state", "copied");
+        await expect(sourceDetails).not.toHaveAttribute("open", "");
+        await sourceSummary.click();
+        await expect(sourceDetails).toHaveAttribute("open", "");
+        await expect(firstPreview.locator(".a3s-preview__stage")).toBeVisible();
         await expect
-          .poll(() => page.evaluate(() => navigator.clipboard.readText()))
-          .toBe(sources[0]);
+          .poll(() => sourceDetails.locator(".line span[style]").count())
+          .toBeGreaterThan(0);
 
-        await previewTab.click();
-        await expect(previewTab).toHaveAttribute("aria-selected", "true");
+        const copyButton = sourceDetails.locator(".rp-code-copy-button");
+        await copyButton.click();
+        await expect
+          .poll(() =>
+            page.evaluate(async () =>
+              (await navigator.clipboard.readText()).trim(),
+            ),
+          )
+          .toBe(sources[0].trim());
+
+        await sourceSummary.click();
+        await expect(sourceDetails).not.toHaveAttribute("open", "");
         await expect(firstPreview.locator(".a3s-preview__stage")).toBeVisible();
       });
     }

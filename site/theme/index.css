@@ -137,17 +137,6 @@ html .rp-switch-appearance {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1280px) {
-  html .rp-nav__others {
-    display: flex;
-    gap: 0;
-  }
-
-  html .rp-nav__others > :not(.rp-switch-appearance) {
-    display: none;
-  }
-}
-
 /* Rspress 2.0.19 resolves the open mobile language grid to zero height in
    Chromium. Switch it atomically so language and version rows never overlap. */
 .rp-nav-screen-langs-group {
@@ -348,120 +337,98 @@ html .rp-doc-layout__doc {
   font-size: 11px;
 }
 
-.a3s-preview__header-actions,
-.a3s-preview__view-tabs,
-.a3s-preview__source-toolbar {
-  display: flex;
-  align-items: center;
-}
-
-.a3s-preview__header-actions {
-  min-width: 0;
-  gap: 12px;
-}
-
-.a3s-preview__view-tabs {
-  padding: 2px;
-  border: 1px solid var(--ui-line);
-  border-radius: 6px;
-  background: var(--ui-paper);
-  gap: 2px;
-}
-
-.a3s-preview__view-tabs > button,
-.a3s-preview__source-toolbar > button {
-  min-height: 28px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--ui-muted);
-  cursor: pointer;
-  font: 600 12px/1 var(--ui-mono);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.a3s-preview__view-tabs > button {
-  padding: 0 9px;
-}
-
-.a3s-preview__view-tabs > button:hover,
-.a3s-preview__source-toolbar > button:hover {
-  background: var(--ui-panel);
-  color: var(--ui-ink);
-}
-
-.a3s-preview__view-tabs > button[aria-selected="true"] {
-  background: var(--ui-blue);
-  color: #ffffff;
-}
-
-.a3s-preview__view-tabs > button:focus-visible,
-.a3s-preview__source-toolbar > button:focus-visible,
-.a3s-preview__source pre:focus-visible {
-  outline: 2px solid var(--ui-blue);
-  outline-offset: 2px;
-}
-
 .a3s-preview__stage {
   display: grid;
   min-height: 150px;
   padding: clamp(20px, 4vw, 36px);
-  border-radius: 0 0 11px 11px;
   background: var(--ui-canvas);
   place-items: center;
 }
 
 .a3s-preview__source {
   overflow: hidden;
+  border-top: 1px solid var(--ui-line);
   border-radius: 0 0 11px 11px;
   background: var(--ui-paper);
 }
 
-.a3s-preview__stage[hidden],
-.a3s-preview__source[hidden] {
+.a3s-preview__source > summary {
+  display: flex;
+  min-height: 44px;
+  padding: 0 14px;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  list-style: none;
+  color: var(--ui-muted);
+  font: 600 12px/1 var(--ui-mono);
+}
+
+.a3s-preview__source > summary::-webkit-details-marker {
   display: none;
 }
 
-.a3s-preview__source-toolbar {
-  min-height: 40px;
-  padding: 0 12px 0 16px;
+.a3s-preview__source > summary:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.a3s-preview__source > summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-blue) 38%, transparent);
+  outline-offset: -3px;
+}
+
+.a3s-preview__source > summary::after {
+  width: 7px;
+  height: 7px;
+  margin-inline-start: auto;
+  border-inline-end: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  content: "";
+  transform: rotate(45deg) translate(-1px, -1px);
+  transition: transform 150ms ease-out;
+}
+
+.a3s-preview__source[open] > summary {
   border-bottom: 1px solid var(--ui-line);
-  justify-content: space-between;
-  color: var(--ui-muted);
-  font: 500 12px/1 var(--ui-mono);
 }
 
-.a3s-preview__source-toolbar > button {
-  padding: 0 10px;
+.a3s-preview__source[open] > summary::after {
+  transform: rotate(225deg) translate(-1px, -1px);
 }
 
-.a3s-preview__source-toolbar > button[data-copy-state="copied"] {
-  color: var(--ui-green);
+.a3s-preview__source > summary small {
+  color: var(--ui-faint);
+  font: inherit;
+  font-weight: 500;
 }
 
-.a3s-preview__source-toolbar > button[data-copy-state="error"] {
-  color: var(--ui-red);
-}
-
-.a3s-preview__source pre {
-  box-sizing: border-box;
-  width: 100%;
-  max-height: min(32rem, 65vh);
+.a3s-preview__source-content,
+.a3s-preview__codeblock.rp-codeblock {
   margin: 0;
-  overflow: auto;
-  padding: 18px 20px 22px;
   border: 0;
   border-radius: 0;
-  background: color-mix(in srgb, var(--ui-panel) 72%, var(--ui-paper));
-  color: var(--ui-ink);
-  tab-size: 2;
-  white-space: pre;
 }
 
-.a3s-preview__source code {
-  color: inherit;
-  font: 500 12px/1.65 var(--ui-mono);
+.a3s-preview__codeblock .rp-codeblock__content__scroll-container {
+  max-height: min(32rem, 65vh);
+}
+
+.a3s-preview__codeblock .rp-code-button-group {
+  opacity: 1;
+}
+
+.a3s-preview__codeblock .rp-code-button-group__button {
+  background: color-mix(in srgb, var(--ui-paper) 92%, transparent);
+  box-shadow: 0 3px 12px rgba(20, 24, 40, 0.1);
+}
+
+.a3s-preview__codeblock pre,
+.a3s-preview__codeblock code {
+  font-family: var(--ui-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  tab-size: 2;
 }
 
 .a3s-preview__canvas {
@@ -1815,13 +1782,9 @@ html .rp-doc-layout__doc {
     letter-spacing: 0.04em;
   }
 
-  .a3s-preview__view-tabs > button,
-  .a3s-preview__source-toolbar > button {
-    min-height: 36px;
-  }
-
-  .a3s-preview__source pre {
-    padding-inline: 14px;
+  .a3s-preview__source > summary {
+    min-height: 44px;
+    padding-inline: 12px;
   }
 
   .a3s-callout {

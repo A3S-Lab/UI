@@ -81,7 +81,7 @@ export const formComponents = [
   defineComponent({
     slug: "code-editor",
     name: "Code Editor",
-    category: "forms",
+    category: "harness",
     selector: ".code-editor",
     className: "code-editor",
     attributes: { role: "group" },
@@ -219,7 +219,7 @@ export const utilityComponents = [
     name: "Theme Switcher",
     category: "utilities",
     selector:
-      "[data-a3s-theme-toggle], button[onclick*=\".theme.toggle\"], button[data-preview-onclick*=\".theme.toggle\"]",
+      '[data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]',
     tag: "button",
     className: "btn",
     attributes: { "data-a3s-theme-toggle": "", type: "button" },

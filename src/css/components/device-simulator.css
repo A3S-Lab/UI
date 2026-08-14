@@ -1,0 +1,211 @@
+@layer components {
+  .device-simulator {
+    --device-simulator-width: 393px;
+    --device-simulator-height: 852px;
+    --device-simulator-scale: 0.7;
+    --device-simulator-scaled-width: 275.1px;
+    --device-simulator-scaled-height: 596.4px;
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .device-simulator > header {
+    display: grid;
+    min-width: 0;
+    gap: 0.625rem;
+  }
+
+  .device-simulator [data-device-simulator-toolbar],
+  .device-simulator [data-device-simulator-dimensions],
+  .device-simulator [data-device-simulator-actions],
+  .device-simulator [data-device-simulator-orientation],
+  .device-simulator > footer {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  .device-simulator [data-device-simulator-toolbar] {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .device-simulator [data-device-simulator-control] {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .device-simulator [data-device-simulator-control] > span {
+    display: block;
+  }
+
+  .device-simulator [data-device-simulator-control] > select {
+    min-width: 10.5rem;
+  }
+
+  .device-simulator [data-device-simulator-dimensions] {
+    gap: 0.375rem;
+  }
+
+  .device-simulator [data-device-simulator-dimensions] > label {
+    display: grid;
+    grid-template-columns: auto minmax(4.5rem, 5.25rem);
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .device-simulator [data-device-simulator-dimensions] input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .device-simulator [data-device-simulator-orientation],
+  .device-simulator [data-device-simulator-actions] {
+    gap: 0.25rem;
+  }
+
+  .device-simulator [data-device-simulator-actions] {
+    margin-inline-start: auto;
+  }
+
+  .device-simulator [data-device-simulator-navigation] {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .device-simulator [data-device-simulator-navigation] > label {
+    display: block;
+    min-width: 0;
+  }
+
+  .device-simulator [data-device-simulator-navigation] input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .device-simulator [data-device-simulator-workspace] {
+    position: relative;
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--device-simulator-workspace-min-height, 31rem);
+    max-height: var(--device-simulator-workspace-max-height, 44rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    align-items: start;
+    justify-items: safe center;
+  }
+
+  .device-simulator [data-device-simulator-canvas] {
+    position: relative;
+    width: var(--device-simulator-scaled-width);
+    height: var(--device-simulator-scaled-height);
+    flex: none;
+  }
+
+  .device-simulator [data-device-simulator-frame] {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: var(--device-simulator-width);
+    height: var(--device-simulator-height);
+    overflow: hidden;
+    transform: scale(var(--device-simulator-scale));
+    transform-origin: top left;
+  }
+
+  .device-simulator [data-device-simulator-preview] {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .device-simulator [data-device-simulator-screen-status] {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    padding: 2rem;
+    text-align: center;
+    place-items: center;
+  }
+
+  .device-simulator [data-device-simulator-screen-status][hidden] {
+    display: none;
+  }
+
+  .device-simulator > footer {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .device-simulator > footer > output {
+    min-width: 0;
+    flex: 1 1 12rem;
+  }
+
+  .device-simulator > footer > code {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    flex: 1 1 24rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .device-simulator > footer > button {
+    flex: none;
+  }
+
+  @media (max-width: 44rem) {
+    .device-simulator [data-device-simulator-actions] {
+      width: 100%;
+      margin-inline-start: 0;
+    }
+
+    .device-simulator [data-device-simulator-actions] > :last-child {
+      margin-inline-start: auto;
+    }
+
+    .device-simulator [data-device-simulator-navigation] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .device-simulator [data-device-simulator-workspace] {
+      min-height: var(--device-simulator-workspace-min-height, 26rem);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .device-simulator [data-device-simulator-control],
+    .device-simulator [data-device-simulator-control] > select,
+    .device-simulator [data-device-simulator-dimensions] {
+      width: 100%;
+    }
+
+    .device-simulator [data-device-simulator-dimensions] > label {
+      flex: 1;
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .device-simulator [data-device-simulator-actions] {
+      flex-wrap: wrap;
+    }
+
+    .device-simulator [data-device-simulator-actions] > :last-child {
+      width: 100%;
+      margin-inline-start: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .device-simulator [data-device-simulator-frame] {
+      transition: none;
+    }
+  }
+}

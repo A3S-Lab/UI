@@ -1,5 +1,6 @@
 import { applicationComponents } from "./application.js";
 import { dataComponents, feedbackComponents } from "./display.js";
+import { harnessComponents } from "./harness.js";
 import { navigationComponents, overlayComponents } from "./navigation.js";
 import {
   actionComponents,
@@ -15,11 +16,14 @@ export const components = Object.freeze([
   ...feedbackComponents,
   ...dataComponents,
   ...applicationComponents,
+  ...harnessComponents,
   ...utilityComponents,
 ]);
 
 export const componentMap = Object.freeze(
-  Object.fromEntries(components.map((component) => [component.slug, component])),
+  Object.fromEntries(
+    components.map((component) => [component.slug, component]),
+  ),
 );
 
 export function getComponent(slug) {

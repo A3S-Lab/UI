@@ -1,0 +1,396 @@
+---
+pageType: doc-wide
+outline: false
+---
+
+# Device Simulator
+
+Device Simulator switches between phone, tablet, and desktop viewports inside a bounded workbench. Browser mode uses a real-size `iframe`; native mode hands safe arguments to a trusted host that can launch `a3s-webview`.
+
+<Preview class="w-full">
+  <section
+    class="device-simulator"
+    aria-label="Responsive device preview"
+    data-device="iphone-15-pro"
+    data-device-kind="phone"
+    data-device-title="A3S responsive preview"
+    data-orientation="portrait"
+    data-state="ready"
+    style="--device-simulator-workspace-min-height:36rem"
+  >
+    <header>
+      <div data-device-simulator-toolbar>
+        <label data-device-simulator-control>
+          <span>Device</span>
+          <select
+            class="select"
+            data-device-simulator-select
+            aria-label="Device preset"
+          >
+            <optgroup label="Phones">
+              <option
+                value="iphone-15-pro"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="393"
+                data-height="852"
+              >
+                iPhone 15 Pro · 393 × 852
+              </option>
+              <option
+                value="pixel-8"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="412"
+                data-height="915"
+              >
+                Pixel 8 · 412 × 915
+              </option>
+              <option
+                value="compact-phone"
+                data-kind="phone"
+                data-orientation="portrait"
+                data-width="360"
+                data-height="800"
+              >
+                Compact phone · 360 × 800
+              </option>
+            </optgroup>
+            <optgroup label="Tablets">
+              <option
+                value="ipad-mini"
+                data-kind="tablet"
+                data-orientation="portrait"
+                data-width="768"
+                data-height="1024"
+              >
+                iPad mini · 768 × 1024
+              </option>
+              <option
+                value="ipad-pro"
+                data-kind="tablet"
+                data-orientation="portrait"
+                data-width="1024"
+                data-height="1366"
+              >
+                iPad Pro · 1024 × 1366
+              </option>
+            </optgroup>
+            <optgroup label="Computers">
+              <option
+                value="laptop"
+                data-kind="desktop"
+                data-orientation="landscape"
+                data-width="1440"
+                data-height="900"
+              >
+                Laptop · 1440 × 900
+              </option>
+              <option
+                value="desktop"
+                data-kind="desktop"
+                data-orientation="landscape"
+                data-width="1920"
+                data-height="1080"
+              >
+                Desktop · 1920 × 1080
+              </option>
+            </optgroup>
+            <option value="custom">Custom size</option>
+          </select>
+        </label>
+        <div data-device-simulator-dimensions aria-label="Custom viewport size">
+          <label>
+            <span>W</span>
+            <input
+              class="input"
+              type="number"
+              min="240"
+              max="4000"
+              value="393"
+              inputMode="numeric"
+              data-device-simulator-width
+            />
+          </label>
+          <span aria-hidden="true">×</span>
+          <label>
+            <span>H</span>
+            <input
+              class="input"
+              type="number"
+              min="180"
+              max="3000"
+              value="852"
+              inputMode="numeric"
+              data-device-simulator-height
+            />
+          </label>
+        </div>
+        <div
+          role="group"
+          aria-label="Screen orientation"
+          data-device-simulator-orientation
+        >
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            aria-pressed="true"
+            data-device-simulator-orientation-value="portrait"
+          >
+            Portrait
+          </button>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            aria-pressed="false"
+            data-device-simulator-orientation-value="landscape"
+          >
+            Landscape
+          </button>
+        </div>
+        <div data-device-simulator-actions>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="outline"
+            data-device-simulator-native
+          >
+            Native preview
+          </button>
+        </div>
+      </div>
+      <form data-device-simulator-navigation>
+        <label>
+          <span class="sr-only">Preview URL</span>
+          <input
+            class="input"
+            type="text"
+            inputMode="url"
+            value="../../device-preview.html?lang=en"
+            spellCheck="false"
+            data-device-simulator-url
+          />
+        </label>
+        <div data-device-simulator-actions>
+          <button type="submit" class="btn" data-size="sm">
+            Open
+          </button>
+          <button
+            type="button"
+            class="btn"
+            data-size="sm"
+            data-variant="ghost"
+            data-device-simulator-refresh
+          >
+            Refresh
+          </button>
+        </div>
+      </form>
+    </header>
+    <div data-device-simulator-workspace>
+      <div data-device-simulator-canvas>
+        <div data-device-simulator-frame>
+          <iframe
+            title="A3S responsive preview fixture"
+            src="../../device-preview.html?lang=en"
+            loading="eager"
+            sandbox="allow-scripts"
+            data-device-simulator-preview
+          ></iframe>
+          <span hidden data-device-simulator-screen-status>
+            Loading preview…
+          </span>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <output aria-live="polite" data-device-simulator-status>
+        Preview ready at 393 × 852.
+      </output>
+      <code data-device-simulator-command>a3s-webview --url …</code>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="ghost"
+        data-device-simulator-copy-command
+      >
+        Copy command
+      </button>
+    </footer>
+  </section>
+</Preview>
+
+The simulator changes only the iframe's CSS viewport width and height. It does not spoof the User-Agent, device pixel ratio, touch capability, network throttling, or operating-system browser behavior. The target must also allow iframe embedding; pages restricted by `X-Frame-Options` or CSP `frame-ancestors` should use native preview instead.
+
+## Usage
+
+Load the runtime and Device Simulator controller. The complete style pack already includes the structural and Harness visual layers.
+
+```html
+<section
+  class="device-simulator"
+  data-device="phone"
+  data-orientation="portrait"
+>
+  <header>
+    <select data-device-simulator-select aria-label="Device preset">
+      <option
+        value="phone"
+        data-kind="phone"
+        data-orientation="portrait"
+        data-width="393"
+        data-height="852"
+      >
+        Phone · 393 × 852
+      </option>
+      <option
+        value="desktop"
+        data-kind="desktop"
+        data-orientation="landscape"
+        data-width="1440"
+        data-height="900"
+      >
+        Desktop · 1440 × 900
+      </option>
+      <option value="custom">Custom</option>
+    </select>
+    <input
+      type="number"
+      min="240"
+      max="4000"
+      value="393"
+      data-device-simulator-width
+    />
+    <input
+      type="number"
+      min="180"
+      max="3000"
+      value="852"
+      data-device-simulator-height
+    />
+    <div
+      role="group"
+      aria-label="Orientation"
+      data-device-simulator-orientation
+    >
+      <button
+        type="button"
+        aria-pressed="true"
+        data-device-simulator-orientation-value="portrait"
+      >
+        Portrait
+      </button>
+      <button
+        type="button"
+        aria-pressed="false"
+        data-device-simulator-orientation-value="landscape"
+      >
+        Landscape
+      </button>
+    </div>
+    <form data-device-simulator-navigation>
+      <input
+        type="text"
+        inputmode="url"
+        value="https://example.com"
+        data-device-simulator-url
+      />
+      <button type="submit">Open</button>
+      <button type="button" data-device-simulator-refresh>Refresh</button>
+    </form>
+  </header>
+  <div data-device-simulator-workspace>
+    <div data-device-simulator-canvas>
+      <div data-device-simulator-frame>
+        <iframe
+          title="Application preview"
+          src="https://example.com"
+          data-device-simulator-preview
+        ></iframe>
+        <span hidden data-device-simulator-screen-status></span>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <output aria-live="polite" data-device-simulator-status></output>
+    <code data-device-simulator-command></code>
+    <button type="button" data-device-simulator-copy-command>
+      Copy native command
+    </button>
+    <button type="button" data-device-simulator-native>
+      Open native preview
+    </button>
+  </footer>
+</section>
+<script type="module">
+  import "@a3s-lab/ui/runtime";
+  import "@a3s-lab/ui/device-simulator";
+</script>
+```
+
+The complete runtime package is equivalent to `import "@a3s-lab/ui/all"`.
+
+### Parameters
+
+| Parameter                                 | Values                       | Default                   | Purpose                                                     |
+| ----------------------------------------- | ---------------------------- | ------------------------- | ----------------------------------------------------------- |
+| Preset `data-width`                       | `240`–`4000`                 | —                         | Preset CSS viewport width                                   |
+| Preset `data-height`                      | `180`–`3000`                 | —                         | Preset CSS viewport height                                  |
+| Preset `data-kind`                        | `phone`, `tablet`, `desktop` | Inferred from width       | Controls device-frame radius                                |
+| Preset `data-orientation`                 | `portrait`, `landscape`      | Keeps current orientation | Synchronizes a preset's natural orientation when selected   |
+| Root `data-orientation`                   | `portrait`, `landscape`      | `portrait`                | Current screen orientation                                  |
+| Root `data-fit`                           | `actual` or omitted          | Automatic fit             | Uses a 1:1 scale or shrinks the viewport into the workspace |
+| Root `data-device-title`                  | String                       | iframe title              | Native window title                                         |
+| `--device-simulator-workspace-min-height` | CSS length                   | `31rem`                   | Workspace minimum height                                    |
+| `--device-simulator-workspace-max-height` | CSS length                   | `44rem`                   | Workspace maximum height                                    |
+
+Custom dimensions are clamped to the same range as `a3s-webview`. Changing either custom input selects the option whose value is `custom` and emits a size-change event.
+
+### JavaScript API
+
+The root element exposes these methods after initialization:
+
+| Method                   | Purpose                                                                |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `setDevice(value)`       | Selects a preset and returns `false` when it does not exist            |
+| `setSize(width, height)` | Switches to custom dimensions and clamps the values                    |
+| `setOrientation(value)`  | Sets `portrait` or `landscape`                                         |
+| `navigate(url?)`         | Validates and opens an HTTP, HTTPS, file, or relative URL              |
+| `refreshPreview()`       | Reloads the current iframe URL                                         |
+| `openNativePreview()`    | Emits a native preview request, then copies the command when unhandled |
+
+Dimension changes emit `a3s:device-change`; URL navigation emits `a3s:device-navigate`. Native preview uses the cancelable, bubbling, and composed `a3s:device-preview-request` event. Its `detail` contains `{ executable, args, url, width, height, title, command }`.
+
+A trusted host should call `preventDefault()` to claim the request and use the structured `args` directly. Do not reparse the display-and-copy-only `command` string.
+
+```js
+const simulator = document.querySelector(".device-simulator");
+
+simulator.addEventListener("a3s:device-preview-request", async (event) => {
+  if (!window.trustedPreviewHost) return;
+  event.preventDefault();
+
+  const { executable, args } = event.detail;
+  await window.trustedPreviewHost.launch({ executable, args });
+});
+```
+
+The web controller never executes a local process directly. Without a trusted host, Native preview only copies the equivalent command to the clipboard.
+
+## States and variants
+
+- `data-state="loading"` exposes progress while the iframe navigates.
+- `data-state="ready"` means the dimensions or preview are synchronized.
+- `data-state="error"` reports an invalid URL or copy failure and names the recovery in the status output.
+- Phone, tablet, and desktop kinds change only the frame treatment; the iframe always uses the real CSS-pixel dimensions in the controls.
+- A `file:` URL can be handed to a native host. Browser security policy decides whether an iframe may load a local file.
+
+## Accessibility
+
+Give the root, preset selector, orientation group, URL input, and iframe accessible names. Orientation buttons use `aria-pressed`, and status output uses `aria-live="polite"`. The workspace remains an independent scroll owner, and scaling the visual frame does not reorder keyboard focus inside the iframe. Custom dimension controls must retain numeric `min`, `max`, and clear labels.

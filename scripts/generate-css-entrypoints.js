@@ -1,100 +1,111 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
-const styles = ['a3s', 'vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
-const excludedComponents = new Set(['form']);
+const styles = [
+  "a3s",
+  "vega",
+  "nova",
+  "maia",
+  "lyra",
+  "mira",
+  "luma",
+  "sera",
+  "rhea",
+];
+const excludedComponents = new Set(["form"]);
 
 // Keep cascade stable for components whose selectors intentionally compose.
 const componentOrder = [
-  'accordion',
-  'alert',
-  'activity-bar',
-  'app-shell',
-  'app-page',
-  'agent-composer',
-  'agent-transcript',
-  'agent-workbench',
-  'approval-request',
-  'avatar',
-  'badge',
-  'brand-lockup',
-  'breadcrumb',
-  'button',
-  'button-group',
-  'card',
-  'catalog',
-  'chart',
-  'code-editor',
-  'collapsible',
-  'command',
-  'combobox',
-  'dialog',
-  'drawer',
-  'dropdown-menu',
-  'empty',
-  'execution-item',
-  'field',
-  'checkbox',
-  'input',
-  'item',
-  'log-viewer',
-  'kbd',
-  'label',
-  'native-select',
-  'pagination',
-  'popover',
-  'progress',
-  'property-list',
-  'radio',
-  'range',
-  'resource-card',
-  'ribbon',
-  'select',
-  'settings-layout',
-  'setting-row',
-  'sidebar',
-  'scrollbar',
-  'skeleton',
-  'switch',
-  'split-pane',
-  'status-bar',
-  'status-badge',
-  'stepper',
-  'table',
-  'timeline',
-  'tabs',
-  'tree',
-  'task-pane',
-  'task-start',
-  'task-workspace',
-  'task-plan',
-  'plan-step',
-  'message-status',
-  'message-attachment',
-  'message-citation',
-  'artifact-card',
-  'context-selector',
-  'task-queue',
-  'checkpoint',
-  'follow-up-suggestions',
-  'tool-call',
-  'change-review',
-  'terminal',
-  'execution-evidence',
-  'textarea',
-  'input-group',
-  'toast',
-  'toolbar',
-  'tooltip',
-  'workspace-header',
+  "accordion",
+  "alert",
+  "activity-bar",
+  "app-shell",
+  "app-page",
+  "agent-composer",
+  "agent-transcript",
+  "agent-workbench",
+  "approval-request",
+  "avatar",
+  "badge",
+  "brand-lockup",
+  "breadcrumb",
+  "button",
+  "button-group",
+  "card",
+  "catalog",
+  "chart",
+  "code-editor",
+  "collapsible",
+  "command",
+  "combobox",
+  "dialog",
+  "device-simulator",
+  "drawer",
+  "dropdown-menu",
+  "empty",
+  "execution-item",
+  "field",
+  "checkbox",
+  "input",
+  "item",
+  "log-viewer",
+  "kbd",
+  "label",
+  "native-select",
+  "pagination",
+  "popover",
+  "progress",
+  "property-list",
+  "radio",
+  "range",
+  "resource-card",
+  "ribbon",
+  "select",
+  "settings-layout",
+  "setting-row",
+  "sidebar",
+  "scrollbar",
+  "skeleton",
+  "switch",
+  "split-pane",
+  "status-bar",
+  "status-badge",
+  "stepper",
+  "table",
+  "timeline",
+  "tabs",
+  "tree",
+  "task-pane",
+  "task-start",
+  "task-workspace",
+  "task-plan",
+  "plan-step",
+  "message-status",
+  "message-attachment",
+  "message-citation",
+  "artifact-card",
+  "context-selector",
+  "task-queue",
+  "checkpoint",
+  "follow-up-suggestions",
+  "tool-call",
+  "change-review",
+  "terminal",
+  "execution-evidence",
+  "textarea",
+  "input-group",
+  "toast",
+  "toolbar",
+  "tooltip",
+  "workspace-header",
 ];
 
 async function existingComponentNames(cssDir) {
-  const componentDir = path.join(cssDir, 'components');
+  const componentDir = path.join(cssDir, "components");
   const files = await fs.readdir(componentDir);
   const names = files
-    .filter((file) => file.endsWith('.css'))
-    .map((file) => path.basename(file, '.css'))
+    .filter((file) => file.endsWith(".css"))
+    .map((file) => path.basename(file, ".css"))
     .filter((name) => !excludedComponents.has(name));
   const known = componentOrder.filter((name) => names.includes(name));
   const extra = names.filter((name) => !componentOrder.includes(name)).sort();
@@ -103,29 +114,37 @@ async function existingComponentNames(cssDir) {
 
 function componentImports(names) {
   return [
-    '/* Components */',
+    "/* Components */",
     ...names.map((name) => `@import "./components/${name}.css";`),
-  ].join('\n');
+  ].join("\n");
 }
 
 async function writeIfChanged(filePath, content) {
   let current = null;
   try {
-    current = await fs.readFile(filePath, 'utf8');
+    current = await fs.readFile(filePath, "utf8");
   } catch (error) {
-    if (error.code !== 'ENOENT') throw error;
+    if (error.code !== "ENOENT") throw error;
   }
   if (current !== content) await fs.writeFile(filePath, content);
 }
 
-export async function generateCssEntrypoints({ cssDir = path.resolve('src/css') } = {}) {
+export async function generateCssEntrypoints({
+  cssDir = path.resolve("src/css"),
+} = {}) {
   const components = await existingComponentNames(cssDir);
   const componentsCss = `${componentImports(components)}\n`;
   const baseCss = `@import "./base/base.css";\n@import "./basecoat-components.css";\n`;
 
-  await writeIfChanged(path.join(cssDir, 'basecoat-components.css'), componentsCss);
-  await writeIfChanged(path.join(cssDir, 'basecoat-base.css'), baseCss);
-  await writeIfChanged(path.join(cssDir, 'basecoat-base.cdn.css'), '@import "tailwindcss" source(none);\n@import "./basecoat-base.css";\n');
+  await writeIfChanged(
+    path.join(cssDir, "basecoat-components.css"),
+    componentsCss,
+  );
+  await writeIfChanged(path.join(cssDir, "basecoat-base.css"), baseCss);
+  await writeIfChanged(
+    path.join(cssDir, "basecoat-base.cdn.css"),
+    '@import "tailwindcss" source(none);\n@import "./basecoat-base.css";\n',
+  );
 
   for (const style of styles) {
     await writeIfChanged(
@@ -138,13 +157,34 @@ export async function generateCssEntrypoints({ cssDir = path.resolve('src/css') 
     );
   }
 
-  await writeIfChanged(path.join(cssDir, 'basecoat.css'), '@import "./basecoat-vega.css";\n');
-  await writeIfChanged(path.join(cssDir, 'a3s-ui.css'), '@import "./basecoat-a3s.css";\n');
-  await writeIfChanged(path.join(cssDir, 'a3s-ui.cdn.css'), '@import "tailwindcss" source(none);\n@import "./a3s-ui.css";\n');
-  await writeIfChanged(path.join(cssDir, 'basecoat.all.css'), '@import "./basecoat.css";\n');
-  await writeIfChanged(path.join(cssDir, 'basecoat.cdn.css'), '@import "tailwindcss" source(none);\n@import "./basecoat.css";\n');
-  await writeIfChanged(path.join(cssDir, 'basecoat-compat.css'), '@import "./compat/legacy.css";\n');
-  await writeIfChanged(path.join(cssDir, 'basecoat-compat.cdn.css'), '@import "tailwindcss" source(none);\n@reference "./basecoat.css";\n@import "./basecoat-compat.css";\n');
+  await writeIfChanged(
+    path.join(cssDir, "basecoat.css"),
+    '@import "./basecoat-vega.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "a3s-ui.css"),
+    '@import "./basecoat-a3s.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "a3s-ui.cdn.css"),
+    '@import "tailwindcss" source(none);\n@import "./a3s-ui.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "basecoat.all.css"),
+    '@import "./basecoat.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "basecoat.cdn.css"),
+    '@import "tailwindcss" source(none);\n@import "./basecoat.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "basecoat-compat.css"),
+    '@import "./compat/legacy.css";\n',
+  );
+  await writeIfChanged(
+    path.join(cssDir, "basecoat-compat.cdn.css"),
+    '@import "tailwindcss" source(none);\n@reference "./basecoat.css";\n@import "./basecoat-compat.css";\n',
+  );
 
   return { components, styles };
 }

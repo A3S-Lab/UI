@@ -1,66 +1,70 @@
-import assert from 'node:assert/strict';
-import { execFile, spawn } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { createServer } from 'node:net';
-import os from 'node:os';
-import path from 'node:path';
-import { promisify } from 'node:util';
-import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
-import { components as sourceComponents } from '../src/ai/manifest/index.js';
+import assert from "node:assert/strict";
+import { execFile, spawn } from "node:child_process";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { createServer } from "node:net";
+import os from "node:os";
+import path from "node:path";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
+import { chromium } from "playwright";
+import { components as sourceComponents } from "../src/ai/manifest/index.js";
 
 const execFileAsync = promisify(execFile);
 const projectRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  '..',
+  "..",
 );
 const npmCliPath = process.env.npm_execpath;
-if (!npmCliPath) throw new Error('npm_execpath is required.');
+if (!npmCliPath) throw new Error("npm_execpath is required.");
 
-const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), 'a3s-ui-frameworks-'));
-const packRoot = path.join(fixtureRoot, 'pack');
+const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), "a3s-ui-frameworks-"));
+const packRoot = path.join(fixtureRoot, "pack");
 await mkdir(packRoot, { recursive: true });
 try {
-const { stdout: packOutput } = await execFileAsync(
-  process.execPath,
-  [
-    npmCliPath,
-    'pack',
-    '--ignore-scripts',
-    '--json',
-    '--pack-destination',
-    packRoot,
-  ],
-  {
-    cwd: projectRoot,
-    maxBuffer: 20 * 1024 * 1024,
-  },
-);
-const [{ filename }] = JSON.parse(packOutput);
-const archive = path.join(packRoot, filename);
-await writeFile(
-  path.join(fixtureRoot, 'package.json'),
-  JSON.stringify({ name: 'a3s-ui-framework-fixture', private: true, type: 'module' }),
-);
-await execFileAsync(
-  process.execPath,
-  [
-    npmCliPath,
-    'install',
-    '--ignore-scripts',
-    '--no-package-lock',
-    archive,
-    'react@19.2.8',
-    'react-dom@19.2.8',
-    '@types/react@19.2.17',
-    'vue@3.5.41',
-    'typescript@6.0.3',
-    'vite@7.3.6',
-  ],
-  { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
-);
+  const { stdout: packOutput } = await execFileAsync(
+    process.execPath,
+    [
+      npmCliPath,
+      "pack",
+      "--ignore-scripts",
+      "--json",
+      "--pack-destination",
+      packRoot,
+    ],
+    {
+      cwd: projectRoot,
+      maxBuffer: 20 * 1024 * 1024,
+    },
+  );
+  const [{ filename }] = JSON.parse(packOutput);
+  const archive = path.join(packRoot, filename);
+  await writeFile(
+    path.join(fixtureRoot, "package.json"),
+    JSON.stringify({
+      name: "a3s-ui-framework-fixture",
+      private: true,
+      type: "module",
+    }),
+  );
+  await execFileAsync(
+    process.execPath,
+    [
+      npmCliPath,
+      "install",
+      "--ignore-scripts",
+      "--no-package-lock",
+      archive,
+      "react@19.2.8",
+      "react-dom@19.2.8",
+      "@types/react@19.2.17",
+      "vue@3.5.41",
+      "typescript@6.0.3",
+      "vite@7.3.6",
+    ],
+    { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
+  );
 
-const fixtureScript = `
+  const fixtureScript = `
 import assert from 'node:assert/strict';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -149,7 +153,7 @@ for (const markup of [reactMarkup, vueMarkup]) {
   assert.match(markup, /class="agent-composer"/);
   assert.match(markup, /<button type="submit" class="btn">Send<\\/button>/);
 }
-assert.equal(manifest.components.length, 83);
+assert.equal(manifest.components.length, 84);
 assert.equal(Object.keys(selectors).length, manifest.components.length);
 assert.equal(componentSelector('task-workspace'), selectors['task-workspace'].root);
 assert.equal(readySelector('task-workspace'), selectors['task-workspace'].ready);
@@ -158,17 +162,21 @@ assert.equal(actionSelector('agent-composer', 'fill'), selectors['agent-composer
 assert.equal(stateSelector('task-workspace', 'complete'), selectors['task-workspace'].states.complete);
 console.log(JSON.stringify({ reactMarkup, vueMarkup, components: manifest.components.length }));
 `;
-const fixtureScriptPath = path.join(fixtureRoot, 'verify.mjs');
-await writeFile(fixtureScriptPath, fixtureScript);
-const { stdout } = await execFileAsync(process.execPath, [fixtureScriptPath], {
-  cwd: fixtureRoot,
-});
-const result = JSON.parse(stdout);
-assert.equal(result.components, 83);
-assert.match(result.reactMarkup, /task-workspace/);
-assert.match(result.vueMarkup, /task-workspace/);
+  const fixtureScriptPath = path.join(fixtureRoot, "verify.mjs");
+  await writeFile(fixtureScriptPath, fixtureScript);
+  const { stdout } = await execFileAsync(
+    process.execPath,
+    [fixtureScriptPath],
+    {
+      cwd: fixtureRoot,
+    },
+  );
+  const result = JSON.parse(stdout);
+  assert.equal(result.components, 84);
+  assert.match(result.reactMarkup, /task-workspace/);
+  assert.match(result.vueMarkup, /task-workspace/);
 
-const typeConsumer = `
+  const typeConsumer = `
 import React, { createRef } from 'react';
 import {
   Button,
@@ -197,28 +205,28 @@ void VueTaskWorkspace;
 void actionSelector('agent-composer', 'fill');
 void selectors['task-workspace'].ready;
 `;
-await writeFile(path.join(fixtureRoot, 'consumer.ts'), typeConsumer);
-await writeFile(
-  path.join(fixtureRoot, 'tsconfig.json'),
-  JSON.stringify({
-    compilerOptions: {
-      lib: ['ES2022', 'DOM', 'DOM.Iterable'],
-      module: 'NodeNext',
-      moduleResolution: 'NodeNext',
-      noEmit: true,
-      strict: true,
-      target: 'ES2022',
-    },
-    files: ['consumer.ts'],
-  }),
-);
-await execFileAsync(
-  process.execPath,
-  [path.join(fixtureRoot, 'node_modules', 'typescript', 'bin', 'tsc')],
-  { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
-);
+  await writeFile(path.join(fixtureRoot, "consumer.ts"), typeConsumer);
+  await writeFile(
+    path.join(fixtureRoot, "tsconfig.json"),
+    JSON.stringify({
+      compilerOptions: {
+        lib: ["ES2022", "DOM", "DOM.Iterable"],
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
+        noEmit: true,
+        strict: true,
+        target: "ES2022",
+      },
+      files: ["consumer.ts"],
+    }),
+  );
+  await execFileAsync(
+    process.execPath,
+    [path.join(fixtureRoot, "node_modules", "typescript", "bin", "tsc")],
+    { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
+  );
 
-const clientSource = `
+  const clientSource = `
 import React, { createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
@@ -409,172 +417,214 @@ window.frameworkStatus = () => ({
   },
 });
 `;
-await writeFile(
-  path.join(fixtureRoot, 'index.html'),
-  '<!doctype html><html><body><div id="react-root"></div><div id="vue-root"></div><script type="module" src="/client.mjs"></script></body></html>',
-);
-await writeFile(path.join(fixtureRoot, 'client.mjs'), clientSource);
-const vitePath = path.join(fixtureRoot, 'node_modules', 'vite', 'bin', 'vite.js');
-await execFileAsync(process.execPath, [vitePath, 'build'], {
-  cwd: fixtureRoot,
-  maxBuffer: 20 * 1024 * 1024,
-});
-
-const previewPort = await new Promise((resolve, reject) => {
-  const server = createServer();
-  server.unref();
-  server.once('error', reject);
-  server.listen(0, '127.0.0.1', () => {
-    const address = server.address();
-    if (!address || typeof address === 'string') {
-      server.close();
-      reject(new Error('Unable to allocate framework preview port.'));
-      return;
-    }
-    server.close((error) => (error ? reject(error) : resolve(address.port)));
+  await writeFile(
+    path.join(fixtureRoot, "index.html"),
+    '<!doctype html><html><body><div id="react-root"></div><div id="vue-root"></div><script type="module" src="/client.mjs"></script></body></html>',
+  );
+  await writeFile(path.join(fixtureRoot, "client.mjs"), clientSource);
+  const vitePath = path.join(
+    fixtureRoot,
+    "node_modules",
+    "vite",
+    "bin",
+    "vite.js",
+  );
+  await execFileAsync(process.execPath, [vitePath, "build"], {
+    cwd: fixtureRoot,
+    maxBuffer: 20 * 1024 * 1024,
   });
-});
-const preview = spawn(
-  process.execPath,
-  [vitePath, 'preview', '--host', '127.0.0.1', '--port', String(previewPort), '--strictPort'],
-  { cwd: fixtureRoot, stdio: ['ignore', 'pipe', 'pipe'] },
-);
-let previewOutput = '';
-preview.stdout.on('data', (chunk) => {
-  previewOutput += chunk;
-});
-preview.stderr.on('data', (chunk) => {
-  previewOutput += chunk;
-});
-let browser;
-try {
-  const previewUrl = `http://127.0.0.1:${previewPort}`;
-  const deadline = Date.now() + 30_000;
-  while (true) {
-    if (preview.exitCode !== null) {
-      throw new Error(`Framework preview exited early.\n${previewOutput}`);
+
+  const previewPort = await new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        server.close();
+        reject(new Error("Unable to allocate framework preview port."));
+        return;
+      }
+      server.close((error) => (error ? reject(error) : resolve(address.port)));
+    });
+  });
+  const preview = spawn(
+    process.execPath,
+    [
+      vitePath,
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      String(previewPort),
+      "--strictPort",
+    ],
+    { cwd: fixtureRoot, stdio: ["ignore", "pipe", "pipe"] },
+  );
+  let previewOutput = "";
+  preview.stdout.on("data", (chunk) => {
+    previewOutput += chunk;
+  });
+  preview.stderr.on("data", (chunk) => {
+    previewOutput += chunk;
+  });
+  let browser;
+  try {
+    const previewUrl = `http://127.0.0.1:${previewPort}`;
+    const deadline = Date.now() + 30_000;
+    while (true) {
+      if (preview.exitCode !== null) {
+        throw new Error(`Framework preview exited early.\n${previewOutput}`);
+      }
+      try {
+        const response = await fetch(previewUrl);
+        if (response.ok) break;
+      } catch {
+        // The exact preview child may still be binding its port.
+      }
+      if (Date.now() > deadline) {
+        throw new Error(
+          `Framework preview did not become ready.\n${previewOutput}`,
+        );
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    try {
-      const response = await fetch(previewUrl);
-      if (response.ok) break;
-    } catch {
-      // The exact preview child may still be binding its port.
+
+    browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({
+      viewport: { width: 390, height: 844 },
+    });
+    const diagnostics = [];
+    page.on("console", (message) => {
+      if (["error", "warning"].includes(message.type())) {
+        diagnostics.push(`console.${message.type()}: ${message.text()}`);
+      }
+    });
+    page.on("pageerror", (error) =>
+      diagnostics.push(`pageerror: ${error.message}`),
+    );
+    await page.goto(previewUrl);
+    await page.waitForFunction(() => {
+      const status = window.frameworkStatus?.();
+      return status?.react.readyCalls === 1 && status?.vue.readyCalls === 1;
+    });
+
+    const status = await page.evaluate(() => window.frameworkStatus());
+    assert.deepEqual(status, {
+      react: { readyCalls: 1, refMatches: true },
+      vue: { readyCalls: 1, refMatches: true },
+    });
+    for (const prefix of ["react", "vue"]) {
+      const root = page.locator(`#${prefix}-tabs`);
+      await root.waitFor();
+      assert.equal(await root.getAttribute("data-framework-ready"), prefix);
+      assert.equal(await root.getAttribute("data-tabs-initialized"), "true");
+      assert.match(
+        await root.getAttribute("data-a3s-components"),
+        /(?:^|\\s)tabs(?:\\s|$)/,
+      );
+      const secondTab = root.getByRole("tab", { name: "Two" });
+      await secondTab.click();
+      assert.equal(await secondTab.getAttribute("aria-selected"), "true");
+      assert.equal(
+        await root.locator(`#${prefix}-two-panel`).isVisible(),
+        true,
+      );
+      assert.equal(await root.locator(`#${prefix}-one-panel`).isHidden(), true);
+
+      const shell = page.locator(`#${prefix}-shell`);
+      const navigation = shell.locator(":scope > [data-app-navigation]");
+      const navigationTrigger = shell.locator("[data-app-navigation-trigger]");
+      assert.equal(
+        await shell.getAttribute("data-app-shell-initialized"),
+        "true",
+      );
+      assert.equal(await navigation.getAttribute("inert"), "");
+      assert.equal(await navigation.getAttribute("aria-hidden"), "true");
+      assert.equal(
+        await navigationTrigger.getAttribute("aria-expanded"),
+        "false",
+      );
+      await navigationTrigger.click();
+      assert.equal(await shell.getAttribute("data-mobile-navigation"), "open");
+      assert.equal(await navigation.getAttribute("inert"), null);
+      assert.equal(
+        await navigation.locator("a").evaluate(async (element) => {
+          if (element === document.activeElement) return true;
+          await new Promise(requestAnimationFrame);
+          return element === document.activeElement;
+        }),
+        true,
+      );
+      await page.keyboard.press("Escape");
+      assert.equal(await shell.getAttribute("data-mobile-navigation"), null);
+      assert.equal(
+        await navigationTrigger.evaluate(async (element) => {
+          if (element === document.activeElement) return true;
+          await new Promise(requestAnimationFrame);
+          return element === document.activeElement;
+        }),
+        true,
+      );
+
+      const workspace = page.locator(`#${prefix}-workspace`);
+      const inspector = workspace.locator("[data-task-inspector]");
+      const inspectorTrigger = workspace.locator(
+        "[data-task-inspector-trigger]",
+      );
+      assert.equal(
+        await workspace.getAttribute("data-task-workspace-initialized"),
+        "true",
+      );
+      assert.equal(await inspector.getAttribute("inert"), "");
+      assert.equal(
+        await inspectorTrigger.getAttribute("aria-expanded"),
+        "false",
+      );
+      await inspectorTrigger.click();
+      assert.equal(await workspace.getAttribute("data-inspector"), "open");
+      assert.equal(await inspector.getAttribute("inert"), null);
+      assert.equal(
+        await inspector.getByRole("button").evaluate(async (element) => {
+          if (element === document.activeElement) return true;
+          await new Promise(requestAnimationFrame);
+          return element === document.activeElement;
+        }),
+        true,
+      );
+      await page.keyboard.press("Escape");
+      assert.equal(await workspace.getAttribute("data-inspector"), null);
+      assert.equal(
+        await inspectorTrigger.evaluate(async (element) => {
+          if (element === document.activeElement) return true;
+          await new Promise(requestAnimationFrame);
+          return element === document.activeElement;
+        }),
+        true,
+      );
     }
-    if (Date.now() > deadline) {
-      throw new Error(`Framework preview did not become ready.\n${previewOutput}`);
+    assert.deepEqual(
+      await page.evaluate(() => window.frameworkStatus()),
+      status,
+    );
+    assert.deepEqual(diagnostics, []);
+  } finally {
+    await browser?.close();
+    if (preview.exitCode === null) {
+      preview.kill("SIGTERM");
+      await new Promise((resolve) => preview.once("exit", resolve));
     }
-    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
-  browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  const diagnostics = [];
-  page.on('console', (message) => {
-    if (['error', 'warning'].includes(message.type())) {
-      diagnostics.push(`console.${message.type()}: ${message.text()}`);
-    }
-  });
-  page.on('pageerror', (error) => diagnostics.push(`pageerror: ${error.message}`));
-  await page.goto(previewUrl);
-  await page.waitForFunction(() => {
-    const status = window.frameworkStatus?.();
-    return status?.react.readyCalls === 1 && status?.vue.readyCalls === 1;
-  });
-
-  const status = await page.evaluate(() => window.frameworkStatus());
-  assert.deepEqual(status, {
-    react: { readyCalls: 1, refMatches: true },
-    vue: { readyCalls: 1, refMatches: true },
-  });
-  for (const prefix of ['react', 'vue']) {
-    const root = page.locator(`#${prefix}-tabs`);
-    await root.waitFor();
-    assert.equal(await root.getAttribute('data-framework-ready'), prefix);
-    assert.equal(await root.getAttribute('data-tabs-initialized'), 'true');
-    assert.match(await root.getAttribute('data-a3s-components'), /(?:^|\\s)tabs(?:\\s|$)/);
-    const secondTab = root.getByRole('tab', { name: 'Two' });
-    await secondTab.click();
-    assert.equal(await secondTab.getAttribute('aria-selected'), 'true');
-    assert.equal(await root.locator(`#${prefix}-two-panel`).isVisible(), true);
-    assert.equal(await root.locator(`#${prefix}-one-panel`).isHidden(), true);
-
-    const shell = page.locator(`#${prefix}-shell`);
-    const navigation = shell.locator(':scope > [data-app-navigation]');
-    const navigationTrigger = shell.locator('[data-app-navigation-trigger]');
-    assert.equal(await shell.getAttribute('data-app-shell-initialized'), 'true');
-    assert.equal(await navigation.getAttribute('inert'), '');
-    assert.equal(await navigation.getAttribute('aria-hidden'), 'true');
-    assert.equal(await navigationTrigger.getAttribute('aria-expanded'), 'false');
-    await navigationTrigger.click();
-    assert.equal(await shell.getAttribute('data-mobile-navigation'), 'open');
-    assert.equal(await navigation.getAttribute('inert'), null);
-    assert.equal(
-      await navigation.locator('a').evaluate(async (element) => {
-        if (element === document.activeElement) return true;
-        await new Promise(requestAnimationFrame);
-        return element === document.activeElement;
-      }),
-      true,
-    );
-    await page.keyboard.press('Escape');
-    assert.equal(await shell.getAttribute('data-mobile-navigation'), null);
-    assert.equal(
-      await navigationTrigger.evaluate(async (element) => {
-        if (element === document.activeElement) return true;
-        await new Promise(requestAnimationFrame);
-        return element === document.activeElement;
-      }),
-      true,
-    );
-
-    const workspace = page.locator(`#${prefix}-workspace`);
-    const inspector = workspace.locator('[data-task-inspector]');
-    const inspectorTrigger = workspace.locator('[data-task-inspector-trigger]');
-    assert.equal(
-      await workspace.getAttribute('data-task-workspace-initialized'),
-      'true',
-    );
-    assert.equal(await inspector.getAttribute('inert'), '');
-    assert.equal(await inspectorTrigger.getAttribute('aria-expanded'), 'false');
-    await inspectorTrigger.click();
-    assert.equal(await workspace.getAttribute('data-inspector'), 'open');
-    assert.equal(await inspector.getAttribute('inert'), null);
-    assert.equal(
-      await inspector.getByRole('button').evaluate(async (element) => {
-        if (element === document.activeElement) return true;
-        await new Promise(requestAnimationFrame);
-        return element === document.activeElement;
-      }),
-      true,
-    );
-    await page.keyboard.press('Escape');
-    assert.equal(await workspace.getAttribute('data-inspector'), null);
-    assert.equal(
-      await inspectorTrigger.evaluate(async (element) => {
-        if (element === document.activeElement) return true;
-        await new Promise(requestAnimationFrame);
-        return element === document.activeElement;
-      }),
-      true,
-    );
-  }
-  assert.deepEqual(await page.evaluate(() => window.frameworkStatus()), status);
-  assert.deepEqual(diagnostics, []);
-} finally {
-  await browser?.close();
-  if (preview.exitCode === null) {
-    preview.kill('SIGTERM');
-    await new Promise((resolve) => preview.once('exit', resolve));
-  }
-}
-
-const packageManifest = JSON.parse(
-  await readFile(path.join(projectRoot, 'package.json'), 'utf8'),
-);
-assert.equal(packageManifest.peerDependenciesMeta.react.optional, true);
-assert.equal(packageManifest.peerDependenciesMeta.vue.optional, true);
-assert.equal(sourceComponents.length, 83);
-console.log('Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.');
+  const packageManifest = JSON.parse(
+    await readFile(path.join(projectRoot, "package.json"), "utf8"),
+  );
+  assert.equal(packageManifest.peerDependenciesMeta.react.optional, true);
+  assert.equal(packageManifest.peerDependenciesMeta.vue.optional, true);
+  assert.equal(sourceComponents.length, 84);
+  console.log(
+    "Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.",
+  );
 } finally {
   await rm(fixtureRoot, { force: true, recursive: true });
 }

@@ -30,7 +30,7 @@ import "@a3s-lab/ui/all";
 
 ## 机器可读组件契约
 
-`@a3s-lab/ui/components.json` 与 `@a3s-lab/ui/manifest` 包含全部 83 个公开组件。每项定义都提供根选择器、语义部件、支持的操作、状态、框架根元素和稳定测试选择器。
+`@a3s-lab/ui/components.json` 与 `@a3s-lab/ui/manifest` 包含全部 84 个公开组件。每项定义都提供根选择器、语义部件、支持的操作、状态、框架根元素和稳定测试选择器。
 
 ```js
 import { getComponent, listComponents } from "@a3s-lab/ui/manifest";
@@ -40,7 +40,8 @@ console.log(workspace.selector); // .task-workspace
 console.log(workspace.test.parts.composer);
 console.log(workspace.test.actions.click);
 console.log(workspace.test.states.complete);
-console.log(listComponents("application").length); // 34
+console.log(listComponents("application").length); // 13
+console.log(listComponents("harness").length); // 24
 ```
 
 可选语义运行时会标注匹配的根和部件，并观察相关状态属性，但不接管应用行为。
@@ -62,11 +63,7 @@ const snapshot = a3sAI.snapshot(document);
 在宿主应用中安装 React，然后导入轻量适配器。适配器合并公共根类、转发 ref 与属性、挂载后初始化交互控制器，并在需要其他语义根时支持 `as`。
 
 ```tsx
-import {
-  AgentComposer,
-  Button,
-  TaskWorkspace,
-} from "@a3s-lab/ui/react";
+import { AgentComposer, Button, TaskWorkspace } from "@a3s-lab/ui/react";
 
 export function ReleaseTask() {
   return (
@@ -75,7 +72,9 @@ export function ReleaseTask() {
         <textarea aria-label="指令" />
         <footer>
           <div data-composer-actions>
-            <Button as="button" type="submit">发送</Button>
+            <Button as="button" type="submit">
+              发送
+            </Button>
           </div>
         </footer>
       </AgentComposer>
@@ -92,11 +91,7 @@ export function ReleaseTask() {
 
 ```vue
 <script setup>
-import {
-  AgentComposer,
-  Button,
-  TaskWorkspace,
-} from "@a3s-lab/ui/vue";
+import { AgentComposer, Button, TaskWorkspace } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
@@ -142,7 +137,7 @@ fill "instruction" {
 }
 ```
 
-仓库为每个公开组件指南提供一个确定性场景。场景默认串行运行，避免有状态预览竞争浏览器资源；具备隔离能力的环境可以显式启用有界并行。仓库还会隔离安装真实打包产物，验证全部 83 个 React 与 Vue 导出、SSR 根元素、TypeScript 消费、客户端 ref、只调用一次的就绪回调、语义标注、控制器初始化与真实交互。
+仓库为每个公开组件指南提供一个确定性场景。场景默认串行运行，避免有状态预览竞争浏览器资源；具备隔离能力的环境可以显式启用有界并行。仓库还会隔离安装真实打包产物，验证全部 84 个 React 与 Vue 导出、SSR 根元素、TypeScript 消费、客户端 ref、只调用一次的就绪回调、语义标注、控制器初始化与真实交互。
 
 ## 边界
 

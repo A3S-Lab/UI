@@ -6,10 +6,8 @@ async function openDocumentationPage(page: Page, route: string) {
 }
 
 async function waitForDocumentationHydration(page: Page) {
-  await expect(page.locator(".rp-switch-appearance").first()).toHaveAttribute(
-    "role",
-    "button",
-  );
+  await expect(page.locator("html")).not.toHaveAttribute("data-a3s-defer-init");
+  await expect(page.locator(".rp-nav")).toBeVisible();
 }
 
 async function waitForSettledBrowserFrames(page: Page) {
@@ -753,40 +751,34 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   const menuButton = page.locator(".rp-sidebar-menu__left");
   const outlineButton = page.locator(".rp-sidebar-menu__right");
   const mobileSearch = page.locator(".rp-search-button--mobile");
-  const navigationButton = page.locator(".rp-nav-hamburger:visible");
+  const navigation = page.locator(".docs-mobile-navigation");
+  const navigationButton = navigation.locator(":scope > summary");
+  const navigationPanel = navigation.locator(".docs-mobile-navigation__panel");
 
   await expect(navigationButton).toHaveAccessibleName("Open navigation");
+  await expect(navigationButton).toHaveAttribute("role", "button");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
-  await expect(navigationButton).toHaveAttribute(
-    "aria-controls",
-    "rspress-primary-navigation",
-  );
+  const navigationPanelId =
+    await navigationButton.getAttribute("aria-controls");
+  expect(navigationPanelId).toBeTruthy();
+  await expect(navigationPanel).toHaveAttribute("id", navigationPanelId!);
+  await expect(navigationPanel).toHaveAttribute("aria-hidden", "true");
   const navigationButtonBox = await navigationButton.boundingBox();
   expect(navigationButtonBox).not.toBeNull();
   expect(navigationButtonBox!.width).toBeGreaterThanOrEqual(44);
   expect(navigationButtonBox!.height).toBeGreaterThanOrEqual(44);
 
   await navigationButton.click();
-  const navigationPanel = page.locator(".rp-nav-screen");
+  await expect(navigation).toHaveAttribute("open", "");
   await expect(navigationPanel).toBeVisible();
-  await expect(navigationPanel).toHaveAttribute(
-    "id",
-    "rspress-primary-navigation",
-  );
-  await expect(navigationPanel).not.toHaveAttribute("inert", "");
-  await expect(navigationPanel).not.toHaveAttribute("aria-hidden", "true");
+  await expect(navigationPanel).toHaveAttribute("aria-hidden", "false");
   await expect(navigationButton).toHaveAccessibleName("Close navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "true");
-  await expect
-    .poll(() =>
-      page.evaluate(() =>
-        Boolean(document.activeElement?.closest(".rp-nav-screen")),
-      ),
-    )
-    .toBe(true);
 
   await page.keyboard.press("Escape");
-  await expect(navigationPanel).toHaveCount(0);
+  await expect(navigation).not.toHaveAttribute("open", "");
+  await expect(navigationPanel).not.toBeVisible();
+  await expect(navigationPanel).toHaveAttribute("aria-hidden", "true");
   await expect(navigationButton).toHaveAccessibleName("Open navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
   await expect(navigationButton).toBeFocused();
@@ -849,10 +841,10 @@ test("component navigation exposes semantic collapsible groups", async ({
 
   await page.locator(".rp-sidebar-menu__left").click();
   const groups = page.locator('.rp-sidebar-group[data-depth="1"]');
-  await expect(groups).toHaveCount(8);
+  await expect(groups).toHaveCount(11);
 
-  const actions = groups.filter({ hasText: /^Actions$/ });
-  const forms = groups.filter({ hasText: /^Forms$/ });
+  const actions = groups.filter({ hasText: /^Input and actions$/ });
+  const forms = groups.filter({ hasText: /^Selection and search$/ });
   const navigation = groups.filter({ hasText: /^Navigation$/ });
   await expect(actions).toHaveAttribute("role", "button");
   await expect(actions).toHaveAttribute("tabindex", "0");

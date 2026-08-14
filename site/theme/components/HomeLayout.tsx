@@ -19,14 +19,24 @@ type ComponentFamily = {
 
 const componentFamilies: ComponentFamily[] = [
   {
-    category: { zh: "输入与选择", en: "Input and selection" },
-    count: "13",
+    category: { zh: "基础交互", en: "Core interaction" },
+    count: "07",
     description: {
-      zh: "字段、选择器、开关、滑块，以及可访问的表单组合。",
-      en: "Fields, selects, switches, sliders, and accessible form composition.",
+      zh: "按钮、字段、输入与文本编辑，覆盖高频创建动作。",
+      en: "Buttons, fields, inputs, and text editing for frequent creation tasks.",
     },
     href: "/components/field",
-    title: { zh: "表单", en: "Forms" },
+    title: { zh: "输入与操作", en: "Input and actions" },
+  },
+  {
+    category: { zh: "选择控制", en: "Choice controls" },
+    count: "07",
+    description: {
+      zh: "选择器、组合框、开关与滑块，保持状态清楚可达。",
+      en: "Selects, comboboxes, switches, and sliders with legible state.",
+    },
+    href: "/components/combobox",
+    title: { zh: "选择与搜索", en: "Selection and search" },
   },
   {
     category: { zh: "定位与导航", en: "Orientation and wayfinding" },
@@ -37,6 +47,16 @@ const componentFamilies: ComponentFamily[] = [
     },
     href: "/components/activity-bar",
     title: { zh: "导航", en: "Navigation" },
+  },
+  {
+    category: { zh: "应用结构", en: "Application structure" },
+    count: "13",
+    description: {
+      zh: "外壳、标题栏、工具栏、窗格与资源布局。",
+      en: "Shells, headers, toolbars, panes, and resource layout.",
+    },
+    href: "/components/app-shell",
+    title: { zh: "布局与工作区", en: "Layout and workspace" },
   },
   {
     category: { zh: "分层交互", en: "Layered interaction" },
@@ -56,28 +76,47 @@ const componentFamilies: ComponentFamily[] = [
       en: "Alerts, status badges, progress, skeletons, spinners, and toast feedback.",
     },
     href: "/components/alert",
-    title: { zh: "反馈", en: "Feedback" },
+    title: { zh: "反馈与状态", en: "Feedback and status" },
   },
   {
     category: { zh: "结构化内容", en: "Structured content" },
-    count: "12",
+    count: "11",
     description: {
-      zh: "卡片、属性列表、步骤条、时间线、日志、表格与结构化信息展示。",
-      en: "Cards, property lists, steppers, timelines, logs, tables, and structured disclosure.",
+      zh: "卡片、属性列表、步骤条、时间线、表格与结构化信息。",
+      en: "Cards, property lists, steppers, timelines, tables, and structured information.",
     },
     href: "/components/card",
-    title: { zh: "数据展示", en: "Data display" },
+    title: { zh: "数据与内容", en: "Data and content" },
   },
   {
-    category: { zh: "应用组合", en: "Application composition" },
-    count: "34",
+    category: { zh: "Agent 工作流", en: "Agent workflows" },
+    count: "24",
     description: {
-      zh: "任务画布、计划、执行证据、审阅、应用外壳与资源目录。",
-      en: "Task canvases, plans, execution evidence, reviews, app shells, and catalogs.",
+      zh: "任务、对话、执行、审阅、证据与开发预览工具。",
+      en: "Tasks, conversation, execution, review, evidence, and preview tooling.",
     },
-    href: "/components/app-shell",
-    title: { zh: "应用模式", en: "Application patterns" },
+    href: "/harness/",
+    title: { zh: "Harness", en: "Harness" },
   },
+  {
+    category: { zh: "系统工具", en: "System utilities" },
+    count: "02",
+    description: {
+      zh: "滚动区域与主题控制，补齐跨页面基础能力。",
+      en: "Scroll regions and theme control shared across product surfaces.",
+    },
+    href: "/components/scroll-area",
+    title: { zh: "工具", en: "Utilities" },
+  },
+];
+
+const legacyComponentFamilies: ComponentFamily[] = [
+  componentFamilies[0],
+  componentFamilies[2],
+  componentFamilies[4],
+  componentFamilies[5],
+  { ...componentFamilies[6], count: "12" },
+  { ...componentFamilies[3], count: "12" },
 ];
 
 const resourceKinds = [
@@ -121,12 +160,12 @@ const homeCopy = {
     specimenMeta: "可交互 A3S OFFICE 工作台",
     semanticHtml: "语义化 HTML",
     nativeBehavior: "浏览器原生行为",
-    applicationPatterns: "应用级组合",
+    applicationPatterns: "Harness 工作流",
     bidirectionalLayout: "响应式 + RTL",
     serverTemplates: "服务端模板",
     catalogTitle: "从一个控件，到整个工作台。",
     catalogBody:
-      "每篇指南提供可运行样例、最小标记和完整状态契约；应用模式展示这些组件如何组成真实工作区。",
+      "通用组件按界面职责分组；Harness 集中任务、对话、执行、审阅和开发预览组件。每篇指南都提供可运行样例与完整状态契约。",
     guides: "个契约",
     browseCatalog: "查看全部组件契约",
     foundationsTitle: "一套语义契约，多种视觉基础。",
@@ -149,7 +188,7 @@ const homeCopy = {
     principlesTitle: "三条不能妥协的产品原则。",
     ctaTitle: "从一个真实界面开始。",
     ctaBody:
-      "安装 @a3s-lab/ui，选择视觉基础，然后从 App Shell 或任一组件契约复制可运行标记。",
+      "安装 @a3s-lab/ui，选择视觉基础，然后从 App Shell、Harness 或任一组件契约复制可运行标记。",
     installation: "查看安装方式",
     explore: "浏览组件契约",
     workspace: "工作区 / 最近使用",
@@ -183,12 +222,12 @@ const homeCopy = {
     specimenMeta: "INTERACTIVE A3S OFFICE WORKBENCH",
     semanticHtml: "Semantic HTML",
     nativeBehavior: "Browser-native behavior",
-    applicationPatterns: "Application composition",
+    applicationPatterns: "Harness workflows",
     bidirectionalLayout: "Responsive + RTL",
     serverTemplates: "Server templates",
     catalogTitle: "From one control to a complete workspace.",
     catalogBody:
-      "Every guide pairs a live specimen with minimal markup and a complete state contract. Application patterns show how those pieces become real workspaces.",
+      "General components are grouped by interface responsibility. Harness brings task, conversation, execution, review, and preview tools together. Every guide includes a live specimen and complete state contract.",
     guides: "CONTRACTS",
     browseCatalog: "View all component contracts",
     foundationsTitle: "One semantic contract. Multiple visual foundations.",
@@ -211,7 +250,7 @@ const homeCopy = {
     principlesTitle: "Three non-negotiables.",
     ctaTitle: "Start with a real interface.",
     ctaBody:
-      "Install @a3s-lab/ui, choose a visual foundation, then copy working markup from App Shell or any component contract.",
+      "Install @a3s-lab/ui, choose a visual foundation, then copy working markup from App Shell, Harness, or any component contract.",
     installation: "View installation",
     explore: "Browse component contracts",
     workspace: "WORKSPACE / RECENT",
@@ -644,14 +683,10 @@ export function HomeLayout() {
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const isCurrentContract = !version || version === defaultVersion;
-  const componentCount = isCurrentContract ? "83" : "64";
+  const componentCount = isCurrentContract ? "84" : "64";
   const homepageFamilies = isCurrentContract
     ? componentFamilies
-    : componentFamilies.map((family) =>
-        family.href === "/components/app-shell"
-          ? { ...family, count: "12" }
-          : family,
-      );
+    : legacyComponentFamilies;
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
   );

@@ -2,6 +2,15 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 declare global {
   interface Window {
+    __devicePreviewDetail?: {
+      args: string[];
+      command: string;
+      executable: string;
+      height: number;
+      title: string;
+      url: string;
+      width: number;
+    } | null;
     __previewCopiedSource?: string;
   }
 }
@@ -467,29 +476,34 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const htmlPreview = page
     .locator(".a3s-preview[data-preview-component=button]")
     .first();
-  const previewTab = htmlPreview.getByRole("tab", { name: "Preview" });
-  const codeTab = htmlPreview.getByRole("tab", { name: "Code" });
+  const sourceDetails = htmlPreview.locator(
+    "details[data-preview-source-panel]",
+  );
+  const sourceSummary = sourceDetails.getByText("View source", {
+    exact: true,
+  });
   await expect(htmlPreview).toHaveAttribute("data-preview-source", "ready");
-  await expect(previewTab).toHaveAttribute("aria-selected", "true");
-  await codeTab.click();
-  await expect(codeTab).toHaveAttribute("aria-selected", "true");
-  await expect(
-    htmlPreview.getByRole("tabpanel", { name: "Code" }),
-  ).toContainText('<button type="button" data-variant="outline" class="btn"');
+  await expect(sourceDetails).not.toHaveAttribute("open", "");
+  await sourceSummary.click();
+  await expect(sourceDetails).toHaveAttribute("open", "");
+  await expect(sourceDetails).toContainText('<button type="button"');
+  await expect(sourceDetails).toContainText('class="btn"');
+  await expect(sourceDetails).toContainText('data-variant="outline"');
   await expect(htmlPreview.locator("[data-reactroot]")).toHaveCount(0);
+  await expect
+    .poll(() => sourceDetails.locator(".line span[style]").count())
+    .toBeGreaterThan(0);
 
-  const copyButton = htmlPreview.locator("[data-preview-copy]");
+  const copyButton = sourceDetails.locator(".rp-code-copy-button");
   await expect(copyButton).toHaveAccessibleName("Copy code");
   await copyButton.click();
-  await expect(copyButton).toHaveAccessibleName("Copied");
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toContain('class="btn"');
 
-  await codeTab.focus();
-  await page.keyboard.press("ArrowLeft");
-  await expect(previewTab).toBeFocused();
-  await expect(previewTab).toHaveAttribute("aria-selected", "true");
+  await sourceDetails.locator("summary").focus();
+  await page.keyboard.press("Space");
+  await expect(sourceDetails).not.toHaveAttribute("open", "");
   await expect(
     htmlPreview.getByRole("button", { name: "Button", exact: true }),
   ).toBeVisible();
@@ -500,8 +514,10 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
       '.a3s-preview[data-preview-component=slider]:has([data-slider-demo="standalone"])',
     )
     .first();
-  await reactPreview.getByRole("tab", { name: "Code" }).click();
-  const reactSource = reactPreview.getByRole("tabpanel", { name: "Code" });
+  const reactSource = reactPreview.locator(
+    "details[data-preview-source-panel]",
+  );
+  await reactSource.locator("summary").click();
   await expect(reactSource).toContainText('type="range"');
   await expect(reactSource).not.toContainText("SliderDemo");
   await expect(reactSource).not.toContainText("data-range-initialized");
@@ -511,8 +527,162 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const chinesePreview = page
     .locator(".a3s-preview[data-preview-component=button]")
     .first();
-  await expect(chinesePreview.getByRole("tab", { name: "预览" })).toBeVisible();
-  await expect(chinesePreview.getByRole("tab", { name: "代码" })).toBeVisible();
+  await expect(
+    chinesePreview.locator("details[data-preview-source-panel] > summary"),
+  ).toContainText("查看源码");
+});
+
+test("Device Simulator keeps real viewport dimensions and a structured native boundary", async ({
+  page,
+}, testInfo) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        readText: async () => window.__previewCopiedSource ?? "",
+        writeText: async (value: string) => {
+          window.__previewCopiedSource = value;
+        },
+      },
+    });
+  });
+  await openComponent(page, "device-simulator");
+
+  const simulator = page.locator(".device-simulator").first();
+  const preset = simulator.locator("[data-device-simulator-select]");
+  const width = simulator.locator("[data-device-simulator-width]");
+  const height = simulator.locator("[data-device-simulator-height]");
+  const preview = simulator.locator("[data-device-simulator-preview]");
+  const status = simulator.locator("[data-device-simulator-status]");
+  await expect(simulator).toHaveAttribute(
+    "data-device-simulator-initialized",
+    "true",
+  );
+  await expect(width).toHaveValue("393");
+  await expect(height).toHaveValue("852");
+  await expect
+    .poll(() =>
+      preview.evaluate((element) => ({
+        height: (element as HTMLIFrameElement).clientHeight,
+        width: (element as HTMLIFrameElement).clientWidth,
+      })),
+    )
+    .toEqual({ height: 852, width: 393 });
+
+  await preset.selectOption("laptop");
+  await expect(simulator).toHaveAttribute("data-device-kind", "desktop");
+  await expect(simulator).toHaveAttribute("data-orientation", "landscape");
+  await expect(width).toHaveValue("1440");
+  await expect(height).toHaveValue("900");
+
+  await simulator
+    .locator('[data-device-simulator-orientation-value="portrait"]')
+    .click();
+  await expect(width).toHaveValue("900");
+  await expect(height).toHaveValue("1440");
+
+  await width.fill("500");
+  await width.evaluate((element) =>
+    element.dispatchEvent(new Event("change", { bubbles: true })),
+  );
+  await height.fill("700");
+  await height.evaluate((element) =>
+    element.dispatchEvent(new Event("change", { bubbles: true })),
+  );
+  await expect(preset).toHaveValue("custom");
+  await expect(simulator).toHaveAttribute("data-width", "500");
+  await expect(simulator).toHaveAttribute("data-height", "700");
+
+  const url = simulator.locator("[data-device-simulator-url]");
+  await url.fill("javascript:alert(1)");
+  await simulator.getByRole("button", { name: "Open", exact: true }).click();
+  await expect(simulator).toHaveAttribute("data-state", "error");
+  await expect(status).toContainText("HTTP, HTTPS, file, or relative URL");
+
+  await url.fill("../../device-preview.html?lang=en");
+  await simulator.getByRole("button", { name: "Open", exact: true }).click();
+  await expect(simulator).toHaveAttribute("data-state", "ready");
+  await expect(status).toContainText("500 × 700");
+
+  await page.evaluate(() => {
+    const root = document.querySelector(".device-simulator");
+    window.__devicePreviewDetail = null;
+    root?.addEventListener(
+      "a3s:device-preview-request",
+      (event) => {
+        event.preventDefault();
+        window.__devicePreviewDetail = (event as CustomEvent).detail;
+      },
+      { once: true },
+    );
+  });
+  await simulator.getByRole("button", { name: "Native preview" }).click();
+  await expect
+    .poll(() => page.evaluate(() => window.__devicePreviewDetail))
+    .not.toBeNull();
+  const capturedDetail = await page.evaluate(
+    () => window.__devicePreviewDetail,
+  );
+  if (!capturedDetail)
+    throw new Error("Native preview detail was not captured.");
+  expect(capturedDetail).toMatchObject({
+    executable: "a3s-webview",
+    height: 700,
+    title: "A3S responsive preview",
+    width: 500,
+  });
+  expect(capturedDetail.args).toEqual([
+    "--url",
+    capturedDetail.url,
+    "--width",
+    "500",
+    "--height",
+    "700",
+    "--title",
+    "A3S responsive preview",
+  ]);
+  await expect(status).toHaveText("Native preview requested.");
+
+  await simulator.getByRole("button", { name: "Native preview" }).click();
+  await expect
+    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+    .toContain("a3s-webview");
+  await expect(status).toHaveText("Native preview command copied.");
+
+  const refreshContract = await simulator.evaluate((element) => {
+    const root = element as HTMLElement & {
+      refresh?: () => void;
+      refreshPreview?: () => void;
+    };
+    const before = root.querySelector<HTMLIFrameElement>(
+      "[data-device-simulator-preview]",
+    )?.src;
+    const runtime = (
+      window as unknown as {
+        a3sUI?: { refresh: (target: Element) => void };
+      }
+    ).a3sUI;
+    runtime?.refresh(root);
+    const after = root.querySelector<HTMLIFrameElement>(
+      "[data-device-simulator-preview]",
+    )?.src;
+    return {
+      hasLegacyRefresh: typeof root.refresh === "function",
+      hasPreviewRefresh: typeof root.refreshPreview === "function",
+      preservedUrl: before === after,
+    };
+  });
+  expect(refreshContract).toEqual({
+    hasLegacyRefresh: false,
+    hasPreviewRefresh: true,
+    preservedUrl: true,
+  });
+
+  await preset.selectOption("pixel-8");
+  await testInfo.attach("device-simulator-phone", {
+    body: await simulator.screenshot(),
+    contentType: "image/png",
+  });
 });
 
 test("Button Group preserves joined edges while hovering and nesting", async ({

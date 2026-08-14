@@ -1,0 +1,23 @@
+# Harness
+
+Harness groups the components needed to build Coding Agent workflows. It separates task input, conversation, execution, permission, review, evidence, and preview tools from general application layout so teams can choose components by user task instead of page appearance.
+
+Harness currently contains 24 public components. Every guide keeps its stable `/components/*` route, so existing links and package imports remain compatible.
+
+## Task and conversation
+
+[Task Start](/components/task-start) · [Task Workspace](/components/task-workspace) · [Agent Composer](/components/agent-composer) · [Agent Transcript](/components/agent-transcript) · [Agent Workbench](/components/agent-workbench) · [Context Selector](/components/context-selector) · [Message Status](/components/message-status) · [Message Attachment](/components/message-attachment) · [Message Citation](/components/message-citation) · [Follow-up Suggestions](/components/follow-up-suggestions)
+
+This group captures goals and context, presents a continuous conversation, and keeps task boundaries legible across streaming, queued, offline, and complete states.
+
+## Execution and review
+
+[Task Plan](/components/task-plan) · [Plan Step](/components/plan-step) · [Task Queue](/components/task-queue) · [Approval Request](/components/approval-request) · [Execution Item](/components/execution-item) · [Checkpoint](/components/checkpoint) · [Tool Call](/components/tool-call) · [Change Review](/components/change-review) · [Execution Evidence](/components/execution-evidence) · [Artifact Card](/components/artifact-card)
+
+This group keeps plans, execution progress, permission boundaries, recoverable state, and final evidence visible. Critical actions must retain an explicit source, scope, and result rather than relying on color alone.
+
+## Tooling
+
+[Code Editor](/components/code-editor) · [Terminal](/components/terminal) · [Log Viewer](/components/log-viewer) · [Device Simulator](/components/device-simulator)
+
+Tooling components inspect and operate on real work results. Browser capabilities stay inside their sandbox boundary; operations that need local process access are handed to a trusted host through structured events.

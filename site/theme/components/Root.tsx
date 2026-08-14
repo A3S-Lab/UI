@@ -1,29 +1,29 @@
 import { useContext, useEffect, type ReactNode } from "react";
-import {
-  ThemeContext,
-  removeBase,
-  useLang,
-  useLocation,
-  usePages,
-  useSite,
-  useVersion,
-  withBase,
-} from "@rspress/core/runtime";
-import {
-  findPageByRoutePath,
-  resolveVersionRoutePath,
-} from "../../version-routing";
+import { ThemeContext, useLocation, withBase } from "@rspress/core/runtime";
 
 type RootProps = {
   children: ReactNode;
 };
 
+function ensureScript(
+  selector: string,
+  source: string,
+  attributes: Record<string, string>,
+) {
+  const existing = document.querySelector<HTMLScriptElement>(selector);
+  if (existing) return existing;
+
+  const script = document.createElement("script");
+  script.src = source;
+  Object.entries(attributes).forEach(([name, value]) => {
+    script.setAttribute(name, value);
+  });
+  document.head.append(script);
+  return script;
+}
+
 export function Root({ children }: RootProps) {
   const location = useLocation();
-  const currentLang = useLang();
-  const currentVersion = useVersion();
-  const { pages } = usePages();
-  const { site } = useSite();
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -31,39 +31,35 @@ export function Root({ children }: RootProps) {
       window.a3sUI?.start();
       window.a3sUI?.initAll();
       document.documentElement.removeAttribute("data-a3s-defer-init");
-      const existingAiScript = document.querySelector<HTMLScriptElement>(
+
+      ensureScript(
         "script[data-a3s-ui-ai-runtime]",
+        withBase("/assets/a3s-ui.ai.js"),
+        { "data-a3s-ui-ai-runtime": "true", type: "module" },
       );
-      if (existingAiScript) return;
-      const aiScript = document.createElement("script");
-      aiScript.type = "module";
-      aiScript.src = withBase("/assets/a3s-ui.ai.js");
-      aiScript.dataset.a3sUiAiRuntime = "true";
-      document.head.append(aiScript);
     };
-    const existingScript = document.querySelector<HTMLScriptElement>(
+
+    const runtimeScript = ensureScript(
       "script[data-a3s-ui-runtime]",
+      withBase("/assets/a3s-ui.min.js"),
+      { "data-a3s-ui-runtime": "true" },
     );
 
-    if (existingScript) {
-      if (window.a3sUI) initializeRuntime();
-      else
-        existingScript.addEventListener("load", initializeRuntime, {
-          once: true,
-        });
-      return () =>
-        existingScript.removeEventListener("load", initializeRuntime);
-    }
+    if (window.a3sUI) initializeRuntime();
+    else
+      runtimeScript.addEventListener("load", initializeRuntime, { once: true });
 
-    const script = document.createElement("script");
-    script.src = withBase("/assets/a3s-ui.min.js");
-    script.async = true;
-    script.dataset.a3sUiRuntime = "true";
-    script.addEventListener("load", initializeRuntime, { once: true });
-    document.head.append(script);
-
-    return () => script.removeEventListener("load", initializeRuntime);
+    return () => runtimeScript.removeEventListener("load", initializeRuntime);
   }, []);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      window.a3sUI?.start();
+      window.a3sUI?.initAll();
+      window.a3sAI?.scan(document);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [location.pathname]);
 
   useEffect(() => {
     try {
@@ -80,8 +76,6 @@ export function Root({ children }: RootProps) {
   useEffect(() => {
     const sidebarQuery = window.matchMedia("(max-width: 768px)");
     const outlineQuery = window.matchMedia("(max-width: 1279px)");
-    const navigationPanelId = "rspress-primary-navigation";
-    let wasNavigationOpen = false;
     const focusableSelector = [
       "a[href]",
       "button:not([disabled])",
@@ -91,22 +85,6 @@ export function Root({ children }: RootProps) {
       "summary",
       '[tabindex]:not([tabindex="-1"])',
     ].join(", ");
-
-    const isVisible = (element: HTMLElement) => {
-      const styles = getComputedStyle(element);
-      const bounds = element.getBoundingClientRect();
-      return (
-        styles.display !== "none" &&
-        styles.visibility !== "hidden" &&
-        bounds.width > 0 &&
-        bounds.height > 0
-      );
-    };
-
-    const visibleNavigationTrigger = () =>
-      Array.from(
-        document.querySelectorAll<HTMLElement>(".rp-nav-hamburger"),
-      ).find(isVisible) ?? null;
 
     const synchronizePanel = (
       panel: HTMLElement | null,
@@ -160,69 +138,10 @@ export function Root({ children }: RootProps) {
         });
     };
 
-    const synchronizeNavigation = (isChinese: boolean) => {
-      const navigationPanel =
-        document.querySelector<HTMLElement>(".rp-nav-screen");
-      const isOpen = Boolean(
-        navigationPanel?.classList.contains("rp-nav-screen--open") ||
-        document.querySelector(
-          ".rp-nav-hamburger__sm.rp-nav-hamburger--active",
-        ),
-      );
-      const navigationTrigger = visibleNavigationTrigger();
-
-      document
-        .querySelectorAll<HTMLElement>(".rp-nav-hamburger")
-        .forEach((trigger) => {
-          trigger.setAttribute("aria-controls", navigationPanelId);
-          trigger.setAttribute("aria-expanded", String(isOpen));
-          trigger.setAttribute(
-            "aria-label",
-            isOpen
-              ? isChinese
-                ? "关闭主导航"
-                : "Close navigation"
-              : isChinese
-                ? "打开主导航"
-                : "Open navigation",
-          );
-        });
-
-      if (navigationPanel) {
-        navigationPanel.id = navigationPanelId;
-        navigationPanel.inert = !isOpen;
-        if (isOpen) navigationPanel.removeAttribute("aria-hidden");
-        else navigationPanel.setAttribute("aria-hidden", "true");
-      }
-
-      if (
-        isOpen &&
-        !wasNavigationOpen &&
-        navigationPanel &&
-        navigationTrigger === document.activeElement
-      ) {
-        requestAnimationFrame(() => {
-          navigationPanel
-            .querySelector<HTMLElement>(focusableSelector)
-            ?.focus();
-        });
-      } else if (
-        !isOpen &&
-        wasNavigationOpen &&
-        (!document.activeElement?.isConnected ||
-          document.activeElement === document.body)
-      ) {
-        requestAnimationFrame(() => navigationTrigger?.focus());
-      }
-
-      wasNavigationOpen = isOpen;
-    };
-
-    const syncDocumentationControls = () => {
+    const synchronizeDocumentationControls = () => {
       const isDark = document.documentElement.classList.contains("dark");
       const isChinese = document.documentElement.lang.startsWith("zh");
 
-      synchronizeNavigation(isChinese);
       synchronizeSidebarGroups();
 
       document
@@ -257,12 +176,9 @@ export function Root({ children }: RootProps) {
       const sidebar = document.querySelector<HTMLElement>(
         ".rp-doc-layout__sidebar",
       );
-      const sidebarTrigger = document.querySelector<HTMLElement>(
-        ".rp-sidebar-menu__left",
-      );
       synchronizePanel(
         sidebar,
-        sidebarTrigger,
+        document.querySelector<HTMLElement>(".rp-sidebar-menu__left"),
         sidebarQuery.matches &&
           !sidebar?.classList.contains("rp-doc-layout__sidebar--open"),
         "rspress-documentation-sidebar",
@@ -271,12 +187,9 @@ export function Root({ children }: RootProps) {
       const outline = document.querySelector<HTMLElement>(
         ".rp-doc-layout__outline",
       );
-      const outlineTrigger = document.querySelector<HTMLElement>(
-        ".rp-sidebar-menu__right",
-      );
       synchronizePanel(
         outline,
-        outlineTrigger,
+        document.querySelector<HTMLElement>(".rp-sidebar-menu__right"),
         outlineQuery.matches &&
           !outline?.classList.contains("rp-doc-layout__outline--open"),
         "rspress-documentation-outline",
@@ -311,24 +224,12 @@ export function Root({ children }: RootProps) {
       }
 
       if (event.key === "Escape") {
-        const openNavigation = document.querySelector<HTMLElement>(
-          ".rp-nav-screen--open",
+        const openOutline = document.querySelector<HTMLElement>(
+          ".rp-doc-layout__outline--open",
         );
         const openSidebar = document.querySelector<HTMLElement>(
           ".rp-doc-layout__sidebar--open",
         );
-        const openOutline = document.querySelector<HTMLElement>(
-          ".rp-doc-layout__outline--open",
-        );
-
-        if (openNavigation) {
-          event.preventDefault();
-          event.stopPropagation();
-          const navigationTrigger = visibleNavigationTrigger();
-          navigationTrigger?.click();
-          requestAnimationFrame(() => navigationTrigger?.focus());
-          return;
-        }
 
         if (openOutline) {
           event.preventDefault();
@@ -352,15 +253,11 @@ export function Root({ children }: RootProps) {
       if (
         event.key !== "Enter" ||
         event.isComposing ||
-        event.defaultPrevented
+        event.defaultPrevented ||
+        event.target.closest(".rp-search-panel")
       ) {
         return;
       }
-
-      // Rspress 2.0.19 listens for Enter on document even when search is
-      // closed. Let interactive controls handle Enter normally, then stop the
-      // event before that inactive search listener can read an empty result.
-      if (event.target.closest(".rp-search-panel")) return;
 
       const interactive = event.target.closest(
         [
@@ -376,106 +273,46 @@ export function Root({ children }: RootProps) {
           '[role="tab"]',
         ].join(", "),
       );
-
       if (interactive) event.stopPropagation();
     };
 
-    syncDocumentationControls();
-    const themeObserver = new MutationObserver(syncDocumentationControls);
-    themeObserver.observe(document.documentElement, {
+    synchronizeDocumentationControls();
+    const observer = new MutationObserver(synchronizeDocumentationControls);
+    observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class", "lang"],
     });
-    const modalContainer = document.querySelector("#__rspress_modal_container");
-    if (modalContainer) {
-      themeObserver.observe(modalContainer, {
+    [
+      document.querySelector("#__rspress_modal_container"),
+      document.querySelector(".rp-nav"),
+      document.querySelector(".rp-doc-layout__container"),
+    ].forEach((target) => {
+      if (!target) return;
+      observer.observe(target, {
         attributes: true,
         attributeFilter: ["class", "style"],
         childList: true,
         subtree: true,
       });
-    }
-    const navigation = document.querySelector(".rp-nav");
-    if (navigation) {
-      themeObserver.observe(navigation, {
-        attributes: true,
-        attributeFilter: ["class", "style"],
-        childList: true,
-        subtree: true,
-      });
-    }
-    const documentationLayout = document.querySelector(
-      ".rp-doc-layout__container",
-    );
-    if (documentationLayout) {
-      themeObserver.observe(documentationLayout, {
-        attributes: true,
-        attributeFilter: ["class", "style"],
-        childList: true,
-        subtree: true,
-      });
-    }
+    });
 
-    sidebarQuery.addEventListener("change", syncDocumentationControls);
-    outlineQuery.addEventListener("change", syncDocumentationControls);
-
+    sidebarQuery.addEventListener("change", synchronizeDocumentationControls);
+    outlineQuery.addEventListener("change", synchronizeDocumentationControls);
     document.body.addEventListener("keydown", handleDocumentationKeyboard);
+
     return () => {
-      themeObserver.disconnect();
-      sidebarQuery.removeEventListener("change", syncDocumentationControls);
-      outlineQuery.removeEventListener("change", syncDocumentationControls);
+      observer.disconnect();
+      sidebarQuery.removeEventListener(
+        "change",
+        synchronizeDocumentationControls,
+      );
+      outlineQuery.removeEventListener(
+        "change",
+        synchronizeDocumentationControls,
+      );
       document.body.removeEventListener("keydown", handleDocumentationKeyboard);
     };
   }, [location.pathname]);
-
-  useEffect(() => {
-    // Rspress maps every version item to the current path even when the target
-    // version does not publish that page. Keep exact matches and fall back to
-    // the target version's localized homepage for version-exclusive content.
-    const currentHref = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    const currentPage = findPageByRoutePath(
-      pages,
-      removeBase(window.location.pathname),
-    );
-    if (!currentPage) return;
-
-    const versions = new Set(site.multiVersion.versions || []);
-    const candidates = document.querySelectorAll<HTMLAnchorElement>(
-      [
-        ".rp-hover-group__item a[aria-label]",
-        ".rp-nav-screen-versions-group__item",
-      ].join(", "),
-    );
-
-    candidates.forEach((link) => {
-      const label = link.getAttribute("aria-label") ?? link.textContent?.trim();
-      if (!label || !versions.has(label)) return;
-
-      if (label === currentVersion) {
-        link.href = currentHref;
-        link.setAttribute("aria-current", "page");
-        return;
-      }
-
-      link.href = withBase(
-        resolveVersionRoutePath(pages, currentPage, label, {
-          defaultLang: site.lang || "",
-          defaultVersion: site.multiVersion.default || "",
-        }),
-      );
-      link.removeAttribute("aria-current");
-    });
-  }, [
-    currentLang,
-    currentVersion,
-    location.pathname,
-    location.search,
-    location.hash,
-    pages,
-    site.lang,
-    site.multiVersion.default,
-    site.multiVersion.versions,
-  ]);
 
   return <>{children}</>;
 }

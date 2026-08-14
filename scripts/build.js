@@ -1,23 +1,23 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { generateCssEntrypoints } from './generate-css-entrypoints.js';
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+import { exec } from "child_process";
+import { promisify } from "util";
+import { generateCssEntrypoints } from "./generate-css-entrypoints.js";
 
 const execPromise = promisify(exec);
 
 // Resolve project root, assuming this script is in <project_root>/scripts/
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '..');
+const projectRoot = path.resolve(__dirname, "..");
 
 // Ensures a directory exists. If it doesn't, it's created recursively.
 async function ensureDir(dirPath) {
   try {
     await fs.access(dirPath);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       await fs.mkdir(dirPath, { recursive: true });
     } else {
       throw error;
@@ -40,7 +40,7 @@ async function cleanDir(directory) {
     }
     console.log(`Cleaned directory: ${directory}`);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       console.log(`Directory not found, no need to clean: ${directory}`);
     } else {
       console.error(`Error cleaning directory ${directory}:`, error);
@@ -66,100 +66,174 @@ async function copyDirRecursive(src, dest) {
 
 // Main build function to prepare the package for publishing.
 async function build() {
-  console.log('Starting build process...');
+  console.log("Starting build process...");
   await generateCssEntrypoints();
-  await execPromise(`node ${path.join(projectRoot, 'scripts', 'generate-ai-assets.mjs')}`);
+  await execPromise(
+    `node ${path.join(projectRoot, "scripts", "generate-ai-assets.mjs")}`,
+  );
 
   // Define all necessary paths
-  const cssDistDir = path.join(projectRoot, 'dist');
-  const cssTemplatesDir = path.join(projectRoot, 'templates');
+  const cssDistDir = path.join(projectRoot, "dist");
+  const cssTemplatesDir = path.join(projectRoot, "templates");
 
-  const srcDir = path.join(projectRoot, 'src');
-  const srcCssDir = path.join(srcDir, 'css');
-  const srcCssStylesDir = path.join(srcCssDir, 'styles');
-  const srcCssCompatDir = path.join(srcCssDir, 'compat');
-  const srcJsDir = path.join(srcDir, 'js');
-  const srcNunjucksDir = path.join(srcDir, 'templates', 'nunjucks');
-  const srcJinjaDir = path.join(srcDir, 'templates', 'jinja');
-  const generatedAiDir = path.join(projectRoot, 'generated', 'ai');
+  const srcDir = path.join(projectRoot, "src");
+  const srcCssDir = path.join(srcDir, "css");
+  const srcCssStylesDir = path.join(srcCssDir, "styles");
+  const srcCssCompatDir = path.join(srcCssDir, "compat");
+  const srcJsDir = path.join(srcDir, "js");
+  const srcNunjucksDir = path.join(srcDir, "templates", "nunjucks");
+  const srcJinjaDir = path.join(srcDir, "templates", "jinja");
+  const generatedAiDir = path.join(projectRoot, "generated", "ai");
 
   // Clean previous build artifacts
-  console.log('Cleaning distribution directories...');
+  console.log("Cleaning distribution directories...");
   await cleanDir(cssDistDir);
   await cleanDir(cssTemplatesDir);
 
   // JS files minification and copy
   const jsFiles = await fs.readdir(srcJsDir);
-  const cssJsDistDir = path.join(cssDistDir, 'js');
+  const cssJsDistDir = path.join(cssDistDir, "js");
   await ensureDir(cssJsDistDir);
-  console.log('Copying and minifying JS files...');
+  console.log("Copying and minifying JS files...");
 
   for (const jsFile of jsFiles) {
-    if (path.extname(jsFile) === '.js') {
+    if (path.extname(jsFile) === ".js") {
       const srcFile = path.join(srcJsDir, jsFile);
-      const baseName = path.basename(jsFile, '.js');
+      const baseName = path.basename(jsFile, ".js");
       const minifiedFileName = `${baseName}.min.js`;
 
       // Copy original file to destination
       await fs.copyFile(srcFile, path.join(cssJsDistDir, jsFile));
 
       // Create minified file
-      await execPromise(`npx terser ${srcFile} -o ${path.join(cssJsDistDir, minifiedFileName)} --compress --mangle`);
+      await execPromise(
+        `npx terser ${srcFile} -o ${path.join(cssJsDistDir, minifiedFileName)} --compress --mangle`,
+      );
     }
   }
 
   // Publish the lifecycle registry under an A3S-owned runtime name while
   // retaining the legacy entrypoint for existing consumers.
-  await fs.copyFile(path.join(cssJsDistDir, 'basecoat.js'), path.join(cssJsDistDir, 'runtime.js'));
-  await fs.copyFile(path.join(cssJsDistDir, 'basecoat.min.js'), path.join(cssJsDistDir, 'runtime.min.js'));
+  await fs.copyFile(
+    path.join(cssJsDistDir, "basecoat.js"),
+    path.join(cssJsDistDir, "runtime.js"),
+  );
+  await fs.copyFile(
+    path.join(cssJsDistDir, "basecoat.min.js"),
+    path.join(cssJsDistDir, "runtime.min.js"),
+  );
 
   // Create combined component files
-  console.log('Creating combined component files...');
-  const componentsToCombine = ['basecoat.js', 'accordion.js', 'app-shell.js', 'code-editor.js', 'command.js', 'combobox.js', 'drawer.js', 'dropdown-menu.js', 'popover.js', 'range.js', 'select.js', 'sidebar.js', 'split-pane.js', 'tabs.js', 'task-workspace.js', 'tree.js', 'toast.js'];
-  const componentPaths = componentsToCombine.map(f => path.join(srcJsDir, f));
+  console.log("Creating combined component files...");
+  const componentsToCombine = [
+    "basecoat.js",
+    "accordion.js",
+    "app-shell.js",
+    "code-editor.js",
+    "command.js",
+    "combobox.js",
+    "device-simulator.js",
+    "drawer.js",
+    "dropdown-menu.js",
+    "popover.js",
+    "range.js",
+    "select.js",
+    "sidebar.js",
+    "split-pane.js",
+    "tabs.js",
+    "task-workspace.js",
+    "tree.js",
+    "toast.js",
+  ];
+  const componentPaths = componentsToCombine.map((f) => path.join(srcJsDir, f));
 
   // Create non-minified bundle
-  let combinedContent = '';
+  let combinedContent = "";
   for (const p of componentPaths) {
-    combinedContent += await fs.readFile(p, 'utf-8') + '\n';
+    combinedContent += (await fs.readFile(p, "utf-8")) + "\n";
   }
-  const allJsPath = path.join(cssJsDistDir, 'all.js');
+  const allJsPath = path.join(cssJsDistDir, "all.js");
   await fs.writeFile(allJsPath, combinedContent);
-  
+
   // Create minified bundle
-  const allMinJsPath = path.join(cssJsDistDir, 'all.min.js');
-  await execPromise(`npx terser ${componentPaths.join(' ')} -o ${allMinJsPath} --compress --mangle`);
+  const allMinJsPath = path.join(cssJsDistDir, "all.min.js");
+  await execPromise(
+    `npx terser ${componentPaths.join(" ")} -o ${allMinJsPath} --compress --mangle`,
+  );
 
   console.log(`Copied and minified JS to ${cssJsDistDir}`);
 
   // Build CSS package
-  console.log('Building CSS package...');
+  console.log("Building CSS package...");
   await ensureDir(cssDistDir);
-  const styles = ['a3s', 'vega', 'nova', 'maia', 'lyra', 'mira', 'luma', 'sera', 'rhea'];
-  await fs.copyFile(path.join(srcCssDir, 'a3s-ui.css'), path.join(cssDistDir, 'a3s-ui.css'));
-  await fs.copyFile(path.join(srcCssDir, 'a3s-ui.cdn.css'), path.join(cssDistDir, 'a3s-ui.cdn.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat.css'), path.join(cssDistDir, 'basecoat.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat.all.css'), path.join(cssDistDir, 'basecoat.all.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat-base.css'), path.join(cssDistDir, 'basecoat-base.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat-base.cdn.css'), path.join(cssDistDir, 'basecoat-base.cdn.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat-compat.css'), path.join(cssDistDir, 'basecoat-compat.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat-compat.cdn.css'), path.join(cssDistDir, 'basecoat-compat.cdn.css'));
-  await fs.copyFile(path.join(srcCssDir, 'basecoat-components.css'), path.join(cssDistDir, 'basecoat-components.css'));
+  const styles = [
+    "a3s",
+    "vega",
+    "nova",
+    "maia",
+    "lyra",
+    "mira",
+    "luma",
+    "sera",
+    "rhea",
+  ];
+  await fs.copyFile(
+    path.join(srcCssDir, "a3s-ui.css"),
+    path.join(cssDistDir, "a3s-ui.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "a3s-ui.cdn.css"),
+    path.join(cssDistDir, "a3s-ui.cdn.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat.css"),
+    path.join(cssDistDir, "basecoat.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat.all.css"),
+    path.join(cssDistDir, "basecoat.all.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat-base.css"),
+    path.join(cssDistDir, "basecoat-base.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat-base.cdn.css"),
+    path.join(cssDistDir, "basecoat-base.cdn.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat-compat.css"),
+    path.join(cssDistDir, "basecoat-compat.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat-compat.cdn.css"),
+    path.join(cssDistDir, "basecoat-compat.cdn.css"),
+  );
+  await fs.copyFile(
+    path.join(srcCssDir, "basecoat-components.css"),
+    path.join(cssDistDir, "basecoat-components.css"),
+  );
   for (const style of styles) {
-    await fs.copyFile(path.join(srcCssDir, `basecoat-${style}.css`), path.join(cssDistDir, `basecoat-${style}.css`));
-    await fs.copyFile(path.join(srcCssDir, `basecoat-${style}.cdn.css`), path.join(cssDistDir, `basecoat-${style}.cdn.css`));
+    await fs.copyFile(
+      path.join(srcCssDir, `basecoat-${style}.css`),
+      path.join(cssDistDir, `basecoat-${style}.css`),
+    );
+    await fs.copyFile(
+      path.join(srcCssDir, `basecoat-${style}.cdn.css`),
+      path.join(cssDistDir, `basecoat-${style}.cdn.css`),
+    );
   }
   console.log(`Copied basecoat CSS entrypoints to ${cssDistDir}`);
 
   // Copy split CSS folders used by basecoat.css imports.
-  const cssBaseSrcDir = path.join(srcCssDir, 'base');
-  const cssComponentsSrcDir = path.join(srcCssDir, 'components');
-  const cssBaseDistDir = path.join(cssDistDir, 'base');
-  const cssComponentsDistDir = path.join(cssDistDir, 'components');
-  const aiDistDir = path.join(cssDistDir, 'ai');
-  const frameworksDistDir = path.join(cssDistDir, 'frameworks');
-  const cssStylesDistDir = path.join(cssDistDir, 'styles');
-  const cssCompatDistDir = path.join(cssDistDir, 'compat');
+  const cssBaseSrcDir = path.join(srcCssDir, "base");
+  const cssComponentsSrcDir = path.join(srcCssDir, "components");
+  const cssBaseDistDir = path.join(cssDistDir, "base");
+  const cssComponentsDistDir = path.join(cssDistDir, "components");
+  const aiDistDir = path.join(cssDistDir, "ai");
+  const frameworksDistDir = path.join(cssDistDir, "frameworks");
+  const cssStylesDistDir = path.join(cssDistDir, "styles");
+  const cssCompatDistDir = path.join(cssDistDir, "compat");
   await copyDirRecursive(cssBaseSrcDir, cssBaseDistDir);
   await copyDirRecursive(cssComponentsSrcDir, cssComponentsDistDir);
   await copyDirRecursive(srcCssStylesDir, cssStylesDistDir);
@@ -173,37 +247,50 @@ async function build() {
     }
   }
   await copyDirRecursive(
-    path.join(generatedAiDir, 'a3s-test'),
-    path.join(aiDistDir, 'a3s-test'),
+    path.join(generatedAiDir, "a3s-test"),
+    path.join(aiDistDir, "a3s-test"),
   );
   await copyDirRecursive(
-    path.join(generatedAiDir, 'frameworks'),
+    path.join(generatedAiDir, "frameworks"),
     frameworksDistDir,
   );
   console.log(`Copied split CSS folders to ${cssDistDir}`);
 
-  await copyDirRecursive(srcNunjucksDir, path.join(cssTemplatesDir, 'nunjucks'));
-  await copyDirRecursive(srcJinjaDir, path.join(cssTemplatesDir, 'jinja'));
+  await copyDirRecursive(
+    srcNunjucksDir,
+    path.join(cssTemplatesDir, "nunjucks"),
+  );
+  await copyDirRecursive(srcJinjaDir, path.join(cssTemplatesDir, "jinja"));
   console.log(`Copied template assets to ${cssTemplatesDir}`);
 
   // Create Tailwind CSS builds for the CSS package.
-  const cdnEntries = ['a3s-ui.cdn.css', 'basecoat.cdn.css', 'basecoat-base.cdn.css', 'basecoat-compat.cdn.css', ...styles.map((style) => `basecoat-${style}.cdn.css`)];
+  const cdnEntries = [
+    "a3s-ui.cdn.css",
+    "basecoat.cdn.css",
+    "basecoat-base.cdn.css",
+    "basecoat-compat.cdn.css",
+    ...styles.map((style) => `basecoat-${style}.cdn.css`),
+  ];
   for (const entry of cdnEntries) {
     const cdnCssSrc = path.join(srcCssDir, entry);
-    const baseName = path.basename(entry, '.css');
+    const baseName = path.basename(entry, ".css");
     const cssDistCdnPath = path.join(cssDistDir, `${baseName}.css`);
     const cssDistCdnMinPath = path.join(cssDistDir, `${baseName}.min.css`);
 
-    await execPromise(`npx tailwindcss -i "${cdnCssSrc}" -o "${cssDistCdnPath}"`);
+    await execPromise(
+      `npx tailwindcss -i "${cdnCssSrc}" -o "${cssDistCdnPath}"`,
+    );
     console.log(`Generated non-minified CSS: ${cssDistCdnPath}`);
-    await execPromise(`npx tailwindcss -i "${cdnCssSrc}" -o "${cssDistCdnMinPath}" --minify`);
+    await execPromise(
+      `npx tailwindcss -i "${cdnCssSrc}" -o "${cssDistCdnMinPath}" --minify`,
+    );
     console.log(`Generated minified CSS: ${cssDistCdnMinPath}`);
   }
 
-  console.log('Build process finished successfully!');
+  console.log("Build process finished successfully!");
 }
 
-build().catch(error => {
-  console.error('Build failed:', error);
+build().catch((error) => {
+  console.error("Build failed:", error);
   process.exit(1);
 });

@@ -19,6 +19,7 @@ pnpm add @a3s-lab/ui@0.3.0
 ```bash title="bun"
 bun add @a3s-lab/ui@0.3.0
 ```
+
 </CodeGroup>
 
   </Step>
@@ -70,16 +71,16 @@ import "@a3s-lab/ui/task-workspace";
 
 ## CSS imports
 
-| Import | Contents |
-| --- | --- |
-| `@a3s-lab/ui` | Default complete A3S bundle |
-| `@a3s-lab/ui/a3s` | Complete A3S bundle, explicit name |
-| `@a3s-lab/ui/{style}` | Complete `vega`, `nova`, `maia`, `lyra`, `mira`, `luma`, `sera`, or `rhea` bundle |
-| `@a3s-lab/ui/base` | Tokens, semantic utilities, and component structure without visual style |
-| `@a3s-lab/ui/components` | All component structure without base or visual style |
-| `@a3s-lab/ui/components/button.css` | One component's structure |
-| `@a3s-lab/ui/styles/a3s.css` | A3S visuals and foundations; combine with `base` |
-| `@a3s-lab/ui/compat` | Optional legacy compatibility aliases |
+| Import                              | Contents                                                                          |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| `@a3s-lab/ui`                       | Default complete A3S bundle                                                       |
+| `@a3s-lab/ui/a3s`                   | Complete A3S bundle, explicit name                                                |
+| `@a3s-lab/ui/{style}`               | Complete `vega`, `nova`, `maia`, `lyra`, `mira`, `luma`, `sera`, or `rhea` bundle |
+| `@a3s-lab/ui/base`                  | Tokens, semantic utilities, and component structure without visual style          |
+| `@a3s-lab/ui/components`            | All component structure without base or visual style                              |
+| `@a3s-lab/ui/components/button.css` | One component's structure                                                         |
+| `@a3s-lab/ui/styles/a3s.css`        | A3S visuals and foundations; combine with `base`                                  |
+| `@a3s-lab/ui/compat`                | Optional legacy compatibility aliases                                             |
 
 ### Split imports
 
@@ -95,25 +96,27 @@ Use split imports when application CSS already owns its dependency graph.
 
 ## JavaScript imports
 
-| Import | Controller |
-| --- | --- |
-| `@a3s-lab/ui/all` | Runtime and all auto-initialized controllers except Chart |
-| `@a3s-lab/ui/runtime` | Shared lifecycle and registry |
-| `@a3s-lab/ui/accordion` | Accordion enhancement |
-| `@a3s-lab/ui/app-shell` | Desktop navigation and contained compact drawer |
-| `@a3s-lab/ui/combobox` | Combobox |
-| `@a3s-lab/ui/command` | Command palette |
-| `@a3s-lab/ui/drawer` | Drawer |
-| `@a3s-lab/ui/dropdown-menu` | Dropdown Menu |
-| `@a3s-lab/ui/popover` | Popover |
-| `@a3s-lab/ui/range` | Range input visual state |
-| `@a3s-lab/ui/select` | Select |
-| `@a3s-lab/ui/sidebar` | Sidebar |
-| `@a3s-lab/ui/split-pane` | Resizable Split Pane |
-| `@a3s-lab/ui/tabs` | Tabs and Ribbon navigation |
-| `@a3s-lab/ui/task-workspace` | Responsive task inspector and focus return |
-| `@a3s-lab/ui/toast` | Toast |
-| `@a3s-lab/ui/chart` | Chart helper; Chart.js remains separate |
+| Import                         | Controller                                                |
+| ------------------------------ | --------------------------------------------------------- |
+| `@a3s-lab/ui/all`              | Runtime and all auto-initialized controllers except Chart |
+| `@a3s-lab/ui/runtime`          | Shared lifecycle and registry                             |
+| `@a3s-lab/ui/accordion`        | Accordion enhancement                                     |
+| `@a3s-lab/ui/app-shell`        | Desktop navigation and contained compact drawer           |
+| `@a3s-lab/ui/code-editor`      | Native Code Editor fallback                               |
+| `@a3s-lab/ui/combobox`         | Combobox                                                  |
+| `@a3s-lab/ui/command`          | Command palette                                           |
+| `@a3s-lab/ui/device-simulator` | Responsive iframe and native device-preview bridge        |
+| `@a3s-lab/ui/drawer`           | Drawer                                                    |
+| `@a3s-lab/ui/dropdown-menu`    | Dropdown Menu                                             |
+| `@a3s-lab/ui/popover`          | Popover                                                   |
+| `@a3s-lab/ui/range`            | Range input visual state                                  |
+| `@a3s-lab/ui/select`           | Select                                                    |
+| `@a3s-lab/ui/sidebar`          | Sidebar                                                   |
+| `@a3s-lab/ui/split-pane`       | Resizable Split Pane                                      |
+| `@a3s-lab/ui/tabs`             | Tabs and Ribbon navigation                                |
+| `@a3s-lab/ui/task-workspace`   | Responsive task inspector and focus return                |
+| `@a3s-lab/ui/toast`            | Toast                                                     |
+| `@a3s-lab/ui/chart`            | Chart helper; Chart.js remains separate                   |
 
 The public runtime namespace is `window.a3sUI`. It initializes registered components on page load and observes newly inserted DOM.
 
@@ -135,6 +138,7 @@ cp -R node_modules/@a3s-lab/ui/templates/nunjucks ./templates/a3s-ui
 ```bash title="Jinja"
 cp -R node_modules/@a3s-lab/ui/templates/jinja ./templates/a3s-ui
 ```
+
 </CodeGroup>
 
 See [Templates](/templates) for macro parameters.
@@ -148,7 +152,7 @@ import { a3sAI } from "@a3s-lab/ui/ai";
 import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
 
 a3sAI.scan(document);
-console.log(manifest.components.length); // 83
+console.log(manifest.components.length); // 84
 ```
 
 React and Vue are optional peer dependencies. Install only the framework used by the host application, then import components from `@a3s-lab/ui/react` or `@a3s-lab/ui/vue`.
