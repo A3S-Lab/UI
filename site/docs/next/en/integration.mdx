@@ -30,7 +30,7 @@ import "@a3s-lab/ui/all";
 
 ## Machine-readable component contract
 
-`@a3s-lab/ui/components.json` and `@a3s-lab/ui/manifest` expose all 84 public components. Each definition includes its root selector, semantic parts, supported actions, states, framework root element, and stable test selectors.
+`@a3s-lab/ui/components.json` and `@a3s-lab/ui/manifest` expose all 89 public components. Each definition includes its root selector, semantic parts, supported actions, states, framework root element, and stable test selectors.
 
 ```js
 import { getComponent, listComponents } from "@a3s-lab/ui/manifest";
@@ -41,7 +41,7 @@ console.log(workspace.test.parts.composer);
 console.log(workspace.test.actions.click);
 console.log(workspace.test.states.complete);
 console.log(listComponents("application").length); // 13
-console.log(listComponents("harness").length); // 24
+console.log(listComponents("harness").length); // 25
 ```
 
 The optional semantic runtime annotates matching roots and parts. It observes relevant state attributes without owning application behavior.
@@ -137,7 +137,7 @@ fill "instruction" {
 }
 ```
 
-The repository validates every public component guide with one deterministic scenario. Scenarios run serially by default so stateful previews do not compete for browser resources; isolated environments may opt into bounded parallelism. The repository also installs the packed package in isolation and verifies all 84 React and Vue exports, SSR roots, TypeScript consumption, client refs, one-time readiness callbacks, semantic annotations, controller initialization, and a real interaction.
+The repository validates every public component guide with one deterministic scenario. Scenarios run serially by default so stateful previews do not compete for browser resources; isolated environments may opt into bounded parallelism. The repository also installs the packed package in isolation and verifies all 89 React and Vue exports, SSR roots, TypeScript consumption, client refs, one-time readiness callbacks, semantic annotations, controller initialization, and a real interaction.
 
 ## Boundaries
 

@@ -1,0 +1,50 @@
+# File Explorer
+
+File Explorer combines workspace identity, file search, hierarchical navigation, file state, and contextual actions in one bounded tool. Filesystem reads, writes, authorization, and source control remain the trusted host's responsibility.
+
+<Preview class="w-full max-w-xl">
+  <section class="file-explorer" data-state="ready" aria-labelledby="file-explorer-title-en" style="height: 27rem">
+    <header><div data-file-explorer-identity><h2 id="file-explorer-title-en">Project files</h2><small>release-dashboard</small></div><div data-file-explorer-actions><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="New file"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="M9 15h6"></path></svg></button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="Refresh files"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"></path></svg></button></div></header>
+    <div data-file-explorer-toolbar><div class="input-group"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" data-file-explorer-search aria-label="Filter files" placeholder="Filter files" /></div><button type="button" class="btn" data-size="sm" data-variant="ghost">Collapse all</button></div>
+    <div data-file-explorer-state hidden>Loading workspace files…</div>
+    <div class="context-menu" data-context-surface><div data-context-trigger data-file-explorer-viewport><div class="tree" role="tree" aria-label="Project file tree"><div role="treeitem" aria-expanded="true" aria-selected="false" data-value="src"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>src</span><span data-tree-meta>3</span></div><div role="group"><div role="treeitem" aria-expanded="true" aria-selected="false" data-value="src/components"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>components</span></div><div role="group"><div role="treeitem" aria-selected="true" data-value="src/components/App.tsx"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>App.tsx</span><span data-file-dirty aria-label="Unsaved"></span><span data-file-status="modified" aria-label="Modified">M</span></div></div><div role="treeitem" aria-selected="false" data-value="src/components/Status.tsx"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>Status.tsx</span><span data-file-status="added" aria-label="Added">A</span></div></div></div></div><div role="treeitem" aria-selected="false" data-value="src/main.ts"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>main.ts</span></div></div></div></div><div role="treeitem" aria-expanded="false" aria-selected="false" data-value="tests"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>tests</span><span data-tree-meta>2</span></div><div role="group"><div role="treeitem" aria-selected="false" data-value="tests/app.spec.ts"><div data-tree-row><span data-tree-label>app.spec.ts</span></div></div></div></div><div role="treeitem" aria-selected="false" data-value="package.json"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>package.json</span></div></div></div></div><div data-context-content role="menu" aria-label="File actions" aria-hidden="true"><button type="button" role="menuitem" data-value="open">Open</button><button type="button" role="menuitem" data-value="rename">Rename</button><button type="button" role="menuitem" data-value="new-file">New file</button><button type="button" role="menuitem" data-value="copy-path">Copy relative path</button><hr role="separator" /><button type="button" role="menuitem" data-value="delete" data-variant="destructive">Delete</button></div></div>
+    <footer><span data-file-explorer-summary>5 files · 2 changes</span><span>main</span></footer>
+  </section>
+</Preview>
+
+## Usage
+
+File Explorer reuses Tree for focus, selection, disclosure, and typeahead. Context Menu supplies contextual commands.
+
+```html
+<section class="file-explorer" aria-labelledby="files-title">
+  <header><div data-file-explorer-identity><h2 id="files-title">Project files</h2></div></header>
+  <div data-file-explorer-toolbar><input class="input" type="search" data-file-explorer-search aria-label="Filter files" /></div>
+  <div data-file-explorer-viewport>
+    <div class="tree" role="tree" aria-label="Project file tree">...</div>
+  </div>
+  <footer><span data-file-explorer-summary>5 files</span></footer>
+</section>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `data-file-explorer-identity` | Workspace or directory name and optional path |
+| `data-file-explorer-toolbar` | Search, refresh, create, and collapse commands |
+| `data-file-explorer-viewport` | The file tree's only scroll owner |
+| `data-file-status` | `added`, `modified`, `deleted`, or `conflict`, with an accessible name |
+| `data-file-dirty` | Unsaved marker; it does not replace text status or leave confirmation |
+| `data-file-editor` | Inline input for rename or create state |
+| `data-file-explorer-state` | Loading, empty, error, or permission feedback |
+
+## States and variants
+
+Read-only mode preserves selection, copy path, and open actions while removing write commands instead of disabling everything. Rename uses `data-file-editor` in the current row: Enter submits, Escape cancels, and the host validates duplicates, invalid characters, and permission.
+
+Source status may appear as a short trailing file marker. Commit, stage, branch creation, and remote synchronization are separate workflows composed from Toolbar, Tree, Alert, and Dialog; they do not belong in File Explorer's base public contract.
+
+## Accessibility
+
+Follow Tree's roving tabindex and arrow-key contract. Filtering must not silently remove the focused node: announce the count, then retain focus in search. Show async loading or error state inside the affected branch. A trusted host performs every file write.

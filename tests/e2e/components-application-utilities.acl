@@ -614,4 +614,24 @@ suite "a3s-ui-application-and-utilities" {
         expect "dark-applied" { visible = css("html.dark.rp-dark") }
         screenshot "theme-switcher" { path = "components/theme-switcher.png" }
     }
+
+    scenario "file-explorer" {
+        name = "File Explorer composes tree selection with contextual file actions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-explorer.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "explorer-ready" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer[data-state=ready]") }
+        expect "tree-ready" { visible = css(".a3s-preview[data-preview-component=file-explorer] .tree[data-tree-initialized=true]") }
+        click "select-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'] > [data-tree-row]") }
+        expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]") }
+        focus "focus-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']") }
+        press "open-file-menu" { key = "Shift+F10" }
+        expect "file-menu-open" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-context-content][aria-hidden=false]") }
+        press "close-file-menu" { key = "Escape" }
+        expect "file-focus-restored" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']:focus") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-explorer-visible" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer") }
+    }
 }

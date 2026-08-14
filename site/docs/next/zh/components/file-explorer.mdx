@@ -1,0 +1,50 @@
+# 文件资源管理器
+
+文件资源管理器把工作区身份、文件搜索、层级导航、文件状态和上下文操作组合成一个有边界的工具。文件系统读取、写入、权限和源码管理仍由可信宿主负责。
+
+<Preview class="w-full max-w-xl">
+  <section class="file-explorer" data-state="ready" aria-labelledby="file-explorer-title-zh" style="height: 27rem">
+    <header><div data-file-explorer-identity><h2 id="file-explorer-title-zh">项目文件</h2><small>release-dashboard</small></div><div data-file-explorer-actions><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="新建文件"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="M9 15h6"></path></svg></button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" aria-label="刷新文件"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5"></path><path d="M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"></path></svg></button></div></header>
+    <div data-file-explorer-toolbar><div class="input-group"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" data-file-explorer-search aria-label="筛选文件" placeholder="筛选文件" /></div><button type="button" class="btn" data-size="sm" data-variant="ghost">全部折叠</button></div>
+    <div data-file-explorer-state hidden>正在加载工作区文件…</div>
+    <div class="context-menu" data-context-surface><div data-context-trigger data-file-explorer-viewport><div class="tree" role="tree" aria-label="项目文件树"><div role="treeitem" aria-expanded="true" aria-selected="false" data-value="src"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>src</span><span data-tree-meta>3</span></div><div role="group"><div role="treeitem" aria-expanded="true" aria-selected="false" data-value="src/components"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>components</span></div><div role="group"><div role="treeitem" aria-selected="true" data-value="src/components/App.tsx"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>App.tsx</span><span data-file-dirty aria-label="未保存"></span><span data-file-status="modified" aria-label="已修改">M</span></div></div><div role="treeitem" aria-selected="false" data-value="src/components/Status.tsx"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>Status.tsx</span><span data-file-status="added" aria-label="已新增">A</span></div></div></div></div><div role="treeitem" aria-selected="false" data-value="src/main.ts"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>main.ts</span></div></div></div></div><div role="treeitem" aria-expanded="false" aria-selected="false" data-value="tests"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"></path></svg><span data-tree-label>tests</span><span data-tree-meta>2</span></div><div role="group"><div role="treeitem" aria-selected="false" data-value="tests/app.spec.ts"><div data-tree-row><span data-tree-label>app.spec.ts</span></div></div></div></div><div role="treeitem" aria-selected="false" data-value="package.json"><div data-tree-row><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span data-tree-label>package.json</span></div></div></div></div><div data-context-content role="menu" aria-label="文件操作" aria-hidden="true"><button type="button" role="menuitem" data-value="open">打开</button><button type="button" role="menuitem" data-value="rename">重命名</button><button type="button" role="menuitem" data-value="new-file">新建文件</button><button type="button" role="menuitem" data-value="copy-path">复制相对路径</button><hr role="separator" /><button type="button" role="menuitem" data-value="delete" data-variant="destructive">删除</button></div></div>
+    <footer><span data-file-explorer-summary>5 个文件 · 2 项变更</span><span>main</span></footer>
+  </section>
+</Preview>
+
+## 用法
+
+文件资源管理器复用 Tree 的焦点、选择、展开和字符定位行为；上下文命令由 Context Menu 提供。
+
+```html
+<section class="file-explorer" aria-labelledby="files-title">
+  <header><div data-file-explorer-identity><h2 id="files-title">项目文件</h2></div></header>
+  <div data-file-explorer-toolbar><input class="input" type="search" data-file-explorer-search aria-label="筛选文件" /></div>
+  <div data-file-explorer-viewport>
+    <div class="tree" role="tree" aria-label="项目文件树">...</div>
+  </div>
+  <footer><span data-file-explorer-summary>5 个文件</span></footer>
+</section>
+```
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `data-file-explorer-identity` | 工作区或目录名称与可选路径 |
+| `data-file-explorer-toolbar` | 搜索、刷新、新建和折叠命令 |
+| `data-file-explorer-viewport` | 唯一的文件树滚动区域 |
+| `data-file-status` | `added`、`modified`、`deleted` 或 `conflict`，同时提供可访问名称 |
+| `data-file-dirty` | 未保存标记；不能替代文本状态或离开页面确认 |
+| `data-file-editor` | 重命名或新建状态中的行内输入框 |
+| `data-file-explorer-state` | 加载、空白、错误或无权限反馈 |
+
+## 状态与变体
+
+只读模式保留选择、复制路径和打开能力，同时移除写操作，不要仅把所有命令禁用。重命名使用当前行的 `data-file-editor`，Enter 提交、Escape 取消，并由宿主验证重名、非法字符和权限。
+
+源码状态可以显示为文件尾部的简短标记；提交、暂存、分支创建和远程同步属于独立工作流，应由现有 Toolbar、Tree、Alert 和 Dialog 组合，不能塞进文件资源管理器的公共基础契约。
+
+## 无障碍
+
+遵循 Tree 的 roving tabindex 和方向键约定。搜索结果不能把当前焦点节点静默移除；先播报数量，再把焦点留在搜索框。异步展开目录时在对应分支内显示加载或错误状态。所有文件写操作都需由可信宿主完成。

@@ -20,7 +20,7 @@ type ComponentFamily = {
 const componentFamilies: ComponentFamily[] = [
   {
     category: { zh: "基础交互", en: "Core interaction" },
-    count: "07",
+    count: "08",
     description: {
       zh: "按钮、字段、输入与文本编辑，覆盖高频创建动作。",
       en: "Buttons, fields, inputs, and text editing for frequent creation tasks.",
@@ -30,7 +30,7 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "选择控制", en: "Choice controls" },
-    count: "07",
+    count: "08",
     description: {
       zh: "选择器、组合框、开关与滑块，保持状态清楚可达。",
       en: "Selects, comboboxes, switches, and sliders with legible state.",
@@ -60,7 +60,7 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "分层交互", en: "Layered interaction" },
-    count: "07",
+    count: "08",
     description: {
       zh: "对话框、抽屉、菜单、浮层、命令面板与上下文帮助。",
       en: "Dialogs, drawers, menus, popovers, commands, and contextual help.",
@@ -80,7 +80,7 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "结构化内容", en: "Structured content" },
-    count: "11",
+    count: "12",
     description: {
       zh: "卡片、属性列表、步骤条、时间线、表格与结构化信息。",
       en: "Cards, property lists, steppers, timelines, tables, and structured information.",
@@ -90,7 +90,7 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "Agent 工作流", en: "Agent workflows" },
-    count: "24",
+    count: "25",
     description: {
       zh: "任务、对话、执行、审阅、证据与开发预览工具。",
       en: "Tasks, conversation, execution, review, evidence, and preview tooling.",
@@ -111,9 +111,9 @@ const componentFamilies: ComponentFamily[] = [
 ];
 
 const legacyComponentFamilies: ComponentFamily[] = [
-  componentFamilies[0],
+  { ...componentFamilies[0], count: "07" },
   componentFamilies[2],
-  componentFamilies[4],
+  { ...componentFamilies[4], count: "07" },
   componentFamilies[5],
   { ...componentFamilies[6], count: "12" },
   { ...componentFamilies[3], count: "12" },
@@ -683,7 +683,7 @@ export function HomeLayout() {
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const isCurrentContract = !version || version === defaultVersion;
-  const componentCount = isCurrentContract ? "84" : "64";
+  const componentCount = isCurrentContract ? "89" : "64";
   const homepageFamilies = isCurrentContract
     ? componentFamilies
     : legacyComponentFamilies;

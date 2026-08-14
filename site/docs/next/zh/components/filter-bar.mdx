@@ -1,0 +1,60 @@
+# 筛选栏
+
+筛选栏把搜索、分面筛选、当前条件、结果数和清除操作放在同一个稳定区域。它只维护控件状态并发出事件，结果查询仍由宿主应用负责。
+
+<Preview class="w-full">
+  <form id="filter-bar-demo-zh" class="filter-bar" role="search" aria-label="筛选项目" onsubmit="event.preventDefault()">
+    <div data-filter-controls><div data-filter-primary><div class="input-group" data-filter-search><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" name="query" aria-label="搜索项目" placeholder="搜索名称或负责人" /></div><div data-filter-group data-selection="single" data-required="true"><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="all" aria-pressed="false">全部</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">活跃</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="paused" aria-pressed="false">已暂停</button></div></div><div data-filter-actions><output data-filter-count aria-live="polite">12 个项目</output><button type="button" class="btn" data-size="sm" data-variant="ghost" data-filter-clear>清除</button></div></div>
+    <div data-filter-active aria-label="当前筛选条件"><span data-filter-chip data-filter-name="state" data-filter-value="active"><strong>状态</strong> 活跃<button type="button" data-filter-remove aria-label="移除状态筛选"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></div>
+  </form>
+</Preview>
+
+## 用法
+
+```html
+<form class="filter-bar" role="search" aria-label="筛选项目">
+  <div data-filter-controls>
+    <div data-filter-primary>
+      <input class="input" type="search" data-filter-search aria-label="搜索项目" />
+      <div data-filter-group data-selection="single">
+        <button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">活跃</button>
+      </div>
+    </div>
+    <div data-filter-actions><output data-filter-count>12 个项目</output><button type="button" data-filter-clear>清除</button></div>
+  </div>
+</form>
+```
+
+加载 `filter-bar.js` 后，控制器会同步单选或多选按钮、当前条件 Chip 和清除操作。
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `data-filter-search` | 原生搜索输入框或包含它的复合字段容器 |
+| `data-filter-group` | 相关条件组；`data-selection` 可为 `single` 或 `multiple` |
+| `data-required="true"` | 单选组始终保留一个条件 |
+| `data-filter-toggle` | 使用 `data-filter-name`、`data-filter-value` 和 `aria-pressed` 表达条件 |
+| `data-filter-chip` / `data-filter-remove` | 当前条件及其移除操作 |
+| `data-filter-count` | 由宿主更新的结果数量 |
+
+### JavaScript API
+
+```js
+const filters = document.querySelector(".filter-bar");
+filters.clear();
+filters.refresh();
+filters.addEventListener("a3s:filter-change", ({ detail }) => updateQuery(detail));
+```
+
+事件详情包含当前 `filters` 数组，以及触发变化的 `kind`、`name`、`value` 和 `pressed`。搜索仍会发出原生 `input` 事件。
+
+## 状态与变体
+
+常用的 2–4 个分段条件可以直接显示；更多分面使用 Select、Combobox 或 Dropdown Menu。不要把所有字段都压成 Chip，也不要为只有一个筛选条件的页面增加复杂工具栏。
+
+加载远程结果时保留用户输入和激活条件。无结果属于结果区域的 Empty 状态，不应替换筛选栏。
+
+## 无障碍
+
+根元素使用具名搜索表单。切换按钮维护 `aria-pressed`，结果数变化使用礼貌播报。移除一个条件后把焦点保留在移除按钮附近；清除全部条件后不要自动聚焦结果区。

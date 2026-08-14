@@ -1,0 +1,138 @@
+/* Data Grid */
+@layer components {
+  .data-grid {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .data-grid > header {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .data-grid [data-grid-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .data-grid [data-grid-actions] {
+    display: flex;
+    min-width: 0;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .data-grid [data-grid-viewport] {
+    position: relative;
+    min-width: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .data-grid table {
+    min-width: 100%;
+  }
+
+  .data-grid th [data-grid-sort] {
+    display: inline-flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .data-grid [data-sort-indicator] {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .data-grid th[aria-sort="none"] [data-sort-indicator] {
+    opacity: 0;
+  }
+
+  .data-grid th[aria-sort="descending"] [data-sort-indicator] {
+    transform: rotate(180deg);
+  }
+
+  .data-grid [data-grid-state] {
+    display: grid;
+    min-height: 9rem;
+    place-items: center;
+    text-align: center;
+  }
+
+  .data-grid [data-grid-state][hidden],
+  .data-grid tr[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 48rem) {
+    .data-grid > header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .data-grid [data-grid-actions] {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .data-grid[data-responsive="stack"] [data-grid-viewport] {
+      overflow: visible;
+    }
+
+    .data-grid[data-responsive="stack"] table,
+    .data-grid[data-responsive="stack"] tbody,
+    .data-grid[data-responsive="stack"] tr,
+    .data-grid[data-responsive="stack"] td {
+      display: block;
+      width: 100%;
+    }
+
+    .data-grid[data-responsive="stack"] thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .data-grid[data-responsive="stack"] tbody tr {
+      display: grid;
+    }
+
+    .data-grid[data-responsive="stack"] tbody td {
+      display: grid;
+      min-width: 0;
+      align-items: start;
+      grid-template-columns: minmax(6.5rem, 38%) minmax(0, 1fr);
+      white-space: normal;
+    }
+
+    .data-grid[data-responsive="stack"] tbody td::before {
+      content: attr(data-label);
+    }
+
+    .data-grid[data-responsive="stack"] tbody td[data-grid-select-cell] {
+      display: block;
+    }
+
+    .data-grid[data-responsive="stack"]
+      tbody
+      td[data-grid-select-cell]::before {
+      content: none;
+    }
+  }
+}

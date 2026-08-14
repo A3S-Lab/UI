@@ -1,0 +1,60 @@
+# Filter Bar
+
+Filter Bar keeps search, facets, active conditions, result count, and clear actions in one stable region. It maintains control state and emits events while the host application owns result queries.
+
+<Preview class="w-full">
+  <form id="filter-bar-demo-en" class="filter-bar" role="search" aria-label="Filter projects" onsubmit="event.preventDefault()">
+    <div data-filter-controls><div data-filter-primary><div class="input-group" data-filter-search><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" name="query" aria-label="Search projects" placeholder="Search name or owner" /></div><div data-filter-group data-selection="single" data-required="true"><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="all" aria-pressed="false">All</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">Active</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="paused" aria-pressed="false">Paused</button></div></div><div data-filter-actions><output data-filter-count aria-live="polite">12 projects</output><button type="button" class="btn" data-size="sm" data-variant="ghost" data-filter-clear>Clear</button></div></div>
+    <div data-filter-active aria-label="Active filters"><span data-filter-chip data-filter-name="state" data-filter-value="active"><strong>State</strong> Active<button type="button" data-filter-remove aria-label="Remove state filter"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></span></div>
+  </form>
+</Preview>
+
+## Usage
+
+```html
+<form class="filter-bar" role="search" aria-label="Filter projects">
+  <div data-filter-controls>
+    <div data-filter-primary>
+      <input class="input" type="search" data-filter-search aria-label="Search projects" />
+      <div data-filter-group data-selection="single">
+        <button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="true">Active</button>
+      </div>
+    </div>
+    <div data-filter-actions><output data-filter-count>12 projects</output><button type="button" data-filter-clear>Clear</button></div>
+  </div>
+</form>
+```
+
+After loading `filter-bar.js`, the controller synchronizes single- or multi-select buttons, active chips, and clear actions.
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `data-filter-search` | Native search input or its compound field container |
+| `data-filter-group` | Related conditions; `data-selection` is `single` or `multiple` |
+| `data-required="true"` | Keeps one condition active in a single-select group |
+| `data-filter-toggle` | Expresses a condition with `data-filter-name`, `data-filter-value`, and `aria-pressed` |
+| `data-filter-chip` / `data-filter-remove` | Active condition and its remove action |
+| `data-filter-count` | Result count updated by the host |
+
+### JavaScript API
+
+```js
+const filters = document.querySelector(".filter-bar");
+filters.clear();
+filters.refresh();
+filters.addEventListener("a3s:filter-change", ({ detail }) => updateQuery(detail));
+```
+
+Event detail contains the current `filters` array plus the triggering `kind`, `name`, `value`, and `pressed`. Search continues to emit the native `input` event.
+
+## States and variants
+
+Show two to four frequent segmented conditions directly. Put larger facet sets in Select, Combobox, or Dropdown Menu. Do not turn every field into a chip or add a complex toolbar for one condition.
+
+Keep input and active conditions visible while remote results load. No results belongs to the results region's Empty state rather than replacing the Filter Bar.
+
+## Accessibility
+
+Use a named search form. Toggle buttons maintain `aria-pressed`, and result-count changes use polite announcements. Keep focus near a removed condition, and do not move focus into the results after clearing all filters.

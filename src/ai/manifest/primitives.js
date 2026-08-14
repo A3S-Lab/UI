@@ -22,6 +22,25 @@ export const actionComponents = [
     actions: ["focus", "click"],
     states: ["ready", "disabled"],
   }),
+  defineComponent({
+    slug: "bulk-action-bar",
+    name: "Bulk Action Bar",
+    category: "actions",
+    selector: ".bulk-action-bar",
+    tag: "section",
+    className: "bulk-action-bar",
+    attributes: { "aria-label": "Selected item actions", role: "region" },
+    parts: {
+      action: "[data-bulk-actions] button, [data-bulk-actions] a[href]",
+      actions: "[data-bulk-actions]",
+      clear: "[data-bulk-clear]",
+      selection: "[data-bulk-selection]",
+      summary: "[data-bulk-summary]",
+    },
+    actions: ["click", "focus", "press"],
+    actionParts: { click: "action", focus: "action", press: "action" },
+    states: ["empty", "selected", "loading", "disabled"],
+  }),
 ];
 
 export const formComponents = [
@@ -38,6 +57,33 @@ export const formComponents = [
       message: "[data-field-message]",
     },
     states: ["ready", "disabled", "invalid", "readonly"],
+  }),
+  defineComponent({
+    slug: "filter-bar",
+    name: "Filter Bar",
+    category: "forms",
+    selector: ".filter-bar",
+    tag: "form",
+    className: "filter-bar",
+    attributes: { "aria-label": "Filters", role: "search" },
+    parts: {
+      active: "[data-filter-active]",
+      clear: "[data-filter-clear]",
+      count: "[data-filter-count]",
+      search:
+        "input[data-filter-search], textarea[data-filter-search], [data-filter-search] input, [data-filter-search] textarea",
+      toggle: "[data-filter-toggle]",
+    },
+    actions: ["click", "fill", "focus", "press", "type"],
+    actionParts: {
+      click: "toggle",
+      fill: "search",
+      focus: "search",
+      press: "toggle",
+      type: "search",
+    },
+    events: ["a3s:filter-change", "basecoat:initialized", "input"],
+    states: ["ready", "active", "empty", "disabled", "loading"],
   }),
   defineComponent({
     slug: "input",

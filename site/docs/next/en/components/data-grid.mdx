@@ -1,0 +1,65 @@
+# Data Grid
+
+Data Grid handles resource collections that need sorting, selection, bulk actions, and remote pagination. It builds on Table, Checkbox, Filter Bar, and Pagination without owning queries, authorization, or data fetching.
+
+<Preview class="w-full">
+  <section id="data-grid-demo-en" class="data-grid" data-responsive="stack" data-state="ready" aria-labelledby="data-grid-title-en">
+    <header><div data-grid-identity><h2 id="data-grid-title-en">Environments</h2><p>Manage build and release targets for this project.</p></div><div data-grid-actions><button type="button" class="btn" data-size="sm">New environment</button></div></header>
+    <form class="filter-bar" role="search" aria-label="Filter environments"><div data-filter-controls><div data-filter-primary><div class="input-group" data-filter-search><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="search" aria-label="Search environments" placeholder="Search name or region" /></div><div data-filter-group data-selection="single" data-required="true"><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="all" aria-pressed="true">All</button><button type="button" data-filter-toggle data-filter-name="state" data-filter-value="active" aria-pressed="false">Active</button></div></div><div data-filter-actions><output data-filter-count>3 environments</output></div></div></form>
+    <div data-grid-viewport tabindex="0" aria-label="Environment data"><table class="table"><thead><tr><th><input class="input" type="checkbox" data-grid-select-all aria-label="Select all environments" /></th><th aria-sort="none"><button type="button" data-grid-sort="name">Name<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-sort-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4-4 4 4"></path><path d="m16 14-4 4-4-4"></path></svg></button></th><th aria-sort="none"><button type="button" data-grid-sort="state">State<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-sort-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m8 10 4-4 4 4"></path><path d="m16 14-4 4-4-4"></path></svg></button></th><th>Region</th><th>Last deploy</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody><tr data-value="production"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="production" aria-label="Select Production" checked /></td><td data-label="Name"><strong>Production</strong></td><td data-label="State"><span class="status-badge" data-state="success"><span data-indicator></span>Healthy</span></td><td data-label="Region">Shanghai</td><td data-label="Last deploy"><time datetime="2026-08-14T09:42:00+08:00">Today 09:42</time></td><td data-label="Actions"><button type="button" class="btn" data-size="sm" data-variant="ghost">Open</button></td></tr><tr data-value="staging"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="staging" aria-label="Select Staging" /></td><td data-label="Name"><strong>Staging</strong></td><td data-label="State"><span class="status-badge" data-state="active"><span data-indicator></span>Deploying</span></td><td data-label="Region">Tokyo</td><td data-label="Last deploy"><time datetime="2026-08-13T18:12:00+08:00">Yesterday 18:12</time></td><td data-label="Actions"><button type="button" class="btn" data-size="sm" data-variant="ghost">Open</button></td></tr><tr data-value="preview"><td data-grid-select-cell><input class="input" type="checkbox" data-grid-select value="preview" aria-label="Select Feature preview" /></td><td data-label="Name"><strong>Feature preview</strong></td><td data-label="State"><span class="status-badge" data-state="neutral"><span data-indicator></span>Paused</span></td><td data-label="Region">Singapore</td><td data-label="Last deploy"><time datetime="2026-08-11T14:20:00+08:00">Aug 11</time></td><td data-label="Actions"><button type="button" class="btn" data-size="sm" data-variant="ghost">Open</button></td></tr></tbody></table></div>
+    <section class="bulk-action-bar" data-position="sticky" data-state="selected" role="region" aria-label="Selected environment actions"><div data-bulk-selection><output data-selected-count>1</output> selected</div><span data-bulk-summary>Only permitted environments will be changed</span><div data-bulk-actions><button type="button" class="btn" data-size="sm" data-variant="outline">Pause</button><button type="button" class="btn" data-size="sm" data-variant="destructive">Delete</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear data-grid-clear-selection>Clear selection</button></div></section>
+  </section>
+</Preview>
+
+## Usage
+
+Load the runtime and Data Grid controller, or use the complete JavaScript bundle.
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/data-grid.min.js" defer></script>
+```
+
+```html
+<section class="data-grid" data-responsive="stack" aria-labelledby="grid-title">
+  <header><div data-grid-identity><h2 id="grid-title">Environments</h2></div></header>
+  <div data-grid-viewport tabindex="0">
+    <table class="table">
+      <thead><tr><th><input type="checkbox" data-grid-select-all aria-label="Select all" /></th><th aria-sort="none"><button type="button" data-grid-sort="name">Name</button></th></tr></thead>
+      <tbody><tr data-value="production"><td data-grid-select-cell><input type="checkbox" data-grid-select value="production" aria-label="Select Production" /></td><td data-label="Name">Production</td></tr></tbody>
+    </table>
+  </div>
+</section>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `data-grid-viewport` | The grid's only horizontal and vertical scroll owner |
+| `data-grid-select` / `data-grid-select-all` | Row selection and select-all checkboxes |
+| `data-grid-sort="key"` | Updates header `aria-sort` and requests host sorting |
+| `data-responsive="stack"` | Reflows each row into a labelled record below 640px; cells need `data-label` |
+| `--data-grid-max-height` | Optional maximum grid height |
+
+### JavaScript API
+
+```js
+const grid = document.querySelector(".data-grid");
+grid.selectAll();
+grid.clearSelection();
+grid.refresh();
+grid.addEventListener("a3s:data-grid-sort", ({ detail }) => loadPage(detail));
+```
+
+Selection emits `a3s:data-grid-selection-change` with `values`, `rows`, and `selectedCount`. Sorting emits `a3s:data-grid-sort` with `{ key, direction }`; the controller never reorders rows or fetches data on its own.
+
+## States and variants
+
+Client collections may replace rows directly. Server collections should preserve the active filter and sort while keeping column widths stable during loading. Empty, error, and permission-denied states use one spanning `data-grid-state` region. Row actions are part of the grid contract rather than a separate public component.
+
+The default narrow layout keeps horizontal scrolling. Use `data-responsive="stack"` only when a record still reads linearly. Keep scrolling for wide comparisons, editable cells, or many columns.
+
+## Accessibility
+
+Use real `<th>` elements and put `aria-sort` on the header rather than its button. Every checkbox needs a row-specific name. Do not move focus when bulk actions appear. Announce server result counts politely, and never discard the current selection during loading without explaining why.

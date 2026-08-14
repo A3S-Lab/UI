@@ -15,6 +15,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | [组合框](/components/combobox) | `combobox()` | [combobox.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/combobox.njk) | [combobox.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/combobox.html.jinja) |
 | [命令](/components/command) | `command()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
 | [命令](/components/command) | `command_dialog()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
+| [上下文菜单](/components/context-menu) | `context_menu()` | [context-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/context-menu.njk) | [context-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/context-menu.html.jinja) |
 | [Dialog](/components/dialog) | `dialog()` | [dialog.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dialog.njk) | [dialog.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dialog.html.jinja) |
 | [下拉菜单](/components/dropdown-menu) | `dropdown_menu()` | [dropdown-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dropdown-menu.njk) | [dropdown-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dropdown-menu.html.jinja) |
 | [弹出](/components/popover) | `popover()` | [popover.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/popover.njk) | [popover.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/popover.html.jinja) |
@@ -144,6 +145,17 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | `open` | `boolean` | `false` | 默认情况下呈现打开的对话框。 |
 | `close_button` | `boolean` | `true` | 包括生成的关闭按钮。 |
 | `close_on_overlay_click` | `boolean` | `true` | 添加背景单击关闭行为。 |
+
+### `context_menu()`
+
+| 道具 | 类型 | 默认 | 描述 |
+| --- | --- | --- | --- |
+| `trigger` | `string` | 必填 | 右键或键盘菜单触发表面的 HTML。 |
+| `label` | `string` | `"Context menu"` | 菜单的可访问名称。 |
+| `id` | `string` | 生成的 | 唯一的上下文菜单 ID。 |
+| `main_attrs` | `object` | `{}` | `.context-menu` 根的额外属性。 |
+| `trigger_attrs` | `object` | `{}` | 触发表面的额外属性。 |
+| `menu_attrs` | `object` | `{}` | 菜单元素的额外属性。 |
 
 ### `dropdown_menu()`
 

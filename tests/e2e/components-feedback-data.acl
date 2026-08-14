@@ -264,4 +264,34 @@ suite "a3s-ui-feedback-and-data" {
         expect "localized-tree-title" { text = "树形控件" }
         expect "localized-project-tree" { visible = css("#tree-demo[aria-label='项目文件'][data-tree-initialized=true]") }
     }
+
+    scenario "data-grid" {
+        name = "Data Grid synchronizes full selection, bulk actions, and sort direction"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/data-grid.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "grid-ready" { visible = css("#data-grid-demo-en[data-data-grid-initialized=true][data-selection=some]") }
+        check "select-all" { target = css("#data-grid-demo-en [data-grid-select-all]") }
+        expect "all-selected" { visible = css("#data-grid-demo-en[data-selection=all] [data-selected-count]") }
+        click "sort-name" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
+        expect "name-ascending" { visible = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
+        click "clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
+        expect "selection-cleared" { visible = css("#data-grid-demo-en[data-selection=none] .bulk-action-bar[hidden]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "stacked-row-visible" { visible = css("#data-grid-demo-en[data-responsive=stack] tbody tr:first-child td[data-label=Name]") }
+    }
+
+    scenario "bulk-action-bar" {
+        name = "Bulk Action Bar clears its temporary selection region"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/bulk-action-bar.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "bulk-actions-visible" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar:not([hidden])") }
+        click "clear-selection" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
+        expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[hidden]") }
+    }
 }

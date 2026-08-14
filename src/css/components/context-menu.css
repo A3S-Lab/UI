@@ -1,0 +1,89 @@
+/* Context Menu */
+@layer components {
+  .context-menu {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+  }
+
+  .context-menu[data-context-surface] {
+    display: block;
+    width: 100%;
+  }
+
+  .context-menu [data-context-content],
+  .context-menu [data-context-submenu-content] {
+    position: fixed;
+    z-index: 80;
+    display: grid;
+    min-width: 12rem;
+    max-width: min(20rem, calc(100vw - 1rem));
+    max-height: min(24rem, calc(100vh - 1rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    outline: none;
+  }
+
+  .context-menu [data-context-content][aria-hidden="true"],
+  .context-menu [data-context-submenu-content][aria-hidden="true"] {
+    display: none;
+  }
+
+  .context-menu
+    [role="menu"]
+    :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    cursor: default;
+    outline: none;
+    user-select: none;
+  }
+
+  .context-menu
+    [role="menu"]
+    :is(
+      [role="menuitem"],
+      [role="menuitemcheckbox"],
+      [role="menuitemradio"]
+    ):is(:disabled, [aria-disabled="true"]) {
+    pointer-events: none;
+  }
+
+  .context-menu [role="separator"] {
+    width: 100%;
+    border: 0;
+  }
+
+  .context-menu [data-context-indicator] {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    visibility: hidden;
+  }
+
+  .context-menu
+    :is([role="menuitemcheckbox"], [role="menuitemradio"])[aria-checked="true"]
+    [data-context-indicator] {
+    visibility: visible;
+  }
+
+  .context-menu :is([data-shortcut], kbd:last-child, .kbd:last-child) {
+    margin-inline-start: auto;
+    flex: none;
+  }
+
+  .context-menu [aria-haspopup="menu"] [data-context-submenu-arrow] {
+    width: 1rem;
+    height: 1rem;
+    margin-inline-start: auto;
+    flex: none;
+  }
+
+  .context-menu[dir="rtl"] [data-context-submenu-arrow],
+  [dir="rtl"] .context-menu [data-context-submenu-arrow] {
+    transform: rotate(180deg);
+  }
+}

@@ -105,9 +105,12 @@ Use split imports when application CSS already owns its dependency graph.
 | `@a3s-lab/ui/code-editor`      | Native Code Editor fallback                               |
 | `@a3s-lab/ui/combobox`         | Combobox                                                  |
 | `@a3s-lab/ui/command`          | Command palette                                           |
+| `@a3s-lab/ui/context-menu`     | Pointer and keyboard Context Menu                         |
+| `@a3s-lab/ui/data-grid`        | Data sorting and selection state                          |
 | `@a3s-lab/ui/device-simulator` | Responsive iframe and native device-preview bridge        |
 | `@a3s-lab/ui/drawer`           | Drawer                                                    |
 | `@a3s-lab/ui/dropdown-menu`    | Dropdown Menu                                             |
+| `@a3s-lab/ui/filter-bar`       | Segmented filters and active conditions                   |
 | `@a3s-lab/ui/popover`          | Popover                                                   |
 | `@a3s-lab/ui/range`            | Range input visual state                                  |
 | `@a3s-lab/ui/select`           | Select                                                    |
@@ -152,7 +155,7 @@ import { a3sAI } from "@a3s-lab/ui/ai";
 import manifest from "@a3s-lab/ui/components.json" with { type: "json" };
 
 a3sAI.scan(document);
-console.log(manifest.components.length); // 84
+console.log(manifest.components.length); // 89
 ```
 
 React and Vue are optional peer dependencies. Install only the framework used by the host application, then import components from `@a3s-lab/ui/react` or `@a3s-lab/ui/vue`.

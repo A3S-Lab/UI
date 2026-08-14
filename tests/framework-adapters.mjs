@@ -153,7 +153,7 @@ for (const markup of [reactMarkup, vueMarkup]) {
   assert.match(markup, /class="agent-composer"/);
   assert.match(markup, /<button type="submit" class="btn">Send<\\/button>/);
 }
-assert.equal(manifest.components.length, 84);
+assert.equal(manifest.components.length, 89);
 assert.equal(Object.keys(selectors).length, manifest.components.length);
 assert.equal(componentSelector('task-workspace'), selectors['task-workspace'].root);
 assert.equal(readySelector('task-workspace'), selectors['task-workspace'].ready);
@@ -172,7 +172,7 @@ console.log(JSON.stringify({ reactMarkup, vueMarkup, components: manifest.compon
     },
   );
   const result = JSON.parse(stdout);
-  assert.equal(result.components, 84);
+  assert.equal(result.components, 89);
   assert.match(result.reactMarkup, /task-workspace/);
   assert.match(result.vueMarkup, /task-workspace/);
 
@@ -621,7 +621,7 @@ window.frameworkStatus = () => ({
   );
   assert.equal(packageManifest.peerDependenciesMeta.react.optional, true);
   assert.equal(packageManifest.peerDependenciesMeta.vue.optional, true);
-  assert.equal(sourceComponents.length, 84);
+  assert.equal(sourceComponents.length, 89);
   console.log(
     "Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.",
   );

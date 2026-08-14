@@ -1,0 +1,41 @@
+# Bulk Action Bar
+
+Bulk Action Bar appears only after selection and keeps scope, eligibility, commands, and clear selection in one temporary task region.
+
+<Preview class="w-full">
+  <section class="bulk-action-bar" data-state="selected" role="region" aria-label="Selected resource actions"><div data-bulk-selection><output data-selected-count>3</output> selected</div><span data-bulk-summary>2 items can be archived</span><div data-bulk-actions><button type="button" class="btn" data-size="sm" data-variant="outline">Move</button><button type="button" class="btn" data-size="sm" data-variant="outline">Archive 2</button><button type="button" class="btn" data-size="sm" data-variant="destructive">Delete</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear data-demo-bulk-clear>Clear selection</button></div></section>
+</Preview>
+
+## Usage
+
+```html
+<section class="bulk-action-bar" data-state="selected" role="region" aria-label="Selected resource actions">
+  <div data-bulk-selection><output data-selected-count>3</output> selected</div>
+  <span data-bulk-summary>2 items can be archived</span>
+  <div data-bulk-actions>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">Archive 2</button>
+    <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-clear>Clear selection</button>
+  </div>
+</section>
+```
+
+### Parameters
+
+| API | Purpose |
+| --- | --- |
+| `data-bulk-selection` | Selected count and scope |
+| `data-selected-count` | Count synchronized by the host or Data Grid controller |
+| `data-bulk-summary` | Optional eligibility note such as “2 of 3 can retry” |
+| `data-bulk-actions` | Commands applied to the current selection |
+| `data-bulk-clear` | Clears selection through the host or parent Data Grid |
+| `data-position="sticky"` | Keeps the bar at the bottom of its scroll owner |
+
+## States and variants
+
+Use `hidden` when nothing is selected rather than retaining a disabled empty toolbar. During a bulk request, preserve the count and command labels, disable only conflicting actions, and report progress or failure in the same region.
+
+Button labels should expose the actual eligible count. If only three of five selected items can retry, say “Retry 3” instead of explaining silent skips after the request.
+
+## Accessibility
+
+Use a named `region`, but do not move focus when it appears. Irreversible actions still need Alert Dialog. After completion, announce the actual processed count and return focus to the command or a surviving list position.

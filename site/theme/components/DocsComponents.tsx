@@ -204,6 +204,13 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
   const target = event.target;
   if (!(target instanceof Element)) return;
 
+  const bulkClear = target.closest<HTMLElement>("[data-demo-bulk-clear]");
+  if (bulkClear) {
+    const bar = bulkClear.closest<HTMLElement>(".bulk-action-bar");
+    if (bar) bar.hidden = true;
+    return;
+  }
+
   const paginationLink = target.closest<HTMLAnchorElement>(
     ".pagination [data-pagination-page]",
   );
@@ -419,7 +426,11 @@ export function Preview({
     const syncOverlayState = () => {
       preview?.toggleAttribute(
         "data-overlay-open",
-        Boolean(preview.querySelector('[data-popover][aria-hidden="false"]')),
+        Boolean(
+          preview.querySelector(
+            '[data-popover][aria-hidden="false"], [data-context-content][aria-hidden="false"]',
+          ),
+        ),
       );
     };
 

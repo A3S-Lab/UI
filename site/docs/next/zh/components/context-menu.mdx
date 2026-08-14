@@ -1,0 +1,55 @@
+# 上下文菜单
+
+上下文菜单为文件、画布节点和数据行提供与当前位置相关的命令。它支持鼠标右键、`Shift + F10`、Menu 键、方向键、子菜单、禁用项和焦点恢复。
+
+<Preview class="w-full max-w-2xl">
+  <div id="context-menu-demo-zh" class="context-menu" data-context-surface>
+    <div class="item" data-variant="outline" data-context-trigger tabindex="0" aria-describedby="context-menu-help-zh"><figure><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></figure><section><h3>deployment.acl</h3><p id="context-menu-help-zh">右键单击，或聚焦后按 Shift + F10。</p></section><aside><span class="status-badge" data-state="warning"><span data-indicator></span>已修改</span></aside></div>
+    <div data-context-content role="menu" aria-label="文件操作" aria-hidden="true"><button type="button" role="menuitem" data-value="open">打开<kbd class="kbd">Enter</kbd></button><button type="button" role="menuitem" data-value="rename">重命名<kbd class="kbd">F2</kbd></button><div role="none" data-context-submenu><button type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false">打开方式<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-submenu-arrow aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button><div data-context-submenu-content role="menu" aria-label="打开方式" aria-hidden="true"><button type="button" role="menuitemradio" aria-checked="true" data-value="editor"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>文本编辑器</button><button type="button" role="menuitemradio" aria-checked="false" data-value="diff"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>差异对比</button></div></div><hr role="separator" /><button type="button" role="menuitemcheckbox" aria-checked="true" data-value="watch"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-context-indicator aria-hidden="true" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"></path></svg>监听变更</button><button type="button" role="menuitem" aria-disabled="true">暂存文件</button><hr role="separator" /><button type="button" role="menuitem" data-value="delete" data-variant="destructive">删除</button></div>
+  </div>
+</Preview>
+
+## 用法
+
+```html
+<div class="context-menu">
+  <div data-context-trigger tabindex="0">deployment.acl</div>
+  <div data-context-content role="menu" aria-label="文件操作" aria-hidden="true">
+    <button type="button" role="menuitem" data-value="open">打开</button>
+    <button type="button" role="menuitem" data-value="rename">重命名</button>
+  </div>
+</div>
+```
+
+加载共享运行时后再加载 `context-menu.js`，或使用完整包。
+
+### 参数
+
+| API | 用途 |
+| --- | --- |
+| `data-context-trigger` | 接收右键和键盘菜单请求的直接子元素 |
+| `data-context-content[role="menu"]` | 根菜单直接子元素 |
+| `data-context-submenu` | 包含一个 `aria-haspopup="menu"` 菜单项和子菜单的结构容器 |
+| `data-context-submenu-content` | 嵌套菜单；同样使用 `role="menu"` |
+| `data-value` | 选择事件返回的稳定命令值 |
+| `data-context-surface` | 让根节点占满容器，适合文件树或画布 |
+
+### JavaScript API
+
+```js
+const menu = document.querySelector(".context-menu");
+menu.openAt(240, 160, selectedNode);
+menu.close();
+menu.refresh();
+menu.addEventListener("a3s:context-menu-select", ({ detail }) => run(detail.value, detail.target));
+```
+
+打开、选择和关闭分别触发 `a3s:context-menu-open`、`a3s:context-menu-select` 和 `a3s:context-menu-close`。控制器把菜单限制在可视窗口内，并在窗口滚动或缩放时关闭。
+
+## 状态与变体
+
+上下文菜单只放与触发目标直接相关的短命令。全局导航使用 Command，持续可见操作使用 Toolbar，破坏性确认使用 Alert Dialog。没有上下文命令时不要显示空菜单。
+
+## 无障碍
+
+可聚焦触发面必须提供名称或说明。禁用项使用 `aria-disabled="true"` 并从方向键导航中跳过。Escape 关闭整个菜单并恢复焦点；逻辑方向键在 RTL 中自动交换。

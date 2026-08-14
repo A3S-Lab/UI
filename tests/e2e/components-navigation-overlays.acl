@@ -181,4 +181,23 @@ suite "a3s-ui-navigation-and-overlays" {
         expect "tooltip-trigger-visible" { visible = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip='Add to library']") }
         screenshot "tooltip" { path = "components/tooltip.png" }
     }
+
+    scenario "context-menu" {
+        name = "Context Menu supports keyboard invocation, submenu navigation, and focus return"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/context-menu.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "context-ready" { visible = css("#context-menu-demo-en[data-context-menu-initialized=true]") }
+        focus "focus-trigger" { target = css("#context-menu-demo-en [data-context-trigger]") }
+        press "open-context-menu" { key = "Shift+F10" }
+        expect "menu-open" { visible = css("#context-menu-demo-en[data-state=open] > [data-context-content][aria-hidden=false]") }
+        press "move-to-rename" { key = "ArrowDown" }
+        press "move-to-open-with" { key = "ArrowDown" }
+        press "open-submenu" { key = "ArrowRight" }
+        expect "submenu-open" { visible = css("#context-menu-demo-en [data-context-submenu-content][aria-hidden=false]") }
+        press "close-context-menu" { key = "Escape" }
+        expect "trigger-restored" { visible = css("#context-menu-demo-en [data-context-trigger]:focus") }
+    }
 }

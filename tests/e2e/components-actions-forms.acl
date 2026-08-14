@@ -236,4 +236,20 @@ suite "a3s-ui-actions-and-forms" {
         expect "astro-visible" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
         screenshot "filtered-combobox" { path = "components/combobox.png" }
     }
+
+    scenario "filter-bar" {
+        name = "Filter Bar preserves its required choice and clears compound search input"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/filter-bar.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "filter-ready" { visible = css("#filter-bar-demo-en[data-filter-bar-initialized=true]") }
+        click "choose-paused" { target = css("#filter-bar-demo-en [data-filter-value=paused]") }
+        expect "paused-selected" { visible = css("#filter-bar-demo-en [data-filter-value=paused][aria-pressed=true]") }
+        fill "search-projects" { target = css("#filter-bar-demo-en input[type=search]") value = "release" }
+        click "clear-filters" { target = css("#filter-bar-demo-en [data-filter-clear]") }
+        expect "required-default-restored" { visible = css("#filter-bar-demo-en [data-filter-value=all][aria-pressed=true]") }
+        expect "search-cleared" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }
+    }
 }

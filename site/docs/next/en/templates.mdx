@@ -15,6 +15,7 @@ The templates are versioned with `@a3s-lab/ui`, so the generated markup matches 
 | [Combobox](/components/combobox) | `combobox()` | [combobox.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/combobox.njk) | [combobox.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/combobox.html.jinja) |
 | [Command](/components/command) | `command()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
 | [Command](/components/command) | `command_dialog()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
+| [Context Menu](/components/context-menu) | `context_menu()` | [context-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/context-menu.njk) | [context-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/context-menu.html.jinja) |
 | [Dialog](/components/dialog) | `dialog()` | [dialog.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dialog.njk) | [dialog.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dialog.html.jinja) |
 | [Dropdown Menu](/components/dropdown-menu) | `dropdown_menu()` | [dropdown-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dropdown-menu.njk) | [dropdown-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dropdown-menu.html.jinja) |
 | [Popover](/components/popover) | `popover()` | [popover.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/popover.njk) | [popover.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/popover.html.jinja) |
@@ -144,6 +145,17 @@ Some macro files include internal recursive helpers such as `render_select_items
 | `open` | `boolean` | `false` | Renders the dialog open by default. |
 | `close_button` | `boolean` | `true` | Includes the generated close button. |
 | `close_on_overlay_click` | `boolean` | `true` | Adds backdrop-click close behavior. |
+
+### `context_menu()`
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `trigger` | `string` | required | HTML for the pointer or keyboard invocation surface. |
+| `label` | `string` | `"Context menu"` | Accessible menu name. |
+| `id` | `string` | generated | Unique Context Menu id. |
+| `main_attrs` | `object` | `{}` | Extra attributes for the `.context-menu` root. |
+| `trigger_attrs` | `object` | `{}` | Extra attributes for the invocation surface. |
+| `menu_attrs` | `object` | `{}` | Extra attributes for the menu element. |
 
 ### `dropdown_menu()`
 

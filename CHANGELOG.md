@@ -8,7 +8,7 @@
 - Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts plus complete Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations composition guides.
 - Added Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, and Execution Evidence contracts.
 - Added the root `DESIGN.md` contract for task-centered application geometry, typography, color, elevation, responsive behavior, and component states.
-- Added a machine-readable 84-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
+- Added a machine-readable 89-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
 - Added Device Simulator with phone, tablet, desktop, custom-size, orientation, URL navigation, iframe preview, and a cancelable structured event for trusted `a3s-webview` hosts.
 - Added the Harness documentation and manifest category for task, conversation, execution, review, evidence, and developer-tool components.
 - Added owned-part, per-action, per-state, and ready selectors plus an importable selector helper for deterministic browser tests.
@@ -16,15 +16,16 @@
 - Added all-export SSR, TypeScript consumer, and isolated client-mount checks for the React and Vue adapters, including refs, readiness callbacks, semantic annotations, and controller initialization.
 - Added route-level geometry, state, and browser diagnostic regression coverage for every public component guide.
 - Added package-owned App Shell navigation and Task Workspace inspector controllers with responsive ARIA/inert synchronization, Escape and backdrop dismissal, focus return, public methods, events, and split imports.
+- Added Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with selection, sorting, keyboard menus, responsive records, file state, bilingual guides, and split controller imports.
 
 ### Changed
 
 - Rebuilt the documentation theme around Rspress routing with Chinese as the default language, page-preserving language and version switching, an official A3S logo, and first-load navigation that works before hydration.
-- Reorganized the component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
+- Reorganized the 89-component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
 
 ### Fixed
 
-- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 84-component contract while preserving historical version counts.
+- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 89-component contract while preserving historical version counts.
 - Made component-specific browser scenarios serial by default to prevent shared-browser resource contention from introducing nondeterministic control-state failures.
 
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
