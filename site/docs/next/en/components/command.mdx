@@ -1,5 +1,7 @@
 # Command
 
+Command lets users search for and execute actions quickly, providing a keyboard-first entry point to frequent navigation and workflows.
+
 <Preview class="w-full max-w-sm">
 <div id="demo-command-standalone" class="command border" aria-label="Command menu">
   <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -397,12 +399,29 @@ import { Command, useCommand } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useCommand();
   return (
-    <Command ref={control.ref}>Component content</Command>
+    <Command ref={control.ref} className="border" aria-label="Project commands">
+      <header>
+        <svg aria-hidden="true">{/* Search icon */}</svg>
+        <input
+          id="project-command-input"
+          type="text"
+          role="combobox"
+          aria-label="Search commands"
+          aria-expanded="true"
+          aria-controls="project-command-menu"
+          placeholder="Type a command or search…"
+        />
+      </header>
+      <div id="project-command-menu" role="menu" data-empty="No matching commands.">
+        <div role="menuitem" data-filter="Open project">Open project</div>
+        <div role="menuitem" data-filter="New task">New task</div>
+      </div>
+    </Command>
   );
 }
 ```
 
-`useCommand` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+`useCommand` exposes the component reference, readiness, and `call("refresh")`. Call `refresh` after dynamically adding or removing commands; the adapter creates no second filtering state model.
 
 ## Vue
 
@@ -415,8 +434,25 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Command ref="componentRef">Component content</Command>
+  <Command ref="componentRef" class="border" aria-label="Project commands">
+    <header>
+      <svg aria-hidden="true"><!-- Search icon --></svg>
+      <input
+        id="project-command-input"
+        type="text"
+        role="combobox"
+        aria-label="Search commands"
+        aria-expanded="true"
+        aria-controls="project-command-menu"
+        placeholder="Type a command or search…"
+      />
+    </header>
+    <div id="project-command-menu" role="menu" data-empty="No matching commands.">
+      <div role="menuitem" data-filter="Open project">Open project</div>
+      <div role="menuitem" data-filter="New task">New task</div>
+    </div>
+  </Command>
 </template>
 ```
 
-`useCommand` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+`useCommand` exposes the component reference, readiness, and `call("refresh")`. Call `refresh` after dynamically adding or removing commands; the adapter creates no second filtering state model.

@@ -3,14 +3,14 @@
 复制代码、命令或标识符，并在同一操作位置提供进行中、成功和失败反馈。
 
 <Preview class="w-full">
-<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed"><span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span></button>
+<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="已复制" data-copy-error="复制失败"><span data-copy-label>复制命令</span><span data-copy-feedback aria-live="polite"></span></button>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
-<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
-  <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+<button class="btn copy-button" data-copy-text="npm install @a3s-lab/ui" data-copy-success="已复制" data-copy-error="复制失败">
+  <span data-copy-label>复制命令</span><span data-copy-feedback aria-live="polite"></span>
 </button>
 ```
 
@@ -34,8 +34,8 @@ import { CopyButton, useCopyButton } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useCopyButton();
   return (
-    <CopyButton ref={control.ref} data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
-      <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+    <CopyButton ref={control.ref} data-copy-text="npm install @a3s-lab/ui" data-copy-success="已复制" data-copy-error="复制失败">
+      <span data-copy-label>复制命令</span><span data-copy-feedback aria-live="polite"></span>
     </CopyButton>
   );
 }
@@ -54,8 +54,8 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <CopyButton ref="componentRef" data-copy-text="npm install @a3s-lab/ui" data-copy-success="Copied" data-copy-error="Copy failed">
-    <span data-copy-label>Copy command</span><span data-copy-feedback aria-live="polite"></span>
+  <CopyButton ref="componentRef" data-copy-text="npm install @a3s-lab/ui" data-copy-success="已复制" data-copy-error="复制失败">
+    <span data-copy-label>复制命令</span><span data-copy-feedback aria-live="polite"></span>
   </CopyButton>
 </template>
 ```

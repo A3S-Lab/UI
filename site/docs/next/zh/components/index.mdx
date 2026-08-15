@@ -1,148 +1,40 @@
-# 组件目录
+# 组件
 
-A3S UI 提供 111 个公开组件契约。86 个通用组件按界面职责组织，另外 25 个构建 Coding Agent 工作流的组件集中在 [Harness](/harness/) 中。每篇指南都包含实时预览、最小 HTML、React 与 Vue 用法、适用的 hook 或组合式函数、状态与可访问性说明。
+A3S UI 提供 111 个公开组件契约。可按中文名、英文名、路由名或界面职责搜索；结果会保留当前语言与文档版本。
 
-<Preview>
-  <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">12</span>
-        <h2>输入与操作</h2>
-        <p>按钮、字段、输入与文本编辑。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          12
-        </span>
-        <h2>选择与搜索</h2>
-        <p>选择器、组合框与选择状态。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="outline">
-          07
-        </span>
-        <h2>导航</h2>
-        <p>定位、切换与页面路径。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">13</span>
-        <h2>布局与工作区</h2>
-        <p>外壳、工具栏、窗格与资源布局。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          10
-        </span>
-        <h2>浮层</h2>
-        <p>对话框、菜单、命令与上下文帮助。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="outline">
-          09
-        </span>
-        <h2>反馈与状态</h2>
-        <p>进度、警告、空状态与即时反馈。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">21</span>
-        <h2>数据与内容</h2>
-        <p>卡片、图表、表格与结构化信息。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          02
-        </span>
-        <h2>工具</h2>
-        <p>滚动区域与主题控制。</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">25</span>
-        <h2>Harness</h2>
-        <p>任务、对话、执行、审阅与开发工具。</p>
-      </header>
-    </article>
-  </div>
-</Preview>
+<ComponentCatalog />
+
+## 选择原则
+
+- 操作、输入和选择优先使用原生元素，让浏览器管理焦点、表单状态与可访问性。
+- 只有原生平台没有提供完整行为时，才引入组件运行时，例如复合选择器、可调整窗格和设备预览。
+- 页面外壳、工具栏和资源布局属于工作区结构，不应代替更小的输入或反馈组件。
+- 任务、执行、审阅与开发工具集中在 [Harness](/harness/) 中；这些组件仍使用稳定的 `/components/*` 页面地址。
 
 ## API 模型
 
-A3S UI 的参数尽量贴近浏览器平台：
+| API 表面       | 用途                 | 示例                                            |
+| -------------- | -------------------- | ----------------------------------------------- |
+| 根类名         | 选择组件             | `class="resource-card"`                         |
+| 原生属性       | 行为与可访问性       | `disabled`、`checked`、`aria-current="page"`    |
+| `data-*` 属性  | 有限的视觉或行为变体 | `data-size="sm"`、`data-orientation="vertical"` |
+| CSS 自定义属性 | 连续布局值与主题决策 | `--split-position: 40%`                         |
+| JavaScript     | 浏览器未提供的行为   | 分割窗格调整、设备预览与复合控件键盘交互        |
 
-| API 表面        | 用途                 | 示例                                            |
-| --------------- | -------------------- | ----------------------------------------------- |
-| 根类名          | 选择组件             | `class="resource-card"`                         |
-| 原生属性        | 行为与可访问性       | `disabled`、`checked`、`aria-current="page"`    |
-| `data-*` 属性   | 有限的视觉或行为变体 | `data-size="sm"`、`data-orientation="vertical"` |
-| CSS 自定义属性  | 连续布局值与主题决策 | `--split-position: 40%`                         |
-| 原生 JavaScript | 浏览器没有提供的行为 | 分割窗格调整、设备预览与复合控件键盘交互        |
+原生元素始终是状态的单一事实来源。例如，禁用按钮直接使用 `disabled`，不需要额外维护一份组件状态。
 
-原生元素始终是状态的单一事实来源。例如，禁用按钮直接使用 `disabled`，不需要额外的组件布尔参数。
+## 框架接入
 
-## 组件分组
+HTML 是所有组件的公开契约。React 与 Vue 适配器复用同一语义根元素，不增加包装层；组件只有在暴露事件或方法时才提供对应的 hook 或组合式函数。每个组件页面会明确列出实际可用的接口，不使用占位 API。
 
-### 输入与操作
+| 能力              | 通用组件         | 布局与工作区     | Harness          |
+| ----------------- | ---------------- | ---------------- | ---------------- |
+| 语义化 HTML       | 必须             | 必须             | 必须             |
+| React 与 Vue      | 语义根适配器     | 语义根适配器     | 语义根适配器     |
+| Hook / 组合式函数 | 有行为接口时提供 | 有行为接口时提供 | 有行为接口时提供 |
+| 浅色与深色主题    | 支持             | 支持             | 支持             |
+| RTL 逻辑布局      | 支持             | 支持             | 支持             |
+| 响应式布局        | 按组件提供       | 内置             | 按工作流提供     |
+| Nunjucks 与 Jinja | 已有组件模板     | 通过 HTML 组合   | 通过 HTML 组合   |
 
-[按钮](/components/button) · [按钮组](/components/button-group) · [批量操作栏](/components/bulk-action-bar) · [复制按钮](/components/copy-button) · [可编辑文本](/components/editable-text) · [表单](/components/form) · [表单字段](/components/field) · [输入](/components/input) · [输入组](/components/input-group) · [快捷键输入](/components/hotkey-input) · [文本区域](/components/textarea) · [标签](/components/label)
-
-### 选择与搜索
-
-[原生选择器](/components/native-select) · [选择器](/components/select) · [组合框](/components/combobox) · [筛选栏](/components/filter-bar) · [日期选择器](/components/date-picker) · [颜色色板](/components/color-swatches) · [图像选择](/components/image-select) · [表情选择器](/components/emoji-picker) · [复选框](/components/checkbox) · [单选组](/components/radio-group) · [开关](/components/switch) · [滑块](/components/slider)
-
-### 导航
-
-[活动栏](/components/activity-bar) · [面包屑](/components/breadcrumb) · [返回底部](/components/back-to-bottom) · [标签页](/components/tabs) · [分页](/components/pagination) · [侧边栏](/components/sidebar) · [页内目录](/components/table-of-contents)
-
-### 布局与工作区
-
-[App Shell](/components/app-shell) · [应用页面](/components/app-page) · [能力目录](/components/catalog) · [设置行](/components/setting-row) · [品牌标识组](/components/brand-lockup) · [工作区标题栏](/components/workspace-header) · [工具栏](/components/toolbar) · [Ribbon 功能区](/components/ribbon) · [设置布局](/components/settings-layout) · [资源卡](/components/resource-card) · [分割窗格](/components/split-pane) · [任务窗格](/components/task-pane) · [状态栏](/components/status-bar)
-
-### 浮层
-
-[警报对话框](/components/alert-dialog) · [对话框](/components/dialog) · [抽屉](/components/drawer) · [下拉菜单](/components/dropdown-menu) · [上下文菜单](/components/context-menu) · [弹出框](/components/popover) · [浮动面板](/components/floating-panel) · [图像查看器](/components/image-viewer) · [命令面板](/components/command) · [工具提示](/components/tooltip)
-
-### 反馈与状态
-
-[警报](/components/alert) · [徽章](/components/badge) · [状态徽章](/components/status-badge) · [空状态](/components/empty) · [进度](/components/progress) · [骨架](/components/skeleton) · [加载指示器](/components/spinner) · [流式文本](/components/streaming-text) · [Toast](/components/toast)
-
-### 数据与内容
-
-[折叠面板](/components/accordion) · [可折叠区](/components/collapsible) · [头像](/components/avatar) · [图标](/components/icon) · [文件类型图标](/components/file-type-icon) · [图像](/components/image) · [卡片](/components/card) · [列表项](/components/item) · [Kbd](/components/kbd) · [Markdown 内容面](/components/markdown-surface) · [代码高亮](/components/highlighter) · [代码差异](/components/code-diff) · [代码片段](/components/snippet) · [图表](/components/chart) · [属性列表](/components/property-list) · [数据网格](/components/data-grid) · [表格](/components/table) · [可排序列表](/components/sortable-list) · [步骤条](/components/stepper) · [时间线](/components/timeline) · [树形控件](/components/tree)
-
-### 工具
-
-[滚动区域](/components/scroll-area) · [主题切换器](/components/theme-switcher)
-
-### Harness
-
-[Harness](/harness/) 按“任务与对话”“执行与审阅”“工具”三段组织 25 个 Coding Agent 组件，并保留每个组件原有的 `/components/*` 稳定路由。
-
-完整页面组合：[任务工作区](/patterns/task-workspace) · [新建任务](/patterns/new-task) · [能力目录](/patterns/capability-catalog) · [设置中心](/patterns/settings-center) · [项目](/patterns/projects) · [自动化](/patterns/automations)
-
-## 支持矩阵
-
-| 能力              | 通用组件         | 布局与工作区   | Harness              |
-| ----------------- | ---------------- | -------------- | -------------------- |
-| 语义化 HTML       | 必须             | 必须           | 必须                 |
-| 浅色与深色主题    | 支持             | 支持           | 支持                 |
-| RTL 逻辑布局      | 支持             | 支持           | 支持                 |
-| 响应式布局        | 按组件提供       | 内置           | 按工作流提供         |
-| Nunjucks 与 Jinja | 已有组件模板     | 通过 HTML 组合 | 通过 HTML 组合       |
-| JavaScript 依赖   | 仅交互式复合组件 | 仅交互布局     | 执行、编辑与预览工具 |
-
-新产品应优先使用 A3S 视觉风格。Vega、Nova、Maia、Lyra、Mira、Luma、Sera 与 Rhea 仍可用于需要旧版兼容外观的应用。
+新产品应优先使用 A3S 视觉风格。Vega、Nova、Maia、Lyra、Mira、Luma、Sera 与 Rhea 仅用于需要兼容既有外观的应用。

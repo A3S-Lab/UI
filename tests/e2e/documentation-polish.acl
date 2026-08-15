@@ -1,0 +1,188 @@
+suite "a3s-ui-documentation-polish" {
+    version = 1
+
+    scenario "image-viewer-mobile" {
+        name = "Image Viewer keeps the full asset and localized controls visible on mobile"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/image-viewer.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "localized-title" { text = "图像预览" }
+        expect "asset-visible" { visible = css(".a3s-preview[data-preview-component=image-viewer] .image-viewer img") }
+        wheel "show-preview" { delta_y = 420 }
+        screenshot "mobile-preview" { path = "documentation/image-viewer-mobile.png" }
+        console "console" { path = "documentation/image-viewer-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/image-viewer-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "split-pane-mobile" {
+        name = "Split Pane keeps the endpoint readable on mobile"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/split-pane.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "endpoint-visible" { visible = css(".a3s-preview[data-preview-component=split-pane] .split-pane h2 .whitespace-nowrap") }
+        wheel "show-preview" { delta_y = 420 }
+        screenshot "mobile-preview" { path = "documentation/split-pane-mobile.png" }
+        console "console" { path = "documentation/split-pane-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/split-pane-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "localized-default-previews" {
+        name = "Chinese component pages expose localized default previews"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "collapsible" { url = "http://127.0.0.1:4178/UI/components/collapsible.html" }
+        wait "collapsible-loaded" { load = "networkidle" }
+        expect "collapsible-copy" { text = "为什么需要此权限" }
+        wheel "show-collapsible" { delta_y = 360 }
+        screenshot "collapsible-preview" { path = "documentation/collapsible-localized.png" }
+
+        navigate "form" { url = "http://127.0.0.1:4178/UI/components/form.html" }
+        wait "form-loaded" { load = "networkidle" }
+        expect "form-copy" { text = "保存工作区" }
+        wheel "show-form" { delta_y = 360 }
+        screenshot "form-preview" { path = "documentation/form-localized.png" }
+
+        navigate "tabs" { url = "http://127.0.0.1:4178/UI/components/tabs.html" }
+        wait "tabs-loaded" { load = "networkidle" }
+        expect "tabs-copy" { text = "保存更改" }
+        expect "tabs-localized-name" { visible = css(".a3s-preview[data-preview-component=tabs] input[value='林安']") }
+        expect "tabs-localized-line-example" { visible = css(".a3s-preview[data-preview-component=tabs] #tabs-line [role=tab][aria-selected=true]") }
+        wheel "show-tabs" { delta_y = 360 }
+        screenshot "tabs-preview" { path = "documentation/tabs-localized.png" }
+
+        navigate "table" { url = "http://127.0.0.1:4178/UI/components/table.html" }
+        wait "table-loaded" { load = "networkidle" }
+        expect "table-copy" { text = "最近账单列表" }
+        wheel "show-table" { delta_y = 360 }
+        screenshot "table-preview" { path = "documentation/table-localized.png" }
+
+        console "console" { path = "documentation/localized-previews-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/localized-previews-page-errors.json" clear = false }
+    }
+
+    scenario "localized-component-contracts" {
+        name = "Localized component guides use realistic previews and framework examples"
+        surface = "web"
+        timeout_ms = 120000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "copy-button" { url = "http://127.0.0.1:4178/UI/components/copy-button.html" }
+        wait "copy-button-loaded" { load = "networkidle" }
+        expect "copy-button-label" { text = "复制命令" }
+        screenshot "copy-button-preview" { path = "documentation/copy-button-localized-desktop.png" }
+
+        navigate "editable-text" { url = "http://127.0.0.1:4178/UI/components/editable-text.html" }
+        wait "editable-text-loaded" { load = "networkidle" }
+        expect "editable-text-label" { text = "发布说明" }
+        screenshot "editable-text-preview" { path = "documentation/editable-text-localized-desktop.png" }
+
+        navigate "emoji-picker" { url = "http://127.0.0.1:4178/UI/components/emoji-picker.html" }
+        wait "emoji-picker-loaded" { load = "networkidle" }
+        expect "emoji-picker-label" { text = "搜索回应" }
+        screenshot "emoji-picker-preview" { path = "documentation/emoji-picker-localized-desktop.png" }
+
+        navigate "command" { url = "http://127.0.0.1:4178/UI/components/command.html" }
+        wait "command-loaded" { load = "networkidle" }
+        expect "command-title" { text = "命令面板" }
+        expect "command-empty-copy" { visible = css(".a3s-preview[data-preview-component=command] [data-empty='没有匹配结果。']") }
+        screenshot "command-preview" { path = "documentation/command-localized-desktop.png" }
+
+        navigate "drawer" { url = "http://127.0.0.1:4178/UI/components/drawer.html" }
+        wait "drawer-loaded" { load = "networkidle" }
+        expect "drawer-copy" { text = "调整每日目标" }
+        screenshot "drawer-preview" { path = "documentation/drawer-real-content-desktop.png" }
+
+        navigate "dropdown-menu" { url = "http://127.0.0.1:4178/UI/components/dropdown-menu.html" }
+        wait "dropdown-menu-loaded" { load = "networkidle" }
+        expect "dropdown-menu-copy" { text = "打开账户菜单" }
+        screenshot "dropdown-menu-preview" { path = "documentation/dropdown-menu-localized-desktop.png" }
+
+        console "console" { path = "documentation/localized-component-contracts-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/localized-component-contracts-page-errors.json" clear = false }
+    }
+
+    scenario "batch-twelve-mobile-layouts" {
+        name = "Batch twelve routes stay readable without clipped headings or controls at 390 pixels"
+        surface = "web"
+        timeout_ms = 120000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "projects" { url = "http://127.0.0.1:4178/UI/patterns/projects.html" }
+        wait "projects-loaded" { load = "networkidle" }
+        expect "projects-heading" { text = "你的项目" }
+        screenshot "projects-top" { path = "documentation/projects-mobile-fixed.png" }
+
+        navigate "templates" { url = "http://127.0.0.1:4178/UI/templates.html" }
+        wait "templates-loaded" { load = "networkidle" }
+        expect "templates-parameters" { text = "参数" }
+        expect "templates-table-scroll-region" { visible = css(".rp-doc .rp-table-scroll-container[data-a3s-table-overflow=true][role=region][aria-label='可横向滚动的表格'][tabindex='0']") }
+        screenshot "templates-top" { path = "documentation/templates-mobile-fixed.png" }
+
+        navigate "command" { url = "http://127.0.0.1:4178/UI/components/command.html" }
+        wait "command-loaded" { load = "networkidle" }
+        expect "command-search" { visible = css(".a3s-preview[data-preview-component=command] input[placeholder='输入命令或搜索…']") }
+        screenshot "command-top" { path = "documentation/command-mobile-fixed.png" }
+
+        navigate "drawer" { url = "http://127.0.0.1:4178/UI/components/drawer.html" }
+        wait "drawer-loaded" { load = "networkidle" }
+        expect "drawer-trigger" { text = "打开抽屉" }
+        screenshot "drawer-top" { path = "documentation/drawer-mobile-fixed.png" }
+
+        console "console" { path = "documentation/batch-twelve-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/batch-twelve-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "batch-twelve-dark-mode" {
+        name = "Corrected component and pattern routes retain contrast in dark mode"
+        surface = "web"
+        timeout_ms = 150000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "command" { url = "http://127.0.0.1:4178/UI/components/command.html" }
+        wait "command-loaded" { load = "networkidle" }
+        click "use-dark-mode" { target = role("button", "切换到深色主题") }
+        expect "dark-mode-ready" { visible = css("html.dark.rp-dark") }
+        screenshot "command-dark" { path = "documentation/command-dark-fixed.png" }
+
+        navigate "drawer" { url = "http://127.0.0.1:4178/UI/components/drawer.html" }
+        wait "drawer-loaded" { load = "networkidle" }
+        expect "drawer-dark" { visible = css("html.dark.rp-dark") }
+        screenshot "drawer-dark-preview" { path = "documentation/drawer-dark-fixed.png" }
+
+        navigate "dropdown-menu" { url = "http://127.0.0.1:4178/UI/components/dropdown-menu.html" }
+        wait "dropdown-menu-loaded" { load = "networkidle" }
+        expect "dropdown-menu-dark" { visible = css("html.dark.rp-dark") }
+        screenshot "dropdown-menu-dark-preview" { path = "documentation/dropdown-menu-dark-fixed.png" }
+
+        navigate "copy-button" { url = "http://127.0.0.1:4178/UI/components/copy-button.html" }
+        wait "copy-button-loaded" { load = "networkidle" }
+        screenshot "copy-button-dark" { path = "documentation/copy-button-dark-fixed.png" }
+
+        navigate "editable-text" { url = "http://127.0.0.1:4178/UI/components/editable-text.html" }
+        wait "editable-text-loaded" { load = "networkidle" }
+        screenshot "editable-text-dark" { path = "documentation/editable-text-dark-fixed.png" }
+
+        navigate "emoji-picker" { url = "http://127.0.0.1:4178/UI/components/emoji-picker.html" }
+        wait "emoji-picker-loaded" { load = "networkidle" }
+        screenshot "emoji-picker-dark" { path = "documentation/emoji-picker-dark-fixed.png" }
+
+        navigate "projects" { url = "http://127.0.0.1:4178/UI/patterns/projects.html" }
+        wait "projects-loaded" { load = "networkidle" }
+        screenshot "projects-dark" { path = "documentation/projects-dark-fixed.png" }
+
+        navigate "templates" { url = "http://127.0.0.1:4178/UI/templates.html" }
+        wait "templates-loaded" { load = "networkidle" }
+        screenshot "templates-dark" { path = "documentation/templates-dark-fixed.png" }
+
+        console "console" { path = "documentation/batch-twelve-dark-console.json" clear = false }
+        page_errors "page-errors" { path = "documentation/batch-twelve-dark-page-errors.json" clear = false }
+    }
+}

@@ -1,7 +1,29 @@
 type MdastNode = {
   type: string;
   name?: string;
+  attributes?: MdastAttribute[];
   children?: MdastNode[];
+};
+
+type MdastAttribute = {
+  type: string;
+  name?: string;
+  value?: unknown;
+};
+
+const intrinsicAttributeAliases: Record<string, string> = {
+  class: "className",
+  for: "htmlFor",
+  tabindex: "tabIndex",
+  colspan: "colSpan",
+  rowspan: "rowSpan",
+  autocomplete: "autoComplete",
+  maxlength: "maxLength",
+  "stroke-width": "strokeWidth",
+  "stroke-linecap": "strokeLinecap",
+  "stroke-linejoin": "strokeLinejoin",
+  "fill-rule": "fillRule",
+  "clip-rule": "clipRule",
 };
 
 const phrasingContentElements = new Set([
@@ -61,6 +83,23 @@ function normalizePhrasingContent(node: MdastNode) {
   node.children?.forEach(normalizePhrasingContent);
 }
 
+function normalizeIntrinsicAttributes(node: MdastNode) {
+  if (
+    (node.type === "mdxJsxFlowElement" ||
+      node.type === "mdxJsxTextElement") &&
+    node.name &&
+    /^[a-z]/.test(node.name)
+  ) {
+    node.attributes?.forEach((attribute) => {
+      if (attribute.type !== "mdxJsxAttribute" || !attribute.name) return;
+      attribute.name =
+        intrinsicAttributeAliases[attribute.name] ?? attribute.name;
+    });
+  }
+
+  node.children?.forEach(normalizeIntrinsicAttributes);
+}
+
 /**
  * MDX treats indented text inside flow JSX as Markdown and wraps it in a
  * paragraph. That produces parser-breaking markup such as `<p><p>…</p></p>`
@@ -69,5 +108,8 @@ function normalizePhrasingContent(node: MdastNode) {
  * elements whose content model is phrasing-only.
  */
 export function normalizeMdxHtmlPlugin() {
-  return (tree: MdastNode) => normalizePhrasingContent(tree);
+  return (tree: MdastNode) => {
+    normalizePhrasingContent(tree);
+    normalizeIntrinsicAttributes(tree);
+  };
 }

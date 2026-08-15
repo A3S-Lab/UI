@@ -183,6 +183,19 @@
     function updateScale() {
       const { height, width } = dimensions();
       const styles = getComputedStyle(workspace);
+      const rootStyles = getComputedStyle(root);
+      const shellLength = (property) => {
+        const value = Number.parseFloat(rootStyles.getPropertyValue(property));
+        return Number.isFinite(value) ? value : 0;
+      };
+      const frameWidth =
+        width +
+        shellLength("--device-simulator-shell-inline-start") +
+        shellLength("--device-simulator-shell-inline-end");
+      const frameHeight =
+        height +
+        shellLength("--device-simulator-shell-block-start") +
+        shellLength("--device-simulator-shell-block-end");
       const horizontalPadding =
         Number.parseFloat(styles.paddingInlineStart) +
         Number.parseFloat(styles.paddingInlineEnd);
@@ -202,16 +215,20 @@
           ? 1
           : Math.max(
               0.1,
-              Math.min(1, availableWidth / width, availableHeight / height),
+              Math.min(
+                1,
+                availableWidth / frameWidth,
+                availableHeight / frameHeight,
+              ),
             );
       root.style.setProperty("--device-simulator-scale", scale.toFixed(4));
       root.style.setProperty(
         "--device-simulator-scaled-width",
-        `${(width * scale).toFixed(2)}px`,
+        `${(frameWidth * scale).toFixed(2)}px`,
       );
       root.style.setProperty(
         "--device-simulator-scaled-height",
-        `${(height * scale).toFixed(2)}px`,
+        `${(frameHeight * scale).toFixed(2)}px`,
       );
       root.dataset.deviceScale = scale.toFixed(4);
     }

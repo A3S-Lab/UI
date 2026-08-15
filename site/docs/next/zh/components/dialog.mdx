@@ -1,42 +1,44 @@
 # 对话框
 
+对话框在需要明确确认或短暂补充信息时将焦点限制在一个任务中，并在完成后返回原流程。
+
 <Preview>
-<button type="button" onclick="document.getElementById('demo-dialog-edit-profile').showModal()" class="btn" data-variant="outline">Open Dialog</button>
+<button type="button" onclick="document.getElementById('demo-dialog-edit-profile').showModal()" class="btn" data-variant="outline">打开对话框</button>
 <dialog id="demo-dialog-edit-profile" class="dialog" aria-labelledby="demo-dialog-edit-profile-title" aria-describedby="demo-dialog-edit-profile-description" onclick="if (event.target === this) this.close()">
   <div class="sm:max-w-sm">
     <header>
-      <h2 id="demo-dialog-edit-profile-title">Edit profile</h2>
-      <p id="demo-dialog-edit-profile-description">Make changes to your profile here. Click save when you're done.</p>
+      <h2 id="demo-dialog-edit-profile-title">编辑个人资料</h2>
+      <p id="demo-dialog-edit-profile-description">修改个人资料，完成后保存更改。</p>
     </header>
     <section>
       <form class="grid gap-4">
         <div class="grid gap-3">
-          <label class="label" for="demo-dialog-edit-profile-name">Name</label>
+          <label class="label" for="demo-dialog-edit-profile-name">姓名</label>
           <input class="input" type="text" value="Pedro Duarte" id="demo-dialog-edit-profile-name" autofocus />
         </div>
         <div class="grid gap-3">
-          <label class="label" for="demo-dialog-edit-profile-username">Username</label>
+          <label class="label" for="demo-dialog-edit-profile-username">用户名</label>
           <input class="input" type="text" value="@peduarte" id="demo-dialog-edit-profile-username" />
         </div>
       </form>
     </section>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Save changes</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
+      <button class="btn" onclick="this.closest('dialog').close()">保存更改</button>
     </footer>
     <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Close dialog" onclick="this.closest('dialog').close()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button>
   </div>
 </dialog>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#dialog" }}>
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#dialog" }}>
 该组件为 Jinja 和 Nunjucks 提供了 `dialog()` 宏。
 </Callout>
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -57,33 +59,33 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your dialog HTML">
+  <Step title="添加对话框 HTML">
 
 A3S UI uses the native `<dialog>` element and `showModal()`. This differs from shadcn/ui's portalled Base UI implementation, but preserves native modality, focus handling, and inert page content without component JavaScript.
 
 ```html
-<button type="button" onclick="document.getElementById('demo-dialog-edit-profile').showModal()" class="btn" data-variant="outline">Open Dialog</button>
+<button type="button" onclick="document.getElementById('demo-dialog-edit-profile').showModal()" class="btn" data-variant="outline">打开对话框</button>
 <dialog id="demo-dialog-edit-profile" class="dialog" aria-labelledby="demo-dialog-edit-profile-title" aria-describedby="demo-dialog-edit-profile-description" onclick="if (event.target === this) this.close()">
   <div class="sm:max-w-sm">
     <header>
-      <h2 id="demo-dialog-edit-profile-title">Edit profile</h2>
-      <p id="demo-dialog-edit-profile-description">Make changes to your profile here. Click save when you're done.</p>
+      <h2 id="demo-dialog-edit-profile-title">编辑个人资料</h2>
+      <p id="demo-dialog-edit-profile-description">修改个人资料，完成后保存更改。</p>
     </header>
     <section>
       <form class="grid gap-4">
         <div class="grid gap-3">
-          <label class="label" for="demo-dialog-edit-profile-name">Name</label>
+          <label class="label" for="demo-dialog-edit-profile-name">姓名</label>
           <input class="input" type="text" value="Pedro Duarte" id="demo-dialog-edit-profile-name" autofocus />
         </div>
         <div class="grid gap-3">
-          <label class="label" for="demo-dialog-edit-profile-username">Username</label>
+          <label class="label" for="demo-dialog-edit-profile-username">用户名</label>
           <input class="input" type="text" value="@peduarte" id="demo-dialog-edit-profile-username" />
         </div>
       </form>
     </section>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Save changes</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
+      <button class="btn" onclick="this.closest('dialog').close()">保存更改</button>
     </footer>
     <button type="button" class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Close dialog" onclick="this.closest('dialog').close()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button>
   </div>

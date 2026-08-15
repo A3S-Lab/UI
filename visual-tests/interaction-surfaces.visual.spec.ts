@@ -448,10 +448,7 @@ test("Field composition reuses a localized mutable Slider demo", async ({
     name: "Price range",
   });
   const englishOutput = englishPreview.locator("output");
-  await expect(englishPreview).toHaveAttribute(
-    "aria-label",
-    "Interactive component preview",
-  );
+  await expect(englishPreview).toHaveAccessibleName("Slider component preview");
   await expect(englishOutput).toHaveText("$800");
   await expect(englishSlider).toHaveAttribute("aria-valuetext", "$800");
   await englishSlider.focus();
@@ -472,9 +469,9 @@ test("Field composition reuses a localized mutable Slider demo", async ({
   const chineseSlider = chinesePreview.getByRole("slider", {
     name: "价格范围",
   });
-  await expect(chinesePreview).toHaveAttribute("aria-label", "交互式组件预览");
+  await expect(chinesePreview).toHaveAccessibleName("滑块组件预览");
   await expect(chinesePreview.locator(".a3s-preview__header")).toContainText(
-    "实时预览",
+    "滑块",
   );
   await expect(chineseSlider).toHaveAttribute("aria-valuetext", "US$800");
   await expect(chinesePreview.locator("output")).toHaveText("US$800");
@@ -501,37 +498,130 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const htmlPreview = page
     .locator(".a3s-preview[data-preview-component=button]")
     .first();
-  const sourceDetails = htmlPreview.locator(
-    "details[data-preview-source-panel]",
+  const sourcePanel = htmlPreview.locator("[data-preview-source-panel]");
+  const sourceToggle = htmlPreview.locator(
+    ".a3s-preview__controls button[aria-controls]",
   );
-  const sourceSummary = sourceDetails.getByText("View source", {
-    exact: true,
-  });
   await expect(htmlPreview).toHaveAttribute("data-preview-source", "ready");
-  await expect(sourceDetails).not.toHaveAttribute("open", "");
-  await sourceSummary.click();
-  await expect(sourceDetails).toHaveAttribute("open", "");
-  await expect(sourceDetails).toContainText('<button type="button"');
-  await expect(sourceDetails).toContainText('class="btn"');
-  await expect(sourceDetails).toContainText('data-variant="outline"');
+  await expect(htmlPreview).toHaveAccessibleName(
+    "Common actions component preview",
+  );
+  const previewCopyButton = htmlPreview.locator(
+    ".a3s-preview__controls button[data-state]",
+  );
+  await expect(previewCopyButton).toHaveAccessibleName("Copy source");
+  await expect(previewCopyButton).toContainText("Copy");
+  await previewCopyButton.click();
+  await expect(previewCopyButton).toHaveAccessibleName("Source copied");
+  await expect(previewCopyButton).toContainText("Copied");
+  await expect
+    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+    .toContain("Save changes");
+  await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
+  await expect(sourceToggle).toHaveAccessibleName("Show source");
+  await expect(sourcePanel).toBeHidden();
+  await sourceToggle.click();
+  await expect(sourceToggle).toHaveAttribute("aria-expanded", "true");
+  await expect(sourcePanel).toBeVisible();
+  await expect(sourcePanel).toContainText('<button type="button"');
+  await expect(sourcePanel).toContainText('class="btn"');
+  await expect(sourcePanel).toContainText('data-variant="outline"');
   await expect(htmlPreview.locator("[data-reactroot]")).toHaveCount(0);
   await expect
-    .poll(() => sourceDetails.locator(".line span[style]").count())
+    .poll(() => sourcePanel.locator(".line span[style]").count())
     .toBeGreaterThan(0);
 
-  const copyButton = sourceDetails.locator(".rp-code-copy-button");
+  const copyButton = sourcePanel.locator(".rp-code-copy-button");
   await expect(copyButton).toHaveAccessibleName("Copy code");
   await copyButton.click();
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toContain('class="btn"');
 
-  await sourceDetails.locator("summary").focus();
+  await sourceToggle.focus();
   await page.keyboard.press("Space");
-  await expect(sourceDetails).not.toHaveAttribute("open", "");
+  await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
+  await expect(sourcePanel).toBeHidden();
   await expect(
-    htmlPreview.getByRole("button", { name: "Button", exact: true }),
+    htmlPreview.getByRole("button", { name: "Save changes", exact: true }),
   ).toBeVisible();
+
+  const phoneViewport = htmlPreview.getByRole("button", {
+    name: "Phone width",
+  });
+  await phoneViewport.click();
+  await expect(phoneViewport).toHaveAttribute("aria-pressed", "true");
+  await expect(htmlPreview).toHaveAttribute("data-preview-viewport", "phone");
+  const phoneShell = htmlPreview.locator(".a3s-preview__viewport-shell");
+  const phoneFrame = htmlPreview.locator(
+    '[data-preview-emulated-viewport="phone"]',
+  );
+  await expect(phoneShell).toBeVisible();
+  await expect(phoneFrame).toBeVisible();
+  const [previewBox, phoneShellBox] = await Promise.all([
+    htmlPreview.boundingBox(),
+    phoneShell.boundingBox(),
+  ]);
+  expect(previewBox).not.toBeNull();
+  expect(phoneShellBox).not.toBeNull();
+  expect(phoneShellBox!.x).toBeGreaterThanOrEqual(previewBox!.x - 1);
+  expect(phoneShellBox!.x + phoneShellBox!.width).toBeLessThanOrEqual(
+    previewBox!.x + previewBox!.width + 1,
+  );
+  const responsiveDocument = htmlPreview.frameLocator("iframe");
+  await expect(
+    responsiveDocument.getByRole("button", {
+      name: "Save changes",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      responsiveDocument
+        .locator("html")
+        .evaluate(() => Math.round(window.innerWidth)),
+    )
+    .toBe(390);
+
+  const tabletViewport = htmlPreview.getByRole("button", {
+    name: "Tablet width",
+  });
+  await tabletViewport.click();
+  await expect(tabletViewport).toHaveAttribute("aria-pressed", "true");
+  await expect(htmlPreview).toHaveAttribute("data-preview-viewport", "tablet");
+  await expect(
+    htmlPreview.locator('[data-preview-emulated-viewport="tablet"]'),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      responsiveDocument
+        .locator("html")
+        .evaluate(() => Math.round(window.innerWidth)),
+    )
+    .toBe(768);
+
+  const themeToggle = htmlPreview.getByRole("button", {
+    name: "Preview in dark mode",
+  });
+  await themeToggle.click();
+  await expect(
+    htmlPreview.getByRole("button", { name: "Use documentation theme" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(htmlPreview).toHaveAttribute("data-preview-scheme", "dark");
+  await expect(responsiveDocument.locator("html")).toHaveClass(/\bdark\b/);
+
+  const directionToggle = htmlPreview.getByRole("button", {
+    name: "Preview right-to-left layout",
+  });
+  await directionToggle.click();
+  await expect(
+    htmlPreview.getByRole("button", { name: "Use left-to-right layout" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(htmlPreview).toHaveAttribute("data-preview-direction", "rtl");
+  await expect(responsiveDocument.locator("html")).toHaveAttribute(
+    "dir",
+    "rtl",
+  );
 
   await openComponent(page, "slider");
   const reactPreview = page
@@ -539,10 +629,10 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
       '.a3s-preview[data-preview-component=slider]:has([data-slider-demo="standalone"])',
     )
     .first();
-  const reactSource = reactPreview.locator(
-    "details[data-preview-source-panel]",
-  );
-  await reactSource.locator("summary").click();
+  const reactSource = reactPreview.locator("[data-preview-source-panel]");
+  await reactPreview
+    .getByRole("button", { name: "Show source", exact: true })
+    .click();
   await expect(reactSource).toContainText('type="range"');
   await expect(reactSource).not.toContainText("SliderDemo");
   await expect(reactSource).not.toContainText("data-range-initialized");
@@ -552,9 +642,60 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const chinesePreview = page
     .locator(".a3s-preview[data-preview-component=button]")
     .first();
+  await expect(chinesePreview).toHaveAccessibleName("常用操作组件预览");
+  await expect(chinesePreview.locator(".a3s-preview__header")).toContainText(
+    "常用操作",
+  );
   await expect(
-    chinesePreview.locator("details[data-preview-source-panel] > summary"),
-  ).toContainText("查看源码");
+    chinesePreview.getByRole("button", { name: "展开源码" }),
+  ).toHaveAttribute("aria-expanded", "false");
+  await expect(
+    chinesePreview.locator("[data-preview-source-panel]"),
+  ).toBeHidden();
+  await expect(
+    chinesePreview.getByRole("button", { name: "复制源码" }),
+  ).toContainText("复制");
+});
+
+test("responsive previews preserve canvas pixels and omit Monaco internals", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openComponent(page, "chart");
+
+  const chartPreview = page
+    .locator(".a3s-preview[data-preview-component=chart]")
+    .first();
+  await chartPreview.getByRole("button", { name: "Phone width" }).click();
+  const chartSnapshot = chartPreview
+    .frameLocator("iframe")
+    .locator("[data-preview-canvas-snapshot]");
+  await expect(chartSnapshot).toBeVisible();
+  expect(
+    await chartSnapshot.evaluate((element) => {
+      const image = element as HTMLImageElement;
+      return (
+        image.complete && image.naturalWidth > 0 && image.naturalHeight > 0
+      );
+    }),
+  ).toBe(true);
+
+  await openComponent(page, "code-editor");
+  const workbenchPreview = page
+    .locator(".a3s-preview[data-preview-component=code-editor]")
+    .filter({ has: page.locator(".monaco-workbench") })
+    .first();
+  await workbenchPreview.getByRole("button", { name: "Phone width" }).click();
+  const workbenchDocument = workbenchPreview.frameLocator("iframe");
+  await expect(
+    workbenchDocument.locator(".a3s-preview-editor-snapshot"),
+  ).toBeVisible();
+  await expect(workbenchDocument.locator(".monaco-editor")).toHaveCount(0);
+  expect(
+    await workbenchDocument
+      .locator("body")
+      .evaluate((element) => element.innerHTML.length),
+  ).toBeLessThan(150_000);
 });
 
 test("Device Simulator keeps real viewport dimensions and a structured native boundary", async ({
@@ -594,11 +735,198 @@ test("Device Simulator keeps real viewport dimensions and a structured native bo
     )
     .toEqual({ height: 852, width: 393 });
 
+  const phoneShell = await simulator.evaluate((element) => {
+    const canvas = element.querySelector<HTMLElement>(
+      "[data-device-simulator-canvas]",
+    )!;
+    const frame = element.querySelector<HTMLElement>(
+      "[data-device-simulator-frame]",
+    )!;
+    const iframe = element.querySelector<HTMLElement>(
+      "[data-device-simulator-preview]",
+    )!;
+    const canvasRect = canvas.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+    const sensor = getComputedStyle(frame, "::before");
+    const gesture = getComputedStyle(frame, "::after");
+    return {
+      canvasHeight: canvasRect.height,
+      canvasWidth: canvasRect.width,
+      frameHeight: frame.offsetHeight,
+      frameRenderedHeight: frameRect.height,
+      frameRenderedWidth: frameRect.width,
+      frameWidth: frame.offsetWidth,
+      gesture: {
+        bottom: gesture.bottom,
+        content: gesture.content,
+        height: gesture.height,
+      },
+      preview: {
+        height: iframe.clientHeight,
+        left: iframe.offsetLeft,
+        top: iframe.offsetTop,
+        width: iframe.clientWidth,
+      },
+      sensor: {
+        content: sensor.content,
+        height: sensor.height,
+        top: sensor.top,
+        width: sensor.width,
+      },
+    };
+  });
+  expect(phoneShell.frameWidth).toBe(413);
+  expect(phoneShell.frameHeight).toBe(872);
+  expect(phoneShell.preview).toEqual({
+    height: 852,
+    left: 10,
+    top: 10,
+    width: 393,
+  });
+  expect(phoneShell.sensor).toMatchObject({
+    height: "30px",
+    top: "20px",
+    width: "112px",
+  });
+  expect(phoneShell.sensor.content).not.toBe("none");
+  expect(phoneShell.gesture.height).toBe("5px");
+  expect(phoneShell.gesture.bottom).toBe("20px");
+  expect(phoneShell.gesture.content).not.toBe("none");
+  expect(phoneShell.canvasWidth).toBeCloseTo(phoneShell.frameRenderedWidth, 1);
+  expect(phoneShell.canvasHeight).toBeCloseTo(
+    phoneShell.frameRenderedHeight,
+    1,
+  );
+
+  await preset.selectOption("ipad-mini");
+  await expect(simulator).toHaveAttribute("data-device-kind", "tablet");
+  const tabletShell = await simulator.evaluate((element) => {
+    const frame = element.querySelector<HTMLElement>(
+      "[data-device-simulator-frame]",
+    )!;
+    const iframe = element.querySelector<HTMLElement>(
+      "[data-device-simulator-preview]",
+    )!;
+    const camera = getComputedStyle(frame, "::before");
+    return {
+      camera: {
+        content: camera.content,
+        height: camera.height,
+        top: camera.top,
+        width: camera.width,
+      },
+      frame: { height: frame.offsetHeight, width: frame.offsetWidth },
+      preview: {
+        height: iframe.clientHeight,
+        left: iframe.offsetLeft,
+        top: iframe.offsetTop,
+        width: iframe.clientWidth,
+      },
+    };
+  });
+  expect(tabletShell.frame).toEqual({ height: 1052, width: 796 });
+  expect(tabletShell.preview).toEqual({
+    height: 1024,
+    left: 14,
+    top: 14,
+    width: 768,
+  });
+  expect(tabletShell.camera).toMatchObject({
+    height: "7px",
+    top: "4px",
+    width: "7px",
+  });
+  expect(tabletShell.camera.content).not.toBe("none");
+  await testInfo.attach("device-simulator-tablet-shell", {
+    body: await simulator.screenshot(),
+    contentType: "image/png",
+  });
+
   await preset.selectOption("laptop");
   await expect(simulator).toHaveAttribute("data-device-kind", "desktop");
   await expect(simulator).toHaveAttribute("data-orientation", "landscape");
   await expect(width).toHaveValue("1440");
   await expect(height).toHaveValue("900");
+
+  const laptopShell = await simulator.evaluate((element) => {
+    const frame = element.querySelector<HTMLElement>(
+      "[data-device-simulator-frame]",
+    )!;
+    const iframe = element.querySelector<HTMLElement>(
+      "[data-device-simulator-preview]",
+    )!;
+    const chassis = getComputedStyle(frame, "::before");
+    const base = getComputedStyle(frame, "::after");
+    return {
+      base: { content: base.content, height: base.height },
+      chassis: { content: chassis.content, height: chassis.height },
+      frame: { height: frame.offsetHeight, width: frame.offsetWidth },
+      preview: {
+        height: iframe.clientHeight,
+        left: iframe.offsetLeft,
+        top: iframe.offsetTop,
+        width: iframe.clientWidth,
+      },
+    };
+  });
+  expect(laptopShell.frame).toEqual({ height: 986, width: 1468 });
+  expect(laptopShell.preview).toEqual({
+    height: 900,
+    left: 14,
+    top: 18,
+    width: 1440,
+  });
+  expect(laptopShell.chassis).toMatchObject({ height: "928px" });
+  expect(laptopShell.chassis.content).not.toBe("none");
+  expect(laptopShell.base).toMatchObject({ height: "60px" });
+  expect(laptopShell.base.content).not.toBe("none");
+  await testInfo.attach("device-simulator-laptop-shell", {
+    body: await simulator.screenshot(),
+    contentType: "image/png",
+  });
+
+  await preset.selectOption("desktop");
+  await expect(simulator).toHaveAttribute("data-device", "desktop");
+  await expect(width).toHaveValue("1920");
+  await expect(height).toHaveValue("1080");
+  const monitorShell = await simulator.evaluate((element) => {
+    const frame = element.querySelector<HTMLElement>(
+      "[data-device-simulator-frame]",
+    )!;
+    const iframe = element.querySelector<HTMLElement>(
+      "[data-device-simulator-preview]",
+    )!;
+    const chassis = getComputedStyle(frame, "::before");
+    const stand = getComputedStyle(frame, "::after");
+    return {
+      chassis: { content: chassis.content, height: chassis.height },
+      frame: { height: frame.offsetHeight, width: frame.offsetWidth },
+      preview: {
+        height: iframe.clientHeight,
+        left: iframe.offsetLeft,
+        top: iframe.offsetTop,
+        width: iframe.clientWidth,
+      },
+      stand: { content: stand.content, height: stand.height },
+    };
+  });
+  expect(monitorShell.frame).toEqual({ height: 1212, width: 1948 });
+  expect(monitorShell.preview).toEqual({
+    height: 1080,
+    left: 14,
+    top: 14,
+    width: 1920,
+  });
+  expect(monitorShell.chassis).toMatchObject({ height: "1136px" });
+  expect(monitorShell.chassis.content).not.toBe("none");
+  expect(monitorShell.stand).toMatchObject({ height: "78px" });
+  expect(monitorShell.stand.content).not.toBe("none");
+  await testInfo.attach("device-simulator-monitor-shell", {
+    body: await simulator.screenshot(),
+    contentType: "image/png",
+  });
+
+  await preset.selectOption("laptop");
 
   await simulator
     .locator('[data-device-simulator-orientation-value="portrait"]')
@@ -705,6 +1033,55 @@ test("Device Simulator keeps real viewport dimensions and a structured native bo
 
   await preset.selectOption("pixel-8");
   await testInfo.attach("device-simulator-phone", {
+    body: await simulator.screenshot(),
+    contentType: "image/png",
+  });
+  await simulator
+    .locator('[data-device-simulator-orientation-value="landscape"]')
+    .click();
+  const landscapePhoneShell = await simulator.evaluate((element) => {
+    const frame = element.querySelector<HTMLElement>(
+      "[data-device-simulator-frame]",
+    )!;
+    const sensor = getComputedStyle(frame, "::before");
+    const gesture = getComputedStyle(frame, "::after");
+    const iframe = element.querySelector<HTMLElement>(
+      "[data-device-simulator-preview]",
+    )!;
+    return {
+      frame: { height: frame.offsetHeight, width: frame.offsetWidth },
+      gesture: {
+        height: gesture.height,
+        right: gesture.right,
+        width: gesture.width,
+      },
+      preview: {
+        height: iframe.clientHeight,
+        left: iframe.offsetLeft,
+        top: iframe.offsetTop,
+        width: iframe.clientWidth,
+      },
+      sensor: { height: sensor.height, left: sensor.left, width: sensor.width },
+    };
+  });
+  expect(landscapePhoneShell.frame).toEqual({ height: 432, width: 935 });
+  expect(landscapePhoneShell.preview).toEqual({
+    height: 412,
+    left: 10,
+    top: 10,
+    width: 915,
+  });
+  expect(landscapePhoneShell.sensor).toEqual({
+    height: "18px",
+    left: "20px",
+    width: "18px",
+  });
+  expect(landscapePhoneShell.gesture).toEqual({
+    height: "112px",
+    right: "20px",
+    width: "5px",
+  });
+  await testInfo.attach("device-simulator-phone-landscape-shell", {
     body: await simulator.screenshot(),
     contentType: "image/png",
   });

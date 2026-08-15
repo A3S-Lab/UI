@@ -6,9 +6,9 @@ App Shell 在开放式产品画布旁提供持久任务上下文。它既可用�
 <div class="app-shell" data-navigation="expanded" style="--app-shell-height:30rem;--app-shell-min-height:30rem;--app-shell-navigation-size:13rem">
   <aside data-app-navigation>
     <div class="activity-bar" aria-label="演示工作区">
-<header><span class="grid size-7 place-items-center rounded-lg bg-[var(--a3s-blue)] font-semibold text-white">A</span><span data-navigation-label>A3S UI</span></header>
+<header><A3SAssetImage className="size-7 rounded-lg" path="/logo.png" alt="" /><span data-navigation-label>A3S UI</span></header>
       <nav aria-label="演示"><ul><li><a href="#shell-home" aria-current="page"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg><span data-navigation-label>工作区</span></a></li><li><a href="#shell-components"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m22 12.5-9.17 4.17a2 2 0 0 1-1.66 0L2 12.5"/></svg><span data-navigation-label>组件</span></a></li><li><a href="#shell-settings"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span data-navigation-label>设置</span></a></li></ul></nav>
-<footer><span class="size-2 rounded-full bg-[var(--a3s-green)]"></span><span data-navigation-label>所有系统就绪</span></footer>
+<footer><span class="size-2 rounded-full bg-[var(--a3s-green)]" aria-hidden="true"></span><span data-navigation-label>所有系统就绪</span></footer>
     </div>
   </aside>
   <main data-app-main>
@@ -21,7 +21,7 @@ App Shell 在开放式产品画布旁提供持久任务上下文。它既可用�
 </div>
 </Preview>
 
-## 用途
+## 用法
 
 ```html
 <div class="app-shell" data-navigation="expanded">
@@ -35,7 +35,7 @@ App Shell 在开放式产品画布旁提供持久任务上下文。它既可用�
 </div>
 ```
 
-### 参数
+### HTML 结构
 
 | 参数 | 可选值 | 默认 | 目的 |
 | --- | --- | --- | --- |
@@ -53,13 +53,9 @@ App Shell 在开放式产品画布旁提供持久任务上下文。它既可用�
 
 导入 `@a3s-lab/ui/all`，或者先导入 `@a3s-lab/ui/runtime`，再导入 `@a3s-lab/ui/app-shell`。控制器在外壳根元素上提供 `expandNavigation()`、`collapseNavigation()`、`hideNavigation()`、`openNavigation()`、`closeNavigation()`、`toggleNavigation()` 与 `refresh()`。状态变化后会派发 `a3s:app-navigation-change`，详情为 `{ navigation, mobileOpen, mode, source }`。可用 `data-app-navigation-open-label`、`data-app-navigation-close-label`、`data-app-navigation-expand-label` 和 `data-app-navigation-collapse-label` 覆盖本地化标签。
 
-## 状态和变体
+## 状态与变体
 
 App Shell 支持展开、折叠、隐藏、全视口与移动端打开状态。低于 768px 时，导航会成为限制在外壳内部的浮层。控制器会为关闭状态设置 `inert` 与 `aria-hidden="true"`，打开后把焦点移到首个控件，并支持 Escape、遮罩和目的地选择关闭。导航与主内容分别拥有自己的滚动区域。宿主应用可以持久化 `data-navigation` 并与路由协调；程序化修改后若需要立即同步，可调用 `refresh()`。
-
-## 可访问性
-
-使用地标元素（`aside`、`nav`、`main`、`header`）并命名每个导航区域。控制器会同步 `aria-expanded`、触发器名称、`inert` 与 `aria-hidden`，关闭紧凑抽屉后恢复触发器焦点。导航应保持为 App Shell 的直接区域，避免局部遮罩覆盖无关页面内容。
 
 ## React
 
@@ -67,14 +63,33 @@ App Shell 支持展开、折叠、隐藏、全视口与移动端打开状态。�
 import { AppShell, useAppShell } from "@a3s-lab/ui/react";
 
 export function Example() {
-  const control = useAppShell();
+  const control = useAppShell({
+    events: {
+      "a3s:app-navigation-change"(event) {
+        const { navigation } = (event as CustomEvent).detail;
+        console.log("navigation", navigation);
+      },
+    },
+  });
+
   return (
-    <AppShell ref={control.ref}>组件内容</AppShell>
+    <AppShell ref={control.ref} data-navigation="expanded">
+      <aside data-app-navigation>
+        <nav aria-label="工作区"><a href="/tasks" aria-current="page">任务</a></nav>
+      </aside>
+      <main data-app-main>
+        <header>
+          <button type="button" onClick={() => control.call("toggleNavigation")}>切换导航</button>
+          <h1>设计系统工作区</h1>
+        </header>
+        <div data-app-content>…</div>
+      </main>
+    </AppShell>
   );
 }
 ```
 
-`useAppShell` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useAppShell` 订阅根节点的导航变化事件，并调用控制器公开的 `toggleNavigation` 等方法。若使用 `data-app-navigation-trigger`，控制器会直接处理点击，不要再在同一按钮上重复调用 hook。
 
 ## Vue
 
@@ -87,8 +102,23 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <AppShell ref="componentRef">组件内容</AppShell>
+  <AppShell ref="componentRef" data-navigation="expanded">
+    <aside data-app-navigation>
+      <nav aria-label="工作区"><a href="/tasks" aria-current="page">任务</a></nav>
+    </aside>
+    <main data-app-main>
+      <header>
+        <button type="button" @click='control.call("toggleNavigation")'>切换导航</button>
+        <h1>设计系统工作区</h1>
+      </header>
+      <div data-app-content>…</div>
+    </main>
+  </AppShell>
 </template>
 ```
 
-`useAppShell` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+Vue composable 使用相同的根元素、事件和方法，不创建另一套导航状态。
+
+## 可访问性
+
+使用 `aside`、`nav`、`main` 和 `header` 建立真实地标，并为每个导航区域提供可区分的名称。控制器同步触发器的 `aria-expanded` 与本地化名称；关闭移动导航时使导航 `inert`，打开时使主内容 `inert`，把焦点移入导航并在其中约束 Tab，最后把焦点还给触发器。导航必须是外壳的直接区域，遮罩只能覆盖当前外壳。宿主负责路由、权限与桌面折叠偏好；组件负责断点状态、焦点、Escape 和关闭行为。

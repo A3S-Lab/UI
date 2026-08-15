@@ -1,49 +1,33 @@
 # 卡片
 
-<Preview class="w-full max-w-sm">
-<div class="card">
+卡片把一组可以独立理解的内容与少量相关操作组织在同一边界内。边界服务于信息分组，不应成为页面的默认容器。
+
+<Preview class="w-full max-w-md">
+<article class="card" aria-labelledby="release-readiness-title">
   <header>
-    <h2>Login to your account</h2>
-    <p>Enter your email below to login to your account</p>
+    <h2 id="release-readiness-title">0.4.0 发布准备</h2>
+    <p>汇总当前版本最重要的交付信号。</p>
     <div class="card-action">
-      <button type="button" class="btn" data-variant="link">Sign Up</button>
+      <span class="badge" data-variant="secondary">需要审查</span>
     </div>
   </header>
   <section>
-    <form class="grid gap-6">
-      <div class="grid gap-2">
-        <label class="label" for="demo-card-email">Email</label>
-        <input class="input" type="email" id="demo-card-email" placeholder="m@example.com" required />
-      </div>
-      <div class="grid gap-2">
-        <div class="flex items-center">
-          <label class="label" for="demo-card-password">Password</label>
-          <a href="#" class="ms-auto inline-flex min-h-6 items-center text-sm underline-offset-4 hover:underline">Forgot your password?</a>
-        </div>
-        <input class="input" type="password" id="demo-card-password" required />
-      </div>
-    </form>
+    <dl class="grid gap-3 text-sm">
+      <div class="flex items-center justify-between gap-4"><dt class="text-muted-foreground">检查</dt><dd class="font-medium">24 / 26 通过</dd></div>
+      <div class="flex items-center justify-between gap-4"><dt class="text-muted-foreground">阻塞项</dt><dd class="font-medium">2 项</dd></div>
+      <div class="flex items-center justify-between gap-4"><dt class="text-muted-foreground">目标环境</dt><dd class="font-medium">生产</dd></div>
+    </dl>
   </section>
-  <footer class="flex-col gap-2">
-    <button type="button" class="btn w-full">Login</button>
-    <button type="button" class="btn w-full" data-variant="outline">Login with Google</button>
+  <footer class="justify-end gap-2">
+    <button type="button" class="btn" data-variant="outline">查看检查</button>
+    <button type="button" class="btn">开始审查</button>
   </footer>
-</div>
+</article>
 </Preview>
 
-## 用途
+## 用法
 
-<Steps>
-  <Step title="Include CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
-
-```css
-@import "tailwindcss";
-@import "@a3s-lab/ui/a3s.css";
-```
-
-或者只导入基本CSS、关联组件CSS和一个样式包。
+导入完整样式包，或按需导入卡片结构与视觉样式。
 
 ```css
 @import "tailwindcss";
@@ -52,158 +36,124 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
-  </Step>
-  <Step title="Add your card HTML">
+根据内容语义选择根元素。独立条目使用 `<article>`，普通布局分组可以使用 `<div>`；不要为了获得外观改变内容本身的标题层级。
 
 ```html
-<div class="card">
+<article class="card" aria-labelledby="release-title">
   <header>
-    <h2>Card Title</h2>
-    <p>Card Description</p>
-    <div class="card-action">Card Action</div>
-  </header>
-  <section> <p>Card Content</p></section>
-  <footer>
-    <p>Card Footer</p>
-  </footer>
-</div>
-```
-
-  </Step>
-</Steps>
-
-## HTML结构
-
-<dl>
-  <dt><code>&lt;div class="card"&gt;</code></dt>
-  <dd>
-    The card container. Use <code>data-size="sm"</code> for a denser layout.
-    <dl>
-      <dt><code>&lt;header&gt;</code></dt>
-      <dd>
-        The card header.
-        <dl>
-          <dt><code>&lt;h2&gt;</code> or <code>&lt;h3&gt;</code></dt>
-          <dd>The card title.</dd>
-          <dt><code>&lt;p&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>The card description.</dd>
-          <dt><code>&lt;div class="card-action"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>Action or metadata placed in the top-right of the header. Use <code>&lt;menu class="card-action"&gt;</code> when the content is a list of commands.</dd>
-        </dl>
-      </dd>
-      <dt><code>&lt;section&gt;</code></dt>
-      <dd>The main card content.</dd>
-      <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>Footer actions or secondary content at the bottom of the card.</dd>
-    </dl>
-  </dd>
-</dl>
-
-## 示例
-
-### 尺寸
-
-使用`data-size="sm"`将卡的尺寸设置为小。小尺寸变体使用更小的间距。
-
-<Preview class="w-full max-w-sm">
-<div class="card" data-size="sm">
-  <header>
-    <h2>Small Card</h2>
-    <p>This card uses the small size variant.</p>
-    <div class="card-action">
-      <button type="button" class="btn" data-size="sm" data-variant="outline">Action</button>
-    </div>
-  </header>
-  <section> <p>The card component supports a size attribute that can be set to <code>sm</code> for a more compact appearance.</p></section>
-</div>
-</Preview>
-
-### 图片
-
-在卡片标题前添加图像以创建带有图像的卡片。
-
-<Preview class="w-full max-w-sm">
-<div class="card">
-  <A3SAssetImage
-    alt="Event cover"
-    class="aspect-video w-full object-cover"
-    path="/assets/images/screenshot.png"
-  />
-  <header>
-    <h2>Design systems meetup</h2>
-    <p>A practical talk on component APIs, accessibility, and shipping faster.</p>
-    <div class="card-action">
-      <span class="badge" data-variant="secondary">Featured</span>
-    </div>
-  </header>
-  <footer>
-    <button type="button" class="btn w-full">View Event</button>
-  </footer>
-</div>
-</Preview>
-
-## RTL
-
-将 `dir="rtl"` 添加到卡或祖先。
-
-<Preview class="w-full max-w-sm">
-<div class="card" dir="rtl">
-  <header>
-    <h2>تسجيل الدخول إلى حسابك</h2>
-    <p>أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك</p>
-    <div class="card-action">
-      <button type="button" class="btn" data-variant="link">إنشاء حساب</button>
-    </div>
+    <h2 id="release-title">发布准备</h2>
+    <p>汇总当前版本最重要的交付信号。</p>
   </header>
   <section>
-    <form class="grid gap-6">
-      <div class="grid gap-2">
-        <label class="label" for="demo-card-rtl-email">البريد الإلكتروني</label>
-        <input class="input" type="email" id="demo-card-rtl-email" placeholder="m@example.com" required />
-      </div>
-      <div class="grid gap-2">
-        <div class="flex items-center">
-          <label class="label" for="demo-card-rtl-password">كلمة المرور</label>
-          <a href="#" class="ms-auto inline-flex min-h-6 items-center text-sm underline-offset-4 hover:underline">نسيت كلمة المرور؟</a>
-        </div>
-        <input class="input" type="password" id="demo-card-rtl-password" required />
-      </div>
-    </form>
+    <p>24 / 26 项检查已通过。</p>
   </section>
-  <footer class="flex-col gap-2">
-    <button type="button" class="btn w-full">تسجيل الدخول</button>
-    <button type="button" class="btn w-full" data-variant="outline">تسجيل الدخول باستخدام Google</button>
+  <footer>
+    <button type="button" class="btn">开始审查</button>
   </footer>
-</div>
+</article>
+```
+
+### HTML 结构
+
+| 元素或属性 | 必填 | 用途 |
+| --- | --- | --- |
+| `.card` | 是 | 卡片根边界 |
+| 直接子 `header` | 推荐 | 标题、说明与头部操作 |
+| `h2`、`h3` 或 `[data-title]` | 推荐 | 与页面层级一致的标题 |
+| `.card-action` | 否 | 一个紧邻标题的状态或低频操作 |
+| 直接子 `section` | 推荐 | 主内容 |
+| 直接子 `footer` | 否 | 与当前内容直接相关的操作 |
+| `data-size="sm"` | 否 | 高密度列表或侧栏中的紧凑间距 |
+
+## 状态与变体
+
+### 紧凑卡片
+
+小尺寸只改变密度，不降低信息完整性。适合侧栏摘要、检查结果或窄列表；触控界面中的按钮仍保持足够目标尺寸。
+
+<Preview class="w-full max-w-sm">
+<article class="card" data-size="sm" aria-labelledby="gateway-card-title">
+  <header>
+    <h2 id="gateway-card-title">Gateway</h2>
+    <p>最后验证于 2 分钟前</p>
+    <div class="card-action"><span class="status-badge" data-state="success">正常</span></div>
+  </header>
+  <section><p class="text-sm">所有入口均通过健康检查。</p></section>
+  <footer class="justify-end"><button type="button" class="btn" data-size="sm" data-variant="outline">查看详情</button></footer>
+</article>
 </Preview>
+
+### 媒体
+
+只有图片本身提供理解内容所需的信息时才放入卡片。图像保持真实宽高比并提供替代文本；装饰图使用空 `alt`。不要用无关封面填补空白。
+
+<Preview class="w-full max-w-sm">
+<article class="card" aria-labelledby="workspace-preview-title">
+  <A3SAssetImage alt="A3S 工作区界面预览" class="aspect-video w-full object-cover" path="/assets/images/screenshot.png" />
+  <header>
+    <h2 id="workspace-preview-title">工作区界面</h2>
+    <p>检查导航、内容画布和审查面板的组合。</p>
+  </header>
+  <footer><a class="btn" data-variant="outline" href="#card-workspace-preview">查看预览</a></footer>
+</article>
+</Preview>
+
+卡片本身不是选择控件，也没有统一的禁用状态。需要整卡导航时使用一个覆盖明确内容的链接模式；需要多选时在卡片内放置具名复选框，并让集合拥有选择状态。不要同时给整个卡片和内部操作添加冲突的点击行为。
+
+### RTL
+
+卡片使用逻辑内外边距，标题操作会随文本方向移动。图片、图表和产品 Logo 不镜像；有方向含义的箭头由宿主单独翻转。
 
 ## React
 
 ```tsx
-import { Card } from "@a3s-lab/ui/react";
+import { Button, Card } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ReleaseReadinessCard() {
   return (
-    <Card>组件内容</Card>
+    <Card as="article" aria-labelledby="release-title">
+      <header>
+        <h2 id="release-title">0.4.0 发布准备</h2>
+        <p>24 / 26 项检查已通过。</p>
+      </header>
+      <section>
+        <p>还有 2 个阻塞项需要审查。</p>
+      </section>
+      <footer>
+        <Button type="button">开始审查</Button>
+      </footer>
+    </Card>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Card` 只映射语义根元素和稳定子结构。内容、导航和选择由宿主拥有，因此不提供组件 hook。
 
 ## Vue
 
 ```vue
 <script setup>
-import { Card } from "@a3s-lab/ui/vue";
-
+import { Button, Card } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <Card>组件内容</Card>
+  <Card as="article" aria-labelledby="release-title">
+    <header>
+      <h2 id="release-title">0.4.0 发布准备</h2>
+      <p>24 / 26 项检查已通过。</p>
+    </header>
+    <section>
+      <p>还有 2 个阻塞项需要审查。</p>
+    </section>
+    <footer>
+      <Button type="button">开始审查</Button>
+    </footer>
+  </Card>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器使用相同的 `article`、标题、内容和操作区，不增加包装层。
+
+## 可访问性
+
+卡片不是独立 ARIA 角色。使用 `article`、`section` 或普通 `div` 取决于内容语义，并用页面层级正确的标题帮助导航。不要让整卡点击区域吞掉内部链接和按钮；如果整卡只导航到一个目标，链接必须有清晰名称并保留可见焦点。头部状态不能只靠颜色，图片需要合适替代文本，操作顺序与视觉顺序必须一致。宿主负责数据、导航、选择和权限；组件只负责内容边界与排版。

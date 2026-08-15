@@ -2,15 +2,16 @@
 @layer components {
   .device-simulator {
     border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
+    border-radius: var(--a3s-radius-lg, 0.75rem);
     background: var(--card);
     color: var(--card-foreground);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
   }
 
   .device-simulator > header {
-    padding: 0.75rem;
+    padding: 1rem;
     border-block-end: 1px solid var(--border);
-    background: color-mix(in srgb, var(--muted) 48%, var(--card));
+    background: color-mix(in srgb, var(--muted) 42%, var(--card));
   }
 
   .device-simulator [data-device-simulator-control] > span,
@@ -30,14 +31,35 @@
   .device-simulator
     [data-device-simulator-orientation]
     > button[aria-pressed="true"] {
-    border-color: color-mix(in srgb, var(--ring) 30%, var(--border));
-    background: color-mix(in srgb, var(--ring) 9%, var(--card));
+    border-color: transparent;
+    background: var(--card);
     color: var(--a3s-blue, var(--primary));
+    box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+  }
+
+  .device-simulator [data-device-simulator-orientation] {
+    padding: 0.1875rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--a3s-radius-sm, 0.375rem) + 0.1875rem);
+    background: var(--muted);
+  }
+
+  .device-simulator [data-device-simulator-orientation] > button {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
   .device-simulator [data-device-simulator-workspace] {
-    padding: clamp(1.25rem, 4vw, 2.5rem);
-    background: color-mix(in srgb, var(--muted) 66%, var(--background));
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background-color: color-mix(in srgb, var(--muted) 74%, var(--background));
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--border) 76%, transparent) 0 0.75px,
+      transparent 0.9px
+    );
+    background-position: 8px 8px;
+    background-size: 16px 16px;
     scrollbar-color: var(--border) transparent;
   }
 
@@ -48,61 +70,361 @@
   }
 
   .device-simulator [data-device-simulator-frame] {
-    border-radius: var(--device-simulator-frame-radius, 1.5rem);
-    background: #ffffff;
+    border-radius: var(--device-simulator-frame-radius, 3rem);
+    background: #0c0d10;
     box-shadow:
-      0 18px 42px rgb(15 23 42 / 18%),
-      inset 0 0 0 1px rgb(15 23 42 / 18%);
+      0 34px 64px -28px rgb(0 0 0 / 56%),
+      0 12px 24px -16px rgb(0 0 0 / 52%),
+      inset 0 0 0 1px rgb(255 255 255 / 20%),
+      inset 0 0 0 3px rgb(0 0 0 / 74%);
     transition:
-      width var(--a3s-motion-normal, 160ms) cubic-bezier(0.16, 1, 0.3, 1),
-      height var(--a3s-motion-normal, 160ms) cubic-bezier(0.16, 1, 0.3, 1),
-      transform var(--a3s-motion-normal, 160ms) cubic-bezier(0.16, 1, 0.3, 1),
-      border-radius var(--a3s-motion-normal, 160ms) ease-out;
+      transform var(--a3s-motion-normal, 160ms)
+        var(--a3s-ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      border-radius var(--a3s-motion-normal, 160ms)
+        var(--a3s-ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      box-shadow var(--a3s-motion-normal, 160ms)
+        var(--a3s-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  .device-simulator[data-device-kind="phone"] {
+    --device-simulator-shell-inline-start: 10px;
+    --device-simulator-shell-inline-end: 10px;
+    --device-simulator-shell-block-start: 10px;
+    --device-simulator-shell-block-end: 10px;
+    --device-simulator-frame-radius: 3.25rem;
+    --device-simulator-screen-radius: 2.625rem;
+  }
+
+  .device-simulator[data-device-kind="phone"][data-orientation="landscape"] {
+    --device-simulator-frame-radius: 2.75rem;
+    --device-simulator-screen-radius: 2.25rem;
   }
 
   .device-simulator[data-device-kind="tablet"] {
-    --device-simulator-frame-radius: 1rem;
+    --device-simulator-shell-inline-start: 14px;
+    --device-simulator-shell-inline-end: 14px;
+    --device-simulator-shell-block-start: 14px;
+    --device-simulator-shell-block-end: 14px;
+    --device-simulator-frame-radius: 1.875rem;
+    --device-simulator-screen-radius: 1.125rem;
   }
 
-  .device-simulator[data-device-kind="desktop"] {
-    --device-simulator-frame-radius: 0.5rem;
+  .device-simulator[data-device="laptop"] {
+    --device-simulator-shell-inline-start: 14px;
+    --device-simulator-shell-inline-end: 14px;
+    --device-simulator-shell-block-start: 18px;
+    --device-simulator-shell-block-end: 68px;
+    --device-simulator-frame-radius: 0.875rem;
+    --device-simulator-screen-radius: 0.3125rem 0.3125rem 0 0;
+  }
+
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"]) {
+    --device-simulator-shell-inline-start: 14px;
+    --device-simulator-shell-inline-end: 14px;
+    --device-simulator-shell-block-start: 14px;
+    --device-simulator-shell-block-end: 118px;
+    --device-simulator-frame-radius: 0.75rem;
+    --device-simulator-screen-radius: 0.25rem;
+  }
+
+  .device-simulator[data-device-kind="phone"]
+    [data-device-simulator-frame]::before,
+  .device-simulator[data-device-kind="phone"]
+    [data-device-simulator-frame]::after,
+  .device-simulator[data-device-kind="tablet"]
+    [data-device-simulator-frame]::before,
+  .device-simulator[data-device="laptop"] [data-device-simulator-frame]::before,
+  .device-simulator[data-device="laptop"] [data-device-simulator-frame]::after,
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"])
+    [data-device-simulator-frame]::before,
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"])
+    [data-device-simulator-frame]::after {
+    position: absolute;
+    display: block;
+    content: "";
+    pointer-events: none;
+  }
+
+  .device-simulator[data-device-kind="phone"] [data-device-simulator-frame] {
+    background:
+      linear-gradient(180deg, #a3a6ad, #3e4148 22%, #15171b 76%, #777a82) 0
+        19% / 3px 12% no-repeat,
+      linear-gradient(180deg, #9699a0, #303238 36%, #777a82) 100% 25% / 3px 9%
+        no-repeat,
+      linear-gradient(145deg, #666970 0%, #202226 16%, #08090b 82%, #55585f);
+    box-shadow:
+      0 38px 68px -30px rgb(0 0 0 / 62%),
+      0 14px 28px -18px rgb(0 0 0 / 56%),
+      inset 0 0 0 1px rgb(255 255 255 / 28%),
+      inset 0 0 0 3px rgb(0 0 0 / 76%);
+  }
+
+  .device-simulator[data-device-kind="phone"]
+    [data-device-simulator-frame]::before {
+    z-index: 4;
+    inset-block-start: 20px;
+    inset-inline-start: 50%;
+    width: 72px;
+    height: 8px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 88% 50%, #26334a 0 2px, #07080a 3px), #07080a;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%);
+    transform: translateX(-50%);
+  }
+
+  .device-simulator[data-device="iphone-15-pro"]
+    [data-device-simulator-frame]::before {
+    inset-block-start: 20px;
+    width: 112px;
+    height: 30px;
+    border-radius: 18px;
+    background:
+      radial-gradient(
+        circle at 82% 50%,
+        #2b4771 0 2px,
+        #132037 3px 4px,
+        #08090b 5px
+      ),
+      #08090b;
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 7%),
+      0 2px 5px rgb(0 0 0 / 46%);
+  }
+
+  .device-simulator[data-device="pixel-8"]
+    [data-device-simulator-frame]::before {
+    inset-block-start: 20px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      #32496f 0 2px,
+      #11151d 3px 5px,
+      #050608 6px
+    );
+  }
+
+  .device-simulator[data-device-kind="phone"]
+    [data-device-simulator-frame]::after {
+    z-index: 4;
+    inset-block-end: 20px;
+    inset-inline-start: 50%;
+    width: 112px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 92%);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 28%),
+      0 0 0 1px rgb(0 0 0 / 8%);
+    transform: translateX(-50%);
+  }
+
+  .device-simulator[data-device-kind="phone"][data-orientation="landscape"]
+    [data-device-simulator-frame]::before {
+    inset-block-start: 50%;
+    inset-inline-start: 20px;
+    width: 8px;
+    height: 72px;
+    transform: translateY(-50%);
+  }
+
+  .device-simulator[data-device="iphone-15-pro"][data-orientation="landscape"]
+    [data-device-simulator-frame]::before {
+    inset-inline-start: 20px;
+    width: 30px;
+    height: 112px;
+  }
+
+  .device-simulator[data-device="pixel-8"][data-orientation="landscape"]
+    [data-device-simulator-frame]::before {
+    inset-inline-start: 20px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .device-simulator[data-device-kind="phone"][data-orientation="landscape"]
+    [data-device-simulator-frame]::after {
+    inset-block-start: 50%;
+    inset-block-end: auto;
+    inset-inline-start: auto;
+    inset-inline-end: 20px;
+    width: 5px;
+    height: 112px;
+    transform: translateY(-50%);
+  }
+
+  .device-simulator[data-device-kind="tablet"] [data-device-simulator-frame] {
+    background: linear-gradient(
+      145deg,
+      #575a62,
+      #1a1b1f 24%,
+      #0b0c0f 76%,
+      #454850
+    );
+    box-shadow:
+      0 24px 40px -12px rgb(0 0 0 / 38%),
+      inset 0 0 0 1px rgb(255 255 255 / 20%),
+      inset 0 0 0 3px rgb(0 0 0 / 68%);
+  }
+
+  .device-simulator[data-device-kind="tablet"]
+    [data-device-simulator-frame]::before {
+    z-index: 4;
+    inset-block-start: 4px;
+    inset-inline-start: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #33496a 0 1px, #090b0f 2px 4px);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 8%);
+    transform: translateX(-50%);
+  }
+
+  .device-simulator[data-device-kind="tablet"][data-orientation="landscape"]
+    [data-device-simulator-frame]::before {
+    inset-block-start: 50%;
+    inset-inline-start: 4px;
+    transform: translateY(-50%);
+  }
+
+  .device-simulator[data-device="laptop"] [data-device-simulator-frame],
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"])
+    [data-device-simulator-frame] {
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .device-simulator[data-device="laptop"]
+    [data-device-simulator-frame]::before {
+    z-index: 0;
+    inset: 0 0 58px;
+    border-radius: 0.875rem 0.875rem 0.5rem 0.5rem;
+    background:
+      radial-gradient(
+        circle at 50% 7px,
+        #30466b 0 2px,
+        #08090b 3px 5px,
+        transparent 6px
+      ),
+      linear-gradient(145deg, #52555d, #202126 20%, #0e0f12 78%, #3e4148);
+    box-shadow:
+      0 24px 38px -14px rgb(0 0 0 / 42%),
+      inset 0 0 0 1px rgb(255 255 255 / 18%),
+      inset 0 0 0 3px rgb(0 0 0 / 68%);
+  }
+
+  .device-simulator[data-device="laptop"] [data-device-simulator-frame]::after {
+    z-index: 2;
+    inset-block-end: 0;
+    inset-inline: 0;
+    height: 60px;
+    border-radius: 0.1875rem 0.1875rem 1.25rem 1.25rem;
+    background:
+      linear-gradient(
+          90deg,
+          transparent 0 43%,
+          rgb(255 255 255 / 24%) 43% 57%,
+          transparent 57%
+        )
+        50% 8px / 100% 1px no-repeat,
+      linear-gradient(
+        180deg,
+        #777a82 0%,
+        #36383e 16%,
+        #afb1b6 78%,
+        #6c6f76 100%
+      );
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 42%),
+      inset 0 -2px 3px rgb(0 0 0 / 32%);
+    clip-path: polygon(1.5% 0, 98.5% 0, 100% 76%, 96% 100%, 4% 100%, 0 76%);
+  }
+
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"])
+    [data-device-simulator-frame]::before {
+    z-index: 0;
+    inset: 0 0 76px;
+    border-radius: 0.75rem;
+    background:
+      radial-gradient(
+        circle at 50% 7px,
+        #314b73 0 2px,
+        #090a0d 3px 5px,
+        transparent 6px
+      ),
+      linear-gradient(145deg, #4d5058, #1d1f23 18%, #0d0e11 78%, #3c3f46);
+    box-shadow:
+      0 24px 38px -14px rgb(0 0 0 / 42%),
+      inset 0 0 0 1px rgb(255 255 255 / 18%),
+      inset 0 0 0 3px rgb(0 0 0 / 66%);
+  }
+
+  .device-simulator[data-device-kind="desktop"]:not([data-device="laptop"])
+    [data-device-simulator-frame]::after {
+    z-index: 0;
+    inset-block-end: 0;
+    inset-inline-start: 30%;
+    width: 40%;
+    height: 78px;
+    background: linear-gradient(90deg, #4f5259, #a6a8ae 50%, #4a4d54);
+    clip-path: polygon(
+      42% 0,
+      58% 0,
+      62% 68%,
+      96% 76%,
+      100% 100%,
+      0 100%,
+      4% 76%,
+      38% 68%
+    );
+    filter: drop-shadow(0 12px 10px rgb(0 0 0 / 20%));
   }
 
   .device-simulator [data-device-simulator-preview] {
-    border-radius: inherit;
+    border-radius: var(--device-simulator-screen-radius, 0);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 9%),
+      0 0 0 2px rgb(0 0 0 / 68%);
   }
 
   .device-simulator [data-device-simulator-screen-status] {
-    border-radius: inherit;
+    border-radius: var(--device-simulator-screen-radius, 0);
     background: color-mix(in srgb, var(--card) 94%, transparent);
     color: var(--muted-foreground);
-    font-size: 0.8125rem;
+    font-size: var(--a3s-font-size-compact, 0.8125rem);
     line-height: 1.25rem;
   }
 
-  .device-simulator[data-state="error"] [data-device-simulator-frame] {
-    box-shadow:
-      0 18px 42px rgb(15 23 42 / 18%),
-      inset 0 0 0 1px color-mix(in srgb, var(--destructive) 52%, transparent);
+  .device-simulator[data-state="error"] [data-device-simulator-screen-status] {
+    color: var(--destructive);
+    box-shadow: inset 0 0 0 2px
+      color-mix(in srgb, var(--destructive) 52%, transparent);
   }
 
   .device-simulator > footer {
-    min-height: 2.75rem;
-    padding: 0.5rem 0.75rem;
+    min-height: 3.25rem;
+    padding: 0.625rem 0.75rem;
     border-block-start: 1px solid var(--border);
     background: var(--card);
   }
 
   .device-simulator > footer > output {
     color: var(--muted-foreground);
-    font-size: var(--a3s-font-size-compact, 0.75rem);
+    font-size: var(--a3s-font-size-compact, 0.8125rem);
     line-height: 1rem;
   }
 
   .device-simulator > footer > code {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--a3s-radius-sm, 0.375rem);
+    background: var(--muted);
     color: var(--foreground);
     font-family: var(--font-mono);
-    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    font-size: var(--a3s-font-size-micro, 0.75rem);
     line-height: 1rem;
   }
 

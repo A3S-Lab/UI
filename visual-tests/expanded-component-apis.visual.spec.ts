@@ -369,6 +369,47 @@ test("Image Viewer keeps a callable open API and complete transform lifecycle", 
   await expect(trigger).toBeFocused();
 });
 
+test("Image Viewer fits the initial asset and toolbar inside a compact preview", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const root = await openComponent(page, "image-viewer");
+  const image = root.locator("img");
+  await expect(image).toHaveJSProperty("complete", true);
+
+  const geometry = await root.evaluate((element) => {
+    const figure = element.querySelector("figure")!;
+    const image = element.querySelector("img")!;
+    const toolbar = element.querySelector<HTMLElement>(
+      "[data-image-viewer-toolbar]",
+    )!;
+    const figureRect = figure.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+    const figureStyles = getComputedStyle(figure);
+    const paddingInline =
+      Number.parseFloat(figureStyles.paddingInlineStart) +
+      Number.parseFloat(figureStyles.paddingInlineEnd);
+    const paddingBlock =
+      Number.parseFloat(figureStyles.paddingBlockStart) +
+      Number.parseFloat(figureStyles.paddingBlockEnd);
+    return {
+      availableHeight: figureRect.height - paddingBlock,
+      availableWidth: figureRect.width - paddingInline,
+      imageHeight: imageRect.height,
+      imageWidth: imageRect.width,
+      toolbarOverflow: toolbar.scrollWidth - toolbar.clientWidth,
+    };
+  });
+
+  expect(geometry.imageWidth).toBeGreaterThan(0);
+  expect(geometry.imageHeight).toBeGreaterThan(0);
+  expect(geometry.imageWidth).toBeLessThanOrEqual(geometry.availableWidth + 1);
+  expect(geometry.imageHeight).toBeLessThanOrEqual(
+    geometry.availableHeight + 1,
+  );
+  expect(geometry.toolbarOverflow).toBeLessThanOrEqual(1);
+});
+
 test("Sortable List restores a keyboard snapshot after rejected movement", async ({
   page,
 }) => {

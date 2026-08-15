@@ -8,17 +8,17 @@
     <style>
       :root {
         color-scheme: light;
-        --canvas: #f5f7fa;
+        --canvas: #f7f7f8;
         --paper: #ffffff;
-        --ink: #17191d;
-        --muted: #667085;
-        --line: #e4e7ec;
-        --blue: #2864e8;
+        --ink: #111113;
+        --muted: #52525b;
+        --line: #dedee1;
+        --blue: #1456f0;
         --blue-soft: #eef4ff;
-        --green: #15815a;
+        --green: #16845b;
         font-family:
-          Inter, "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui,
-          sans-serif;
+          "Geist Sans", "HarmonyOS Sans SC", "PingFang SC", ui-sans-serif,
+          system-ui, sans-serif;
       }
 
       * {
@@ -75,14 +75,11 @@
         font-weight: 700;
       }
 
-      .fixture-brand span:first-child {
-        display: grid;
+      .fixture-brand img {
+        display: block;
         width: 30px;
         height: 30px;
         border-radius: 7px;
-        background: var(--blue);
-        color: #ffffff;
-        place-items: center;
       }
 
       .fixture-nav nav {
@@ -218,7 +215,7 @@
         min-width: 0;
         padding: 18px;
         border: 1px solid var(--line);
-        border-radius: 10px;
+        border-radius: 8px;
         background: var(--paper);
       }
 
@@ -391,14 +388,14 @@
       @media (prefers-color-scheme: dark) {
         :root {
           color-scheme: dark;
-          --canvas: #111318;
-          --paper: #191c22;
-          --ink: #f2f4f7;
-          --muted: #a8b0be;
-          --line: #303640;
-          --blue: #6ca3ff;
-          --blue-soft: #1e2d4a;
-          --green: #59c49b;
+          --canvas: #0d0d0f;
+          --paper: #151518;
+          --ink: #f4f4f5;
+          --muted: #b4b4bc;
+          --line: #333338;
+          --blue: #4380f9;
+          --blue-soft: #17223b;
+          --green: #57c795;
         }
       }
     </style>
@@ -406,13 +403,21 @@
   <body>
     <div class="fixture-shell">
       <aside class="fixture-nav">
-        <div class="fixture-brand"><span>A</span><span>A3S Preview</span></div>
+        <div class="fixture-brand">
+          <img src="./logo.png" alt="" width="30" height="30" />
+          <span>A3S Preview</span>
+        </div>
         <nav aria-label="Preview navigation">
-          <a href="#workspace" aria-current="page" data-i18n="workspace">工作区</a>
+          <a href="#workspace" aria-current="page" data-i18n="workspace"
+            >工作区</a
+          >
           <a href="#activity" data-i18n="activity">活动</a>
           <a href="#settings" data-i18n="settings">设置</a>
         </nav>
-        <footer><span class="fixture-status-dot"></span><span data-i18n="ready">预览已连接</span></footer>
+        <footer>
+          <span class="fixture-status-dot"></span
+          ><span data-i18n="ready">预览已连接</span>
+        </footer>
       </aside>
       <main class="fixture-main">
         <header class="fixture-header">
@@ -426,26 +431,58 @@
           <section class="fixture-intro">
             <div>
               <h2 data-i18n="headline">真实视口，清晰断点。</h2>
-              <p data-i18n="description">此夹具会读取 iframe 的实际 CSS 视口，并在手机、平板与桌面布局之间切换。</p>
+              <p data-i18n="description">
+                此夹具会读取 iframe 的实际 CSS
+                视口，并在手机、平板与桌面布局之间切换。
+              </p>
             </div>
-            <output class="fixture-viewport" aria-live="polite">393 × 852 · phone</output>
+            <output class="fixture-viewport" aria-live="polite"
+              >393 × 852 · phone</output
+            >
           </section>
           <div class="fixture-grid">
             <section class="fixture-panel">
-              <header><h3 data-i18n="recent">最近任务</h3><small data-i18n="updated">刚刚更新</small></header>
+              <header>
+                <h3 data-i18n="recent">最近任务</h3>
+                <small data-i18n="updated">刚刚更新</small>
+              </header>
               <ul class="fixture-list">
-                <li><i></i><strong data-i18n="taskOne">检查响应式布局</strong><span data-i18n="running">运行中</span></li>
-                <li><i></i><strong data-i18n="taskTwo">整理组件契约</strong><span data-i18n="complete">已完成</span></li>
-                <li><i></i><strong data-i18n="taskThree">验证键盘路径</strong><span data-i18n="queued">排队中</span></li>
+                <li>
+                  <i></i><strong data-i18n="taskOne">检查响应式布局</strong
+                  ><span data-i18n="running">运行中</span>
+                </li>
+                <li>
+                  <i></i><strong data-i18n="taskTwo">整理组件契约</strong
+                  ><span data-i18n="complete">已完成</span>
+                </li>
+                <li>
+                  <i></i><strong data-i18n="taskThree">验证键盘路径</strong
+                  ><span data-i18n="queued">排队中</span>
+                </li>
               </ul>
             </section>
             <aside class="fixture-panel">
-              <header><h3 data-i18n="viewport">视口属性</h3><small>CSS px</small></header>
+              <header>
+                <h3 data-i18n="viewport">视口属性</h3>
+                <small>CSS px</small>
+              </header>
               <dl class="fixture-properties">
-                <div><dt data-i18n="width">宽度</dt><dd data-property="width">393</dd></div>
-                <div><dt data-i18n="height">高度</dt><dd data-property="height">852</dd></div>
-                <div><dt data-i18n="orientation">方向</dt><dd data-property="orientation">portrait</dd></div>
-                <div><dt data-i18n="breakpoint">布局</dt><dd data-property="breakpoint">phone</dd></div>
+                <div>
+                  <dt data-i18n="width">宽度</dt>
+                  <dd data-property="width">393</dd>
+                </div>
+                <div>
+                  <dt data-i18n="height">高度</dt>
+                  <dd data-property="height">852</dd>
+                </div>
+                <div>
+                  <dt data-i18n="orientation">方向</dt>
+                  <dd data-property="orientation">portrait</dd>
+                </div>
+                <div>
+                  <dt data-i18n="breakpoint">布局</dt>
+                  <dd data-property="breakpoint">phone</dd>
+                </div>
               </dl>
             </aside>
           </div>
@@ -484,7 +521,8 @@
           activity: "活动",
           breakpoint: "布局",
           complete: "已完成",
-          description: "此夹具会读取 iframe 的实际 CSS 视口，并在手机、平板与桌面布局之间切换。",
+          description:
+            "此夹具会读取 iframe 的实际 CSS 视口，并在手机、平板与桌面布局之间切换。",
           headline: "真实视口，清晰断点。",
           height: "高度",
           orientation: "方向",
@@ -516,13 +554,17 @@
       const renderViewport = () => {
         const width = document.documentElement.clientWidth;
         const height = document.documentElement.clientHeight;
-        const breakpoint = width < 600 ? "phone" : width < 1100 ? "tablet" : "desktop";
+        const breakpoint =
+          width < 600 ? "phone" : width < 1100 ? "tablet" : "desktop";
         const orientation = width > height ? "landscape" : "portrait";
-        document.querySelector(".fixture-viewport").textContent = `${width} × ${height} · ${breakpoint}`;
+        document.querySelector(".fixture-viewport").textContent =
+          `${width} × ${height} · ${breakpoint}`;
         document.querySelector('[data-property="width"]').textContent = width;
         document.querySelector('[data-property="height"]').textContent = height;
-        document.querySelector('[data-property="orientation"]').textContent = orientation;
-        document.querySelector('[data-property="breakpoint"]').textContent = breakpoint;
+        document.querySelector('[data-property="orientation"]').textContent =
+          orientation;
+        document.querySelector('[data-property="breakpoint"]').textContent =
+          breakpoint;
       };
 
       addEventListener("resize", renderViewport);

@@ -1,34 +1,29 @@
 # Brand Lockup
 
-Brand Lockup keeps a product mark, name, and optional description aligned across application headers, authentication surfaces, and product navigation.
+Brand Lockup combines the official mark, product name, and an optional description into a stable identity for application headers, authentication entry points, and product navigation.
 
 <Preview class="w-full">
-  <div class="flex w-full flex-wrap items-center justify-between gap-4 rounded-xl border bg-card p-4">
-    <a
-      class="brand-lockup"
-      href="#brand-lockup-product"
-      aria-label="A3S OS home"
-    >
-      <span data-brand-mark aria-hidden="true">
-        <img src="../../../public/logo.png" alt="" />
-      </span>
-      <span data-brand-name>A3S OS</span>
-    </a>
-    <div class="brand-lockup" data-size="sm" data-tone="mono">
-      <span data-brand-mark aria-hidden="true">
-        <img src="../../../public/logo.png" alt="" />
-      </span>
-      <span data-brand-identity>
-        <strong data-brand-name>A3S Web</strong>
-        <small data-brand-description>Control plane</small>
-      </span>
-    </div>
+<div class="flex w-full flex-wrap items-center justify-between gap-6">
+  <a class="brand-lockup" href="#brand-lockup-home-en" aria-label="Return to the A3S OS home page">
+    <span data-brand-mark aria-hidden="true"><A3SAssetImage path="/logo.png" alt="" /></span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S OS</strong>
+      <small data-brand-description>Intelligent work system</small>
+    </span>
+  </a>
+  <div class="brand-lockup" data-size="sm" data-tone="mono">
+    <span data-brand-mark aria-hidden="true"><A3SAssetImage path="/logo.png" alt="" /></span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S Web</strong>
+      <small data-brand-description>Control plane</small>
+    </span>
   </div>
+</div>
 </Preview>
 
 ## Usage
 
-Import the complete A3S bundle or the split Brand Lockup entrypoint.
+Import the complete style bundle or load Brand Lockup on demand.
 
 ```css
 @import "tailwindcss";
@@ -37,55 +32,60 @@ Import the complete A3S bundle or the split Brand Lockup entrypoint.
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Use an anchor when the lockup navigates home and a neutral container when it only identifies the current product.
+Use a link when the lockup returns to the product home page; use a neutral container when it only identifies the current product. The deployment host provides the approved asset path. This documentation site uses `/logo.png`.
 
 ```html
-<a class="brand-lockup" href="/" aria-label="A3S OS home">
-  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+<a class="brand-lockup" href="/" aria-label="Return to the A3S OS home page">
+  <span data-brand-mark aria-hidden="true">
+    <img src="/logo.png" alt="" />
+  </span>
   <span data-brand-identity>
     <strong data-brand-name>A3S OS</strong>
-    <small data-brand-description>Agent Factory</small>
+    <small data-brand-description>Intelligent work system</small>
   </span>
 </a>
 ```
 
 ### Parameters
 
-| API                      | Values    | Purpose                              |
-| ------------------------ | --------- | ------------------------------------ |
-| `class="brand-lockup"`   | Required  | Root identity group                  |
-| `data-brand-mark`        | Required  | Fixed mark, monogram, or logo region |
-| `data-brand-identity`    | Optional  | Groups a name and description        |
-| `data-brand-name`        | Required  | Visible product or organization name |
-| `data-brand-description` | Optional  | Compact product context              |
-| `data-size`              | `sm`      | Denser header treatment              |
-| `data-tone`              | `mono`    | Monochrome treatment of official art |
-| `--brand-lockup-accent`  | CSS color | Mark accent override                 |
+| API | Required | Purpose |
+| --- | --- | --- |
+| `class="brand-lockup"` | Yes | Identity root |
+| `data-brand-mark` | Yes | Official mark region |
+| `data-brand-identity` | With a description | Groups the name and description |
+| `data-brand-name` | Yes | Visible product name |
+| `data-brand-description` | No | Concise product context, not a marketing slogan |
+| `data-size="sm"` | No | Compact treatment for dense headers |
+| `data-tone="mono"` | No | Fallback for restricted monochrome environments |
+| `--brand-lockup-accent` | No | Approved brand-token override only |
 
 ## States and variants
 
-The name may sit directly beside the mark when no description is needed. Use `data-size="sm"` in dense workspace headers and `data-tone="mono"` only where color is unavailable. Every presentation uses the official A3S OS asset; do not redraw, crop, or fabricate a three-dimensional mark. Override `--brand-lockup-accent` only with an approved brand token; keep operational state colors out of product identity.
+Use the default size on authentication pages, navigation titles, and spacious start surfaces. Use the compact size in constrained workspace headers. The name may sit directly beside the mark or join a one-line description in an identity column. Enable `data-tone="mono"` only where the color asset cannot be used.
 
-## Accessibility
-
-Keep the visible product name in text. Mark decorative monograms and logos with `aria-hidden="true"`; if the whole lockup is a link, give the link a destination-specific accessible name. Do not repeat the product name in both the mark and the accessibility tree.
+Brand Lockup does not communicate online, danger, success, or permission state. Do not recolor the logo with operational status colors, crop or stretch it, add a shadow, replace its letterform, or invent new marks for related products. A3S products share the official A3S OS mark and distinguish themselves with the visible name.
 
 ## React
 
 ```tsx
 import { BrandLockup } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ProductHomeLink() {
   return (
-    <BrandLockup href="/" aria-label="A3S OS home">
-      <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
-      <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+    <BrandLockup as="a" href="/" aria-label="Return to the A3S OS home page">
+      <span data-brand-mark aria-hidden="true">
+        <img src="/logo.png" alt="" />
+      </span>
+      <span data-brand-identity>
+        <strong data-brand-name>A3S OS</strong>
+        <small data-brand-description>Intelligent work system</small>
+      </span>
     </BrandLockup>
   );
 }
 ```
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+`BrandLockup` maps only the identity root. Asset resolution, product naming, and navigation destination remain host-owned, so no component hook is needed.
 
 ## Vue
 
@@ -95,11 +95,20 @@ import { BrandLockup } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <BrandLockup href="/" aria-label="A3S OS home">
-    <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
-    <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+  <BrandLockup as="a" href="/" aria-label="Return to the A3S OS home page">
+    <span data-brand-mark aria-hidden="true">
+      <img src="/logo.png" alt="" />
+    </span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S OS</strong>
+      <small data-brand-description>Intelligent work system</small>
+    </span>
   </BrandLockup>
 </template>
 ```
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+The Vue adapter emits the same link, official asset, and visible name without a framework-only wrapper.
+
+## Accessibility
+
+Keep the product name as visible text; never show the logo alone. The mark and image supplement that name, so place them in an `aria-hidden="true"` region and use an empty `alt` to prevent duplicate announcements. When the complete lockup is a link, its accessible name should state the destination, such as “Return to the A3S OS home page.” Do not add link or button semantics when it only identifies the current product. A compact layout may truncate a nonessential description but must never hide the product name. The host supplies a correct, approved, cacheable official asset; the component owns sizing, arrangement, and focus presentation.

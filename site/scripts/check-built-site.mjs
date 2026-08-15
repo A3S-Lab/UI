@@ -175,7 +175,6 @@ const homepageExpectations = [
     file: "index.html",
     markers: [
       'lang="zh"',
-      "A3S 产品界面系统",
       "复杂界面，",
       "也该有清晰语法。",
       "复制安装命令",
@@ -195,7 +194,6 @@ const homepageExpectations = [
     file: "en/index.html",
     markers: [
       'lang="en"',
-      "A3S PRODUCT INTERFACE SYSTEM",
       "Complex UI.",
       "Clear grammar.",
       "Copy install command",
@@ -212,7 +210,6 @@ const homepageExpectations = [
     file: "v0.2.0/index.html",
     markers: [
       'lang="zh"',
-      "A3S 产品界面系统",
       "复杂界面，",
       "npm install @a3s-lab/ui@0.2.0",
       "<dt>64</dt>",
@@ -223,7 +220,6 @@ const homepageExpectations = [
     file: "v0.2.0/en/index.html",
     markers: [
       'lang="en"',
-      "A3S PRODUCT INTERFACE SYSTEM",
       "Complex UI.",
       "npm install @a3s-lab/ui@0.2.0",
       "<dt>64</dt>",
@@ -234,7 +230,6 @@ const homepageExpectations = [
     file: "v0.1.0/index.html",
     markers: [
       'lang="zh"',
-      "A3S 产品界面系统",
       "复杂界面，",
       "npm install @a3s-lab/ui@0.1.0",
       "<dt>64</dt>",
@@ -245,7 +240,6 @@ const homepageExpectations = [
     file: "v0.1.0/en/index.html",
     markers: [
       'lang="en"',
-      "A3S PRODUCT INTERFACE SYSTEM",
       "Complex UI.",
       "npm install @a3s-lab/ui@0.1.0",
       "<dt>64</dt>",
@@ -310,13 +304,22 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
     },
     {
       file: `${versionPrefix}components/button-group.html`,
-      markers: [
-        'lang="zh"',
-        "按钮组负责连接子控件的边界与交互状态",
-        'aria-label="搜索"',
-        'placeholder="搜索…"',
-        "拆分按钮",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="zh"',
+              "按钮组把同一任务中相邻、同级的操作连接成一个视觉单元",
+              'aria-label="编辑操作"',
+              'aria-label="保存选项"',
+              "拆分操作",
+            ]
+          : [
+              'lang="zh"',
+              "按钮组负责连接子控件的边界与交互状态",
+              'aria-label="搜索"',
+              'placeholder="搜索…"',
+              "拆分按钮",
+            ],
     },
     {
       file: `${versionPrefix}en/components/button-group.html`,
@@ -376,9 +379,10 @@ const nextCatalogExpectations = [
   {
     file: "components/index.html",
     markers: [
-      'id="工具"',
-      'id="harness"',
-      'href="/UI/harness/index.html"',
+      "data-component-catalog",
+      'placeholder="按名称、英文名或分组搜索…"',
+      "9 个职责分组，可搜索 111 个组件",
+      'data-component-group="harness"',
       'href="/UI/components/scroll-area.html"',
       'href="/UI/components/theme-switcher.html"',
     ],
@@ -386,9 +390,10 @@ const nextCatalogExpectations = [
   {
     file: "en/components/index.html",
     markers: [
-      'id="utilities"',
-      'id="harness"',
-      'href="/UI/en/harness/index.html"',
+      "data-component-catalog",
+      'placeholder="Search by name, slug, or group…"',
+      "9 task groups across 111 searchable components",
+      'data-component-group="harness"',
       'href="/UI/en/components/scroll-area.html"',
       'href="/UI/en/components/theme-switcher.html"',
     ],
@@ -1111,6 +1116,25 @@ for (const { file, markers } of [
   }
 }
 
+for (const file of [
+  "components/combobox.html",
+  "en/components/combobox.html",
+]) {
+  const html = await readFile(path.join(outputRoot, file), "utf8");
+  const componentIntroIndex = html.indexOf('class="component-intro"');
+  const firstPreviewIndex = html.indexOf('class="a3s-preview"');
+
+  if (
+    componentIntroIndex === -1 ||
+    firstPreviewIndex === -1 ||
+    componentIntroIndex > firstPreviewIndex
+  ) {
+    throw new Error(
+      `${file} must place the component quick start before its first preview.`,
+    );
+  }
+}
+
 for (const { file, links } of switchExpectations) {
   const html = await readFile(path.join(outputRoot, file), "utf8");
   for (const link of links) {
@@ -1256,8 +1280,10 @@ for (const htmlFile of htmlFiles) {
   }
   const previewCount = (html.match(/class="a3s-preview"/g) ?? []).length;
   builtPreviewCount += previewCount;
-  const previewDetailsCount = (
-    html.match(/<details\b[^>]*class="a3s-preview__source"/g) ?? []
+  const previewToggleCount = (
+    html.match(
+      /<button\b(?=[^>]*\baria-controls="[^"]+")(?=[^>]*\baria-expanded="false")(?=[^>]*\btitle="(?:Show source|展开源码)")[^>]*>/g,
+    ) ?? []
   ).length;
   const previewSourcePanelCount = (
     html.match(/data-preview-source-panel="true"/g) ?? []
@@ -1266,16 +1292,22 @@ for (const htmlFile of htmlFiles) {
     .length;
   const previewSourceCount = (html.match(/class="a3s-preview__source"/g) ?? [])
     .length;
+  const hiddenPreviewSourceCount = (
+    html.match(
+      /<div\b(?=[^>]*class="a3s-preview__source")(?=[^>]*data-preview-source-panel="true")(?=[^>]*hidden="")[^>]*>/g,
+    ) ?? []
+  ).length;
   if (
-    previewCount !== previewDetailsCount ||
+    previewCount !== previewToggleCount ||
     previewCount !== previewSourcePanelCount ||
     previewCount !== previewStageCount ||
     previewCount !== previewSourceCount ||
+    previewCount !== hiddenPreviewSourceCount ||
     (previewCount > 0 && !html.includes("rp-code-copy-button")) ||
     (previewCount > 0 && !html.includes("shiki"))
   ) {
     previewSourceViolations.push(
-      `${relativeHtmlFile}: ${previewCount} previews, ${previewDetailsCount} source details, ${previewSourcePanelCount} source markers, ${previewStageCount} stages, ${previewSourceCount} source panels, copy=${html.includes("rp-code-copy-button")}, shiki=${html.includes("shiki")}`,
+      `${relativeHtmlFile}: ${previewCount} previews, ${previewToggleCount} source toggles, ${previewSourcePanelCount} source markers, ${previewStageCount} stages, ${previewSourceCount} source panels, ${hiddenPreviewSourceCount} initially hidden, copy=${html.includes("rp-code-copy-button")}, shiki=${html.includes("shiki")}`,
     );
   }
   const visibleText = html
@@ -1298,6 +1330,8 @@ for (const htmlFile of htmlFiles) {
     }
   }
   const htmlWithGeneratedSelfLinksOmitted = html
+    .replace(/<pre\b[^>]*>[\s\S]*?<\/pre>/gi, "")
+    .replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, "")
     .replace(
       /<li class="rp-hover-group__item rp-hover-group__item--active"[^>]*>[\s\S]*?<\/li>/g,
       (item) => item.replace(/href="[^"]+"/, 'href="#current-version"'),

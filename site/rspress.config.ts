@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { defineConfig, type UserConfig } from "@rspress/core";
+import { componentIntroPlugin } from "./plugins/component-intro";
 import { normalizeMdxHtmlPlugin } from "./plugins/normalize-mdx-html";
 import { previewSourcePlugin } from "./plugins/preview-source";
 import { standalonePagesPlugin } from "./plugins/standalone-pages";
@@ -54,11 +55,17 @@ const config: UserConfig = {
     },
   ],
   markdown: {
-    remarkPlugins: [previewSourcePlugin, normalizeMdxHtmlPlugin],
+    remarkPlugins: [
+      componentIntroPlugin,
+      previewSourcePlugin,
+      normalizeMdxHtmlPlugin,
+    ],
     globalComponents: [
       path.join(__dirname, "theme/mdx/A3SAssetImage.tsx"),
       path.join(__dirname, "theme/mdx/Callout.tsx"),
       path.join(__dirname, "theme/mdx/ChartDemo.tsx"),
+      path.join(__dirname, "theme/mdx/ComponentCatalog.tsx"),
+      path.join(__dirname, "theme/mdx/ComponentIntro.tsx"),
       path.join(__dirname, "theme/mdx/MonacoWorkbenchDemo.tsx"),
       path.join(__dirname, "theme/mdx/CodeGroup.tsx"),
       path.join(__dirname, "theme/mdx/Preview.tsx"),
@@ -71,7 +78,7 @@ const config: UserConfig = {
     `<script>${themeBridgeScript}</script>`,
     ["link", { rel: "icon", type: "image/png", href: `${base}logo.png` }],
     ["link", { rel: "apple-touch-icon", href: `${base}logo.png` }],
-    ["meta", { name: "theme-color", content: "#ffffff" }],
+    ["meta", { name: "theme-color", content: "#f5f7fb" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "A3S UI" }],
     [
@@ -117,7 +124,7 @@ const config: UserConfig = {
   ],
   themeConfig: {
     search: true,
-    enableContentAnimation: true,
+    enableContentAnimation: false,
     editLink: {
       docRepoBaseUrl: "https://github.com/A3S-Lab/UI/tree/main/site/docs",
     },

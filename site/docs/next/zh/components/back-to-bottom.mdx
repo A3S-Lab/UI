@@ -1,86 +1,154 @@
 # 回到底部
 
-在持续追加内容的滚动区域中，让离开最新位置的用户一步回到末尾，并明确提示尚未阅读的更新数量。
+回到底部只在持续追加内容的滚动区域中出现，让暂时离开实时位置的用户主动回到末尾，同时保留未读更新数量。
 
 <Preview class="w-full">
-<div data-scroll-owner style="position:relative;min-height:10rem;inline-size:100%;padding:1rem;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-  <p>你正在阅读较早的输出，新内容会在底部继续到达。</p>
-  <button class="back-to-bottom" data-always-visible data-unread="3"><span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span></button>
+<div data-scroll-owner class="relative min-h-40 w-full overflow-hidden rounded-lg border p-4">
+  <div class="grid gap-2 text-sm">
+    <p class="font-medium">你正在查看较早的运行记录</p>
+    <p class="max-w-md text-muted-foreground">末尾又收到 3 条更新。阅读位置不会被新内容强制移动。</p>
+  </div>
+  <button type="button" class="back-to-bottom" data-always-visible data-unread="3">
+    <span data-back-to-bottom-label>回到最新内容</span>
+    <span data-unread-count aria-label="3 条未读更新">3</span>
+  </button>
 </div>
 </Preview>
 
-## 使用方式
+## 用法
+
+把按钮放在真正拥有滚动的区域内。默认情况下，控制器会在距离末尾超过阈值或存在未读更新时显示按钮；`data-always-visible` 只适合演示和调试。
 
 ```html
-<button class="back-to-bottom" data-always-visible data-unread="3">
-  <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
-</button>
+<div class="transcript-viewport" data-scroll-owner>
+  <ol aria-label="运行记录">
+    <li>依赖检查已完成。</li>
+    <li>正在构建文档站。</li>
+  </ol>
+  <button type="button" class="back-to-bottom" data-unread="3">
+    <span data-back-to-bottom-label>回到最新内容</span>
+    <span data-unread-count>3</span>
+  </button>
+</div>
 ```
 
-### 独立控制器
+按需加载时，先导入共享运行时，再导入控制器。
 
 ```js
 import "@a3s-lab/ui/runtime";
 import "@a3s-lab/ui/back-to-bottom";
 
-const component = document.querySelector(".back-to-bottom");
-component.getState();
+const button = document.querySelector(".back-to-bottom");
+
+button.addEventListener("a3s:back-to-bottom-activate", () => {
+  markVisibleUpdatesAsRead();
+});
+
+button.setUnread(3);
 ```
 
-控制器是幂等的；完整包可改为一次导入 `@a3s-lab/ui/all`。宿主通过可取消的 `before-*` 事件执行权限与业务校验。
+### 参数
+
+| API | 默认值 | 用途 |
+| --- | --- | --- |
+| `data-scroll-target` | 最近的 `[data-scroll-owner]` | 指向其他滚动容器的 CSS 选择器 |
+| `data-threshold` | `96` | 距离末尾超过多少像素后显示按钮 |
+| `data-unread` | `0` | 当前未读更新数量 |
+| `data-always-visible` | 省略 | 强制显示，仅用于演示或诊断 |
+| `data-back-to-bottom-label` | 必填 | 本地化的可见动作名称 |
+| `data-unread-count` | 可选 | 未读数量；超过 99 时显示 `99+` |
+
+### JavaScript API
+
+| 方法或事件 | 用途 |
+| --- | --- |
+| `getState()` | 返回 `{ atBottom, unread, visible }` 快照 |
+| `setUnread(count)` | 更新未读数量和可见状态 |
+| `scrollToBottom(options)` | 滚动到末尾；默认清除未读数量 |
+| `refresh()` | DOM 或滚动宿主变化后重新建立关联 |
+| `a3s:back-to-bottom-activate` | 用户或 API 完成回到底部意图时派发 |
+| `a3s:back-to-bottom-visibility-change` | 按钮显隐变化时派发 |
+
+## 状态与变体
+
+`hidden` 表示用户仍在实时末尾且没有未读更新；`visible` 表示用户离开末尾；`unread` 表示有新内容等待阅读。新内容到达时只增加计数，不自动滚动。用户主动回到底部后，组件清除计数并遵循 `prefers-reduced-motion`。
+
+这个操作只属于持续追加且有独立滚动所有者的区域，例如运行日志、对话记录或事件流。普通短列表、静态文章和页面级滚动不需要它。
 
 ## React
 
 ```tsx
+import { useEffect } from "react";
 import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useBackToBottom();
+export function TranscriptTail({
+  unreadCount,
+  onReturnToLive,
+}: {
+  unreadCount: number;
+  onReturnToLive: () => void;
+}) {
+  const control = useBackToBottom({
+    events: {
+      "a3s:back-to-bottom-activate"() {
+        onReturnToLive();
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (control.ready) control.call("setUnread", unreadCount);
+  }, [control, control.ready, unreadCount]);
+
   return (
-    <BackToBottom ref={control.ref} data-always-visible data-unread="3">
-      <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+    <BackToBottom ref={control.ref}>
+      <span data-back-to-bottom-label>回到最新内容</span>
+      <span data-unread-count>{unreadCount}</span>
     </BackToBottom>
   );
 }
 ```
 
-`useBackToBottom` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
+`useBackToBottom` 订阅同一根节点的公开事件，并调用 `setUnread`、`scrollToBottom`、`getState` 与 `refresh`。它不复制滚动状态，也不接管消息数据。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { watchEffect } from "vue";
 import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/vue";
 
-const control = useBackToBottom();
+const props = defineProps<{
+  unreadCount: number;
+  onReturnToLive: () => void;
+}>();
+
+const control = useBackToBottom({
+  events: {
+    "a3s:back-to-bottom-activate"() {
+      props.onReturnToLive();
+    },
+  },
+});
 const componentRef = control.componentRef;
+
+watchEffect(() => {
+  if (control.ready.value) {
+    control.call("setUnread", props.unreadCount);
+  }
+});
 </script>
 
 <template>
-  <BackToBottom ref="componentRef" data-always-visible data-unread="3">
-    <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+  <BackToBottom ref="componentRef">
+    <span data-back-to-bottom-label>回到最新内容</span>
+    <span data-unread-count>{{ unreadCount }}</span>
   </BackToBottom>
 </template>
 ```
 
-`useBackToBottom` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
-
-## 契约
-
-| 接口 | 值 |
-| --- | --- |
-| 根选择器 | `.back-to-bottom` |
-| 原生根元素 | `<button>` |
-| 状态 | `hidden`, `visible`, `unread` |
-| 事件 | `a3s:back-to-bottom-activate`, `a3s:back-to-bottom-visibility-change` |
-| 方法 | `getState`, `scrollToBottom`, `setUnread` |
-
-## 产品边界
-
-它只管理滚动位置和未读计数，不拥有消息传输、已读回执或列表虚拟化。内容较短或没有持续追加时，不应显示这个操作。
-
-组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
+Vue 组合式函数暴露相同的事件和方法；滚动容器、未读来源与已读策略仍由宿主决定。
 
 ## 可访问性
 
-按钮需要可理解的名称；更新计数通过可见文本表达。滚动遵循减弱动态效果偏好，且不在新内容到达时强制抢走用户位置。
+根元素必须是具有清晰动作名称的原生按钮。未读数量需要可见，并通过按钮名称或 `data-unread-count` 的可访问文本说明“未读更新”含义，不能只读出一个孤立数字。新内容到达时不抢焦点、不强制滚动；如果产品另设实时播报区域，避免在按钮上重复播报同一条更新。按钮只能控制所属滚动容器，关闭或隐藏时不得留在 Tab 顺序中。宿主负责内容传输、已读回执、虚拟列表和业务计数，组件只负责滚动位置、显隐和回到底部意图。

@@ -183,11 +183,12 @@ export const overlayComponents = [
       group: "[role=group]",
       input: "input",
       item: "[role=option], [role^=menuitem], [data-command-item]",
-      list: "[role=listbox]",
+      list: "[role=listbox], [role=menu]",
     },
     actions: ["click", "fill", "focus", "press", "select"],
     actionParts: { click: "item", select: "item" },
     events: ["basecoat:initialized"],
+    methods: ["refresh"],
     states: ["ready", "empty", "loading", "open", "closed"],
   }),
   defineComponent({

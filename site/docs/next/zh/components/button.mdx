@@ -1,272 +1,305 @@
 # 按钮
 
-<Preview>
-<div class="flex flex-wrap items-center gap-2">
-  <button type="button" class="btn" data-variant="outline">Button</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Submit"><svg class="lucide lucide-arrow-up" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg></button>
-</div>
+按钮触发当前界面中的操作；需要前往其他地址时，应使用带 `href` 的链接并应用相同视觉样式。
+
+<Preview title="常用操作">
+  <div class="flex flex-wrap items-center gap-2">
+    <button type="button" class="btn">
+      保存更改
+    </button>
+    <button type="button" class="btn" data-variant="outline">
+      预览
+    </button>
+    <button type="button" class="btn" data-variant="secondary">
+      稍后处理
+    </button>
+    <button type="button" class="btn" data-variant="destructive">
+      删除
+    </button>
+  </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Steps>
-  <Step title="Include CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 与完整 A3S 样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本CSS、按钮组件CSS和一个样式包。
+然后在原生按钮上添加 `btn` 类。务必显式设置 `type="button"`，避免按钮在表单中意外提交。
+
+```html
+<button type="button" class="btn">保存更改</button>
+```
+
+需要按组件加载时，依次导入基础样式、按钮结构和 A3S 视觉样式。CDN 与其他接入方式见[安装](/installation)。
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/button.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+### 参数
 
-  </Step>
-  <Step title="Add your button HTML">
+| 参数           | 值                                                                   | 用途                               |
+| -------------- | -------------------------------------------------------------------- | ---------------------------------- |
+| 根元素         | `<button>` 或 `<a>`                                                  | 操作使用按钮，页面跳转使用链接     |
+| `class`        | `btn`                                                                | 必填的组件根类名                   |
+| `data-variant` | `primary`、`secondary`、`outline`、`ghost`、`link`、`destructive`    | 控制操作层级；省略时为主按钮       |
+| `data-size`    | `xs`、`sm`、`default`、`lg`、`icon-xs`、`icon-sm`、`icon`、`icon-lg` | 控制点击目标与视觉密度             |
+| `data-icon`    | `inline-start` 或 `inline-end`                                       | 放在文字按钮的内联图标上，校正间距 |
+| 原生状态       | `disabled`、`aria-busy`、`aria-pressed`                              | 表达不可用、处理中与切换状态       |
 
-```html
-<button type="button" class="btn">Primary</button>
-<button type="button" class="btn" data-variant="outline">Outline</button>
-<button type="button" class="btn" data-variant="secondary" data-size="sm">Small secondary</button>
-<button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Settings"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg></button>
-```
+## 状态与变体
 
-  </Step>
-</Steps>
+同一区域通常只保留一个主按钮。`secondary` 与 `outline` 用于次级操作，`ghost` 用于低强调工具操作，`destructive` 只用于有明确破坏后果的动作。`link` 只是按钮的视觉变体，真正的页面导航仍应使用 `<a href>`。
 
-Add `class="btn"` to a `<button>` or `<a>`. Add `data-variant` and `data-size` when needed. Add `data-icon="inline-start"` or `data-icon="inline-end"` to inline icons when a text button needs icon-aware spacing.
-
-#### HTML 结构
-
-<dl>
-  <dt><code>&lt;button class="btn"&gt;</code></dt>
-  <dd>Button root. Use a native <code>&lt;button&gt;</code> for actions and <code>&lt;a&gt;</code> for navigation.</dd>
-  <dt><code>data-variant="primary|secondary|outline|ghost|link|destructive"</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Visual variant. Omit it for the primary variant.</dd>
-  <dt><code>data-size="xs|sm|default|lg|icon|icon-xs|icon-sm|icon-lg"</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Button size. Omit it for the default size.</dd>
-</dl>
-
-### 变体
-
-| 变体 | 标记 |
-| --- | --- |
-| Primary | `<button class="btn">` |
-| Secondary | `<button class="btn" data-variant="secondary">` |
-| Outline | `<button class="btn" data-variant="outline">` |
-| Ghost | `<button class="btn" data-variant="ghost">` |
-| Link | `<button class="btn" data-variant="link">` |
-| Destructive | `<button class="btn" data-variant="destructive">` |
-
-### 尺寸
-
-| 尺寸 | 标记 |
-| --- | --- |
-| Extra small | `<button class="btn" data-size="xs">` |
-| Small | `<button class="btn" data-size="sm">` |
-| Default | `<button class="btn">` |
-| Large | `<button class="btn" data-size="lg">` |
-| Icon extra small | `<button class="btn" data-size="icon-xs">` |
-| Icon small | `<button class="btn" data-size="icon-sm">` |
-| Icon | `<button class="btn" data-size="icon">` |
-| Icon large | `<button class="btn" data-size="icon-lg">` |
-
-使用 `data-size="icon"` 或方形按钮的图标大小变体之一。仅图标按钮需要一个可访问的名称，通常为 `aria-label`。
-
-当文本按钮需要图标感知间距时，在内联图标上使用 `data-icon="inline-start"` 或 `data-icon="inline-end"`。仅对纯图标按钮使用图标大小变体。
-
-要对相关按钮进行分组，请使用[Button Group](/components/button-group)组件。
-
-## 示例
-
-### 尺寸
-
-使用`data-size`更改按钮的大小。
-
-<Preview>
-<div class="flex flex-wrap items-center gap-2">
-  <button type="button" class="btn" data-variant="outline" data-size="xs">Extra Small</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon-xs" aria-label="Submit"><svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></button>
-  <button type="button" class="btn" data-variant="outline" data-size="sm">Small</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="Submit"><svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></button>
-  <button type="button" class="btn" data-variant="outline">Default</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Submit"><svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></button>
-  <button type="button" class="btn" data-variant="outline" data-size="lg">Large</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon-lg" aria-label="Submit"><svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg></button>
-</div>
-</Preview>
-
-### 默认
-
-<Preview>
-<button type="button" class="btn">Button</button>
-</Preview>
-
-### 概要
-
-<Preview>
-<button type="button" class="btn" data-variant="outline">Outline</button>
-</Preview>
-
-### 次要
-
-<Preview>
-<button type="button" class="btn" data-variant="secondary">Secondary</button>
-</Preview>
-
-### 幽灵
-
-<Preview>
-<button type="button" class="btn" data-variant="ghost">Ghost</button>
-</Preview>
-
-### 破坏性
-
-<Preview>
-<button type="button" class="btn" data-variant="destructive">Destructive</button>
-</Preview>
-
-### 链接
-
-<Preview>
-<button type="button" class="btn" data-variant="link">Link</button>
-</Preview>
-
-### 图标
-
-<Preview>
-<button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Open"><svg class="lucide lucide-circle-fading-arrow-up" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.38 16.75" /><path d="m16 12-4-4-4 4" /><path d="M12 16V8" /><path d="M2.5 8.875a10 10 0 0 0-.5 3" /><path d="M2.83 16a10 10 0 0 0 2.43 3.4" /><path d="M4.636 5.235a10 10 0 0 1 .891-.857" /><path d="M8.644 21.42a10 10 0 0 0 7.631-.38" /></svg></button>
-</Preview>
-
-### 带图标
-
-在内联图标上使用 `data-icon="inline-start"` 或 `data-icon="inline-end"` 以匹配上游图标感知间距。
-
-<Preview>
-<button type="button" class="btn" data-variant="outline" data-size="sm"><svg data-icon="inline-start" class="lucide lucide-git-branch" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6a9 9 0 0 0-9 9V3" /><circle cx="18" cy="6" r="3" /><circle cx="6" cy="18" r="3" /></svg>
-  New Branch
-</button>
-</Preview>
-
-### 圆形
-
-使用 `rounded-full` 类使按钮变圆。
-
-<Preview>
-<button type="button" class="btn rounded-full" data-variant="outline" data-size="icon" aria-label="Scroll up"><svg class="lucide lucide-arrow-up" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg></button>
-</Preview>
-
-### 加载指示器
-
-<Preview>
-<div class="flex flex-wrap items-center gap-2">
-  <button type="button" class="btn" disabled><svg data-icon="inline-start" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
-    Generating
-  </button>
-  <button type="button" class="btn" data-variant="secondary" disabled>
-    Downloading
-    <svg data-icon="inline-end" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
-  </button>
-</div>
-</Preview>
-
-### 按钮组
-
-要对相关按钮进行分组，请使用[Button Group](/components/button-group)组件。
-
-<Preview>
-<div class="flex w-fit items-stretch gap-2">
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Go back"><svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg></button>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline">Archive</button>
-    <button type="button" class="btn" data-variant="outline">Report</button>
+<Preview title="操作层级">
+  <div class="flex flex-wrap items-center gap-2">
+    <button type="button" class="btn">
+      主操作
+    </button>
+    <button type="button" class="btn" data-variant="secondary">
+      次级操作
+    </button>
+    <button type="button" class="btn" data-variant="outline">
+      弱操作
+    </button>
+    <button type="button" class="btn" data-variant="ghost">
+      工具操作
+    </button>
+    <button type="button" class="btn" data-variant="link">
+      行内操作
+    </button>
+    <button type="button" class="btn" data-variant="destructive">
+      删除
+    </button>
   </div>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline">Snooze</button>
-    <div id="button-docs-actions" class="dropdown-menu">
-      <button type="button" id="button-docs-actions-trigger" aria-label="More options" aria-haspopup="menu" aria-controls="button-docs-actions-menu" aria-expanded="false" class="btn" data-variant="outline" data-size="icon"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></button>
-      <div id="button-docs-actions-popover" data-popover aria-hidden="true" data-align="end">
-        <div role="menu" id="button-docs-actions-menu" aria-labelledby="button-docs-actions-trigger">
-          <div role="menuitem"><svg class="lucide lucide-mail-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /><path d="m16 19 2 2 4-4" /></svg>
-            Mark as Read
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-archive" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1" /><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" /><path d="M10 12h4" /></svg>
-            Archive
-          </div>
-          <hr role="separator" />
-          <div role="menuitem"><svg class="lucide lucide-clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-            Snooze
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-            Add to Calendar
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-list-filter-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5H2" /><path d="M6 12h12" /><path d="M9 19h6" /><path d="M16 5h6" /><path d="M19 8V2" /></svg>
-            Add to List
-          </div>
-          <hr role="separator" />
-          <div role="menuitem" class="text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 focus:bg-destructive/10 dark:focus:bg-destructive/20 focus:text-destructive [&_svg]:!text-destructive"><svg class="lucide lucide-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-            Trash
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 </Preview>
 
-### RTL
+`disabled` 阻止交互。异步操作应同时提供可见进度文本和 `aria-busy="true"`；可切换按钮由业务状态更新 `aria-pressed`，组件不会替应用维护状态。
 
-将 `dir="rtl"` 添加到按钮或祖先。明确翻转方向图标。
+<Preview title="处理中与不可用">
+  <div class="flex flex-wrap items-center gap-2">
+    <button type="button" class="btn" disabled>
+      不可用
+    </button>
+    <button type="button" class="btn" aria-busy="true" disabled>
+      <svg
+        data-icon="inline-start"
+        class="animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+      </svg>
+      保存中…
+    </button>
+    <button type="button" class="btn" data-variant="ghost" aria-pressed="true">
+      已固定
+    </button>
+  </div>
+</Preview>
 
-<Preview>
-<div dir="rtl" class="flex flex-wrap items-center gap-2">
-  <button type="button" class="btn" data-variant="outline">زر</button>
-  <button type="button" class="btn" data-variant="destructive">حذف</button>
-  <button type="button" class="btn" data-variant="outline">
-    إرسال
-    <svg data-icon="inline-end" class="rtl:rotate-180 lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-  </button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="Add"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
-  <button type="button" class="btn" data-variant="secondary" disabled><svg data-icon="inline-start" class="animate-spin lucide lucide-loader-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
-    جاري التحميل
-  </button>
-</div>
+## 尺寸
+
+尺寸应由界面密度决定，不用于表达操作重要性。常规页面使用默认尺寸；紧凑工具栏可使用 `sm`，大尺寸适合低密度或触控优先界面。仅图标按钮使用对应的 `icon-*` 尺寸。
+
+<Preview title="尺寸与点击目标">
+  <div class="flex flex-wrap items-center gap-2">
+    <button type="button" class="btn" data-variant="outline" data-size="xs">
+      特小
+    </button>
+    <button type="button" class="btn" data-variant="outline" data-size="sm">
+      小
+    </button>
+    <button type="button" class="btn" data-variant="outline">
+      默认
+    </button>
+    <button type="button" class="btn" data-variant="outline" data-size="lg">
+      大
+    </button>
+    <button
+      type="button"
+      class="btn"
+      data-variant="outline"
+      data-size="icon-sm"
+      aria-label="添加"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M5 12h14M12 5v14" />
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="btn"
+      data-variant="outline"
+      data-size="icon"
+      aria-label="设置"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.2.37.56.72 1 .9.34.14.7.2 1.1.2h.09v4h-.09a1.7 1.7 0 0 0-1.1.4c-.44.35-.8.7-1 1Z" />
+      </svg>
+    </button>
+  </div>
+</Preview>
+
+## 图标与链接
+
+文字按钮中的图标使用 `data-icon` 表明位置。仅图标按钮必须通过 `aria-label` 提供名称。链接按钮保留原生链接语义和浏览器行为。
+
+<Preview title="图标与导航">
+  <div class="flex flex-wrap items-center gap-2">
+    <button type="button" class="btn" data-variant="outline">
+      <svg
+        data-icon="inline-start"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      新建项目
+    </button>
+    <a class="btn" data-variant="secondary" href="./button-group.html">
+      查看按钮组
+      <svg
+        data-icon="inline-end"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </a>
+    <button
+      type="button"
+      class="btn"
+      data-variant="ghost"
+      data-size="icon"
+      aria-label="更多操作"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <circle cx="5" cy="12" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="19" cy="12" r="1.5" />
+      </svg>
+    </button>
+  </div>
 </Preview>
 
 ## React
 
 ```tsx
+import { useState } from "react";
 import { Button } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function SaveButton({
+  saveChanges,
+}: {
+  saveChanges: () => Promise<void>;
+}) {
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await saveChanges();
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <Button>组件内容</Button>
+    <Button type="button" disabled={saving} aria-busy={saving} onClick={save}>
+      {saving ? "保存中…" : "保存更改"}
+    </Button>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Button` 使用清单定义的原生 `<button>` 根元素，也可通过 `as="a"` 渲染链接。按钮没有组件私有事件或方法，因此不提供 `useButton`；直接使用 React 事件与状态即可。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Button } from "@a3s-lab/ui/vue";
 
+const props = defineProps<{
+  saveChanges: () => Promise<void>;
+}>();
+const saving = ref(false);
+
+async function save() {
+  saving.value = true;
+  try {
+    await props.saveChanges();
+  } finally {
+    saving.value = false;
+  }
+}
 </script>
 
 <template>
-  <Button>组件内容</Button>
+  <Button type="button" :disabled="saving" :aria-busy="saving" @click="save">
+    {{ saving ? "保存中…" : "保存更改" }}
+  </Button>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器同样不增加包装层。按钮没有专用组合式函数，交互状态由 Vue 事件和响应式状态管理。
+
+## 可访问性
+
+- 操作使用 `<button>`，导航使用带 `href` 的 `<a>`；不要用点击事件伪装链接。
+- 仅图标按钮必须有可访问名称，通常使用 `aria-label`。
+- 加载状态保留描述动作的文字，并同步 `disabled` 与 `aria-busy="true"`。
+- 切换按钮由应用维护 `aria-pressed="true|false"`；展开浮层的按钮使用 `aria-expanded` 与 `aria-controls`。
+- 破坏性按钮只表达操作性质。需要二次确认时，使用[警报对话框](/components/alert-dialog)。
+- A3S 样式包提供可见焦点环；不要在应用样式中移除它。

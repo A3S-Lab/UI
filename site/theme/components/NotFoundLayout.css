@@ -1,0 +1,198 @@
+.a3s-not-found {
+  display: grid;
+  width: min(1040px, calc(100% - 64px));
+  min-height: calc(100dvh - var(--rp-nav-height));
+  margin: 0 auto;
+  padding: clamp(72px, 11vh, 128px) 0;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(48px, 7vw, 88px);
+}
+
+.a3s-not-found__code {
+  padding: 8px clamp(40px, 5vw, 72px) 24px 0;
+  border-inline-end: 1px solid var(--ui-line-strong);
+  color: var(--ui-blue);
+  font-size: clamp(104px, 13vw, 176px);
+  font-weight: 680;
+  letter-spacing: -0.04em;
+  line-height: 0.82;
+}
+
+.a3s-not-found__content {
+  max-width: 620px;
+}
+
+.a3s-not-found__content h1 {
+  max-width: 12ch;
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: clamp(40px, 5vw, 58px);
+  font-weight: 680;
+  letter-spacing: -0.038em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.a3s-not-found__content > p {
+  max-width: 58ch;
+  margin: 24px 0 0;
+  color: var(--ui-muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.a3s-not-found__actions {
+  display: flex;
+  margin-top: 32px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.a3s-not-found__actions > a {
+  display: inline-flex;
+  min-height: 44px;
+  padding: 0 17px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 620;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease-out,
+    border-color 140ms ease-out,
+    color 140ms ease-out;
+}
+
+.a3s-not-found__actions > .a3s-not-found__primary {
+  background: var(--ui-blue);
+  color: var(--primary-foreground);
+}
+
+.a3s-not-found__actions > .a3s-not-found__primary:hover {
+  background: var(--ui-blue-deep);
+}
+
+.a3s-not-found__actions > .a3s-not-found__secondary {
+  border-color: var(--ui-line-strong);
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+}
+
+.a3s-not-found__actions > .a3s-not-found__secondary:hover {
+  background: var(--ui-panel);
+}
+
+.a3s-not-found__actions > a:focus-visible,
+.a3s-not-found__destinations > a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-blue) 38%, transparent);
+  outline-offset: 3px;
+}
+
+.a3s-not-found__destinations {
+  display: grid;
+  margin-top: clamp(56px, 8vh, 88px);
+  border-block: 1px solid var(--ui-line);
+}
+
+.a3s-not-found__destinations > a {
+  display: grid;
+  min-height: 72px;
+  padding: 14px 2px;
+  grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 20px;
+  color: var(--ui-ink);
+  text-decoration: none;
+}
+
+.a3s-not-found__destinations > a + a {
+  border-block-start: 1px solid var(--ui-line);
+}
+
+.a3s-not-found__destinations > a:hover strong,
+.a3s-not-found__destinations > a:hover svg {
+  color: var(--ui-blue-deep);
+}
+
+.a3s-not-found__destinations strong {
+  font-size: 14px;
+  font-weight: 640;
+}
+
+.a3s-not-found__destinations span {
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.a3s-not-found__destinations svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ui-faint);
+  transition: color 140ms ease-out;
+}
+
+@media (max-width: 720px) {
+  .a3s-not-found {
+    width: min(100% - 40px, 560px);
+    padding: 56px 0 72px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .a3s-not-found__code {
+    width: fit-content;
+    padding: 0 0 18px;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ui-line-strong);
+    font-size: 88px;
+  }
+
+  .a3s-not-found__content h1 {
+    font-size: clamp(36px, 10vw, 46px);
+  }
+
+  .a3s-not-found__content > p {
+    margin-top: 18px;
+    font-size: 15px;
+  }
+
+  .a3s-not-found__actions {
+    margin-top: 26px;
+  }
+
+  .a3s-not-found__actions > a {
+    flex: 1 1 10rem;
+  }
+
+  .a3s-not-found__destinations {
+    margin-top: 52px;
+  }
+
+  .a3s-not-found__destinations > a {
+    min-height: 84px;
+    padding: 14px 0;
+    grid-template-columns: minmax(0, 1fr) 20px;
+    gap: 4px 16px;
+  }
+
+  .a3s-not-found__destinations strong,
+  .a3s-not-found__destinations span {
+    grid-column: 1;
+  }
+
+  .a3s-not-found__destinations svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-not-found__actions > a,
+  .a3s-not-found__destinations svg {
+    transition: none;
+  }
+}

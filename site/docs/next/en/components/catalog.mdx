@@ -1,73 +1,209 @@
 # Catalog
 
-Catalog provides one reusable page skeleton for assistants, skills, connectors, templates, and other searchable capability collections.
+Catalog provides a page-level skeleton for large capability collections that need search and filtering. Use it only when discovering and choosing a capability is the primary task; use a regular list or Resource Grid for small collections.
 
 <Preview class="w-full">
-  <section class="catalog">
-    <header><div data-catalog-identity><h2>Capabilities</h2><p>Choose reusable assistants, skills, and connectors.</p></div><div data-catalog-actions><input class="input" type="search" aria-label="Search capabilities" placeholder="Search capabilities" /></div></header>
-    <div data-catalog-featured><ul><li><h3>Release steward</h3><p>Coordinate checks and release evidence.</p></li><li><h3>Research workspace</h3><p>Find and synthesize source material.</p></li><li><h3>Repository review</h3><p>Inspect changes and quality signals.</p></li></ul></div>
-    <div data-catalog-toolbar><div data-catalog-filters><button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">All</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Development</button><button type="button" class="btn" data-size="sm" data-variant="ghost">Research</button></div><div data-catalog-actions><span data-catalog-count>3 capabilities</span></div></div>
-    <div class="resource-grid" data-catalog-results><article class="resource-card"><section><strong>Code reviewer</strong><small>A3S Lab</small><p>Review focused changes and evidence.</p><footer><span class="status-badge" data-state="success">Installed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></footer></section></article><article class="resource-card"><section><strong>Documentation planner</strong><small>A3S Lab</small><p>Plan bilingual documentation changes.</p><footer><span>Add when needed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Add</button></footer></section></article></div>
-  </section>
+<section class="catalog" aria-labelledby="catalog-title-en">
+  <header>
+    <div data-catalog-identity>
+      <h2 id="catalog-title-en">Capabilities</h2>
+      <p>Find reusable skills, connectors, and work templates.</p>
+    </div>
+    <div data-catalog-actions>
+      <label class="sr-only" for="catalog-search-preview-en">Search capabilities</label>
+      <input class="input" id="catalog-search-preview-en" type="search" placeholder="Search by name or purpose" />
+    </div>
+  </header>
+  <div data-catalog-featured aria-labelledby="catalog-featured-title-en">
+    <h3 id="catalog-featured-title-en" class="mb-3 text-sm font-semibold">Featured capabilities</h3>
+    <ul>
+      <li><h4 class="font-medium">Release checks</h4><p class="mt-1 text-sm text-muted-foreground">Collect validation results and release evidence.</p></li>
+      <li><h4 class="font-medium">Research workspace</h4><p class="mt-1 text-sm text-muted-foreground">Gather, compare, and organize source material.</p></li>
+      <li><h4 class="font-medium">Code review</h4><p class="mt-1 text-sm text-muted-foreground">Focus on change scope and quality signals.</p></li>
+    </ul>
+  </div>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters aria-label="Capability type">
+      <button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">All</button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" aria-pressed="false">Development</button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" aria-pressed="false">Research</button>
+    </div>
+    <div data-catalog-actions><span data-catalog-count aria-live="polite">3 capabilities</span></div>
+  </div>
+  <div class="resource-grid" data-catalog-results aria-label="Capability results">
+    <article class="resource-card">
+      <section><strong>Code review</strong><small>A3S Lab</small><p>Inspect focused changes and supporting evidence.</p><footer><span class="status-badge" data-state="success">Installed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Open</button></footer></section>
+    </article>
+    <article class="resource-card">
+      <section><strong>Documentation planning</strong><small>A3S Lab</small><p>Plan bilingual documentation and acceptance scope.</p><footer><span>Add when needed</span><button type="button" class="btn" data-size="sm" data-variant="outline">Add</button></footer></section>
+    </article>
+  </div>
+</section>
 </Preview>
 
 ## Usage
 
+The Catalog root owns page arrangement only. The host implements search, filtering, sorting, installation, and data requests. Compose [Resource Card](/components/resource-card), a list, or a table inside the results region.
+
 ```html
-<section class="catalog">
-  <header>...</header>
-  <div data-catalog-featured>...</div>
-  <div data-catalog-toolbar>...</div>
-  <div class="resource-grid" data-catalog-results>...</div>
+<section class="catalog" aria-labelledby="capability-catalog-title">
+  <header>
+    <div data-catalog-identity>
+      <h1 id="capability-catalog-title">Capabilities</h1>
+      <p>Find reusable skills, connectors, and work templates.</p>
+    </div>
+    <div data-catalog-actions>
+      <label for="capability-search">Search capabilities</label>
+      <input
+        class="input"
+        id="capability-search"
+        type="search"
+        placeholder="Search by name or purpose"
+      />
+    </div>
+  </header>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters aria-label="Capability type"></div>
+    <div data-catalog-actions>
+      <output data-catalog-count>12 capabilities</output>
+    </div>
+  </div>
+  <div data-catalog-results aria-label="Capability results"></div>
 </section>
 ```
 
 ### Parameters
 
-| API | Purpose |
-| --- | --- |
-| `data-catalog-identity` | Title and description |
-| `data-catalog-actions` | Search, sort, view, and ownership actions |
-| `data-catalog-featured` | Optional horizontal featured collection |
-| `data-catalog-toolbar` | Filters, result count, sort, and view controls |
-| `data-catalog-results` | Resource Grid, list, table, or Empty state |
+| API | Required | Purpose |
+| --- | --- | --- |
+| `data-catalog-identity` | Yes | Page title and concise description |
+| `data-catalog-actions` | No | Search, sort, view, or ownership actions |
+| `data-catalog-featured` | No | A small, justified set of featured items |
+| `data-catalog-toolbar` | Recommended | Filters, result count, and sorting |
+| `data-catalog-filters` | No | A group of filters with visible selected state |
+| `data-catalog-count` | Recommended | Result count after filtering |
+| `data-catalog-results` | Yes | Grid, list, table, or state feedback |
 
 ## States and variants
 
-Keep the page skeleton stable while card content distinguishes assistants, skills, and connectors. Results must cover loading, empty, error, selected, installed, unavailable, and pagination states.
+`ready` displays stable results. `loading` retains the title, filters, and results dimensions. `empty` explains why the current conditions match nothing and offers a clear-filter path. `error` names the failure and recovery. `partial` indicates pagination or that more results are still loading.
 
-## Accessibility
+<Preview class="w-full">
+<section class="catalog" data-state="empty" aria-labelledby="empty-catalog-title-en">
+  <header>
+    <div data-catalog-identity><h2 id="empty-catalog-title-en">Capabilities</h2><p>No results match the current filters.</p></div>
+  </header>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters><span class="badge" data-variant="outline">Research · Installed</span></div>
+    <div data-catalog-actions><output data-catalog-count aria-live="polite">0 capabilities</output></div>
+  </div>
+  <div data-catalog-results>
+    <div class="empty" data-state="empty">
+      <h3>No matching capabilities</h3>
+      <p>Clear the Installed filter or try a broader search term.</p>
+      <footer><button type="button" class="btn" data-variant="outline">Clear filters</button></footer>
+    </div>
+  </div>
+</section>
+</Preview>
 
-Use a real search input and pressed state for toggle filters. Announce result counts after filtering without moving focus. Featured content may scroll horizontally, but the document must not overflow.
+Featured content is not a permanent advertising slot. Keep the set small and explainable. On phones, show complete stacked items instead of clipped horizontal cards that compete with primary results. Different resource types share search and selection rules; visible metadata communicates the type difference.
 
 ## React
 
 ```tsx
+import { useState } from "react";
 import { Catalog, useCatalog } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useCatalog();
+export function CapabilityCatalog() {
+  const [query, setQuery] = useState("");
+  const control = useCatalog({
+    events: {
+      input(event) {
+        const target = event.target as HTMLInputElement;
+        if (target.type === "search") setQuery(target.value);
+      },
+    },
+  });
+
   return (
-    <Catalog ref={control.ref} aria-label="Catalog">Component content</Catalog>
+    <Catalog ref={control.ref} aria-labelledby="catalog-title">
+      <header>
+        <div data-catalog-identity>
+          <h1 id="catalog-title">Capabilities</h1>
+          <p>Find reusable skills, connectors, and work templates.</p>
+        </div>
+        <div data-catalog-actions>
+          <label htmlFor="catalog-search">Search capabilities</label>
+          <input
+            id="catalog-search"
+            className="input"
+            type="search"
+            defaultValue=""
+          />
+        </div>
+      </header>
+      <div data-catalog-toolbar>
+        <output data-catalog-count>1 capability</output>
+      </div>
+      <div data-catalog-results>
+        <article className="resource-card"><h2>Code review</h2></article>
+      </div>
+    </Catalog>
   );
 }
 ```
 
-`useCatalog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+`useCatalog` observes standard `input` events at the Catalog root and exposes no controller methods. This example makes the hook the only query update path. A conventional React form may omit the hook and use only `onChange` instead.
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Catalog, useCatalog } from "@a3s-lab/ui/vue";
 
-const control = useCatalog();
+const query = ref("");
+const control = useCatalog({
+  events: {
+    input(event) {
+      const target = event.target as HTMLInputElement;
+      if (target.type === "search") query.value = target.value;
+    },
+  },
+});
 const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Catalog ref="componentRef" aria-label="Catalog">Component content</Catalog>
+  <Catalog ref="componentRef" aria-labelledby="catalog-title">
+    <header>
+      <div data-catalog-identity>
+        <h1 id="catalog-title">Capabilities</h1>
+        <p>Find reusable skills, connectors, and work templates.</p>
+      </div>
+      <div data-catalog-actions>
+        <label for="catalog-search">Search capabilities</label>
+        <input
+          id="catalog-search"
+          :value="query"
+          class="input"
+          type="search"
+        />
+      </div>
+    </header>
+    <div data-catalog-toolbar>
+      <output data-catalog-count>1 capability</output>
+    </div>
+    <div data-catalog-results>
+      <article class="resource-card"><h2>Code review</h2></article>
+    </div>
+  </Catalog>
 </template>
 ```
 
-`useCatalog` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+The Vue composable is the only query update path here. Remove its `input` handler if you choose `v-model` instead. Query, filters, and results remain application state.
+
+## Accessibility
+
+Catalog needs one unique page title. Give the search input a visible or visually hidden label, and express filter selection with `aria-pressed` or equivalent semantics. Announce result count changes through `data-catalog-count` without moving focus or resetting scroll. Loading, empty, and error states retain title and filter context; retrying or clearing filters leaves focus on the triggering control. Featured and result items use real links or buttons—never a clickable card containing nested actions. The host owns queries, pagination, recommendation criteria, installation permissions, and trusted metadata; the component owns information architecture and responsive arrangement.

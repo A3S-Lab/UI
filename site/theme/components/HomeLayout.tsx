@@ -142,7 +142,6 @@ const resourceKinds = [
 
 const homeCopy = {
   zh: {
-    kicker: "A3S 产品界面系统",
     titleLead: "复杂界面，",
     titleAccent: "也该有清晰语法。",
     subtitle:
@@ -204,7 +203,6 @@ const homeCopy = {
     workbenchRegion: "交互式 A3S Office 工作台样例",
   },
   en: {
-    kicker: "A3S PRODUCT INTERFACE SYSTEM",
     titleLead: "Complex UI.",
     titleAccent: "Clear grammar.",
     subtitle:
@@ -752,9 +750,6 @@ export function HomeLayout() {
     <main className="ui-home">
       <section className="ui-hero">
         <div className="ui-hero__copy">
-          <div className="ui-kicker">
-            <span /> {labels.kicker}
-          </div>
           <h1>
             {labels.titleLead}
             <span>{labels.titleAccent}</span>

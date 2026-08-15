@@ -1,0 +1,184 @@
+.component-intro {
+  display: grid;
+  margin: 24px 0 36px;
+  padding: 16px 0;
+  border-block: 1px solid var(--ui-line-strong);
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 24px;
+}
+
+.component-intro__context {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
+}
+
+.component-intro__context > div,
+.component-intro__context ul {
+  display: flex;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.component-intro__context > div {
+  gap: 7px;
+  color: var(--ui-faint);
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.component-intro__context > div a {
+  color: var(--ui-blue-deep);
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.component-intro__context > div a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.component-intro__context > div a:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.component-intro__context ul {
+  overflow: hidden;
+  gap: 0;
+  color: var(--ui-muted);
+  font-size: 12px;
+  list-style: none;
+}
+
+.component-intro__context li {
+  display: flex;
+  align-items: center;
+}
+
+.component-intro__context li + li::before {
+  width: 1px;
+  height: 12px;
+  margin-inline: 9px;
+  background: var(--ui-line-strong);
+  content: "";
+}
+
+.component-intro__install {
+  display: grid;
+  min-width: 0;
+  min-height: 42px;
+  overflow: hidden;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 8px;
+  background: var(--ui-canvas);
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.rp-doc .component-intro__install code {
+  overflow: hidden;
+  min-width: 0;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ui-ink);
+  font: 550 12px/1.4 var(--ui-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.component-intro__install button {
+  position: relative;
+  display: inline-flex;
+  min-width: 82px;
+  min-height: 40px;
+  padding: 0 11px;
+  border: 0;
+  border-inline-start: 1px solid var(--ui-line-strong);
+  background: var(--ui-paper);
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 620;
+}
+
+.component-intro__install button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.component-intro__install button:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--ui-blue);
+  outline-offset: -2px;
+}
+
+.component-intro__install button[data-state="copied"] {
+  color: var(--ui-green);
+}
+
+.component-intro__install button[data-state="error"] {
+  color: var(--ui-red);
+}
+
+.component-intro__install button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.component-intro__feedback {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .component-intro {
+    margin: 22px 0 32px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .component-intro__context {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .component-intro__context {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .component-intro__install button {
+    min-width: 44px;
+    padding-inline: 10px;
+  }
+
+  .component-intro__install button > span:not(.component-intro__feedback) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .component-intro__install button {
+    transition: none;
+  }
+}

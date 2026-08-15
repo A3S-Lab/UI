@@ -1,45 +1,42 @@
 # 头像
 
-<Preview>
-<div class="flex flex-row flex-wrap items-center gap-12">
-  <span class="avatar">
-    <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-    <span>CN</span>
-  </span>
-  <span class="avatar rounded-lg">
-    <A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" />
-    <span>ER</span>
-  </span>
-  <div class="avatar-group [&_.avatar]:grayscale">
-    <span class="avatar">
-      <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-      <span>CN</span>
+头像用照片或稳定的后备标识帮助用户快速识别人、团队或自动化身份；它补充可见名称，不代替名称。
+
+<Preview class="w-full max-w-md">
+<div class="grid gap-3">
+  <article class="item" data-variant="outline">
+    <span class="avatar" role="img" aria-label="林然">
+      <A3SAssetImage path="/assets/images/avatar-1.png" alt="" />
+      <span aria-hidden="true">LR</span>
+      <span class="avatar-badge bg-[var(--a3s-green)]" aria-hidden="true"></span>
     </span>
-    <span class="avatar">
-      <A3SAssetImage path="/assets/images/avatar-3.png" alt="@maxleiter" />
-      <span>LR</span>
-    </span>
-    <span class="avatar">
-      <A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" />
-      <span>ER</span>
-    </span>
+    <section><h3>林然</h3><p>界面工程 · 在线</p></section>
+  </article>
+  <div class="flex items-center justify-between gap-4">
+    <div class="avatar-group" role="group" aria-label="当前协作者">
+      <span class="avatar" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+      <span class="avatar" role="img" aria-label="陈墨"><A3SAssetImage path="/assets/images/avatar-2.png" alt="" /><span aria-hidden="true">CM</span></span>
+      <span class="avatar" role="img" aria-label="周遥"><A3SAssetImage path="/assets/images/avatar-3.png" alt="" /><span aria-hidden="true">ZY</span></span>
+      <span data-count role="img" aria-label="另外 3 位协作者">+3</span>
+    </div>
+    <span class="text-sm text-muted-foreground">6 人参与</span>
   </div>
 </div>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 和完整样式包。
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本CSS、Avatar组件CSS和一个样式包。
+也可以只导入基础样式、头像组件和一个样式包。
 
 ```css
 @import "tailwindcss";
@@ -48,204 +45,161 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
   </Step>
-  <Step title="Add your avatar HTML">
+  <Step title="添加头像 HTML">
 
-Add `class="avatar"` to a small inline container. Add `data-size="sm"` or `data-size="lg"` when needed. Put the image first and a fallback `<span>` after it. Add `.avatar-badge` for a status badge or badge icon.
+由根元素提供稳定名称；图片使用空 `alt`，后备首字母对读屏隐藏。这样图片加载成功或失败时都只读一次身份。
 
 ```html
-<span class="avatar">
-  <img src="/assets/images/avatar-1.png" alt="@shadcn" />
-  <span>CN</span>
+<span class="avatar" role="img" aria-label="林然" data-state="ready">
+  <img src="/people/lin-ran.jpg" alt="" />
+  <span aria-hidden="true">LR</span>
 </span>
 ```
+
+图片加载失败后由宿主把 `data-state` 改为 `fallback`。组件会隐藏失败图片并显示后备内容。
 
   </Step>
 </Steps>
 
 ### HTML 结构
 
-<dl>
-  <dt><code>&lt;div class="avatar-group"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>
-    Optional parent that groups avatars with overlap.
-    <dl>
-      <dt><code>&lt;span class="avatar"&gt;</code></dt>
-      <dd>
-        Avatar root. Use it standalone or as a direct child of <code>.avatar-group</code>. Add <code>data-size="sm"</code> or <code>data-size="lg"</code> for alternate sizes.
-        <dl>
-          <dt><code>&lt;img&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>The avatar image. Provide meaningful <code>alt</code> text.</dd>
-          <dt><code>&lt;span&gt;</code></dt>
-          <dd>Fallback initials or icon.</dd>
-          <dt><code>&lt;span class="avatar-badge"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>Status badge positioned at the block-end inline-end corner. It can be empty or contain an icon.</dd>
-        </dl>
-      </dd>
-      <dt><code>&lt;span data-count&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>Count or icon indicator displayed at the end of the group.</dd>
-    </dl>
-  </dd>
-</dl>
+| 元素或属性 | 必填 | 用途 |
+| --- | --- | --- |
+| `<span class="avatar">` | 是 | 单个身份的行内根元素 |
+| `role="img"` 与 `aria-label` | 独立头像 | 提供不随图片状态变化的身份名称 |
+| 直接子 `<img alt="">` | 可选 | 照片；空替代文本避免与根名称重复 |
+| 直接子 `<span aria-hidden="true">` | 是 | 首字母、图标或其他后备标识 |
+| `data-state` | `ready`、`fallback` | 由宿主同步图片加载结果 |
+| `data-size` | `sm`、省略、`lg` | 24px、32px、40px 三个稳定尺寸 |
+| `.avatar-badge` | 可选 | 角落状态提示，只作为辅助视觉信号 |
+| `.avatar-group` | 可选 | 直接排列多个头像与一个 `data-count` 汇总项 |
 
-## 示例
+## 状态与变体
 
-### 基本
+### 图片与后备标识
+
+后备内容不是错误提示，而是身份的等价视觉表示。首字母必须来自稳定名称，不能用随机颜色或无法解释的占位图标。
 
 <Preview>
-<span class="avatar">
-  <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-  <span>CN</span>
-</span>
-</Preview>
-
-### 徽章
-
-<Preview>
-<span class="avatar">
-  <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-  <span>CN</span>
-  <span class="avatar-badge bg-green-600 dark:bg-green-800"></span>
-</span>
-</Preview>
-
-### 带有图标的徽章
-
-<Preview>
-<span class="avatar">
-  <A3SAssetImage path="/assets/images/avatar-3.png" alt="@pranathip" />
-  <span>PP</span>
-  <span class="avatar-badge"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></span>
-</span>
-</Preview>
-
-### 头像组
-
-<Preview>
-<div class="avatar-group">
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" /><span>CN</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-3.png" alt="@maxleiter" /><span>LR</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" /><span>ER</span></span>
-</div>
-</Preview>
-
-### 头像组数
-
-<Preview>
-<div class="avatar-group">
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" /><span>CN</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-3.png" alt="@maxleiter" /><span>LR</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" /><span>ER</span></span>
-  <span data-count>+3</span>
-</div>
-</Preview>
-
-### 带有图标的头像组
-
-<Preview>
-<div class="avatar-group">
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" /><span>CN</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-3.png" alt="@maxleiter" /><span>LR</span></span>
-  <span class="avatar"><A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" /><span>ER</span></span>
-  <span data-count aria-label="Additional avatars"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></span>
+<div class="flex flex-wrap items-center gap-6">
+  <div class="flex items-center gap-2">
+    <span class="avatar" role="img" aria-label="林然" data-state="ready"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+    <span>林然</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="avatar" role="img" aria-label="陈墨" data-state="fallback"><A3SAssetImage path="/assets/images/avatar-2.png" alt="" /><span aria-hidden="true">CM</span></span>
+    <span>陈墨</span>
+  </div>
 </div>
 </Preview>
 
 ### 尺寸
 
+尺寸表达界面密度，不表达用户等级。列表使用小号或默认尺寸，账户入口和身份摘要可使用大号。
+
 <Preview>
-<div class="grid gap-2">
-  <div class="flex flex-wrap items-center gap-2">
-    <span class="avatar" data-size="sm">
-      <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-      <span>CN</span>
-    </span>
-    <span class="avatar">
-      <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-      <span>CN</span>
-    </span>
-    <span class="avatar" data-size="lg">
-      <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-      <span>CN</span>
-    </span>
+<div class="flex flex-wrap items-end gap-4">
+  <span class="avatar" data-size="sm" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+  <span class="avatar" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+  <span class="avatar" data-size="lg" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+</div>
+</Preview>
+
+### 状态与头像组
+
+角落徽点不能单独承担“在线”“忙碌”等含义；在附近保留可见状态文本。头像组显示有限数量并用汇总项说明其余成员，不能把几十个头像全部堆叠。
+
+<Preview class="w-full max-w-sm">
+<div class="grid gap-4">
+  <div class="flex items-center gap-2">
+    <span class="avatar" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span><span class="avatar-badge bg-[var(--a3s-green)]" aria-hidden="true"></span></span>
+    <span>林然 · 在线</span>
   </div>
-  <div class="flex flex-wrap items-center gap-2">
-    <span class="avatar" data-size="sm"><span>CN</span></span>
-    <span class="avatar"><span>CN</span></span>
-    <span class="avatar" data-size="lg"><span>CN</span></span>
+  <div class="avatar-group" role="group" aria-label="审查参与者">
+    <span class="avatar" role="img" aria-label="林然"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">LR</span></span>
+    <span class="avatar" role="img" aria-label="陈墨"><A3SAssetImage path="/assets/images/avatar-2.png" alt="" /><span aria-hidden="true">CM</span></span>
+    <span class="avatar" role="img" aria-label="周遥"><A3SAssetImage path="/assets/images/avatar-3.png" alt="" /><span aria-hidden="true">ZY</span></span>
+    <span data-count role="img" aria-label="另外 3 位参与者">+3</span>
   </div>
 </div>
 </Preview>
 
-### 下拉菜单
+### 交互入口
+
+头像本身不是按钮。需要打开账户菜单时，把头像放进真实按钮，并由按钮命名操作；按钮内的头像设为装饰，避免重复朗读。
 
 <Preview>
-<div class="dropdown-menu">
-  <button type="button" id="avatar-dropdown-trigger" aria-label="Open user menu" aria-haspopup="menu" aria-controls="avatar-dropdown-menu" aria-expanded="false" class="btn rounded-full" data-variant="ghost" data-size="icon">
-    <span class="avatar">
-      <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-      <span>CN</span>
-    </span>
-  </button>
-  <div data-popover aria-hidden="true" class="w-32">
-    <div role="menu" id="avatar-dropdown-menu" aria-labelledby="avatar-dropdown-trigger">
-      <div role="menuitem">Profile</div>
-      <div role="menuitem">Billing</div>
-      <div role="menuitem">Settings</div>
-      <hr role="separator" />
-      <div role="menuitem" data-variant="destructive">Log out</div>
-    </div>
-  </div>
-</div>
+<button type="button" class="btn rounded-full" data-size="icon" data-variant="ghost" aria-label="打开林然的账户菜单">
+  <span class="avatar" aria-hidden="true"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span>LR</span></span>
+</button>
 </Preview>
 
 ### RTL
 
+头像照片和首字母不镜像。头像组通过逻辑方向调整重叠顺序，身份名称仍由各自语言决定。
+
 <Preview>
-<div class="flex flex-row flex-wrap items-center gap-12" dir="rtl">
-  <span class="avatar">
-    <A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" />
-    <span>CN</span>
-  </span>
-  <span class="avatar rounded-lg">
-    <A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" />
-    <span>ER</span>
-  </span>
-  <div class="avatar-group [&_.avatar]:grayscale">
-    <span class="avatar"><A3SAssetImage path="/assets/images/avatar-1.png" alt="@shadcn" /><span>CN</span></span>
-    <span class="avatar"><A3SAssetImage path="/assets/images/avatar-3.png" alt="@maxleiter" /><span>LR</span></span>
-    <span class="avatar"><A3SAssetImage path="/assets/images/avatar-2.png" alt="@evilrabbit" /><span>ER</span></span>
+<div class="flex items-center gap-3" dir="rtl">
+  <div class="avatar-group" role="group" aria-label="المشاركون الحاليون">
+    <span class="avatar" role="img" aria-label="ليان"><A3SAssetImage path="/assets/images/avatar-1.png" alt="" /><span aria-hidden="true">لي</span></span>
+    <span class="avatar" role="img" aria-label="سامي"><A3SAssetImage path="/assets/images/avatar-2.png" alt="" /><span aria-hidden="true">سا</span></span>
+    <span data-count role="img" aria-label="مشاركان إضافيان">+2</span>
   </div>
+  <span>فريق المراجعة</span>
 </div>
 </Preview>
 
 ## React
 
 ```tsx
+import { useState } from "react";
 import { Avatar } from "@a3s-lab/ui/react";
 
 export function Example() {
+  const [failed, setFailed] = useState(false);
+
   return (
-    <Avatar>组件内容</Avatar>
+    <Avatar
+      role="img"
+      aria-label="林然"
+      data-state={failed ? "fallback" : "ready"}
+    >
+      {!failed && (
+        <img src="/people/lin-ran.jpg" alt="" onError={() => setFailed(true)} />
+      )}
+      <span aria-hidden="true">LR</span>
+    </Avatar>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Avatar` 映射同一个行内根元素。图片加载与后备状态属于应用数据，因此不提供没有行为依据的组件 hook。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Avatar } from "@a3s-lab/ui/vue";
 
+const failed = ref(false);
 </script>
 
 <template>
-  <Avatar>组件内容</Avatar>
+  <Avatar
+    role="img"
+    aria-label="林然"
+    :data-state='failed ? "fallback" : "ready"'
+  >
+    <img v-if="!failed" src="/people/lin-ran.jpg" alt="" @error="failed = true" />
+    <span aria-hidden="true">LR</span>
+  </Avatar>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 版本使用同一图片错误状态和语义根元素，不把头像资源请求放入适配器。
+
+## 可访问性
+
+独立头像由根元素提供一个稳定名称，图片 `alt` 为空、后备内容 `aria-hidden="true"`，避免图片和首字母被重复朗读。头像紧邻同名文本时，可以把整个头像设为 `aria-hidden="true"`。状态徽点只作视觉补充，在线、忙碌或离线必须同时有文字。可点击头像必须由外层按钮或链接承担名称、焦点和键盘行为。宿主负责身份数据、图片授权、加载失败、隐私与状态真实性；组件只负责呈现，不应根据头像颜色推断角色、在线状态或权限。

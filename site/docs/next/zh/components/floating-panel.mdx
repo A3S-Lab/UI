@@ -3,14 +3,14 @@
 让检查器、辅助工具或短期上下文停靠在主要任务旁，并在窄屏上自然转为底部面板。
 
 <Preview class="w-full">
-<aside class="floating-panel" data-position="docked" data-state="open"><header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section></aside>
+<aside class="floating-panel" data-position="docked" data-state="open"><header><strong>检查器</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">关闭</button></header><section><p>无需离开当前任务即可检查所选资源。</p></section></aside>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
 <aside class="floating-panel" data-position="docked" data-state="open">
-  <header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+  <header><strong>检查器</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">关闭</button></header><section><p>无需离开当前任务即可检查所选资源。</p></section>
 </aside>
 ```
 
@@ -35,7 +35,7 @@ export function Example() {
   const control = useFloatingPanel();
   return (
     <FloatingPanel ref={control.ref} data-position="docked" data-state="open">
-      <header><strong>Inspector</strong><button type="button" className="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+      <header><strong>检查器</strong><button type="button" className="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">关闭</button></header><section><p>无需离开当前任务即可检查所选资源。</p></section>
     </FloatingPanel>
   );
 }
@@ -55,7 +55,7 @@ const componentRef = control.componentRef;
 
 <template>
   <FloatingPanel ref="componentRef" data-position="docked" data-state="open">
-    <header><strong>Inspector</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">Close</button></header><section><p>Review the selected resource without leaving the task.</p></section>
+    <header><strong>检查器</strong><button type="button" class="btn" data-size="sm" data-variant="ghost" data-floating-panel-action="close">关闭</button></header><section><p>无需离开当前任务即可检查所选资源。</p></section>
   </FloatingPanel>
 </template>
 ```

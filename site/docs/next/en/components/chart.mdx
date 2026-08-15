@@ -1,10 +1,10 @@
 # Chart
 
-<Callout type="warning" title="Beta API" icon="triangle-alert">
-  Chart support is beta. The JavaScript API, generated markup, and option names may change before the stable 1.0 release.
-</Callout>
+Chart turns numeric relationships into comparable visual structure. Use it for trends, differences, and composition—not as a substitute for exact data or as decoration for an empty surface.
 
-Use Chart.js with A3S UI defaults for themed colors, external tooltips, and optional generated legends.
+<Callout type="warning" title="Beta API" icon="triangle-alert">
+  Chart support remains beta. Initialization options and generated markup may change before 1.0; data and accessibility structure must remain host-owned.
+</Callout>
 
 <Preview class="w-full">
   <ChartDemo variant="bar" />
@@ -12,17 +12,7 @@ Use Chart.js with A3S UI defaults for themed colors, external tooltips, and opti
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
-
-```css
-@import "tailwindcss";
-@import "@a3s-lab/ui/a3s.css";
-```
-
-Or import only the base CSS, Chart component CSS, and one style pack.
+Import the Chart structure and A3S visual tokens. Chart.js remains an explicit host dependency.
 
 ```css
 @import "tailwindcss";
@@ -31,242 +21,228 @@ Or import only the base CSS, Chart component CSS, and one style pack.
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
+`a3sUI.chart()` accepts a native `canvas` and applies A3S tokens to axes, tooltips, and an optional legend. Pass Chart.js explicitly through `Chart` in module environments instead of relying on an implicit global.
 
-  </Step>
-  <Step title="Include JavaScript">
+```js
+import ChartJS from "chart.js/auto";
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/chart";
 
-Copy or serve Chart.js, the A3S UI runtime, and Chart script.
+const rows = [
+  { month: "Jan", desktop: 186, mobile: 80 },
+  { month: "Feb", desktop: 305, mobile: 200 },
+  { month: "Mar", desktop: 237, mobile: 120 },
+];
 
-```html
-<script src="/assets/js/chart.umd.min.js"></script>
-<script src="/assets/js/runtime.min.js" defer></script>
-<script src="/assets/js/chart.min.js" defer></script>
+const chart = window.a3sUI.chart("#visitors-chart", {
+  Chart: ChartJS,
+  type: "bar",
+  labelKey: "month",
+  data: rows,
+  series: {
+    desktop: { label: "Desktop", color: "var(--chart-1)" },
+    mobile: { label: "Mobile", color: "var(--chart-2)" },
+  },
+  legend: true,
+});
 ```
 
-Chart is not included in the full A3S UI JavaScript bundle.
-
-Using CDN or bundler imports? See the [Installation page](/installation).
-
-  </Step>
-  <Step title="Add your chart HTML">
+Place the canvas, a visible title, a concise conclusion, and equivalent data in one `figure`. The graphic must never be the only representation of the values.
 
 ```html
-<canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    window.a3sUI.chart("#visitors-chart", {
+<figure aria-labelledby="visitors-title">
+  <figcaption id="visitors-title">
+    <strong>Monthly visits by device</strong>
+    <span id="visitors-summary">Desktop and mobile visits both peak in February.</span>
+  </figcaption>
+  <div class="chart">
+    <canvas id="visitors-chart" aria-describedby="visitors-summary">
+      The chart is unavailable in this environment. Use the data table below.
+    </canvas>
+  </div>
+  <table class="sr-only">
+    <caption>Monthly visits by device</caption>
+    <thead><tr><th scope="col">Month</th><th scope="col">Desktop</th><th scope="col">Mobile</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Jan</th><td>186</td><td>80</td></tr>
+      <tr><th scope="row">Feb</th><td>305</td><td>200</td></tr>
+      <tr><th scope="row">Mar</th><td>237</td><td>120</td></tr>
+    </tbody>
+  </table>
+</figure>
+```
+
+The helper reuses an existing `.chart` container or creates one around a bare canvas. When the theme or style pack changes, it resolves the current CSS color tokens again.
+
+### Parameters
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `Chart` | `window.Chart` | Chart.js constructor; pass it explicitly in module environments |
+| `type` | `"bar"` | Chart.js chart type |
+| `labelKey` | `"label"` | Row key used for the category or horizontal-axis label |
+| `data` | `[]` | Row objects, or raw Chart.js data with `datasets` |
+| `series` | `{}` | Maps data keys to labels, colors, and dataset options |
+| `legend` | `false` | Generates a read-only A3S legend |
+| `tooltip` | `true` | Uses the themed external tooltip |
+| `options` | `{}` | Passes through Chart.js options |
+| `plugins` | `[]` | Passes through Chart.js plugins |
+| `chartData` | Undefined | Complete Chart.js data; overrides row mapping |
+
+Each `series.label` must be localized user-facing copy. Use stable `--chart-1` through `--chart-5` tokens for color. `surface` accepts `true`, `"gradient"`, or `{ from, to }`; place only native Chart.js dataset options in `dataset`.
+
+## States and variants
+
+### Choose the right graphic
+
+- Bar charts compare discrete categories and normally start from a zero baseline.
+- Line charts communicate an ordered trend. Avoid smoothing that implies unsampled values.
+- Stacked charts work only when users need both total and composition; use a table when categories become dense.
+- Doughnut charts suit a small number of categories that form a clear whole and must show the values alongside the graphic.
+- Radar charts are difficult to compare precisely. Reserve them for a small overview of dimensions on the same scale, never for a critical decision.
+
+<Preview class="w-full">
+<div class="grid gap-8">
+  <div><h3 class="mb-3 text-sm font-semibold">Continuous trend</h3><ChartDemo variant="line" /></div>
+  <div><h3 class="mb-3 text-sm font-semibold">Whole composition</h3><ChartDemo variant="donut" /></div>
+</div>
+</Preview>
+
+### Loading, empty, and error
+
+Keep the chart measurement box while data is unavailable, and explain the current condition inside `data-chart-state`. Empty state says why no values exist; error state includes a recovery path. Do not disguise missing data as a zero-value chart.
+
+<Preview class="w-full">
+<div class="grid w-full gap-4 lg:grid-cols-3">
+  <div class="chart" data-state="loading" aria-busy="true">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state role="status">
+      <strong>Loading visit data</strong>
+      <span>Chart dimensions remain stable while the data resolves.</span>
+    </div>
+  </div>
+  <div class="chart" data-state="empty">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state>
+      <strong>No comparable data</strong>
+      <span>Select at least two points in time or expand the date range.</span>
+    </div>
+  </div>
+  <div class="chart" data-state="error">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state role="alert">
+      <strong>Visit data failed to load</strong>
+      <span>Check the data connection and retry. Current filters will remain.</span>
+      <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Reload</button></footer>
+    </div>
+  </div>
+</div>
+</Preview>
+
+The host drives `loading`, `empty`, and `error` from its data lifecycle. Prefer the Chart.js update API when values change so focus, size, and animation context remain stable. An interactive legend is a filter control and needs real buttons with synchronized `aria-pressed`; the generated default legend only identifies series.
+
+## React
+
+```tsx
+import { useEffect, useRef } from "react";
+import ChartJS from "chart.js/auto";
+import { Chart } from "@a3s-lab/ui/react";
+import "@a3s-lab/ui/chart";
+
+export function VisitsChart() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const instance = window.a3sUI.chart(canvasRef.current, {
+      Chart: ChartJS,
       type: "bar",
       labelKey: "month",
       data: [
         { month: "Jan", desktop: 186, mobile: 80 },
         { month: "Feb", desktop: 305, mobile: 200 },
-        { month: "Mar", desktop: 237, mobile: 120 },
-        { month: "Apr", desktop: 73, mobile: 190 },
-        { month: "May", desktop: 209, mobile: 130 },
-        { month: "Jun", desktop: 214, mobile: 140 },
       ],
       series: {
         desktop: { label: "Desktop", color: "var(--chart-1)" },
         mobile: { label: "Mobile", color: "var(--chart-2)" },
       },
-    })
-  })
-</script>
-```
+      legend: true,
+    });
+    return () => instance.destroy();
+  }, []);
 
-  </Step>
-</Steps>
-
-`a3sUI.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
-
-Charts default to `aspect-video`. Use a height, `min-h-*`, or `aspect-*` utility on a parent element when you need a different measuring box.
-
-## Legend
-
-Set `legend: true` to generate a A3S UI-styled legend after the canvas.
-
-The generated legend is display-only by default, matching shadcn/ui. Use a Chart.js plugin or custom legend markup if you need click-to-toggle behavior.
-
-```js
-window.a3sUI.chart("#visitors-chart", {
-  type: "bar",
-  labelKey: "month",
-  data,
-  series,
-  legend: true,
-})
-```
-
-## Series
-
-`series` maps object keys from each data row to labels, colors, and optional Chart.js dataset settings.
-
-```js
-window.a3sUI.chart("#revenue-chart", {
-  type: "line",
-  labelKey: "month",
-  data,
-  series: {
-    recurring: {
-      label: "Recurring",
-      color: "var(--chart-1)",
-      surface: "gradient",
-      dataset: {
-        fill: true,
-        tension: 0.35,
-      },
-    },
-    new: {
-      label: "New",
-      color: "var(--chart-2)",
-      dataset: {
-        borderDash: [4, 4],
-      },
-    },
-  },
-})
-```
-
-## Escape Hatches
-
-Pass raw Chart.js options and plugins through `options` and `plugins`.
-
-```js
-const chart = window.a3sUI.chart("#visitors-chart", {
-  type: "bar",
-  labelKey: "month",
-  data,
-  series,
-  options: {
-    indexAxis: "x",
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      tooltip: {
-        mode: "index",
-      },
-    },
-  },
-  plugins: [myChartJsPlugin],
-})
-```
-
-Pass complete Chart.js data through `chartData` when the simplified `data` plus `series` mapper is not enough.
-
-```js
-window.a3sUI.chart("#custom-chart", {
-  type: "scatter",
-  chartData: {
-    datasets: [
-      {
-        label: "Samples",
-        data: [{ x: 1, y: 2 }, { x: 2, y: 5 }],
-      },
-    ],
-  },
-  options: {
-    scales: {
-      x: { type: "linear" },
-    },
-  },
-})
-```
-
-`a3sUI.chart()` returns the Chart.js instance for single targets and an array of instances for multi-target selectors.
-
-## Examples
-
-### Bar chart - multiple
-
-<Preview class="w-full">
-  <ChartDemo variant="bar" />
-</Preview>
-
-### Line chart - linear
-
-<Preview class="w-full">
-  <ChartDemo variant="line" />
-</Preview>
-
-### Line chart - step
-
-<Preview class="w-full">
-  <ChartDemo variant="step" />
-</Preview>
-
-### Bar chart - stacked
-
-<Preview class="w-full">
-  <ChartDemo variant="stacked" />
-</Preview>
-
-### Pie chart - donut
-
-<Preview class="w-full">
-  <ChartDemo variant="donut" />
-</Preview>
-
-### Radar chart
-
-<Preview class="w-full">
-  <ChartDemo variant="radar" />
-</Preview>
-
-## API
-
-| Option | Default | Description |
-| --- | --- | --- |
-| `type` | `"bar"` | Chart.js chart type. |
-| `labelKey` | `"label"` | Row key used for labels. |
-| `data` | `[]` | Array of row objects, or raw Chart.js data with `datasets`. |
-| `series` | `{}` | Series config mapped from row keys. |
-| `legend` | `false` | Generates a A3S UI legend after the canvas. |
-| `tooltip` | `true` | Uses the A3S UI external tooltip. |
-| `options` | `{}` | Raw Chart.js options. |
-| `plugins` | `[]` | Raw Chart.js plugins. |
-| `chartData` | `undefined` | Complete Chart.js data object. Overrides the data mapper. |
-
-### Series options
-
-| Option | Description |
-| --- | --- |
-| `label` | Display label for legends and tooltips. |
-| `color` | Base color for the series stroke, fill, legend marker, and tooltip marker. |
-| `surface` | Derives a fill from `color`. Use `true` for a translucent fill, `"gradient"` for an upstream-style vertical fade, or `{ from, to }` for custom opacity stops. |
-| `dataset` | Raw Chart.js dataset options. |
-
-## React
-
-```tsx
-import { Chart, useChart } from "@a3s-lab/ui/react";
-
-export function Example() {
-  const control = useChart();
   return (
-    <Chart ref={control.ref}>Component content</Chart>
+    <figure aria-labelledby="visits-title">
+      <figcaption id="visits-title">Monthly visits by device</figcaption>
+      <Chart>
+        <canvas ref={canvasRef} aria-label="February visits exceed January visits" />
+      </Chart>
+      <table className="sr-only">
+        <caption>Monthly visits by device</caption>
+        <tbody>
+          <tr><th scope="row">Jan</th><td>Desktop 186, mobile 80</td></tr>
+          <tr><th scope="row">Feb</th><td>Desktop 305, mobile 200</td></tr>
+        </tbody>
+      </table>
+    </figure>
   );
 }
 ```
 
-`useChart` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+`Chart` supplies the stable measurement container. Initialization and cleanup use the real Chart.js instance. There is no root controller API, so the package does not expose a fabricated `useChart` hook.
 
 ## Vue
 
 ```vue
-<script setup>
-import { Chart, useChart } from "@a3s-lab/ui/vue";
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import ChartJS from "chart.js/auto";
+import { Chart } from "@a3s-lab/ui/vue";
+import "@a3s-lab/ui/chart";
 
-const control = useChart();
-const componentRef = control.componentRef;
+const canvas = ref<HTMLCanvasElement | null>(null);
+let instance: ChartJS | undefined;
+
+onMounted(() => {
+  if (!canvas.value) return;
+  instance = window.a3sUI.chart(canvas.value, {
+    Chart: ChartJS,
+    type: "bar",
+    labelKey: "month",
+    data: [
+      { month: "Jan", desktop: 186, mobile: 80 },
+      { month: "Feb", desktop: 305, mobile: 200 },
+    ],
+    series: {
+      desktop: { label: "Desktop", color: "var(--chart-1)" },
+      mobile: { label: "Mobile", color: "var(--chart-2)" },
+    },
+    legend: true,
+  });
+});
+
+onBeforeUnmount(() => instance?.destroy());
 </script>
 
 <template>
-  <Chart ref="componentRef">Component content</Chart>
+  <figure aria-labelledby="visits-title">
+    <figcaption id="visits-title">Monthly visits by device</figcaption>
+    <Chart>
+      <canvas ref="canvas" aria-label="February visits exceed January visits" />
+    </Chart>
+    <table class="sr-only">
+      <caption>Monthly visits by device</caption>
+      <tbody>
+        <tr><th scope="row">Jan</th><td>Desktop 186, mobile 80</td></tr>
+        <tr><th scope="row">Feb</th><td>Desktop 305, mobile 200</td></tr>
+      </tbody>
+    </table>
+  </figure>
 </template>
 ```
 
-`useChart` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+Vue uses the same container and the same Chart.js initialization and cleanup path; it does not introduce a second chart state model.
+
+## Accessibility
+
+Charts need a visible title, a concise conclusion, and an equivalent data table. A canvas `aria-label` may summarize the main finding but cannot replace exact values. Distinguish series with labels, shape, or position as well as color. Tooltip values must also be available in the table. Keep the default read-only legend out of the tab order; interactive legends must use buttons. Preserve label and data comprehension at 200% zoom, in dark mode, in RTL, and on narrow screens. Respect reduced-motion preferences and avoid noisy live announcements for streaming data. The host owns data truth, formatting, units, time zones, and remote states; the component owns visual mapping and theme integration.

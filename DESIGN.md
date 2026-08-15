@@ -2,10 +2,12 @@
 name: A3S UI
 description: A precise, framework-independent interface system for intelligent work.
 reference:
-  publicSite: "https://ui.lobehub.com/"
-  repository: "https://github.com/lobehub/lobe-ui"
-  version: "5.29.3"
-  revision: "f1d2a7e7b342f76ffc64602e32f3cb47ae96e0aa"
+  componentSite: "https://ui.lobehub.com/"
+  componentRepository: "https://github.com/lobehub/lobe-ui"
+  componentVersion: "5.29.3"
+  componentRevision: "f1d2a7e7b342f76ffc64602e32f3cb47ae96e0aa"
+  documentationRepository: "https://github.com/A3S-Lab/Test"
+  documentationRevision: "b74c008826aea8c1251ca9366f7ada67ee18fa7c"
 colors:
   light:
     canvas: "#ffffff"
@@ -69,10 +71,11 @@ spacing:
   controlHeight: "36px"
   compactControlHeight: "28px"
   touchTarget: "44px"
-  headerHeight: "56px"
-  sidebarWidth: "248px"
-  readingWidth: "752px"
-  shellMaxWidth: "1440px"
+  headerHeight: "64px"
+  sidebarWidth: "320px"
+  readingWidth: "920px"
+  outlineWidth: "268px"
+  shellMaxWidth: "1380px"
 motion:
   fast: "120ms"
   normal: "160ms"
@@ -87,11 +90,11 @@ motion:
 
 A3S UI is a quiet, exact surface for intelligent work. It combines the restraint of a professional developer tool with the clarity of an editorial document. The interface starts with white or near-black space, establishes hierarchy with type and alignment, and introduces color only for identity, focus, state, or a deliberate moment of emphasis.
 
-The visual direction is grounded in the pinned public reference and its v5.29.3 source, while the result remains an A3S product. Preserve the official A3S OS logo, semantic HTML API, framework independence, product vocabulary, and blue-to-violet brand relationship. Do not copy reference branding, mascots, product names, or React-specific DOM.
+The component direction is grounded in the pinned public catalog and its v5.29.3 source, while the documentation shell follows the pinned A3S Test Rspress system. The documentation reference supplies geometry, editorial rhythm, continuous boundaries, and responsive behavior—not its green palette. Preserve the official A3S OS logo, semantic HTML API, framework independence, product vocabulary, and blue-to-violet brand relationship. Do not copy reference branding, mascots, product names, or React-specific DOM.
 
 The system must feel recognizably related to the reference through mechanics that users can perceive:
 
-- A 56px, low-contrast top bar and a narrow persistent documentation rail.
+- A 64px, low-contrast top bar, a 320px persistent documentation rail, and a 268px page outline on wide screens.
 - Geist typography, strong compact headings, generous reading space, and short secondary copy.
 - White and near-black canvases with four tonal surface steps instead of gray card grids.
 - Small 4/6/8/12px radii, thin boundaries, 36px controls, and precise icon sizing.
@@ -163,7 +166,7 @@ Use a 4px base. Common internal gaps are 4, 6, 8, 12, and 16px. Region gaps are 
 
 Product controls are 36px high by default and 28px when explicitly compact. Every coarse-pointer target is at least 44px even when the visible control is smaller. Page padding is 16px on phones, 24px on tablets, and 32–48px on desktop.
 
-Documentation uses a maximum 1440px shell, a 248px sidebar, a 752px reading column, and an optional 216px outline. Product applications use stable context at an edge, an open central task canvas, and an optional inspector. A pane must declare its scroll owner; document and transcript scrolling may not compete.
+Documentation uses the A3S Test shell geometry: a maximum 1380px frame, a 320px sidebar, a content region capped at 920px, an optional 268px outline, and 80px desktop content padding. At intermediate widths content padding becomes 36px; phones use 24px page margins. Product applications use stable context at an edge, an open central task canvas, and an optional inspector. A pane must declare its scroll owner; document and transcript scrolling may not compete.
 
 At 900px, secondary inspectors become overlays or drawers. At 768px, persistent navigation becomes a dismissible sheet and is inert while closed. At 520px, headers keep only identity and essential actions, controls expand to touch targets, and safe-area padding protects bottom actions.
 
@@ -283,7 +286,7 @@ Harness components support authoring, conversation, execution, review, evidence,
 
 ### Component preview
 
-A preview is evidence, not decoration. It has one 12px frame, a compact title bar, a live stage, and a source region. The toolbar includes only meaningful controls: viewport, appearance, direction, source, copy, and optional external open. Source uses real syntax highlighting and a working copy action. Preview height adapts to content and names loading or runtime failure.
+A preview is evidence, not decoration. It has one 12px frame, a compact title bar, a live stage, and a source region. The toolbar includes only meaningful controls: viewport, appearance, direction, source, copy, and optional external open. Source uses real syntax highlighting and a working copy action. Preview height adapts to content and names loading or runtime failure. Each preview declares or derives one layout intent: centered control, flowing content, bounded overlay, or edge-to-edge workspace. Phone and tablet modes render inside isolated CSS viewports so component media queries respond to the selected width instead of the documentation window.
 
 ### Button and Action Icon
 
@@ -309,6 +312,8 @@ Composer combines a growing text area, context, attachments, tools, status, queu
 
 Highlighter and Snippet use the code surface, Geist Mono, theme-aware syntax tokens, copy feedback, and horizontal scrolling. Markdown establishes safe typography and delegates diagrams, math, raw HTML, media, and remote links to explicit host renderers. HTML Preview is sandboxed and belongs in Device Simulator when viewport controls or remote navigation are required.
 
+Device Simulator keeps the iframe at the exact selected CSS viewport and places hardware geometry outside that measurement. Phones expose an edge rail, sensor treatment, and gesture region; tablets expose a bezel and camera; laptops expose a display frame, hinge, and base; desktop monitors expose a bezel, chin, and stand. The complete shell scales as one unit to fit its workspace and remains a visual boundary only: it does not claim to emulate user agents, pixel density, touch, safe areas, network conditions, or operating-system browser behavior.
+
 ### Data Grid and Sortable List
 
 Data Grid owns navigation, sort intent, selection, and local presentation state; the host owns data queries and mutations. Sortable List provides pointer and keyboard reordering, a visible destination, cancel, and a completed reorder event. Both preserve selection and scroll context after rejected remote actions.
@@ -320,6 +325,17 @@ Brand Lockup renders the official A3S OS logo, product name, and optional descri
 ## 6. Documentation system
 
 Documentation and product experience are separate information architectures.
+
+The documentation site shares the visual grammar of A3S Test while retaining A3S UI identity:
+
+- Use a 64px Rspress navigation bar, blue-gray `#f5f7fb` light canvas, near-black `#0d1118` dark canvas, and the A3S OS blue interaction accent.
+- Keep sidebar, article, and outline regions on one continuous editorial grid. Separation comes from spacing and 1px boundaries, not a stack of floating cards.
+- Use 16px for major document surfaces, 12px for component preview frames, and 8px for controls. Do not inflate ordinary controls into pills.
+- Cap the article region at 920px while keeping paragraph measure between 65 and 75 characters. Use 80px desktop padding, 36px intermediate padding, and 24px phone margins.
+- Disable generic content entrance animation. Motion is reserved for control feedback, disclosure continuity, and state transitions.
+- Closed mobile navigation and outline regions are invisible and inert. Their tree lines, arrows, and focusable descendants must not leak into article space.
+- Every code example uses syntax highlighting and a persistent localized copy action. Component previews use the same code block system instead of a parallel highlighter.
+- Home, documentation, and Playground use the same tokens, typography, borders, and responsive breakpoints even though they remain separate routes and information architectures.
 
 - `site/docs/` contains guides, foundations, component contracts, Harness documentation, and composition patterns only.
 - Playground is a standalone custom route under `site/pages/`, linked from top navigation and absent from documentation sidebars, section indexes, search grouping, and previous/next ordering.

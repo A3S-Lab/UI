@@ -1,30 +1,23 @@
 # 面包屑
 
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb">
+面包屑说明当前页面在稳定信息层级中的位置，并让用户直接返回祖先页面；它不记录浏览历史，也不替代主导航。
+
+<Preview class="w-full">
+<nav class="breadcrumb" aria-label="面包屑">
   <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><a href="#">Components</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
+    <li><a href="#breadcrumb-docs">文档</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></li>
+    <li><a href="#breadcrumb-components">组件</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></li>
+    <li><span aria-current="page">面包屑</span></li>
   </ol>
 </nav>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
-
-```css
-@import "tailwindcss";
-@import "@a3s-lab/ui/a3s.css";
-```
-
-或者仅导入基本 CSS、面包组件 CSS 和一个样式包。
+  <Step title="引入 CSS">
 
 ```css
 @import "tailwindcss";
@@ -33,19 +26,21 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
   </Step>
-  <Step title="Add your breadcrumb HTML">
+  <Step title="添加层级路径">
 
-使用带有有序列表的导航地标。用 `aria-current="page"` 标记当前页面。
+使用具名导航地标和有序列表。祖先是链接，当前页面是带 `aria-current="page"` 的普通文本，分隔符不进入可访问性树。
 
 ```html
-<nav class="breadcrumb" aria-label="Breadcrumb">
+<nav class="breadcrumb" aria-label="面包屑">
   <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" ...></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
+    <li><a href="/docs">文档</a></li>
+    <li aria-hidden="true">
+      <svg data-rtl-flip viewBox="0 0 24 24">
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </li>
+    <li><span aria-current="page">组件</span></li>
   </ol>
 </nav>
 ```
@@ -53,133 +48,87 @@
   </Step>
 </Steps>
 
-## HTML结构
+### HTML 结构
 
-- `nav.breadcrumb` 是根地标，应包含 `aria-label="面包屑"`。
-- `ol` 包含按层次结构顺序排列的面包屑项目。
-- `li > a` 代表可导航的祖先。
-- `li[aria-hidden="true"]` 表示视觉分隔符。
-- `[aria-current="page"]` 代表当前页面。
-- `li > span[aria-hidden="true"]` 表示折叠的省略号。
+| 元素或属性 | 用途 |
+| --- | --- |
+| `nav.breadcrumb` | 具名导航地标 |
+| 直接子 `ol` | 按根到当前页面的顺序保存层级 |
+| `li > a` | 可导航祖先 |
+| `[aria-current="page"]` | 当前页面，只出现一次 |
+| `li[aria-hidden="true"]` | 纯视觉分隔符 |
+| `[data-rtl-flip]` | 在 RTL 中翻转有方向含义的分隔图标 |
 
-面包屑项目始终保持在同一命令行中。当可用宽度小于完整路径时，有序列表会横向滚动，不会把分隔符换到下一行。对于持续狭窄的界面，应折叠中间层级。
+## 状态与变体
 
-## 示例
+### 折叠长路径
 
-### 基本
+窄屏只保留根节点、最近祖先和当前页。折叠项需要告诉辅助技术省略了多少层级；如果用户必须访问被折叠的祖先，组合[下拉菜单](/components/dropdown-menu)，不要把不可操作的省略号伪装成按钮。
 
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb">
+<Preview class="w-full">
+<nav class="breadcrumb" aria-label="面包屑">
   <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><a href="#">Components</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
+    <li><a href="#breadcrumb-workspaces">工作区</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></li>
+    <li><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></span><span class="sr-only">已折叠 2 级路径</span></li>
+    <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></li>
+    <li><a href="#breadcrumb-interface">界面系统</a></li>
+    <li aria-hidden="true"><svg data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></li>
+    <li><span aria-current="page">面包屑</span></li>
   </ol>
 </nav>
 </Preview>
 
-### 定制分隔符
-
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg class="lucide lucide-dot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12.1" cy="12.1" r="1" /></svg></li>
-    <li><a href="#">Components</a></li>
-    <li aria-hidden="true"><svg class="lucide lucide-dot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12.1" cy="12.1" r="1" /></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
-  </ol>
-</nav>
-</Preview>
-
-### 下拉菜单
-
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li>
-      <div id="breadcrumb-dropdown" class="dropdown-menu">
-        <button type="button" id="breadcrumb-dropdown-trigger" class="btn" data-variant="ghost" data-size="icon-sm" aria-haspopup="menu" aria-controls="breadcrumb-dropdown-menu" aria-expanded="false"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
-          <span class="sr-only">Toggle menu</span>
-        </button>
-        <div id="breadcrumb-dropdown-popover" data-popover aria-hidden="true">
-          <div role="menu" id="breadcrumb-dropdown-menu" aria-labelledby="breadcrumb-dropdown-trigger">
-            <nav role="menu">
-              <button type="button" role="menuitem">Documentation</button>
-              <button type="button" role="menuitem">Themes</button>
-              <button type="button" role="menuitem">GitHub</button>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><a href="#">Components</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
-  </ol>
-</nav>
-</Preview>
-
-### 已折叠
-
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="#">Home</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li> <span aria-hidden="true"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></span></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><a href="#">Components</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><span aria-current="page">Breadcrumb</span></li>
-  </ol>
-</nav>
-</Preview>
+组件在空间不足时提供横向滚动作为安全退路，但产品应在已知狭窄布局中主动折叠中间层级。不要让分隔符单独换行，也不要用 CSS 改变路径的语义顺序。
 
 ### RTL
 
-<Preview>
-<nav class="breadcrumb" aria-label="Breadcrumb" dir="rtl">
-  <ol>
-    <li><a href="#">الرئيسية</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><a href="#">المكونات</a></li>
-    <li aria-hidden="true"><svg data-rtl-flip class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></li>
-    <li><span aria-current="page">مسار التنقل</span></li>
-  </ol>
-</nav>
-</Preview>
+路径顺序仍按“根到当前页”的 DOM 顺序编写，由 `dir="rtl"` 决定视觉方向。只有箭头、尖括号等方向图标需要 `data-rtl-flip`；圆点和省略号不翻转。
 
 ## React
 
 ```tsx
 import { Breadcrumb } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ComponentPath() {
   return (
-    <Breadcrumb aria-label="Breadcrumb"><a href="#current" aria-current="page">当前页面</a></Breadcrumb>
+    <Breadcrumb aria-label="面包屑">
+      <ol>
+        <li><a href="/docs">文档</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/docs/components">组件</a></li>
+        <li aria-hidden="true">/</li>
+        <li><span aria-current="page">面包屑</span></li>
+      </ol>
+    </Breadcrumb>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Breadcrumb` 映射原生 `nav`。路径来自路由和内容层级，没有组件私有状态，因此不提供 hook。
 
 ## Vue
 
 ```vue
 <script setup>
 import { Breadcrumb } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Breadcrumb aria-label="Breadcrumb"><a href="#current" aria-current="page">当前页面</a></Breadcrumb>
+  <Breadcrumb aria-label="面包屑">
+    <ol>
+      <li><a href="/docs">文档</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="/docs/components">组件</a></li>
+      <li aria-hidden="true">/</li>
+      <li><span aria-current="page">面包屑</span></li>
+    </ol>
+  </Breadcrumb>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器输出相同的导航地标与有序列表，不生成框架专属路径模型。
+
+## 可访问性
+
+每组面包屑都必须有可区分的 `aria-label`；页面中存在多个导航地标时尤其如此。当前页面使用 `aria-current="page"` 且不应再次链接到自己。分隔符设置 `aria-hidden="true"`，避免读屏重复朗读标点。链接文字应使用真实页面名称，不能全部写成“返回”或“更多”。折叠路径若只是省略，提供隐藏说明；若可展开，则使用具名按钮并采用菜单的完整键盘和焦点行为。宿主负责从路由生成稳定层级，组件只负责排列、溢出和方向。

@@ -1,4 +1,11 @@
-import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   removeBase,
   useLang,
@@ -75,7 +82,11 @@ function DocsSwitchers({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="docs-switchers" data-compact={compact || undefined}>
-      <details className="docs-switcher" data-switcher="language">
+      <details
+        className="docs-switcher"
+        data-switcher="language"
+        name="docs-preference-switcher"
+      >
         <summary
           aria-label={
             isChinese ? "切换文档语言" : "Switch documentation language"
@@ -109,7 +120,11 @@ function DocsSwitchers({ compact = false }: { compact?: boolean }) {
         </div>
       </details>
 
-      <details className="docs-switcher" data-switcher="version">
+      <details
+        className="docs-switcher"
+        data-switcher="version"
+        name="docs-preference-switcher"
+      >
         <summary
           aria-label={
             isChinese ? "切换文档版本" : "Switch documentation version"
@@ -149,12 +164,69 @@ function navigationHref(href: string) {
   return routeWithBase(href);
 }
 
+function DesktopUtilityNavigation({ items }: { items: NavigationItem[] }) {
+  const location = useLocation();
+  const menuItems = items.filter((item) => {
+    const position = "position" in item ? item.position : undefined;
+    return (position ?? "right") === "right";
+  });
+
+  if (menuItems.length === 0) return null;
+
+  return (
+    <ul className="rp-nav-menu rp-nav-menu--right docs-desktop-utilities">
+      {menuItems.map((item, index) => {
+        if ("items" in item && Array.isArray(item.items)) {
+          return (
+            <li className="rp-nav-menu__item" key={`${item.text}-${index}`}>
+              <details
+                className="docs-desktop-navigation"
+                key={`${item.text}-${location.pathname}`}
+                name="docs-desktop-navigation"
+              >
+                <summary className="rp-nav-menu__item__container">
+                  <span>{item.text}</span>
+                  <SvgWrapper icon={IconArrowDown} />
+                </summary>
+                <div className="docs-desktop-navigation__panel">
+                  {item.items.map((child, childIndex) =>
+                    "link" in child && typeof child.link === "string" ? (
+                      <MobileNavigationLink
+                        key={`${child.text}-${childIndex}`}
+                        item={child as NavigationItem}
+                        href={navigationHref(child.link)}
+                        onNavigate={() => undefined}
+                      />
+                    ) : null,
+                  )}
+                </div>
+              </details>
+            </li>
+          );
+        }
+
+        return "link" in item && typeof item.link === "string" ? (
+          <li className="rp-nav-menu__item" key={`${item.text}-${index}`}>
+            <MobileNavigationLink
+              item={item}
+              href={navigationHref(item.link)}
+              onNavigate={() => undefined}
+            />
+          </li>
+        ) : null;
+      })}
+    </ul>
+  );
+}
+
 function MobileNavigationLink({
   item,
   href,
+  onNavigate,
 }: {
   item: NavigationItem;
   href: string;
+  onNavigate: () => void;
 }) {
   const target =
     "target" in item && typeof item.target === "string"
@@ -162,91 +234,134 @@ function MobileNavigationLink({
       : undefined;
 
   return (
-    <a href={href} target={target}>
+    <a
+      href={href}
+      target={target}
+      rel={target === "_blank" ? "noreferrer" : undefined}
+      onClick={onNavigate}
+    >
       {item.text}
     </a>
   );
 }
 
+function CloseNavigationIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <path
+        d="m5 5 10 10M15 5 5 15"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function MobileNavigation({ items }: { items: NavigationItem[] }) {
   const currentLang = useLang();
+  const location = useLocation();
   const { site } = useSite();
   const isChinese = currentLang === site.lang;
   const panelId = useId();
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDetailsElement>) => {
-    if (event.key !== "Escape") return;
-    const details = event.currentTarget;
-    if (!details.open) return;
-    details.open = false;
+  const closeNavigation = useCallback(() => {
+    const dialog = dialogRef.current;
+    if (dialog?.open) dialog.close();
     setOpen(false);
-    details.querySelector<HTMLElement>("summary")?.focus();
+  }, []);
+
+  const openNavigation = () => {
+    const dialog = dialogRef.current;
+    if (!dialog || dialog.open) return;
+    dialog.showModal();
+    setOpen(true);
   };
 
+  useEffect(() => {
+    closeNavigation();
+  }, [closeNavigation, location.pathname]);
+
   return (
-    <details
-      className="docs-mobile-navigation"
-      open={open}
-      onKeyDown={handleKeyDown}
-      onToggle={(event) => setOpen(event.currentTarget.open)}
-    >
-      <summary
-        role="button"
+    <>
+      <button
+        type="button"
+        className="docs-mobile-navigation__trigger"
         aria-controls={panelId}
         aria-expanded={open}
-        aria-label={
-          open
-            ? isChinese
-              ? "关闭主导航"
-              : "Close navigation"
-            : isChinese
-              ? "打开主导航"
-              : "Open navigation"
-        }
+        aria-label={isChinese ? "打开主导航" : "Open navigation"}
+        onClick={openNavigation}
       >
         <SvgWrapper icon={IconSmallMenu} />
-      </summary>
-      <div
+      </button>
+      <dialog
+        ref={dialogRef}
         id={panelId}
-        className="docs-mobile-navigation__panel"
-        aria-hidden={!open}
+        className="docs-mobile-navigation"
+        aria-labelledby={titleId}
+        onCancel={(event) => {
+          event.preventDefault();
+          closeNavigation();
+        }}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) closeNavigation();
+        }}
+        onClose={() => setOpen(false)}
       >
-        <nav aria-label={isChinese ? "主导航" : "Primary navigation"}>
-          {items.map((item, index) => {
-            if ("items" in item && Array.isArray(item.items)) {
-              return (
-                <section key={`${item.text}-${index}`}>
-                  <strong>{item.text}</strong>
-                  {item.items.map((child, childIndex) =>
-                    "link" in child && typeof child.link === "string" ? (
-                      <MobileNavigationLink
-                        key={`${child.text}-${childIndex}`}
-                        item={child as NavigationItem}
-                        href={navigationHref(child.link)}
-                      />
-                    ) : null,
-                  )}
-                </section>
-              );
-            }
+        <div className="docs-mobile-navigation__panel">
+          <header>
+            <strong id={titleId}>
+              {isChinese ? "浏览与设置" : "Browse and settings"}
+            </strong>
+            <button
+              type="button"
+              aria-label={isChinese ? "关闭主导航" : "Close navigation"}
+              onClick={closeNavigation}
+            >
+              <CloseNavigationIcon />
+            </button>
+          </header>
+          <nav aria-label={isChinese ? "主导航" : "Primary navigation"}>
+            {items.map((item, index) => {
+              if ("items" in item && Array.isArray(item.items)) {
+                return (
+                  <section key={`${item.text}-${index}`}>
+                    <strong>{item.text}</strong>
+                    {item.items.map((child, childIndex) =>
+                      "link" in child && typeof child.link === "string" ? (
+                        <MobileNavigationLink
+                          key={`${child.text}-${childIndex}`}
+                          item={child as NavigationItem}
+                          href={navigationHref(child.link)}
+                          onNavigate={closeNavigation}
+                        />
+                      ) : null,
+                    )}
+                  </section>
+                );
+              }
 
-            return "link" in item && typeof item.link === "string" ? (
-              <MobileNavigationLink
-                key={`${item.text}-${index}`}
-                item={item}
-                href={navigationHref(item.link)}
-              />
-            ) : null;
-          })}
-        </nav>
-        <DocsSwitchers compact />
-        <div className="docs-mobile-navigation__utilities">
-          <SwitchAppearance />
-          <SocialLinks />
+              return "link" in item && typeof item.link === "string" ? (
+                <MobileNavigationLink
+                  key={`${item.text}-${index}`}
+                  item={item}
+                  href={navigationHref(item.link)}
+                  onNavigate={closeNavigation}
+                />
+              ) : null;
+            })}
+          </nav>
+          <DocsSwitchers compact />
+          <div className="docs-mobile-navigation__utilities">
+            <SwitchAppearance />
+            <SocialLinks />
+          </div>
         </div>
-      </div>
-    </details>
+      </dialog>
+    </>
   );
 }
 
@@ -264,13 +379,13 @@ export function Nav({
       <div className="rp-nav__left">
         {beforeNavTitle}
         {navTitle ?? <NavTitle />}
-        <NavMenu menuItems={navList} position="left" />
         {afterNavTitle}
       </div>
       <div className="rp-nav__right">
         {beforeNavMenu}
         <Search />
-        <NavMenu menuItems={navList} position="right" />
+        <NavMenu menuItems={navList} position="left" />
+        <DesktopUtilityNavigation items={navList} />
         <div className="rp-nav__others">
           <NavMenuDivider />
           <DocsSwitchers />

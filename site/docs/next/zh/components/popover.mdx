@@ -1,5 +1,7 @@
 # 弹出框
 
+弹出框在触发器附近呈现少量补充内容或轻量操作，不中断页面主任务。
+
 <Preview>
 <div id="demo-popover" class="popover">
   <button id="demo-popover-trigger" type="button" aria-expanded="false" aria-controls="demo-popover-popover" class="btn" data-variant="outline">Open popover</button>
@@ -30,16 +32,16 @@
 </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#popover" }}>
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#popover" }}>
 该组件为 Jinja 和 Nunjucks 提供了 `popover()` 宏。
 </Callout>
 
 A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 shadcn/ui 的门户 Base UI 实现不同，但保持标记无依赖，并与 A3S UI 现有的下拉/选择定位模型配合使用。
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -60,7 +62,7 @@ A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 sha
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -78,7 +80,7 @@ A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 sha
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your popover HTML">
+  <Step title="添加弹出框 HTML">
 
 ```html
 <div id="demo-popover" class="popover">

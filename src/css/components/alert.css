@@ -35,4 +35,34 @@
   .alert > footer {
     @apply absolute;
   }
+
+  .alert[data-variant="success"],
+  .alert[data-variant="info"],
+  .alert[data-variant="warning"] {
+    border-color: color-mix(
+      in srgb,
+      var(--alert-tone) 34%,
+      var(--border)
+    );
+    background: color-mix(in srgb, var(--alert-tone) 9%, var(--card));
+    color: color-mix(in srgb, var(--alert-tone) 82%, var(--foreground));
+  }
+
+  .alert[data-variant="success"] {
+    --alert-tone: var(--success, var(--a3s-green, #16845b));
+  }
+
+  .alert[data-variant="info"] {
+    --alert-tone: var(--a3s-blue, var(--primary));
+  }
+
+  .alert[data-variant="warning"] {
+    --alert-tone: var(--warning, var(--a3s-amber, #a86412));
+  }
+
+  .alert[data-variant="success"] > section,
+  .alert[data-variant="info"] > section,
+  .alert[data-variant="warning"] > section {
+    color: color-mix(in srgb, var(--alert-tone) 64%, var(--foreground));
+  }
 }

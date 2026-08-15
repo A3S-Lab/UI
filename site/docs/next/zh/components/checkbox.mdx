@@ -1,259 +1,211 @@
 # 复选框
 
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox" name="terms-checkbox" class="input" />
-    <label for="terms-checkbox">Accept terms and conditions</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-2" name="terms-checkbox-2" class="input" defaultChecked />
-    <section>
-      <label for="terms-checkbox-2">Accept terms and conditions</label>
-      <p>By clicking this checkbox, you agree to the terms.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox" name="toggle-checkbox" class="input" disabled />
-    <label for="toggle-checkbox">Enable notifications</label>
-  </div>
-  <label>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="checkbox" id="toggle-checkbox-2" name="toggle-checkbox-2" class="input" />
-      <section>
-        <h3>Enable notifications</h3>
-        <p>You can enable or disable notifications at any time.</p>
-      </section>
+复选框让用户从一组非互斥选项中选择零项、一项或多项。它适合随表单一起提交的选择；会立即改变系统状态的二元设置应使用[开关](/components/switch)。
+
+<Preview title="通知渠道">
+  <fieldset class="fieldset">
+    <legend data-variant="label">接收发布状态</legend>
+    <p>选择团队需要接收通知的渠道。</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-email" name="release-channel" value="email" defaultChecked />
+        <section>
+          <label for="release-email">电子邮件</label>
+          <p>在发布完成或失败时发送摘要。</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-desktop" name="release-channel" value="desktop" />
+        <section>
+          <label for="release-desktop">桌面通知</label>
+          <p>仅在此设备在线时提醒。</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal" data-disabled>
+        <input class="input" type="checkbox" id="release-sms" name="release-channel" value="sms" disabled />
+        <section>
+          <label for="release-sms">短信</label>
+          <p>当前工作区尚未配置短信服务。</p>
+        </section>
+      </div>
     </div>
-  </label>
-</div>
+  </fieldset>
 </Preview>
 
-## 用途
+## 用法
 
-<Steps>
-  <Step title="Include CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 与完整 A3S 样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本 CSS、组成 CSS 组件和一个样式包。
+为原生复选框添加 `input` 类，并使用 `label` 建立名称关联。只有一个输入时，标签可以直接与它配对。
+
+```html
+<div class="field" data-orientation="horizontal">
+  <input class="input" type="checkbox" id="include-logs" name="include-logs" />
+  <label for="include-logs">附带诊断日志</label>
+</div>
+```
+
+需要按组件加载时，依次导入基础样式、复选框结构、字段结构和 A3S 视觉样式。CDN 与其他接入方式见[安装](/installation)。
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/checkbox.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+### 参数
 
-  </Step>
-  <Step title="Add your checkbox HTML">
+| 参数 | 值 | 用途 |
+| --- | --- | --- |
+| 根元素 | `<input type="checkbox">` | 保留浏览器的表单、键盘和无障碍语义 |
+| `class` | `input` | 应用复选框结构与视觉样式 |
+| `checked` | 布尔属性 | 表示已选择；服务端渲染时只用于真实默认值 |
+| `disabled` | 布尔属性 | 阻止交互；所在 `.field` 同步设置 `data-disabled` |
+| `aria-invalid` | `true` | 在校验失败后表达无效状态 |
+| `aria-describedby` | 元素 ID | 关联帮助、限制或错误信息 |
+| `indeterminate` | DOM 属性 | 表示子项只选中一部分，不等同于第三个提交值 |
 
-Add `class="input"` to checkbox inputs. Pair it with [Field](/components/field) and a native `<label>` for layout and labeling.
+## 状态与变体
 
-```html
-<input type="checkbox" class="input" />
-```
+未选中和已选中是用户可操作的常态。禁用状态必须同时解释原因；无效状态只在用户提交或离开字段后出现，避免页面首次加载就显示错误。
 
-  </Step>
-</Steps>
-
-## 示例
-
-### 基本
-
-Pair the checkbox with `field` and a native `<label>` for proper layout and labeling.
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-basic" name="terms-checkbox-basic" class="input" />
-    <label for="terms-checkbox-basic">Accept terms and conditions</label>
-  </div>
-</div>
-</Preview>
-
-### 说明
-
-使用 `section` 和段落作为帮助文本。
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-desc" name="terms-checkbox-desc" class="input" defaultChecked aria-describedby="terms-checkbox-desc-description" />
-    <section>
-      <label for="terms-checkbox-desc">Accept terms and conditions</label>
-      <p id="terms-checkbox-desc-description">By clicking this checkbox, you agree to the terms and conditions.</p>
-    </section>
-  </div>
-</div>
-</Preview>
-
-### 已禁用
-
-使用 `disabled` 属性来防止交互，并将 `data-disabled` 添加到 `.field` 组件以禁用样式。
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox-disabled" name="toggle-checkbox-disabled" class="input" disabled />
-    <label for="toggle-checkbox-disabled">Enable notifications</label>
-  </div>
-</div>
-</Preview>
-
-### 无效
-
-在复选框上设置 `aria-invalid="true"`，在字段包装器上设置 `data-invalid` 以显示无效样式。
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal" data-invalid>
-    <input type="checkbox" id="terms-checkbox-invalid" name="terms-checkbox-invalid" class="input" aria-invalid="true" />
-    <label for="terms-checkbox-invalid">Accept terms and conditions</label>
-  </div>
-</div>
-</Preview>
-
-### 组
-
-使用多个字段创建复选框列表。
-
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">Show these items on the desktop:</legend>
-  <p>Select the items you want to show on the desktop.</p>
-  <div role="group" aria-label="Desktop items" data-slot="checkbox-group">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-hard-disks-ljj-checkbox" name="finder-pref-9k2-hard-disks-ljj-checkbox" defaultChecked />
-      <label for="finder-pref-9k2-hard-disks-ljj-checkbox" class="font-normal">Hard disks</label>
+<Preview title="选择与校验状态">
+  <div class="grid gap-4">
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-selected" name="state-selected" defaultChecked />
+      <label for="state-selected">包含源文件</label>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-external-disks-1yg-checkbox" name="finder-pref-9k2-external-disks-1yg-checkbox" defaultChecked />
-      <label for="finder-pref-9k2-external-disks-1yg-checkbox" class="font-normal">External disks</label>
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-unselected" name="state-unselected" />
+      <label for="state-unselected">包含构建缓存</label>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-cds-dvds-fzt-checkbox" name="finder-pref-9k2-cds-dvds-fzt-checkbox" />
-      <label for="finder-pref-9k2-cds-dvds-fzt-checkbox" class="font-normal">CDs, DVDs, and iPods</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-connected-servers-6l2-checkbox" name="finder-pref-9k2-connected-servers-6l2-checkbox" />
-      <label for="finder-pref-9k2-connected-servers-6l2-checkbox" class="font-normal">Connected servers</label>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### 表
-
-<Preview class="w-full">
-<div class="table-container">
-  <table class="table" data-checkbox-table>
-    <thead>
-      <tr>
-        <th class="w-8"><input type="checkbox" id="select-all-checkbox" name="select-all-checkbox" class="input" aria-label="Select all" /></th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-state="selected">
-        <td><input type="checkbox" id="row-1-checkbox" name="row-1-checkbox" class="input" aria-label="Select Sarah Chen" defaultChecked /></td>
-        <td class="font-medium">Sarah Chen</td>
-        <td>sarah.chen@example.com</td>
-        <td>Admin</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-2-checkbox" name="row-2-checkbox" class="input" aria-label="Select Marcus Rodriguez" /></td>
-        <td class="font-medium">Marcus Rodriguez</td>
-        <td>marcus.rodriguez@example.com</td>
-        <td>User</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-3-checkbox" name="row-3-checkbox" class="input" aria-label="Select Priya Patel" /></td>
-        <td class="font-medium">Priya Patel</td>
-        <td>priya.patel@example.com</td>
-        <td>User</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-4-checkbox" name="row-4-checkbox" class="input" aria-label="Select David Kim" /></td>
-        <td class="font-medium">David Kim</td>
-        <td>david.kim@example.com</td>
-        <td>Editor</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</Preview>
-
-## RTL
-
-将 `dir="rtl"` 添加到字段组或祖先。
-
-<Preview>
-<div role="group" class="fieldset" dir="rtl">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-rtl" name="terms-checkbox" class="input" />
-    <label for="terms-checkbox-rtl">قبول الشروط والأحكام</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-2-rtl" name="terms-checkbox-2" class="input" defaultChecked aria-describedby="terms-checkbox-2-rtl-description" />
-    <section>
-      <label for="terms-checkbox-2-rtl">قبول الشروط والأحكام</label>
-      <p id="terms-checkbox-2-rtl-description">بالنقر على هذا المربع، فإنك توافق على الشروط.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox-rtl" name="toggle-checkbox" class="input" disabled />
-    <label for="toggle-checkbox-rtl">تفعيل الإشعارات</label>
-  </div>
-  <label>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="checkbox" id="toggle-checkbox-2-rtl" name="toggle-checkbox-2" class="input" />
+    <div class="field" data-orientation="horizontal" data-invalid>
+      <input class="input" type="checkbox" id="state-required" name="state-required" aria-invalid="true" aria-describedby="state-required-error" />
       <section>
-        <h3>تفعيل الإشعارات</h3>
-        <p>يمكنك تفعيل أو إلغاء تفعيل الإشعارات في أي وقت.</p>
+        <label for="state-required">确认已移除敏感数据</label>
+        <p id="state-required-error" role="alert">导出前必须完成确认。</p>
       </section>
     </div>
-  </label>
-</div>
+    <div class="field" data-orientation="horizontal" data-disabled>
+      <input class="input" type="checkbox" id="state-disabled" name="state-disabled" disabled />
+      <section>
+        <label for="state-disabled">包含审计归档</label>
+        <p>只有工作区所有者可以更改此项。</p>
+      </section>
+    </div>
+  </div>
 </Preview>
+
+`indeterminate` 只能通过 DOM 属性设置，常用于“全选”控件。它仍会按 `checked` 属性决定表单提交结果，因此应用必须分别维护两个状态。
+
+```js
+const selectAll = document.querySelector("#select-all");
+const selectedCount = 2;
+const totalCount = 5;
+
+selectAll.checked = selectedCount === totalCount;
+selectAll.indeterminate = selectedCount > 0 && selectedCount < totalCount;
+```
+
+## 多项选择
+
+相关选项使用 `fieldset` 和 `legend` 分组。标签回答“这一项是什么”，说明文字补充后果或限制；不要把整段说明都塞进标签。
+
+<Preview title="导出内容">
+  <fieldset class="fieldset">
+    <legend data-variant="legend">选择导出内容</legend>
+    <p>至少选择一项，导出任务才可开始。</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-documents" name="export-content" value="documents" defaultChecked />
+        <label for="export-documents">文档</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-comments" name="export-content" value="comments" defaultChecked />
+        <label for="export-comments">评论与批注</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-history" name="export-content" value="history" />
+        <label for="export-history">版本历史</label>
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+表格中的行选择属于[表格](/components/table)或[数据网格](/components/data-grid)的整体交互。表头“全选”必须同步可见行、跨页选择范围和不确定状态，不能只在复选框文档中拼出一个没有行为的静态表格。
 
 ## React
 
+`Checkbox` 渲染清单定义的原生输入。需要从 DOM 事件连接业务状态时，`useCheckbox` 可以订阅 `change` 与 `input`，但不会替应用维护选中值。
+
 ```tsx
+import { useState } from "react";
 import { Checkbox, useCheckbox } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useCheckbox();
+export function ReleaseNotification() {
+  const [enabled, setEnabled] = useState(false);
+  const checkbox = useCheckbox({
+    events: {
+      change(event) {
+        setEnabled((event.currentTarget as HTMLInputElement).checked);
+      },
+    },
+  });
+
   return (
-    <Checkbox ref={control.ref} aria-label="名称" />
+    <div className="field" data-orientation="horizontal">
+      <Checkbox ref={checkbox.ref} id="release-notification" name="release-notification" />
+      <section>
+        <label htmlFor="release-notification">发布通知</label>
+        <p aria-live="polite">{enabled ? "已启用" : "未启用"}</p>
+      </section>
+    </div>
   );
 }
 ```
 
-`useCheckbox` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
-
 ## Vue
 
+Vue 组合式函数使用同一份清单事件。模板引用连接原生输入，响应式状态仍由应用拥有。
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Checkbox, useCheckbox } from "@a3s-lab/ui/vue";
 
-const control = useCheckbox();
-const componentRef = control.componentRef;
+const enabled = ref(false);
+const checkbox = useCheckbox({
+  events: {
+    change(event) {
+      enabled.value = (event.currentTarget as HTMLInputElement).checked;
+    },
+  },
+});
+const componentRef = checkbox.componentRef;
 </script>
 
 <template>
-  <Checkbox ref="componentRef" aria-label="名称" />
+  <div class="field" data-orientation="horizontal">
+    <Checkbox ref="componentRef" id="release-notification" name="release-notification" />
+    <section>
+      <label for="release-notification">发布通知</label>
+      <p aria-live="polite">{{ enabled ? "已启用" : "未启用" }}</p>
+    </section>
+  </div>
 </template>
 ```
 
-`useCheckbox` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+## 可访问性
+
+- 每个复选框都必须有可访问名称，优先使用与 `id` 配对的可见 `label`。
+- 相关多选项使用 `fieldset` 与 `legend`；不要为普通 `.field` 添加冗余的 `role="group"`。
+- 空格键切换聚焦的原生复选框。不要用自定义点击处理替换浏览器行为，也不要阻止标签点击。
+- 帮助或错误信息通过 `aria-describedby` 关联；校验失败时同步设置 `aria-invalid="true"`。
+- 禁用项仍应显示标签和不可用原因。若用户仍需理解或复制内容，优先只禁用控件，不要隐藏整行。
+- `indeterminate` 只是部分选择的视觉和无障碍状态；提交值仍由 `checked` 决定。

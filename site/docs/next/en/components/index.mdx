@@ -1,88 +1,17 @@
-# Component catalog
+# Components
 
-A3S UI provides 111 public component contracts. Eighty-six general components are organized by interface responsibility, while 25 components for building Coding Agent workflows live in [Harness](/harness/). Every guide includes a live preview, minimal HTML, React and Vue usage, applicable hooks or composables, states, and accessibility guidance.
+A3S UI provides 111 public component contracts. Search by display name, localized name, route slug, or interface responsibility; results preserve the current language and documentation version.
 
-<Preview>
-  <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">12</span>
-        <h2>Input and actions</h2>
-        <p>Buttons, fields, inputs, and text editing.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          12
-        </span>
-        <h2>Selection and search</h2>
-        <p>Selects, comboboxes, and choice state.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="outline">
-          07
-        </span>
-        <h2>Navigation</h2>
-        <p>Orientation, switching, and page paths.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">13</span>
-        <h2>Layout and workspace</h2>
-        <p>Shells, toolbars, panes, and resource layout.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          10
-        </span>
-        <h2>Overlays</h2>
-        <p>Dialogs, menus, commands, and contextual help.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="outline">
-          09
-        </span>
-        <h2>Feedback and status</h2>
-        <p>Progress, alerts, empty states, and transient feedback.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">21</span>
-        <h2>Data and content</h2>
-        <p>Cards, charts, tables, and structured information.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge" data-variant="secondary">
-          02
-        </span>
-        <h2>Utilities</h2>
-        <p>Scroll regions and theme control.</p>
-      </header>
-    </article>
-    <article class="card" data-size="sm">
-      <header>
-        <span class="badge">25</span>
-        <h2>Harness</h2>
-        <p>Tasks, conversation, execution, review, and developer tools.</p>
-      </header>
-    </article>
-  </div>
-</Preview>
+<ComponentCatalog />
+
+## Choosing a component
+
+- Prefer native elements for actions, input, and selection so the browser owns focus, form state, and accessibility.
+- Add a component runtime only when the platform does not provide the complete behavior, such as composite selection, resizable panes, or device previews.
+- Page shells, toolbars, and resource layouts provide workspace structure. They do not replace smaller input or feedback components.
+- Task, execution, review, and developer-tool components live in [Harness](/harness/); each one keeps its stable `/components/*` page URL.
 
 ## API model
-
-A3S UI keeps parameters close to the browser platform:
 
 | API surface           | Purpose                                      | Example                                                                 |
 | --------------------- | -------------------------------------------- | ----------------------------------------------------------------------- |
@@ -90,59 +19,22 @@ A3S UI keeps parameters close to the browser platform:
 | Native attributes     | Behavior and accessibility                   | `disabled`, `checked`, `aria-current="page"`                            |
 | `data-*` attributes   | Finite visual or behavioral variants         | `data-size="sm"`, `data-orientation="vertical"`                         |
 | CSS custom properties | Continuous layout values and theme decisions | `--split-position: 40%`                                                 |
-| Vanilla JavaScript    | Behavior the browser does not provide        | Split-pane resizing, device preview, and composite keyboard interaction |
+| JavaScript            | Behavior the browser does not provide        | Split-pane resizing, device preview, and composite keyboard interaction |
 
-Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a library-specific boolean.
+Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a second library-owned state value.
 
-## Groups
+## Framework integration
 
-### Input and actions
+HTML is the public contract for every component. The React and Vue adapters reuse the same semantic root without adding wrappers. A component gets a dedicated hook or composable only when it exposes events or methods. Each component page lists the interfaces that actually exist instead of placeholder APIs.
 
-[Button](/components/button) · [Button Group](/components/button-group) · [Bulk Action Bar](/components/bulk-action-bar) · [Copy Button](/components/copy-button) · [Editable Text](/components/editable-text) · [Form](/components/form) · [Field](/components/field) · [Input](/components/input) · [Input Group](/components/input-group) · [Hotkey Input](/components/hotkey-input) · [Textarea](/components/textarea) · [Label](/components/label)
+| Capability            | General components       | Layout and workspace     | Harness                  |
+| --------------------- | ------------------------ | ------------------------ | ------------------------ |
+| Semantic HTML         | Required                 | Required                 | Required                 |
+| React and Vue         | Semantic-root adapter    | Semantic-root adapter    | Semantic-root adapter    |
+| Hook or composable    | When behavior APIs exist | When behavior APIs exist | When behavior APIs exist |
+| Light and dark themes | Supported                | Supported                | Supported                |
+| RTL logical layout    | Supported                | Supported                | Supported                |
+| Responsive layout     | Component-specific       | Built in                 | Workflow-specific        |
+| Nunjucks and Jinja    | Existing templates       | HTML composition         | HTML composition         |
 
-### Selection and search
-
-[Native Select](/components/native-select) · [Select](/components/select) · [Combobox](/components/combobox) · [Filter Bar](/components/filter-bar) · [Date Picker](/components/date-picker) · [Color Swatches](/components/color-swatches) · [Image Select](/components/image-select) · [Emoji Picker](/components/emoji-picker) · [Checkbox](/components/checkbox) · [Radio Group](/components/radio-group) · [Switch](/components/switch) · [Slider](/components/slider)
-
-### Navigation
-
-[Activity Bar](/components/activity-bar) · [Breadcrumb](/components/breadcrumb) · [Back to Bottom](/components/back-to-bottom) · [Tabs](/components/tabs) · [Pagination](/components/pagination) · [Sidebar](/components/sidebar) · [Table of Contents](/components/table-of-contents)
-
-### Layout and workspace
-
-[App Shell](/components/app-shell) · [App Page](/components/app-page) · [Catalog](/components/catalog) · [Setting Row](/components/setting-row) · [Brand Lockup](/components/brand-lockup) · [Workspace Header](/components/workspace-header) · [Toolbar](/components/toolbar) · [Ribbon](/components/ribbon) · [Settings Layout](/components/settings-layout) · [Resource Card](/components/resource-card) · [Split Pane](/components/split-pane) · [Task Pane](/components/task-pane) · [Status Bar](/components/status-bar)
-
-### Overlays
-
-[Alert Dialog](/components/alert-dialog) · [Dialog](/components/dialog) · [Drawer](/components/drawer) · [Dropdown Menu](/components/dropdown-menu) · [Context Menu](/components/context-menu) · [Popover](/components/popover) · [Floating Panel](/components/floating-panel) · [Image Viewer](/components/image-viewer) · [Command](/components/command) · [Tooltip](/components/tooltip)
-
-### Feedback and status
-
-[Alert](/components/alert) · [Badge](/components/badge) · [Status Badge](/components/status-badge) · [Empty](/components/empty) · [Progress](/components/progress) · [Skeleton](/components/skeleton) · [Spinner](/components/spinner) · [Streaming Text](/components/streaming-text) · [Toast](/components/toast)
-
-### Data and content
-
-[Accordion](/components/accordion) · [Collapsible](/components/collapsible) · [Avatar](/components/avatar) · [Icon](/components/icon) · [File Type Icon](/components/file-type-icon) · [Image](/components/image) · [Card](/components/card) · [Item](/components/item) · [Kbd](/components/kbd) · [Markdown Surface](/components/markdown-surface) · [Highlighter](/components/highlighter) · [Code Diff](/components/code-diff) · [Snippet](/components/snippet) · [Chart](/components/chart) · [Property List](/components/property-list) · [Data Grid](/components/data-grid) · [Table](/components/table) · [Sortable List](/components/sortable-list) · [Stepper](/components/stepper) · [Timeline](/components/timeline) · [Tree](/components/tree)
-
-### Utilities
-
-[Scroll Area](/components/scroll-area) · [Theme Switcher](/components/theme-switcher)
-
-### Harness
-
-[Harness](/harness/) organizes 25 Coding Agent components into Task and Conversation, Execution and Review, and Tooling while preserving each component's stable `/components/*` route.
-
-Full-page compositions: [Task Workspace](/patterns/task-workspace) · [New Task](/patterns/new-task) · [Capability Catalog](/patterns/capability-catalog) · [Settings Center](/patterns/settings-center) · [Projects](/patterns/projects) · [Automations](/patterns/automations)
-
-## Support matrix
-
-| Capability            | General components          | Layout and workspace     | Harness                               |
-| --------------------- | --------------------------- | ------------------------ | ------------------------------------- |
-| Semantic HTML         | Required                    | Required                 | Required                              |
-| Light and dark themes | Yes                         | Yes                      | Yes                                   |
-| RTL logical layout    | Yes                         | Yes                      | Yes                                   |
-| Responsive layout     | Component-specific          | Built in                 | Workflow-specific                     |
-| Nunjucks and Jinja    | Existing templates          | HTML composition         | HTML composition                      |
-| JavaScript dependency | Interactive composites only | Interactive layouts only | Execution, editing, and preview tools |
-
-Choose the A3S style pack for new products. The inherited Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea packs remain available for applications that require their established appearance.
+Choose the A3S style pack for new products. Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea are reserved for applications that must preserve an established appearance.

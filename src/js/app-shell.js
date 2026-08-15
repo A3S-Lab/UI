@@ -35,6 +35,7 @@
 
     const navigation = shell.querySelector(':scope > [data-app-navigation]');
     if (!navigation) return;
+    const main = shell.querySelector(':scope > [data-app-main]');
 
     let focusFrame = 0;
     let restoreTarget = null;
@@ -91,6 +92,14 @@
       } else {
         navigation.removeAttribute('inert');
         navigation.removeAttribute('aria-hidden');
+      }
+
+      if (open) {
+        main?.setAttribute('inert', '');
+        main?.setAttribute('aria-hidden', 'true');
+      } else {
+        main?.removeAttribute('inert');
+        main?.removeAttribute('aria-hidden');
       }
 
       triggers().forEach((trigger) => {
@@ -180,9 +189,33 @@
     };
 
     const handleKeydown = (event) => {
-      if (event.key !== 'Escape' || !mobileOpen()) return;
-      event.preventDefault();
-      closeMobile({ source: 'escape' });
+      if (!mobileOpen()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMobile({ source: 'escape' });
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusable = Array.from(
+        navigation.querySelectorAll(focusableSelector),
+      ).filter((element) => !element.closest('[inert]'));
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!navigation.contains(document.activeElement)) {
+        event.preventDefault();
+        focusElement(event.shiftKey ? last : first);
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        focusElement(last);
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        focusElement(first);
+      }
     };
 
     const handleBreakpointChange = () => {

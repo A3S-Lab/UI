@@ -85,12 +85,12 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 </form>
 ```
 
-### 参数
+### HTML 结构
 
 | API                           | 取值                                                             | 用途                                        |
 | ----------------------------- | ---------------------------------------------------------------- | ------------------------------------------- |
 | `class="agent-composer"`      | 必须                                                             | 独立 `<form>`，或归外层 Form 所有的 Section |
-| `data-state`                  | `idle`、`submitting`、`streaming`、`queued`、`error`、`disabled` | 由宿主管理的有限展示状态                    |
+| `data-state`                  | `ready`、`submitting`、`streaming`、`queued`、`offline`、`error`、`disabled` | 由宿主管理的有限展示状态          |
 | `data-composer-context`       | 可选列表                                                         | 附件、文件、符号、源码范围、图片或 URL      |
 | `data-composer-tools`         | 可选容器                                                         | 附件与上下文控件                            |
 | `data-composer-actions`       | 推荐容器                                                         | 发送、排队、停止或重试操作                  |
@@ -105,38 +105,78 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 
 附件和排队消息都是应用数据。A3S UI 不上传文件，也不修改队列。原生 `submit` 与按钮事件就是集成点。只有祖先 Form 已经提供提交边界时才使用 `<section class="agent-composer">`，嵌套 Form 是无效标记。
 
-## 无障碍
-
-为表单和文本区域提供可访问名称。移除按钮应紧邻对应条目，标签中应包含条目名称。异步状态使用礼貌型实时区域，但不要逐 Token 播报流式内容。保留普通的输入法组合和多行输入行为；产品快捷键不得在输入法组合期间拦截 Enter。
-
 ## React
 
 ```tsx
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useAgentComposer();
+type Props = { onSubmit(message: string): void };
+
+export function Example({ onSubmit }: Props) {
+  const control = useAgentComposer({
+    events: {
+      submit(event) {
+        event.preventDefault();
+        const form = event.currentTarget as HTMLFormElement;
+        const message = new FormData(form).get("prompt")?.toString().trim();
+        if (message) onSubmit(message);
+      },
+    },
+  });
+
   return (
-    <AgentComposer ref={control.ref} aria-label="Agent Composer"><label>名称<input name="name" /></label><button type="submit">继续</button></AgentComposer>
+    <AgentComposer ref={control.ref} aria-label="发送下一条指令" data-state="ready">
+      <ul data-composer-context aria-label="已附加上下文">
+        <li><span>src/runtime.ts:42–96</span><button type="button" aria-label="移除 runtime 源码范围">移除</button></li>
+      </ul>
+      <textarea name="prompt" aria-label="指令" placeholder="描述要检查或修改的内容" />
+      <footer>
+        <div data-composer-tools><button type="button">附加文件</button></div>
+        <div data-composer-actions><button type="submit">发送</button></div>
+      </footer>
+    </AgentComposer>
   );
 }
 ```
 
-`useAgentComposer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useAgentComposer` 在同一根元素上订阅原生 `input` 与 `submit` 事件。示例阻止浏览器默认提交后把文本交给宿主；上传、队列、传输和错误恢复仍不进入组件内部。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
 
-const control = useAgentComposer();
+const props = defineProps<{ onSubmit(message: string): void }>();
+const control = useAgentComposer({
+  events: {
+    submit(event) {
+      event.preventDefault();
+      const form = event.currentTarget as HTMLFormElement;
+      const message = new FormData(form).get("prompt")?.toString().trim();
+      if (message) props.onSubmit(message);
+    },
+  },
+});
 const componentRef = control.componentRef;
 </script>
 
 <template>
-  <AgentComposer ref="componentRef" aria-label="Agent Composer"><label>名称<input name="name" /></label><button type="submit">继续</button></AgentComposer>
+  <AgentComposer ref="componentRef" aria-label="发送下一条指令" data-state="ready">
+    <ul data-composer-context aria-label="已附加上下文">
+      <li><span>src/runtime.ts:42–96</span><button type="button" aria-label="移除 runtime 源码范围">移除</button></li>
+    </ul>
+    <textarea name="prompt" aria-label="指令" placeholder="描述要检查或修改的内容"></textarea>
+    <footer>
+      <div data-composer-tools><button type="button">附加文件</button></div>
+      <div data-composer-actions><button type="submit">发送</button></div>
+    </footer>
+  </AgentComposer>
 </template>
 ```
 
-`useAgentComposer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+Vue composable 使用同一事件契约与根元素引用，不创建第二套提交状态。
+
+## 可访问性
+
+为表单和文本区域提供不同且明确的名称。移除按钮应紧邻对应条目，名称中包含被移除的文件或范围。异步状态只用一个礼貌型实时区域播报“已排队”“发送失败”等粗粒度结果，不能逐 Token 播报流式内容。保留多行输入、输入法组合与浏览器撤销行为；快捷键在 `isComposing` 为真时不得拦截 Enter。错误发生后保留草稿、上下文和焦点，宿主完成上传、传输、权限检查与队列持久化，并把每个结果映射回可见状态和可执行的恢复操作。

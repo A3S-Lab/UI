@@ -101,12 +101,88 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
-        expect "catalog-preview-visible" {
-            visible = css(".a3s-preview[data-preview-component=index] .card")
+        expect "catalog-visible" {
+            visible = css("[data-component-catalog] .component-catalog__group-section")
         }
 
         expect "harness-family-visible" {
-            visible = css("h3#harness")
+            visible = css("[data-component-catalog] [data-component-group=harness]")
+        }
+
+        fill "search-for-button" {
+            target = placeholder("Search by name, slug, or group…")
+            value = "button"
+        }
+
+        expect "button-result-visible" {
+            visible = css("[data-component-catalog] .component-catalog__results a[href$='/components/button.html']")
+        }
+    }
+
+    scenario "component-preview-tooling" {
+        name = "Component previews expose source, viewport, theme, and direction controls"
+        surface = "web"
+        timeout_ms = 45000
+
+        navigate "open-button" {
+            url = "http://127.0.0.1:4178/UI/en/components/button.html"
+        }
+
+        wait "page-loaded" {
+            load = "networkidle"
+        }
+
+        wait "interactive-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
+        viewport "desktop" {
+            width = 1440
+            height = 1000
+        }
+
+        click "show-source" {
+            target = role("button", "Show source")
+        }
+
+        expect "highlighted-source-visible" {
+            visible = css(".a3s-preview [data-preview-source-panel]:not([hidden]) .line span[style]")
+        }
+
+        click "use-dark-preview" {
+            target = role("button", "Preview in dark mode")
+        }
+
+        expect "dark-preview-applied" {
+            visible = css(".a3s-preview[data-preview-scheme=dark] .a3s-preview__canvas.dark")
+        }
+
+        click "use-rtl-preview" {
+            target = role("button", "Preview right-to-left layout")
+        }
+
+        expect "rtl-preview-applied" {
+            visible = css(".a3s-preview[data-preview-direction=rtl] .a3s-preview__canvas[dir=rtl]")
+        }
+
+        click "use-phone-width" {
+            target = role("button", "Phone width")
+        }
+
+        expect "phone-width-applied" {
+            visible = css(".a3s-preview[data-preview-viewport=phone] button[aria-label='Phone width'][aria-pressed=true]")
+        }
+
+        expect "phone-shell-visible" {
+            visible = css(".a3s-preview[data-preview-viewport=phone] .a3s-preview__viewport-shell")
+        }
+
+        expect "phone-frame-visible" {
+            visible = css(".a3s-preview[data-preview-viewport=phone] iframe[title='Common actions phone preview']")
+        }
+
+        screenshot "preview-tooling-evidence" {
+            path = "documentation/preview-tooling.png"
         }
     }
 
@@ -128,16 +204,16 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         viewport "responsive-boundary" {
-            width = 1280
+            width = 1024
             height = 900
         }
 
         expect "responsive-menu-visible" {
-            visible = css(".docs-mobile-navigation > summary")
+            visible = css(".docs-mobile-navigation__trigger")
         }
 
         click "open-navigation" {
-            target = css(".docs-mobile-navigation > summary")
+            target = role("button", "打开主导航")
         }
 
         expect "navigation-open" {
@@ -165,7 +241,7 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         click "open-component-navigation" {
-            target = css(".docs-mobile-navigation > summary")
+            target = role("button", "Open navigation")
         }
 
         click "open-version-switcher" {

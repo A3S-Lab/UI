@@ -1,60 +1,48 @@
-# 命令
+# 命令面板
+
+命令面板让用户通过搜索快速定位并执行操作，适合键盘优先的导航、切换和高频工作流。它应提供可预测的命令名称、清晰的分组与快捷键，而不是承担复杂表单或长篇内容。
 
 <Preview class="w-full max-w-sm">
-<div id="demo-command-standalone" class="command border" aria-label="Command menu">
-  <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
+<div id="demo-command-standalone" class="command border" aria-label="命令菜单">
+  <header>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+    <input type="text" id="demo-command-standalone-input" placeholder="输入命令或搜索…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
   </header>
-  <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="No results found.">
-    <div role="group" aria-labelledby="suggestions">
-      <span role="heading" id="suggestions">Suggestions</span>
-      <div role="menuitem" data-filter="Calendar" data-keywords="date event schedule"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-        <span>Calendar</span>
-      </div>
-      <div role="menuitem" data-filter="Search Emoji" data-keywords="emoji smile reaction"><svg class="lucide lucide-smile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
-        <span>Search Emoji</span>
-      </div>
-      <div role="menuitem" aria-disabled="true"><svg class="lucide lucide-calculator" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg>
-        <span>Calculator</span>
-      </div>
+  <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="没有匹配结果。">
+    <div role="group" aria-labelledby="demo-command-recent">
+      <span role="heading" id="demo-command-recent">最近使用</span>
+      <div role="menuitem" data-filter="打开项目 Open project" data-keywords="仓库 工作区 repository workspace"><span>打开项目</span><span data-shortcut>⌘O</span></div>
+      <div role="menuitem" data-filter="新建任务 New task" data-keywords="创建 工作 create work"><span>新建任务</span><span data-shortcut>⌘N</span></div>
+      <div role="menuitem" data-filter="查看任务队列 Task queue" data-keywords="运行 等待 running queued"><span>查看任务队列</span><span data-shortcut>⌘J</span></div>
     </div>
     <hr role="separator" />
-    <div role="group" aria-labelledby="settings">
-      <span role="heading" id="settings">Settings</span>
-      <div role="menuitem" data-filter="Profile" data-keywords="user account"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-        <span>Profile</span>
-        <span data-shortcut>⌘P</span>
-      </div>
-      <div role="menuitem" data-filter="Billing" data-keywords="invoice payment"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-        <span>Billing</span>
-        <span data-shortcut>⌘B</span>
-      </div>
-      <div role="menuitem" data-filter="Settings" data-keywords="config preferences"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
-        <span>Settings</span>
-        <span data-shortcut>⌘S</span>
-      </div>
+    <div role="group" aria-labelledby="demo-command-workspace">
+      <span role="heading" id="demo-command-workspace">工作区</span>
+      <div role="menuitem" data-filter="切换主题 Change theme" data-keywords="外观 深色 浅色 appearance dark light"><span>切换主题</span><span data-shortcut>⌘⇧L</span></div>
+      <div role="menuitem" data-filter="打开设置 Open settings" data-keywords="偏好 配置 preferences configuration"><span>打开设置</span><span data-shortcut>⌘,</span></div>
+      <div role="menuitem" aria-disabled="true" data-filter="运行诊断 Run diagnostics"><span>运行诊断</span><span data-shortcut>维护中</span></div>
     </div>
   </div>
 </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#command" }}>
-该组件为 Jinja 和 Nunjucks 提供了 `command()` 和 `command_dialog()` 宏。
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#command" }}>
+该组件为 Jinja 和 Nunjucks 提供 `command()` 和 `command_dialog()` 宏。
 </Callout>
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入样式">
 
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 和完整样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本CSS、命令组件CSS和一个样式包。
+拆分导入时，同时包含基础层、命令面板结构与主题样式：
 
 ```css
 @import "tailwindcss";
@@ -63,282 +51,140 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入脚本">
 
-复制或提供完整的 A3S UI JavaScript 包。
+使用完整运行时：
 
 ```html
 <script src="/assets/js/all.min.js" defer></script>
 ```
 
-或者复制或提供 A3S UI 运行时和命令脚本。
+拆分加载时，同时引入共享运行时和命令面板控制器：
 
 ```html
 <script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/command.min.js" defer></script>
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
   </Step>
-  <Step title="Add your command HTML">
+  <Step title="添加语义化结构">
 
 ```html
-<div id="demo-command-standalone" class="command border" aria-label="Command menu">
-  <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-    <input type="text" id="demo-command-standalone-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
+<div class="command border" aria-label="命令菜单">
+  <header>
+    <svg aria-hidden="true"><!-- 搜索图标 --></svg>
+    <input
+      type="text"
+      role="combobox"
+      aria-label="命令搜索"
+      aria-expanded="true"
+      aria-controls="project-command-menu"
+      placeholder="输入命令或搜索…"
+    />
   </header>
-  <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="No results found.">
-    <div role="group" aria-labelledby="suggestions">
-      <span role="heading" id="suggestions">Suggestions</span>
-      <div role="menuitem" data-filter="Calendar" data-keywords="date event schedule"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-        <span>Calendar</span>
-      </div>
-      <div role="menuitem" data-filter="Search Emoji" data-keywords="emoji smile reaction"><svg class="lucide lucide-smile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
-        <span>Search Emoji</span>
-      </div>
-      <div role="menuitem" aria-disabled="true"><svg class="lucide lucide-calculator" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg>
-        <span>Calculator</span>
-      </div>
-    </div>
-    <hr role="separator" />
-    <div role="group" aria-labelledby="settings">
-      <span role="heading" id="settings">Settings</span>
-      <div role="menuitem" data-filter="Profile" data-keywords="user account"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-        <span>Profile</span>
-        <span data-shortcut>⌘P</span>
-      </div>
-      <div role="menuitem" data-filter="Billing" data-keywords="invoice payment"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-        <span>Billing</span>
-        <span data-shortcut>⌘B</span>
-      </div>
-      <div role="menuitem" data-filter="Settings" data-keywords="config preferences"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
-        <span>Settings</span>
-        <span data-shortcut>⌘S</span>
-      </div>
+  <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+    <div role="group" aria-labelledby="project-command-heading">
+      <span id="project-command-heading" role="heading">项目</span>
+      <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+      <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
     </div>
   </div>
 </div>
 ```
 
-Use `<dialog class="command-dialog">` for the command palette variant.
-
-```html
-<button class="btn" data-variant="outline" onclick="document.getElementById('command-palette').showModal()">Open</button>
-<dialog id="command-palette" class="command-dialog" aria-label="Command menu">
-  <div class="command">
-    <!-- Command content -->
-  </div>
-</dialog>
-```
+需要模态命令面板时，将 `.command` 放进原生 `<dialog class="command-dialog">`，并为对话框提供可访问名称。
 
   </Step>
 </Steps>
 
 ### HTML 结构
 
-命令菜单可以独立使用，也可以在原生对话框中使用。结构是：
-
 <dl>
-  <dt><code>&lt;dialog class="command-dialog"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
+  <dt><code>&lt;dialog class="command-dialog"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+  <dd>模态命令面板容器。直接子元素应为 <code>.command</code>，并通过 <code>aria-label</code> 或 <code>aria-labelledby</code> 提供名称。</dd>
+  <dt><code>&lt;div class="command"&gt;</code></dt>
   <dd>
-    Dialog variant. Wraps one direct child <code>&lt;div class="command"&gt;</code>. Add <code>aria-label</code> or <code>aria-labelledby</code> for an accessible name.
+    命令面板根元素。设置 <code>data-filter="manual"</code> 可由应用接管远程搜索或索引过滤。
     <dl>
-      <dt><code>&lt;div class="command"&gt;</code></dt>
-      <dd>
-        Root command menu. Can also be used standalone without the dialog wrapper. Add <code>data-filter="manual"</code> when your app owns filtering, such as remote search or a local Lunr index.
-        <dl>
-          <dt><code>&lt;header&gt;</code></dt>
-          <dd>
-            Search input wrapper. The macro includes a search icon and input.
-            <dl>
-              <dt><code>&lt;input type="text" role="combobox"&gt;</code></dt>
-              <dd>Filter input. Use <code>aria-expanded="true"</code> and <code>aria-controls="&#123; MENU_ID &#125;"</code> to point to the command list.</dd>
-            </dl>
-          </dd>
-          <dt><code>&lt;div role="menu" id="&#123; MENU_ID &#125;"&gt;</code></dt>
-          <dd>
-            Command list. Set <code>data-empty</code> to customize the empty state.
-            <dl>
-              <dt><code>&lt;div role="group" aria-labelledby="&#123; HEADING_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Groups related command items. Hidden automatically when every item in the group is filtered out.</dd>
-              <dt><code>&lt;span role="heading" id="&#123; HEADING_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Group heading. Use an <code>id</code> when the parent group uses <code>aria-labelledby</code>.</dd>
-              <dt><code>&lt;div role="menuitem"&gt;</code> or <code>&lt;a role="menuitem"&gt;</code></dt>
-              <dd>Selectable command item. Use <code>&lt;a&gt;</code> for navigation and <code>&lt;div&gt;</code> for actions. Supports <code>data-filter</code>, <code>data-keywords</code>, <code>data-force</code>, <code>data-keep-command-open</code>, <code>aria-disabled="true"</code>, and <code>data-disabled="true"</code>.</dd>
-              <dt><code>&lt;span data-shortcut&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Shortcut hint aligned to the inline end of the item.</dd>
-              <dt><code>&lt;span data-indicator&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Item indicator. It becomes visible with <code>data-checked="true"</code> or <code>aria-selected="true"</code>.</dd>
-              <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Separator between groups/items. Hidden while filtering.</dd>
-            </dl>
-          </dd>
-        </dl>
-      </dd>
+      <dt><code>&lt;header&gt;</code></dt>
+      <dd>搜索图标和输入框的容器。</dd>
+      <dt><code>&lt;input role="combobox"&gt;</code></dt>
+      <dd>命令搜索框。使用 <code>aria-controls</code> 指向命令列表，并保持 <code>aria-expanded</code> 与列表状态一致。</dd>
+      <dt><code>&lt;div role="menu"&gt;</code></dt>
+      <dd>命令列表；通过 <code>data-empty</code> 提供本地化的无结果文案。</dd>
+      <dt><code>&lt;div role="group"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>组织相关命令；组内全部命令被过滤后会自动隐藏。</dd>
+      <dt><code>&lt;span role="heading"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>命令组标题，应由父级的 <code>aria-labelledby</code> 引用。</dd>
+      <dt><code>&lt;div role="menuitem"&gt;</code></dt>
+      <dd>可执行操作。导航命令使用 <code>&lt;a role="menuitem"&gt;</code>；不可用操作使用 <code>aria-disabled="true"</code>。</dd>
+      <dt><code>&lt;span data-shortcut&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>位于行尾的快捷键提示。</dd>
+      <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>命令组之间的分隔线；搜索期间会自动隐藏。</dd>
     </dl>
   </dd>
 </dl>
 
 ### JavaScript API
 
-| 应用程序编程接口 | 类型 | 描述 |
+| API | 类型 | 描述 |
 | --- | --- | --- |
-| `command.refresh()` | 方法 | 在现有 `role="menu"` 列表中的子项更改后重新扫描命令项。 |
+| `command.refresh()` | 方法 | 动态添加、移除或重命名命令后，重新扫描当前列表。 |
 
 ## 示例
 
-### 基本
+### 模态命令面板
 
-对话框中的简单命令菜单。
+把高频操作放在前面，并显示可记忆的快捷键。点击遮罩或按 <kbd>Esc</kbd> 关闭。
 
 <Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-basic').showModal()">Open Menu</button>
-<dialog id="command-basic" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-dialog-demo').showModal()">打开命令面板</button>
+<dialog id="command-dialog-demo" class="command-dialog" aria-label="命令菜单" onclick="if (event.target === this) this.close()">
   <div class="command">
-    <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-basic-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-basic-menu" />
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-dialog-input" placeholder="输入命令或搜索…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-dialog-menu" />
     </header>
-    <div role="menu" id="command-basic-menu" aria-orientation="vertical" data-empty="No results found.">
-      <div role="group" aria-labelledby="command-basic-suggestions">
-        <span role="heading" id="command-basic-suggestions">Suggestions</span>
-        <div role="menuitem" data-filter="Calendar">Calendar</div>
-        <div role="menuitem" data-filter="Search Emoji">Search Emoji</div>
-        <div role="menuitem" data-filter="Calculator">Calculator</div>
+    <div role="menu" id="command-dialog-menu" data-empty="没有匹配结果。">
+      <div role="group" aria-labelledby="command-dialog-project">
+        <span role="heading" id="command-dialog-project">项目</span>
+        <div role="menuitem" data-filter="打开项目 Open project"><span>打开项目</span><span data-shortcut>⌘O</span></div>
+        <div role="menuitem" data-filter="新建任务 New task"><span>新建任务</span><span data-shortcut>⌘N</span></div>
+        <div role="menuitem" data-filter="切换分支 Switch branch"><span>切换分支</span><span data-shortcut>⌘⇧B</span></div>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-labelledby="command-dialog-view">
+        <span role="heading" id="command-dialog-view">视图</span>
+        <div role="menuitem" data-filter="显示终端 Show terminal"><span>显示终端</span><span data-shortcut>⌘J</span></div>
+        <div role="menuitem" data-filter="切换侧栏 Toggle sidebar"><span>切换侧栏</span><span data-shortcut>⌘B</span></div>
       </div>
     </div>
   </div>
 </dialog>
 </Preview>
 
-### 快捷键
+### 长列表
+
+长列表保持搜索框可见，命令区域独立滚动。分组应反映用户心智模型，避免按技术模块堆砌。
 
 <Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-shortcuts-dialog').showModal()">Open Menu</button>
-<dialog id="command-shortcuts-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-scrollable-dialog').showModal()">浏览全部命令</button>
+<dialog id="command-scrollable-dialog" class="command-dialog" aria-label="全部命令" onclick="if (event.target === this) this.close()">
   <div class="command">
-    <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-shortcuts-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-shortcuts-menu" />
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-scrollable-input" placeholder="搜索全部命令…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-scrollable-menu" />
     </header>
-    <div role="menu" id="command-shortcuts-menu" aria-orientation="vertical" data-empty="No results found.">
-      <div role="group" aria-labelledby="command-shortcuts-settings">
-        <span role="heading" id="command-shortcuts-settings">Settings</span>
-        <div role="menuitem" data-filter="Profile" data-keywords="user account"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-          <span>Profile</span>
-          <span data-shortcut>⌘P</span>
-        </div>
-        <div role="menuitem" data-filter="Billing" data-keywords="invoice payment"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-          <span>Billing</span>
-          <span data-shortcut>⌘B</span>
-        </div>
-        <div role="menuitem" data-filter="Settings" data-keywords="config preferences"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
-          <span>Settings</span>
-          <span data-shortcut>⌘S</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</dialog>
-</Preview>
-
-### 组
-
-<Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-groups-dialog').showModal()">Open Menu</button>
-<dialog id="command-groups-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
-  <div class="command">
-    <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-groups-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-groups-menu" />
-    </header>
-    <div role="menu" id="command-groups-menu" aria-orientation="vertical" data-empty="No results found.">
-      <div role="group" aria-labelledby="command-groups-suggestions">
-        <span role="heading" id="command-groups-suggestions">Suggestions</span>
-        <div role="menuitem" data-filter="Calendar" data-keywords="date event schedule"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-          <span>Calendar</span>
-        </div>
-        <div role="menuitem" data-filter="Search Emoji" data-keywords="emoji smile reaction"><svg class="lucide lucide-smile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
-          <span>Search Emoji</span>
-        </div>
-        <div role="menuitem" data-filter="Calculator"><svg class="lucide lucide-calculator" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg>
-          <span>Calculator</span>
-        </div>
-      </div>
+    <div role="menu" id="command-scrollable-menu" data-empty="没有匹配结果。">
+      <div role="group" aria-labelledby="command-navigation"><span role="heading" id="command-navigation">导航</span><div role="menuitem" data-filter="首页 Home">首页</div><div role="menuitem" data-filter="收件箱 Inbox">收件箱</div><div role="menuitem" data-filter="项目 Projects">项目</div><div role="menuitem" data-filter="设置 Settings">设置</div></div>
       <hr role="separator" />
-      <div role="group" aria-labelledby="command-groups-settings">
-        <span role="heading" id="command-groups-settings">Settings</span>
-        <div role="menuitem" data-filter="Profile" data-keywords="user account"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-          <span>Profile</span>
-          <span data-shortcut>⌘P</span>
-        </div>
-        <div role="menuitem" data-filter="Billing" data-keywords="invoice payment"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-          <span>Billing</span>
-          <span data-shortcut>⌘B</span>
-        </div>
-        <div role="menuitem" data-filter="Settings" data-keywords="config preferences"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
-          <span>Settings</span>
-          <span data-shortcut>⌘S</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</dialog>
-</Preview>
-
-### 可滚动
-
-<Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-scrollable-dialog').showModal()">Open Menu</button>
-<dialog id="command-scrollable-dialog" class="command-dialog" aria-label="Command menu" onclick="if (event.target === this) this.close()">
-  <div class="command">
-    <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-scrollable-input" placeholder="Type a command or search..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-scrollable-menu" />
-    </header>
-    <div role="menu" id="command-scrollable-menu" aria-orientation="vertical" data-empty="No results found.">
-      <div role="group" aria-labelledby="command-scrollable-navigation">
-        <span role="heading" id="command-scrollable-navigation">Navigation</span>
-        <div role="menuitem" data-filter="Home"><svg class="lucide lucide-home" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg><span>Home</span><span data-shortcut>⌘H</span></div>
-        <div role="menuitem" data-filter="Inbox"><svg class="lucide lucide-inbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg><span>Inbox</span><span data-shortcut>⌘I</span></div>
-        <div role="menuitem" data-filter="Documents"><svg class="lucide lucide-file-text" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Documents</span><span data-shortcut>⌘D</span></div>
-        <div role="menuitem" data-filter="Folders"><svg class="lucide lucide-folder" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg><span>Folders</span><span data-shortcut>⌘F</span></div>
-      </div>
+      <div role="group" aria-labelledby="command-actions"><span role="heading" id="command-actions">操作</span><div role="menuitem" data-filter="新建文件 New file">新建文件</div><div role="menuitem" data-filter="新建文件夹 New folder">新建文件夹</div><div role="menuitem" data-filter="创建副本 Duplicate">创建副本</div><div role="menuitem" data-filter="移动到 Move to">移动到…</div></div>
       <hr role="separator" />
-      <div role="group" aria-labelledby="command-scrollable-actions">
-        <span role="heading" id="command-scrollable-actions">Actions</span>
-        <div role="menuitem" data-filter="New File"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg><span>New File</span><span data-shortcut>⌘N</span></div>
-        <div role="menuitem" data-filter="New Folder"><svg class="lucide lucide-folder-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6" /><path d="M9 13h6" /><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg><span>New Folder</span><span data-shortcut>⇧⌘N</span></div>
-        <div role="menuitem" data-filter="Copy"><svg class="lucide lucide-copy" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg><span>Copy</span><span data-shortcut>⌘C</span></div>
-        <div role="menuitem" data-filter="Cut"><svg class="lucide lucide-scissors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" /><path d="M20 4 8.12 15.88" /><circle cx="6" cy="18" r="3" /><path d="M14.8 14.8 20 20" /></svg><span>Cut</span><span data-shortcut>⌘X</span></div>
-        <div role="menuitem" data-filter="Paste"><svg class="lucide lucide-clipboard-paste" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h10" /><path d="M16 4h2a2 2 0 0 1 2 2v1.344" /><path d="m17 18 4-4-4-4" /><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113" /><rect x="8" y="2" width="8" height="4" rx="1" /></svg><span>Paste</span><span data-shortcut>⌘V</span></div>
-        <div role="menuitem" data-filter="Delete"><svg class="lucide lucide-trash" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg><span>Delete</span><span data-shortcut>⌫</span></div>
-      </div>
+      <div role="group" aria-labelledby="command-tools"><span role="heading" id="command-tools">工具</span><div role="menuitem" data-filter="打开终端 Open terminal">打开终端</div><div role="menuitem" data-filter="查看日志 View logs">查看日志</div><div role="menuitem" data-filter="运行检查 Run checks">运行检查</div><div role="menuitem" data-filter="设备预览 Device preview">设备预览</div></div>
       <hr role="separator" />
-      <div role="group" aria-labelledby="command-scrollable-view">
-        <span role="heading" id="command-scrollable-view">View</span>
-        <div role="menuitem" data-filter="Grid View"><svg class="lucide lucide-layout-grid" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1" /><rect width="7" height="7" x="14" y="3" rx="1" /><rect width="7" height="7" x="14" y="14" rx="1" /><rect width="7" height="7" x="3" y="14" rx="1" /></svg><span>Grid View</span></div>
-        <div role="menuitem" data-filter="List View"><svg class="lucide lucide-list" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h.01" /><path d="M3 12h.01" /><path d="M3 19h.01" /><path d="M8 5h13" /><path d="M8 12h13" /><path d="M8 19h13" /></svg><span>List View</span></div>
-        <div role="menuitem" data-filter="Zoom In"><svg class="lucide lucide-zoom-in" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" x2="16.65" y1="21" y2="16.65" /><line x1="11" x2="11" y1="8" y2="14" /><line x1="8" x2="14" y1="11" y2="11" /></svg><span>Zoom In</span><span data-shortcut>⌘+</span></div>
-        <div role="menuitem" data-filter="Zoom Out"><svg class="lucide lucide-zoom-out" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" x2="16.65" y1="21" y2="16.65" /><line x1="8" x2="14" y1="11" y2="11" /></svg><span>Zoom Out</span><span data-shortcut>⌘-</span></div>
-      </div>
-      <hr role="separator" />
-      <div role="group" aria-labelledby="command-scrollable-account">
-        <span role="heading" id="command-scrollable-account">Account</span>
-        <div role="menuitem" data-filter="Profile"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg><span>Profile</span><span data-shortcut>⌘P</span></div>
-        <div role="menuitem" data-filter="Billing"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg><span>Billing</span><span data-shortcut>⌘B</span></div>
-        <div role="menuitem" data-filter="Settings"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg><span>Settings</span><span data-shortcut>⌘S</span></div>
-        <div role="menuitem" data-filter="Notifications"><svg class="lucide lucide-bell" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0" /><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></svg><span>Notifications</span></div>
-        <div role="menuitem" data-filter="Help & Support"><svg class="lucide lucide-circle-help" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg><span>Help &amp; Support</span></div>
-      </div>
-      <hr role="separator" />
-      <div role="group" aria-labelledby="command-scrollable-tools">
-        <span role="heading" id="command-scrollable-tools">Tools</span>
-        <div role="menuitem" data-filter="Calculator"><svg class="lucide lucide-calculator" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg><span>Calculator</span></div>
-        <div role="menuitem" data-filter="Calendar"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg><span>Calendar</span></div>
-        <div role="menuitem" data-filter="Image Editor"><svg class="lucide lucide-image" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span>Image Editor</span></div>
-        <div role="menuitem" data-filter="Code Editor"><svg class="lucide lucide-code" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6" /><path d="m8 6-6 6 6 6" /></svg><span>Code Editor</span></div>
-      </div>
+      <div role="group" aria-labelledby="command-account"><span role="heading" id="command-account">账户</span><div role="menuitem" data-filter="个人资料 Profile">个人资料</div><div role="menuitem" data-filter="通知 Notifications">通知</div><div role="menuitem" data-filter="退出登录 Sign out">退出登录</div></div>
     </div>
   </div>
 </dialog>
@@ -346,43 +192,21 @@ Use `<dialog class="command-dialog">` for the command palette variant.
 
 ## RTL
 
-将 `dir="rtl"` 添加到命令根或祖先。
+将 `dir="rtl"` 添加到命令根元素或祖先；标题、输入与快捷键会随文档方向重新排列。
 
 <Preview class="w-full max-w-sm">
 <div dir="rtl">
-  <div id="command-rtl" class="command border" aria-label="Command menu">
-    <header><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-      <input type="text" id="command-rtl-input" placeholder="اكتب أمرًا أو ابحث..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="بحث الأوامر" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-rtl-menu" />
+  <div id="command-rtl" class="command border" aria-label="قائمة الأوامر">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-rtl-input" placeholder="اكتب أمرًا أو ابحث…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="بحث الأوامر" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-rtl-menu" />
     </header>
-    <div role="menu" id="command-rtl-menu" aria-orientation="vertical" data-empty="لم يتم العثور على نتائج.">
-      <div role="group" aria-labelledby="command-rtl-suggestions">
-        <span role="heading" id="command-rtl-suggestions">اقتراحات</span>
-        <div role="menuitem" data-filter="Calendar"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-          <span>التقويم</span>
-          <span data-shortcut>⌘K</span>
-        </div>
-        <div role="menuitem" data-filter="Search Emoji"><svg class="lucide lucide-smile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
-          <span>البحث عن الرموز التعبيرية</span>
-        </div>
-        <div role="menuitem" aria-disabled="true" data-filter="Calculator"><svg class="lucide lucide-calculator" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" /><path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" /></svg>
-          <span>الآلة الحاسبة</span>
-        </div>
-      </div>
-      <hr role="separator" />
-      <div role="group" aria-labelledby="command-rtl-settings">
-        <span role="heading" id="command-rtl-settings">الإعدادات</span>
-        <div role="menuitem" data-filter="Profile"><svg class="lucide lucide-user" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-          <span>الملف الشخصي</span>
-          <span data-shortcut>⌘P</span>
-        </div>
-        <div role="menuitem" data-filter="Billing"><svg class="lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-          <span>الفوترة</span>
-          <span data-shortcut>⌘B</span>
-        </div>
-        <div role="menuitem" data-filter="Settings"><svg class="lucide lucide-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
-          <span>الإعدادات</span>
-          <span data-shortcut>⌘S</span>
-        </div>
+    <div role="menu" id="command-rtl-menu" data-empty="لم يتم العثور على نتائج.">
+      <div role="group" aria-labelledby="command-rtl-navigation">
+        <span role="heading" id="command-rtl-navigation">التنقل</span>
+        <div role="menuitem" data-filter="فتح المشروع"><span>فتح المشروع</span><span data-shortcut>⌘O</span></div>
+        <div role="menuitem" data-filter="مهمة جديدة"><span>مهمة جديدة</span><span data-shortcut>⌘N</span></div>
+        <div role="menuitem" data-filter="فتح الإعدادات"><span>فتح الإعدادات</span><span data-shortcut>⌘,</span></div>
       </div>
     </div>
   </div>
@@ -394,15 +218,33 @@ Use `<dialog class="command-dialog">` for the command palette variant.
 ```tsx
 import { Command, useCommand } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useCommand();
+export function ProjectCommands() {
+  const command = useCommand();
+
   return (
-    <Command ref={control.ref}>组件内容</Command>
+    <Command ref={command.ref} className="border" aria-label="项目命令">
+      <header>
+        <svg aria-hidden="true">{/* 搜索图标 */}</svg>
+        <input
+          id="project-command-input"
+          type="text"
+          role="combobox"
+          aria-label="命令搜索"
+          aria-expanded="true"
+          aria-controls="project-command-menu"
+          placeholder="输入命令或搜索…"
+        />
+      </header>
+      <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+        <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+        <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
+      </div>
+    </Command>
   );
 }
 ```
 
-`useCommand` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useCommand` 提供组件引用、就绪状态和 `call("refresh")`。动态增删命令后调用 `refresh`，无需维护第二套框架专属过滤状态。
 
 ## Vue
 
@@ -410,13 +252,30 @@ export function Example() {
 <script setup>
 import { Command, useCommand } from "@a3s-lab/ui/vue";
 
-const control = useCommand();
-const componentRef = control.componentRef;
+const command = useCommand();
+const componentRef = command.componentRef;
 </script>
 
 <template>
-  <Command ref="componentRef">组件内容</Command>
+  <Command ref="componentRef" class="border" aria-label="项目命令">
+    <header>
+      <svg aria-hidden="true"><!-- 搜索图标 --></svg>
+      <input
+        id="project-command-input"
+        type="text"
+        role="combobox"
+        aria-label="命令搜索"
+        aria-expanded="true"
+        aria-controls="project-command-menu"
+        placeholder="输入命令或搜索…"
+      />
+    </header>
+    <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+      <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+      <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
+    </div>
+  </Command>
 </template>
 ```
 
-`useCommand` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useCommand` 提供组件引用、就绪状态和 `call("refresh")`。动态增删命令后调用 `refresh`，无需维护第二套框架专属过滤状态。

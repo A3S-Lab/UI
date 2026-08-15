@@ -1,13 +1,15 @@
 # 输入
 
+输入框用于录入单行文本或结构化值，并通过标签、格式提示和即时反馈降低输入错误。
+
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="name@example.com" />
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -28,14 +30,14 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your input HTML">
+  <Step title="添加输入框 HTML">
 
-Add `class="input"` to supported `<input>` elements. Inputs inside a `class="field"` container also receive the same styling automatically for common text-like input types.
+为受支持的 `<input>` 元素添加 `class="input"`。常见文本输入放在 `class="field"` 容器内时，也会自动获得同一套样式。
 
 使用原生HTML属性来实现：`disabled`用于禁止输入，`required`用于必填字段行为，`aria-invalid="true"`用于无效状态样式。
 
 ```html
-<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="name@example.com" />
 ```
 
   </Step>
@@ -46,18 +48,18 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 ### 基本
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="name@example.com" />
 </Preview>
 
-### 现场
+### 带说明
 
 使用带有标签和说明的 `field` 创建可访问字段。
 
 <Preview class="w-full max-w-xs">
 <div role="group" class="field">
-  <label for="input-field">Email</label>
+  <label for="input-field">电子邮箱</label>
   <input id="input-field" type="email" placeholder="m@example.com" />
-  <p>Enter your email address.</p>
+  <p>用于接收通知和恢复账户。</p>
 </div>
 </Preview>
 
@@ -66,12 +68,12 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 <Preview class="w-full max-w-xs">
 <div class="grid gap-4">
   <div role="group" class="field">
-    <label for="input-first-name">First name</label>
-    <input id="input-first-name" type="text" placeholder="Jane" />
+    <label for="input-first-name">名</label>
+    <input id="input-first-name" type="text" placeholder="小明" />
   </div>
   <div role="group" class="field">
-    <label for="input-last-name">Last name</label>
-    <input id="input-last-name" type="text" placeholder="Doe" />
+    <label for="input-last-name">姓</label>
+    <input id="input-last-name" type="text" placeholder="陈" />
   </div>
 </div>
 </Preview>
@@ -79,13 +81,13 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 ### 已禁用
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" disabled />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="name@example.com" disabled />
 </Preview>
 
 ### 无效
 
 <Preview class="w-full max-w-xs">
-<input class="input" type="email" aria-label="电子邮箱" placeholder="Email" aria-invalid="true" />
+<input class="input" type="email" aria-label="电子邮箱" placeholder="name@example.com" aria-invalid="true" />
 </Preview>
 
 ### 文件
@@ -98,8 +100,8 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-xs">
 <div class="flex items-center gap-2">
-  <input class="input" type="search" aria-label="搜索" placeholder="Search..." />
-  <button type="submit" class="btn">Search</button>
+  <input class="input" type="search" aria-label="搜索" placeholder="搜索…" />
+  <button type="submit" class="btn">搜索</button>
 </div>
 </Preview>
 
@@ -107,9 +109,9 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-sm">
 <div class="grid gap-4 md:grid-cols-2">
-  <input class="input" type="text" aria-label="名字" placeholder="First name" />
-  <input class="input" type="text" aria-label="姓氏" placeholder="Last name" />
-  <input class="input md:col-span-2" type="email" aria-label="电子邮箱" placeholder="Email" />
+  <input class="input" type="text" aria-label="名字" placeholder="小明" />
+  <input class="input" type="text" aria-label="姓氏" placeholder="陈" />
+  <input class="input md:col-span-2" type="email" aria-label="电子邮箱" placeholder="name@example.com" />
 </div>
 </Preview>
 
@@ -117,8 +119,8 @@ Add `class="input"` to supported `<input>` elements. Inputs inside a `class="fie
 
 <Preview class="w-full max-w-xs">
 <div role="group" class="field">
-  <label for="input-required">Username <span class="text-destructive">*</span></label>
-  <input id="input-required" type="text" placeholder="hunvreus" required />
+  <label for="input-required">用户名 <span class="text-destructive">*</span></label>
+  <input id="input-required" type="text" placeholder="xiaoming" required />
 </div>
 </Preview>
 

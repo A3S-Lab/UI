@@ -3,14 +3,14 @@
 在可搜索、可键盘遍历的有限集合中选择一个表情，并把选择结果作为普通文本交给宿主。
 
 <Preview class="w-full">
-<section class="emoji-picker" aria-label="Choose a reaction"><input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div></section>
+<section class="emoji-picker" aria-label="选择回应表情"><input class="input" type="search" placeholder="搜索回应" aria-label="搜索回应" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="赞同">👍</button><button type="button" data-emoji-value="🎉" aria-label="庆祝">🎉</button><button type="button" data-emoji-value="❤️" aria-label="喜爱">❤️</button><p hidden data-emoji-empty>没有匹配的回应。</p></div></section>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
-<section class="emoji-picker" aria-label="Choose a reaction">
-  <input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+<section class="emoji-picker" aria-label="选择回应表情">
+  <input class="input" type="search" placeholder="搜索回应" aria-label="搜索回应" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="赞同">👍</button><button type="button" data-emoji-value="🎉" aria-label="庆祝">🎉</button><button type="button" data-emoji-value="❤️" aria-label="喜爱">❤️</button><p hidden data-emoji-empty>没有匹配的回应。</p></div>
 </section>
 ```
 
@@ -34,8 +34,8 @@ import { EmojiPicker, useEmojiPicker } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useEmojiPicker();
   return (
-    <EmojiPicker ref={control.ref} aria-label="Choose a reaction">
-      <input className="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+    <EmojiPicker ref={control.ref} aria-label="选择回应表情">
+      <input className="input" type="search" placeholder="搜索回应" aria-label="搜索回应" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="赞同">👍</button><button type="button" data-emoji-value="🎉" aria-label="庆祝">🎉</button><button type="button" data-emoji-value="❤️" aria-label="喜爱">❤️</button><p hidden data-emoji-empty>没有匹配的回应。</p></div>
     </EmojiPicker>
   );
 }
@@ -54,8 +54,8 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <EmojiPicker ref="componentRef" aria-label="Choose a reaction">
-    <input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+  <EmojiPicker ref="componentRef" aria-label="选择回应表情">
+    <input class="input" type="search" placeholder="搜索回应" aria-label="搜索回应" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="赞同">👍</button><button type="button" data-emoji-value="🎉" aria-label="庆祝">🎉</button><button type="button" data-emoji-value="❤️" aria-label="喜爱">❤️</button><p hidden data-emoji-empty>没有匹配的回应。</p></div>
   </EmojiPicker>
 </template>
 ```

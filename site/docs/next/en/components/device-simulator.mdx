@@ -5,7 +5,7 @@ outline: false
 
 # Device Simulator
 
-Device Simulator switches between phone, tablet, and desktop viewports inside a bounded workbench. Browser mode uses a real-size `iframe`; native mode hands safe arguments to a trusted host that can launch `a3s-webview`.
+Device Simulator switches between phone, tablet, and desktop viewports inside a bounded workbench and renders the matching hardware shell for each class. Browser mode uses a real-size `iframe`; native mode hands safe arguments to a trusted host that can launch `a3s-webview`.
 
 <Preview class="w-full">
   <section
@@ -16,7 +16,7 @@ Device Simulator switches between phone, tablet, and desktop viewports inside a 
     data-device-title="A3S responsive preview"
     data-orientation="portrait"
     data-state="ready"
-    style="--device-simulator-workspace-min-height:36rem"
+    style="--device-simulator-workspace-min-height:40rem"
   >
     <header>
       <div data-device-simulator-toolbar>
@@ -226,7 +226,9 @@ Device Simulator switches between phone, tablet, and desktop viewports inside a 
   </section>
 </Preview>
 
-The simulator changes only the iframe's CSS viewport width and height. It does not spoof the User-Agent, device pixel ratio, touch capability, network throttling, or operating-system browser behavior. The target must also allow iframe embedding; pages restricted by `X-Frame-Options` or CSP `frame-ancestors` should use native preview instead.
+The phone shell includes a metal rail, sensor area, and bottom gesture region, while the tablet shell includes a narrow bezel and camera. Laptops add a display bezel, hinge, and base; desktop monitors add a chin and stand. Every shell scales with its device to fit the workbench, while the iframe retains the exact selected CSS viewport dimensions.
+
+The simulator does not spoof the User-Agent, device pixel ratio, or touch capability, inject safe-area variables into the target, or simulate network throttling or operating-system browser behavior. The target must also allow iframe embedding; pages restricted by `X-Frame-Options` or CSP `frame-ancestors` should use native preview instead.
 
 ## Usage
 
@@ -342,12 +344,12 @@ The complete runtime package is equivalent to `import "@a3s-lab/ui/all"`.
 | ----------------------------------------- | ---------------------------- | ------------------------- | ----------------------------------------------------------- |
 | Preset `data-width`                       | `240`–`4000`                 | —                         | Preset CSS viewport width                                   |
 | Preset `data-height`                      | `180`–`3000`                 | —                         | Preset CSS viewport height                                  |
-| Preset `data-kind`                        | `phone`, `tablet`, `desktop` | Inferred from width       | Controls device-frame radius                                |
+| Preset `data-kind`                        | `phone`, `tablet`, `desktop` | Inferred from width       | Selects the phone, tablet, or computer hardware shell       |
 | Preset `data-orientation`                 | `portrait`, `landscape`      | Keeps current orientation | Synchronizes a preset's natural orientation when selected   |
 | Root `data-orientation`                   | `portrait`, `landscape`      | `portrait`                | Current screen orientation                                  |
 | Root `data-fit`                           | `actual` or omitted          | Automatic fit             | Uses a 1:1 scale or shrinks the viewport into the workspace |
 | Root `data-device-title`                  | String                       | iframe title              | Native window title                                         |
-| `--device-simulator-workspace-min-height` | CSS length                   | `31rem`                   | Workspace minimum height                                    |
+| `--device-simulator-workspace-min-height` | CSS length                   | `38rem`                   | Workspace minimum height                                    |
 | `--device-simulator-workspace-max-height` | CSS length                   | `44rem`                   | Workspace maximum height                                    |
 
 Custom dimensions are clamped to the same range as `a3s-webview`. Changing either custom input selects the option whose value is `custom` and emits a size-change event.
@@ -388,7 +390,7 @@ The web controller never executes a local process directly. Without a trusted ho
 - `data-state="loading"` exposes progress while the iframe navigates.
 - `data-state="ready"` means the dimensions or preview are synchronized.
 - `data-state="error"` reports an invalid URL or copy failure and names the recovery in the status output.
-- Phone, tablet, and desktop kinds change only the frame treatment; the iframe always uses the real CSS-pixel dimensions in the controls.
+- Phones, tablets, laptops, and desktop monitors use distinct bezels, sensors, bases, or stands. The iframe always uses the real CSS-pixel dimensions in the controls.
 - A `file:` URL can be handed to a native host. Browser security policy decides whether an iframe may load a local file.
 
 ## Accessibility
@@ -403,7 +405,9 @@ import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDeviceSimulator();
   return (
-    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">Component content</DeviceSimulator>
+    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">
+      Component content
+    </DeviceSimulator>
   );
 }
 ```
@@ -421,7 +425,9 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <DeviceSimulator ref="componentRef" aria-label="Device Simulator">Component content</DeviceSimulator>
+  <DeviceSimulator ref="componentRef" aria-label="Device Simulator"
+    >Component content</DeviceSimulator
+  >
 </template>
 ```
 

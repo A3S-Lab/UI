@@ -1,73 +1,209 @@
 # 能力目录
 
-能力目录为助理、技能、连接器、模板和其他可搜索能力集合提供一套可复用页面骨架。
+能力目录为数量较多、需要搜索和筛选的能力集合提供页面级骨架。只有“发现并选择能力”是当前主任务时才使用它；小型集合应使用普通列表或资源网格。
 
 <Preview class="w-full">
-  <section class="catalog">
-    <header><div data-catalog-identity><h2>能力</h2><p>选择可复用的助理、技能和连接器。</p></div><div data-catalog-actions><input class="input" type="search" aria-label="搜索能力" placeholder="搜索能力" /></div></header>
-    <div data-catalog-featured><ul><li><h3>发布管家</h3><p>协调检查和发布证据。</p></li><li><h3>研究工作区</h3><p>查找并整理来源材料。</p></li><li><h3>代码仓库审查</h3><p>检查变更和质量信号。</p></li></ul></div>
-    <div data-catalog-toolbar><div data-catalog-filters><button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">全部</button><button type="button" class="btn" data-size="sm" data-variant="ghost">开发</button><button type="button" class="btn" data-size="sm" data-variant="ghost">研究</button></div><div data-catalog-actions><span data-catalog-count>3 项能力</span></div></div>
-    <div class="resource-grid" data-catalog-results><article class="resource-card"><section><strong>代码审查</strong><small>A3S Lab</small><p>审查聚焦变更和相关证据。</p><footer><span class="status-badge" data-state="success">已安装</span><button type="button" class="btn" data-size="sm" data-variant="outline">打开</button></footer></section></article><article class="resource-card"><section><strong>文档规划</strong><small>A3S Lab</small><p>规划双语文档变更。</p><footer><span>按需添加</span><button type="button" class="btn" data-size="sm" data-variant="outline">添加</button></footer></section></article></div>
-  </section>
+<section class="catalog" aria-labelledby="catalog-title">
+  <header>
+    <div data-catalog-identity>
+      <h2 id="catalog-title">能力</h2>
+      <p>查找可复用的技能、连接器和工作模板。</p>
+    </div>
+    <div data-catalog-actions>
+      <label class="sr-only" for="catalog-search-preview">搜索能力</label>
+      <input class="input" id="catalog-search-preview" type="search" placeholder="搜索名称或用途" />
+    </div>
+  </header>
+  <div data-catalog-featured aria-labelledby="catalog-featured-title">
+    <h3 id="catalog-featured-title" class="mb-3 text-sm font-semibold">精选能力</h3>
+    <ul>
+      <li><h4 class="font-medium">发布检查</h4><p class="mt-1 text-sm text-muted-foreground">汇总验证结果与发布证据。</p></li>
+      <li><h4 class="font-medium">研究工作区</h4><p class="mt-1 text-sm text-muted-foreground">收集、比较并整理来源材料。</p></li>
+      <li><h4 class="font-medium">代码审查</h4><p class="mt-1 text-sm text-muted-foreground">聚焦变更范围和质量信号。</p></li>
+    </ul>
+  </div>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters aria-label="能力类型">
+      <button type="button" class="btn" data-size="sm" data-variant="secondary" aria-pressed="true">全部</button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" aria-pressed="false">开发</button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" aria-pressed="false">研究</button>
+    </div>
+    <div data-catalog-actions><span data-catalog-count aria-live="polite">3 项能力</span></div>
+  </div>
+  <div class="resource-grid" data-catalog-results aria-label="能力结果">
+    <article class="resource-card">
+      <section><strong>代码审查</strong><small>A3S Lab</small><p>检查聚焦变更与相关证据。</p><footer><span class="status-badge" data-state="success">已安装</span><button type="button" class="btn" data-size="sm" data-variant="outline">打开</button></footer></section>
+    </article>
+    <article class="resource-card">
+      <section><strong>文档规划</strong><small>A3S Lab</small><p>规划双语文档与验收范围。</p><footer><span>按需添加</span><button type="button" class="btn" data-size="sm" data-variant="outline">添加</button></footer></section>
+    </article>
+  </div>
+</section>
 </Preview>
 
 ## 用法
 
+目录根节点只拥有页面排列。搜索、筛选、排序、安装和数据请求仍由宿主实现；结果项组合[资源卡片](/components/resource-card)、列表或表格。
+
 ```html
-<section class="catalog">
-  <header>...</header>
-  <div data-catalog-featured>...</div>
-  <div data-catalog-toolbar>...</div>
-  <div class="resource-grid" data-catalog-results>...</div>
+<section class="catalog" aria-labelledby="capability-catalog-title">
+  <header>
+    <div data-catalog-identity>
+      <h1 id="capability-catalog-title">能力</h1>
+      <p>查找可复用的技能、连接器和工作模板。</p>
+    </div>
+    <div data-catalog-actions>
+      <label for="capability-search">搜索能力</label>
+      <input
+        class="input"
+        id="capability-search"
+        type="search"
+        placeholder="搜索名称或用途"
+      />
+    </div>
+  </header>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters aria-label="能力类型"></div>
+    <div data-catalog-actions>
+      <output data-catalog-count>12 项能力</output>
+    </div>
+  </div>
+  <div data-catalog-results aria-label="能力结果"></div>
 </section>
 ```
 
 ### 参数
 
-| API | 用途 |
-| --- | --- |
-| `data-catalog-identity` | 标题和说明 |
-| `data-catalog-actions` | 搜索、排序、视图和所有权操作 |
-| `data-catalog-featured` | 可选的横向精选集合 |
-| `data-catalog-toolbar` | 筛选、结果数、排序和视图控件 |
-| `data-catalog-results` | 资源网格、列表、表格或空状态 |
+| API | 必填 | 用途 |
+| --- | --- | --- |
+| `data-catalog-identity` | 是 | 页面标题与简短说明 |
+| `data-catalog-actions` | 否 | 搜索、排序、视图或所有权操作 |
+| `data-catalog-featured` | 否 | 数量有限且确实需要强调的精选集合 |
+| `data-catalog-toolbar` | 推荐 | 筛选、结果数量与排序 |
+| `data-catalog-filters` | 否 | 一组具有可见选中状态的筛选器 |
+| `data-catalog-count` | 推荐 | 筛选后的结果数量 |
+| `data-catalog-results` | 是 | 网格、列表、表格或状态反馈 |
 
-## 状态和变体
+## 状态与变体
 
-页面骨架保持稳定，卡片内容用于区分助理、技能和连接器。结果区域必须覆盖加载、空白、错误、选中、已安装、不可用和分页状态。
+`ready` 显示稳定结果；`loading` 保留标题、筛选器和结果区域尺寸；`empty` 解释当前条件没有匹配项并提供清除筛选；`error` 说明失败原因和重试路径；`partial` 表明仍在分页或加载更多结果。
 
-## 无障碍
+<Preview class="w-full">
+<section class="catalog" data-state="empty" aria-labelledby="empty-catalog-title">
+  <header>
+    <div data-catalog-identity><h2 id="empty-catalog-title">能力</h2><p>当前筛选条件没有匹配结果。</p></div>
+  </header>
+  <div data-catalog-toolbar>
+    <div data-catalog-filters><span class="badge" data-variant="outline">研究 · 已安装</span></div>
+    <div data-catalog-actions><output data-catalog-count aria-live="polite">0 项能力</output></div>
+  </div>
+  <div data-catalog-results>
+    <div class="empty" data-state="empty">
+      <h3>没有符合条件的能力</h3>
+      <p>清除“已安装”筛选，或尝试更宽泛的关键词。</p>
+      <footer><button type="button" class="btn" data-variant="outline">清除筛选</button></footer>
+    </div>
+  </div>
+</section>
+</Preview>
 
-使用真实搜索输入框，切换型筛选使用按下状态。筛选后播报结果数量，但不要移动焦点。精选内容可以横向滚动，文档本身不能溢出。
+精选区不是永久广告位。只保留少量、可解释的推荐，并在手机上堆叠为完整条目；不要用被裁切的横向卡片掩盖主要结果。目录中不同资源类型共享搜索与选择规则，类型差异由可见元数据表达。
 
 ## React
 
 ```tsx
+import { useState } from "react";
 import { Catalog, useCatalog } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useCatalog();
+export function CapabilityCatalog() {
+  const [query, setQuery] = useState("");
+  const control = useCatalog({
+    events: {
+      input(event) {
+        const target = event.target as HTMLInputElement;
+        if (target.type === "search") setQuery(target.value);
+      },
+    },
+  });
+
   return (
-    <Catalog ref={control.ref} aria-label="Catalog">组件内容</Catalog>
+    <Catalog ref={control.ref} aria-labelledby="catalog-title">
+      <header>
+        <div data-catalog-identity>
+          <h1 id="catalog-title">能力</h1>
+          <p>查找可复用的技能、连接器和工作模板。</p>
+        </div>
+        <div data-catalog-actions>
+          <label htmlFor="catalog-search">搜索能力</label>
+          <input
+            id="catalog-search"
+            className="input"
+            type="search"
+            defaultValue=""
+          />
+        </div>
+      </header>
+      <div data-catalog-toolbar>
+        <output data-catalog-count>1 项能力</output>
+      </div>
+      <div data-catalog-results>
+        <article className="resource-card"><h2>代码审查</h2></article>
+      </div>
+    </Catalog>
   );
 }
 ```
 
-`useCatalog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useCatalog` 在目录根节点统一观察标准 `input` 事件，没有控制器方法。这里让 hook 成为查询状态的唯一更新路径；普通 React 表单也可以不使用 hook，改为只用 `onChange`。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Catalog, useCatalog } from "@a3s-lab/ui/vue";
 
-const control = useCatalog();
+const query = ref("");
+const control = useCatalog({
+  events: {
+    input(event) {
+      const target = event.target as HTMLInputElement;
+      if (target.type === "search") query.value = target.value;
+    },
+  },
+});
 const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Catalog ref="componentRef" aria-label="Catalog">组件内容</Catalog>
+  <Catalog ref="componentRef" aria-labelledby="catalog-title">
+    <header>
+      <div data-catalog-identity>
+        <h1 id="catalog-title">能力</h1>
+        <p>查找可复用的技能、连接器和工作模板。</p>
+      </div>
+      <div data-catalog-actions>
+        <label for="catalog-search">搜索能力</label>
+        <input
+          id="catalog-search"
+          :value="query"
+          class="input"
+          type="search"
+        />
+      </div>
+    </header>
+    <div data-catalog-toolbar>
+      <output data-catalog-count>1 项能力</output>
+    </div>
+    <div data-catalog-results>
+      <article class="resource-card"><h2>代码审查</h2></article>
+    </div>
+  </Catalog>
 </template>
 ```
 
-`useCatalog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+Vue 组合式函数是查询状态的唯一更新路径；若改用 `v-model`，应移除 hook 中的 `input` 处理。查询、筛选和结果仍属于应用状态。
+
+## 可访问性
+
+目录必须有唯一页面标题，搜索输入框需要可见或隐藏标签，筛选按钮使用 `aria-pressed` 或等价选择语义。筛选后在 `data-catalog-count` 中礼貌播报结果数量，但不要移动焦点或重置滚动。加载、空白和错误状态保留标题与筛选上下文；重试或清除筛选后把焦点留在原控件。精选条目和结果条目使用真实链接或按钮，不能让整张卡片与内部操作形成嵌套点击目标。宿主负责查询、分页、推荐依据、安装权限和可信元数据；组件只负责信息架构与响应式排列。

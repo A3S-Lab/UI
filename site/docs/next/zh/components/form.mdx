@@ -3,14 +3,14 @@
 把相关字段、校验摘要和提交操作组织为一个可恢复的任务，并保留浏览器原生提交语义。
 
 <Preview class="w-full">
-<form class="form"><label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer></form>
+<form class="form"><label class="field"><span class="label">工作区名称</span><input class="input" name="name" value="研究" required /></label><footer><button type="submit" class="btn">保存工作区</button></footer></form>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
 <form class="form">
-  <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+  <label class="field"><span class="label">工作区名称</span><input class="input" name="name" value="研究" required /></label><footer><button type="submit" class="btn">保存工作区</button></footer>
 </form>
 ```
 
@@ -23,7 +23,7 @@ export function Example() {
   const control = useForm();
   return (
     <Form ref={control.ref}>
-      <label className="field"><span className="label">Workspace name</span><input className="input" name="name" value="Research" required /></label><footer><button type="submit" className="btn">Save workspace</button></footer>
+      <label className="field"><span className="label">工作区名称</span><input className="input" name="name" value="研究" required /></label><footer><button type="submit" className="btn">保存工作区</button></footer>
     </Form>
   );
 }
@@ -43,7 +43,7 @@ const componentRef = control.componentRef;
 
 <template>
   <Form ref="componentRef">
-    <label class="field"><span class="label">Workspace name</span><input class="input" name="name" value="Research" required /></label><footer><button type="submit" class="btn">Save workspace</button></footer>
+    <label class="field"><span class="label">工作区名称</span><input class="input" name="name" value="研究" required /></label><footer><button type="submit" class="btn">保存工作区</button></footer>
   </Form>
 </template>
 ```

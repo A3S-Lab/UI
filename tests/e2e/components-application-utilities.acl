@@ -19,8 +19,10 @@ suite "a3s-ui-application-and-utilities" {
         expect "compact-navigation-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation][inert][aria-hidden=true]") }
         click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
+        expect "compact-main-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]") }
         expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
         press "close-compact-navigation" { key = "Escape" }
+        expect "compact-main-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main]:not([inert]):not([aria-hidden])") }
         expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-app-navigation-trigger]:focus") }
         screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
     }
@@ -558,13 +560,33 @@ suite "a3s-ui-application-and-utilities" {
     }
 
     scenario "device-simulator" {
-        name = "Device Simulator keeps real preset dimensions, rotation, and relative preview URLs"
+        name = "Device Simulator keeps real viewport dimensions inside phone, tablet, and desktop shells"
         surface = "web"
         timeout_ms = 60000
+        viewport "desktop-shell-evidence" { width = 1440 height = 1600 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/device-simulator.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "simulator-ready" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device-simulator-initialized=true][data-width='393'][data-height='852']") }
+        screenshot "iphone-shell" { path = "components/device-simulator-iphone-shell.png" }
+        select "choose-ipad-mini" {
+            target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]")
+            values = ["ipad-mini"]
+        }
+        expect "tablet-shell-applied" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device=ipad-mini][data-device-kind=tablet][data-width='768'][data-height='1024']") }
+        screenshot "tablet-shell" { path = "components/device-simulator-tablet-shell.png" }
+        select "choose-laptop" {
+            target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]")
+            values = ["laptop"]
+        }
+        expect "laptop-shell-applied" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device=laptop][data-device-kind=desktop][data-width='1440'][data-height='900']") }
+        screenshot "laptop-shell" { path = "components/device-simulator-laptop-shell.png" }
+        select "choose-desktop-monitor" {
+            target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]")
+            values = ["desktop"]
+        }
+        expect "monitor-shell-applied" { visible = css(".a3s-preview[data-preview-component=device-simulator] .device-simulator[data-device=desktop][data-device-kind=desktop][data-width='1920'][data-height='1080']") }
+        screenshot "monitor-shell" { path = "components/device-simulator-monitor-shell.png" }
         select "choose-pixel-8" {
             target = css(".a3s-preview[data-preview-component=device-simulator] [data-device-simulator-select]")
             values = ["pixel-8"]

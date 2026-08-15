@@ -8,8 +8,8 @@ declare global {
 }
 
 const locales = [
-  { code: "en", path: "en/", sourceLabel: "View source" },
-  { code: "zh", path: "", sourceLabel: "查看源码" },
+  { code: "en", path: "en/", sourceLabel: "Show source" },
+  { code: "zh", path: "", sourceLabel: "展开源码" },
 ] as const;
 
 const runtimeAttributePattern =
@@ -65,7 +65,7 @@ test.describe("component preview source contracts", () => {
 
         const previewCount = await previews.count();
         await expect(
-          previews.locator("details[data-preview-source-panel]"),
+          previews.locator("[data-preview-source-panel]"),
         ).toHaveCount(previewCount);
         await expect(previews.locator(".rp-code-copy-button")).toHaveCount(
           previewCount,
@@ -87,21 +87,22 @@ test.describe("component preview source contracts", () => {
         });
 
         const firstPreview = previews.first();
-        const sourceDetails = firstPreview.locator(
-          "details[data-preview-source-panel]",
+        const sourcePanel = firstPreview.locator("[data-preview-source-panel]");
+        const sourceToggle = firstPreview.locator(
+          ".a3s-preview__controls button[aria-controls]",
         );
-        const sourceSummary = sourceDetails.getByText(locale.sourceLabel, {
-          exact: true,
-        });
-        await expect(sourceDetails).not.toHaveAttribute("open", "");
-        await sourceSummary.click();
-        await expect(sourceDetails).toHaveAttribute("open", "");
+        await expect(sourceToggle).toHaveAccessibleName(locale.sourceLabel);
+        await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
+        await expect(sourcePanel).toBeHidden();
+        await sourceToggle.click();
+        await expect(sourceToggle).toHaveAttribute("aria-expanded", "true");
+        await expect(sourcePanel).toBeVisible();
         await expect(firstPreview.locator(".a3s-preview__stage")).toBeVisible();
         await expect
-          .poll(() => sourceDetails.locator(".line span[style]").count())
+          .poll(() => sourcePanel.locator(".line span[style]").count())
           .toBeGreaterThan(0);
 
-        const copyButton = sourceDetails.locator(".rp-code-copy-button");
+        const copyButton = sourcePanel.locator(".rp-code-copy-button");
         await copyButton.click();
         await expect
           .poll(() =>
@@ -111,8 +112,9 @@ test.describe("component preview source contracts", () => {
           )
           .toBe(sources[0].trim());
 
-        await sourceSummary.click();
-        await expect(sourceDetails).not.toHaveAttribute("open", "");
+        await sourceToggle.click();
+        await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
+        await expect(sourcePanel).toBeHidden();
         await expect(firstPreview.locator(".a3s-preview__stage")).toBeVisible();
       });
     }

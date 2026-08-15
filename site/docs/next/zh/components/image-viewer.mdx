@@ -3,14 +3,14 @@
 在受保护的全屏阅读层中检查图像细节，并提供缩放、旋转、复位和明确关闭路径。
 
 <Preview class="w-full">
-<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0"><div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="../../../public/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p></dialog>
+<dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0"><div data-image-viewer-toolbar><strong>图像预览</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">缩小</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">放大</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">关闭</button></div></div><figure><A3SAssetImage path="/logo.png" alt="A3S OS 官方标志" /></figure><p data-image-viewer-caption>检查图像而不修改源文件。</p></dialog>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
 <dialog class="image-viewer" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
-  <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+  <div data-image-viewer-toolbar><strong>图像预览</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">缩小</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">放大</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">关闭</button></div></div><figure><img src="/logo.png" alt="A3S OS 官方标志" /></figure><p data-image-viewer-caption>检查图像而不修改源文件。</p>
 </dialog>
 ```
 
@@ -35,7 +35,7 @@ export function Example() {
   const control = useImageViewer();
   return (
     <ImageViewer ref={control.ref} open data-state="open" style={{ position: "relative", inlineSize: "100%", blockSize: "20rem", margin: "0" }}>
-      <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+      <div data-image-viewer-toolbar><strong>图像预览</strong><div><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">缩小</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">放大</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">关闭</button></div></div><figure><img src="/logo.png" alt="A3S OS 官方标志" /></figure><p data-image-viewer-caption>检查图像而不修改源文件。</p>
     </ImageViewer>
   );
 }
@@ -55,7 +55,7 @@ const componentRef = control.componentRef;
 
 <template>
   <ImageViewer ref="componentRef" open data-state="open" style="position:relative;inline-size:100%;block-size:20rem;margin:0">
-    <div data-image-viewer-toolbar><strong>Image preview</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">Zoom out</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">Zoom in</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">Close</button></div></div><figure><img src="/logo.png" alt="Official A3S OS mark" /></figure><p data-image-viewer-caption>Inspect without changing the source asset.</p>
+    <div data-image-viewer-toolbar><strong>图像预览</strong><div><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-out">缩小</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="zoom-in">放大</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-image-viewer-action="close">关闭</button></div></div><figure><img src="/logo.png" alt="A3S OS 官方标志" /></figure><p data-image-viewer-caption>检查图像而不修改源文件。</p>
   </ImageViewer>
 </template>
 ```

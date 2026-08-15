@@ -8,6 +8,42 @@
     @apply block size-full;
   }
 
+  .chart > [data-chart-state] {
+    display: none;
+  }
+
+  .chart:is(
+      [data-state="loading"],
+      [data-state="empty"],
+      [data-state="error"]
+    ) {
+    @apply min-h-56 items-center;
+  }
+
+  .chart:is(
+      [data-state="loading"],
+      [data-state="empty"],
+      [data-state="error"]
+    ) > canvas {
+    visibility: hidden;
+  }
+
+  .chart:is(
+      [data-state="loading"],
+      [data-state="empty"],
+      [data-state="error"]
+    ) > [data-chart-state] {
+    @apply absolute inset-0 grid content-center justify-items-center gap-1.5 p-6 text-center;
+  }
+
+  .chart > [data-chart-state] > :is(strong, span, p) {
+    @apply m-0;
+  }
+
+  .chart > [data-chart-state] > footer {
+    @apply mt-3 flex flex-wrap items-center justify-center gap-2;
+  }
+
   .chart-tooltip {
     @apply pointer-events-none fixed z-50 grid min-w-32 -translate-x-1/2 translate-y-2 items-start transition-[left,top,opacity] duration-150 ease-out;
   }
