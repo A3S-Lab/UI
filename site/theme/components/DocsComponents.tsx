@@ -1,9 +1,12 @@
 import {
   Children,
-  cloneElement,
+  createElement,
   isValidElement,
+  useContext,
   useEffect,
   useId,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -14,13 +17,25 @@ import {
 } from "react";
 import { CodeBlockRuntime } from "@rspress/core/theme";
 import {
+  ThemeContext,
   useLang,
   useLocation,
   useSite,
   useVersion,
   withBase,
 } from "@rspress/core/runtime";
-import Chart, { type ChartConfiguration } from "chart.js/auto";
+import { writeClipboardText } from "./clipboard";
+import {
+  needsRenderedPreviewSource,
+  previewSourceFromCanvas,
+  previewStylesheetHrefs,
+  resolvePreviewLayout,
+  responsivePreviewDocument,
+  type PreviewLayout,
+  type PreviewViewport,
+} from "./DocsPreviewRuntime";
+
+export { ChartDemo } from "./DocsChartDemo";
 
 declare global {
   interface Window {
@@ -97,7 +112,9 @@ function createInlineHandler(source: string) {
 }
 
 function normalizePreviewNode(node: ReactNode): ReactNode {
-  if (Array.isArray(node)) return node.map(normalizePreviewNode);
+  if (Array.isArray(node)) {
+    return Children.toArray(node).map(normalizePreviewNode);
+  }
   if (!isValidElement(node)) return node;
 
   const element = node as ReactElement<Record<string, unknown>>;
@@ -113,27 +130,23 @@ function normalizePreviewNode(node: ReactNode): ReactNode {
     if (name === "children") continue;
 
     if (isMutableFormControl && !hasValueHandler && name === "value") {
-      normalizedProps.value = undefined;
       normalizedProps.defaultValue = value;
       continue;
     }
 
     if (isMutableFormControl && !hasValueHandler && name === "checked") {
-      normalizedProps.checked = undefined;
       normalizedProps.defaultChecked = value;
       continue;
     }
 
     const attributeAlias = attributeAliases[name];
     if (attributeAlias) {
-      normalizedProps[name] = undefined;
       normalizedProps[attributeAlias] = value;
       continue;
     }
 
     const eventAlias = eventAliases[name];
     if (eventAlias && typeof value === "string") {
-      normalizedProps[name] = undefined;
       normalizedProps[eventAlias] = createInlineHandler(value);
       normalizedProps[`data-preview-${name}`] = value;
       continue;
@@ -150,7 +163,10 @@ function normalizePreviewNode(node: ReactNode): ReactNode {
   normalizedProps.children = normalizePreviewNode(
     element.props.children as ReactNode,
   );
-  return cloneElement(element, normalizedProps);
+  return createElement(element.type, {
+    ...normalizedProps,
+    key: element.key ?? undefined,
+  });
 }
 
 function initializeDocumentationDemos(root: HTMLElement) {
@@ -242,168 +258,86 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
 type PreviewProps = HTMLAttributes<HTMLDivElement> & {
   class?: string;
   children: ReactNode;
+  layout?: PreviewLayout;
   source?: string;
   title?: string;
 };
 
-const previewVoidElements = new Set([
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "link",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr",
-]);
+const previewViewportDimensions = {
+  phone: { height: 592, label: "Phone", width: 390 },
+  tablet: { height: 672, label: "Tablet", width: 768 },
+} as const;
 
-const previewBooleanAttributes = new Set([
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "autoplay",
-  "checked",
-  "controls",
-  "default",
-  "defer",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "inert",
-  "ismap",
-  "itemscope",
-  "loop",
-  "multiple",
-  "muted",
-  "nomodule",
-  "novalidate",
-  "open",
-  "playsinline",
-  "readonly",
-  "required",
-  "reversed",
-  "selected",
-]);
+function ResponsivePreviewFrame({
+  documentSource,
+  isChinese,
+  resolvedTitle,
+  viewport,
+}: {
+  documentSource: string;
+  isChinese: boolean;
+  resolvedTitle: string;
+  viewport: Exclude<PreviewViewport, "fluid">;
+}) {
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const dimensions = previewViewportDimensions[viewport];
+  const frameOuterWidth = dimensions.width + 2;
+  const frameOuterHeight = dimensions.height + 2;
 
-const previewRuntimeAttribute =
-  /^(?:data-basecoat-component|data-a3s-(?:component|components|part-owners|parts|positioned|state)|data-resolved-(?:align|side)|data-[a-z0-9-]+-initialized)$/;
-const previewDemoAttribute =
-  /^data-(?:demo-[a-z0-9-]+|[a-z0-9-]+-demo(?:-[a-z0-9-]+)?)$/;
+  useLayoutEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
 
-function escapePreviewText(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
+    const synchronizeScale = () => {
+      const nextScale = Math.min(1, shell.clientWidth / frameOuterWidth);
+      setScale((current) =>
+        Math.abs(current - nextScale) < 0.001 ? current : nextScale,
+      );
+    };
 
-function escapePreviewAttribute(value: string) {
-  return escapePreviewText(value).replaceAll('"', "&quot;");
-}
+    synchronizeScale();
+    const observer = new ResizeObserver(synchronizeScale);
+    observer.observe(shell);
+    return () => observer.disconnect();
+  }, [frameOuterWidth]);
 
-function previewAttributeSource(element: Element) {
-  return Array.from(element.attributes).map(({ name, value }) => {
-    const normalizedName = name.toLowerCase();
-    if (previewBooleanAttributes.has(normalizedName) && value === "") {
-      return name;
-    }
-    return `${name}="${escapePreviewAttribute(value)}"`;
-  });
-}
-
-function formatPreviewElement(element: Element, depth = 0): string {
-  const indentation = "  ".repeat(depth);
-  const childIndentation = "  ".repeat(depth + 1);
-  const tagName = element.tagName.toLowerCase();
-  const attributes = previewAttributeSource(element);
-  const compactOpening = `<${tagName}${attributes.length ? ` ${attributes.join(" ")}` : ""}>`;
-  const opening =
-    indentation.length + compactOpening.length <= 108
-      ? `${indentation}${compactOpening}`
-      : [
-          `${indentation}<${tagName}`,
-          ...attributes.map((attribute) => `${childIndentation}${attribute}`),
-          `${indentation}>`,
-        ].join("\n");
-
-  if (previewVoidElements.has(tagName)) return opening;
-
-  const children = Array.from(element.childNodes).filter(
-    (node) =>
-      node.nodeType === Node.ELEMENT_NODE ||
-      (node.nodeType === Node.TEXT_NODE && Boolean(node.textContent?.trim())),
-  );
-  if (children.length === 0) return `${opening}</${tagName}>`;
-
-  const textOnly = children.every((node) => node.nodeType === Node.TEXT_NODE);
-  if (textOnly) {
-    const text = children
-      .map((node) => node.textContent ?? "")
-      .join("")
-      .replace(/\s+/g, " ")
-      .trim();
-    const inline = `${compactOpening}${escapePreviewText(text)}</${tagName}>`;
-    if (!opening.includes("\n") && indentation.length + inline.length <= 120) {
-      return `${indentation}${inline}`;
-    }
-  }
-
-  const formattedChildren = children.flatMap((node) => {
-    if (node instanceof Element) return formatPreviewElement(node, depth + 1);
-    const text = (node.textContent ?? "").replace(/\s+/g, " ").trim();
-    return text ? `${childIndentation}${escapePreviewText(text)}` : [];
-  });
-
-  return [opening, ...formattedChildren, `${indentation}</${tagName}>`].join(
-    "\n",
-  );
-}
-
-function previewSourceFromCanvas(canvas: HTMLElement) {
-  const clone = canvas.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll("*").forEach((element) => {
-    Array.from(element.attributes).forEach(({ name }) => {
-      if (name.startsWith("data-preview-on")) {
-        element.setAttribute(
-          name.slice("data-preview-".length),
-          element.getAttribute(name) ?? "",
-        );
-        element.removeAttribute(name);
-        return;
-      }
-      if (
-        name === "data-reactroot" ||
-        previewRuntimeAttribute.test(name) ||
-        previewDemoAttribute.test(name)
-      ) {
-        element.removeAttribute(name);
-      }
-    });
-
-    if (
-      element instanceof HTMLCanvasElement &&
-      element.closest(".a3s-chart-demo")
-    ) {
-      element.removeAttribute("height");
-      element.removeAttribute("style");
-      element.removeAttribute("width");
-    }
-  });
-
-  return Array.from(clone.children)
-    .map((element) => formatPreviewElement(element))
-    .join("\n");
-}
-
-function needsRenderedPreviewSource(source: string) {
-  return /<(?:A3SAssetImage|ChartDemo|MonacoWorkbenchDemo|SliderDemo)\b/.test(
-    source,
+  return (
+    <div
+      ref={shellRef}
+      className="a3s-preview__viewport-shell"
+      style={{
+        height: frameOuterHeight * scale,
+        maxWidth: frameOuterWidth,
+      }}
+    >
+      <div
+        className="a3s-preview__viewport-frame"
+        data-preview-emulated-viewport={viewport}
+        style={{
+          height: dimensions.height,
+          transform: `scale(${scale})`,
+          width: dimensions.width,
+        }}
+      >
+        <div className="a3s-preview__viewport-frame-bar" aria-hidden="true">
+          <span>{dimensions.width} CSS px</span>
+          <span>{dimensions.label}</span>
+        </div>
+        <iframe
+          className="a3s-preview__viewport-frame-content"
+          title={
+            isChinese
+              ? `${resolvedTitle}${viewport === "phone" ? "手机" : "平板"}预览`
+              : `${resolvedTitle} ${viewport} preview`
+          }
+          srcDoc={documentSource}
+          sandbox="allow-scripts"
+          allow="clipboard-write"
+          loading="eager"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -422,6 +356,85 @@ function PreviewCodeIcon() {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PreviewViewportIcon({ viewport }: { viewport: PreviewViewport }) {
+  if (viewport === "phone") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+        <rect
+          x="6.25"
+          y="2.75"
+          width="7.5"
+          height="14.5"
+          rx="1.75"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <path d="M9 14.75h2" stroke="currentColor" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (viewport === "tablet") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+        <rect
+          x="3.5"
+          y="2.75"
+          width="13"
+          height="14.5"
+          rx="1.75"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <path d="M9 14.75h2" stroke="currentColor" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <rect
+        x="2.75"
+        y="4"
+        width="14.5"
+        height="10.5"
+        rx="1.75"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M6 17h8M10 14.5V17"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PreviewThemeIcon({ dark }: { dark: boolean }) {
+  return dark ? (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M15.6 12.8A6.2 6.2 0 0 1 7.2 4.4 6.4 6.4 0 1 0 15.6 12.8Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ) : (
+    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="3.25" stroke="currentColor" />
+      <path
+        d="M10 2.25v1.5M10 16.25v1.5M2.25 10h1.5M16.25 10h1.5M4.52 4.52l1.06 1.06M14.42 14.42l1.06 1.06M15.48 4.52l-1.06 1.06M5.58 14.42l-1.06 1.06"
+        stroke="currentColor"
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -467,29 +480,64 @@ function PreviewCopyIcon({ copied }: { copied: boolean }) {
   );
 }
 
+function findPreviewHeading(preview: HTMLElement) {
+  let sibling = preview.previousElementSibling;
+
+  while (sibling) {
+    if (sibling.matches("h1, h2, h3, h4")) {
+      return (
+        sibling.textContent?.replace(/\s+/g, " ").trim().replace(/^#\s*/, "") ??
+        ""
+      );
+    }
+    sibling = sibling.previousElementSibling;
+  }
+
+  return "";
+}
+
 export function Preview({
   children,
   className,
   class: htmlClass,
+  layout,
   source,
   title,
 }: PreviewProps) {
+  const { theme } = useContext(ThemeContext);
   const location = useLocation();
   const language = useLang();
   const previewRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const sourceRef = useRef<HTMLDetailsElement>(null);
   const copyResetRef = useRef<number | null>(null);
+  const titleId = useId();
   const sourceId = useId();
   const [sourceText, setSourceText] = useState(source ?? "");
-  const [sourceOpen, setSourceOpen] = useState(false);
+  const [responsiveSourceText, setResponsiveSourceText] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
     "idle",
   );
+  const [viewport, setViewport] = useState<PreviewViewport>("fluid");
+  const [alternateTheme, setAlternateTheme] = useState(false);
+  const [rtl, setRtl] = useState(false);
+  const [sourceOpen, setSourceOpen] = useState(false);
   const componentName =
     location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
     (/\/components\/?$/.test(location.pathname) ? "index" : undefined);
+  const resolvedLayout = resolvePreviewLayout(componentName, layout);
   const isChinese = language === "zh";
+  const fallbackTitle = isChinese ? "实时预览" : "Live preview";
+  const [resolvedTitle, setResolvedTitle] = useState(
+    title?.trim() || fallbackTitle,
+  );
+
+  useEffect(() => {
+    const nextTitle =
+      title?.trim() ||
+      (previewRef.current ? findPreviewHeading(previewRef.current) : "") ||
+      fallbackTitle;
+    setResolvedTitle(nextTitle);
+  }, [fallbackTitle, location.pathname, title]);
 
   useEffect(
     () => () => {
@@ -524,7 +572,10 @@ export function Preview({
 
     syncOverlayState();
     if (canvasRef.current) {
-      const renderedSource = previewSourceFromCanvas(canvasRef.current);
+      const renderedSource =
+        !source || needsRenderedPreviewSource(source)
+          ? previewSourceFromCanvas(canvasRef.current, "source")
+          : "";
       setSourceText(
         source && !needsRenderedPreviewSource(source)
           ? source
@@ -532,6 +583,9 @@ export function Preview({
       );
       initializeDocumentationDemos(canvasRef.current);
       window.a3sAI?.scan(canvasRef.current);
+      setResponsiveSourceText(
+        previewSourceFromCanvas(canvasRef.current, "responsive"),
+      );
     }
     syncOverlayState();
     return () => {
@@ -539,11 +593,12 @@ export function Preview({
     };
   }, [children, source]);
 
-  const toggleSource = () => {
-    if (!sourceRef.current) return;
-    sourceRef.current.open = !sourceRef.current.open;
-    setSourceOpen(sourceRef.current.open);
-  };
+  useEffect(() => {
+    if (viewport === "fluid" || !canvasRef.current) return;
+    setResponsiveSourceText(
+      previewSourceFromCanvas(canvasRef.current, "responsive"),
+    );
+  }, [children, source, viewport]);
 
   const copySource = async () => {
     if (!sourceText) return;
@@ -552,7 +607,7 @@ export function Preview({
     }
 
     try {
-      await navigator.clipboard.writeText(sourceText);
+      await writeClipboardText(sourceText);
       setCopyState("copied");
     } catch {
       setCopyState("error");
@@ -576,34 +631,169 @@ export function Preview({
         : isChinese
           ? "复制源码"
           : "Copy source";
+  const copyVisibleLabel =
+    copyState === "copied"
+      ? isChinese
+        ? "已复制"
+        : "Copied"
+      : copyState === "error"
+        ? isChinese
+          ? "重试"
+          : "Retry"
+        : isChinese
+          ? "复制"
+          : "Copy";
+  const accessibleName =
+    resolvedTitle === fallbackTitle
+      ? isChinese
+        ? "交互式组件预览"
+        : "Interactive component preview"
+      : isChinese
+        ? `${resolvedTitle}组件预览`
+        : `${resolvedTitle} component preview`;
+  const siteIsDark = theme === "dark";
+  const previewScheme = alternateTheme
+    ? siteIsDark
+      ? "light"
+      : "dark"
+    : "inherit";
+  const responsiveDocument = useMemo(
+    () =>
+      responsivePreviewDocument({
+        classes: [className, htmlClass].filter(Boolean).join(" "),
+        dark:
+          previewScheme === "dark" ||
+          (previewScheme === "inherit" && siteIsDark),
+        direction: rtl ? "rtl" : "ltr",
+        language,
+        layout: resolvedLayout,
+        runtimeHref: withBase("/assets/a3s-ui.min.js"),
+        source: responsiveSourceText,
+        stylesheetHrefs: previewStylesheetHrefs(withBase("/assets/a3s-ui.css")),
+      }),
+    [
+      className,
+      htmlClass,
+      language,
+      previewScheme,
+      resolvedLayout,
+      rtl,
+      siteIsDark,
+      responsiveSourceText,
+    ],
+  );
+  const viewportOptions: Array<{
+    label: string;
+    value: PreviewViewport;
+  }> = [
+    {
+      label: isChinese ? "自适应宽度" : "Fluid width",
+      value: "fluid",
+    },
+    {
+      label: isChinese ? "手机宽度" : "Phone width",
+      value: "phone",
+    },
+    {
+      label: isChinese ? "平板宽度" : "Tablet width",
+      value: "tablet",
+    },
+  ];
+  const themeLabel = alternateTheme
+    ? isChinese
+      ? "恢复文档主题"
+      : "Use documentation theme"
+    : siteIsDark
+      ? isChinese
+        ? "切换为浅色预览"
+        : "Preview in light mode"
+      : isChinese
+        ? "切换为深色预览"
+        : "Preview in dark mode";
+  const directionLabel = rtl
+    ? isChinese
+      ? "恢复从左到右布局"
+      : "Use left-to-right layout"
+    : isChinese
+      ? "切换为从右到左布局"
+      : "Preview right-to-left layout";
+  const sourceLabel = sourceOpen
+    ? isChinese
+      ? "收起源码"
+      : "Hide source"
+    : isChinese
+      ? "展开源码"
+      : "Show source";
 
   return (
     <section
       ref={previewRef}
       className="a3s-preview"
-      aria-label={
-        language === "zh" ? "交互式组件预览" : "Interactive component preview"
-      }
+      aria-label={accessibleName}
       data-preview-component={componentName}
+      data-preview-direction={rtl ? "rtl" : "ltr"}
+      data-preview-layout={resolvedLayout}
+      data-preview-scheme={previewScheme}
       data-preview-source={sourceText ? "ready" : "pending"}
+      data-preview-viewport={viewport}
     >
       <header className="a3s-preview__header">
-        <strong>{title ?? (isChinese ? "实时预览" : "Live preview")}</strong>
+        <strong id={titleId}>{resolvedTitle}</strong>
         <div
           className="a3s-preview__controls"
           role="group"
           aria-label={isChinese ? "预览工具" : "Preview tools"}
         >
+          <div
+            className="a3s-preview__viewport-controls"
+            role="group"
+            aria-label={isChinese ? "预览宽度" : "Preview width"}
+          >
+            {viewportOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-label={option.label}
+                aria-pressed={viewport === option.value}
+                title={option.label}
+                onClick={() => setViewport(option.value)}
+              >
+                <PreviewViewportIcon viewport={option.value} />
+              </button>
+            ))}
+          </div>
+          <span className="a3s-preview__control-divider" aria-hidden="true" />
           <button
             type="button"
-            onClick={toggleSource}
+            onClick={() => setAlternateTheme((current) => !current)}
+            aria-label={themeLabel}
+            aria-pressed={alternateTheme}
+            title={themeLabel}
+          >
+            <PreviewThemeIcon dark={previewScheme === "dark"} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setRtl((current) => !current)}
+            aria-label={directionLabel}
+            aria-pressed={rtl}
+            title={directionLabel}
+          >
+            <span className="a3s-preview__direction-mark" aria-hidden="true">
+              RTL
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSourceOpen((current) => !current)}
+            aria-label={sourceLabel}
             aria-controls={sourceId}
             aria-expanded={sourceOpen}
-            aria-label={isChinese ? "切换源码" : "Toggle source"}
-            title={isChinese ? "切换源码" : "Toggle source"}
+            title={sourceLabel}
           >
             <PreviewCodeIcon />
           </button>
+          <span className="a3s-preview__control-divider" aria-hidden="true" />
           <button
             type="button"
             onClick={copySource}
@@ -613,6 +803,7 @@ export function Preview({
             data-state={copyState}
           >
             <PreviewCopyIcon copied={copyState === "copied"} />
+            <span>{copyVisibleLabel}</span>
             <span className="a3s-preview__feedback" aria-live="polite">
               {copyState === "idle" ? "" : copyLabel}
             </span>
@@ -623,24 +814,38 @@ export function Preview({
         <div
           ref={canvasRef}
           onClick={handleDocumentationDemoClick}
-          className={["a3s-preview__canvas", "rp-not-doc", className, htmlClass]
+          className={[
+            "a3s-preview__canvas",
+            "rp-not-doc",
+            previewScheme === "dark" ? "dark" : "",
+            className,
+            htmlClass,
+          ]
             .filter(Boolean)
             .join(" ")}
+          data-preview-scheme={previewScheme}
+          dir={rtl ? "rtl" : undefined}
+          hidden={viewport !== "fluid"}
         >
           {normalizePreviewNode(children)}
         </div>
+        {viewport !== "fluid" ? (
+          <ResponsivePreviewFrame
+            documentSource={responsiveDocument}
+            isChinese={isChinese}
+            resolvedTitle={resolvedTitle}
+            viewport={viewport}
+          />
+        ) : null}
       </div>
-      <details
-        ref={sourceRef}
+      <div
         id={sourceId}
         className="a3s-preview__source"
         data-preview-source-panel
-        onToggle={(event) => setSourceOpen(event.currentTarget.open)}
+        hidden={!sourceOpen}
+        role="region"
+        aria-label={isChinese ? "语义化 HTML 源码" : "Semantic HTML source"}
       >
-        <summary>
-          <span>{isChinese ? "查看源码" : "View source"}</span>
-          <small>{isChinese ? "语义化 HTML" : "Semantic HTML"}</small>
-        </summary>
         <div className="a3s-preview__source-content">
           <CodeBlockRuntime
             lang="html"
@@ -651,7 +856,7 @@ export function Preview({
             containerElementClassName="a3s-preview__codeblock"
           />
         </div>
-      </details>
+      </div>
     </section>
   );
 }
@@ -732,108 +937,5 @@ export function Callout({
         </a>
       ) : null}
     </aside>
-  );
-}
-
-type ChartDemoVariant = "bar" | "line" | "step" | "stacked" | "donut" | "radar";
-
-function chartConfiguration(variant: ChartDemoVariant): ChartConfiguration {
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-  const gridColor = "rgba(123, 132, 148, 0.16)";
-  const commonOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: variant === "donut" || variant === "radar" },
-    },
-    scales:
-      variant === "donut" || variant === "radar"
-        ? undefined
-        : {
-            x: { grid: { display: false } },
-            y: { beginAtZero: true, grid: { color: gridColor } },
-          },
-  };
-
-  if (variant === "donut") {
-    return {
-      type: "doughnut",
-      data: {
-        labels: ["Direct", "Search", "Social", "Referral"],
-        datasets: [
-          {
-            data: [42, 31, 17, 10],
-            backgroundColor: ["#4f7ff0", "#28a978", "#9a63df", "#e4a43b"],
-            borderWidth: 0,
-          },
-        ],
-      },
-      options: commonOptions,
-    };
-  }
-
-  if (variant === "radar") {
-    return {
-      type: "radar",
-      data: {
-        labels: ["Speed", "Quality", "Safety", "Reach", "Control", "Clarity"],
-        datasets: [
-          {
-            label: "A3S UI",
-            data: [86, 92, 88, 78, 91, 94],
-            borderColor: "#4f7ff0",
-            backgroundColor: "rgba(79, 127, 240, 0.18)",
-            pointBackgroundColor: "#4f7ff0",
-          },
-        ],
-      },
-      options: commonOptions,
-    };
-  }
-
-  const isLine = variant === "line" || variant === "step";
-  return {
-    type: isLine ? "line" : "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Desktop",
-          data: [186, 305, 237, 273, 209, 314],
-          borderColor: "#4f7ff0",
-          backgroundColor: isLine ? "rgba(79, 127, 240, 0.14)" : "#4f7ff0",
-          fill: isLine,
-          stepped: variant === "step",
-          tension: variant === "line" ? 0.35 : 0,
-          stack: variant === "stacked" ? "traffic" : undefined,
-        },
-        {
-          label: "Mobile",
-          data: [80, 200, 120, 190, 130, 220],
-          borderColor: "#28a978",
-          backgroundColor: isLine ? "rgba(40, 169, 120, 0.08)" : "#71c9a8",
-          fill: isLine,
-          tension: variant === "line" ? 0.35 : 0,
-          stack: variant === "stacked" ? "traffic" : undefined,
-        },
-      ],
-    },
-    options: commonOptions,
-  };
-}
-
-export function ChartDemo({ variant = "bar" }: { variant?: ChartDemoVariant }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const chart = new Chart(canvasRef.current, chartConfiguration(variant));
-    return () => chart.destroy();
-  }, [variant]);
-
-  return (
-    <div className="a3s-chart-demo chart">
-      <canvas ref={canvasRef} aria-label={`${variant} chart preview`} />
-    </div>
   );
 }

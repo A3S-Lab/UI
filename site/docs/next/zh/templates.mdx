@@ -8,7 +8,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 这些模板使用 `@a3s-lab/ui` 进行版本控制，因此生成的标记与您安装的 CSS 和 JavaScript 文件相匹配。
 
-## 宏
+## 可用宏
 
 | 组件 | 宏 | Nunjucks | Jinja |
 | --- | --- | --- | --- |
@@ -16,14 +16,14 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | [命令](/components/command) | `command()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
 | [命令](/components/command) | `command_dialog()` | [command.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/command.njk) | [command.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/command.html.jinja) |
 | [上下文菜单](/components/context-menu) | `context_menu()` | [context-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/context-menu.njk) | [context-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/context-menu.html.jinja) |
-| [Dialog](/components/dialog) | `dialog()` | [dialog.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dialog.njk) | [dialog.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dialog.html.jinja) |
+| [对话框](/components/dialog) | `dialog()` | [dialog.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dialog.njk) | [dialog.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dialog.html.jinja) |
 | [下拉菜单](/components/dropdown-menu) | `dropdown_menu()` | [dropdown-menu.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/dropdown-menu.njk) | [dropdown-menu.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/dropdown-menu.html.jinja) |
-| [弹出](/components/popover) | `popover()` | [popover.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/popover.njk) | [popover.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/popover.html.jinja) |
-| [选择器](/components/select) | `select()` | [select.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/select.njk) | [select.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/select.html.jinja) |
+| [弹出层](/components/popover) | `popover()` | [popover.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/popover.njk) | [popover.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/popover.html.jinja) |
+| [选择菜单](/components/select) | `select()` | [select.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/select.njk) | [select.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/select.html.jinja) |
 | [侧边栏](/components/sidebar) | `sidebar()` | [sidebar.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/sidebar.njk) | [sidebar.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/sidebar.html.jinja) |
-| [标签](/components/tabs) | `tabs()` | [tabs.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/tabs.njk) | [tabs.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/tabs.html.jinja) |
-| [Toast](/components/toast) | `toaster()` | [toast.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/toast.njk) | [toast.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/toast.html.jinja) |
-| [Toast](/components/toast) | `toast()` | [toast.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/toast.njk) | [toast.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/toast.html.jinja) |
+| [标签页](/components/tabs) | `tabs()` | [tabs.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/tabs.njk) | [tabs.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/tabs.html.jinja) |
+| [通知](/components/toast) | `toaster()` | [toast.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/toast.njk) | [toast.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/toast.html.jinja) |
+| [通知](/components/toast) | `toast()` | [toast.njk](https://github.com/A3S-Lab/UI/blob/main/src/templates/nunjucks/toast.njk) | [toast.html.jinja](https://github.com/A3S-Lab/UI/blob/main/src/templates/jinja/toast.html.jinja) |
 
 某些宏文件包含内部递归助手，例如 `render_select_items()`。这些助手是实现细节，不属于公共 API 的一部分。
 
@@ -52,7 +52,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
   <Step>
     ### 使用宏
 
-从复制的模板文件导入宏，然后使用该组件的 props 调用它。
+从复制的模板文件导入宏，然后传入该组件所需的参数。
 
     <CodeGroup>
     ```jinja title="Nunjucks"
@@ -86,17 +86,17 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `combobox()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的组合框 ID。 |
-| `selected` | `字符串\ | 数组\ | 对象` | `None` / `none` | 初始选择的一个或多个值。对象可以包括 `value` 和 `label`。 |
+| `selected` | `string \| array \| object` | `None` / `none` | 初始选择的一个或多个值。对象可以包括 `value` 和 `label`。 |
 | `name` | `string` | `None` / `none` | 隐藏输入名称。 |
 | `multiple` | `boolean` | `false` | 启用基于芯片的多重选择。 |
 | `placeholder` | `string` | `None` / `none` | 可见的输入占位符。 |
 | `close_on_select` | `boolean` | `false` | 在多模式下选择每个选项后关闭弹出窗口。 |
 | `clear` | `boolean` | `false` | 在单选模式下显示清除按钮。 |
 | `auto_highlight` | `boolean` | `false` | 过滤时突出显示第一个匹配选项。 |
-| `format` | `“值”\ | “对象”` | `"value"` | 隐藏输入序列化格式。 |
+| `format` | `"value" \| "object"` | `"value"` | 隐藏输入序列化格式。 |
 | `main_attrs` | `object` | `{}` | `.combobox` 根的额外属性。 |
 | `input_attrs` | `object` | `{}` | 可见输入或芯片输入包装器的额外属性。 |
 | `popover_attrs` | `object` | `{}` | 弹出框元素的额外属性。 |
@@ -105,7 +105,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `command()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的命令 ID。 |
 | `items` | `array` | `None` / `none` | 可选的结构化项目数据。省略时使用调用者内容。 |
@@ -117,7 +117,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `command_dialog()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的命令对话框 ID。 |
 | `items` | `array` | `None` / `none` | 可选的结构化项目数据。省略时使用调用者内容。 |
@@ -126,11 +126,11 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | `dialog_attrs` | `object` | `{}` | 原生对话框的额外属性。 |
 | `input_attrs` | `object` | `{}` | 搜索输入的额外属性。 |
 | `menu_attrs` | `object` | `{}` | 命令菜单的额外属性。 |
-| `open` | `boolean` | `false` | 默认情况下呈现打开的对话框。 |
+| `open` | `boolean` | `false` | 是否默认以打开状态渲染。 |
 
 ### `dialog()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的对话框 ID。 |
 | `trigger` | `string` | `None` / `none` | 生成的触发按钮的文本或 HTML。 |
@@ -142,13 +142,13 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | `header_attrs` | `object` | `{}` | 对话框标题的额外属性。 |
 | `body_attrs` | `object` | `{}` | 对话框主体部分的额外属性。 |
 | `footer_attrs` | `object` | `{}` | 对话框页脚的额外属性。 |
-| `open` | `boolean` | `false` | 默认情况下呈现打开的对话框。 |
+| `open` | `boolean` | `false` | 是否默认以打开状态渲染。 |
 | `close_button` | `boolean` | `true` | 包括生成的关闭按钮。 |
 | `close_on_overlay_click` | `boolean` | `true` | 添加背景单击关闭行为。 |
 
 ### `context_menu()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `trigger` | `string` | 必填 | 右键或键盘菜单触发表面的 HTML。 |
 | `label` | `string` | `"Context menu"` | 菜单的可访问名称。 |
@@ -159,7 +159,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `dropdown_menu()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `trigger` | `string` | 必填 | 触发按钮的 HTML。 |
 | `id` | `string` | 生成的 | 唯一的下拉菜单 ID。 |
@@ -171,7 +171,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `popover()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `trigger` | `string` | 必填 | 触发按钮的 HTML。 |
 | `id` | `string` | 生成的 | 唯一的弹出窗口 ID。 |
@@ -181,16 +181,16 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `select()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的选择 ID。 |
-| `selected` | `字符串\ | 数组` | `None` / `none` | 初始选择的一个或多个值。 |
+| `selected` | `string \| array` | `None` / `none` | 初始选择的一个或多个值。 |
 | `name` | `string` | 从 `id` 生成 | 隐藏输入名称。 |
 | `items` | `array` | `None` / `none` | 可选的结构化项目数据。省略时使用调用者内容。 |
 | `multiple` | `boolean` | `false` | 启用多项选择。 |
 | `placeholder` | `string` | `None` / `none` | 多种模式的占位符文本，无需选择。 |
 | `close_on_select` | `boolean` | `false` | 在多模式下选择每个选项后关闭弹出窗口。 |
-| `format` | `“值”\ | “对象”` | `"value"` | 隐藏输入序列化格式。 |
+| `format` | `"value" \| "object"` | `"value"` | 隐藏输入序列化格式。 |
 | `main_attrs` | `object` | `{}` | `.select` 根的额外属性。 |
 | `trigger_attrs` | `object` | `{}` | 触发按钮的额外属性。 |
 | `popover_attrs` | `object` | `{}` | 弹出框元素的额外属性。 |
@@ -199,12 +199,12 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `sidebar()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | `None` / `none` | 可选侧边栏 ID。当存在多个侧边栏时使用一个。 |
 | `label` | `string` | `"Sidebar navigation"` | 导航地标标签。 |
 | `open` | `boolean` | `true` | 初始打开状态。 |
-| `side` | `“左”\ | “对”` | `"left"` | 视口的一侧。 |
+| `side` | `"left" \| "right"` | `"left"` | 侧边栏所在的视口一侧。 |
 | `header` | `string` | `None` / `none` | 侧边栏标题的 HTML。 |
 | `footer` | `string` | `None` / `none` | 侧边栏页脚的 HTML。 |
 | `menu` | `array` | `None` / `none` | 可选的结构化菜单数据。省略时使用调用者内容。 |
@@ -215,7 +215,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `tabs()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
 | `id` | `string` | 生成的 | 唯一的选项卡 ID。 |
 | `tabsets` | `array` | `[]` | 选项卡定义。每个项目可包括 `tab`、`panel`、`tab_attrs` 和 `panel_attrs`。 |
@@ -225,19 +225,19 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 
 ### `toaster()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `id` | `string` | `"toaster"` | 烤面包机容器 ID。 |
-| `toasts` | `array` | `[]` | 烤面包机内渲染的初始烤面包对象。 |
+| `id` | `string` | `"toaster"` | 通知容器 ID。 |
+| `toasts` | `array` | `[]` | 通知容器内初始渲染的通知对象。 |
 | `attrs` | `object` | `{}` | `.toaster` 容器的额外属性。 |
 
 ### `toast()`
 
-| 道具 | 类型 | 默认 | 描述 |
+| 参数 | 类型 | 默认值 | 描述 |
 | --- | --- | --- | --- |
-| `category` | `“成功”\ | “错误”\ | “信息”\ | “警告”` | `"success"` | Toast类。控制图标和 ARIA 角色。 |
-| `title` | `string` | `""` | Toast标题。 |
-| `description` | `string` | `""` | Toast描述。 |
+| `category` | `"success" \| "error" \| "info" \| "warning"` | `"success"` | 通知类型，用于控制图标和 ARIA 角色。 |
+| `title` | `string` | `""` | 通知标题。 |
+| `description` | `string` | `""` | 通知说明。 |
 | `duration` | `number` | 默认超时 | 超时（以毫秒为单位）。使用 `-1` 使 toast 保持打开状态。 |
 | `icon` | `string` | 类别图标 | 自定义图标 HTML。 |
 | `action` | `object` | `None` / `none` | 操作按钮/链接配置。支持`label`、`onclick`和`href`。 |

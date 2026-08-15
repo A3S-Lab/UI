@@ -1,86 +1,154 @@
 # Back to Bottom
 
-Returns people to the newest content in an append-only scroll region and exposes how many updates arrived while they were reading earlier content.
+Back to Bottom appears only in an append-only scroll region, letting people return to the live edge without losing the number of updates that arrived while they read earlier content.
 
 <Preview class="w-full">
-<div data-scroll-owner style="position:relative;min-height:10rem;inline-size:100%;padding:1rem;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-  <p>You are reading earlier output while new content continues below.</p>
-  <button class="back-to-bottom" data-always-visible data-unread="3"><span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span></button>
+<div data-scroll-owner class="relative min-h-40 w-full overflow-hidden rounded-lg border p-4">
+  <div class="grid gap-2 text-sm">
+    <p class="font-medium">You are reading earlier run output</p>
+    <p class="max-w-md text-muted-foreground">Three updates arrived at the end. New content will not force your reading position to move.</p>
+  </div>
+  <button type="button" class="back-to-bottom" data-always-visible data-unread="3">
+    <span data-back-to-bottom-label>Return to latest output</span>
+    <span data-unread-count aria-label="3 unread updates">3</span>
+  </button>
 </div>
 </Preview>
 
 ## Usage
 
+Place the button inside the element that truly owns scrolling. The controller appears when the distance from the live edge exceeds the threshold or unread updates exist. Reserve `data-always-visible` for demonstrations and diagnostics.
+
 ```html
-<button class="back-to-bottom" data-always-visible data-unread="3">
-  <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
-</button>
+<div class="transcript-viewport" data-scroll-owner>
+  <ol aria-label="Run output">
+    <li>Dependency checks completed.</li>
+    <li>Documentation build started.</li>
+  </ol>
+  <button type="button" class="back-to-bottom" data-unread="3">
+    <span data-back-to-bottom-label>Return to latest output</span>
+    <span data-unread-count>3</span>
+  </button>
+</div>
 ```
 
-### Standalone controller
+For on-demand loading, import the shared runtime before the controller.
 
 ```js
 import "@a3s-lab/ui/runtime";
 import "@a3s-lab/ui/back-to-bottom";
 
-const component = document.querySelector(".back-to-bottom");
-component.getState();
+const button = document.querySelector(".back-to-bottom");
+
+button.addEventListener("a3s:back-to-bottom-activate", () => {
+  markVisibleUpdatesAsRead();
+});
+
+button.setUnread(3);
 ```
 
-The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+### Parameters
+
+| API | Default | Purpose |
+| --- | --- | --- |
+| `data-scroll-target` | Nearest `[data-scroll-owner]` | CSS selector for another scroll owner |
+| `data-threshold` | `96` | Distance from the end, in pixels, before the button appears |
+| `data-unread` | `0` | Current unread update count |
+| `data-always-visible` | Omitted | Forces visibility for demonstration or diagnosis only |
+| `data-back-to-bottom-label` | Required | Localized visible action name |
+| `data-unread-count` | Optional | Unread count; values above 99 display as `99+` |
+
+### JavaScript API
+
+| Method or event | Purpose |
+| --- | --- |
+| `getState()` | Returns `{ atBottom, unread, visible }` |
+| `setUnread(count)` | Updates the unread count and visibility |
+| `scrollToBottom(options)` | Scrolls to the live edge and clears unread by default |
+| `refresh()` | Reconnects after the DOM or scroll owner changes |
+| `a3s:back-to-bottom-activate` | Publishes the user's or API's return-to-bottom intent |
+| `a3s:back-to-bottom-visibility-change` | Publishes a visibility change |
+
+## States and variants
+
+`hidden` means the reader remains at the live edge with no unread updates. `visible` means the reader moved away from the end. `unread` means new content is waiting. New content increments the count without scrolling. A deliberate return clears the count and respects `prefers-reduced-motion`.
+
+Use this action only for an independently scrolling, append-only region such as run output, a conversation transcript, or an event stream. Short lists, static articles, and page-level scrolling do not need it.
 
 ## React
 
 ```tsx
+import { useEffect } from "react";
 import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useBackToBottom();
+export function TranscriptTail({
+  unreadCount,
+  onReturnToLive,
+}: {
+  unreadCount: number;
+  onReturnToLive: () => void;
+}) {
+  const control = useBackToBottom({
+    events: {
+      "a3s:back-to-bottom-activate"() {
+        onReturnToLive();
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (control.ready) control.call("setUnread", unreadCount);
+  }, [control, control.ready, unreadCount]);
+
   return (
-    <BackToBottom ref={control.ref} data-always-visible data-unread="3">
-      <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+    <BackToBottom ref={control.ref}>
+      <span data-back-to-bottom-label>Return to latest output</span>
+      <span data-unread-count>{unreadCount}</span>
     </BackToBottom>
   );
 }
 ```
 
-`useBackToBottom` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+`useBackToBottom` subscribes to the root's public events and calls `setUnread`, `scrollToBottom`, `getState`, and `refresh`. It does not duplicate scroll state or own message data.
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { watchEffect } from "vue";
 import { BackToBottom, useBackToBottom } from "@a3s-lab/ui/vue";
 
-const control = useBackToBottom();
+const props = defineProps<{
+  unreadCount: number;
+  onReturnToLive: () => void;
+}>();
+
+const control = useBackToBottom({
+  events: {
+    "a3s:back-to-bottom-activate"() {
+      props.onReturnToLive();
+    },
+  },
+});
 const componentRef = control.componentRef;
+
+watchEffect(() => {
+  if (control.ready.value) {
+    control.call("setUnread", props.unreadCount);
+  }
+});
 </script>
 
 <template>
-  <BackToBottom ref="componentRef" data-always-visible data-unread="3">
-    <span data-back-to-bottom-label>Latest output</span><span data-unread-count>3</span>
+  <BackToBottom ref="componentRef">
+    <span data-back-to-bottom-label>Return to latest output</span>
+    <span data-unread-count>{{ unreadCount }}</span>
   </BackToBottom>
 </template>
 ```
 
-`useBackToBottom` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
-
-## Contract
-
-| Surface | Value |
-| --- | --- |
-| Root selector | `.back-to-bottom` |
-| Native root | `<button>` |
-| States | `hidden`, `visible`, `unread` |
-| Events | `a3s:back-to-bottom-activate`, `a3s:back-to-bottom-visibility-change` |
-| Methods | `getState`, `scrollToBottom`, `setUnread` |
-
-## Product boundary
-
-It owns scroll position and an unread count only. Transport, read receipts, and list virtualization remain with the host. Do not show it for short or non-streaming content.
-
-The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+The Vue composable exposes the same events and methods. The host still owns the scroll container, unread source, and read policy.
 
 ## Accessibility
 
-Give the button a clear name and render the update count as text. Scrolling honors reduced-motion preferences and never drags a reader away when new content arrives.
+Use a native button with a clear action name. Keep the unread count visible and explain its meaning through the button name or accessible text on `data-unread-count`; an isolated number is not enough. New content must not steal focus or force scrolling. If the product has another live-announcement region, do not announce each update again through this control. The button controls only its owning scroll region and leaves the tab order when hidden. The host owns transport, read receipts, virtualization, and business counts; the component owns scroll position, visibility, and return intent.

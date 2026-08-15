@@ -1,37 +1,39 @@
 # 抽屉
 
+抽屉从页面边缘呈现补充任务或详情，在保留原页面上下文的同时提供更大的临时工作区。
+
 <Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-drawer').showModal()">Open Drawer</button>
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-drawer').showModal()">打开抽屉</button>
 <dialog id="demo-drawer" class="drawer" aria-labelledby="demo-drawer-title" aria-describedby="demo-drawer-description">
   <article>
     <header class="mx-auto w-full max-w-sm">
-      <h2 id="demo-drawer-title">Move Goal</h2>
-      <p id="demo-drawer-description">Set your daily activity goal.</p>
+      <h2 id="demo-drawer-title">调整每日目标</h2>
+      <p id="demo-drawer-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
       <div class="mx-auto w-full max-w-sm">
         <div class="flex items-center justify-center gap-6">
-          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="Decrease"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /></svg></button>
+          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="减少"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /></svg></button>
           <div class="text-center">
             <div class="text-7xl font-bold">350</div>
-            <div class="text-muted-foreground text-xs uppercase">Calories/day</div>
+            <div class="text-muted-foreground text-xs">千卡/天</div>
           </div>
-          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="Increase"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
+          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="增加"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
         </div>
       </div>
     </section>
     <footer class="mx-auto w-full max-w-sm">
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -52,7 +54,7 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -70,33 +72,33 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your drawer HTML">
+  <Step title="添加抽屉 HTML">
 
-A3S UI maps shadcn/ui's Vaul Drawer to a native `<dialog>` element. This keeps modality, focus handling, and inert page content in the browser platform. The Drawer script adds safe backdrop-click close and lets the exit animation finish before calling the native close. Drag gestures, snap points, and the drag handle are intentionally not included.
+A3S UI 使用原生 `<dialog>` 实现抽屉，让浏览器直接负责模态语义、焦点约束和背景内容的不可交互状态。抽屉脚本补充了安全的遮罩点击关闭，并等待退出动效结束后再调用原生关闭方法。该组件不模拟拖动手势、吸附点或拖动手柄。
 
 ```html
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-drawer').showModal()">Open Drawer</button>
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('demo-drawer').showModal()">打开抽屉</button>
 <dialog id="demo-drawer" class="drawer" aria-labelledby="demo-drawer-title" aria-describedby="demo-drawer-description">
   <article>
     <header class="mx-auto w-full max-w-sm">
-      <h2 id="demo-drawer-title">Move Goal</h2>
-      <p id="demo-drawer-description">Set your daily activity goal.</p>
+      <h2 id="demo-drawer-title">调整每日目标</h2>
+      <p id="demo-drawer-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
       <div class="mx-auto w-full max-w-sm">
         <div class="flex items-center justify-center gap-6">
-          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="Decrease">...</button>
+          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="减少">...</button>
           <div class="text-center">
             <div class="text-7xl font-bold">350</div>
-            <div class="text-muted-foreground text-xs uppercase">Calories/day</div>
+            <div class="text-muted-foreground text-xs">千卡/天</div>
           </div>
-          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="Increase">...</button>
+          <button type="button" class="btn rounded-full" data-variant="outline" data-size="icon-sm" aria-label="增加">...</button>
         </div>
       </div>
     </section>
     <footer class="mx-auto w-full max-w-sm">
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
@@ -107,27 +109,27 @@ A3S UI maps shadcn/ui's Vaul Drawer to a native `<dialog>` element. This keeps m
 
 ### HTML 结构
 
-<Callout type="warning" title="No drag handle" icon="triangle-alert">
-A3S UI未实现Vaul的拖动关闭呼吸、捕捉点或拖动手柄。滑块通过外部单击、Escape或显式关闭控件关闭。
+<Callout type="warning" title="不提供拖动手柄" icon="triangle-alert">
+A3S UI 不实现拖动关闭手势、吸附点或拖动手柄。抽屉通过点击遮罩、按下 Escape 或使用明确的关闭控件关闭。
 </Callout>
 
 <dl>
-  <dt><code>&lt;button type="button" onclick="drawer.showModal()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Trigger button. A3S UI intentionally uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
+  <dt><code>&lt;button type="button" onclick="drawer.showModal()"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+  <dd>触发按钮。A3S UI 直接使用原生 <code>HTMLDialogElement.showModal()</code> 方法。</dd>
   <dt><code>&lt;dialog class="drawer" data-side="bottom|top|left|right"&gt;</code></dt>
   <dd>
-    Native modal drawer. Omit <code>data-side</code> for the default bottom drawer. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present. JavaScript adds the <code>data-drawer-initialized</code> flag and manages animated close behavior.
+    原生模态抽屉。省略 <code>data-side</code> 时从底部打开；存在标题和说明时添加 <code>aria-labelledby</code> 与 <code>aria-describedby</code>。JavaScript 会添加 <code>data-drawer-initialized</code> 标记并管理带动效的关闭过程。
     <dl>
       <dt><code>&lt;article&gt;</code></dt>
       <dd>
-        Drawer content surface.
+        抽屉内容表面。
         <dl>
-          <dt><code>&lt;header&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>Drawer header with a title and optional description.</dd>
-          <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>Scrollable body/content area.</dd>
-          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-          <dd>Action area pinned after the drawer body.</dd>
+          <dt><code>&lt;header&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+          <dd>包含标题与可选说明的抽屉标题区。</dd>
+          <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+          <dd>可滚动的主体内容区。</dd>
+          <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+          <dd>位于主体之后的操作区。</dd>
         </dl>
       </dd>
     </dl>
@@ -146,104 +148,84 @@ React 的 `useDrawer` 与 Vue 的同名 composable 暴露原生 `showModal()` �
 
 <Preview>
 <div class="flex flex-wrap gap-2">
-  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-top').showModal()">Top</button>
-  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-right').showModal()">Right</button>
-  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-bottom').showModal()">Bottom</button>
-  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-left').showModal()">Left</button>
+  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-top').showModal()">顶部</button>
+  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-right').showModal()">右侧</button>
+  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-bottom').showModal()">底部</button>
+  <button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-side-left').showModal()">左侧</button>
 </div>
 <dialog id="drawer-side-top" class="drawer" data-side="top" aria-labelledby="drawer-side-top-title" aria-describedby="drawer-side-top-description">
   <article class="max-h-[50vh]">
     <header>
-      <h2 id="drawer-side-top-title">Move Goal</h2>
-      <p id="drawer-side-top-description">Set your daily activity goal.</p>
+      <h2 id="drawer-side-top-title">调整每日目标</h2>
+      <p id="drawer-side-top-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <dl class="grid gap-4 py-1">
+        <div><dt class="font-medium">每日完成任务</dt><dd class="text-sm text-muted-foreground">8 项</dd></div>
+        <div><dt class="font-medium">专注时长</dt><dd class="text-sm text-muted-foreground">90 分钟</dd></div>
+        <div><dt class="font-medium">提醒时间</dt><dd class="text-sm text-muted-foreground">工作日 17:30</dd></div>
+      </dl>
     </section>
     <footer>
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
 <dialog id="drawer-side-right" class="drawer" data-side="right" aria-labelledby="drawer-side-right-title" aria-describedby="drawer-side-right-description">
   <article>
     <header>
-      <h2 id="drawer-side-right-title">Move Goal</h2>
-      <p id="drawer-side-right-description">Set your daily activity goal.</p>
+      <h2 id="drawer-side-right-title">调整每日目标</h2>
+      <p id="drawer-side-right-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <dl class="grid gap-4 py-1">
+        <div><dt class="font-medium">本周进度</dt><dd class="text-sm text-muted-foreground">已完成 31 / 40 项任务</dd></div>
+        <div><dt class="font-medium">连续达标</dt><dd class="text-sm text-muted-foreground">4 个工作日</dd></div>
+        <div><dt class="font-medium">调整建议</dt><dd class="text-sm text-muted-foreground">根据最近两周节奏，将目标保持在 8 项。</dd></div>
+      </dl>
     </section>
     <footer>
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
 <dialog id="drawer-side-bottom" class="drawer" data-side="bottom" aria-labelledby="drawer-side-bottom-title" aria-describedby="drawer-side-bottom-description">
   <article class="max-h-[50vh]">
     <header>
-      <h2 id="drawer-side-bottom-title">Move Goal</h2>
-      <p id="drawer-side-bottom-description">Set your daily activity goal.</p>
+      <h2 id="drawer-side-bottom-title">调整每日目标</h2>
+      <p id="drawer-side-bottom-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <dl class="grid gap-4 py-1 sm:grid-cols-3">
+        <div><dt class="font-medium">任务目标</dt><dd class="text-sm text-muted-foreground">每天 8 项</dd></div>
+        <div><dt class="font-medium">专注目标</dt><dd class="text-sm text-muted-foreground">每天 90 分钟</dd></div>
+        <div><dt class="font-medium">休息日</dt><dd class="text-sm text-muted-foreground">周六、周日</dd></div>
+      </dl>
     </section>
     <footer>
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
 <dialog id="drawer-side-left" class="drawer" data-side="left" aria-labelledby="drawer-side-left-title" aria-describedby="drawer-side-left-description">
   <article>
     <header>
-      <h2 id="drawer-side-left-title">Move Goal</h2>
-      <p id="drawer-side-left-description">Set your daily activity goal.</p>
+      <h2 id="drawer-side-left-title">调整每日目标</h2>
+      <p id="drawer-side-left-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <dl class="grid gap-4 py-1">
+        <div><dt class="font-medium">计算方式</dt><dd class="text-sm text-muted-foreground">仅统计已完成且通过验收的任务。</dd></div>
+        <div><dt class="font-medium">跨日规则</dt><dd class="text-sm text-muted-foreground">未完成任务不会自动计入第二天。</dd></div>
+        <div><dt class="font-medium">生效时间</dt><dd class="text-sm text-muted-foreground">保存后立即更新今天的进度。</dd></div>
+      </dl>
     </section>
     <footer>
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
@@ -254,28 +236,26 @@ React 的 `useDrawer` 与 Vue 的同名 composable 暴露原生 `showModal()` �
 当抽屉主体滚动时，保持操作可见。
 
 <Preview>
-<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-scrollable').showModal()">Scrollable Content</button>
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('drawer-scrollable').showModal()">查看长内容</button>
 <dialog id="drawer-scrollable" class="drawer" data-side="right" aria-labelledby="drawer-scrollable-title" aria-describedby="drawer-scrollable-description">
   <article>
     <header>
-      <h2 id="drawer-scrollable-title">Move Goal</h2>
-      <p id="drawer-scrollable-description">Set your daily activity goal.</p>
+      <h2 id="drawer-scrollable-title">调整每日目标</h2>
+      <p id="drawer-scrollable-description">设置每天希望完成的活动目标。</p>
     </header>
     <section class="px-4">
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <p class="mb-4 leading-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <div class="grid gap-6 py-1">
+        <div><h3 class="mb-1 font-medium">任务目标</h3><p class="text-sm leading-normal text-muted-foreground">每天完成 8 项经过验收的任务。草稿、已取消任务和失败的自动化不会计入。</p></div>
+        <div><h3 class="mb-1 font-medium">专注目标</h3><p class="text-sm leading-normal text-muted-foreground">累计 90 分钟专注时间。少于 5 分钟的片段会被忽略，避免误触影响统计。</p></div>
+        <div><h3 class="mb-1 font-medium">工作日</h3><p class="text-sm leading-normal text-muted-foreground">目标仅在周一至周五生效，法定节假日与手动标记的休息日不会中断连续记录。</p></div>
+        <div><h3 class="mb-1 font-medium">提醒</h3><p class="text-sm leading-normal text-muted-foreground">工作日 17:30 提醒一次；达到目标或当天已设为休息日时不再发送。</p></div>
+        <div><h3 class="mb-1 font-medium">统计范围</h3><p class="text-sm leading-normal text-muted-foreground">个人任务和当前团队项目都会纳入统计，归档项目中的历史任务不会被重新计算。</p></div>
+        <div><h3 class="mb-1 font-medium">生效方式</h3><p class="text-sm leading-normal text-muted-foreground">保存后立即更新今日进度，过往日期保持原始记录，方便比较目标调整前后的节奏。</p></div>
+      </div>
     </section>
     <footer>
-      <button type="button" class="btn" onclick="this.closest('dialog').close()">Submit</button>
-      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" onclick="this.closest('dialog').close()">保存</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
     </footer>
   </article>
 </dialog>
@@ -320,15 +300,39 @@ React 的 `useDrawer` 与 Vue 的同名 composable 暴露原生 `showModal()` �
 ```tsx
 import { Drawer, useDrawer } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useDrawer();
+export function GoalDrawer() {
+  const drawer = useDrawer();
   return (
-    <Drawer ref={control.ref} aria-label="Drawer"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Drawer>
+    <>
+      <button type="button" onClick={() => drawer.call("showModal")}>
+        调整目标
+      </button>
+      <Drawer
+        ref={drawer.ref}
+        data-side="right"
+        aria-labelledby="goal-drawer-title"
+        aria-describedby="goal-drawer-description"
+      >
+        <article>
+          <header>
+            <h2 id="goal-drawer-title">调整每日目标</h2>
+            <p id="goal-drawer-description">选择一个可持续的任务目标。</p>
+          </header>
+          <section>
+            <label>每日任务数 <input type="number" min="1" max="20" defaultValue="8" /></label>
+          </section>
+          <footer>
+            <button type="button" onClick={() => drawer.call("close", "saved")}>保存更改</button>
+            <button type="button" onClick={() => drawer.call("close")}>取消</button>
+          </footer>
+        </article>
+      </Drawer>
+    </>
   );
 }
 ```
 
-`useDrawer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useDrawer` 通过 `call()` 提供 `showModal` 与 `close(returnValue)`，保留原生对话框生命周期，不创建框架专属的重复打开状态。
 
 ## Vue
 
@@ -336,13 +340,33 @@ export function Example() {
 <script setup>
 import { Drawer, useDrawer } from "@a3s-lab/ui/vue";
 
-const control = useDrawer();
-const componentRef = control.componentRef;
+const drawer = useDrawer();
+const componentRef = drawer.componentRef;
 </script>
 
 <template>
-  <Drawer ref="componentRef" aria-label="Drawer"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Drawer>
+  <button type="button" @click="drawer.call('showModal')">调整目标</button>
+  <Drawer
+    ref="componentRef"
+    data-side="right"
+    aria-labelledby="goal-drawer-title"
+    aria-describedby="goal-drawer-description"
+  >
+    <article>
+      <header>
+        <h2 id="goal-drawer-title">调整每日目标</h2>
+        <p id="goal-drawer-description">选择一个可持续的任务目标。</p>
+      </header>
+      <section>
+        <label>每日任务数 <input type="number" min="1" max="20" value="8" /></label>
+      </section>
+      <footer>
+        <button type="button" @click="drawer.call('close', 'saved')">保存更改</button>
+        <button type="button" @click="drawer.call('close')">取消</button>
+      </footer>
+    </article>
+  </Drawer>
 </template>
 ```
 
-`useDrawer` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useDrawer` 通过 `call()` 提供 `showModal` 与 `close(returnValue)`，保留原生对话框生命周期，不创建框架专属的重复打开状态。

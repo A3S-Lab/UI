@@ -1022,6 +1022,12 @@ test("coarse pointers receive touch-sized component targets", async ({
     await openDocumentationPage(touchPage, "split-pane");
     const splitPane = touchPage.locator(".a3s-preview .split-pane").first();
     await expectMinimumTarget(splitPane.locator('[role="separator"]'));
+    const endpoint = splitPane.locator("h2").first();
+    expect(
+      await endpoint.evaluate(
+        (element) => element.scrollWidth - element.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
     expect(
       await splitPane.evaluate((element) => {
         const panes = element.querySelectorAll<HTMLElement>(

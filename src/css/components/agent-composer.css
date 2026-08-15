@@ -103,11 +103,24 @@
 
   @media (max-width: 36rem) {
     .agent-composer > footer {
+      align-items: stretch;
+      flex-direction: column;
       gap: 0.5rem;
     }
 
     .agent-composer > footer > [data-composer-tools] {
-      flex: 1;
+      width: 100%;
+      overflow: visible;
+      flex: none;
+      flex-wrap: wrap;
+    }
+
+    .agent-composer > footer > [data-composer-tools] > [data-composer-status] {
+      flex: 1 0 100%;
+    }
+
+    .agent-composer > footer > [data-composer-actions] {
+      width: 100%;
     }
   }
 }

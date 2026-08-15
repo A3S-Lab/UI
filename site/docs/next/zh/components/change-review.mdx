@@ -1,22 +1,52 @@
 # 变更审阅
 
-变更审阅汇总一组有界文件变更，并让审阅决定紧邻其作用范围。
+变更审阅把一组有明确边界的文件变更、范围摘要和最终决定放在一起，让用户在行动前确认自己正在接受什么。
 
 <Preview class="w-full max-w-3xl">
-  <section class="change-review" data-state="reviewing" aria-labelledby="change-review-title-zh">
-    <header><div><h2 id="change-review-title-zh">审阅变更</h2><p data-review-summary>3 个文件 · 新增 44 行 · 删除 9 行</p></div><span class="status-badge" data-state="active">审阅中</span></header>
-    <ul data-review-files><li><code>src/css/styles/application.css</code><span data-review-delta>+2 −0</span></li><li><code>src/css/components/task-plan.css</code><span data-review-delta>+31 −0</span></li><li><code>site/docs/next/zh/components/task-plan.mdx</code><span data-review-delta>+11 −9</span></li></ul>
-    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">要求修改</button><button type="button" class="btn" data-size="sm">接受变更</button></footer>
-  </section>
+<section class="change-review" data-state="reviewing" aria-labelledby="change-review-title">
+  <header>
+    <div><h2 id="change-review-title">审阅界面更新</h2><p data-review-summary>3 个文件 · 新增 44 行 · 删除 9 行</p></div>
+    <span class="status-badge" data-state="active">审阅中</span>
+  </header>
+  <ul data-review-files>
+    <li><code>src/css/components/device-simulator.css</code><span data-review-delta>+21 −3</span></li>
+    <li><code>site/docs/next/zh/components/device-simulator.mdx</code><span data-review-delta>+18 −6</span></li>
+    <li><code>visual-tests/component-quality.visual.spec.ts</code><span data-review-delta>+5</span></li>
+  </ul>
+  <footer>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">要求修改</button>
+    <button type="button" class="btn" data-size="sm">接受这 3 个文件</button>
+  </footer>
+</section>
 </Preview>
 
 ## 用法
 
+标题说明变更目的，摘要给出完整范围，文件列表保留可核对的路径，决定按钮直接写明后果。组件不加载差异内容，也不替宿主提交决定。
+
 ```html
-<section class="change-review" data-state="reviewing" aria-labelledby="review-title">
-  <header><h2 id="review-title">审阅变更</h2><p data-review-summary>3 个文件</p></header>
-  <ul data-review-files><li><code>src/app.css</code><span data-review-delta>+4 −1</span></li></ul>
-  <footer>...</footer>
+<section
+  class="change-review"
+  data-state="reviewing"
+  aria-labelledby="review-title"
+>
+  <header>
+    <div>
+      <h2 id="review-title">审阅界面更新</h2>
+      <p data-review-summary>3 个文件 · 新增 44 行 · 删除 9 行</p>
+    </div>
+    <span class="status-badge" data-state="active">审阅中</span>
+  </header>
+  <ul data-review-files>
+    <li>
+      <code>src/app.css</code>
+      <span data-review-delta>+4 −1</span>
+    </li>
+  </ul>
+  <footer>
+    <button type="button" class="btn" data-variant="outline">要求修改</button>
+    <button type="button" class="btn">接受变更</button>
+  </footer>
 </section>
 ```
 
@@ -24,43 +54,90 @@
 
 | API | 取值 | 用途 |
 | --- | --- | --- |
-| `data-state` | `pending`、`reviewing`、`accepted`、`rejected`、`conflict`、`error` | 审阅生命周期 |
-| `data-review-files` | 必须 | 决策范围内的文件 |
-| `data-review-summary` | 推荐 | 总计数量与增删行数 |
+| `data-state` | `pending`、`reviewing`、`accepted`、`rejected`、`conflict`、`error` | 当前审阅生命周期 |
+| `data-review-summary` | 推荐 | 文件数、增删行数和其他范围摘要 |
+| `data-review-files` | 必填 | 当前决定覆盖的文件列表 |
+| `data-review-delta` | 推荐 | 每个文件的新增和删除数量 |
+| `data-review-status` | 推荐 | 不仅依靠状态徽标样式时使用的可见生命周期标签 |
+| 直接子 `footer` | 有决定时 | 与整组变更相关的最终操作 |
 
 ## 状态与变体
 
-冲突状态保留拟议变更并说明竞争修订。逐文件接受属于更丰富的检查器，不应藏在复选框列表中。
+`pending` 表示审阅材料仍在准备，不能提前显示可执行决定；`reviewing` 允许用户检查和决定；`accepted` 与 `rejected` 保留最终结果；`conflict` 保留原提案并说明竞争修订；`error` 说明材料无法加载或决定无法提交。
 
-## 无障碍
+<Preview class="w-full max-w-3xl">
+<section class="change-review" data-state="conflict" aria-labelledby="change-conflict-title">
+  <header>
+    <div><h2 id="change-conflict-title">变更需要重新审阅</h2><p data-review-summary>审阅期间有 1 个文件被更新</p></div>
+    <span class="status-badge" data-state="warning">存在冲突</span>
+  </header>
+  <ul data-review-files>
+    <li><code>src/css/components/device-simulator.css</code><span data-review-delta>修订已变化</span></li>
+  </ul>
+  <footer><button type="button" class="btn" data-size="sm" data-variant="outline">加载最新变更</button></footer>
+</section>
+</Preview>
 
-决策按钮直接说明后果。计数与文件名保留为文本，增删内容不能只依赖红绿颜色。
+逐行或逐文件接受属于更丰富的差异检查器，不应伪装成普通复选框列表。文件数很多时先提供摘要和过滤，再进入完整[代码差异](/components/code-diff)；不要在一张卡片中渲染无限文件。
 
 ## React
 
 ```tsx
-import { ChangeReview } from "@a3s-lab/ui/react";
+import { Button, ChangeReview } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ReviewSummary() {
   return (
-    <ChangeReview aria-label="Change Review">组件内容</ChangeReview>
+    <ChangeReview data-state="reviewing" aria-labelledby="review-title">
+      <header>
+        <div>
+          <h2 id="review-title">审阅界面更新</h2>
+          <p data-review-summary>2 个文件 · 新增 18 行 · 删除 4 行</p>
+        </div>
+      </header>
+      <ul data-review-files>
+        <li><code>src/app.css</code><span data-review-delta>+12 −4</span></li>
+        <li><code>src/app.test.ts</code><span data-review-delta>+6</span></li>
+      </ul>
+      <footer>
+        <Button type="button" data-variant="outline">要求修改</Button>
+        <Button type="button">接受这 2 个文件</Button>
+      </footer>
+    </ChangeReview>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`ChangeReview` 是静态审阅摘要，不发布组件私有决定事件，因此不提供 hook。React 应用直接处理按钮事件并更新 `data-state`。
 
 ## Vue
 
 ```vue
 <script setup>
-import { ChangeReview } from "@a3s-lab/ui/vue";
-
+import { Button, ChangeReview } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <ChangeReview aria-label="Change Review">组件内容</ChangeReview>
+  <ChangeReview data-state="reviewing" aria-labelledby="review-title">
+    <header>
+      <div>
+        <h2 id="review-title">审阅界面更新</h2>
+        <p data-review-summary>2 个文件 · 新增 18 行 · 删除 4 行</p>
+      </div>
+    </header>
+    <ul data-review-files>
+      <li><code>src/app.css</code><span data-review-delta>+12 −4</span></li>
+      <li><code>src/app.test.ts</code><span data-review-delta>+6</span></li>
+    </ul>
+    <footer>
+      <Button type="button" data-variant="outline">要求修改</Button>
+      <Button type="button">接受这 2 个文件</Button>
+    </footer>
+  </ChangeReview>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器保留同一审阅范围和语义结构；决定状态由应用更新。
+
+## 可访问性
+
+根区域通过标题关联获得名称。文件数、增删数量和冲突必须使用文本与符号表达，不能只依赖红绿颜色。代码路径允许视觉截断，但完整路径应保留在 DOM、标题属性或可访问说明中。决定按钮写清影响范围；不可逆或高风险接受动作需要额外的[审批请求](/components/approval-request)或警报对话框，而不是靠按钮颜色制造警告。异步提交时保留焦点和审阅内容，失败后说明原因与重试路径。宿主负责差异来源、可信修订、权限、提交与回滚，组件只负责审阅摘要和决定边界。

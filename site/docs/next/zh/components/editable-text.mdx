@@ -3,14 +3,14 @@
 在读取上下文中安全地切换到短文本编辑，并保留保存、取消、校验和焦点返回路径。
 
 <Preview class="w-full">
-<div class="editable-text"><div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form></div>
+<div class="editable-text"><div data-editable-display><span data-editable-value>发布说明</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">编辑</button></div><form data-editable-form><input class="input" value="发布说明" aria-label="标题" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">保存</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">取消</button></form></div>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
 <div class="editable-text">
-  <div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+  <div data-editable-display><span data-editable-value>发布说明</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">编辑</button></div><form data-editable-form><input class="input" value="发布说明" aria-label="标题" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">保存</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">取消</button></form>
 </div>
 ```
 
@@ -35,7 +35,7 @@ export function Example() {
   const control = useEditableText();
   return (
     <EditableText ref={control.ref}>
-      <div data-editable-display><span data-editable-value>Release notes</span><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input className="input" value="Release notes" aria-label="Title" /><button type="submit" className="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+      <div data-editable-display><span data-editable-value>发布说明</span><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">编辑</button></div><form data-editable-form><input className="input" value="发布说明" aria-label="标题" /><button type="submit" className="btn" data-size="sm" data-editable-action="save">保存</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">取消</button></form>
     </EditableText>
   );
 }
@@ -55,7 +55,7 @@ const componentRef = control.componentRef;
 
 <template>
   <EditableText ref="componentRef">
-    <div data-editable-display><span data-editable-value>Release notes</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input class="input" value="Release notes" aria-label="Title" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+    <div data-editable-display><span data-editable-value>发布说明</span><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">编辑</button></div><form data-editable-form><input class="input" value="发布说明" aria-label="标题" /><button type="submit" class="btn" data-size="sm" data-editable-action="save">保存</button><button type="button" class="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">取消</button></form>
   </EditableText>
 </template>
 ```

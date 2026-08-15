@@ -1,12 +1,14 @@
 # Alert
 
+Alert communicates a state, result, or risk that needs attention without interrupting the task already in progress.
+
 <Preview class="w-full max-w-md">
 <div class="grid items-start gap-4">
-  <div class="alert"><svg class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+  <div class="alert" data-variant="success"><svg class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
     <h2>Payment successful</h2>
     <section>Your payment of $29.99 has been processed. A receipt has been sent to your email address.</section>
   </div>
-  <div class="alert"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+  <div class="alert" data-variant="info"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
     <h2>New feature available</h2>
     <section>We've added dark mode support. You can enable it in your account settings.</section>
   </div>
@@ -39,7 +41,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
   </Step>
   <Step title="Add your alert HTML">
 
-Use `alert` for default styling. Add `data-variant="destructive"` for error states. Add a direct child `<footer>` for an inline-end action region.
+Use `alert` for neutral guidance and `data-variant="info"`, `success`, or `destructive` for semantic states. Add a direct child `<footer>` for an inline-end action region.
 
 ```html
 <div class="alert"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
@@ -59,7 +61,7 @@ Use `alert` for default styling. Add `data-variant="destructive"` for error stat
 <dl>
   <dt><code>&lt;div class="alert"&gt;</code></dt>
   <dd>
-    Main container. Use <code>data-variant="destructive"</code> for error states.
+    Main container. Use <code>data-variant="info"</code>, <code>success</code>, or <code>destructive</code> for semantic states.
     <dl>
       <dt><code>&lt;svg&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
       <dd>The icon.</dd>

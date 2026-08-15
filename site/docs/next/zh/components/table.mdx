@@ -1,64 +1,66 @@
 # 表格
 
+表格以行列关系呈现可比较的结构化数据，并为标题、排序和紧凑浏览保留清晰语义。
+
 <Preview class="w-full">
 <div class="table-container">
 <table class="table">
-  <caption>A list of your recent invoices.</caption>
+  <caption>最近账单列表</caption>
   <thead>
     <tr>
-      <th>Invoice</th>
-      <th>Status</th>
-      <th>Method</th>
-      <th>Amount</th>
+      <th>账单</th>
+      <th>状态</th>
+      <th>付款方式</th>
+      <th>金额</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td class="font-medium">INV001</td>
-      <td>Paid</td>
-      <td>Credit Card</td>
+      <td>已支付</td>
+      <td>信用卡</td>
       <td class="text-end">$250.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV002</td>
-      <td>Pending</td>
+      <td>待处理</td>
       <td>PayPal</td>
       <td class="text-end">$150.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV003</td>
-      <td>Unpaid</td>
-      <td>Bank Transfer</td>
+      <td>未支付</td>
+      <td>银行转账</td>
       <td class="text-end">$350.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV004</td>
-      <td>Paid</td>
+      <td>已支付</td>
       <td>Paypal</td>
       <td class="text-end">$450.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV005</td>
-      <td>Paid</td>
-      <td>Credit Card</td>
+      <td>已支付</td>
+      <td>信用卡</td>
       <td class="text-end">$550.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV006</td>
-      <td>Pending</td>
-      <td>Bank Transfer</td>
+      <td>待处理</td>
+      <td>银行转账</td>
       <td class="text-end">$200.00</td>
     </tr>
     <tr>
       <td class="font-medium">INV007</td>
-      <td>Unpaid</td>
-      <td>Credit Card</td>
+      <td>未支付</td>
+      <td>信用卡</td>
       <td class="text-end">$300.00</td>
     </tr>
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="3">Total</td>
+      <td colspan="3">合计</td>
       <td class="text-end">$2,500.00</td>
     </tr>
   </tfoot>
@@ -66,10 +68,10 @@
 </div>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -90,7 +92,7 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your table HTML">
+  <Step title="添加表格 HTML">
 
 将 `class="table"` 添加到您的表元素中。当需要水平滚动时，将其包裹在`class="table-container"`中。
 

@@ -1,58 +1,18 @@
 # 按钮组
 
+按钮组把同一任务中相邻、同级的操作连接成一个视觉单元，同时保留每个按钮独立的名称、焦点和行为。
+
 <Preview>
-<div class="flex w-fit items-stretch gap-2">
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="返回"><svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg></button>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline">归档</button>
-    <button type="button" class="btn" data-variant="outline">举报</button>
-  </div>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline">稍后提醒</button>
-    <div id="dropdown-menu-277805" class="dropdown-menu">
-      <button type="button" id="dropdown-menu-277805-trigger" aria-label="更多归档选项" aria-haspopup="menu" aria-controls="dropdown-menu-277805-menu" aria-expanded="false" class="btn" data-variant="outline" data-size="icon"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></button>
-      <div id="dropdown-menu-277805-popover" data-popover aria-hidden="true" data-align="end">
-        <div role="menu" id="dropdown-menu-277805-menu" aria-labelledby="dropdown-menu-277805-trigger">
-          <div role="menuitem"><svg class="lucide lucide-mail-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /><path d="m16 19 2 2 4-4" /></svg>
-            标记为已读
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-archive" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1" /><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" /><path d="M10 12h4" /></svg>
-            归档
-          </div>
-          <hr role="separator" />
-          <div role="menuitem"><svg class="lucide lucide-clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-            稍后提醒
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /></svg>
-            添加到日历
-          </div>
-          <div role="menuitem"><svg class="lucide lucide-list-filter-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5H2" /><path d="M6 12h12" /><path d="M9 19h6" /><path d="M16 5h6" /><path d="M19 8V2" /></svg>
-            添加到列表
-          </div>
-          <hr role="separator" />
-          <div role="menuitem" class="text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 focus:bg-destructive/10 dark:focus:bg-destructive/20 focus:text-destructive [&_svg]:!text-destructive"><svg class="lucide lucide-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-            删除
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div role="group" aria-label="编辑操作" class="button-group">
+  <button type="button" class="btn" data-variant="outline">撤销</button>
+  <button type="button" class="btn" data-variant="outline">重做</button>
+  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="更多编辑操作"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
 </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Steps>
-  <Step title="引入 CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
-
-```css
-@import "tailwindcss";
-@import "@a3s-lab/ui/a3s.css";
-```
-
-或者只导入基础 CSS、所需组件 CSS 和一个样式包。
+导入按钮组、按钮和一个完整视觉样式包。
 
 ```css
 @import "tailwindcss";
@@ -62,275 +22,121 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-按钮组负责连接子控件的边界与交互状态。
-
-使用 CDN 或打包工具导入？请参阅[安装页](/installation)。
-
-  </Step>
-  <Step title="添加按钮组 HTML">
-
-将相关控件包装在 `button-group` 中。
+只有命令属于同一任务且视觉上需要连接时才分组。根元素使用 `role="group"` 和能说明共同目的的名称。
 
 ```html
-<div role="group" aria-label="消息操作" class="button-group">
-  <button type="button" class="btn" data-variant="outline">归档</button>
-  <button type="button" class="btn" data-variant="outline">举报</button>
+<div role="group" aria-label="编辑操作" class="button-group">
+  <button type="button" class="btn" data-variant="outline">撤销</button>
+  <button type="button" class="btn" data-variant="outline">重做</button>
 </div>
 ```
 
-  </Step>
-</Steps>
+### 参数
 
-使用 `data-orientation="vertical"` 垂直堆叠项目。拆分操作等场景需要可见分隔线时，在项目之间添加 `<hr role="separator" />`。非交互文本片段可使用直接子元素 `<span>`、`<label>` 或 `<output>`；直接子元素 `<div>` 不附加样式，可用于自定义布局。
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `class="button-group"` | 必填 | 连接直接子控件的边界 |
+| `role="group"` | 推荐 | 声明相关操作集合 |
+| `aria-label` 或 `aria-labelledby` | 推荐 | 说明整组任务 |
+| `data-orientation` | `horizontal`、`vertical` | 省略时为水平方向 |
+| 直接子 `hr[role="separator"]` | 可选 | 为拆分操作提供视觉分隔 |
 
-## 示例
+## 状态与变体
 
-### 方向
+### 水平与垂直
 
-使用 `data-orientation="vertical"` 垂直堆叠按钮。
-
-<Preview>
-<div role="group" aria-label="媒体控制" class="button-group h-fit" data-orientation="vertical">
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="放大"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="缩小"><svg class="lucide lucide-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /></svg></button>
-</div>
-</Preview>
-
-### 尺寸
+水平组适合工具栏中的相邻命令；垂直组只适合空间或任务顺序本身要求纵向排列的场景。尺寸由每个子按钮统一设置，不能在同一组中混用高度。
 
 <Preview>
-<div class="flex flex-col items-start gap-8">
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline" data-size="sm">小号</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">按钮</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">组</button>
-    <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="添加小号项目"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
+<div class="flex flex-wrap items-start gap-6">
+  <div role="group" aria-label="缩放" class="button-group">
+    <button type="button" class="btn" data-size="sm" data-variant="outline">75%</button>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">100%</button>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">适合宽度</button>
   </div>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline">默认</button>
-    <button type="button" class="btn" data-variant="outline">按钮</button>
-    <button type="button" class="btn" data-variant="outline">组</button>
-    <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="添加项目"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
-  </div>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline" data-size="lg">大号</button>
-    <button type="button" class="btn" data-variant="outline" data-size="lg">按钮</button>
-    <button type="button" class="btn" data-variant="outline" data-size="lg">组</button>
-    <button type="button" class="btn" data-variant="outline" data-size="icon-lg" aria-label="添加大号项目"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
+  <div role="group" aria-label="对象顺序" class="button-group" data-orientation="vertical">
+    <button type="button" class="btn" data-size="sm" data-variant="outline">上移一层</button>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">下移一层</button>
   </div>
 </div>
 </Preview>
 
-### 嵌套
+### 拆分操作
 
-嵌套 `button-group` 组件以保持每个组内的控件连接，同时增加组之间的间距。
-
-<Preview>
-<div role="group" aria-label="分页控制" class="button-group">
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline" data-size="sm">1</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">2</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">3</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">4</button>
-    <button type="button" class="btn" data-variant="outline" data-size="sm">5</button>
-  </div>
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="上一页"><svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg></button>
-    <button type="button" class="btn" data-variant="outline" data-size="icon-sm" aria-label="下一页"><svg class="lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></button>
-  </div>
-</div>
-</Preview>
-
-### 分隔符
-
-使用 `<hr role="separator" />` 在按钮之间添加可见分隔线。
+拆分按钮由一个可直接执行的主命令和一个打开备选菜单的按钮组成。两者必须有不同名称；附加按钮使用 `aria-haspopup="menu"`，并组合[下拉菜单](/components/dropdown-menu)的控制器。
 
 <Preview>
-<div role="group" class="button-group">
-  <button type="button" class="btn" data-variant="secondary" data-size="sm">复制</button>
+<div role="group" aria-label="保存选项" class="button-group">
+  <button type="button" class="btn">保存</button>
   <hr role="separator" />
-  <button type="button" class="btn" data-variant="secondary" data-size="sm">粘贴</button>
+  <button type="button" class="btn" data-size="icon" aria-label="选择保存方式" aria-haspopup="menu" aria-expanded="false"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
 </div>
 </Preview>
 
-### 拆分按钮
-
-使用分隔符创建带主操作和附加操作的拆分按钮。
-
-<Preview>
-<div role="group" class="button-group">
-  <button type="button" class="btn" data-variant="secondary">操作</button>
-  <hr role="separator" />
-  <button type="button" class="btn" data-variant="secondary" data-size="icon" aria-label="添加"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
-</div>
-</Preview>
-
-### 输入
-
-<Preview>
-<div role="group" aria-label="搜索" class="button-group">
-  <input type="text" class="input" placeholder="搜索…" aria-label="搜索消息" />
-  <button type="button" class="btn" data-variant="outline" aria-label="搜索"><svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></button>
-</div>
-</Preview>
-
-### 输入组
-
-<Preview>
-<div role="group" class="button-group">
-  <div role="group" class="button-group">
-    <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="添加附件"><svg class="lucide lucide-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg></button>
-  </div>
-  <div role="group" class="button-group">
-    <div class="input-group">
-      <input type="text" placeholder="输入消息…" aria-label="消息" />
-      <div role="group" data-align="inline-end">
-        <button type="button" class="btn" data-variant="ghost" data-size="icon-xs" aria-label="语音模式" aria-pressed="false"><svg class="lucide lucide-audio-lines" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3" /><path d="M6 6v11" /><path d="M10 3v18" /><path d="M14 8v7" /><path d="M18 5v13" /><path d="M22 10v3" /></svg></button>
-      </div>
-    </div>
-  </div>
-</div>
-</Preview>
-
-### 下拉菜单
-
-<Preview>
-<div role="group" class="button-group">
-  <button type="button" class="btn" data-variant="outline">关注</button>
-  <div id="dropdown-menu-609880" class="dropdown-menu">
-    <button type="button" id="dropdown-menu-609880-trigger" aria-label="更多关注选项" aria-haspopup="menu" aria-controls="dropdown-menu-609880-menu" aria-expanded="false" class="btn" data-variant="outline" data-size="icon"><svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></button>
-    <div id="dropdown-menu-609880-popover" data-popover aria-hidden="true" data-align="end">
-      <div role="menu" id="dropdown-menu-609880-menu" aria-labelledby="dropdown-menu-609880-trigger">
-        <div role="menuitem"><svg class="lucide lucide-volume-off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 9a5 5 0 0 1 .95 2.293" /><path d="M19.364 5.636a9 9 0 0 1 1.889 9.96" /><path d="m2 2 20 20" /><path d="m7 7-.587.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298V11" /><path d="M9.828 4.172A.686.686 0 0 1 11 4.657v.686" /></svg>
-          将对话静音
-        </div>
-        <div role="menuitem"><svg class="lucide lucide-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-          标记为已读
-        </div>
-        <div role="menuitem"><svg class="lucide lucide-triangle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-          举报对话
-        </div>
-        <div role="menuitem"><svg class="lucide lucide-user-round-x" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21a8 8 0 0 1 11.873-7" /><circle cx="10" cy="8" r="5" /><path d="m17 17 5 5" /><path d="m22 17-5 5" /></svg>
-          屏蔽用户
-        </div>
-        <div role="menuitem"><svg class="lucide lucide-share" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13" /><path d="m16 6-4-4-4 4" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /></svg>
-          分享对话
-        </div>
-        <div role="menuitem"><svg class="lucide lucide-copy" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
-          复制对话
-        </div>
-        <hr role="separator" />
-        <div role="menuitem" class="text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 focus:bg-destructive/10 dark:focus:bg-destructive/20 focus:text-destructive [&_svg]:!text-destructive"><svg class="lucide lucide-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-          删除对话
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</Preview>
-
-### 选择
-
-<Preview>
-<div class="flex items-stretch gap-2">
-  <div role="group" aria-label="货币金额" class="button-group">
-    <div id="select-797405" class="select">
-      <button type="button" class="[&amp;_[data-name]]:hidden" id="select-797405-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-797405-listbox">
-        <span class="truncate">$</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
-      </button>
-      <div id="select-797405-popover" data-popover aria-hidden="true">
-        <div role="listbox" id="select-797405-listbox" aria-orientation="vertical" aria-labelledby="select-797405-trigger">
-          <div role="option" data-value="$" data-label="$" aria-selected="true">
-            $
-            <span class="text-muted-foreground">美元</span>
-          </div>
-          <div role="option" data-value="€" data-label="€">
-            €
-            <span class="text-muted-foreground">欧元</span>
-          </div>
-          <div role="option" data-value="£" data-label="£">
-            £
-            <span class="text-muted-foreground">英镑</span>
-          </div>
-        </div>
-      </div>
-      <input type="hidden" name="select-797405-value" value="$" />
-    </div>
-    <input type="text" class="input" placeholder="10.00" aria-label="金额" />
-  </div>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="提交金额"><svg class="lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></button>
-</div>
-</Preview>
-
-### 弹出框
-
-<Preview>
-<div role="group" class="button-group">
-  <button type="button" class="btn" data-variant="outline"><svg class="lucide lucide-bot" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" /></svg>
-    Copilot
-  </button>
-  <div id="popover-788465" class="popover">
-    <button id="popover-788465-trigger" type="button" aria-label="打开弹出框" aria-expanded="false" aria-controls="popover-788465-popover" class="btn" data-variant="outline" data-size="icon"><svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg></button>
-    <div id="popover-788465-popover" data-popover aria-hidden="true" class="w-72 text-sm" data-align="end">
-      <div>
-        <p class="font-medium">使用 Copilot 开始新任务</p>
-        <p class="text-muted-foreground">用自然语言描述你的任务。</p>
-      </div>
-      <textarea class="textarea min-h-16 w-full resize-none" placeholder="我需要……"></textarea>
-      <p class="text-muted-foreground text-xs">Copilot 会创建拉取请求以供审查。</p>
-    </div>
-  </div>
-</div>
-</Preview>
+按钮组不管理选择状态，也不实现方向键漫游。互斥视图切换使用 Tabs 或分段控件；格式开关集合使用 Toggle Group；文本框与前后缀操作优先使用[输入组](/components/input-group)。不要把无关命令仅为了减少间距而塞进同一组。
 
 ### RTL
 
-将 `dir="rtl"` 添加到组或祖先中。明确翻转方向图标。
-
-<Preview>
-<div dir="rtl">
-  <div role="group" aria-label="إجراءات الرسالة" class="button-group">
-    <div role="group" class="button-group">
-      <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="رجوع"><svg class="rtl:rotate-180 lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg></button>
-    </div>
-    <div role="group" class="button-group">
-      <button type="button" class="btn" data-variant="outline">أرشفة</button>
-      <button type="button" class="btn" data-variant="outline">تقرير</button>
-    </div>
-    <div role="group" class="button-group">
-      <button type="button" class="btn" data-variant="outline">تأجيل</button>
-      <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="المزيد من الخيارات"><svg class="lucide lucide-ellipsis" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg></button>
-    </div>
-  </div>
-</div>
-</Preview>
+按钮组遵循 DOM 的逻辑顺序，不主动倒置命令。返回、前进等方向图标由宿主在 RTL 中翻转；保存、删除、加号等对象图标保持不变。
 
 ## React
 
 ```tsx
-import { ButtonGroup } from "@a3s-lab/ui/react";
+import { Button, ButtonGroup } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function EditActions() {
   return (
-    <ButtonGroup>组件内容</ButtonGroup>
+    <ButtonGroup role="group" aria-label="编辑操作">
+      <Button type="button" data-variant="outline">撤销</Button>
+      <Button type="button" data-variant="outline">重做</Button>
+      <Button
+        type="button"
+        data-variant="outline"
+        data-size="icon"
+        aria-label="更多编辑操作"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <circle cx="5" cy="12" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="19" cy="12" r="1.5" />
+        </svg>
+      </Button>
+    </ButtonGroup>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`ButtonGroup` 只提供排列和边界连接，不维护命令状态，因此不提供组件 hook。事件仍由每个 `Button` 处理。
 
 ## Vue
 
 ```vue
 <script setup>
-import { ButtonGroup } from "@a3s-lab/ui/vue";
-
+import { Button, ButtonGroup } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <ButtonGroup>组件内容</ButtonGroup>
+  <ButtonGroup role="group" aria-label="编辑操作">
+    <Button type="button" data-variant="outline">撤销</Button>
+    <Button type="button" data-variant="outline">重做</Button>
+    <Button
+      type="button"
+      data-variant="outline"
+      data-size="icon"
+      aria-label="更多编辑操作"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <circle cx="5" cy="12" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="19" cy="12" r="1.5" />
+      </svg>
+    </Button>
+  </ButtonGroup>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器输出相同的组语义与直接子按钮，不增加包装层。
+
+## 可访问性
+
+每个按钮都必须保留独立、明确的可访问名称，整组再用 `aria-label` 或 `aria-labelledby` 说明共同任务。按钮组不会把多个按钮变成一个 Tab 停靠点，用户仍按正常顺序访问每个可用控件。禁用状态应施加在具体按钮上；不要禁用根组来掩盖每个命令的真实可用性。仅图标按钮必须命名，视觉分隔符从可访问性树中移除，拆分按钮的菜单触发器同步 `aria-expanded`。触控设备上的每个子按钮仍需达到最小目标尺寸。

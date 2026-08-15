@@ -1,68 +1,113 @@
 # 标签页
 
+标签页在同一页面位置切换同层级内容，每次只展示一个面板并保留明确的当前状态。
+
 <Preview class="max-w-[400px] w-full">
-<div class="tabs w-full" id="demo-tabs-with-panels">
-  <nav role="tablist" aria-orientation="horizontal" class="w-full">
-    <button type="button" role="tab" id="demo-tabs-with-panels-tab-1" aria-controls="demo-tabs-with-panels-panel-1" aria-selected="true" tabindex="0">Account</button>
-    <button type="button" role="tab" id="demo-tabs-with-panels-tab-2" aria-controls="demo-tabs-with-panels-panel-2" aria-selected="false" tabindex="-1">Password</button>
-  </nav>
-  <div role="tabpanel" id="demo-tabs-with-panels-panel-1" aria-labelledby="demo-tabs-with-panels-tab-1" tabindex="-1" aria-selected="true">
-    <div class="card">
-      <header>
-        <h2>Account</h2>
-        <p>Make changes to your account here. Click save when you're done.</p>
-      </header>
-      <section>
-        <form class="grid gap-4">
-          <div role="group" class="field">
-            <label for="demo-tabs-account-name">Name</label>
-            <input type="text" id="demo-tabs-account-name" value="Pedro Duarte" />
-          </div>
-          <div role="group" class="field">
-            <label for="demo-tabs-account-username">Username</label>
-            <input type="text" id="demo-tabs-account-username" value="@peduarte" />
-          </div>
-        </form>
-      </section>
-      <footer>
-        <button type="button" class="btn">Save changes</button>
-      </footer>
+  <div class="tabs w-full" id="demo-tabs-with-panels">
+    <nav role="tablist" aria-orientation="horizontal" class="w-full">
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-1"
+        aria-controls="demo-tabs-with-panels-panel-1"
+        aria-selected="true"
+        tabindex="0"
+      >
+        账户
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-2"
+        aria-controls="demo-tabs-with-panels-panel-2"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        密码
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-1"
+      aria-labelledby="demo-tabs-with-panels-tab-1"
+      tabindex="-1"
+      aria-selected="true"
+    >
+      <div class="card">
+        <header>
+          <h2>账户</h2>
+          <p>修改账户信息，完成后保存更改。</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-account-name">姓名</label>
+              <input type="text" id="demo-tabs-account-name" value="林安" />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-account-username">用户名</label>
+              <input
+                type="text"
+                id="demo-tabs-account-username"
+                value="@linan"
+              />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">
+            保存更改
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-2"
+      aria-labelledby="demo-tabs-with-panels-tab-2"
+      tabindex="-1"
+      aria-selected="false"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>密码</h2>
+          <p>修改密码后，当前会话将退出登录。</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-password-current">当前密码</label>
+              <input type="password" id="demo-tabs-password-current" />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-password-new">新密码</label>
+              <input type="password" id="demo-tabs-password-new" />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">
+            保存密码
+          </button>
+        </footer>
+      </div>
     </div>
   </div>
-  <div role="tabpanel" id="demo-tabs-with-panels-panel-2" aria-labelledby="demo-tabs-with-panels-tab-2" tabindex="-1" aria-selected="false" hidden>
-    <div class="card">
-      <header>
-        <h2>Password</h2>
-        <p>Change your password here. After saving, you'll be logged out.</p>
-      </header>
-      <section>
-        <form class="grid gap-4">
-          <div role="group" class="field">
-            <label for="demo-tabs-password-current">Current password</label>
-            <input type="password" id="demo-tabs-password-current" />
-          </div>
-          <div role="group" class="field">
-            <label for="demo-tabs-password-new">New password</label>
-            <input type="password" id="demo-tabs-password-new" />
-          </div>
-        </form>
-      </section>
-      <footer>
-        <button type="button" class="btn">Save password</button>
-      </footer>
-    </div>
-  </div>
-</div>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#tabs" }}>
-该组件为 Jinja 和 Nunjucks 提供了 `tabs()` 宏。
+<Callout
+  title="支持模板宏"
+  icon="code"
+  action={{ label: "查看模板", href: "/templates#tabs" }}
+>
+  该组件为 Jinja 和 Nunjucks 提供了 `tabs()` 宏。
 </Callout>
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -71,7 +116,7 @@
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本CSS、选项卡组件CSS和一个样式包。
+或者只导入基础 CSS、标签页组件 CSS 和一个样式包。
 
 ```css
 @import "tailwindcss";
@@ -80,10 +125,10 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+使用 CDN 或构建工具导入时，请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -98,60 +143,91 @@
 <script src="/assets/js/tabs.min.js" defer></script>
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+使用 CDN 或构建工具导入时，请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your tabs HTML">
+  <Step title="添加标签页 HTML">
 
 ```html
 <div class="tabs w-full" id="demo-tabs-with-panels">
   <nav role="tablist" aria-orientation="horizontal" class="w-full">
-    <button type="button" role="tab" id="demo-tabs-with-panels-tab-1" aria-controls="demo-tabs-with-panels-panel-1" aria-selected="true" tabindex="0">Account</button>
-    <button type="button" role="tab" id="demo-tabs-with-panels-tab-2" aria-controls="demo-tabs-with-panels-panel-2" aria-selected="false" tabindex="-1">Password</button>
+    <button
+      type="button"
+      role="tab"
+      id="demo-tabs-with-panels-tab-1"
+      aria-controls="demo-tabs-with-panels-panel-1"
+      aria-selected="true"
+      tabindex="0"
+    >
+      账户
+    </button>
+    <button
+      type="button"
+      role="tab"
+      id="demo-tabs-with-panels-tab-2"
+      aria-controls="demo-tabs-with-panels-panel-2"
+      aria-selected="false"
+      tabindex="-1"
+    >
+      密码
+    </button>
   </nav>
-  <div role="tabpanel" id="demo-tabs-with-panels-panel-1" aria-labelledby="demo-tabs-with-panels-tab-1" tabindex="-1" aria-selected="true">
+  <div
+    role="tabpanel"
+    id="demo-tabs-with-panels-panel-1"
+    aria-labelledby="demo-tabs-with-panels-tab-1"
+    tabindex="-1"
+    aria-selected="true"
+  >
     <div class="card">
       <header>
-        <h2>Account</h2>
-        <p>Make changes to your account here. Click save when you're done.</p>
+        <h2>账户</h2>
+        <p>修改账户信息，完成后保存更改。</p>
       </header>
       <section>
         <form class="grid gap-4">
           <div role="group" class="field">
-            <label for="demo-tabs-account-name">Name</label>
-            <input type="text" id="demo-tabs-account-name" value="Pedro Duarte" />
+            <label for="demo-tabs-account-name">姓名</label>
+            <input type="text" id="demo-tabs-account-name" value="林安" />
           </div>
           <div role="group" class="field">
-            <label for="demo-tabs-account-username">Username</label>
-            <input type="text" id="demo-tabs-account-username" value="@peduarte" />
+            <label for="demo-tabs-account-username">用户名</label>
+            <input type="text" id="demo-tabs-account-username" value="@linan" />
           </div>
         </form>
       </section>
       <footer>
-        <button type="button" class="btn">Save changes</button>
+        <button type="button" class="btn">保存更改</button>
       </footer>
     </div>
   </div>
-  <div role="tabpanel" id="demo-tabs-with-panels-panel-2" aria-labelledby="demo-tabs-with-panels-tab-2" tabindex="-1" aria-selected="false" hidden>
+  <div
+    role="tabpanel"
+    id="demo-tabs-with-panels-panel-2"
+    aria-labelledby="demo-tabs-with-panels-tab-2"
+    tabindex="-1"
+    aria-selected="false"
+    hidden
+  >
     <div class="card">
       <header>
-        <h2>Password</h2>
-        <p>Change your password here. After saving, you'll be logged out.</p>
+        <h2>密码</h2>
+        <p>修改密码后，当前会话将退出登录。</p>
       </header>
       <section>
         <form class="grid gap-4">
           <div role="group" class="field">
-            <label for="demo-tabs-password-current">Current password</label>
+            <label for="demo-tabs-password-current">当前密码</label>
             <input type="password" id="demo-tabs-password-current" />
           </div>
           <div role="group" class="field">
-            <label for="demo-tabs-password-new">New password</label>
+            <label for="demo-tabs-password-new">新密码</label>
             <input type="password" id="demo-tabs-password-new" />
           </div>
         </form>
       </section>
       <footer>
-        <button type="button" class="btn">Save password</button>
+        <button type="button" class="btn">保存密码</button>
       </footer>
     </div>
   </div>
@@ -164,30 +240,51 @@
 ### HTML 结构
 
 <dl>
-  <dt><code>&lt;div class="tabs"&gt;</code></dt>
+  <dt>
+    <code>&lt;div class="tabs"&gt;</code>
+  </dt>
   <dd>
-    Root tabs container. It becomes horizontal or vertical based on the child tablist's <code>aria-orientation</code>.
+    标签页根容器。布局方向由子级标签列表的 <code>aria-orientation</code> 决定。
     <dl>
-      <dt><code>&lt;nav role="tablist" aria-orientation="horizontal"&gt;</code></dt>
+      <dt>
+        <code>&lt;nav role="tablist" aria-orientation="horizontal"&gt;</code>
+      </dt>
       <dd>
-        Tablist containing tab buttons. Set <code>aria-orientation="vertical"</code> for vertical tabs and <code>data-variant="line"</code> for the line style.
+        包含标签按钮的列表。使用 <code>aria-orientation="vertical"</code>{" "}
+        切换为垂直布局，使用 <code>data-variant="line"</code> 启用线型样式。
         <dl>
-          <dt><code>&lt;button role="tab" id="&#123; TAB_ID &#125;" aria-controls="&#123; PANEL_ID &#125;" aria-selected="true" tabindex="0"&gt;</code></dt>
-          <dd>Tab trigger. The active tab has <code>aria-selected="true"</code> and <code>tabindex="0"</code>. Inactive tabs use <code>tabindex="-1"</code>. Disabled tabs use <code>disabled</code> or <code>aria-disabled="true"</code>.</dd>
+          <dt>
+            <code>
+              &lt;button role="tab" id="&#123; TAB_ID &#125;"
+              aria-controls="&#123; PANEL_ID &#125;" aria-selected="true"
+              tabindex="0"&gt;
+            </code>
+          </dt>
+          <dd>
+            标签触发按钮。当前标签使用 <code>aria-selected="true"</code> 和{" "}
+            <code>tabindex="0"</code>，其余标签使用 <code>tabindex="-1"</code>
+            。禁用标签使用 <code>disabled</code> 或{" "}
+            <code>aria-disabled="true"</code>。
+          </dd>
         </dl>
       </dd>
-      <dt><code>&lt;div role="tabpanel" id="&#123; PANEL_ID &#125;" aria-labelledby="&#123; TAB_ID &#125;"&gt;</code></dt>
-      <dd>Panel controlled by a tab. Inactive panels are hidden.</dd>
+      <dt>
+        <code>
+          &lt;div role="tabpanel" id="&#123; PANEL_ID &#125;"
+          aria-labelledby="&#123; TAB_ID &#125;"&gt;
+        </code>
+      </dt>
+      <dd>由标签控制的内容面板，非当前面板保持隐藏。</dd>
     </dl>
   </dd>
 </dl>
 
 ### JavaScript API
 
-| 应用程序编程接口 | 类型 | 描述 |
-| --- | --- | --- |
-| `tabs.select(tab)` | 方法 | 选择选项卡列表中的选项卡按钮。 |
-| `tabs.refresh()` | 方法 | 在现有选项卡列表/面板结构内的子项发生更改后重新扫描选项卡和面板。 |
+| API                | 类型 | 描述                                                              |
+| ------------------ | ---- | ----------------------------------------------------------------- |
+| `tabs.select(tab)` | 方法 | 选择选项卡列表中的选项卡按钮。                                    |
+| `tabs.refresh()`   | 方法 | 在现有选项卡列表/面板结构内的子项发生更改后重新扫描选项卡和面板。 |
 
 React 的 `useTabs` 与 Vue 的同名 composable 通过 `call("select", tab, focus)` 和 `call("refresh")` 暴露相同契约。
 
@@ -198,116 +295,391 @@ React 的 `useTabs` 与 Vue 的同名 composable 通过 `call("select", tab, foc
 ### 线
 
 <Preview>
-<div class="tabs" id="tabs-line">
-  <nav role="tablist" aria-orientation="horizontal" data-variant="line">
-    <button type="button" role="tab" id="tabs-line-tab-overview" aria-controls="tabs-line-panel-overview" aria-selected="true" tabindex="0">Overview</button>
-    <button type="button" role="tab" id="tabs-line-tab-analytics" aria-controls="tabs-line-panel-analytics" aria-selected="false" tabindex="-1">Analytics</button>
-    <button type="button" role="tab" id="tabs-line-tab-reports" aria-controls="tabs-line-panel-reports" aria-selected="false" tabindex="-1">Reports</button>
-  </nav>
-  <div role="tabpanel" id="tabs-line-panel-overview" aria-labelledby="tabs-line-tab-overview" tabindex="-1">Overview content.</div>
-  <div role="tabpanel" id="tabs-line-panel-analytics" aria-labelledby="tabs-line-tab-analytics" tabindex="-1" hidden>Analytics content.</div>
-  <div role="tabpanel" id="tabs-line-panel-reports" aria-labelledby="tabs-line-tab-reports" tabindex="-1" hidden>Reports content.</div>
-</div>
+  <div class="tabs" id="tabs-line">
+    <nav role="tablist" aria-orientation="horizontal" data-variant="line">
+      <button
+        type="button"
+        role="tab"
+        id="tabs-line-tab-overview"
+        aria-controls="tabs-line-panel-overview"
+        aria-selected="true"
+        tabindex="0"
+      >
+        概览
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-line-tab-analytics"
+        aria-controls="tabs-line-panel-analytics"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        分析
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-line-tab-reports"
+        aria-controls="tabs-line-panel-reports"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        报告
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="tabs-line-panel-overview"
+      aria-labelledby="tabs-line-tab-overview"
+      tabindex="-1"
+    >
+      概览内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-line-panel-analytics"
+      aria-labelledby="tabs-line-tab-analytics"
+      tabindex="-1"
+      hidden
+    >
+      分析内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-line-panel-reports"
+      aria-labelledby="tabs-line-tab-reports"
+      tabindex="-1"
+      hidden
+    >
+      报告内容。
+    </div>
+  </div>
 </Preview>
 
 ### 垂直
 
 <Preview>
-<div class="tabs" id="tabs-vertical">
-  <nav role="tablist" aria-orientation="vertical">
-    <button type="button" role="tab" id="tabs-vertical-tab-account" aria-controls="tabs-vertical-panel-account" aria-selected="true" tabindex="0">Account</button>
-    <button type="button" role="tab" id="tabs-vertical-tab-password" aria-controls="tabs-vertical-panel-password" aria-selected="false" tabindex="-1">Password</button>
-    <button type="button" role="tab" id="tabs-vertical-tab-notifications" aria-controls="tabs-vertical-panel-notifications" aria-selected="false" tabindex="-1">Notifications</button>
-  </nav>
-  <div role="tabpanel" id="tabs-vertical-panel-account" aria-labelledby="tabs-vertical-tab-account" tabindex="-1">Account content.</div>
-  <div role="tabpanel" id="tabs-vertical-panel-password" aria-labelledby="tabs-vertical-tab-password" tabindex="-1" hidden>Password content.</div>
-  <div role="tabpanel" id="tabs-vertical-panel-notifications" aria-labelledby="tabs-vertical-tab-notifications" tabindex="-1" hidden>Notifications content.</div>
-</div>
+  <div class="tabs" id="tabs-vertical">
+    <nav role="tablist" aria-orientation="vertical">
+      <button
+        type="button"
+        role="tab"
+        id="tabs-vertical-tab-account"
+        aria-controls="tabs-vertical-panel-account"
+        aria-selected="true"
+        tabindex="0"
+      >
+        账户
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-vertical-tab-password"
+        aria-controls="tabs-vertical-panel-password"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        密码
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-vertical-tab-notifications"
+        aria-controls="tabs-vertical-panel-notifications"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        通知
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="tabs-vertical-panel-account"
+      aria-labelledby="tabs-vertical-tab-account"
+      tabindex="-1"
+    >
+      账户内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-vertical-panel-password"
+      aria-labelledby="tabs-vertical-tab-password"
+      tabindex="-1"
+      hidden
+    >
+      密码内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-vertical-panel-notifications"
+      aria-labelledby="tabs-vertical-tab-notifications"
+      tabindex="-1"
+      hidden
+    >
+      通知内容。
+    </div>
+  </div>
 </Preview>
 
 ### 已禁用
 
 <Preview>
-<div class="tabs" id="tabs-disabled">
-  <nav role="tablist" aria-orientation="horizontal">
-    <button type="button" role="tab" id="tabs-disabled-tab-home" aria-controls="tabs-disabled-panel-home" aria-selected="true" tabindex="0">Home</button>
-    <button type="button" role="tab" id="tabs-disabled-tab-settings" aria-controls="tabs-disabled-panel-settings" aria-selected="false" tabindex="-1" disabled>Disabled</button>
-  </nav>
-  <div role="tabpanel" id="tabs-disabled-panel-home" aria-labelledby="tabs-disabled-tab-home" tabindex="-1">Home content.</div>
-  <div role="tabpanel" id="tabs-disabled-panel-settings" aria-labelledby="tabs-disabled-tab-settings" tabindex="-1" hidden>Settings content.</div>
-</div>
+  <div class="tabs" id="tabs-disabled">
+    <nav role="tablist" aria-orientation="horizontal">
+      <button
+        type="button"
+        role="tab"
+        id="tabs-disabled-tab-home"
+        aria-controls="tabs-disabled-panel-home"
+        aria-selected="true"
+        tabindex="0"
+      >
+        首页
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-disabled-tab-settings"
+        aria-controls="tabs-disabled-panel-settings"
+        aria-selected="false"
+        tabindex="-1"
+        disabled
+      >
+        已禁用
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="tabs-disabled-panel-home"
+      aria-labelledby="tabs-disabled-tab-home"
+      tabindex="-1"
+    >
+      首页内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-disabled-panel-settings"
+      aria-labelledby="tabs-disabled-tab-settings"
+      tabindex="-1"
+      hidden
+    >
+      设置内容。
+    </div>
+  </div>
 </Preview>
 
 ### 图标
 
 <Preview>
-<div class="tabs" id="tabs-with-icons">
-  <nav role="tablist" aria-orientation="horizontal">
-    <button type="button" role="tab" id="tabs-with-icons-tab-preview" aria-controls="tabs-with-icons-panel-preview" aria-selected="true" tabindex="0"><svg class="lucide lucide-app-window" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M10 4v4" /><path d="M2 8h20" /><path d="M6 4v4" /></svg> Preview</button>
-    <button type="button" role="tab" id="tabs-with-icons-tab-code" aria-controls="tabs-with-icons-panel-code" aria-selected="false" tabindex="-1"><svg class="lucide lucide-code" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6" /><path d="m8 6-6 6 6 6" /></svg> Code</button>
-  </nav>
-  <div role="tabpanel" id="tabs-with-icons-panel-preview" aria-labelledby="tabs-with-icons-tab-preview" tabindex="-1">Preview content.</div>
-  <div role="tabpanel" id="tabs-with-icons-panel-code" aria-labelledby="tabs-with-icons-tab-code" tabindex="-1" hidden>Code content.</div>
-</div>
+  <div class="tabs" id="tabs-with-icons">
+    <nav role="tablist" aria-orientation="horizontal">
+      <button
+        type="button"
+        role="tab"
+        id="tabs-with-icons-tab-preview"
+        aria-controls="tabs-with-icons-panel-preview"
+        aria-selected="true"
+        tabindex="0"
+      >
+        <svg
+          class="lucide lucide-app-window"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="M10 4v4" />
+          <path d="M2 8h20" />
+          <path d="M6 4v4" />
+        </svg>{" "}
+        预览
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-with-icons-tab-code"
+        aria-controls="tabs-with-icons-panel-code"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        <svg
+          class="lucide lucide-code"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m16 18 6-6-6-6" />
+          <path d="m8 6-6 6 6 6" />
+        </svg>{" "}
+        代码
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="tabs-with-icons-panel-preview"
+      aria-labelledby="tabs-with-icons-tab-preview"
+      tabindex="-1"
+    >
+      预览内容。
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-with-icons-panel-code"
+      aria-labelledby="tabs-with-icons-tab-code"
+      tabindex="-1"
+      hidden
+    >
+      代码内容。
+    </div>
+  </div>
 </Preview>
 
 ## RTL
 
-要启用RTL支持，请在选项卡根或父元素上设置`dir="rtl"`。
+要启用 RTL 支持，请在标签页根节点或父元素上设置 `dir="rtl"`。
 
 <Preview>
-<div class="tabs w-full max-w-sm" id="tabs-rtl" dir="rtl">
-  <nav role="tablist" aria-orientation="horizontal" dir="rtl">
-    <button type="button" role="tab" id="tabs-rtl-tab-overview" aria-controls="tabs-rtl-panel-overview" aria-selected="true" tabindex="0">نظرة عامة</button>
-    <button type="button" role="tab" id="tabs-rtl-tab-analytics" aria-controls="tabs-rtl-panel-analytics" aria-selected="false" tabindex="-1">التحليلات</button>
-    <button type="button" role="tab" id="tabs-rtl-tab-reports" aria-controls="tabs-rtl-panel-reports" aria-selected="false" tabindex="-1">التقارير</button>
-    <button type="button" role="tab" id="tabs-rtl-tab-settings" aria-controls="tabs-rtl-panel-settings" aria-selected="false" tabindex="-1">الإعدادات</button>
-  </nav>
-  <div role="tabpanel" id="tabs-rtl-panel-overview" aria-labelledby="tabs-rtl-tab-overview" tabindex="-1">
-    <div class="card">
-      <header>
-        <h2>نظرة عامة</h2>
-        <p>عرض مقاييسك الرئيسية وأنشطة المشروع الأخيرة. تتبع التقدم عبر جميع مشاريعك النشطة.</p>
-      </header>
-      <section>
-        <p class="text-muted-foreground text-sm">لديك ١٢ مشروعًا نشطًا و٣ مهام معلقة.</p>
-      </section>
+  <div class="tabs w-full max-w-sm" id="tabs-rtl" dir="rtl">
+    <nav role="tablist" aria-orientation="horizontal" dir="rtl">
+      <button
+        type="button"
+        role="tab"
+        id="tabs-rtl-tab-overview"
+        aria-controls="tabs-rtl-panel-overview"
+        aria-selected="true"
+        tabindex="0"
+      >
+        نظرة عامة
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-rtl-tab-analytics"
+        aria-controls="tabs-rtl-panel-analytics"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        التحليلات
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-rtl-tab-reports"
+        aria-controls="tabs-rtl-panel-reports"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        التقارير
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tabs-rtl-tab-settings"
+        aria-controls="tabs-rtl-panel-settings"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        الإعدادات
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="tabs-rtl-panel-overview"
+      aria-labelledby="tabs-rtl-tab-overview"
+      tabindex="-1"
+    >
+      <div class="card">
+        <header>
+          <h2>نظرة عامة</h2>
+          <p>
+            عرض مقاييسك الرئيسية وأنشطة المشروع الأخيرة. تتبع التقدم عبر جميع
+            مشاريعك النشطة.
+          </p>
+        </header>
+        <section>
+          <p class="text-muted-foreground text-sm">
+            لديك ١٢ مشروعًا نشطًا و٣ مهام معلقة.
+          </p>
+        </section>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-rtl-panel-analytics"
+      aria-labelledby="tabs-rtl-tab-analytics"
+      tabindex="-1"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>التحليلات</h2>
+          <p>
+            تتبع مقاييس الأداء ومشاركة المستخدمين. راقب الاتجاهات وحدد فرص
+            النمو.
+          </p>
+        </header>
+        <section>
+          <p class="text-muted-foreground text-sm">
+            زادت مشاهدات الصفحة بنسبة ٢٥٪ مقارنة بالشهر الماضي.
+          </p>
+        </section>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-rtl-panel-reports"
+      aria-labelledby="tabs-rtl-tab-reports"
+      tabindex="-1"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>التقارير</h2>
+          <p>
+            إنشاء وتنزيل تقاريرك التفصيلية. تصدير البيانات بتنسيقات متعددة
+            للتحليل.
+          </p>
+        </header>
+        <section>
+          <p class="text-muted-foreground text-sm">
+            لديك ٥ تقارير جاهزة ومتاحة للتصدير.
+          </p>
+        </section>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="tabs-rtl-panel-settings"
+      aria-labelledby="tabs-rtl-tab-settings"
+      tabindex="-1"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>الإعدادات</h2>
+          <p>إدارة تفضيلات حسابك وخياراته. تخصيص تجربتك لتناسب احتياجاتك.</p>
+        </header>
+        <section>
+          <p class="text-muted-foreground text-sm">
+            تكوين الإشعارات والأمان والسمات.
+          </p>
+        </section>
+      </div>
     </div>
   </div>
-  <div role="tabpanel" id="tabs-rtl-panel-analytics" aria-labelledby="tabs-rtl-tab-analytics" tabindex="-1" hidden>
-    <div class="card">
-      <header>
-        <h2>التحليلات</h2>
-        <p>تتبع مقاييس الأداء ومشاركة المستخدمين. راقب الاتجاهات وحدد فرص النمو.</p>
-      </header>
-      <section>
-        <p class="text-muted-foreground text-sm">زادت مشاهدات الصفحة بنسبة ٢٥٪ مقارنة بالشهر الماضي.</p>
-      </section>
-    </div>
-  </div>
-  <div role="tabpanel" id="tabs-rtl-panel-reports" aria-labelledby="tabs-rtl-tab-reports" tabindex="-1" hidden>
-    <div class="card">
-      <header>
-        <h2>التقارير</h2>
-        <p>إنشاء وتنزيل تقاريرك التفصيلية. تصدير البيانات بتنسيقات متعددة للتحليل.</p>
-      </header>
-      <section>
-        <p class="text-muted-foreground text-sm">لديك ٥ تقارير جاهزة ومتاحة للتصدير.</p>
-      </section>
-    </div>
-  </div>
-  <div role="tabpanel" id="tabs-rtl-panel-settings" aria-labelledby="tabs-rtl-tab-settings" tabindex="-1" hidden>
-    <div class="card">
-      <header>
-        <h2>الإعدادات</h2>
-        <p>إدارة تفضيلات حسابك وخياراته. تخصيص تجربتك لتناسب احتياجاتك.</p>
-      </header>
-      <section>
-        <p class="text-muted-foreground text-sm">تكوين الإشعارات والأمان والسمات.</p>
-      </section>
-    </div>
-  </div>
-</div>
 </Preview>
 
 ## React
@@ -317,9 +689,7 @@ import { Tabs, useTabs } from "@a3s-lab/ui/react";
 
 export function Example() {
   const control = useTabs();
-  return (
-    <Tabs ref={control.ref}>组件内容</Tabs>
-  );
+  return <Tabs ref={control.ref}>组件内容</Tabs>;
 }
 ```
 

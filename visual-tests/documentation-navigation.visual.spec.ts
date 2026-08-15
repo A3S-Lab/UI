@@ -7,7 +7,7 @@ async function openDocumentationPage(page: Page, route: string) {
 
 async function openResponsiveNavigation(page: Page) {
   const navigation = page.locator(".docs-mobile-navigation");
-  const trigger = navigation.locator(":scope > summary");
+  const trigger = page.locator(".docs-mobile-navigation__trigger");
 
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -54,7 +54,7 @@ test("index routes hydrate with complete desktop navigation", async ({
   expect(hydrationWarnings).toEqual([]);
 });
 
-test("documentation header has no responsive dead zone at 1280px", async ({
+test("documentation header uses one navigation model at each breakpoint", async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-1280");
@@ -65,8 +65,13 @@ test("documentation header has no responsive dead zone at 1280px", async ({
   expect(headerBox).not.toBeNull();
   expect(headerBox!.height).toBeLessThanOrEqual(65);
   await expect(header).toHaveCSS("display", "flex");
-  await expect(page.locator(".rp-nav__others")).not.toBeVisible();
+  await expect(page.locator(".rp-nav__others")).toBeVisible();
+  await expect(
+    page.locator(".docs-mobile-navigation__trigger"),
+  ).not.toBeVisible();
 
+  await page.setViewportSize({ width: 1024, height: 800 });
+  await expect(page.locator(".rp-nav__others")).not.toBeVisible();
   const navigation = await openResponsiveNavigation(page);
   await expect(
     navigation.getByRole("navigation", { name: "主导航" }),
@@ -80,6 +85,7 @@ test("responsive switchers preserve the page and produce one route prefix", asyn
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1024, height: 800 });
   await openDocumentationPage(page, "components/device-simulator.html");
 
   let navigation = await openResponsiveNavigation(page);
@@ -107,4 +113,42 @@ test("responsive switchers preserve the page and produce one route prefix", asyn
   await expect(
     page.getByRole("heading", { name: "Button", level: 1 }),
   ).toBeVisible();
+});
+
+test("component catalog searches both languages and filters by product group", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openDocumentationPage(page, "components/index.html");
+
+  let catalog = page.locator("[data-component-catalog]");
+  let search = catalog.getByRole("searchbox", { name: "搜索组件" });
+  await expect(catalog).toContainText("111 个组件");
+  await search.fill("device simulator");
+  await expect(catalog.getByRole("status")).toHaveText("找到 1 个匹配组件");
+  await expect(
+    catalog.getByRole("link", { name: /设备模拟器/ }),
+  ).toHaveAttribute("href", "/UI/components/device-simulator.html");
+
+  await catalog.getByRole("button", { name: "清除" }).click();
+  const harnessFilter = catalog
+    .locator(".component-catalog__filters button")
+    .filter({ hasText: "Harness" });
+  await harnessFilter.click();
+  await expect(harnessFilter).toHaveAttribute("aria-pressed", "true");
+  await expect(catalog.getByRole("status")).toHaveText("显示 25 个组件");
+
+  await openDocumentationPage(page, "en/components/index.html");
+  catalog = page.locator("[data-component-catalog]");
+  search = catalog.getByRole("searchbox", { name: "Search components" });
+  await search.fill("设备模拟器");
+  await expect(catalog.getByRole("status")).toHaveText("1 matching components");
+  await expect(
+    catalog.getByRole("link", { name: /Device Simulator/ }),
+  ).toHaveAttribute("href", "/UI/en/components/device-simulator.html");
+
+  await search.fill("");
+  await page.keyboard.press("/");
+  await expect(search).toBeFocused();
 });

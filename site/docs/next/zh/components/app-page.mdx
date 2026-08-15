@@ -3,7 +3,7 @@
 应用页面为 App Shell 内的项目、自动化、目录、表单和详情页提供开放且有宽度约束的页面框架。它稳定放置页面身份与操作，不会给整个视图再套一层卡片。
 
 <Preview class="w-full">
-  <section class="app-page min-h-80 rounded-xl border border-border" data-width="wide">
+  <section class="app-page min-h-80" data-width="wide">
     <header>
       <div data-page-identity><h2>项目</h2><p>集中管理长期上下文、模板和任务历史。</p></div>
       <div data-page-actions><button type="button" class="btn">新建项目</button></div>
@@ -27,7 +27,7 @@
 </section>
 ```
 
-### 参数
+### HTML 结构
 
 | API | 可选值 | 用途 |
 | --- | --- | --- |
@@ -37,13 +37,9 @@
 | `data-page-content` | 必填 | 页面内容 |
 | `data-width` | `reading`、`wide`、省略 | 内容阅读宽度 |
 
-## 状态和变体
+## 状态与变体
 
 空状态、加载、错误、部分数据和权限状态由 Empty、Skeleton、Alert、Resource Card、Table 或表单组件承担。不要再增加通用页面卡片。
-
-## 无障碍
-
-使用符合外层文档结构的标题级别。操作在 DOM 中位于页面身份之后，窄屏堆叠时保持同一顺序。
 
 ## React
 
@@ -52,24 +48,43 @@ import { AppPage } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <AppPage aria-label="App Page">组件内容</AppPage>
+    <AppPage data-width="wide">
+      <header>
+        <div data-page-identity><h1>项目</h1><p>集中管理长期上下文和任务历史。</p></div>
+        <div data-page-actions><button type="button">新建项目</button></div>
+      </header>
+      <div data-page-content>
+        <article><h2>A3S UI</h2><p>3 个进行中任务</p></article>
+      </div>
+    </AppPage>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`AppPage` 保留开放的 `<section>` 根节点，不自动增加 Card、数据请求或路由状态。静态布局没有控制器 hook。
 
 ## Vue
 
 ```vue
 <script setup>
 import { AppPage } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <AppPage aria-label="App Page">组件内容</AppPage>
+  <AppPage data-width="wide">
+    <header>
+      <div data-page-identity><h1>项目</h1><p>集中管理长期上下文和任务历史。</p></div>
+      <div data-page-actions><button type="button">新建项目</button></div>
+    </header>
+    <div data-page-content>
+      <article><h2>A3S UI</h2><p>3 个进行中任务</p></article>
+    </div>
+  </AppPage>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器映射同一页面结构，列表、表单和异步数据仍属于页面内容。
+
+## 可访问性
+
+每个应用页面必须有一个与外壳层级匹配的主标题；不要用泛化 `aria-label` 代替可见标题。页面操作在 DOM 中紧随页面身份，窄屏堆叠后仍保持标题、说明、操作、内容的顺序。加载时保留标题和既有布局，并在内容区域使用 `aria-busy`；错误、空状态和权限拒绝要命名原因与恢复路径。宿主负责数据、路由、授权和焦点迁移，`AppPage` 只约束页面宽度与区域关系。

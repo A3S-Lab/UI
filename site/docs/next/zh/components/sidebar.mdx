@@ -1,5 +1,7 @@
 # 侧边栏
 
+侧边栏承载产品的持久导航或工作区上下文，让用户在主要任务之间保持方向感。
+
 <Preview>
 <div class="a3s-sidebar-demo">
   <aside id="demo-sidebar" class="sidebar" data-demo-contained data-initial-open="true">
@@ -28,16 +30,16 @@
 </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#sidebar" }}>
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#sidebar" }}>
 该组件为 Jinja 和 Nunjucks 提供了 `sidebar()` 宏。
 </Callout>
 
 Sidebar uses a native `<aside>` next to your page content. A3S UI owns the fixed positioning, overlay behavior, active states, nested lists, and `details` submenu styling. Your app still owns the navigation data and current route.
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -58,7 +60,7 @@ Sidebar uses a native `<aside>` next to your page content. A3S UI owns the fixed
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -76,7 +78,7 @@ Sidebar uses a native `<aside>` next to your page content. A3S UI owns the fixed
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your sidebar HTML">
+  <Step title="添加侧边栏 HTML">
 ```html
 <aside id="sidebar" class="sidebar" data-side="left">
   <nav aria-label="Sidebar navigation">

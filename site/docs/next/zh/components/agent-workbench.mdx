@@ -55,6 +55,7 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
       class="code-editor"
       data-size="sm"
       data-line-numbers="false"
+      data-wrap="true"
       data-agent-canvas
     >
       <header>
@@ -150,7 +151,7 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
   </section>
 </Preview>
 
-## 使用
+## 用法
 
 导入完整 A3S 样式包，再使用产品实际需要的组件组合各个区域。
 
@@ -168,7 +169,7 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
 </section>
 ```
 
-### 参数
+### HTML 结构
 
 | API                                 | 必需 | 用途                                         |
 | ----------------------------------- | ---- | -------------------------------------------- |
@@ -191,10 +192,6 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
 
 区域内部组合 Card、Tree、Code Editor、Field、Property List、状态徽章、Timeline 与 Log Viewer。加载、空、不可用、错误和只读状态应由这些子组件明确呈现。
 
-## 可访问性
-
-为工作台以及每个导航或实时区域提供名称。在主 Canvas 内部或外部保留一个页面级标题，使用与内容匹配的 Landmark，并保持合理 DOM 顺序：上下文、主要工作、Inspector、活动。响应式重排不得改变键盘顺序。导航后的焦点、流式播报、验证与破坏性操作确认由宿主应用负责。
-
 ## React
 
 ```tsx
@@ -202,24 +199,61 @@ import { AgentWorkbench } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <AgentWorkbench aria-label="Agent Workbench">组件内容</AgentWorkbench>
+    <AgentWorkbench aria-label="Release 构建工作台">
+      <aside data-agent-context aria-label="构建上下文">
+        <h2>输入</h2>
+        <nav aria-label="资源"><a href="#instructions">agent.acl</a></nav>
+      </aside>
+      <article data-agent-canvas>
+        <header><h2>配置</h2></header>
+        <textarea aria-label="Agent 配置" defaultValue={'agent "coding" {}'} />
+      </article>
+      <aside data-agent-inspector aria-label="Release 设置">
+        <h2>绑定</h2>
+        <label>Provider <select><option>A3S Code · v0.8.4</option></select></label>
+      </aside>
+      <section data-agent-activity aria-label="执行活动">
+        <h2>活动</h2>
+        <ol><li>Release 已解析</li><li aria-current="step">Provider 运行中</li></ol>
+      </section>
+    </AgentWorkbench>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`AgentWorkbench` 只负责区域关系与响应式布局。每个区域继续使用自己的语义组件；执行、保存和选择状态仍由宿主管理，因此没有框架专属 hook。
 
 ## Vue
 
 ```vue
 <script setup>
 import { AgentWorkbench } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <AgentWorkbench aria-label="Agent Workbench">组件内容</AgentWorkbench>
+  <AgentWorkbench aria-label="Release 构建工作台">
+    <aside data-agent-context aria-label="构建上下文">
+      <h2>输入</h2>
+      <nav aria-label="资源"><a href="#instructions">agent.acl</a></nav>
+    </aside>
+    <article data-agent-canvas>
+      <header><h2>配置</h2></header>
+      <textarea aria-label="Agent 配置" value='agent "coding" {}'></textarea>
+    </article>
+    <aside data-agent-inspector aria-label="Release 设置">
+      <h2>绑定</h2>
+      <label>Provider <select><option>A3S Code · v0.8.4</option></select></label>
+    </aside>
+    <section data-agent-activity aria-label="执行活动">
+      <h2>活动</h2>
+      <ol><li>Release 已解析</li><li aria-current="step">Provider 运行中</li></ol>
+    </section>
+  </AgentWorkbench>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 版本保留同一 DOM 顺序与区域契约，不在适配器中复制布局状态。
+
+## 可访问性
+
+为工作台以及其中每个导航、检查器和活动区域提供可区分的名称。页面级标题放在主画布内部或工作台之前，不能让四个区域各自争夺页面主标题。DOM 顺序固定为上下文、主要工作、检查器、活动；响应式折行或抽屉提升不得改变阅读与键盘顺序。只有真正持续更新的简短执行状态进入礼貌型实时区域，日志和时间线本身不设为实时区域。宿主负责抽屉焦点、验证、保存、权限、破坏性确认和执行结果，工作台不持有这些业务状态。

@@ -54,6 +54,41 @@
     --chart-bar-radius: 6px;
   }
 
+  .chart > [data-chart-state] {
+    border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--muted) 58%, var(--background));
+    color: var(--muted-foreground);
+  }
+
+  .chart > [data-chart-state] > strong {
+    color: var(--foreground);
+    font-size: var(--a3s-font-size-ui, 0.875rem);
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .chart > [data-chart-state] > :is(span, p) {
+    max-width: 34rem;
+    font-size: var(--a3s-font-size-annotation, 0.8125rem);
+    line-height: 1.55;
+  }
+
+  .chart[data-state="loading"] > [data-chart-state]::before {
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-block-end: 0.5rem;
+    border: 2px solid color-mix(in srgb, var(--primary) 24%, transparent);
+    border-block-start-color: var(--primary);
+    border-radius: 999px;
+    animation: chart-state-spin 720ms linear infinite;
+    content: "";
+  }
+
+  .chart[data-state="error"] > [data-chart-state] > strong {
+    color: var(--destructive);
+  }
+
   .chart-tooltip {
     @apply border-border/50 bg-background text-foreground gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl;
   }
@@ -68,5 +103,19 @@
 
   .chart-legend-item[aria-pressed="false"] {
     @apply text-muted-foreground;
+  }
+
+  @keyframes chart-state-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chart[data-state="loading"] > [data-chart-state]::before {
+      animation: none;
+      border-color: color-mix(in srgb, var(--primary) 34%, transparent);
+      border-block-start-color: var(--primary);
+    }
   }
 }

@@ -1,0 +1,45 @@
+suite "a3s-ui-app-shell-accessibility" {
+    version = 1
+
+    scenario "compact-focus-boundary" {
+        name = "App Shell contains compact navigation focus and restores the trigger"
+        surface = "web"
+        timeout_ms = 45000
+
+        viewport "compact" { width = 768 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        expect "closed-navigation-inert" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation][inert][aria-hidden=true]")
+        }
+        click "open-navigation" {
+            target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]")
+        }
+        expect "main-inert-while-open" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]")
+        }
+        expect "first-link-focused" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus")
+        }
+
+        press "wrap-backward" { key = "Shift+Tab" }
+        expect "last-link-focused" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:last-of-type:focus")
+        }
+        press "wrap-forward" { key = "Tab" }
+        expect "first-link-focused-again" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus")
+        }
+
+        press "close-navigation" { key = "Escape" }
+        expect "main-restored" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main]:not([inert]):not([aria-hidden])")
+        }
+        expect "trigger-restored" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]:focus")
+        }
+        screenshot "closed-compact-shell" { path = "components/app-shell-focus-restored.png" }
+    }
+}

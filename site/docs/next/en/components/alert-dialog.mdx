@@ -1,21 +1,23 @@
 # Alert Dialog
 
-A modal dialog that interrupts the user with important content and expects a response.
+Alert Dialog requires an explicit choice before a high-risk or irreversible action. Use it only when continuing without a response would be unsafe.
 
-<Preview>
-<button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">Show Dialog</button>
-<dialog id="demo-alert-dialog" class="alert-dialog" role="alertdialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
-  <div>
+<Preview class="w-full max-w-lg">
+<div class="grid w-full justify-items-start gap-4">
+  <button type="button" onclick="const dialog = document.getElementById('demo-alert-dialog'); if (dialog.open) dialog.close(); dialog.style.cssText = ''; dialog.firstElementChild.style.cssText = ''; dialog.showModal()" class="btn" data-variant="outline">Open confirmation dialog</button>
+  <dialog id="demo-alert-dialog" class="alert-dialog" role="alertdialog" open aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description" style="position:static;inset:auto;display:block;width:100%;max-width:30rem;margin:0 auto;overflow:visible">
+  <div style="position:relative;inset:auto;translate:none;scale:1;transform:none;max-height:none;margin:0">
     <header>
-      <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
-      <p id="demo-alert-dialog-description">This action cannot be undone. This will permanently delete your account and remove your data from our servers.</p>
+      <h2 id="demo-alert-dialog-title">Delete account?</h2>
+      <p id="demo-alert-dialog-description">Your account, projects, and history will be permanently deleted. This action cannot be undone.</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Continue</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
+      <button type="button" class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Delete account</button>
     </footer>
   </div>
-</dialog>
+  </dialog>
+</div>
 </Preview>
 
 ## Usage

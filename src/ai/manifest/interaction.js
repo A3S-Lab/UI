@@ -16,7 +16,7 @@ export const interactionComponents = [
       "a3s:back-to-bottom-visibility-change",
       "basecoat:initialized",
     ],
-    methods: ["getState", "scrollToBottom", "setUnread"],
+    methods: ["getState", "refresh", "scrollToBottom", "setUnread"],
     states: ["hidden", "visible", "unread"],
   }),
   defineComponent({

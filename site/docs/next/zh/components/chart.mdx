@@ -1,28 +1,18 @@
 # 图表
 
-<Callout type="warning" title="Beta API" icon="triangle-alert">
-图表支持一个测试阶段。在稳定的 1.0 版本发布之前，JavaScript API、生成的标记和选项名称可能会发生变化。
-</Callout>
+图表把数值关系转换成可比较的视觉结构。它适合趋势、差异和组成关系，不适合替代精确数据表或用装饰图形填充空白。
 
-使用 Chart.js 和 A3S UI 默认设置主题颜色、外部工具提示和可选生成的图例。
+<Callout type="warning" title="Beta API" icon="triangle-alert">
+  图表辅助 API 仍处于测试阶段。1.0 之前，初始化选项和生成标记可能调整；数据与可访问性结构应保持由宿主拥有。
+</Callout>
 
 <Preview class="w-full">
   <ChartDemo variant="bar" />
 </Preview>
 
-## 用途
+## 用法
 
-<Steps>
-  <Step title="Include CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
-
-```css
-@import "tailwindcss";
-@import "@a3s-lab/ui/a3s.css";
-```
-
-或者只导入基本CSS、图表组件CSS和一个样式包。
+导入图表结构和 A3S 视觉令牌；Chart.js 仍是显式的宿主依赖。
 
 ```css
 @import "tailwindcss";
@@ -31,242 +21,228 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
-  </Step>
-  <Step title="Include JavaScript">
-
-复制或提供Chart.js、A3S UI运行时和图表脚本。
-
-```html
-<script src="/assets/js/chart.umd.min.js"></script>
-<script src="/assets/js/runtime.min.js" defer></script>
-<script src="/assets/js/chart.min.js" defer></script>
-```
-
-图表不包含完整的 A3S UI JavaScript 包中。
-
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
-  </Step>
-  <Step title="Add your chart HTML">
-
-```html
-<canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    window.a3sUI.chart("#visitors-chart", {
-      type: "bar",
-      labelKey: "month",
-      data: [
-        { month: "Jan", desktop: 186, mobile: 80 },
-        { month: "Feb", desktop: 305, mobile: 200 },
-        { month: "Mar", desktop: 237, mobile: 120 },
-        { month: "Apr", desktop: 73, mobile: 190 },
-        { month: "May", desktop: 209, mobile: 130 },
-        { month: "Jun", desktop: 214, mobile: 140 },
-      ],
-      series: {
-        desktop: { label: "Desktop", color: "var(--chart-1)" },
-        mobile: { label: "Mobile", color: "var(--chart-2)" },
-      },
-    })
-  })
-</script>
-```
-
-  </Step>
-</Steps>
-
-`a3sUI.chart()` targets the `<canvas>` directly and creates A3S UI's internal `.chart` container for Chart.js sizing. You do not need to add a wrapper or class in your HTML.
-
-图表默认为 `aspect-video`。当您需要不同的测量框时，请在父元素上使用高度、`min-h-*` 或 `aspect-*` 工具类。
-
-## 图例
-
-`legend: true`以在最低后生成A3S UI风格的图例。
-
-生成的图例默认仅显示，与 shadcn/ui 匹配。如果您需要点击切换行为，请使用 Chart.js 插件或自定义图例标记。
+`a3sUI.chart()` 接收原生 `canvas`，使用 A3S 令牌配置坐标轴、工具提示和可选图例。通过 `Chart` 参数显式传入 Chart.js，避免依赖隐式全局变量。
 
 ```js
-window.a3sUI.chart("#visitors-chart", {
-  type: "bar",
-  labelKey: "month",
-  data,
-  series,
-  legend: true,
-})
-```
+import ChartJS from "chart.js/auto";
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/chart";
 
-## 系列
+const rows = [
+  { month: "1 月", desktop: 186, mobile: 80 },
+  { month: "2 月", desktop: 305, mobile: 200 },
+  { month: "3 月", desktop: 237, mobile: 120 },
+];
 
-`series` 将每个数据行的对象键映射到标签、颜色和任选的 Chart.js 数据集设置。
-
-```js
-window.a3sUI.chart("#revenue-chart", {
-  type: "line",
-  labelKey: "month",
-  data,
-  series: {
-    recurring: {
-      label: "Recurring",
-      color: "var(--chart-1)",
-      surface: "gradient",
-      dataset: {
-        fill: true,
-        tension: 0.35,
-      },
-    },
-    new: {
-      label: "New",
-      color: "var(--chart-2)",
-      dataset: {
-        borderDash: [4, 4],
-      },
-    },
-  },
-})
-```
-
-## 逃生舱口
-
-通过 `options` 和 `plugins` 提交原始 Chart.js 选项和插件。
-
-```js
 const chart = window.a3sUI.chart("#visitors-chart", {
+  Chart: ChartJS,
   type: "bar",
   labelKey: "month",
-  data,
-  series,
-  options: {
-    indexAxis: "x",
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      tooltip: {
-        mode: "index",
-      },
-    },
+  data: rows,
+  series: {
+    desktop: { label: "桌面端", color: "var(--chart-1)" },
+    mobile: { label: "移动端", color: "var(--chart-2)" },
   },
-  plugins: [myChartJsPlugin],
-})
+  legend: true,
+});
 ```
 
-当简化 `data` 加 `series` 放大器不够时，通过 `chartData` 提交完整的 Chart.js 数据。
+画布必须与标题、简短结论和等价数据放在同一个 `figure` 中。视觉图表不是数据的唯一表达。
 
-```js
-window.a3sUI.chart("#custom-chart", {
-  type: "scatter",
-  chartData: {
-    datasets: [
-      {
-        label: "Samples",
-        data: [{ x: 1, y: 2 }, { x: 2, y: 5 }],
-      },
-    ],
-  },
-  options: {
-    scales: {
-      x: { type: "linear" },
-    },
-  },
-})
+```html
+<figure aria-labelledby="visitors-title">
+  <figcaption id="visitors-title">
+    <strong>按设备划分的月访问量</strong>
+    <span id="visitors-summary">桌面端和移动端访问量都在 2 月达到峰值。</span>
+  </figcaption>
+  <div class="chart">
+    <canvas id="visitors-chart" aria-describedby="visitors-summary">
+      当前环境无法显示图表，请查看下方数据表。
+    </canvas>
+  </div>
+  <table class="sr-only">
+    <caption>按设备划分的月访问量</caption>
+    <thead><tr><th scope="col">月份</th><th scope="col">桌面端</th><th scope="col">移动端</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 月</th><td>186</td><td>80</td></tr>
+      <tr><th scope="row">2 月</th><td>305</td><td>200</td></tr>
+      <tr><th scope="row">3 月</th><td>237</td><td>120</td></tr>
+    </tbody>
+  </table>
+</figure>
 ```
 
-`a3sUI.chart()`返回单个目标的Chart.js实例和多个目标选择器的实例集群。
+辅助 API 会复用已有 `.chart` 容器；若画布没有容器，它会生成一个。主题或样式包变化时会从 CSS 令牌重新解析颜色。
 
-## 示例
+### 参数
 
-### 条形图 - 多个
-
-<Preview class="w-full">
-  <ChartDemo variant="bar" />
-</Preview>
-
-### 折线图 - 线性
-
-<Preview class="w-full">
-  <ChartDemo variant="line" />
-</Preview>
-
-### 折线图 - 步骤
-
-<Preview class="w-full">
-  <ChartDemo variant="step" />
-</Preview>
-
-### 条形图 - 堆叠
-
-<Preview class="w-full">
-  <ChartDemo variant="stacked" />
-</Preview>
-
-### P饼图 - 甜甜圈
-
-<Preview class="w-full">
-  <ChartDemo variant="donut" />
-</Preview>
-
-### 雷达图
-
-<Preview class="w-full">
-  <ChartDemo variant="radar" />
-</Preview>
-
-## API
-
-| 选项 | 默认 | 描述 |
+| 选项 | 默认值 | 用途 |
 | --- | --- | --- |
-| `type` | `"bar"` | Chart.js 图表类型。 |
-| `labelKey` | `"label"` | 用于标签的行键。 |
-| `data` | `[]` | 行对象数组，或带有 `datasets` 的原始 Chart.js 数据。 |
-| `series` | `{}` | 从行键映射的系列配置。 |
-| `legend` | `false` | 在画布后生成 A3S UI 图例。 |
-| `tooltip` | `true` | 使用 A3S UI 外部工具提示。 |
-| `options` | `{}` | 原始 Chart.js 选项。 |
-| `plugins` | `[]` | 原始 Chart.js 插件。 |
-| `chartData` | `undefined` | 完整的 Chart.js 数据对象。覆盖数据映射器。 |
+| `Chart` | `window.Chart` | Chart.js 构造器；模块环境建议显式传入 |
+| `type` | `"bar"` | Chart.js 图表类型 |
+| `labelKey` | `"label"` | 每行数据中的横轴或分类标签键 |
+| `data` | `[]` | 行对象数组，或原始 Chart.js `datasets` 数据 |
+| `series` | `{}` | 从数据键到标签、颜色和数据集选项的映射 |
+| `legend` | `false` | 生成只读 A3S 图例 |
+| `tooltip` | `true` | 使用主题化外部工具提示 |
+| `options` | `{}` | 透传 Chart.js 选项 |
+| `plugins` | `[]` | 透传 Chart.js 插件 |
+| `chartData` | 未定义 | 完整 Chart.js 数据；存在时覆盖行映射 |
 
-### 系列选项
+`series` 中的 `label` 必须是面向用户的本地化名称。`color` 使用 `--chart-1` 到 `--chart-5` 等稳定令牌；`surface` 可为 `true`、`"gradient"` 或 `{ from, to }`；`dataset` 只放当前系列的原生 Chart.js 配置。
 
-| 选项 | 描述 |
-| --- | --- |
-| `label` | 显示图例和工具提示的标签。 |
-| `color` | 系列描边、填充、图例标记和工具提示标记的基色。 |
-| `surface` | 从 `color` 派生填充。使用 `true` 进行半透明填充，使用 `"gradient"` 进行上游式垂直淡入淡出，或使用 `{ from, to }` 进行自定义不透明度停止。 |
-| `dataset` | 原始 Chart.js 数据集选项。 |
+## 状态与变体
+
+### 选择正确图形
+
+- 条形图比较离散类别，基线通常从零开始。
+- 折线图表达有顺序的时间趋势，不应用平滑曲线暗示不存在的数据。
+- 堆叠图只在用户需要比较整体组成时使用；类别过多时改用表格。
+- 环形图只适合少量、总和明确为整体的类别，并同时显示数值。
+- 雷达图很难精确比较，只适合少量同尺度维度的概览，不用于关键决策。
+
+<Preview class="w-full">
+<div class="grid gap-8">
+  <div><h3 class="mb-3 text-sm font-semibold">连续趋势</h3><ChartDemo variant="line" /></div>
+  <div><h3 class="mb-3 text-sm font-semibold">整体组成</h3><ChartDemo variant="donut" /></div>
+</div>
+</Preview>
+
+### 加载、空白与错误
+
+数据未就绪时保留图表测量框，并在 `data-chart-state` 中说明当前状态。空白状态解释为什么没有数据；错误状态提供恢复方式。不要用一张零值图表伪装空数据。
+
+<Preview class="w-full">
+<div class="grid w-full gap-4 lg:grid-cols-3">
+  <div class="chart" data-state="loading" aria-busy="true">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state role="status">
+      <strong>正在加载访问量</strong>
+      <span>保留图表尺寸，避免内容完成后跳动。</span>
+    </div>
+  </div>
+  <div class="chart" data-state="empty">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state>
+      <strong>没有可比较的数据</strong>
+      <span>选择至少两个时间点，或扩大日期范围。</span>
+    </div>
+  </div>
+  <div class="chart" data-state="error">
+    <canvas aria-hidden="true"></canvas>
+    <div data-chart-state role="alert">
+      <strong>访问量加载失败</strong>
+      <span>检查数据连接后重试，当前筛选仍会保留。</span>
+      <footer><button type="button" class="btn" data-size="sm" data-variant="outline">重新加载</button></footer>
+    </div>
+  </div>
+</div>
+</Preview>
+
+`loading`、`empty` 和 `error` 由宿主数据生命周期驱动。更新数据时优先调用 Chart.js 实例的更新 API，避免销毁后造成焦点、尺寸和动画上下文跳变。交互式图例属于筛选控件，应使用真实按钮并同步 `aria-pressed`；默认生成的图例只用于识别系列。
 
 ## React
 
 ```tsx
-import { Chart, useChart } from "@a3s-lab/ui/react";
+import { useEffect, useRef } from "react";
+import ChartJS from "chart.js/auto";
+import { Chart } from "@a3s-lab/ui/react";
+import "@a3s-lab/ui/chart";
 
-export function Example() {
-  const control = useChart();
+export function VisitsChart() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const instance = window.a3sUI.chart(canvasRef.current, {
+      Chart: ChartJS,
+      type: "bar",
+      labelKey: "month",
+      data: [
+        { month: "1 月", desktop: 186, mobile: 80 },
+        { month: "2 月", desktop: 305, mobile: 200 },
+      ],
+      series: {
+        desktop: { label: "桌面端", color: "var(--chart-1)" },
+        mobile: { label: "移动端", color: "var(--chart-2)" },
+      },
+      legend: true,
+    });
+    return () => instance.destroy();
+  }, []);
+
   return (
-    <Chart ref={control.ref}>组件内容</Chart>
+    <figure aria-labelledby="visits-title">
+      <figcaption id="visits-title">按设备划分的月访问量</figcaption>
+      <Chart>
+        <canvas ref={canvasRef} aria-label="2 月访问量高于 1 月" />
+      </Chart>
+      <table className="sr-only">
+        <caption>按设备划分的月访问量</caption>
+        <tbody>
+          <tr><th scope="row">1 月</th><td>桌面端 186，移动端 80</td></tr>
+          <tr><th scope="row">2 月</th><td>桌面端 305，移动端 200</td></tr>
+        </tbody>
+      </table>
+    </figure>
   );
 }
 ```
 
-`useChart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`Chart` 提供稳定测量容器；初始化与销毁使用真实 Chart.js 实例。当前没有根控制器方法，因此不提供无效的 `useChart`。
 
 ## Vue
 
 ```vue
-<script setup>
-import { Chart, useChart } from "@a3s-lab/ui/vue";
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import ChartJS from "chart.js/auto";
+import { Chart } from "@a3s-lab/ui/vue";
+import "@a3s-lab/ui/chart";
 
-const control = useChart();
-const componentRef = control.componentRef;
+const canvas = ref<HTMLCanvasElement | null>(null);
+let instance: ChartJS | undefined;
+
+onMounted(() => {
+  if (!canvas.value) return;
+  instance = window.a3sUI.chart(canvas.value, {
+    Chart: ChartJS,
+    type: "bar",
+    labelKey: "month",
+    data: [
+      { month: "1 月", desktop: 186, mobile: 80 },
+      { month: "2 月", desktop: 305, mobile: 200 },
+    ],
+    series: {
+      desktop: { label: "桌面端", color: "var(--chart-1)" },
+      mobile: { label: "移动端", color: "var(--chart-2)" },
+    },
+    legend: true,
+  });
+});
+
+onBeforeUnmount(() => instance?.destroy());
 </script>
 
 <template>
-  <Chart ref="componentRef">组件内容</Chart>
+  <figure aria-labelledby="visits-title">
+    <figcaption id="visits-title">按设备划分的月访问量</figcaption>
+    <Chart>
+      <canvas ref="canvas" aria-label="2 月访问量高于 1 月" />
+    </Chart>
+    <table class="sr-only">
+      <caption>按设备划分的月访问量</caption>
+      <tbody>
+        <tr><th scope="row">1 月</th><td>桌面端 186，移动端 80</td></tr>
+        <tr><th scope="row">2 月</th><td>桌面端 305，移动端 200</td></tr>
+      </tbody>
+    </table>
+  </figure>
 </template>
 ```
 
-`useChart` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+Vue 使用相同容器、Chart.js 初始化和销毁路径，不建立第二套图表状态。
+
+## 可访问性
+
+图表必须有可见标题、简短结论和等价数据表；`canvas` 的 `aria-label` 只能概括主要发现，不能替代全部数值。系列同时使用标签、形状或位置区分，不能只依赖颜色。工具提示信息应可从表格获得，默认只读图例不进入 Tab 顺序；交互式图例必须改为真实按钮。缩放到 200%、暗色主题、RTL 和窄屏时仍要保留标签与数据理解路径。动画遵循减弱动态效果偏好，实时数据更新不应高频播报。宿主负责数据真实性、格式化、单位、时区、空白与错误状态；组件只负责视觉映射和主题集成。

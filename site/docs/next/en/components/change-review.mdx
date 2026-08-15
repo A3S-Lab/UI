@@ -1,66 +1,145 @@
 # Change Review
 
-Change Review summarizes a bounded set of proposed file changes and keeps review decisions adjacent to their scope.
+Change Review keeps a bounded set of file changes, scope summary, and final decision together so people can confirm exactly what they are accepting before they act.
 
 <Preview class="w-full max-w-3xl">
-  <section class="change-review" data-state="reviewing" aria-labelledby="change-review-title">
-    <header><div><h2 id="change-review-title">Review changes</h2><p data-review-summary>3 files · 44 additions · 9 deletions</p></div><span class="status-badge" data-state="active">Reviewing</span></header>
-    <ul data-review-files><li><code>src/css/styles/application.css</code><span data-review-delta>+2 −0</span></li><li><code>src/css/components/task-plan.css</code><span data-review-delta>+31 −0</span></li><li><code>site/docs/next/en/components/task-plan.mdx</code><span data-review-delta>+11 −9</span></li></ul>
-    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Request changes</button><button type="button" class="btn" data-size="sm">Accept changes</button></footer>
-  </section>
+<section class="change-review" data-state="reviewing" aria-labelledby="change-review-title-en">
+  <header>
+    <div><h2 id="change-review-title-en">Review interface updates</h2><p data-review-summary>3 files · 44 additions · 9 deletions</p></div>
+    <span class="status-badge" data-state="active" data-review-status>In review</span>
+  </header>
+  <ul data-review-files>
+    <li><code>src/css/components/device-simulator.css</code><span data-review-delta>+21 −3</span></li>
+    <li><code>site/docs/next/en/components/device-simulator.mdx</code><span data-review-delta>+18 −6</span></li>
+    <li><code>visual-tests/component-quality.visual.spec.ts</code><span data-review-delta>+5</span></li>
+  </ul>
+  <footer>
+    <button type="button" class="btn" data-size="sm" data-variant="outline">Request changes</button>
+    <button type="button" class="btn" data-size="sm">Accept these 3 files</button>
+  </footer>
+</section>
 </Preview>
 
 ## Usage
 
+The title states the purpose of the change, the summary gives its complete scope, the file list preserves auditable paths, and decision labels name their consequences. The component does not load diffs or submit a decision for the host.
+
 ```html
-<section class="change-review" data-state="reviewing" aria-labelledby="review-title">
-  <header><h2 id="review-title">Review changes</h2><p data-review-summary>3 files</p></header>
-  <ul data-review-files><li><code>src/app.css</code><span data-review-delta>+4 −1</span></li></ul>
-  <footer>...</footer>
+<section
+  class="change-review"
+  data-state="reviewing"
+  aria-labelledby="review-title"
+>
+  <header>
+    <div>
+      <h2 id="review-title">Review interface updates</h2>
+      <p data-review-summary>3 files · 44 additions · 9 deletions</p>
+    </div>
+    <span class="status-badge" data-state="active" data-review-status>In review</span>
+  </header>
+  <ul data-review-files>
+    <li>
+      <code>src/app.css</code>
+      <span data-review-delta>+4 −1</span>
+    </li>
+  </ul>
+  <footer>
+    <button type="button" class="btn" data-variant="outline">Request changes</button>
+    <button type="button" class="btn">Accept changes</button>
+  </footer>
 </section>
 ```
 
 ### Parameters
 
-| API | Values | Purpose |
+| API | Value | Purpose |
 | --- | --- | --- |
-| `data-state` | `pending`, `reviewing`, `accepted`, `rejected`, `conflict`, `error` | Review lifecycle |
-| `data-review-files` | Required | Files within the decision scope |
-| `data-review-summary` | Recommended | Aggregate count and delta |
+| `data-state` | `pending`, `reviewing`, `accepted`, `rejected`, `conflict`, `error` | Current review lifecycle |
+| `data-review-summary` | Recommended | File count, line changes, and other scope summary |
+| `data-review-files` | Required | Files covered by the current decision |
+| `data-review-delta` | Recommended | Additions and deletions for each file |
+| `data-review-status` | Recommended | Visible lifecycle label when a Status Badge is not sufficient by itself |
+| Direct child `footer` | When decisions exist | Final actions that apply to the complete change set |
 
 ## States and variants
 
-A conflict preserves the proposed changes and explains the competing revision. File-level acceptance belongs in a richer inspector, not a hidden checkbox list.
+`pending` means review material is still being prepared and must not expose premature decisions. `reviewing` permits inspection and a decision. `accepted` and `rejected` preserve the final outcome. `conflict` retains the original proposal while explaining a competing revision. `error` explains why the material or decision could not load or submit.
 
-## Accessibility
+<Preview class="w-full max-w-3xl">
+<section class="change-review" data-state="conflict" aria-labelledby="change-conflict-title-en">
+  <header>
+    <div><h2 id="change-conflict-title-en">Changes need another review</h2><p data-review-summary>1 file changed while the review was open</p></div>
+    <span class="status-badge" data-state="warning" data-review-status>Conflict</span>
+  </header>
+  <ul data-review-files>
+    <li><code>src/css/components/device-simulator.css</code><span data-review-delta>Revision changed</span></li>
+  </ul>
+  <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Load latest changes</button></footer>
+</section>
+</Preview>
 
-Decision buttons name their consequence. Counts and filenames remain text; additions and deletions do not depend on red and green alone.
+Per-line or per-file acceptance belongs to a richer diff inspector and should not be imitated with an ordinary checkbox list. When the file set is large, show summary and filtering before entering [Code Diff](/components/code-diff); do not render an unbounded list inside one card.
 
 ## React
 
 ```tsx
-import { ChangeReview } from "@a3s-lab/ui/react";
+import { Button, ChangeReview } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ReviewSummary() {
   return (
-    <ChangeReview aria-label="Change Review">Component content</ChangeReview>
+    <ChangeReview data-state="reviewing" aria-labelledby="review-title">
+      <header>
+        <div>
+          <h2 id="review-title">Review interface updates</h2>
+          <p data-review-summary>2 files · 18 additions · 4 deletions</p>
+        </div>
+        <span className="status-badge" data-state="active" data-review-status>In review</span>
+      </header>
+      <ul data-review-files>
+        <li><code>src/app.css</code><span data-review-delta>+12 −4</span></li>
+        <li><code>src/app.test.ts</code><span data-review-delta>+6</span></li>
+      </ul>
+      <footer>
+        <Button type="button" data-variant="outline">Request changes</Button>
+        <Button type="button">Accept these 2 files</Button>
+      </footer>
+    </ChangeReview>
   );
 }
 ```
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+`ChangeReview` is a static review summary and publishes no private decision event, so it has no hook. The React application handles button events and updates `data-state` directly.
 
 ## Vue
 
 ```vue
 <script setup>
-import { ChangeReview } from "@a3s-lab/ui/vue";
-
+import { Button, ChangeReview } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <ChangeReview aria-label="Change Review">Component content</ChangeReview>
+  <ChangeReview data-state="reviewing" aria-labelledby="review-title">
+    <header>
+      <div>
+        <h2 id="review-title">Review interface updates</h2>
+        <p data-review-summary>2 files · 18 additions · 4 deletions</p>
+      </div>
+      <span class="status-badge" data-state="active" data-review-status>In review</span>
+    </header>
+    <ul data-review-files>
+      <li><code>src/app.css</code><span data-review-delta>+12 −4</span></li>
+      <li><code>src/app.test.ts</code><span data-review-delta>+6</span></li>
+    </ul>
+    <footer>
+      <Button type="button" data-variant="outline">Request changes</Button>
+      <Button type="button">Accept these 2 files</Button>
+    </footer>
+  </ChangeReview>
 </template>
 ```
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+Vue renders the same semantic structure. The host owns decision events, request state, rollback, and conflict resolution.
+
+## Accessibility
+
+Associate the section with its heading through `aria-labelledby`. State labels need text; color alone cannot communicate review, conflict, or completion. Keep long file paths available through horizontal reading or a title rather than truncating the only value. Button labels state the affected scope and result. During `pending` or decision submission, retain the summary and current focus context. After a conflict or error, put recovery next to its explanation instead of silently returning to a generic review state. The host owns change truth, permissions, decisions, and persistence; the component owns the review summary and action grouping.

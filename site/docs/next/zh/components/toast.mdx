@@ -1,29 +1,31 @@
 # Toast
 
+Toast 在任务继续进行时提供短暂、非阻塞的结果反馈，并为重要后续操作保留可访问路径。
+
 <Preview class="max-w-md">
 <div id="toaster" class="toaster"></div>
 <button
   class="btn" data-variant="outline"
   onclick="document.getElementById('toaster').toast({
     category: 'success',
-    title: 'Success',
-    description: 'A success toast called from the front-end.',
+    title: '操作成功',
+    description: '更改已保存，可以继续当前任务。',
     duration: -1,
     cancel: {
-      label: 'Dismiss'
+      label: '关闭'
     }
   })"
->Toast from front-end</button>
+>显示成功提示</button>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#toast" }}>
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#toast" }}>
 该组件为 Jinja 和 Nunjucks 提供了 `toaster()` 和 `toast()` 宏。
 </Callout>
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -44,7 +46,7 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -62,31 +64,31 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add the toaster HTML">
+  <Step title="添加 Toast 容器">
 
-在页面正文末尾附近添加一台烤面包机：
+在页面正文末尾附近添加 Toast 容器：
 
 ```html
 <div id="toaster" class="toaster"></div>
 ```
 
-在烤面包机上设置 `data-align="start"`、`data-align="center"` 或 `data-align="end"` 以更改位置。
+在容器上设置 `data-align="start"`、`data-align="center"` 或 `data-align="end"` 以更改位置。
 
   </Step>
-  <Step title="Add your toasts">
+  <Step title="添加 Toast">
 
-将服务器渲染的Toast标记附加到烤面包机上，或使用 `toaster.toast(config)` 从 JavaScript 创建标记。
+将服务器渲染的 Toast 标记放入容器，或使用 `toaster.toast(config)` 从 JavaScript 创建标记。
 
 ```html
 <div id="toaster" class="toaster">
   <div class="toast" role="status" aria-atomic="true" aria-hidden="false" data-category="success">
     <div class="toast-content"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
       <section>
-        <h2>Success</h2>
-        <p>A success toast called from the front-end.</p>
+        <h2>操作成功</h2>
+        <p>更改已保存，可以继续当前任务。</p>
       </section>
       <footer>
-        <button type="button" class="btn" data-toast-action>Dismiss</button>
+        <button type="button" class="btn" data-toast-action>关闭</button>
       </footer>
     </div>
   </div>
@@ -98,12 +100,12 @@
   class="btn" data-variant="outline"
   onclick="document.getElementById('toaster').toast({
     category: 'success',
-    title: 'Success',
-    description: 'A success toast called from the front-end.',
+    title: '操作成功',
+    description: '更改已保存，可以继续当前任务。',
     cancel: {
-      label: 'Dismiss'
+      label: '关闭'
     }
-  })">Toast from front-end</button>
+  })">显示成功提示</button>
 ```
 
   </Step>

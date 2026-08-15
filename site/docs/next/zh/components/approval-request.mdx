@@ -10,8 +10,8 @@
   >
     <header>
       <div>
-        <h2 id="approval-demo-title">允许在项目之外运行命令吗？</h2>
-        <p>Agent 希望检查已安装的 Node.js 运行时。</p>
+        <h2 id="approval-demo-title">允许更新生产集群吗？</h2>
+        <p>该命令会把当前发布清单应用到 production 集群，并可能重启 6 个实例。</p>
       </div>
       <span class="status-badge" data-state="warning" data-indicator>需要审批</span>
     </header>
@@ -24,11 +24,11 @@
       >
         <div>
           <dt>命令</dt>
-          <dd><code>node --version</code></dd>
+          <dd><code>kubectl apply -f deploy/production.yaml</code></dd>
         </div>
         <div>
-          <dt>工作目录</dt>
-          <dd><code>C:\Program Files\nodejs</code></dd>
+          <dt>目标</dt>
+          <dd><code>production / asia-east-1</code></dd>
         </div>
       </dl>
     </section>
@@ -38,16 +38,16 @@
         <label>
           <input type="radio" name="approval-scope-demo" value="once" checked />
           <strong>仅允许一次</strong>
-          <small>只允许当前 Turn 中的这一条命令。</small>
+          <small>只允许当前任务中的这一条完整命令。</small>
         </label>
         <label>
           <input type="radio" name="approval-scope-demo" value="session" />
-          <strong>本会话内允许</strong>
-          <small>允许匹配命令，直到当前线程关闭。</small>
+          <strong>本任务内允许相同目标</strong>
+          <small>仅允许相同清单与集群，直到当前任务结束。</small>
         </label>
       </fieldset>
       <footer>
-        <button type="button" class="btn" data-size="sm" data-variant="outline">拒绝</button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" data-approval="deny">拒绝</button>
         <button type="submit" class="btn" data-size="sm">允许命令</button>
       </footer>
     </form>
@@ -79,12 +79,12 @@
 </section>
 ```
 
-### 参数
+### HTML 结构
 
 | API                        | 取值                                       | 用途                                    |
 | -------------------------- | ------------------------------------------ | --------------------------------------- |
 | `class="approval-request"` | 必须                                       | 具有名称的决策表面                      |
-| `data-state`               | `pending`、`approved`、`denied`、`expired` | 审批生命周期展示                        |
+| `data-state`               | `pending`、`approved`、`denied`、`expired`、`error` | 审批生命周期展示                 |
 | 直接子 `<header>`          | 必须                                       | 决策标题、原因和状态                    |
 | 直接子 `<section>`         | 推荐                                       | 具体命令、路径、站点、Capability 和影响 |
 | 直接子 `<form>`            | Pending 状态                               | 原生范围选择和决策提交                  |
@@ -96,38 +96,89 @@
 
 组件不发送策略事件。所选范围使用原生 `submit`，拒绝或取消使用普通按钮事件。应用可以取消 Submit 以执行异步决策。
 
-## 无障碍
-
-使用标题并通过 `aria-labelledby` 关联。在控件之前说明具体资源与后果。范围选项使用 Fieldset 中的原生 Radio。只有请求确实阻塞当前任务时才把焦点移动到请求标题；其他情况下应播报请求到达而不抢焦点。不得只依赖颜色区分等待、批准和拒绝状态。
-
 ## React
 
 ```tsx
 import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useApprovalRequest();
+type Props = {
+  onApprove(scope: string): void;
+  onDeny(): void;
+};
+
+export function Example({ onApprove, onDeny }: Props) {
+  const control = useApprovalRequest({
+    events: {
+      submit(event) {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        onApprove(new FormData(form).get("scope")?.toString() ?? "once");
+      },
+    },
+  });
+
   return (
-    <ApprovalRequest ref={control.ref} aria-label="Approval Request">组件内容</ApprovalRequest>
+    <ApprovalRequest ref={control.ref} data-state="pending" aria-labelledby="approval-title">
+      <header><div><h2 id="approval-title">允许更新生产集群吗？</h2><p>可能重启 6 个实例。</p></div></header>
+      <section><code>kubectl apply -f deploy/production.yaml</code></section>
+      <form>
+        <fieldset>
+          <legend>权限范围</legend>
+          <label><input type="radio" name="scope" value="once" defaultChecked />仅允许一次</label>
+          <label><input type="radio" name="scope" value="task" />本任务内允许相同目标</label>
+        </fieldset>
+        <footer>
+          <button type="button" data-approval="deny" onClick={onDeny}>拒绝</button>
+          <button type="submit" data-approval="approve">允许命令</button>
+        </footer>
+      </form>
+    </ApprovalRequest>
   );
 }
 ```
 
-`useApprovalRequest` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+`useApprovalRequest` 监听冒泡到根节点的原生 `submit`。批准范围由表单提交，拒绝使用普通按钮处理；策略与执行仍由宿主完成。
 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/vue";
 
-const control = useApprovalRequest();
+const props = defineProps<{ onApprove(scope: string): void; onDeny(): void }>();
+const control = useApprovalRequest({
+  events: {
+    submit(event) {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      props.onApprove(new FormData(form).get("scope")?.toString() ?? "once");
+    },
+  },
+});
 const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ApprovalRequest ref="componentRef" aria-label="Approval Request">组件内容</ApprovalRequest>
+  <ApprovalRequest ref="componentRef" data-state="pending" aria-labelledby="approval-title">
+    <header><div><h2 id="approval-title">允许更新生产集群吗？</h2><p>可能重启 6 个实例。</p></div></header>
+    <section><code>kubectl apply -f deploy/production.yaml</code></section>
+    <form>
+      <fieldset>
+        <legend>权限范围</legend>
+        <label><input type="radio" name="scope" value="once" checked />仅允许一次</label>
+        <label><input type="radio" name="scope" value="task" />本任务内允许相同目标</label>
+      </fieldset>
+      <footer>
+        <button type="button" data-approval="deny" @click="props.onDeny()">拒绝</button>
+        <button type="submit" data-approval="approve">允许命令</button>
+      </footer>
+    </form>
+  </ApprovalRequest>
 </template>
 ```
 
-`useApprovalRequest` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+Vue composable 使用相同的原生表单事件与根元素引用，不复制审批状态。
+
+## 可访问性
+
+用可见标题命名请求，并通过 `aria-labelledby` 与根节点关联。在任何选项之前明确说明资源、目标环境、实际影响和可恢复性；范围使用带 `legend` 的原生单选组。安全默认值应是最窄的一次性范围，不能预选永久授权。只有请求确实阻塞当前任务时才把焦点移到标题；非阻塞请求只播报到达，不抢夺焦点。审批过期或失败时保留上下文、禁用旧控件并提供重新请求路径。宿主负责策略评估、授权持久化、审计和批准后的执行，组件不能把按钮点击等同于权限已经生效。

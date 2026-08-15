@@ -70,9 +70,16 @@ test('App Shell keeps Office navigation geometry and a contained mobile drawer',
     await expect(navigation).toHaveCSS('pointer-events', 'auto');
     await expect(navigation).not.toHaveAttribute('inert', '');
     await expect(navigation).not.toHaveAttribute('aria-hidden', 'true');
+    await expect(main).toHaveAttribute('inert', '');
+    await expect(main).toHaveAttribute('aria-hidden', 'true');
     await expect(navigation).toHaveCSS('opacity', '1');
-    await expect(toggle).toHaveAccessibleName('Close navigation');
-    await expect(navigation.getByRole('link').first()).toBeFocused();
+    await expect(toggle).toHaveAttribute('aria-label', 'Close navigation');
+    const navigationLinks = navigation.getByRole('link');
+    await expect(navigationLinks.first()).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(navigationLinks.last()).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(navigationLinks.first()).toBeFocused();
     const [openShellBox, openNavigationBox] = await Promise.all([
       shell.boundingBox(),
       navigation.boundingBox(),
@@ -86,6 +93,8 @@ test('App Shell keeps Office navigation geometry and a contained mobile drawer',
     await page.keyboard.press('Escape');
     await expect(shell).not.toHaveAttribute('data-mobile-navigation', 'open');
     await expect(navigation).toHaveCSS('visibility', 'hidden');
+    await expect(main).not.toHaveAttribute('inert', '');
+    await expect(main).not.toHaveAttribute('aria-hidden', 'true');
     await expect(toggle).toBeFocused();
   }
 });

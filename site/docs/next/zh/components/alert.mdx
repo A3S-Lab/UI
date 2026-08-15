@@ -1,22 +1,24 @@
 # 警报
 
+警报用于在当前页面中传达需要注意的状态、结果或风险，不打断用户正在进行的任务。
+
 <Preview class="w-full max-w-md">
 <div class="grid items-start gap-4">
-  <div class="alert"><svg class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
-    <h2>Payment successful</h2>
-    <section>Your payment of $29.99 has been processed. A receipt has been sent to your email address.</section>
+  <div class="alert" data-variant="success"><svg aria-hidden="true" class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+    <h2>付款成功</h2>
+    <section>¥199.00 已支付，电子收据已发送到你的邮箱。</section>
   </div>
-  <div class="alert"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-    <h2>New feature available</h2>
-    <section>We've added dark mode support. You can enable it in your account settings.</section>
+  <div class="alert" data-variant="info"><svg aria-hidden="true" class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+    <h2>深色模式现已可用</h2>
+    <section>可以在外观设置中切换主题，选择会立即应用到整个工作区。</section>
   </div>
 </div>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -34,19 +36,19 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+使用 CDN 或包管理器集成时，请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your alert HTML">
+  <Step title="添加警报 HTML">
 
-Use `alert` for default styling. Add `data-variant="destructive"` for error states. Add a direct child `<footer>` for an inline-end action region.
+使用 `alert` 作为中性提示；通过 `data-variant="info"`、`success`、`warning` 或 `destructive` 表达信息、成功、警告和错误。只有动态插入的紧急错误才添加 `role="alert"`；可延后处理的状态使用 `role="status"`，静态说明不需要实时角色。直接添加 `<footer>` 子元素可提供一个与提示紧密相关的恢复操作。
 
 ```html
-<div class="alert"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-  <h2>Heads up!</h2>
-  <section>You can add components and dependencies to your app.</section>
+<div class="alert"><svg aria-hidden="true" class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+  <h2>网关配置需要重新验证</h2>
+  <section>证书已更新，请先验证连接再继续发布。</section>
   <footer>
-    <button type="button" class="btn" data-variant="outline">Enable</button>
+    <button type="button" class="btn" data-variant="outline">立即验证</button>
   </footer>
 </div>
 ```
@@ -59,30 +61,30 @@ Use `alert` for default styling. Add `data-variant="destructive"` for error stat
 <dl>
   <dt><code>&lt;div class="alert"&gt;</code></dt>
   <dd>
-    Main container. Use <code>data-variant="destructive"</code> for error states.
+    主容器。使用 <code>data-variant="info"</code>、<code>success</code> 或 <code>destructive</code> 表达语义状态。
     <dl>
-      <dt><code>&lt;svg&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>The icon.</dd>
+      <dt><code>&lt;svg&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>辅助识别状态的图标。必须设置 <code>aria-hidden="true"</code>，不能替代标题。</dd>
       <dt><code>&lt;h2&gt;</code></dt>
-      <dd>The title.</dd>
-      <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>The description.</dd>
-      <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-      <dd>The action region, aligned to the inline end of the alert. Put the action element inside it, such as a button or link.</dd>
+      <dd>简短结果或问题名称。根据页面层级选择合适的标题级别，也可使用 <code>&lt;strong data-title&gt;</code>。</dd>
+      <dt><code>&lt;section&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>影响、原因和恢复方式。</dd>
+      <dt><code>&lt;footer&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>行末操作区。只放与当前提示直接相关的按钮或链接，避免形成第二套工具栏。</dd>
     </dl>
   </dd>
 </dl>
 
-## 示例
+## 状态与变体
 
 ### 基本
 
-带有图标、标题和描述的基本警报。
+中性提示用于说明当前上下文，不暗示成功或失败。
 
 <Preview class="w-full max-w-md">
-<div class="alert"><svg class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
-  <h2>Account updated successfully</h2>
-  <section>Your profile information has been saved. Changes will be reflected immediately.</section>
+<div class="alert"><svg aria-hidden="true" class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+  <h2>维护窗口已安排</h2>
+  <section>网关将在今晚 23:00 重启，预计持续 5 分钟。</section>
 </div>
 </Preview>
 
@@ -91,34 +93,34 @@ Use `alert` for default styling. Add `data-variant="destructive"` for error stat
 使用 `data-variant="destructive"` 创建破坏性警报。
 
 <Preview class="w-full max-w-md">
-<div class="alert" data-variant="destructive"><svg class="lucide lucide-circle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
-  <h2>Payment failed</h2>
-  <section>Your payment could not be processed. Please check your payment method and try again.</section>
+<div class="alert" data-variant="destructive"><svg aria-hidden="true" class="lucide lucide-circle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
+  <h2>发布失败</h2>
+  <section>目标集群拒绝了配置。请检查证书权限后重试。</section>
 </div>
 </Preview>
 
 ### 动作
 
-Use `<footer>` to add a button or other action element to the alert.
+当存在明确恢复路径时，使用 `<footer>` 提供一个主操作。不要把与提示无关的命令放进警报。
 
 <Preview class="w-full max-w-md">
 <div class="alert">
-  <h2>Dark mode is now available</h2>
-  <section>Enable it under your profile settings to get started.</section>
+  <h2>检测到新的访问范围</h2>
+  <section>当前密钥请求写入生产环境，需要重新确认权限。</section>
   <footer>
-    <button type="button" class="btn" data-size="xs">Enable</button>
+    <button type="button" class="btn" data-size="xs">审查权限</button>
   </footer>
 </div>
 </Preview>
 
-### 自定义颜色
+### 警告
 
-您可以通过向警报添加自定义类（例如 `bg-amber-50 dark:bg-amber-950`）来自定义警报颜色。
+使用 `data-variant="warning"` 表达尚未失败、但继续操作前需要处理的风险。状态含义必须同时由标题和说明表达。
 
 <Preview class="w-full max-w-md">
-<div class="alert border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50"><svg class="lucide lucide-triangle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-  <h2>Your subscription will expire in 3 days.</h2>
-  <section>Renew now to avoid service interruption or upgrade to a paid plan to continue using the service.</section>
+<div class="alert" data-variant="warning"><svg aria-hidden="true" class="lucide lucide-triangle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+  <h2>生产证书将在 3 天后过期</h2>
+  <section>请在到期前完成轮换并验证调用方，避免连接中断。</section>
 </div>
 </Preview>
 
@@ -128,11 +130,11 @@ Use `<footer>` to add a button or other action element to the alert.
 
 <Preview class="w-full max-w-md">
 <div class="grid items-start gap-4" dir="rtl">
-  <div class="alert"><svg class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+  <div class="alert"><svg aria-hidden="true" class="lucide lucide-circle-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
     <h2>تم الدفع بنجاح</h2>
     <section>تمت معالجة دفعتك البالغة 29.99 دولارًا. تم إرسال إيصال إلى عنوان بريدك الإلكتروني.</section>
   </div>
-  <div class="alert"><svg class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+  <div class="alert"><svg aria-hidden="true" class="lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
     <h2>ميزة جديدة متاحة</h2>
     <section>لقد أضفنا دعم الوضع الداكن. يمكنك تفعيله في إعدادات حسابك.</section>
   </div>
@@ -146,24 +148,45 @@ import { Alert } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Alert>组件内容</Alert>
+    <Alert data-variant="warning" role="status">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M12 9v4m0 4h.01" />
+      </svg>
+      <h2>生产证书将在 3 天后过期</h2>
+      <section>请在到期前完成轮换并验证调用方，避免连接中断。</section>
+      <footer>
+        <button type="button">开始轮换</button>
+      </footer>
+    </Alert>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Alert` 只映射语义根元素，标题、说明和恢复操作仍遵循上方 HTML 契约。这里使用 `role="status"` 是因为宿主会在证书状态变化后动态插入提示；页面初始就存在的说明不需要实时角色。
 
 ## Vue
 
 ```vue
 <script setup>
 import { Alert } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Alert>组件内容</Alert>
+  <Alert data-variant="warning" role="status">
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M12 9v4m0 4h.01" />
+    </svg>
+    <h2>生产证书将在 3 天后过期</h2>
+    <section>请在到期前完成轮换并验证调用方，避免连接中断。</section>
+    <footer>
+      <button type="button">开始轮换</button>
+    </footer>
+  </Alert>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`Alert` 只映射语义根元素，Vue 版本不会增加框架专属状态或包装层。静态警报没有控制器，因此不提供伪造的 hook。
+
+## 可访问性
+
+标题必须独立说明结果或风险，说明文本再补充影响与恢复路径；图标只用于快速识别状态，并设置 `aria-hidden="true"`。静态说明不添加实时角色；异步完成且不紧急的结果使用 `role="status"`，需要用户立即处理的动态错误才使用 `role="alert"`。不要在已有实时区域中嵌套警报，也不要因为颜色或图标不同而省略状态文字。宿主负责决定何时插入或更新警报、把焦点保持在原任务上，并让警报中的恢复操作回到可预测的焦点位置。

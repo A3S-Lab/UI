@@ -1,34 +1,29 @@
 # 品牌标识组
 
-品牌标识组将产品标记、名称和可选说明稳定地组合在应用标题栏、认证界面与产品导航中。
+品牌标识组把官方标记、产品名称和可选说明组合成一个稳定身份，用于应用标题栏、认证入口与产品导航。
 
 <Preview class="w-full">
-  <div class="flex w-full flex-wrap items-center justify-between gap-4 rounded-xl border bg-card p-4">
-    <a
-      class="brand-lockup"
-      href="#brand-lockup-product"
-      aria-label="A3S OS 首页"
-    >
-      <span data-brand-mark aria-hidden="true">
-        <img src="../../../public/logo.png" alt="" />
-      </span>
-      <span data-brand-name>A3S OS</span>
-    </a>
-    <div class="brand-lockup" data-size="sm" data-tone="mono">
-      <span data-brand-mark aria-hidden="true">
-        <img src="../../../public/logo.png" alt="" />
-      </span>
-      <span data-brand-identity>
-        <strong data-brand-name>A3S Web</strong>
-        <small data-brand-description>控制平面</small>
-      </span>
-    </div>
+<div class="flex w-full flex-wrap items-center justify-between gap-6">
+  <a class="brand-lockup" href="#brand-lockup-home" aria-label="返回 A3S OS 首页">
+    <span data-brand-mark aria-hidden="true"><A3SAssetImage path="/logo.png" alt="" /></span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S OS</strong>
+      <small data-brand-description>智能工作系统</small>
+    </span>
+  </a>
+  <div class="brand-lockup" data-size="sm" data-tone="mono">
+    <span data-brand-mark aria-hidden="true"><A3SAssetImage path="/logo.png" alt="" /></span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S Web</strong>
+      <small data-brand-description>控制平面</small>
+    </span>
   </div>
+</div>
 </Preview>
 
 ## 用法
 
-可导入完整 A3S 样式包，也可以按需导入品牌标识组入口。
+导入完整样式包，或按需导入品牌标识组。
 
 ```css
 @import "tailwindcss";
@@ -37,55 +32,60 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-标识组用于返回首页时使用链接；仅用于标识当前产品时使用普通容器。
+标识组用于返回产品首页时使用链接；只说明当前产品身份时使用普通容器。官方 Logo 路径由部署环境提供，文档站使用 `/logo.png`。
 
 ```html
-<a class="brand-lockup" href="/" aria-label="A3S OS 首页">
-  <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
+<a class="brand-lockup" href="/" aria-label="返回 A3S OS 首页">
+  <span data-brand-mark aria-hidden="true">
+    <img src="/logo.png" alt="" />
+  </span>
   <span data-brand-identity>
     <strong data-brand-name>A3S OS</strong>
-    <small data-brand-description>Agent Factory</small>
+    <small data-brand-description>智能工作系统</small>
   </span>
 </a>
 ```
 
 ### 参数
 
-| API                      | 取值     | 用途                             |
-| ------------------------ | -------- | -------------------------------- |
-| `class="brand-lockup"`   | 必填     | 标识组根元素                     |
-| `data-brand-mark`        | 必填     | 固定的图形、字母组合或 Logo 区域 |
-| `data-brand-identity`    | 可选     | 组合名称和说明                   |
-| `data-brand-name`        | 必填     | 可见的产品或组织名称             |
-| `data-brand-description` | 可选     | 紧凑的产品上下文                 |
-| `data-size`              | `sm`     | 更紧凑的标题栏样式               |
-| `data-tone`              | `mono`   | 官方图形的单色呈现                |
-| `--brand-lockup-accent`  | CSS 颜色 | 覆盖标记强调色                   |
+| API | 必填 | 用途 |
+| --- | --- | --- |
+| `class="brand-lockup"` | 是 | 根元素 |
+| `data-brand-mark` | 是 | 官方标记区域 |
+| `data-brand-identity` | 有说明时 | 组合名称与说明 |
+| `data-brand-name` | 是 | 可见产品名称 |
+| `data-brand-description` | 否 | 简短产品上下文，不是营销口号 |
+| `data-size="sm"` | 否 | 适配密集标题栏的紧凑尺寸 |
+| `data-tone="mono"` | 否 | 受限单色环境中的后备呈现 |
+| `--brand-lockup-accent` | 否 | 仅使用获准品牌令牌覆盖强调色 |
 
 ## 状态与变体
 
-不需要说明时，名称可以直接放在标记旁边。密集的工作区标题栏使用 `data-size="sm"`，只有无法使用彩色资产时才使用 `data-tone="mono"`。所有呈现都必须使用 A3S OS 官方资产，不能重画、裁切或虚构三维标识。仅使用获准的品牌令牌覆盖 `--brand-lockup-accent`，不要用业务状态颜色装饰产品身份。
+默认尺寸用于认证页、导航标题和空白启动面；紧凑尺寸用于空间受限的工作区标题栏。名称可以直接跟随标记，也可以与一句说明组成身份列。只有无法使用彩色资产的受限环境才启用 `data-tone="mono"`。
 
-## 可访问性
-
-产品名称必须保留为可见文本。装饰性的字母标记和 Logo 使用 `aria-hidden="true"`；当整个标识组是链接时，为链接提供能说明目标位置的可访问名称。不要让标记和名称在可访问性树中重复朗读同一产品名。
+品牌标识组不表达在线、危险、成功或权限状态。不要使用业务状态色重绘 Logo，不要裁切、拉伸、加阴影、替换字母标记或在不同产品中虚构新图形。A3S 子产品共享官方 A3S OS 标记，通过可见名称区分。
 
 ## React
 
 ```tsx
 import { BrandLockup } from "@a3s-lab/ui/react";
 
-export function Example() {
+export function ProductHomeLink() {
   return (
-    <BrandLockup href="/" aria-label="A3S OS 首页">
-      <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
-      <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+    <BrandLockup as="a" href="/" aria-label="返回 A3S OS 首页">
+      <span data-brand-mark aria-hidden="true">
+        <img src="/logo.png" alt="" />
+      </span>
+      <span data-brand-identity>
+        <strong data-brand-name>A3S OS</strong>
+        <small data-brand-description>智能工作系统</small>
+      </span>
     </BrandLockup>
   );
 }
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+`BrandLockup` 只映射身份根元素。资产解析、产品名称和导航目标由宿主提供，因此不需要组件 hook。
 
 ## Vue
 
@@ -95,11 +95,20 @@ import { BrandLockup } from "@a3s-lab/ui/vue";
 </script>
 
 <template>
-  <BrandLockup href="/" aria-label="A3S OS 首页">
-    <span data-brand-mark aria-hidden="true"><img src="/logo.png" alt="" /></span>
-    <span data-brand-identity><strong data-brand-name>A3S OS</strong><small data-brand-description>Agent Factory</small></span>
+  <BrandLockup as="a" href="/" aria-label="返回 A3S OS 首页">
+    <span data-brand-mark aria-hidden="true">
+      <img src="/logo.png" alt="" />
+    </span>
+    <span data-brand-identity>
+      <strong data-brand-name>A3S OS</strong>
+      <small data-brand-description>智能工作系统</small>
+    </span>
   </BrandLockup>
 </template>
 ```
 
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Vue 适配器输出相同的链接、官方资产与可见名称，不增加框架专属包装。
+
+## 可访问性
+
+产品名称必须保留为可见文本，不能只显示 Logo。标记和图片是对名称的视觉补充，应放在 `aria-hidden="true"` 的区域内并使用空 `alt`，避免重复朗读。整个标识组是链接时，链接名称应说明目标，例如“返回 A3S OS 首页”；当前产品身份不是导航时不要赋予链接或按钮语义。紧凑布局可以截断非必要说明，但不能隐藏产品名称。宿主负责提供正确、获准且可缓存的官方资产，组件只负责尺寸、排列与焦点呈现。

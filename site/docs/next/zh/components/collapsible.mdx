@@ -3,14 +3,14 @@
 使用原生 details 元素收纳次要说明，同时让标题、展开状态和无脚本降级路径保持清晰。
 
 <Preview class="w-full">
-<details class="collapsible" open><summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div></details>
+<details class="collapsible" open><summary>为什么需要此权限</summary><div data-collapsible-content>获得批准前，此文件夹保持只读。</div></details>
 </Preview>
 
-## 使用方式
+## 用法
 
 ```html
 <details class="collapsible" open>
-  <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+  <summary>为什么需要此权限</summary><div data-collapsible-content>获得批准前，此文件夹保持只读。</div>
 </details>
 ```
 
@@ -23,7 +23,7 @@ export function Example() {
   const control = useCollapsible();
   return (
     <Collapsible ref={control.ref} open>
-      <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+      <summary>为什么需要此权限</summary><div data-collapsible-content>获得批准前，此文件夹保持只读。</div>
     </Collapsible>
   );
 }
@@ -43,7 +43,7 @@ const componentRef = control.componentRef;
 
 <template>
   <Collapsible ref="componentRef" open>
-    <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+    <summary>为什么需要此权限</summary><div data-collapsible-content>获得批准前，此文件夹保持只读。</div>
   </Collapsible>
 </template>
 ```

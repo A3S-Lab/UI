@@ -81,7 +81,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Harness              | Task Start, Task Workspace, Agent Composer, Agent Transcript, Agent Workbench, Context Selector, Message Status, Message Attachment, Message Citation, Follow-up Suggestions, Task Plan, Plan Step, Task Queue, Approval Request, Execution Item, Checkpoint, Tool Call, Change Review, Execution Evidence, Artifact Card, File Explorer, Code Editor, Terminal, Log Viewer, and Device Simulator |
 | Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                                    |
 
-Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
+Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Preview stages derive the correct control, content, overlay, or workspace layout, while phone and tablet modes run in isolated CSS viewports so responsive media queries use the selected width. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
 ## Design foundations
 
@@ -118,6 +118,8 @@ Harness
 ```
 
 These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320–380-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
+
+Device Simulator preserves exact iframe viewport dimensions inside scaled phone, tablet, and desktop hardware shells, then exposes a structured native-preview boundary for trusted `a3s-webview` hosts.
 
 The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations. Applications continue to own repository, terminal, browser, transport, scheduling, persistence, and policy logic.
 

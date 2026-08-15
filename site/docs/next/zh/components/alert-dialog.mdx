@@ -1,27 +1,29 @@
 # 警报对话框
 
-模式对话框，用重要内容打断用户并期望得到响应。
+警报对话框要求用户在高风险或不可逆操作前做出明确选择；只有缺少响应就无法安全继续时才使用。
 
-<Preview>
-<button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">Show Dialog</button>
-<dialog id="demo-alert-dialog" class="alert-dialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
-  <div>
+<Preview class="w-full max-w-lg">
+<div class="grid w-full justify-items-start gap-4">
+  <button type="button" onclick="const dialog = document.getElementById('demo-alert-dialog'); if (dialog.open) dialog.close(); dialog.style.cssText = ''; dialog.firstElementChild.style.cssText = ''; dialog.showModal()" class="btn" data-variant="outline">打开确认对话框</button>
+  <dialog id="demo-alert-dialog" class="alert-dialog" role="alertdialog" open aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description" style="position:static;inset:auto;display:block;width:100%;max-width:30rem;margin:0 auto;overflow:visible">
+  <div style="position:relative;inset:auto;translate:none;scale:1;transform:none;max-height:none;margin:0">
     <header>
-      <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
-      <p id="demo-alert-dialog-description">This action cannot be undone. This will permanently delete your account and remove your data from our servers.</p>
+      <h2 id="demo-alert-dialog-title">删除账户？</h2>
+      <p id="demo-alert-dialog-description">账户、项目和历史记录将被永久删除。该操作无法撤销。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Continue</button>
+      <button type="button" class="btn" data-variant="outline" onclick="this.closest('dialog').close()">取消</button>
+      <button type="button" class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">删除账户</button>
     </footer>
   </div>
-</dialog>
+  </dialog>
+</div>
 </Preview>
 
-## 用途
+## 用法
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -30,7 +32,7 @@
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者仅导入基本 CSS、诊断对话框组件 CSS 和一个样式包。
+或者仅导入基础 CSS、对话框组件 CSS 和一个样式包。
 
 ```css
 @import "tailwindcss";
@@ -39,26 +41,26 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-警报对话框使用对话框组件CSS。
+警报对话框复用对话框组件 CSS，不需要额外样式文件。
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+使用 CDN 或包管理器集成时，请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your alert dialog HTML">
+  <Step title="添加警报对话框 HTML">
 
-Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the close button and backdrop-click handler when the user must choose an explicit action.
+警报对话框使用原生 `<dialog class="alert-dialog">`。当用户必须明确选择才能安全继续时，不提供右上角关闭按钮，也不允许点击背景关闭。
 
 ```html
-<button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">Show Dialog</button>
+<button type="button" onclick="document.getElementById('demo-alert-dialog').showModal()" class="btn" data-variant="outline">删除账户</button>
 <dialog id="demo-alert-dialog" class="alert-dialog" aria-labelledby="demo-alert-dialog-title" aria-describedby="demo-alert-dialog-description">
   <div>
     <header>
-      <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
-      <p id="demo-alert-dialog-description">This action cannot be undone. This will permanently delete your account and remove your data from our servers.</p>
+      <h2 id="demo-alert-dialog-title">确认删除账户？</h2>
+      <p id="demo-alert-dialog-description">账户、项目和历史记录将被永久删除，且无法恢复。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Continue</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">取消</button>
+      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close('confirm')">删除账户</button>
     </footer>
   </div>
 </dialog>
@@ -70,30 +72,30 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
 ### HTML 结构
 
 <dl>
-  <dt><code>&lt;button type="button" onclick="dialog.showModal()"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-  <dd>Trigger button. A3S UI uses the native <code>HTMLDialogElement.showModal()</code> method.</dd>
+  <dt><code>&lt;button type="button" onclick="dialog.showModal()"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+  <dd>触发按钮。使用原生 <code>HTMLDialogElement.showModal()</code> 打开模态对话框。</dd>
   <dt><code>&lt;dialog class="alert-dialog" id="&#123; DIALOG_ID &#125;"&gt;</code></dt>
   <dd>
-    Native modal dialog. Add <code>aria-labelledby</code> and <code>aria-describedby</code> when title and description are present. Use <code>data-size="sm"</code> for the compact upstream size.
+    原生模态对话框。存在标题和说明时，分别通过 <code>aria-labelledby</code> 与 <code>aria-describedby</code> 建立关系；紧凑布局使用 <code>data-size="sm"</code>。
     <dl>
       <dt><code>&lt;div&gt;</code></dt>
       <dd>
-        Dialog content surface.
+        对话框内容表面。
         <dl>
           <dt><code>&lt;header&gt;</code></dt>
           <dd>
-            Alert dialog header.
+            警报对话框标题区。
             <dl>
-              <dt><code>&lt;figure&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Media area for an icon or image.</dd>
+              <dt><code>&lt;figure&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+              <dd>用于解释风险类型的图标或图片，不能替代标题。</dd>
               <dt><code>&lt;h2 id="&#123; TITLE_ID &#125;"&gt;</code></dt>
-              <dd>Alert dialog title. Reference it from <code>aria-labelledby</code>.</dd>
-              <dt><code>&lt;p id="&#123; DESCRIPTION_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Alert dialog description. Reference it from <code>aria-describedby</code>.</dd>
+              <dd>警报标题，由 <code>aria-labelledby</code> 引用。</dd>
+              <dt><code>&lt;p id="&#123; DESCRIPTION_ID &#125;"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+              <dd>结果与恢复说明，由 <code>aria-describedby</code> 引用。</dd>
             </dl>
           </dd>
           <dt><code>&lt;footer&gt;</code></dt>
-          <dd>Action area. Include a cancel action and the primary action.</dd>
+          <dd>操作区。至少提供安全退出操作和明确命名的确认操作。</dd>
         </dl>
       </dd>
     </dl>
@@ -102,25 +104,25 @@ Alert Dialog uses a native `<dialog class="alert-dialog">` element. Omit the clo
 
 ### JavaScript API
 
-Alert Dialog 保留原生 `HTMLDialogElement` 契约。React 的 `useAlertDialog` 与 Vue 的同名 composable 可调用 `showModal()` 和 `close(returnValue)`；`cancel` 与 `close` 仍是原生 DOM 事件。
+警报对话框保留原生 `HTMLDialogElement` 契约。React 与 Vue 的 `useAlertDialog` 可调用 `showModal()` 和 `close(returnValue)`；`cancel` 与 `close` 仍是原生 DOM 事件。
 
-## 示例
+## 状态与变体
 
 ### 基本
 
-带有标题、描述以及取消和继续按钮的基本警报对话框。
+基础警报必须说明继续操作的具体后果，并提供安全退出路径。
 
 <Preview>
-<button type="button" onclick="document.getElementById('alert-dialog-basic').showModal()" class="btn" data-variant="outline">Show Dialog</button>
+<button type="button" onclick="document.getElementById('alert-dialog-basic').showModal()" class="btn" data-variant="outline">离开编辑器</button>
 <dialog id="alert-dialog-basic" class="alert-dialog" aria-labelledby="alert-dialog-basic-title" aria-describedby="alert-dialog-basic-description">
   <div>
     <header>
-      <h2 id="alert-dialog-basic-title">Are you absolutely sure?</h2>
-      <p id="alert-dialog-basic-description">This action cannot be undone. This will permanently delete your account and remove your data from our servers.</p>
+      <h2 id="alert-dialog-basic-title">放弃未保存的更改？</h2>
+      <p id="alert-dialog-basic-description">离开后，本次编辑的 6 项配置更改将丢失。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Continue</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">继续编辑</button>
+      <button class="btn" onclick="this.closest('dialog').close('confirm')">放弃更改</button>
     </footer>
   </div>
 </dialog>
@@ -128,20 +130,20 @@ Alert Dialog 保留原生 `HTMLDialogElement` 契约。React 的 `useAlertDialog
 
 ### 媒体
 
-Use a `<figure>` in the header to add a media element such as an icon or image to the alert dialog.
+只有当图标能帮助识别风险类型时，才在标题区使用 `<figure>`；图标不应成为装饰。
 
 <Preview>
-<button type="button" onclick="document.getElementById('alert-dialog-media').showModal()" class="btn" data-variant="outline">Share Project</button>
+<button type="button" onclick="document.getElementById('alert-dialog-media').showModal()" class="btn" data-variant="outline">轮换生产密钥</button>
 <dialog id="alert-dialog-media" class="alert-dialog" aria-labelledby="alert-dialog-media-title" aria-describedby="alert-dialog-media-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-circle-fading-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 7.38 16.75" /><path d="M12 8v8" /><path d="M16 12H8" /><path d="M2.5 8.88a10 10 0 0 0 0 6.24" /><path d="M4.64 4.64a10 10 0 0 0 0 14.72" /></svg></figure>
-      <h2 id="alert-dialog-media-title">Share this project?</h2>
-      <p id="alert-dialog-media-description">Anyone with the link will be able to view and edit this project.</p>
+      <h2 id="alert-dialog-media-title">立即轮换生产密钥？</h2>
+      <p id="alert-dialog-media-description">旧密钥会立刻失效。尚未更新的调用方将无法连接。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Share</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">暂不轮换</button>
+      <button class="btn" onclick="this.closest('dialog').close('confirm')">确认轮换</button>
     </footer>
   </div>
 </dialog>
@@ -152,17 +154,17 @@ Use a `<figure>` in the header to add a media element such as an icon or image t
 当警报对话框确认破坏性操作时，使用破坏性操作按钮。
 
 <Preview>
-<button type="button" onclick="document.getElementById('alert-dialog-destructive').showModal()" class="btn" data-variant="destructive">Delete Chat</button>
+<button type="button" onclick="document.getElementById('alert-dialog-destructive').showModal()" class="btn" data-variant="destructive">删除运行记录</button>
 <dialog id="alert-dialog-destructive" class="alert-dialog" aria-labelledby="alert-dialog-destructive-title" aria-describedby="alert-dialog-destructive-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-trash-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></figure>
-      <h2 id="alert-dialog-destructive-title">Delete this chat?</h2>
-      <p id="alert-dialog-destructive-description">This action cannot be undone. This will permanently delete the chat and remove it from your history.</p>
+      <h2 id="alert-dialog-destructive-title">永久删除运行记录？</h2>
+      <p id="alert-dialog-destructive-description">日志、证据和关联产物索引都将被删除，且无法恢复。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close()">Delete</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">取消</button>
+      <button class="btn" data-variant="destructive" onclick="this.closest('dialog').close('confirm')">删除记录</button>
     </footer>
   </div>
 </dialog>
@@ -170,20 +172,20 @@ Use a `<figure>` in the header to add a media element such as an icon or image t
 
 ### 小
 
-使用 `data-size="sm"` 实现紧凑的警报对话框。小尺寸使媒体、标题和描述堆叠在一起，并将操作按钮集中在两列页脚中。
+使用 `data-size="sm"` 处理文案短、选择明确的阻塞操作。复杂影响或需要补充输入的任务不应塞进紧凑对话框。
 
 <Preview>
-<button type="button" onclick="document.getElementById('alert-dialog-small').showModal()" class="btn" data-variant="outline">Invite Members</button>
+<button type="button" onclick="document.getElementById('alert-dialog-small').showModal()" class="btn" data-variant="outline">停止任务</button>
 <dialog id="alert-dialog-small" class="alert-dialog" data-size="sm" aria-labelledby="alert-dialog-small-title" aria-describedby="alert-dialog-small-description">
   <div>
     <header>
       <figure><svg class="lucide lucide-users" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" /></svg></figure>
-      <h2 id="alert-dialog-small-title">Invite team members?</h2>
-      <p id="alert-dialog-small-description">Send an invitation link to your selected teammates.</p>
+      <h2 id="alert-dialog-small-title">停止正在运行的任务？</h2>
+      <p id="alert-dialog-small-description">当前步骤会取消，已完成的变更仍会保留。</p>
     </header>
     <footer>
-      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close()">Cancel</button>
-      <button class="btn" onclick="this.closest('dialog').close()">Invite</button>
+      <button class="btn" data-variant="outline" onclick="this.closest('dialog').close('cancel')">继续运行</button>
+      <button class="btn" onclick="this.closest('dialog').close('confirm')">停止任务</button>
     </footer>
   </div>
 </dialog>
@@ -219,7 +221,27 @@ import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useAlertDialog();
   return (
-    <AlertDialog ref={control.ref} aria-label="Alert Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></AlertDialog>
+    <>
+      <button type="button" onClick={() => control.call("showModal")}>
+        删除运行记录
+      </button>
+      <AlertDialog
+        ref={control.ref}
+        aria-labelledby="delete-run-title"
+        aria-describedby="delete-run-description"
+      >
+        <div>
+          <header>
+            <h2 id="delete-run-title">永久删除运行记录？</h2>
+            <p id="delete-run-description">日志、证据和产物索引都将被删除，且无法恢复。</p>
+          </header>
+          <footer>
+            <button type="button" onClick={() => control.call("close", "cancel")}>取消</button>
+            <button type="button" onClick={() => control.call("close", "confirm")}>删除记录</button>
+          </footer>
+        </div>
+      </AlertDialog>
+    </>
   );
 }
 ```
@@ -237,8 +259,28 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <AlertDialog ref="componentRef" aria-label="Alert Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></AlertDialog>
+  <button type="button" @click='control.call("showModal")'>删除运行记录</button>
+  <AlertDialog
+    ref="componentRef"
+    aria-labelledby="delete-run-title"
+    aria-describedby="delete-run-description"
+  >
+    <div>
+      <header>
+        <h2 id="delete-run-title">永久删除运行记录？</h2>
+        <p id="delete-run-description">日志、证据和产物索引都将被删除，且无法恢复。</p>
+      </header>
+      <footer>
+        <button type="button" @click='control.call("close", "cancel")'>取消</button>
+        <button type="button" @click='control.call("close", "confirm")'>删除记录</button>
+      </footer>
+    </div>
+  </AlertDialog>
 </template>
 ```
 
 `useAlertDialog` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## 可访问性
+
+标题必须准确命名决策，说明必须写明继续操作的影响以及是否可恢复，并通过 `aria-labelledby`、`aria-describedby` 与对话框关联。打开后把焦点放在最安全、最可预测的操作上；关闭后归还给原触发器。保留原生 Escape 与焦点约束，但当缺少明确选择就无法安全继续时，应拦截 `cancel`，且不能允许背景点击关闭。确认按钮使用动词和对象命名，不能只写“继续”。

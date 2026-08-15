@@ -1,10 +1,12 @@
 # 组合框
 
+组合框将可编辑输入与建议列表结合，适合选项较多、需要搜索或允许自定义输入的场景。
+
 <Preview>
 <div id="framework-combobox" class="combobox">
-  <input type="text" role="combobox" placeholder="Select a framework" aria-label="框架" autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" aria-expanded="false" aria-controls="framework-combobox-listbox" /><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="combobox-trigger-icon"><path d="m6 9 6 6 6-6" /></svg>
+  <input type="text" role="combobox" placeholder="选择框架" aria-label="框架" autocomplete="off" autocorrect="off" spellcheck="false" aria-autocomplete="list" aria-expanded="false" aria-controls="framework-combobox-listbox" /><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="combobox-trigger-icon"><path d="m6 9 6 6 6-6" /></svg>
   <div id="framework-combobox-popover" data-popover aria-hidden="true">
-    <div role="listbox" id="framework-combobox-listbox" aria-orientation="vertical" data-empty="No items found.">
+    <div role="listbox" id="framework-combobox-listbox" aria-orientation="vertical" data-empty="没有匹配项。">
       <div role="option" data-value="Next.js">Next.js</div>
       <div role="option" data-value="SvelteKit">SvelteKit</div>
       <div role="option" data-value="Nuxt.js">Nuxt.js</div>
@@ -16,14 +18,14 @@
 </div>
 </Preview>
 
-## 用途
+## 用法
 
-<Callout title="Template macros available" icon="code" action={{ label: "More", href: "/templates#combobox" }}>
+<Callout title="提供模板宏" icon="code" action={{ label: "了解更多", href: "/templates#combobox" }}>
 该组件为 Jinja 和 Nunjucks 提供了 `combobox()` 宏。
 </Callout>
 
 <Steps>
-  <Step title="Include CSS">
+  <Step title="引入 CSS">
 
 导入 Tailwind 和一个完整的 A3S UI 样式包。
 
@@ -44,7 +46,7 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Include JavaScript">
+  <Step title="引入 JavaScript">
 
 复制或提供完整的 A3S UI JavaScript 包。
 
@@ -62,7 +64,7 @@
 使用CDN或批量程序导入？请参见[安装页](/installation)。
 
   </Step>
-  <Step title="Add your combobox HTML">
+  <Step title="添加组合框 HTML">
 
 组合框是输入优先的。可见输入过滤列表；隐藏输入存储提交的值。
 

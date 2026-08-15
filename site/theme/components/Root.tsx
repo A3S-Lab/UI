@@ -5,6 +5,24 @@ type RootProps = {
   children: ReactNode;
 };
 
+function ensureStylesheet(
+  selector: string,
+  source: string,
+  attributes: Record<string, string>,
+) {
+  const existing = document.querySelector<HTMLLinkElement>(selector);
+  if (existing) return existing;
+
+  const stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = source;
+  Object.entries(attributes).forEach(([name, value]) => {
+    stylesheet.setAttribute(name, value);
+  });
+  document.head.append(stylesheet);
+  return stylesheet;
+}
+
 function ensureScript(
   selector: string,
   source: string,
@@ -27,6 +45,17 @@ export function Root({ children }: RootProps) {
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
+    ensureStylesheet(
+      'link[rel="stylesheet"][href$="/assets/a3s-cascade.css"]',
+      withBase("/assets/a3s-cascade.css"),
+      { "data-a3s-ui-cascade": "true" },
+    );
+    ensureStylesheet(
+      'link[rel="stylesheet"][href$="/assets/a3s-ui.css"]',
+      withBase("/assets/a3s-ui.css"),
+      { "data-a3s-ui-styles": "true" },
+    );
+
     const initializeRuntime = () => {
       window.a3sUI?.start();
       window.a3sUI?.initAll();
@@ -70,7 +99,7 @@ export function Root({ children }: RootProps) {
 
     document
       .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute("content", theme === "dark" ? "#0d0d0f" : "#ffffff");
+      ?.setAttribute("content", theme === "dark" ? "#0d1118" : "#f5f7fb");
   }, [theme]);
 
   useEffect(() => {
@@ -145,6 +174,51 @@ export function Root({ children }: RootProps) {
       synchronizeSidebarGroups();
 
       document
+        .querySelectorAll<HTMLElement>(".rp-doc .rp-table-scroll-container")
+        .forEach((container) => {
+          const overflowing = container.scrollWidth > container.clientWidth + 1;
+          container.dataset.a3sTableOverflow = String(overflowing);
+
+          const synchronizeScrollPosition = () => {
+            const maximum = Math.max(
+              0,
+              container.scrollWidth - container.clientWidth,
+            );
+            const offset = Math.min(maximum, Math.abs(container.scrollLeft));
+            container.dataset.a3sTableScrollPosition =
+              maximum <= 1
+                ? "none"
+                : offset <= 1
+                  ? "start"
+                  : maximum - offset <= 1
+                    ? "end"
+                    : "middle";
+          };
+
+          if (!container.hasAttribute("data-a3s-table-scroll-bound")) {
+            container.setAttribute("data-a3s-table-scroll-bound", "true");
+            container.addEventListener("scroll", synchronizeScrollPosition, {
+              passive: true,
+            });
+          }
+          synchronizeScrollPosition();
+
+          if (overflowing) {
+            container.setAttribute("role", "region");
+            container.setAttribute(
+              "aria-label",
+              isChinese ? "可横向滚动的表格" : "Horizontally scrollable table",
+            );
+            container.tabIndex = 0;
+            return;
+          }
+
+          container.removeAttribute("role");
+          container.removeAttribute("aria-label");
+          container.removeAttribute("tabindex");
+        });
+
+      document
         .querySelectorAll<HTMLElement>(".rp-switch-appearance")
         .forEach((toggle) => {
           toggle.setAttribute("role", "button");
@@ -173,27 +247,99 @@ export function Root({ children }: RootProps) {
           searchButton.tabIndex = 0;
         });
 
+      document
+        .querySelectorAll<HTMLAnchorElement>(
+          '.rp-social-links__item[href*="github.com/A3S-Lab/UI"]',
+        )
+        .forEach((link) => {
+          link.setAttribute(
+            "aria-label",
+            isChinese ? "在 GitHub 查看 A3S UI" : "View A3S UI on GitHub",
+          );
+        });
+
+      document
+        .querySelectorAll<HTMLButtonElement>(".rp-code-copy-button")
+        .forEach((button) => {
+          const label = isChinese ? "复制代码" : "Copy code";
+          button.setAttribute("aria-label", label);
+          button.setAttribute("title", label);
+        });
+
       const sidebar = document.querySelector<HTMLElement>(
         ".rp-doc-layout__sidebar",
       );
+      const sidebarTrigger = document.querySelector<HTMLElement>(
+        ".rp-sidebar-menu__left",
+      );
+      const sidebarOpen =
+        sidebar?.classList.contains("rp-doc-layout__sidebar--open") ?? false;
       synchronizePanel(
         sidebar,
-        document.querySelector<HTMLElement>(".rp-sidebar-menu__left"),
-        sidebarQuery.matches &&
-          !sidebar?.classList.contains("rp-doc-layout__sidebar--open"),
+        sidebarTrigger,
+        sidebarQuery.matches && !sidebarOpen,
         "rspress-documentation-sidebar",
       );
+      if (sidebarTrigger?.matches("button")) {
+        sidebarTrigger.setAttribute(
+          "aria-label",
+          sidebarOpen
+            ? isChinese
+              ? "关闭文档导航"
+              : "Close documentation navigation"
+            : isChinese
+              ? "打开文档导航"
+              : "Open documentation navigation",
+        );
+        const visibleLabel = sidebarTrigger.querySelector("span");
+        if (
+          ["菜单", "Menu", "文档导航", "Docs"].includes(
+            visibleLabel?.textContent?.trim() ?? "",
+          )
+        ) {
+          visibleLabel!.textContent = isChinese ? "菜单" : "Menu";
+        }
+      }
 
       const outline = document.querySelector<HTMLElement>(
         ".rp-doc-layout__outline",
       );
+      const outlineTrigger = document.querySelector<HTMLElement>(
+        ".rp-sidebar-menu__right",
+      );
+      const outlineOpen =
+        outline?.classList.contains("rp-doc-layout__outline--open") ?? false;
       synchronizePanel(
         outline,
-        document.querySelector<HTMLElement>(".rp-sidebar-menu__right"),
-        outlineQuery.matches &&
-          !outline?.classList.contains("rp-doc-layout__outline--open"),
+        outlineTrigger,
+        outlineQuery.matches && !outlineOpen,
         "rspress-documentation-outline",
       );
+      if (outlineTrigger?.matches("button")) {
+        outlineTrigger.setAttribute(
+          "aria-label",
+          outlineOpen
+            ? isChinese
+              ? "关闭本页目录"
+              : "Close page outline"
+            : isChinese
+              ? "打开本页目录"
+              : "Open page outline",
+        );
+        const visibleLabel = outlineTrigger.querySelector<HTMLElement>(
+          ".rp-sidebar-menu__right__text",
+        );
+        const currentLabel = visibleLabel?.textContent?.trim() ?? "";
+        const nextLabel = isChinese ? "目录" : "Outline";
+        if (
+          ["目录", "本页目录", "Outline", "On this page"].includes(
+            currentLabel,
+          ) &&
+          currentLabel !== nextLabel
+        ) {
+          visibleLabel!.textContent = nextLabel;
+        }
+      }
     };
 
     const handleDocumentationKeyboard = (event: KeyboardEvent) => {
@@ -248,6 +394,16 @@ export function Root({ children }: RootProps) {
             ?.click();
           return;
         }
+
+        const openDetails = document.querySelector<HTMLDetailsElement>(
+          ".docs-switcher[open], .docs-desktop-navigation[open]",
+        );
+        if (openDetails) {
+          event.preventDefault();
+          openDetails.open = false;
+          openDetails.querySelector<HTMLElement>("summary")?.focus();
+          return;
+        }
       }
 
       if (
@@ -276,6 +432,18 @@ export function Root({ children }: RootProps) {
       if (interactive) event.stopPropagation();
     };
 
+    const dismissDocumentationMenus = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      document
+        .querySelectorAll<HTMLDetailsElement>(
+          ".docs-switcher[open], .docs-desktop-navigation[open]",
+        )
+        .forEach((details) => {
+          if (!details.contains(target)) details.open = false;
+        });
+    };
+
     synchronizeDocumentationControls();
     const observer = new MutationObserver(synchronizeDocumentationControls);
     observer.observe(document.documentElement, {
@@ -298,7 +466,9 @@ export function Root({ children }: RootProps) {
 
     sidebarQuery.addEventListener("change", synchronizeDocumentationControls);
     outlineQuery.addEventListener("change", synchronizeDocumentationControls);
+    window.addEventListener("resize", synchronizeDocumentationControls);
     document.body.addEventListener("keydown", handleDocumentationKeyboard);
+    document.body.addEventListener("pointerdown", dismissDocumentationMenus);
 
     return () => {
       observer.disconnect();
@@ -310,7 +480,12 @@ export function Root({ children }: RootProps) {
         "change",
         synchronizeDocumentationControls,
       );
+      window.removeEventListener("resize", synchronizeDocumentationControls);
       document.body.removeEventListener("keydown", handleDocumentationKeyboard);
+      document.body.removeEventListener(
+        "pointerdown",
+        dismissDocumentationMenus,
+      );
     };
   }, [location.pathname]);
 

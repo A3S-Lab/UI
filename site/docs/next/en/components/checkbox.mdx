@@ -1,259 +1,211 @@
 # Checkbox
 
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox" name="terms-checkbox" class="input" />
-    <label for="terms-checkbox">Accept terms and conditions</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-2" name="terms-checkbox-2" class="input" defaultChecked />
-    <section>
-      <label for="terms-checkbox-2">Accept terms and conditions</label>
-      <p>By clicking this checkbox, you agree to the terms.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox" name="toggle-checkbox" class="input" disabled />
-    <label for="toggle-checkbox">Enable notifications</label>
-  </div>
-  <label>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="checkbox" id="toggle-checkbox-2" name="toggle-checkbox-2" class="input" />
-      <section>
-        <h3>Enable notifications</h3>
-        <p>You can enable or disable notifications at any time.</p>
-      </section>
+Checkbox lets people select zero, one, or several non-exclusive options. Use it for choices that are submitted with a form; use [Switch](/components/switch) for a binary setting that takes effect immediately.
+
+<Preview title="Notification channels">
+  <fieldset class="fieldset">
+    <legend data-variant="label">Receive release status</legend>
+    <p>Select the channels that should notify the team.</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-email-en" name="release-channel" value="email" defaultChecked />
+        <section>
+          <label for="release-email-en">Email</label>
+          <p>Send a summary when a release succeeds or fails.</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-desktop-en" name="release-channel" value="desktop" />
+        <section>
+          <label for="release-desktop-en">Desktop notification</label>
+          <p>Notify only while this device is online.</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal" data-disabled>
+        <input class="input" type="checkbox" id="release-sms-en" name="release-channel" value="sms" disabled />
+        <section>
+          <label for="release-sms-en">Text message</label>
+          <p>This workspace has no text-message provider configured.</p>
+        </section>
+      </div>
     </div>
-  </label>
-</div>
+  </fieldset>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and the complete A3S style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Checkbox component CSS, and one style pack.
+Add the `input` class to a native checkbox and associate it with a `label`. A single input can pair directly with its label.
+
+```html
+<div class="field" data-orientation="horizontal">
+  <input class="input" type="checkbox" id="include-logs" name="include-logs" />
+  <label for="include-logs">Include diagnostic logs</label>
+</div>
+```
+
+For component-level loading, import the base styles, Checkbox structure, Field structure, and the A3S visual style in that order. See [Installation](/installation) for CDN and other integrations.
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/checkbox.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
+### Parameters
 
-  </Step>
-  <Step title="Add your checkbox HTML">
+| Parameter | Value | Purpose |
+| --- | --- | --- |
+| Root | `<input type="checkbox">` | Preserves native form, keyboard, and accessibility semantics |
+| `class` | `input` | Applies Checkbox structure and visual styles |
+| `checked` | Boolean attribute | Marks the option selected; on server-rendered pages, use it only for the real default |
+| `disabled` | Boolean attribute | Prevents interaction; also add `data-disabled` to the owning `.field` |
+| `aria-invalid` | `true` | Exposes a failed validation state |
+| `aria-describedby` | Element ID | Associates help, constraints, or error text |
+| `indeterminate` | DOM property | Indicates partial child selection; it is not a third submitted value |
 
-Add `class="input"` to checkbox inputs. Pair it with [Field](/components/field) and a native `<label>` for layout and labeling.
+## States and variants
 
-```html
-<input type="checkbox" class="input" />
-```
+Unchecked and checked are the normal interactive states. Disabled choices must explain why they are unavailable. Show invalid state only after submission or field departure so the page does not open with premature errors.
 
-  </Step>
-</Steps>
-
-## Examples
-
-### Basic
-
-Pair the checkbox with `field` and a native `<label>` for proper layout and labeling.
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-basic" name="terms-checkbox-basic" class="input" />
-    <label for="terms-checkbox-basic">Accept terms and conditions</label>
-  </div>
-</div>
-</Preview>
-
-### Description
-
-Use a `section` and paragraph for helper text.
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-desc" name="terms-checkbox-desc" class="input" defaultChecked aria-describedby="terms-checkbox-desc-description" />
-    <section>
-      <label for="terms-checkbox-desc">Accept terms and conditions</label>
-      <p id="terms-checkbox-desc-description">By clicking this checkbox, you agree to the terms and conditions.</p>
-    </section>
-  </div>
-</div>
-</Preview>
-
-### Disabled
-
-Use the `disabled` attribute to prevent interaction and add `data-disabled` to the `.field` component for disabled styles.
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox-disabled" name="toggle-checkbox-disabled" class="input" disabled />
-    <label for="toggle-checkbox-disabled">Enable notifications</label>
-  </div>
-</div>
-</Preview>
-
-### Invalid
-
-Set `aria-invalid="true"` on the checkbox and `data-invalid` on the field wrapper to show invalid styles.
-
-<Preview>
-<div role="group" class="fieldset">
-  <div role="group" class="field" data-orientation="horizontal" data-invalid>
-    <input type="checkbox" id="terms-checkbox-invalid" name="terms-checkbox-invalid" class="input" aria-invalid="true" />
-    <label for="terms-checkbox-invalid">Accept terms and conditions</label>
-  </div>
-</div>
-</Preview>
-
-### Group
-
-Use multiple fields to create a checkbox list.
-
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">Show these items on the desktop:</legend>
-  <p>Select the items you want to show on the desktop.</p>
-  <div role="group" aria-label="Desktop items" data-slot="checkbox-group">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-hard-disks-ljj-checkbox" name="finder-pref-9k2-hard-disks-ljj-checkbox" defaultChecked />
-      <label for="finder-pref-9k2-hard-disks-ljj-checkbox" class="font-normal">Hard disks</label>
+<Preview title="Selection and validation states">
+  <div class="grid gap-4">
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-selected-en" name="state-selected" defaultChecked />
+      <label for="state-selected-en">Include source files</label>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-external-disks-1yg-checkbox" name="finder-pref-9k2-external-disks-1yg-checkbox" defaultChecked />
-      <label for="finder-pref-9k2-external-disks-1yg-checkbox" class="font-normal">External disks</label>
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-unselected-en" name="state-unselected" />
+      <label for="state-unselected-en">Include build cache</label>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-cds-dvds-fzt-checkbox" name="finder-pref-9k2-cds-dvds-fzt-checkbox" />
-      <label for="finder-pref-9k2-cds-dvds-fzt-checkbox" class="font-normal">CDs, DVDs, and iPods</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input class="input" type="checkbox" id="finder-pref-9k2-connected-servers-6l2-checkbox" name="finder-pref-9k2-connected-servers-6l2-checkbox" />
-      <label for="finder-pref-9k2-connected-servers-6l2-checkbox" class="font-normal">Connected servers</label>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### Table
-
-<Preview class="w-full">
-<div class="table-container">
-  <table class="table" data-checkbox-table>
-    <thead>
-      <tr>
-        <th class="w-8"><input type="checkbox" id="select-all-checkbox" name="select-all-checkbox" class="input" aria-label="Select all" /></th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-state="selected">
-        <td><input type="checkbox" id="row-1-checkbox" name="row-1-checkbox" class="input" aria-label="Select Sarah Chen" defaultChecked /></td>
-        <td class="font-medium">Sarah Chen</td>
-        <td>sarah.chen@example.com</td>
-        <td>Admin</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-2-checkbox" name="row-2-checkbox" class="input" aria-label="Select Marcus Rodriguez" /></td>
-        <td class="font-medium">Marcus Rodriguez</td>
-        <td>marcus.rodriguez@example.com</td>
-        <td>User</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-3-checkbox" name="row-3-checkbox" class="input" aria-label="Select Priya Patel" /></td>
-        <td class="font-medium">Priya Patel</td>
-        <td>priya.patel@example.com</td>
-        <td>User</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" id="row-4-checkbox" name="row-4-checkbox" class="input" aria-label="Select David Kim" /></td>
-        <td class="font-medium">David Kim</td>
-        <td>david.kim@example.com</td>
-        <td>Editor</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</Preview>
-
-## RTL
-
-Add `dir="rtl"` to the field group or an ancestor.
-
-<Preview>
-<div role="group" class="fieldset" dir="rtl">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-rtl" name="terms-checkbox" class="input" />
-    <label for="terms-checkbox-rtl">قبول الشروط والأحكام</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="checkbox" id="terms-checkbox-2-rtl" name="terms-checkbox-2" class="input" defaultChecked aria-describedby="terms-checkbox-2-rtl-description" />
-    <section>
-      <label for="terms-checkbox-2-rtl">قبول الشروط والأحكام</label>
-      <p id="terms-checkbox-2-rtl-description">بالنقر على هذا المربع، فإنك توافق على الشروط.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="checkbox" id="toggle-checkbox-rtl" name="toggle-checkbox" class="input" disabled />
-    <label for="toggle-checkbox-rtl">تفعيل الإشعارات</label>
-  </div>
-  <label>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="checkbox" id="toggle-checkbox-2-rtl" name="toggle-checkbox-2" class="input" />
+    <div class="field" data-orientation="horizontal" data-invalid>
+      <input class="input" type="checkbox" id="state-required-en" name="state-required" aria-invalid="true" aria-describedby="state-required-error-en" />
       <section>
-        <h3>تفعيل الإشعارات</h3>
-        <p>يمكنك تفعيل أو إلغاء تفعيل الإشعارات في أي وقت.</p>
+        <label for="state-required-en">Confirm that sensitive data was removed</label>
+        <p id="state-required-error-en" role="alert">Confirmation is required before export.</p>
       </section>
     </div>
-  </label>
-</div>
+    <div class="field" data-orientation="horizontal" data-disabled>
+      <input class="input" type="checkbox" id="state-disabled-en" name="state-disabled" disabled />
+      <section>
+        <label for="state-disabled-en">Include audit archive</label>
+        <p>Only workspace owners can change this option.</p>
+      </section>
+    </div>
+  </div>
 </Preview>
+
+`indeterminate` is a DOM property commonly used by a “select all” control. Form submission still follows `checked`, so applications must maintain both values explicitly.
+
+```js
+const selectAll = document.querySelector("#select-all");
+const selectedCount = 2;
+const totalCount = 5;
+
+selectAll.checked = selectedCount === totalCount;
+selectAll.indeterminate = selectedCount > 0 && selectedCount < totalCount;
+```
+
+## Multiple choices
+
+Group related options with `fieldset` and `legend`. A label answers what the option is; supporting copy explains its consequence or constraint. Do not place an entire description inside the label.
+
+<Preview title="Export content">
+  <fieldset class="fieldset">
+    <legend data-variant="legend">Choose content to export</legend>
+    <p>Select at least one item before starting the export.</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-documents-en" name="export-content" value="documents" defaultChecked />
+        <label for="export-documents-en">Documents</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-comments-en" name="export-content" value="comments" defaultChecked />
+        <label for="export-comments-en">Comments and annotations</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-history-en" name="export-content" value="history" />
+        <label for="export-history-en">Version history</label>
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+Row selection inside a table belongs to the complete interaction model of [Table](/components/table) or [Data Grid](/components/data-grid). Its “select all” control must synchronize visible rows, cross-page scope, and indeterminate state; do not present an inert table gallery in Checkbox documentation.
 
 ## React
 
+`Checkbox` renders the native input declared by the manifest. `useCheckbox` can connect `change` and `input` DOM events to application state, but it does not own the selected value.
+
 ```tsx
+import { useState } from "react";
 import { Checkbox, useCheckbox } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useCheckbox();
+export function ReleaseNotification() {
+  const [enabled, setEnabled] = useState(false);
+  const checkbox = useCheckbox({
+    events: {
+      change(event) {
+        setEnabled((event.currentTarget as HTMLInputElement).checked);
+      },
+    },
+  });
+
   return (
-    <Checkbox ref={control.ref} aria-label="Name" />
+    <div className="field" data-orientation="horizontal">
+      <Checkbox ref={checkbox.ref} id="release-notification" name="release-notification" />
+      <section>
+        <label htmlFor="release-notification">Release notifications</label>
+        <p aria-live="polite">{enabled ? "Enabled" : "Not enabled"}</p>
+      </section>
+    </div>
   );
 }
 ```
 
-`useCheckbox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
 ## Vue
 
+The Vue composable subscribes to the same manifest event. The template ref connects the native input, while reactive state remains application-owned.
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Checkbox, useCheckbox } from "@a3s-lab/ui/vue";
 
-const control = useCheckbox();
-const componentRef = control.componentRef;
+const enabled = ref(false);
+const checkbox = useCheckbox({
+  events: {
+    change(event) {
+      enabled.value = (event.currentTarget as HTMLInputElement).checked;
+    },
+  },
+});
+const componentRef = checkbox.componentRef;
 </script>
 
 <template>
-  <Checkbox ref="componentRef" aria-label="Name" />
+  <div class="field" data-orientation="horizontal">
+    <Checkbox ref="componentRef" id="release-notification" name="release-notification" />
+    <section>
+      <label for="release-notification">Release notifications</label>
+      <p aria-live="polite">{{ enabled ? "Enabled" : "Not enabled" }}</p>
+    </section>
+  </div>
 </template>
 ```
 
-`useCheckbox` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## Accessibility
+
+- Every checkbox needs an accessible name, preferably a visible `label` paired through `id`.
+- Group related options with `fieldset` and `legend`; do not add redundant `role="group"` to an ordinary `.field`.
+- Space toggles a focused native checkbox. Do not replace browser behavior with a custom click handler or block label activation.
+- Associate help and error copy with `aria-describedby`; set `aria-invalid="true"` when validation fails.
+- Keep the label and unavailability reason visible for disabled options. If users still need to understand or copy the content, disable only the control rather than hiding the row.
+- `indeterminate` communicates partial selection visually and semantically; form submission still follows `checked`.

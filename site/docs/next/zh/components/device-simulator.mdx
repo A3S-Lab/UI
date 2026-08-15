@@ -5,7 +5,7 @@ outline: false
 
 # 设备模拟器
 
-设备模拟器在一个有边界的工作台中切换手机、平板和桌面视口。浏览器模式使用真实尺寸的 `iframe`，原生模式则把安全参数交给可信宿主启动 `a3s-webview`。
+设备模拟器在一个有边界的工作台中切换手机、平板和桌面视口，并为三类设备呈现对应的硬件外壳。浏览器模式使用真实尺寸的 `iframe`，原生模式则把安全参数交给可信宿主启动 `a3s-webview`。
 
 <Preview class="w-full">
   <section
@@ -16,7 +16,7 @@ outline: false
     data-device-title="A3S 响应式预览"
     data-orientation="portrait"
     data-state="ready"
-    style="--device-simulator-workspace-min-height:36rem"
+    style="--device-simulator-workspace-min-height:40rem"
   >
     <header>
       <div data-device-simulator-toolbar>
@@ -226,7 +226,9 @@ outline: false
   </section>
 </Preview>
 
-模拟器只改变 iframe 的 CSS viewport 宽高。它不会伪装 User-Agent、设备像素比、触控能力，也不会模拟网络限速或系统浏览器差异。目标页面还必须允许被 iframe 嵌入；受 `X-Frame-Options` 或 CSP `frame-ancestors` 限制的页面应改用原生预览。
+手机外壳包含金属边框、传感器区和底部手势区，平板外壳包含窄边框与摄像头；笔记本使用屏幕边框、铰链和底座，桌面显示器则呈现下巴与支架。整套外壳会和设备一起缩放以适配工作区，iframe 内部仍保持所选 CSS viewport 的精确宽高。
+
+模拟器不会伪装 User-Agent、设备像素比、触控能力，也不会向目标页面注入安全区变量，同时不会模拟网络限速或系统浏览器差异。目标页面还必须允许被 iframe 嵌入；受 `X-Frame-Options` 或 CSP `frame-ancestors` 限制的页面应改用原生预览。
 
 ## 用法
 
@@ -342,12 +344,12 @@ outline: false
 | ----------------------------------------- | ---------------------------- | ------------ | ------------------------------- |
 | 预设 `data-width`                         | `240`–`4000`                 | —            | 预设的 CSS viewport 宽度        |
 | 预设 `data-height`                        | `180`–`3000`                 | —            | 预设的 CSS viewport 高度        |
-| 预设 `data-kind`                          | `phone`、`tablet`、`desktop` | 按宽度推断   | 控制设备框圆角                  |
+| 预设 `data-kind`                          | `phone`、`tablet`、`desktop` | 按宽度推断   | 选择手机、平板或电脑硬件外壳    |
 | 预设 `data-orientation`                   | `portrait`、`landscape`      | 保持当前方向 | 选择预设时同步其自然方向        |
 | 根 `data-orientation`                     | `portrait`、`landscape`      | `portrait`   | 当前屏幕方向                    |
 | 根 `data-fit`                             | `actual` 或省略              | 自动适配     | 使用 1:1 比例或自动缩小到工作区 |
 | 根 `data-device-title`                    | 字符串                       | iframe 标题  | 原生窗口标题                    |
-| `--device-simulator-workspace-min-height` | CSS 长度                     | `31rem`      | 工作区最小高度                  |
+| `--device-simulator-workspace-min-height` | CSS 长度                     | `38rem`      | 工作区最小高度                  |
 | `--device-simulator-workspace-max-height` | CSS 长度                     | `44rem`      | 工作区最大高度                  |
 
 自定义宽高会限制在和 `a3s-webview` 一致的范围内。修改自定义输入后，控制器会选择值为 `custom` 的选项并派发尺寸变化事件。
@@ -388,7 +390,7 @@ simulator.addEventListener("a3s:device-preview-request", async (event) => {
 - `data-state="loading"` 在 iframe 导航期间显示加载状态。
 - `data-state="ready"` 表示尺寸或预览已经同步。
 - `data-state="error"` 表示 URL 无效或复制失败，并在状态输出中说明恢复方式。
-- 手机、平板和桌面只改变框体外观；iframe 始终使用输入框中的真实 CSS 像素尺寸。
+- 手机、平板、笔记本和桌面显示器使用不同的边框、传感器、底座或支架；iframe 始终使用输入框中的真实 CSS 像素尺寸。
 - `file:` URL 可交给原生宿主；浏览器是否允许 iframe 打开本地文件由浏览器安全策略决定。
 
 ## 可访问性
@@ -403,7 +405,9 @@ import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDeviceSimulator();
   return (
-    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">组件内容</DeviceSimulator>
+    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">
+      组件内容
+    </DeviceSimulator>
   );
 }
 ```
@@ -421,7 +425,9 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <DeviceSimulator ref="componentRef" aria-label="Device Simulator">组件内容</DeviceSimulator>
+  <DeviceSimulator ref="componentRef" aria-label="Device Simulator"
+    >组件内容</DeviceSimulator
+  >
 </template>
 ```
 
