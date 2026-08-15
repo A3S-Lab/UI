@@ -29,7 +29,7 @@
 - Reorganized the 111-component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
 - Added a first-principles product admission gate to `DESIGN.md`, separating durable components from extracted patterns, compositions, and rejected application-specific implementations.
 - Deepened Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with cancelable precondition hooks, controlled snapshots, source-aware completion events, asynchronous recovery, read-only behavior, filtering, and reversible inline rename.
-- Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, and overlays with the Focused Intelligence palette, 4/6/8/12-pixel radii, neutral action hierarchy, and 120/160/220-millisecond motion system.
+- Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, and overlays with the Focused Intelligence palette, 4/6/8/12-pixel radii, A3S OS blue action hierarchy, and 120/160/220-millisecond motion system.
 - Exposed Tabs, Alert Dialog, Dialog, Drawer, Dropdown Menu, and Popover controller methods through the manifest and generated React hooks and Vue composables.
 
 ### Fixed
@@ -39,6 +39,7 @@
 
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
 - Removed decorative overlay blur, restored a visible line-tab indicator and checkbox indeterminate state, and documented framework controller usage with tested method unions and runtime calls.
+- Restored A3S OS blue as the default action, focus, link, and selection theme in light and dark modes; kept violet as an optional persisted accent; and added A3S Test visual acceptance for desktop, mobile, reset, focus, and cross-route persistence.
 
 ## [0.3.0] - 2026-08-12
 

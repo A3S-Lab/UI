@@ -13,6 +13,7 @@ colors:
     surfaceMuted: "#f7f7f8"
     surfaceHover: "#f4f4f5"
     surfaceActive: "#eeeeef"
+    selectionSurface: "#eef4ff"
     code: "#fafafa"
     text: "#111113"
     textSecondary: "#52525b"
@@ -20,10 +21,10 @@ colors:
     borderSubtle: "#e9e9eb"
     border: "#dedee1"
     borderStrong: "#c9c9ce"
-    accent: "#5b57d9"
-    accentHover: "#4f4bc4"
+    accent: "#1456f0"
+    accentHover: "#0f46c7"
     accentContrast: "#ffffff"
-    brandBlue: "#249bf6"
+    brandBlue: "#243a9a"
     success: "#16845b"
     warning: "#a86412"
     danger: "#c93d45"
@@ -33,6 +34,7 @@ colors:
     surfaceMuted: "#19191d"
     surfaceHover: "#202024"
     surfaceActive: "#26262b"
+    selectionSurface: "#17223b"
     code: "#121214"
     text: "#f4f4f5"
     textSecondary: "#b4b4bc"
@@ -40,10 +42,10 @@ colors:
     borderSubtle: "#26262b"
     border: "#333338"
     borderStrong: "#45454b"
-    accent: "#8378f0"
-    accentHover: "#978df5"
+    accent: "#4380f9"
+    accentHover: "#6ca3ff"
     accentContrast: "#0d0d0f"
-    brandBlue: "#38a8eb"
+    brandBlue: "#7aa2f7"
     success: "#57c795"
     warning: "#e7ad55"
     danger: "#ef7a82"
@@ -94,7 +96,7 @@ The system must feel recognizably related to the reference through mechanics tha
 - White and near-black canvases with four tonal surface steps instead of gray card grids.
 - Small 4/6/8/12px radii, thin boundaries, 36px controls, and precise icon sizing.
 - Framed component demos with a quiet title bar, live preview, highlighted source, and copy action.
-- A restrained iris accent, subtle ambient color near landmark surfaces, and neutral primary controls.
+- A restrained A3S OS blue accent, subtle ambient color near landmark surfaces, and blue primary controls.
 - Dense capability without visual noise: controls appear where the task needs them and recede at rest.
 
 ### Product invariants
@@ -112,7 +114,7 @@ Visual fidelity never removes the properties that make A3S UI usable as infrastr
 
 ### 2.1 Color architecture
 
-The neutral scale carries the interface. In light mode the canvas and raised surface are both white; spacing and borders decide whether they need separation. Muted, hover, and active surfaces advance through `#f7f7f8`, `#f4f4f5`, and `#eeeeef`. In dark mode the same roles advance through `#0d0d0f`, `#151518`, `#19191d`, `#202024`, and `#26262b`.
+The neutral scale carries the interface. In light mode the canvas and raised surface are both white; spacing and borders decide whether they need separation. Muted, hover, and active surfaces advance through `#f7f7f8`, `#f4f4f5`, and `#eeeeef`. In dark mode the same roles advance through `#0d0d0f`, `#151518`, `#19191d`, `#202024`, and `#26262b`. Selected or user-authored regions may step out to the blue surfaces `#eef4ff` and `#17223b`; those surfaces do not become generic card backgrounds.
 
 Text has three durable roles:
 
@@ -126,7 +128,9 @@ Borders also have three roles:
 - Default borders define controls, preview frames, tables, and overlays.
 - Strong borders indicate a selected edge or a boundary that must survive dense content.
 
-The A3S accent is an iris tone aligned with the official blue-to-violet logo. Use it for focus rings, current navigation, links, selection, and the primary action in a bounded region. A3S blue may appear in identity and information. Neither color may flood ordinary cards or whole application panes.
+The default accent is the A3S OS workspace blue: `#1456f0` in light mode and `#4380f9` in dark mode. It owns focus rings, current navigation, links, selection, and the primary action in a bounded region. The deeper `#243a9a` identity blue belongs to the mark and brand lockups. Violet remains an optional accent and a supporting color in the official blue-to-violet identity, never the default interaction color. No accent may flood ordinary cards or whole application panes.
+
+An accent choice remaps the complete interaction contract together: primary action, hover, focus ring, current navigation, links, selection surface, and accessible foreground. It must not recolor success, warning, or danger semantics.
 
 Success, warning, and danger colors communicate outcomes only. Every semantic state also needs text, an icon, or structure. Never use color as the only status channel.
 
@@ -245,7 +249,7 @@ Coverage is incomplete when any reference document is missing, mapped to `TBD`, 
 
 #### Actions
 
-Buttons use neutral ink for the default primary treatment and the A3S accent when a region needs one unmistakable action. Filled, tonal, outlined, ghost, danger, link, icon-only, split, copy, and download actions share the same height, focus, loading, and disabled rules. Icon-only actions always have an accessible name.
+Buttons use A3S OS blue for the default primary treatment. A bounded region keeps one unmistakable primary action; surrounding actions use tonal, outlined, ghost, or link treatments. Filled, tonal, outlined, ghost, danger, link, icon-only, split, copy, and download actions share the same height, focus, loading, and disabled rules. Icon-only actions always have an accessible name.
 
 #### Fields and choice controls
 
@@ -364,7 +368,7 @@ The release audit compares the pinned 160-page reference inventory with `LOBEUI_
 
 - Use neutral space, precise type, and alignment before adding a container.
 - Keep one obvious primary action in each bounded task region.
-- Use the A3S iris accent for focus, current state, links, and deliberate action.
+- Use A3S OS blue by default for focus, current state, links, and deliberate action.
 - Keep controls compact while preserving 44px coarse-pointer targets.
 - Give every mutation a complete state and recovery cycle.
 - Make framework adapters thin reflections of the semantic contract.

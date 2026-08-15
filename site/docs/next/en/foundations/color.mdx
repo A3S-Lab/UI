@@ -1,6 +1,6 @@
 # Color
 
-A3S UI uses neutrals for structure and iris for focus and selection. Brand blue belongs to identity and information. Green, amber, and red report outcomes and never replace text, icons, or structure.
+A3S UI uses neutrals for structure and A3S OS blue for primary actions, focus, links, and selection. The deeper logo blue belongs to identity. Green, amber, and red report outcomes and never replace text, icons, or structure.
 
 <Preview>
   <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -16,12 +16,12 @@ A3S UI uses neutrals for structure and iris for focus and selection. Brand blue 
     </div>
     <div class="rounded-lg border border-border bg-card p-4">
       <div class="mb-3 h-12 rounded-md bg-primary"></div>
-      <strong class="text-sm">Neutral primary</strong>
+      <strong class="text-sm">A3S primary</strong>
       <code class="mt-1 block text-xs text-muted-foreground">--primary</code>
     </div>
     <div class="rounded-lg border border-border bg-card p-4">
       <div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div>
-      <strong class="text-sm">Iris focus</strong>
+      <strong class="text-sm">Blue focus / selection</strong>
       <code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code>
     </div>
   </div>
@@ -35,21 +35,21 @@ A3S UI uses neutrals for structure and iris for focus and selection. Brand blue 
 | `--foreground`          | `#111113` | `#f4f4f5` | Primary content                |
 | `--card`                | `#ffffff` | `#151518` | Stable and raised surfaces     |
 | `--muted`               | `#f7f7f8` | `#19191d` | Muted surface                  |
-| `--accent`              | `#f4f4f5` | `#202024` | Hover surface                  |
+| `--accent`              | `#eef4ff` | `#17223b` | Selected or accented surface   |
 | `--a3s-panel-strong`    | `#eeeeef` | `#26262b` | Active surface                 |
 | `--muted-foreground`    | `#52525b` | `#b4b4bc` | Supporting text                |
 | `--a3s-subtle`          | `#71717a` | `#888891` | Nonessential annotation        |
 | `--border`              | `#dedee1` | `#333338` | Control and overlay boundaries |
 | `--input`               | `#c9c9ce` | `#45454b` | Strong boundary                |
-| `--primary`             | `#111113` | `#f4f4f5` | Default primary action         |
-| `--ring` / `--a3s-blue` | `#5b57d9` | `#8378f0` | Focus, links, and selection    |
-| `--a3s-brand-blue`      | `#249bf6` | `#38a8eb` | A3S identity and information   |
+| `--primary`             | `#1456f0` | `#4380f9` | Default primary action         |
+| `--ring` / `--a3s-blue` | `#1456f0` | `#4380f9` | Focus, links, and selection    |
+| `--a3s-brand-blue`      | `#243a9a` | `#7aa2f7` | A3S identity and information   |
 
 ## Reserved state colors
 
 <Preview>
   <div class="flex w-full flex-wrap gap-3">
-    <span class="badge bg-[var(--a3s-blue)] text-white">Focus / selection</span>
+    <span class="badge bg-[var(--a3s-blue)] text-primary-foreground">Focus / selection</span>
     <span class="badge bg-[var(--a3s-green)] text-white">Success</span>
     <span class="badge bg-[var(--a3s-warning)] text-white">Warning</span>
     <span class="badge bg-destructive text-white">Danger</span>
@@ -66,4 +66,4 @@ Success, warning, and danger resolve to `#16845b`, `#a86412`, and `#c93d45` in l
 
 ## Parameters
 
-Theme switching uses the `dark` class on `<html>`. Consumers may override semantic tokens at `:root`, within `.dark`, or inside a scoped product container, but must revalidate text contrast, visible focus, and state meaning together.
+Theme switching uses the `dark` class on `<html>`. Consumers may override semantic tokens at `:root`, within `.dark`, or inside a scoped product container, but must remap primary action, hover, focus, selection surface, and foreground together. Violet and other optional accents never replace the default A3S OS blue contract or semantic state colors.

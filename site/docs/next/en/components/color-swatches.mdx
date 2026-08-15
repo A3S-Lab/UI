@@ -3,14 +3,14 @@
 Expresses a finite, named color set with native radio or checkbox inputs and keeps selection understandable beyond hue alone.
 
 <Preview class="w-full">
-<fieldset class="color-swatches" aria-label="Accent color"><label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label></fieldset>
+<fieldset class="color-swatches" aria-label="Accent color"><label><input type="radio" name="accent" defaultChecked aria-label="A3S Blue" /><span data-swatch style="--swatch-color:#1456f0"></span></label><label><input type="radio" name="accent" aria-label="Violet" /><span data-swatch style="--swatch-color:#5b57d9"></span></label></fieldset>
 </Preview>
 
 ## Usage
 
 ```html
 <fieldset class="color-swatches" aria-label="Accent color">
-  <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+  <label><input type="radio" name="accent" checked aria-label="A3S Blue" /><span data-swatch style="--swatch-color:#1456f0"></span></label><label><input type="radio" name="accent" aria-label="Violet" /><span data-swatch style="--swatch-color:#5b57d9"></span></label>
 </fieldset>
 ```
 
@@ -23,7 +23,7 @@ export function Example() {
   const control = useColorSwatches();
   return (
     <ColorSwatches ref={control.ref} aria-label="Accent color">
-      <label><input type="radio" name="accent" defaultChecked aria-label="Iris" /><span data-swatch style={{ "--swatch-color": "#5b57d9" }}></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style={{ "--swatch-color": "#249bf6" }}></span></label>
+      <label><input type="radio" name="accent" defaultChecked aria-label="A3S Blue" /><span data-swatch style={{ "--swatch-color": "#1456f0" }}></span></label><label><input type="radio" name="accent" aria-label="Violet" /><span data-swatch style={{ "--swatch-color": "#5b57d9" }}></span></label>
     </ColorSwatches>
   );
 }
@@ -43,7 +43,7 @@ const componentRef = control.componentRef;
 
 <template>
   <ColorSwatches ref="componentRef" aria-label="Accent color">
-    <label><input type="radio" name="accent" checked aria-label="Iris" /><span data-swatch style="--swatch-color:#5b57d9"></span></label><label><input type="radio" name="accent" aria-label="Blue" /><span data-swatch style="--swatch-color:#249bf6"></span></label>
+    <label><input type="radio" name="accent" checked aria-label="A3S Blue" /><span data-swatch style="--swatch-color:#1456f0"></span></label><label><input type="radio" name="accent" aria-label="Violet" /><span data-swatch style="--swatch-color:#5b57d9"></span></label>
   </ColorSwatches>
 </template>
 ```

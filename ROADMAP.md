@@ -37,6 +37,7 @@
 - [x] Added Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer after a product-level reuse and ownership review.
 - [x] Added aligned React and Vue examples for all 111 component guides plus `useA3SLocale`, `useA3STheme`, and `useA3SMotion` runtime configuration APIs.
 - [x] Closed the 160-item reference audit with checked component, composition, foundation, brand, integration, and standalone-route evidence instead of promoting every source concept into a component.
+- [ ] Execute the first-principles and adversarial component review in [COMPONENT_OPTIMIZATION_PLAN.md](./COMPONENT_OPTIMIZATION_PLAN.md), promoting each contract only after its product, interaction, visual, framework, and regression evidence is complete.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.
 

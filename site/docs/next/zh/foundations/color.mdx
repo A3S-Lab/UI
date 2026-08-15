@@ -1,6 +1,6 @@
 # 颜色
 
-A3S UI 以中性色承担结构，以虹膜色承担焦点与选择。品牌蓝只属于身份和信息提示；绿色、琥珀色与红色只表达结果，不能替代文本、图标或结构。
+A3S UI 以中性色承担结构，以 A3S OS 蓝承担主操作、焦点、链接与选择；更深的标志蓝用于品牌身份。绿色、琥珀色与红色只表达结果，不能替代文本、图标或结构。
 
 <Preview>
   <div class="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -16,12 +16,12 @@ A3S UI 以中性色承担结构，以虹膜色承担焦点与选择。品牌蓝�
     </div>
     <div class="rounded-lg border border-border bg-card p-4">
       <div class="mb-3 h-12 rounded-md bg-primary"></div>
-      <strong class="text-sm">中性主操作</strong>
+      <strong class="text-sm">A3S 主操作</strong>
       <code class="mt-1 block text-xs text-muted-foreground">--primary</code>
     </div>
     <div class="rounded-lg border border-border bg-card p-4">
       <div class="mb-3 h-12 rounded-md bg-[var(--a3s-blue)]"></div>
-      <strong class="text-sm">虹膜焦点色</strong>
+      <strong class="text-sm">蓝色焦点 / 选择</strong>
       <code class="mt-1 block text-xs text-muted-foreground">--a3s-blue</code>
     </div>
   </div>
@@ -35,21 +35,21 @@ A3S UI 以中性色承担结构，以虹膜色承担焦点与选择。品牌蓝�
 | `--foreground`          | `#111113` | `#f4f4f5` | 主要内容         |
 | `--card`                | `#ffffff` | `#151518` | 稳定与抬升表面   |
 | `--muted`               | `#f7f7f8` | `#19191d` | 弱化表面         |
-| `--accent`              | `#f4f4f5` | `#202024` | 悬停表面         |
+| `--accent`              | `#eef4ff` | `#17223b` | 选择或强调表面   |
 | `--a3s-panel-strong`    | `#eeeeef` | `#26262b` | 激活表面         |
 | `--muted-foreground`    | `#52525b` | `#b4b4bc` | 辅助文本         |
 | `--a3s-subtle`          | `#71717a` | `#888891` | 非关键注释       |
 | `--border`              | `#dedee1` | `#333338` | 控件与浮层边界   |
 | `--input`               | `#c9c9ce` | `#45454b` | 强边界           |
-| `--primary`             | `#111113` | `#f4f4f5` | 默认主操作       |
-| `--ring` / `--a3s-blue` | `#5b57d9` | `#8378f0` | 焦点、链接与选择 |
-| `--a3s-brand-blue`      | `#249bf6` | `#38a8eb` | A3S 身份与信息   |
+| `--primary`             | `#1456f0` | `#4380f9` | 默认主操作       |
+| `--ring` / `--a3s-blue` | `#1456f0` | `#4380f9` | 焦点、链接与选择 |
+| `--a3s-brand-blue`      | `#243a9a` | `#7aa2f7` | A3S 身份与信息   |
 
 ## 状态保留色
 
 <Preview>
   <div class="flex w-full flex-wrap gap-3">
-    <span class="badge bg-[var(--a3s-blue)] text-white">焦点 / 选择</span>
+    <span class="badge bg-[var(--a3s-blue)] text-primary-foreground">焦点 / 选择</span>
     <span class="badge bg-[var(--a3s-green)] text-white">成功</span>
     <span class="badge bg-[var(--a3s-warning)] text-white">警告</span>
     <span class="badge bg-destructive text-white">危险</span>
@@ -66,4 +66,4 @@ A3S UI 以中性色承担结构，以虹膜色承担焦点与选择。品牌蓝�
 
 ## 参数
 
-主题切换通过 `<html>` 上的 `dark` 类完成。应用可以在 `:root`、`.dark` 或局部产品容器中覆盖语义令牌，但必须同时验证文本对比度、焦点可见性与状态含义。
+主题切换通过 `<html>` 上的 `dark` 类完成。应用可以在 `:root`、`.dark` 或局部产品容器中覆盖语义令牌，但必须成组映射主操作、悬停、焦点、选择表面和前景色。紫罗兰等可选强调色不会替代默认 A3S OS 蓝契约，也不会改写语义状态色。

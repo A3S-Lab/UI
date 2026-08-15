@@ -7,12 +7,36 @@ type Accent = "blue" | "violet" | "emerald" | "amber" | "rose";
 type Radius = "sharp" | "balanced" | "rounded";
 type Density = "compact" | "comfortable";
 
-const accentOptions: Array<{ color: string; id: Accent; label: string }> = [
-  { id: "blue", label: "Iris", color: "#5b57d9" },
-  { id: "violet", label: "Violet", color: "#6d4aff" },
-  { id: "emerald", label: "Emerald", color: "#0c9970" },
-  { id: "amber", label: "Amber", color: "#c27216" },
-  { id: "rose", label: "Rose", color: "#c84d68" },
+const accentOptions: Array<{
+  color: string;
+  id: Accent;
+  label: Record<Locale, string>;
+}> = [
+  {
+    id: "blue",
+    label: { zh: "A3S 蓝", en: "A3S Blue" },
+    color: "#1456f0",
+  },
+  {
+    id: "violet",
+    label: { zh: "紫罗兰", en: "Violet" },
+    color: "#5b57d9",
+  },
+  {
+    id: "emerald",
+    label: { zh: "祖母绿", en: "Emerald" },
+    color: "#0c9970",
+  },
+  {
+    id: "amber",
+    label: { zh: "琥珀", en: "Amber" },
+    color: "#c27216",
+  },
+  {
+    id: "rose",
+    label: { zh: "玫瑰", en: "Rose" },
+    color: "#c84d68",
+  },
 ];
 
 const copy = {
@@ -257,7 +281,7 @@ export function ThemeCustomizer({ locale }: { locale: Locale }) {
                 <button
                   key={option.id}
                   type="button"
-                  aria-label={option.label}
+                  aria-label={option.label[locale]}
                   aria-pressed={accent === option.id}
                   onClick={() => chooseAccent(option.id)}
                   data-theme-accent={option.id}

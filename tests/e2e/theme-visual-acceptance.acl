@@ -1,0 +1,249 @@
+suite "a3s-ui-theme-visual-acceptance" {
+    version = 1
+
+    scenario "default-blue-theme-visuals" {
+        name = "Default A3S OS blue theme remains coherent across modes and viewports"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-homepage" {
+            url = "http://127.0.0.1:4178/UI/"
+        }
+
+        wait "homepage-loaded" {
+            load = "networkidle"
+        }
+
+        wait "homepage-ready" {
+            visible = css("html:not([data-a3s-defer-init])")
+        }
+
+        viewport "customizer-workspace" {
+            width = 1280
+            height = 1600
+        }
+
+        focus "reset-customization" {
+            target = css("[data-a3s-customizer] .ui-theme-customizer__reset")
+        }
+
+        press "confirm-reset" {
+            key = "Enter"
+        }
+
+        expect "reset-restores-blue" {
+            visible = css("html[data-a3s-accent=blue][data-a3s-radius=balanced][data-a3s-density=compact] [data-theme-accent=blue][aria-pressed=true]")
+        }
+
+        focus "choose-light" {
+            target = css("[data-theme-appearance=light]")
+        }
+
+        press "confirm-light" {
+            key = "Enter"
+        }
+
+        navigate "reload-light-homepage" {
+            url = "http://127.0.0.1:4178/UI/"
+        }
+
+        wait "light-homepage-loaded" {
+            load = "networkidle"
+        }
+
+        viewport "light-desktop" {
+            width = 1440
+            height = 900
+        }
+
+        expect "light-blue-theme" {
+            visible = css("html:not(.dark)[data-a3s-accent=blue] .ui-home")
+        }
+
+        screenshot "light-desktop-evidence" {
+            path = "theme/default-blue-light-desktop.png"
+        }
+
+        focus "choose-dark" {
+            target = css("[data-theme-appearance=dark]")
+        }
+
+        press "confirm-dark" {
+            key = "Enter"
+        }
+
+        expect "dark-blue-theme" {
+            visible = css("html.dark.rp-dark[data-a3s-accent=blue]")
+        }
+
+        navigate "reload-dark-homepage" {
+            url = "http://127.0.0.1:4178/UI/"
+        }
+
+        wait "dark-homepage-loaded" {
+            load = "networkidle"
+        }
+
+        screenshot "dark-desktop-evidence" {
+            path = "theme/default-blue-dark-desktop.png"
+        }
+
+        focus "restore-light" {
+            target = css("[data-theme-appearance=light]")
+        }
+
+        press "confirm-restored-light" {
+            key = "Enter"
+        }
+
+        navigate "reload-mobile-homepage" {
+            url = "http://127.0.0.1:4178/UI/"
+        }
+
+        wait "mobile-homepage-loaded" {
+            load = "networkidle"
+        }
+
+        viewport "mobile" {
+            width = 390
+            height = 844
+        }
+
+        expect "mobile-blue-theme" {
+            visible = css("html:not(.dark)[data-a3s-accent=blue] .ui-home")
+        }
+
+        screenshot "mobile-evidence" {
+            path = "theme/default-blue-mobile.png"
+        }
+
+        viewport "customizer-persistence-workspace" {
+            width = 1280
+            height = 1600
+        }
+
+        focus "choose-violet" {
+            target = css("[data-theme-accent=violet]")
+        }
+
+        press "confirm-violet" {
+            key = "Enter"
+        }
+
+        expect "violet-selected" {
+            visible = css("html[data-a3s-accent=violet] [data-theme-accent=violet][aria-pressed=true]")
+        }
+
+        navigate "open-component-with-violet" {
+            url = "http://127.0.0.1:4178/UI/en/components/button.html"
+        }
+
+        wait "violet-component-loaded" {
+            load = "networkidle"
+        }
+
+        expect "violet-persists-across-navigation" {
+            visible = css("html[data-a3s-accent=violet] .a3s-preview[data-preview-component=button]")
+        }
+
+        focus "show-violet-focus-ring" {
+            target = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]")
+        }
+
+        screenshot "optional-accent-evidence" {
+            path = "theme/optional-violet-component.png"
+        }
+
+        navigate "return-to-customizer" {
+            url = "http://127.0.0.1:4178/UI/"
+        }
+
+        wait "customizer-reloaded" {
+            load = "networkidle"
+        }
+
+        focus "reset-violet" {
+            target = css("[data-a3s-customizer] .ui-theme-customizer__reset")
+        }
+
+        press "confirm-violet-reset" {
+            key = "Enter"
+        }
+
+        expect "reset-returns-to-blue" {
+            visible = css("html[data-a3s-accent=blue][data-a3s-radius=balanced][data-a3s-density=compact] [data-theme-accent=blue][aria-pressed=true]")
+        }
+
+        focus "set-final-light-mode" {
+            target = css("[data-theme-appearance=light]")
+        }
+
+        press "confirm-final-light-mode" {
+            key = "Enter"
+        }
+
+        navigate "open-blue-component" {
+            url = "http://127.0.0.1:4178/UI/en/components/button.html"
+        }
+
+        wait "blue-component-loaded" {
+            load = "networkidle"
+        }
+
+        viewport "component-desktop" {
+            width = 1440
+            height = 900
+        }
+
+        expect "blue-component-theme" {
+            visible = css("html:not(.dark)[data-a3s-accent=blue] .a3s-preview[data-preview-component=button]")
+        }
+
+        expect "syntax-highlighted-code-visible" {
+            visible = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .shiki .line > span[style*='--shiki-token']")
+        }
+
+        expect "code-copy-control-visible" {
+            visible = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .rp-code-copy-button[title='Copy code']")
+        }
+
+        hover "reveal-code-controls" {
+            target = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type")
+        }
+
+        screenshot "code-documentation-evidence" {
+            path = "theme/highlighted-code-and-copy-control.png"
+        }
+
+        click "copy-highlighted-code" {
+            target = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .rp-code-copy-button[title='Copy code']")
+        }
+
+        screenshot "code-copy-feedback-evidence" {
+            path = "theme/code-copy-activated.png"
+        }
+
+        focus "show-blue-focus-ring" {
+            target = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]")
+        }
+
+        screenshot "blue-component-focus-evidence" {
+            path = "theme/default-blue-component-focus.png"
+        }
+
+        accessibility "component-accessibility" {
+            path = "theme/component-accessibility.json"
+            interactive = true
+        }
+
+        console "browser-console" {
+            path = "theme/console.json"
+            clear = false
+        }
+
+        page_errors "page-errors" {
+            path = "theme/page-errors.json"
+            clear = false
+        }
+    }
+}

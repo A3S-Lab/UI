@@ -1066,7 +1066,9 @@ if (!homepageHtml.includes(runtimePreloadMarkup)) {
   );
 }
 
-if (!/document\.addEventListener\(["']a3s:themechange["']/u.test(homepageHtml)) {
+if (
+  !/document\.addEventListener\(["']a3s:themechange["']/u.test(homepageHtml)
+) {
   throw new Error("The pre-hydration documentation theme bridge is missing.");
 }
 
@@ -1128,18 +1130,20 @@ const styleExpectations = [
     matches: compiledStyles.startsWith("@layer rp-base;"),
   },
   {
-    label: "A3S light neutral action token is present",
-    matches: compiledStyles.includes("--primary:#111113"),
+    label: "A3S OS light primary action token is present",
+    matches: compiledStyles.includes("--primary:#1456f0"),
   },
   {
-    label: "A3S dark neutral action token is present",
-    matches: compiledStyles.includes("--primary:#f4f4f5"),
+    label: "A3S OS dark primary action token is present",
+    matches: compiledStyles.includes("--primary:#4380f9"),
   },
   {
-    label: "A3S light and dark iris accent tokens are present",
+    label: "A3S OS light and dark default accent tokens are present",
     matches:
-      compiledStyles.includes("--a3s-accent:#5b57d9") &&
-      compiledStyles.includes("--a3s-accent:#8378f0"),
+      compiledStyles.includes("--a3s-accent:#1456f0") &&
+      compiledStyles.includes("--a3s-accent:#4380f9") &&
+      compiledStyles.includes("--accent:#eef4ff") &&
+      compiledStyles.includes("--accent:#17223b"),
   },
   {
     label: "primary button contract is present",
