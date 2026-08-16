@@ -32,6 +32,14 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-responsive-navigation[open] .a3s-responsive-navigation__surface")
         }
 
+        click "open-resource-navigation" {
+            target = role("button", "资源")
+        }
+
+        expect "changelog-destination-visible" {
+            visible = css(".a3s-responsive-navigation[open] a[href='https://github.com/A3S-Lab/UI/blob/main/CHANGELOG.md']")
+        }
+
         expect "playground-destination-visible" {
             visible = css(".a3s-responsive-navigation[open] a[href='/UI/playground.html']")
         }
@@ -46,6 +54,66 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "playground-loaded" {
             url = "http://127.0.0.1:4178/UI/playground.html"
+        }
+
+        network_unroute "restore-client-javascript" {
+            pattern = "**/*.js"
+        }
+    }
+
+    scenario "first-load-sidebar-navigation" {
+        name = "Nested documentation navigation works before client hydration"
+        surface = "web"
+        timeout_ms = 90000
+
+        viewport "desktop" {
+            width = 1440
+            height = 900
+        }
+
+        network_route "block-client-javascript" {
+            pattern = "**/*.js"
+            abort = true
+        }
+
+        navigate "open-component" {
+            url = "http://127.0.0.1:4178/UI/components/button.html"
+        }
+
+        wait "server-rendered-page" {
+            load = "domcontentloaded"
+        }
+
+        click "open-selection-group" {
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与搜索'] > summary")
+        }
+
+        expect "selection-link-visible" {
+            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与搜索'][open] a[href='/UI/components/select.html']")
+        }
+
+        click "open-harness-group" {
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='Harness'] > summary")
+        }
+
+        click "open-conversation-group" {
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'] > summary")
+        }
+
+        expect "workbench-link-visible" {
+            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'][open] a[href='/UI/components/agent-workbench.html']")
+        }
+
+        screenshot "first-load-sidebar" {
+            path = "documentation/first-load-sidebar.png"
+        }
+
+        click "open-workbench" {
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'][open] a[href='/UI/components/agent-workbench.html']")
+        }
+
+        wait "workbench-loaded" {
+            url = "http://127.0.0.1:4178/UI/components/agent-workbench.html"
         }
 
         network_unroute "restore-client-javascript" {

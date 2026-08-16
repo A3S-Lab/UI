@@ -38,6 +38,7 @@
 ### Fixed
 
 - Made responsive primary, resource, language, and version navigation progressively operable before hydration, and removed legacy Playground selectors that conflicted with the dockable responsive workspace.
+- Made nested documentation sidebar disclosures operable before hydration through native details and summary semantics at every hierarchy level.
 - Kept Agent Composer status synchronization idempotent so its DOM observer cannot enter a self-triggering loop that freezes Playground and other composed surfaces after hydration.
 - Distinguished the site navigation from embedded workspace navigation with unambiguous accessible names and responsive navbar-to-Playground regression coverage.
 - Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 114-component contract while preserving historical version counts.

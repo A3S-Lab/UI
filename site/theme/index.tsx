@@ -2,6 +2,7 @@ import "./index.css";
 
 export { HomeLayout } from "./components/HomeLayout";
 export { Nav } from "./components/DocsNav";
+export { Sidebar, SidebarList } from "./components/DocsSidebar";
 export { NotFoundLayout } from "./components/NotFoundLayout";
 export { Outline } from "./components/Outline";
 export { Root } from "./components/Root";

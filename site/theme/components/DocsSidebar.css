@@ -1,0 +1,64 @@
+.a3s-docs-sidebar__group {
+  margin: 0;
+}
+
+.a3s-docs-sidebar__group > summary {
+  list-style: none;
+}
+
+.a3s-docs-sidebar__group > summary::marker,
+.a3s-docs-sidebar__group > summary::-webkit-details-marker {
+  display: none;
+  content: "";
+}
+
+.a3s-docs-sidebar__group > summary:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.a3s-docs-sidebar__group > summary .rp-sidebar-item__left {
+  min-width: 0;
+}
+
+.a3s-docs-sidebar__group > summary .rp-doc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-docs-sidebar__chevron {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  place-items: center;
+  transition: transform 140ms ease-out;
+}
+
+.a3s-docs-sidebar__chevron > span,
+.a3s-docs-sidebar__chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.a3s-docs-sidebar__group[open] > summary .a3s-docs-sidebar__chevron {
+  transform: rotate(90deg);
+}
+
+[dir="rtl"]
+  .a3s-docs-sidebar__group:not([open])
+  > summary
+  .a3s-docs-sidebar__chevron {
+  transform: rotate(180deg);
+}
+
+.a3s-docs-sidebar__panel {
+  min-width: 0;
+}
+
+@media (pointer: coarse) {
+  .a3s-docs-sidebar__group > summary {
+    min-height: 44px;
+  }
+}

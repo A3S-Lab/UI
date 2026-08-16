@@ -42,7 +42,9 @@ test("desktop menus remain operable before any client JavaScript runs", async ({
   await expect(english).toHaveAttribute("href", /\/UI\/en\/components\/button/);
   await english.click();
   await expect(page).toHaveURL(/\/UI\/en\/components\/button\.html$/);
-  await expect(page.getByRole("heading", { name: "Button", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Button", level: 1 }),
+  ).toBeVisible();
 });
 
 test("responsive navigation remains operable before hydration", async ({
@@ -58,11 +60,82 @@ test("responsive navigation remains operable before hydration", async ({
   await expect(trigger).toBeVisible();
   await trigger.click();
   await expect(navigation).toHaveAttribute("open", "");
+  await navigation.getByRole("button", { name: "资源" }).click();
+  await expect(
+    navigation.getByRole("link", { name: "更新日志" }),
+  ).toBeVisible();
   await expect(
     navigation.getByRole("link", { name: "Playground" }),
   ).toBeVisible();
   await navigation.getByRole("link", { name: "Playground" }).click();
   await expect(page).toHaveURL(/\/UI\/playground\.html$/);
+});
+
+test("sidebar disclosures remain operable before hydration", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.route(/\.js(?:\?|$)/, (route) => route.abort());
+  await page.goto("components/button.html", { waitUntil: "domcontentloaded" });
+
+  const sidebar = page.locator(".rp-doc-layout__sidebar");
+  const selection = sidebar.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与搜索"]',
+  );
+  await expect(selection).not.toHaveAttribute("open", "");
+  await selection.locator(":scope > summary").click();
+  await expect(selection).toHaveAttribute("open", "");
+  await expect(
+    selection.getByRole("link", { name: "选择器", exact: true }),
+  ).toBeVisible();
+
+  const harness = sidebar.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="Harness"]',
+  );
+  await harness.locator(":scope > summary").click();
+  const conversations = harness.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="任务与对话"]',
+  );
+  await conversations.locator(":scope > summary").click();
+  const workbench = conversations.getByRole("link", { name: "Agent 工作台" });
+  await expect(workbench).toBeVisible();
+  await workbench.click();
+  await expect(page).toHaveURL(/\/UI\/components\/agent-workbench\.html$/);
+});
+
+test("sidebar state survives a click during hydration", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  let allowScripts!: () => void;
+  const scriptsMayLoad = new Promise<void>((resolve) => {
+    allowScripts = resolve;
+  });
+  await page.route(/\.js(?:\?|$)/, async (route) => {
+    await scriptsMayLoad;
+    await route.continue();
+  });
+
+  const navigation = page.goto("components/button.html", {
+    waitUntil: "domcontentloaded",
+  });
+  const selection = page.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与搜索"]',
+  );
+  await expect(selection).toBeVisible();
+  await selection.locator(":scope > summary").click();
+  await expect(selection).toHaveAttribute("open", "");
+
+  allowScripts();
+  await navigation;
+  await expect(page.locator("html")).not.toHaveAttribute("data-a3s-defer-init");
+  await expect(selection).toHaveAttribute("open", "");
+  await expect(
+    selection.getByRole("link", { name: "选择器", exact: true }),
+  ).toBeVisible();
 });
 
 test("index routes hydrate with complete desktop navigation", async ({
@@ -107,9 +180,9 @@ test("index routes hydrate with complete desktop navigation", async ({
     28,
   );
   expect(Math.abs(logoBox!.width - logoBox!.height)).toBeLessThanOrEqual(0.5);
-  expect(Math.abs(logoImageBox!.width - logoImageBox!.height)).toBeLessThanOrEqual(
-    0.5,
-  );
+  expect(
+    Math.abs(logoImageBox!.width - logoImageBox!.height),
+  ).toBeLessThanOrEqual(0.5);
   await expect(header).toHaveCSS("height", "72px");
   expect(hydrationWarnings).toEqual([]);
 });
@@ -152,9 +225,7 @@ test("responsive switchers preserve the page and produce one route prefix", asyn
   await openDocumentationPage(page, "components/device-simulator.html");
 
   let navigation = await openResponsiveNavigation(page);
-  await navigation
-    .getByRole("button", { name: "语言 简体中文" })
-    .click();
+  await navigation.getByRole("button", { name: "语言 简体中文" }).click();
   await navigation.getByRole("link", { name: "English" }).click();
   await expect(page).toHaveURL(/\/UI\/en\/components\/device-simulator\.html$/);
   await expect(

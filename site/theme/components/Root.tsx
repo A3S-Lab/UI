@@ -150,6 +150,17 @@ export function Root({ children }: RootProps) {
           const panel = group.nextElementSibling;
           if (!(panel instanceof HTMLElement)) return;
 
+          if (group.tagName === "SUMMARY") {
+            panel.id ||= `rspress-sidebar-group-${index}-panel`;
+            panel.inert = false;
+            panel.removeAttribute("aria-hidden");
+            group.setAttribute("aria-controls", panel.id);
+            group.removeAttribute("aria-expanded");
+            group.removeAttribute("role");
+            group.removeAttribute("tabindex");
+            return;
+          }
+
           const hidden = panel.style.gridTemplateRows === "0fr";
           panel.id ||= `rspress-sidebar-group-${index}-panel`;
           panel.inert = hidden;
