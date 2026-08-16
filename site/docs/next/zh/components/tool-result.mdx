@@ -1,0 +1,103 @@
+# 工具结果
+
+工具结果在一次调用完成后，把主要结果、诊断信息和结构化元数据放在同一可切换区域。它适合输出类型明确、用户需要比较多个视图的结果；简单的一行成功信息仍留在工具调用摘要中。
+
+<Preview class="w-full max-w-4xl" title="测试运行结果">
+  <section class="tool-result tabs" data-state="ready" aria-labelledby="tool-result-title-zh">
+    <header>
+      <span><strong id="tool-result-title-zh">权限边界测试</strong> <span class="status-badge" data-state="success" data-tool-result-status>通过</span></span>
+      <div data-tool-result-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">复制当前视图</button><button type="button" class="btn" data-size="sm" data-variant="outline">打开完整报告</button></div>
+    </header>
+    <div role="tablist" aria-label="结果视图" aria-orientation="horizontal">
+      <button type="button" role="tab" id="tool-result-summary-tab-zh" aria-controls="tool-result-summary-panel-zh" aria-selected="true" tabindex="0">摘要</button>
+      <button type="button" role="tab" id="tool-result-output-tab-zh" aria-controls="tool-result-output-panel-zh" aria-selected="false" tabindex="-1">输出 <span class="badge">24</span></button>
+      <button type="button" role="tab" id="tool-result-metadata-tab-zh" aria-controls="tool-result-metadata-panel-zh" aria-selected="false" tabindex="-1">元数据</button>
+    </div>
+    <section role="tabpanel" id="tool-result-summary-panel-zh" aria-labelledby="tool-result-summary-tab-zh" tabindex="-1">
+      <div data-tool-result-meta><span>18 个测试通过</span><span>0 个失败</span><span>耗时 2.84 s</span><span>退出码 0</span></div>
+      <pre>{`PASS tests/policy.spec.ts
+PASS tests/permission-boundary.spec.ts
+
+Test Suites  2 passed (2)
+Tests        18 passed (18)`}</pre>
+    </section>
+    <section role="tabpanel" id="tool-result-output-panel-zh" aria-labelledby="tool-result-output-tab-zh" tabindex="-1" hidden>
+      <pre>{`[setup] loading permission fixtures
+[runner] executing 18 cases
+[cleanup] removed temporary workspace`}</pre>
+    </section>
+    <section role="tabpanel" id="tool-result-metadata-panel-zh" aria-labelledby="tool-result-metadata-tab-zh" tabindex="-1" hidden>
+      <dl><div><dt>命令</dt><dd><code>npm test -- permissions</code></dd></div><div><dt>工作目录</dt><dd><code>/workspace/ui</code></dd></div><div><dt>报告</dt><dd><code>artifacts/permissions.json</code></dd></div></dl>
+    </section>
+  </section>
+</Preview>
+
+## 信息架构
+
+第一个标签必须是用户最常用的判断视图，而不是机械地把 `stdout` 放在最前。标签页只用于同一结果的平级表示，例如摘要、输出、差异、预览和元数据；重试、下载、打开文件等命令放在页头动作区。
+
+加载、空结果和错误都保留页头身份与状态。错误页提供原因和恢复动作，不能显示一个空白输出标签。二进制、图片或超大文件使用专门预览器或下载链接，不把整个资源塞进 DOM。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section class="tool-result tabs" data-state="ready">
+  <header><strong>测试结果</strong><span data-tool-result-status>通过</span></header>
+  <div role="tablist" aria-label="结果视图">
+    <button type="button" role="tab" id="summary-tab" aria-controls="summary-panel" aria-selected="true" tabindex="0">摘要</button>
+    <button type="button" role="tab" id="output-tab" aria-controls="output-panel" aria-selected="false" tabindex="-1">输出</button>
+  </div>
+  <section role="tabpanel" id="summary-panel" aria-labelledby="summary-tab" tabindex="-1">18 个测试通过</section>
+  <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabindex="-1" hidden><pre>…</pre></section>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tabs";
+</script>`}
+  react={`import { ToolResult, useToolResult } from "@a3s-lab/ui/react";
+
+export function TestResult({ result }) {
+  const control = useToolResult({
+    events: {
+      "a3s:tabs-before-change": event => preserveResultScroll(event.detail),
+      "a3s:tabs-change": event => rememberResultView(event.detail),
+    },
+  });
+
+  return (
+    <ToolResult ref={control.ref} data-state="ready">
+      <header><strong>测试结果</strong><span data-tool-result-status>通过</span></header>
+      <div role="tablist" aria-label="结果视图">{/* 带稳定 ID 的标签按钮 */}</div>
+      {/* 由 aria-controls 关联的结果面板 */}
+    </ToolResult>
+  );
+}
+
+control.call("select", outputTab);`}
+  vue={`<script setup lang="ts">
+import { ToolResult, useToolResult } from "@a3s-lab/ui/vue";
+
+const control = useToolResult({
+  events: {
+    "a3s:tabs-before-change": event => preserveResultScroll(event.detail),
+    "a3s:tabs-change": event => rememberResultView(event.detail),
+  },
+});
+</script>
+
+<template>
+  <ToolResult :ref="control.componentRef" data-state="ready">
+    <header><strong>测试结果</strong><span data-tool-result-status>通过</span></header>
+    <div role="tablist" aria-label="结果视图"><!-- 带稳定 ID 的标签按钮 --></div>
+    <!-- 由 aria-controls 关联的结果面板 -->
+  </ToolResult>
+</template>`}
+/>
+
+## 控制器与状态
+
+工具结果复用 Tabs 的 `select(tab, focus)` 和 `refresh()`，并发送相同的可取消切换事件。根状态为 `ready`、`loading`、`empty` 或 `error`；标签选择是内部视图状态，不能覆盖结果是否可用。
+
+## 无障碍
+
+标签、面板、`aria-controls` 和 `aria-labelledby` 必须一一对应。方向键、Home 和 End 在标签列表内移动，非活动标签使用 `tabindex="-1"`，隐藏面板使用原生 `hidden`。页头状态、结果数量和退出码必须有文本，不依赖绿色或红色。

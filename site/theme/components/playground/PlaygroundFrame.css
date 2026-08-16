@@ -2,13 +2,25 @@
   .a3s-workspace-playground__device {
   width: min(100%, 48rem);
   aspect-ratio: 768 / 1024;
+  border: 0.375rem solid #171a22;
+  border-radius: 1.5rem;
+  grid-template-rows: 1.875rem minmax(0, 1fr);
+  box-shadow:
+    0 1.75rem 4rem rgb(15 23 42 / 18%),
+    inset 0 0 0 1px rgb(255 255 255 / 8%);
 }
 
 .a3s-workspace-playground[data-playground-viewport="phone"]
   .a3s-workspace-playground__device {
   width: min(100%, 24.375rem);
   aspect-ratio: 390 / 844;
-  border-radius: 1.25rem;
+  border: 0.4375rem solid #14171e;
+  border-radius: 2.375rem;
+  grid-template-rows: 1.875rem minmax(0, 1fr);
+  background: #14171e;
+  box-shadow:
+    0 1.75rem 4rem rgb(15 23 42 / 22%),
+    inset 0 0 0 1px rgb(255 255 255 / 10%);
 }
 
 .a3s-workspace-playground__windowbar {
@@ -40,7 +52,7 @@
   min-width: 0;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
 .a3s-workspace-playground__windowbar img {
@@ -52,7 +64,7 @@
 .a3s-workspace-playground__windowbar small {
   justify-self: end;
   font-family: var(--ui-mono);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
 }
 
 .a3s-workspace-playground__shell.app-shell {
@@ -64,7 +76,7 @@
   min-height: 0;
   border: 0;
   border-radius: 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .a3s-workspace-playground__shell > [data-app-navigation] {
@@ -83,7 +95,7 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--foreground);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .a3s-workspace-playground__shell > [data-app-navigation] img {
@@ -114,7 +126,7 @@
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-align: start;
 }
 
@@ -159,7 +171,7 @@
   display: block;
   overflow: hidden;
   color: var(--foreground);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 680;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -219,13 +231,89 @@
 
 .a3s-workspace-playground[data-playground-viewport="phone"]
   .a3s-workspace-playground__windowbar {
+  min-height: 1.875rem;
   padding-inline: 0.625rem;
+  border-block-end: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  > span {
+  position: relative;
+  min-width: 2.5rem;
+  min-height: 1rem;
+  align-items: center;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  > span
+  i {
+  display: none;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  > span::after {
+  content: "9:41";
+  font-size: 0.625rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  > div {
+  width: 4.5rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #090b0f;
+  justify-self: center;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  > div
+  > * {
+  display: none;
 }
 
 .a3s-workspace-playground[data-playground-viewport="phone"]
   .a3s-workspace-playground__windowbar
   small {
-  display: none;
+  position: relative;
+  display: block;
+  width: 1rem;
+  height: 0.5rem;
+  margin-inline-end: 0.125rem;
+  border: 1px solid currentColor;
+  border-radius: 0.125rem;
+  font-size: 0;
+  opacity: 0.78;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  small::before {
+  position: absolute;
+  inset: 1px 2px 1px 1px;
+  border-radius: 1px;
+  background: currentColor;
+  content: "";
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .a3s-workspace-playground__windowbar
+  small::after {
+  position: absolute;
+  inset-block: 0.125rem;
+  inset-inline-end: -0.1875rem;
+  width: 0.125rem;
+  border-radius: 0 1px 1px 0;
+  background: currentColor;
+  content: "";
 }
 
 .a3s-workspace-playground[data-playground-viewport="phone"]

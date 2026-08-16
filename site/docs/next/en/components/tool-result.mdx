@@ -1,0 +1,103 @@
+# Tool Result
+
+Tool Result presents the primary result, diagnostics, and structured metadata for a completed call in one switchable region. Use it when the output has distinct peer views that people need to compare. A one-line success message stays in the Tool Call summary.
+
+<Preview class="w-full max-w-4xl" title="Test run result">
+  <section class="tool-result tabs" data-state="ready" aria-labelledby="tool-result-title-en">
+    <header>
+      <span><strong id="tool-result-title-en">Permission boundary tests</strong> <span class="status-badge" data-state="success" data-tool-result-status>Passed</span></span>
+      <div data-tool-result-actions><button type="button" class="btn" data-size="sm" data-variant="ghost">Copy current view</button><button type="button" class="btn" data-size="sm" data-variant="outline">Open full report</button></div>
+    </header>
+    <div role="tablist" aria-label="Result views" aria-orientation="horizontal">
+      <button type="button" role="tab" id="tool-result-summary-tab-en" aria-controls="tool-result-summary-panel-en" aria-selected="true" tabindex="0">Summary</button>
+      <button type="button" role="tab" id="tool-result-output-tab-en" aria-controls="tool-result-output-panel-en" aria-selected="false" tabindex="-1">Output <span class="badge">24</span></button>
+      <button type="button" role="tab" id="tool-result-metadata-tab-en" aria-controls="tool-result-metadata-panel-en" aria-selected="false" tabindex="-1">Metadata</button>
+    </div>
+    <section role="tabpanel" id="tool-result-summary-panel-en" aria-labelledby="tool-result-summary-tab-en" tabindex="-1">
+      <div data-tool-result-meta><span>18 tests passed</span><span>0 failed</span><span>2.84 s</span><span>Exit code 0</span></div>
+      <pre>{`PASS tests/policy.spec.ts
+PASS tests/permission-boundary.spec.ts
+
+Test Suites  2 passed (2)
+Tests        18 passed (18)`}</pre>
+    </section>
+    <section role="tabpanel" id="tool-result-output-panel-en" aria-labelledby="tool-result-output-tab-en" tabindex="-1" hidden>
+      <pre>{`[setup] loading permission fixtures
+[runner] executing 18 cases
+[cleanup] removed temporary workspace`}</pre>
+    </section>
+    <section role="tabpanel" id="tool-result-metadata-panel-en" aria-labelledby="tool-result-metadata-tab-en" tabindex="-1" hidden>
+      <dl><div><dt>Command</dt><dd><code>npm test -- permissions</code></dd></div><div><dt>Working directory</dt><dd><code>/workspace/ui</code></dd></div><div><dt>Report</dt><dd><code>artifacts/permissions.json</code></dd></div></dl>
+    </section>
+  </section>
+</Preview>
+
+## Information architecture
+
+The first tab is the view most useful for making a decision, not mechanically `stdout`. Tabs are peer representations of one result, such as summary, output, diff, preview, and metadata. Retry, download, and open-file commands belong in the header action region.
+
+Loading, empty, and error states retain the result identity and status. An error view explains the cause and exposes a recovery action instead of rendering an empty Output tab. Use a dedicated previewer or download link for binary assets, images, and very large files rather than mounting the whole resource in the DOM.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section class="tool-result tabs" data-state="ready">
+  <header><strong>Test result</strong><span data-tool-result-status>Passed</span></header>
+  <div role="tablist" aria-label="Result views">
+    <button type="button" role="tab" id="summary-tab" aria-controls="summary-panel" aria-selected="true" tabindex="0">Summary</button>
+    <button type="button" role="tab" id="output-tab" aria-controls="output-panel" aria-selected="false" tabindex="-1">Output</button>
+  </div>
+  <section role="tabpanel" id="summary-panel" aria-labelledby="summary-tab" tabindex="-1">18 tests passed</section>
+  <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabindex="-1" hidden><pre>…</pre></section>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tabs";
+</script>`}
+  react={`import { ToolResult, useToolResult } from "@a3s-lab/ui/react";
+
+export function TestResult({ result }) {
+  const control = useToolResult({
+    events: {
+      "a3s:tabs-before-change": event => preserveResultScroll(event.detail),
+      "a3s:tabs-change": event => rememberResultView(event.detail),
+    },
+  });
+
+  return (
+    <ToolResult ref={control.ref} data-state="ready">
+      <header><strong>Test result</strong><span data-tool-result-status>Passed</span></header>
+      <div role="tablist" aria-label="Result views">{/* Tab buttons with stable IDs */}</div>
+      {/* Result panels linked through aria-controls */}
+    </ToolResult>
+  );
+}
+
+control.call("select", outputTab);`}
+  vue={`<script setup lang="ts">
+import { ToolResult, useToolResult } from "@a3s-lab/ui/vue";
+
+const control = useToolResult({
+  events: {
+    "a3s:tabs-before-change": event => preserveResultScroll(event.detail),
+    "a3s:tabs-change": event => rememberResultView(event.detail),
+  },
+});
+</script>
+
+<template>
+  <ToolResult :ref="control.componentRef" data-state="ready">
+    <header><strong>Test result</strong><span data-tool-result-status>Passed</span></header>
+    <div role="tablist" aria-label="Result views"><!-- Tab buttons with stable IDs --></div>
+    <!-- Result panels linked through aria-controls -->
+  </ToolResult>
+</template>`}
+/>
+
+## Controller and states
+
+Tool Result reuses Tabs `select(tab, focus)` and `refresh()` methods and emits the same cancelable transition events. Root state is `ready`, `loading`, `empty`, or `error`. The selected tab is an internal view state and cannot replace whether the result itself is available.
+
+## Accessibility
+
+Each tab and panel pair must have matching `aria-controls` and `aria-labelledby` values. Arrow keys, Home, and End move within the tablist. Inactive tabs use `tabindex="-1"`; inactive panels use native `hidden`. Header status, result counts, and exit codes have text equivalents and never depend on green or red alone.

@@ -519,6 +519,7 @@ export function WorkflowScene({ locale }: { locale: PlaygroundLocale }) {
             </strong>
           </article>
           <svg
+            className="playground-flow-links"
             aria-hidden="true"
             viewBox="0 0 700 320"
             preserveAspectRatio="none"

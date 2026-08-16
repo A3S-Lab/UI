@@ -88,10 +88,20 @@
       "types": "./dist/frameworks/vue.d.ts",
       "import": "./dist/frameworks/vue.js"
     },
+    "./tiptap/react": {
+      "types": "./dist/integrations/tiptap/react.d.ts",
+      "import": "./dist/integrations/tiptap/react.js"
+    },
+    "./tiptap/vue": {
+      "types": "./dist/integrations/tiptap/vue.d.ts",
+      "import": "./dist/integrations/tiptap/vue.js"
+    },
     "./all": "./dist/js/all.js",
     "./all.min": "./dist/js/all.min.js",
     "./accordion": "./dist/js/accordion.js",
     "./accordion.min": "./dist/js/accordion.min.js",
+    "./agent-composer": "./dist/js/agent-composer.js",
+    "./agent-composer.min": "./dist/js/agent-composer.min.js",
     "./app-shell": "./dist/js/app-shell.js",
     "./app-shell.min": "./dist/js/app-shell.min.js",
     "./back-to-bottom": "./dist/js/back-to-bottom.js",
@@ -102,6 +112,8 @@
     "./chart.min": "./dist/js/chart.min.js",
     "./code-editor": "./dist/js/code-editor.js",
     "./code-editor.min": "./dist/js/code-editor.min.js",
+    "./code-graph": "./dist/js/code-graph.js",
+    "./code-graph.min": "./dist/js/code-graph.min.js",
     "./combobox": "./dist/js/combobox.js",
     "./combobox.min": "./dist/js/combobox.min.js",
     "./context-menu": "./dist/js/context-menu.js",
@@ -152,6 +164,10 @@
     "./table-of-contents.min": "./dist/js/table-of-contents.min.js",
     "./task-workspace": "./dist/js/task-workspace.js",
     "./task-workspace.min": "./dist/js/task-workspace.min.js",
+    "./tool-call": "./dist/js/tool-call.js",
+    "./tool-call.min": "./dist/js/tool-call.min.js",
+    "./tool-call-timeline": "./dist/js/tool-call-timeline.js",
+    "./tool-call-timeline.min": "./dist/js/tool-call-timeline.min.js",
     "./tree": "./dist/js/tree.js",
     "./tree.min": "./dist/js/tree.min.js",
     "./toast": "./dist/js/toast.js",
@@ -232,10 +248,38 @@
     "test:visual:update": "npm run build && playwright test --config playwright.config.ts --update-snapshots"
   },
   "peerDependencies": {
+    "@tiptap/core": ">=3.27.3",
+    "@tiptap/extension-placeholder": ">=3.27.3",
+    "@tiptap/markdown": ">=3.27.3",
+    "@tiptap/pm": ">=3.27.3",
+    "@tiptap/react": ">=3.27.3",
+    "@tiptap/starter-kit": ">=3.27.3",
+    "@tiptap/vue-3": ">=3.27.3",
     "react": ">=18.2.0",
     "vue": ">=3.4.0"
   },
   "peerDependenciesMeta": {
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extension-placeholder": {
+      "optional": true
+    },
+    "@tiptap/markdown": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/react": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
+      "optional": true
+    },
+    "@tiptap/vue-3": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
@@ -246,8 +290,18 @@
   "devDependencies": {
     "@playwright/test": "1.61.1",
     "@tailwindcss/cli": "^4.1.17",
+    "@tiptap/core": "^3.30.1",
+    "@tiptap/extension-placeholder": "^3.30.1",
+    "@tiptap/markdown": "^3.30.1",
+    "@tiptap/pm": "^3.30.1",
+    "@tiptap/react": "^3.30.1",
+    "@tiptap/starter-kit": "^3.30.1",
+    "@tiptap/vue-3": "^3.30.1",
     "prettier": "^3.5.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tailwindcss": "^4.1.17",
-    "terser": "^5.42.0"
+    "terser": "^5.42.0",
+    "vue": "^3.5.28"
   }
 }

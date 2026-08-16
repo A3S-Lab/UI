@@ -145,6 +145,7 @@
 }
 
 .a3s-preview__stage {
+  --a3s-preview-overlay-extension: 0px;
   display: grid;
   width: 100%;
   min-width: 0;
@@ -163,8 +164,15 @@
   align-items: start;
 }
 
-.a3s-preview[data-preview-layout="overlay"] .a3s-preview__stage {
-  min-height: 220px;
+.a3s-preview[data-preview-layout="overlay"] .a3s-preview__stage,
+.a3s-preview:has(
+    .a3s-preview__canvas :is([data-popover], [data-context-content])
+  )
+  .a3s-preview__stage {
+  min-height: calc(280px + var(--a3s-preview-overlay-extension));
+  padding-block-start: 64px;
+  overflow: visible;
+  align-items: start;
 }
 
 .a3s-preview[data-preview-layout="workspace"] .a3s-preview__stage {

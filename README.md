@@ -18,7 +18,7 @@
 
 A3S UI turns the interaction patterns refined in A3S Office into reusable, semantic HTML. It combines Tailwind CSS v4, native browser elements, and small vanilla JavaScript controllers—without requiring React, Radix, or a framework runtime.
 
-The system now exposes 111 public component contracts. Eighty-six general components cover controls, navigation, content, overlays, and product structure, while the 25-component Harness groups task, conversation, execution, review, evidence, file navigation, editing, terminal, log, and device-preview workflows for Coding Agents.
+The system now exposes 114 public component contracts. Eighty-six general components cover controls, navigation, content, overlays, and product structure, while the 28-component Harness groups task, conversation, execution, review, evidence, file navigation, editing, terminal, log, and device-preview workflows for Coding Agents.
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
@@ -149,7 +149,7 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/runtime`               | Shared lifecycle and controller registry                                                                                     |
 | `@a3s-lab/ui/all`                   | Shared runtime plus all auto-initialized controllers except Chart                                                            |
 | `@a3s-lab/ui/{controller}`          | One JavaScript controller, such as `app-shell`, `task-workspace`, `tabs`, `split-pane`, `code-editor`, or `device-simulator` |
-| `@a3s-lab/ui/manifest`              | Machine-readable metadata for all 111 public components                                                                      |
+| `@a3s-lab/ui/manifest`              | Machine-readable metadata for all 114 public components                                                                      |
 | `@a3s-lab/ui/components.json`       | JSON component selectors, parts, actions, states, and test selectors                                                         |
 | `@a3s-lab/ui/ai`                    | DOM annotation, discovery, selector, and snapshot helpers                                                                    |
 | `@a3s-lab/ui/a3s-test`              | Ready-to-run deterministic workflow example                                                                                  |

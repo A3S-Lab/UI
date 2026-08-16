@@ -29,13 +29,13 @@
 - [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Task Workspace and New Task compositions.
 - [x] Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts with bilingual Capability Catalog, Settings Center, Projects, and Automations patterns.
 - [x] Added the 14 detailed task-workflow contracts for plans, message state, artifacts, context, queues, checkpoints, follow-ups, tools, change review, terminal output, and execution evidence.
-- [x] Added the 111-component machine manifest, semantic DOM runtime, optional React and Vue adapters, isolated package checks, and deterministic per-component A3S Test coverage.
+- [x] Added the 114-component machine manifest, semantic DOM runtime, optional React and Vue adapters, isolated package checks, and deterministic per-component A3S Test coverage.
 - [x] Added the Harness information architecture for task, conversation, execution, review, and tooling components.
 - [x] Added Device Simulator with phone, tablet, desktop, custom-size, orientation, iframe, and trusted native-preview integrations.
 - [x] Rebuilt the documentation on Rspress with Chinese-first bilingual navigation, version-aware switching, highlighted source panels, and copy controls.
 - [x] Added owned-part/action/state selector helpers, all-component framework export and type checks, real client mounting, and source disclosure for every bilingual component example.
 - [x] Added Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer after a product-level reuse and ownership review.
-- [x] Added aligned React and Vue examples for all 111 component guides plus `useA3SLocale`, `useA3STheme`, and `useA3SMotion` runtime configuration APIs.
+- [x] Added aligned React and Vue examples for all 114 component guides plus `useA3SLocale`, `useA3STheme`, and `useA3SMotion` runtime configuration APIs.
 - [x] Closed the 160-item reference audit with checked component, composition, foundation, brand, integration, and standalone-route evidence instead of promoting every source concept into a component.
 - [ ] Execute the first-principles and adversarial component review in [COMPONENT_OPTIMIZATION_PLAN.md](./COMPONENT_OPTIMIZATION_PLAN.md), promoting each contract only after its product, interaction, visual, framework, and regression evidence is complete.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.

@@ -2,22 +2,22 @@
 
 Harness 集中放置构建 Coding Agent 工作流需要的组件。它把任务输入、对话、执行、权限、审阅、证据和预览工具从通用应用布局中分离出来，让组件选择从用户任务出发，而不是从页面外观出发。
 
-当前 Harness 包含 25 个公开组件，所有页面继续使用稳定的 `/components/*` 路由，现有链接与包导入方式不变。
+当前 Harness 包含 28 个公开组件，所有页面继续使用稳定的 `/components/*` 路由，现有链接与包导入方式不变。
 
 ## 任务与对话
 
-[任务启动页](/components/task-start) · [任务工作区](/components/task-workspace) · [Agent 输入框](/components/agent-composer) · [Agent 对话记录](/components/agent-transcript) · [Agent 工作台](/components/agent-workbench) · [上下文选择器](/components/context-selector) · [消息状态](/components/message-status) · [消息附件](/components/message-attachment) · [消息引用](/components/message-citation) · [后续建议](/components/follow-up-suggestions)
+[任务启动页](/components/task-start) · [任务工作区](/components/task-workspace) · [任务输入器](/components/agent-composer) · [Agent 对话记录](/components/agent-transcript) · [Agent 工作台](/components/agent-workbench) · [上下文选择器](/components/context-selector) · [消息状态](/components/message-status) · [消息附件](/components/message-attachment) · [消息引用](/components/message-citation) · [后续建议](/components/follow-up-suggestions)
 
 这一组负责收集目标与上下文、呈现连续对话，并在流式、排队、离线和完成状态之间保持清楚的任务边界。
 
 ## 执行与审阅
 
-[任务计划](/components/task-plan) · [计划步骤](/components/plan-step) · [任务队列](/components/task-queue) · [审批请求](/components/approval-request) · [执行项](/components/execution-item) · [检查点](/components/checkpoint) · [工具调用](/components/tool-call) · [变更审阅](/components/change-review) · [执行证据](/components/execution-evidence) · [产物卡](/components/artifact-card)
+[任务计划](/components/task-plan) · [计划步骤](/components/plan-step) · [任务队列](/components/task-queue) · [审批请求](/components/approval-request) · [执行项](/components/execution-item) · [检查点](/components/checkpoint) · [工具调用](/components/tool-call) · [工具调用时间线](/components/tool-call-timeline) · [工具结果](/components/tool-result) · [变更审阅](/components/change-review) · [执行证据](/components/execution-evidence) · [产物卡](/components/artifact-card)
 
 这一组让计划、执行进度、权限边界、可恢复状态和最终证据保持可见。关键操作必须保留明确的来源、影响范围与结果，不能只依赖颜色表达状态。
 
 ## 工具
 
-[文件资源管理器](/components/file-explorer) · [代码编辑器](/components/code-editor) · [终端](/components/terminal) · [日志查看器](/components/log-viewer) · [设备模拟器](/components/device-simulator)
+[文件资源管理器](/components/file-explorer) · [3D 代码图谱](/components/code-graph) · [代码编辑器](/components/code-editor) · [终端](/components/terminal) · [日志查看器](/components/log-viewer) · [设备模拟器](/components/device-simulator)
 
 工具组件用于检查和操作真实工作结果。文件与设备能力保持沙箱边界；需要访问本机文件、进程或原生视图的操作通过结构化事件交给可信宿主执行。

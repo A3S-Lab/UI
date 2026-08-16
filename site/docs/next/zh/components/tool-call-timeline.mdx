@@ -1,0 +1,111 @@
+# 工具调用时间线
+
+工具调用时间线把一次任务中的多次调用按发生顺序组织起来，并在顶部汇总运行、等待处理、完成和异常数量。它解决的是“任务现在卡在哪里”，不是替代完整审计日志。
+
+<Preview class="w-full max-w-4xl" title="任务执行中的工具序列">
+  <section class="tool-call-timeline" data-visible-calls="2" aria-labelledby="tool-timeline-title-zh">
+    <header data-tool-timeline-summary>
+      <span><strong id="tool-timeline-title-zh">执行记录</strong><output data-tool-timeline-status aria-live="polite">4 次调用 · 1 次等待确认</output></span>
+      <span>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-timeline-action="expand-history">显示较早调用</button>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-timeline-action="collapse-history" hidden>收起较早调用</button>
+      </span>
+    </header>
+    <ol data-tool-call-list>
+      <li data-tool-history>
+        <details class="tool-call" data-state="succeeded">
+          <summary><span data-tool-kind aria-hidden="true">1</span><span data-tool-identity><strong>读取项目规则</strong><small>filesystem · AGENTS.md</small></span><span data-tool-duration>84 ms</span><span class="status-badge" data-state="success" data-tool-status>成功</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+      <li data-tool-history>
+        <details class="tool-call" data-state="succeeded">
+          <summary><span data-tool-kind aria-hidden="true">2</span><span data-tool-identity><strong>检索权限实现</strong><small>search · 18 个匹配</small></span><span data-tool-duration>312 ms</span><span class="status-badge" data-state="success" data-tool-status>成功</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+      <li>
+        <details class="tool-call" data-state="running" open>
+          <summary><span data-tool-kind aria-hidden="true">3</span><span data-tool-identity><strong>运行回归测试</strong><small>shell · npm test -- permissions</small></span><span data-tool-duration>8.4 s</span><span class="status-badge" data-state="info" data-tool-status>运行中</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+          <section data-tool-content><pre data-tool-output>{`PASS policy.spec.ts
+RUNS permission-boundary.spec.ts`}</pre><progress data-tool-progress value="72" max="100" aria-label="测试进度">72%</progress></section>
+        </details>
+      </li>
+      <li>
+        <details class="tool-call" data-state="awaiting">
+          <summary><span data-tool-kind aria-hidden="true">4</span><span data-tool-identity><strong>更新受保护的快照</strong><small>filesystem · 2 个文件</small></span><span data-tool-duration>等待中</span><span class="status-badge" data-state="warning" data-tool-status>需要确认</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+    </ol>
+  </section>
+</Preview>
+
+## 何时使用
+
+当一次任务包含至少两次可独立理解的调用，并且用户需要判断顺序、当前阻塞或异常来源时使用时间线。只有一次调用时直接使用工具调用；跨会话检索、筛选和导出属于审计日志。
+
+历史默认只收起较早的稳定调用。正在运行、等待确认、失败和最新调用始终可见，不能为了节省空间隐藏需要处理的状态。`data-visible-calls` 定义折叠时保留的最新数量。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section class="tool-call-timeline" data-visible-calls="4">
+  <header data-tool-timeline-summary>
+    <strong>执行记录</strong>
+    <output data-tool-timeline-status aria-live="polite"></output>
+    <button type="button" data-tool-timeline-action="expand-history">显示较早调用</button>
+    <button type="button" data-tool-timeline-action="collapse-history" hidden>收起较早调用</button>
+  </header>
+  <ol data-tool-call-list>
+    <li data-tool-history><details class="tool-call" data-state="succeeded">…</details></li>
+    <li><details class="tool-call" data-state="running">…</details></li>
+  </ol>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tool-call";
+  import "@a3s-lab/ui/tool-call-timeline";
+</script>`}
+  react={`import { ToolCallTimeline, useToolCallTimeline } from "@a3s-lab/ui/react";
+
+export function ExecutionTimeline() {
+  const control = useToolCallTimeline({
+    events: {
+      "a3s:tool-timeline-change": event => persistSummary(event.detail.current),
+      "a3s:tool-timeline-visibility-change": event => persistPreference(event.detail.expanded),
+    },
+  });
+
+  return (
+    <ToolCallTimeline ref={control.ref} data-visible-calls="4">
+      <header data-tool-timeline-summary><strong>执行记录</strong><output data-tool-timeline-status /></header>
+      <ol data-tool-call-list>{calls.map(renderToolCall)}</ol>
+    </ToolCallTimeline>
+  );
+}
+
+const summary = control.call("getSummary");`}
+  vue={`<script setup lang="ts">
+import { ToolCallTimeline, useToolCallTimeline } from "@a3s-lab/ui/vue";
+
+const control = useToolCallTimeline({
+  events: {
+    "a3s:tool-timeline-change": event => persistSummary(event.detail.current),
+    "a3s:tool-timeline-visibility-change": event => persistPreference(event.detail.expanded),
+  },
+});
+</script>
+
+<template>
+  <ToolCallTimeline :ref="control.componentRef" data-visible-calls="4">
+    <header data-tool-timeline-summary><strong>执行记录</strong><output data-tool-timeline-status /></header>
+    <ol data-tool-call-list><li v-for="call in calls" :key="call.id"><ToolCallRow :call="call" /></li></ol>
+  </ToolCallTimeline>
+</template>`}
+/>
+
+## 汇总与控制器
+
+`getSummary()` 返回 `total`、`active`、`attention`、`completed`、`problems` 和派生状态。等待确认优先于异常，异常优先于运行，以保证需要人工处理的状态不会被“仍在运行”掩盖。`expandHistory()` 和 `collapseHistory()` 同步历史条目、按钮可见性，并发送可持久化的偏好事件。
+
+## 无障碍
+
+列表保持真实 DOM 顺序。汇总使用一个 `aria-live="polite"` 输出，不为每个流式片段播报。折叠历史后，隐藏条目必须离开可访问树；展开按钮说明它会显示“较早调用”，不能只写“更多”。

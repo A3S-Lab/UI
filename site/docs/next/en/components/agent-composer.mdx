@@ -1,142 +1,162 @@
-# Agent Composer
+# Task Composer
 
-Agent Composer captures the next instruction, attached context, queued input, and send or stop actions. The host application owns uploads, shortcuts, submission, cancellation, and queue persistence.
+Task Composer turns an instruction, file context, source selections, skills, run settings, and follow-up messages into one recoverable submission. The primary input is always backed by TipTap. A plain `textarea` cannot reliably support Markdown, structured triggers, composition input, selection, and controlled drafts, so it is not part of the production contract.
 
-<Preview class="w-full max-w-3xl">
-  <form
-    class="agent-composer"
-    aria-label="Message the coding agent"
-    data-state="streaming"
-  >
-    <ul data-composer-context aria-label="Attached context">
-      <li>
-        <span>AGENTS.md</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="Remove AGENTS.md"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-      <li>
-        <span>src/runtime.ts:42–96</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="Remove runtime source range"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-    </ul>
-    <textarea
-      name="prompt"
-      aria-label="Instruction"
-      placeholder="Ask A3S Code to inspect, change, or explain this project…"
-      defaultValue="Add cancellation coverage for the streaming execution path."
-    />
-    <footer>
-      <div data-composer-tools>
-        <button type="button" class="btn" data-size="sm" data-variant="ghost">Attach</button>
-        <button type="button" class="btn" data-size="sm" data-variant="ghost">Context</button>
-        <span data-composer-status aria-live="polite">Agent is running · this message will be queued</span>
-      </div>
-      <div data-composer-actions>
-        <button type="button" class="btn" data-size="sm" data-variant="outline">Stop</button>
-        <button type="submit" class="btn" data-size="sm">Queue message</button>
-      </div>
-    </footer>
-    <ol data-composer-queue aria-label="Queued messages">
-      <li>
-        <span>Then update the English and Chinese API examples.</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="Remove queued message"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-    </ol>
-  </form>
+<Preview class="w-full max-w-4xl" title="Production task composer">
+  <AgentComposerDemo />
 </Preview>
 
-## Usage
+## Product boundary
 
-```html
-<form class="agent-composer" aria-label="Message the coding agent">
-  <ul data-composer-context aria-label="Attached context">
-    ...
-  </ul>
-  <textarea name="prompt" aria-label="Instruction"></textarea>
-  <footer>
-    <div data-composer-tools>...</div>
-    <div data-composer-actions>
-      <button type="submit" class="btn">Send</button>
-    </div>
-  </footer>
-</form>
-```
+The composer answers four questions: what should happen, which resources may be used, which run settings apply, and whether the instruction sends now or joins the queue. Uploads, model transport, authorization, and persistence remain host responsibilities.
 
-### Parameters
+- Enter submits and Shift + Enter inserts a line break. Never intercept Enter during IME composition.
+- `@` opens the workspace tree, `$` opens skills, and `/` opens built-in commands. Suggestions use a listbox or tree while focus remains in the editor through `aria-activedescendant`.
+- Files and directories can arrive through a picker or drag and drop. Every resource keeps a stable identifier, visible type, and remove action.
+- Running states distinguish send, queue, stop, and unavailable actions with text, not an icon swap alone.
+- Failed submissions preserve Markdown, selection, resources, settings, and focus, then name a concrete recovery action.
 
-| API                           | Values                                                           | Purpose                                                     |
-| ----------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------- |
-| `class="agent-composer"`      | Required                                                         | Standalone `<form>`, or a Section inside an owning Form     |
-| `data-state`                  | `idle`, `submitting`, `streaming`, `queued`, `error`, `disabled` | Finite presentation state owned by the host                 |
-| `data-composer-context`       | Optional list                                                    | Attachments, files, symbols, source ranges, images, or URLs |
-| `data-composer-tools`         | Optional container                                               | Attachment and context controls                             |
-| `data-composer-actions`       | Recommended container                                            | Send, queue, stop, or retry actions                         |
-| `data-composer-status`        | Optional status text                                             | Submission or queue feedback                                |
-| `data-composer-queue`         | Optional ordered list                                            | Messages waiting behind an active Turn                      |
-| `--agent-composer-min-height` | CSS length, default `5.5rem`                                     | Minimum textarea height                                     |
-| `--agent-composer-max-height` | CSS length, default `18rem`                                      | Maximum textarea height before internal scrolling           |
+## Public structure
 
-## States and variants
+| API | Purpose |
+| --- | --- |
+| `.agent-composer` | The `<form>` boundary; use `<section>` only inside an existing form |
+| `data-composer-editor` | Host for the TipTap instance |
+| `data-composer-input` | ProseMirror root created by TipTap and the accessible textbox |
+| `data-composer-resources` | Ordered files, directories, source ranges, images, URLs, and skills |
+| `data-composer-suggestions` | Listbox or tree opened by `@`, `$`, or `/` |
+| `data-composer-setting` | Mode, context, model, and reasoning controls owned by the host |
+| `data-composer-actions` | Send, queue, stop, and retry actions |
+| `data-composer-status` | One polite status region, never a token-by-token announcer |
+| `data-composer-queue` | Editable, removable, sortable, pausable follow-up messages |
 
-Use native `disabled` on individual controls and `aria-disabled="true"` only when the entire composer is unavailable. Keep input text when submission fails. During streaming, applications may send immediately, queue the message, or disable submission; the button label and status text must state which behavior applies.
+Root states are `ready`, `submitting`, `streaming`, `queued`, `stopping`, `offline`, `error`, and `disabled`. Individual controls continue to use native `disabled`.
 
-Attachments and queue items are application data. A3S UI neither uploads files nor mutates a queue. Native `submit` and button events are the integration points. Use a `<section class="agent-composer">` only when an ancestor Form already owns the submit boundary; nested Forms are invalid.
+## Framework usage
 
-## Accessibility
+TipTap lives behind a separate package entry, so applications that only use CSS or ordinary components do not pay for the editor. HTML, React, and Vue share the same DOM, events, and Markdown value.
 
-Give the form and textarea accessible names. Keep each removal button adjacent to the item it removes and include the item name in the button label. Put asynchronous status copy in a polite live region, but do not announce every streamed token. Preserve ordinary IME composition and multiline textarea behavior; product shortcuts must not intercept Enter while composition is active.
+<FrameworkTabs
+  html={`import { Editor } from "@tiptap/core";
+import Placeholder from "@tiptap/extension-placeholder";
+import { Markdown } from "@tiptap/markdown";
+import StarterKit from "@tiptap/starter-kit";
+import "@a3s-lab/ui";
+import "@a3s-lab/ui/agent-composer";
 
-## React
+const form = document.querySelector(".agent-composer");
+const editor = new Editor({
+  element: form.querySelector("[data-composer-input]"),
+  extensions: [
+    StarterKit.configure({ heading: false, codeBlock: false }),
+    Placeholder.configure({ placeholder: "Describe the task; use @, $, or /…" }),
+    Markdown,
+  ],
+  contentType: "markdown",
+  content: "Review the permission boundary.",
+  editorProps: {
+    attributes: {
+      role: "textbox",
+      "aria-label": "Task instruction",
+      "aria-multiline": "true",
+      "data-composer-input": "",
+    },
+    handleKeyDown: (_view, event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
+      event.preventDefault();
+      form.requestSubmit();
+      return true;
+    },
+  },
+});
 
-```tsx
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  submitTask({ markdown: editor.getMarkdown() });
+});`}
+  react={`import { useState } from "react";
+import { EditorContent } from "@tiptap/react";
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/react";
 
-export function Example() {
-  const control = useAgentComposer();
+export function TaskInput() {
+  const [draft, setDraft] = useState("");
+  const composer = useAgentComposer({
+    events: {
+      "a3s:composer-submit": event => saveTask(event.detail),
+      "a3s:composer-action": event => runComposerAction(event.detail),
+    },
+  });
+  const editor = useAgentComposerEditor({
+    value: draft,
+    onChange: setDraft,
+    onSubmit: markdown => submitTask({ markdown }),
+    onTriggerChange: trigger => openSuggestionSource(trigger),
+    placeholder: "Describe the task; use @, $, or /…",
+  });
+
   return (
-    <AgentComposer ref={control.ref} aria-label="Agent Composer"><label>Name<input name="name" /></label><button type="submit">Continue</button></AgentComposer>
+    <AgentComposer ref={composer.ref} aria-label="Task composer" data-state="ready">
+      <section className="agent-composer-editor" data-composer-editor>
+        {editor.editor && <EditorContent editor={editor.editor} />}
+      </section>
+      <footer>
+        <div data-composer-tools>{/* Resources and run settings */}</div>
+        <div data-composer-actions><button type="submit">Send</button></div>
+      </footer>
+    </AgentComposer>
   );
-}
-```
-
-`useAgentComposer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
-## Vue
-
-```vue
-<script setup>
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { EditorContent } from "@tiptap/vue-3";
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/vue";
 
-const control = useAgentComposer();
-const componentRef = control.componentRef;
+const draft = ref("");
+const composer = useAgentComposer({
+  events: {
+    "a3s:composer-submit": event => saveTask(event.detail),
+    "a3s:composer-action": event => runComposerAction(event.detail),
+  },
+});
+const editor = useAgentComposerEditor({
+  value: draft,
+  onSubmit: markdown => submitTask({ markdown }),
+  onTriggerChange: trigger => openSuggestionSource(trigger),
+  placeholder: "Describe the task; use @, $, or /…",
+});
+const tiptap = editor.editor;
 </script>
 
 <template>
-  <AgentComposer ref="componentRef" aria-label="Agent Composer"><label>Name<input name="name" /></label><button type="submit">Continue</button></AgentComposer>
-</template>
-```
+  <AgentComposer :ref="composer.componentRef" aria-label="Task composer" data-state="ready">
+    <section class="agent-composer-editor" data-composer-editor>
+      <EditorContent v-if="tiptap" :editor="tiptap" />
+    </section>
+    <footer>
+      <div data-composer-tools><!-- Resources and run settings --></div>
+      <div data-composer-actions><button type="submit">Send</button></div>
+    </footer>
+  </AgentComposer>
+</template>`}
+/>
 
-`useAgentComposer` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+`useAgentComposer` controls root events and methods. `useAgentComposerEditor` owns the TipTap instance, Markdown value, focus, insertion, and trigger replacement. Do not create both hooks for the same editor instance; most applications render `AgentComposerEditor` directly and call the lower-level editor hook only for custom rendering.
+
+## Controller
+
+| Method | Result |
+| --- | --- |
+| `getDraft()` / `setDraft(markdown)` | Read or update controlled Markdown |
+| `focusInput()` | Restore focus to the ProseMirror surface |
+| `openSuggestions(trigger)` / `closeSuggestions()` | Manage suggestions without moving editor focus |
+| `setState(state, options)` | Update submitting, streaming, stopping, offline, or error state |
+| `setError(message)` | Preserve the draft while presenting a recoverable error |
+| `runAction(action, options)` | Run a host action after its cancelable authorization event |
+
+Important events include `a3s:composer-before-submit`, `a3s:composer-submit`, `a3s:composer-draft-change`, `a3s:composer-trigger-change`, `a3s:composer-before-action`, `a3s:composer-action`, and `a3s:composer-queue-action`.
+
+## Release acceptance
+
+Validate IME composition, undo and redo, long Markdown, empty drafts, focus restoration, keyboard suggestions, directory drops, resource deduplication, repeated stop attempts, offline recovery, queue editing, and 320px layouts. A test that proves only typing and submission is not enough for a production task workspace.

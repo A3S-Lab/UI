@@ -1,15 +1,40 @@
+/* Tool call, timeline, and result composition */
 @layer components {
+  .tool-call-timeline,
   .tool-call {
     display: block;
     width: 100%;
     min-width: 0;
+  }
+
+  .tool-call-timeline > header,
+  .tool-call-timeline [data-tool-timeline-summary] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tool-call-timeline [data-tool-call-list] {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tool-call-timeline [data-tool-call-list] > li {
+    min-width: 0;
+  }
+
+  .tool-call {
     overflow: hidden;
   }
 
   .tool-call > summary {
     display: grid;
     min-width: 0;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto auto auto;
     align-items: center;
     list-style: none;
     cursor: pointer;
@@ -24,21 +49,111 @@
     min-width: 0;
   }
 
-  .tool-call [data-tool-identity] > :is(strong, small) {
+  .tool-call [data-tool-identity] > :is(strong, small),
+  .tool-call [data-tool-operation] {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .tool-call > :is(section, footer) {
+  .tool-call [data-tool-chevron] {
+    transition: transform var(--a3s-motion-fast, 120ms)
+      cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tool-call[open] [data-tool-chevron] {
+    transform: rotate(90deg);
+  }
+
+  .tool-call > :is(section, footer),
+  .tool-call [data-tool-content],
+  .tool-call [data-tool-view] {
     min-width: 0;
   }
 
+  .tool-call [data-tool-content] {
+    display: grid;
+  }
+
+  .tool-call [data-tool-metadata] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
   .tool-call [data-tool-input],
-  .tool-call [data-tool-output] {
+  .tool-call [data-tool-output],
+  .tool-call [data-tool-args] {
     max-width: 100%;
     overflow: auto;
     overflow-wrap: anywhere;
+    white-space: pre;
+  }
+
+  .tool-call [data-tool-progress] {
+    width: 100%;
+  }
+
+  .tool-call > footer,
+  .tool-call [data-tool-result-actions] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .tool-result.tabs {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tool-result.tabs > header,
+  .tool-result.tabs > footer {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tool-result.tabs > [role='tablist'] {
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .tool-result.tabs > [role='tabpanel'] {
+    min-width: 0;
+    overflow: auto;
+  }
+
+  .tool-result [data-tool-result-meta] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 32rem) {
+    .tool-call > summary {
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+    }
+
+    .tool-call > summary [data-tool-duration] {
+      display: none;
+    }
+
+    .tool-call [data-tool-metadata] {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tool-call [data-tool-chevron] {
+      transition: none;
+    }
   }
 }

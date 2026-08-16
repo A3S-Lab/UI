@@ -240,12 +240,18 @@ const workspacePreviewComponents = new Set([
 
 const overlayPreviewComponents = new Set([
   "alert-dialog",
+  "combobox",
+  "context-selector",
   "context-menu",
+  "date-picker",
   "dialog",
   "drawer",
   "dropdown-menu",
+  "emoji-picker",
   "floating-panel",
+  "image-select",
   "popover",
+  "select",
   "tooltip",
 ]);
 

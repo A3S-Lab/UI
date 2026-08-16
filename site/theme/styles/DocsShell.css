@@ -14,7 +14,7 @@ html:root {
   --rp-c-text-1: #142033;
   --rp-c-text-2: #526078;
   --rp-c-text-3: #748095;
-  --rp-nav-height: 64px;
+  --rp-nav-height: 72px;
   --rp-sidebar-width: 320px;
   --rp-sidebar-padding: 20px;
   --rp-outline-width: 268px;
@@ -34,6 +34,7 @@ html:root {
   --rp-c-text-code-border: #dce3ec;
   --rp-c-text-code: #0f46c7;
   --ui-home-width: 1380px;
+  --ui-nav-width: 1440px;
   --ui-canvas: #f5f7fb;
   --ui-paper: #ffffff;
   --ui-panel: #eaf0f8;
@@ -144,10 +145,18 @@ body {
 
 html .rp-nav {
   height: var(--rp-nav-height);
-  border-bottom: 1px solid var(--ui-line-strong);
-  background: color-mix(in srgb, var(--ui-canvas) 90%, transparent);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  padding-right: max(
+    24px,
+    calc((100vw - var(--ui-nav-width)) / 2 + 24px)
+  );
+  padding-left: max(
+    24px,
+    calc((100vw - var(--ui-nav-width)) / 2 + 24px)
+  );
+  border-bottom: 1px solid var(--ui-line);
+  background: color-mix(in srgb, var(--ui-paper) 94%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
   transition: none;
 }
 
@@ -156,39 +165,65 @@ html .rp-nav {
   min-width: 0;
 }
 
-.rp-nav__right {
-  gap: 16px;
-}
-
-.rp-nav__others {
-  gap: 12px;
-}
-
-.rp-nav-menu {
-  gap: 20px;
+.rp-nav__left {
+  align-items: center;
+  gap: 32px;
 }
 
 .rp-nav__title__link {
-  gap: 9px;
-  letter-spacing: -0.02em;
+  gap: 10px;
+  letter-spacing: -0.025em;
 }
 
-.rp-nav__title__logo,
-.rspress-logo {
-  width: 28px;
-  min-width: 28px;
-  height: 28px;
+html .rp-nav__title__logo {
+  display: grid;
+  overflow: hidden;
+  width: 31px;
+  min-width: 31px;
+  max-width: 31px;
+  height: 31px;
+  min-height: 31px;
+  max-height: 31px;
+  aspect-ratio: 1;
+  flex: 0 0 31px;
   margin-right: 0;
+  border-radius: 9px;
+  box-shadow: 0 6px 16px rgb(36 58 154 / 20%);
+  place-items: center;
+}
+
+html .rp-nav__title__logo img,
+html img.rspress-logo {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: 1;
+  object-fit: contain !important;
 }
 
 .rp-nav__title__link > span {
-  font-size: 16px;
-  font-weight: 720;
+  color: var(--ui-ink);
+  font-size: 17px;
+  font-weight: 740;
 }
 
-.rp-nav-menu__item,
-.rp-nav-menu__item__container {
+.rp-nav-menu__item {
+  color: var(--ui-muted);
   font-size: 14px;
+  font-weight: 560;
+}
+
+.rp-nav-menu__item:hover,
+.rp-nav-menu__item--active {
+  color: var(--ui-blue);
+}
+
+.rp-search-button {
+  border-color: var(--ui-line) !important;
+  border-radius: 9px !important;
+  background: var(--ui-paper) !important;
 }
 
 .rp-nav-hamburger,

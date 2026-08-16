@@ -751,36 +751,32 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   const menuButton = page.locator(".rp-sidebar-menu__left");
   const outlineButton = page.locator(".rp-sidebar-menu__right");
   const mobileSearch = page.locator(".rp-search-button--mobile");
-  const navigation = page.locator(".docs-mobile-navigation");
-  const navigationButton = navigation.locator(":scope > summary");
-  const navigationPanel = navigation.locator(".docs-mobile-navigation__panel");
+  const navigationButton = page.locator(".rp-nav-hamburger");
 
   await expect(navigationButton).toHaveAccessibleName("Open navigation");
-  await expect(navigationButton).toHaveAttribute("role", "button");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
-  const navigationPanelId =
+  const navigationId =
     await navigationButton.getAttribute("aria-controls");
-  expect(navigationPanelId).toBeTruthy();
-  await expect(navigationPanel).toHaveAttribute("id", navigationPanelId!);
-  await expect(navigationPanel).toHaveAttribute("aria-hidden", "true");
+  expect(navigationId).toBe("a3s-ui-mobile-navigation");
   const navigationButtonBox = await navigationButton.boundingBox();
   expect(navigationButtonBox).not.toBeNull();
   expect(navigationButtonBox!.width).toBeGreaterThanOrEqual(44);
   expect(navigationButtonBox!.height).toBeGreaterThanOrEqual(44);
 
   await navigationButton.click();
-  await expect(navigation).toHaveAttribute("open", "");
-  await expect(navigationPanel).toBeVisible();
-  await expect(navigationPanel).toHaveAttribute("aria-hidden", "false");
+  const navigation = page.getByRole("dialog", { name: "Site navigation" });
+  await expect(navigation).toBeVisible();
+  await expect(navigation).toHaveAttribute("id", navigationId!);
+  await expect(navigation).toHaveAttribute("aria-modal", "true");
   await expect(navigationButton).toHaveAccessibleName("Close navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "true");
-  const navigationPanelBox = await navigationPanel.boundingBox();
+  const navigationPanelBox = await navigation.boundingBox();
   expect(navigationPanelBox).not.toBeNull();
   expect(navigationPanelBox!.x).toBeGreaterThanOrEqual(0);
   expect(navigationPanelBox!.x + navigationPanelBox!.width).toBeLessThanOrEqual(
     391,
   );
-  const firstNavigationLinkBox = await navigationPanel
+  const firstNavigationLinkBox = await navigation
     .getByRole("link")
     .first()
     .boundingBox();
@@ -791,9 +787,7 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
   ).toBeLessThanOrEqual(391);
 
   await page.keyboard.press("Escape");
-  await expect(navigation).not.toHaveAttribute("open", "");
-  await expect(navigationPanel).not.toBeVisible();
-  await expect(navigationPanel).toHaveAttribute("aria-hidden", "true");
+  await expect(navigation).not.toBeVisible();
   await expect(navigationButton).toHaveAccessibleName("Open navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
   await expect(navigationButton).toBeFocused();

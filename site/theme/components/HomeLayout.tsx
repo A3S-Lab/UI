@@ -90,7 +90,7 @@ const componentFamilies: ComponentFamily[] = [
   },
   {
     category: { zh: "Agent 工作流", en: "Agent workflows" },
-    count: "25",
+    count: "28",
     description: {
       zh: "任务、对话、执行、审阅、证据与开发预览工具。",
       en: "Tasks, conversation, execution, review, evidence, and preview tooling.",
@@ -681,7 +681,7 @@ export function HomeLayout() {
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const isCurrentContract = !version || version === defaultVersion;
-  const componentCount = isCurrentContract ? "111" : "64";
+  const componentCount = isCurrentContract ? "114" : "64";
   const homepageFamilies = isCurrentContract
     ? componentFamilies
     : legacyComponentFamilies;

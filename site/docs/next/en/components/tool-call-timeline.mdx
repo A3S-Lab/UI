@@ -1,0 +1,111 @@
+# Tool Call Timeline
+
+Tool Call Timeline orders the calls in one task and summarizes running, attention, completed, and problem counts. It answers where the task is blocked; it does not replace a searchable audit log.
+
+<Preview class="w-full max-w-4xl" title="Tool sequence during task execution">
+  <section class="tool-call-timeline" data-visible-calls="2" aria-labelledby="tool-timeline-title-en">
+    <header data-tool-timeline-summary>
+      <span><strong id="tool-timeline-title-en">Execution record</strong><output data-tool-timeline-status aria-live="polite">4 calls · 1 needs confirmation</output></span>
+      <span>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-timeline-action="expand-history">Show earlier calls</button>
+        <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-timeline-action="collapse-history" hidden>Hide earlier calls</button>
+      </span>
+    </header>
+    <ol data-tool-call-list>
+      <li data-tool-history>
+        <details class="tool-call" data-state="succeeded">
+          <summary><span data-tool-kind aria-hidden="true">1</span><span data-tool-identity><strong>Read repository instructions</strong><small>filesystem · AGENTS.md</small></span><span data-tool-duration>84 ms</span><span class="status-badge" data-state="success" data-tool-status>Succeeded</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+      <li data-tool-history>
+        <details class="tool-call" data-state="succeeded">
+          <summary><span data-tool-kind aria-hidden="true">2</span><span data-tool-identity><strong>Find permission implementations</strong><small>search · 18 matches</small></span><span data-tool-duration>312 ms</span><span class="status-badge" data-state="success" data-tool-status>Succeeded</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+      <li>
+        <details class="tool-call" data-state="running" open>
+          <summary><span data-tool-kind aria-hidden="true">3</span><span data-tool-identity><strong>Run regression tests</strong><small>shell · npm test -- permissions</small></span><span data-tool-duration>8.4 s</span><span class="status-badge" data-state="info" data-tool-status>Running</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+          <section data-tool-content><pre data-tool-output>{`PASS policy.spec.ts
+RUNS permission-boundary.spec.ts`}</pre><progress data-tool-progress value="72" max="100" aria-label="Test progress">72%</progress></section>
+        </details>
+      </li>
+      <li>
+        <details class="tool-call" data-state="awaiting">
+          <summary><span data-tool-kind aria-hidden="true">4</span><span data-tool-identity><strong>Update protected snapshots</strong><small>filesystem · 2 files</small></span><span data-tool-duration>Waiting</span><span class="status-badge" data-state="warning" data-tool-status>Confirmation needed</span><span data-tool-chevron aria-hidden="true">›</span></summary>
+        </details>
+      </li>
+    </ol>
+  </section>
+</Preview>
+
+## When to use it
+
+Use a timeline when a task contains at least two independently meaningful calls and a person needs to understand sequence, current blockage, or the source of a problem. Render a single Tool Call directly. Cross-session search, filtering, and export belong in an audit log.
+
+Only stable, earlier calls collapse by default. Running, awaiting, failed, and newest calls remain visible so compactness never hides an actionable state. `data-visible-calls` sets how many newest calls remain when history is collapsed.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section class="tool-call-timeline" data-visible-calls="4">
+  <header data-tool-timeline-summary>
+    <strong>Execution record</strong>
+    <output data-tool-timeline-status aria-live="polite"></output>
+    <button type="button" data-tool-timeline-action="expand-history">Show earlier calls</button>
+    <button type="button" data-tool-timeline-action="collapse-history" hidden>Hide earlier calls</button>
+  </header>
+  <ol data-tool-call-list>
+    <li data-tool-history><details class="tool-call" data-state="succeeded">…</details></li>
+    <li><details class="tool-call" data-state="running">…</details></li>
+  </ol>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tool-call";
+  import "@a3s-lab/ui/tool-call-timeline";
+</script>`}
+  react={`import { ToolCallTimeline, useToolCallTimeline } from "@a3s-lab/ui/react";
+
+export function ExecutionTimeline() {
+  const control = useToolCallTimeline({
+    events: {
+      "a3s:tool-timeline-change": event => persistSummary(event.detail.current),
+      "a3s:tool-timeline-visibility-change": event => persistPreference(event.detail.expanded),
+    },
+  });
+
+  return (
+    <ToolCallTimeline ref={control.ref} data-visible-calls="4">
+      <header data-tool-timeline-summary><strong>Execution record</strong><output data-tool-timeline-status /></header>
+      <ol data-tool-call-list>{calls.map(renderToolCall)}</ol>
+    </ToolCallTimeline>
+  );
+}
+
+const summary = control.call("getSummary");`}
+  vue={`<script setup lang="ts">
+import { ToolCallTimeline, useToolCallTimeline } from "@a3s-lab/ui/vue";
+
+const control = useToolCallTimeline({
+  events: {
+    "a3s:tool-timeline-change": event => persistSummary(event.detail.current),
+    "a3s:tool-timeline-visibility-change": event => persistPreference(event.detail.expanded),
+  },
+});
+</script>
+
+<template>
+  <ToolCallTimeline :ref="control.componentRef" data-visible-calls="4">
+    <header data-tool-timeline-summary><strong>Execution record</strong><output data-tool-timeline-status /></header>
+    <ol data-tool-call-list><li v-for="call in calls" :key="call.id"><ToolCallRow :call="call" /></li></ol>
+  </ToolCallTimeline>
+</template>`}
+/>
+
+## Summary and controller
+
+`getSummary()` returns `total`, `active`, `attention`, `completed`, `problems`, and a derived state. Attention outranks problems, and problems outrank running, so an item that needs a person is never obscured by work that happens to continue elsewhere. `expandHistory()` and `collapseHistory()` synchronize history items, action visibility, and a persistable preference event.
+
+## Accessibility
+
+The list retains real DOM order. Use one `aria-live="polite"` summary instead of announcing every stream chunk. Collapsed history leaves the accessibility tree. Name the control “Show earlier calls,” not an ambiguous “More.”

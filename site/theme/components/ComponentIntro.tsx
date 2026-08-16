@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import {
   useLang,
   useLocation,
@@ -13,6 +19,17 @@ import { writeClipboardText } from "./clipboard";
 import "./ComponentIntro.css";
 
 type CopyState = "copied" | "error" | "idle";
+type Framework = "html" | "react" | "vue";
+
+const FRAMEWORK_STORAGE_KEY = "a3s-ui-docs-framework";
+const frameworks: readonly Framework[] = ["html", "react", "vue"];
+
+function adapterName(slug: string) {
+  return slug
+    .split("-")
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join("");
+}
 
 function CopyIcon({ copied }: { copied: boolean }) {
   return (
@@ -42,8 +59,23 @@ export function ComponentIntro() {
   const isChinese = language === "zh";
   const slug = location.pathname.match(/\/components\/([^/.]+)/)?.[1];
   const record = slug ? findCatalogRecord(language, slug) : undefined;
+  const frameworkId = useId();
   const resetTimer = useRef<number | null>(null);
   const [copyState, setCopyState] = useState<CopyState>("idle");
+  const [framework, setFramework] = useState<Framework>("html");
+
+  useEffect(() => {
+    try {
+      const storedFramework = window.localStorage.getItem(
+        FRAMEWORK_STORAGE_KEY,
+      );
+      if (frameworks.includes(storedFramework as Framework)) {
+        setFramework(storedFramework as Framework);
+      }
+    } catch {
+      // Storage is an enhancement; tabs remain fully operable without it.
+    }
+  }, []);
 
   useEffect(
     () => () => {
@@ -60,7 +92,15 @@ export function ComponentIntro() {
     "components",
   ].filter(Boolean);
   const catalogHref = withBase(`/${routeParts.join("/")}/index.html`);
-  const command = "npm install @a3s-lab/ui";
+  const componentName = adapterName(record.slug);
+  const snippets: Record<Framework, string> = {
+    html: 'import "@a3s-lab/ui";\nimport "@a3s-lab/ui/all";',
+    react: `import "@a3s-lab/ui";\nimport { ${componentName} } from "@a3s-lab/ui/react";`,
+    vue: `import "@a3s-lab/ui";\nimport { ${componentName} } from "@a3s-lab/ui/vue";`,
+  };
+  const snippet = snippets[framework];
+  const frameworkLabel =
+    framework === "html" ? "HTML" : framework === "react" ? "React" : "Vue";
   const versionLabel =
     version === "next"
       ? isChinese
@@ -69,22 +109,57 @@ export function ComponentIntro() {
       : version;
   const copyLabel =
     copyState === "copied"
-      ? isChinese
-        ? "安装命令已复制"
-        : "Install command copied"
+        ? isChinese
+        ? `${frameworkLabel} 接入代码已复制`
+        : `${frameworkLabel} integration copied`
       : copyState === "error"
         ? isChinese
           ? "复制失败，请重试"
           : "Copy failed, try again"
         : isChinese
-          ? "复制安装命令"
-          : "Copy install command";
+          ? `复制 ${frameworkLabel} 接入代码`
+          : `Copy ${frameworkLabel} integration`;
 
-  const copyCommand = async () => {
+  const selectFramework = (nextFramework: Framework) => {
+    if (resetTimer.current !== null) {
+      window.clearTimeout(resetTimer.current);
+      resetTimer.current = null;
+    }
+    setCopyState("idle");
+    setFramework(nextFramework);
+    try {
+      window.localStorage.setItem(FRAMEWORK_STORAGE_KEY, nextFramework);
+    } catch {
+      // Storage is optional and must never block framework selection.
+    }
+  };
+
+  const handleFrameworkKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      return;
+    }
+    event.preventDefault();
+    const currentIndex = frameworks.indexOf(framework);
+    const nextIndex =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? frameworks.length - 1
+          : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) +
+              frameworks.length) %
+            frameworks.length;
+    const nextFramework = frameworks[nextIndex];
+    selectFramework(nextFramework);
+    document
+      .getElementById(`${frameworkId}-${nextFramework}-tab`)
+      ?.focus();
+  };
+
+  const copySnippet = async () => {
     if (resetTimer.current !== null) window.clearTimeout(resetTimer.current);
 
     try {
-      await writeClipboardText(command);
+      await writeClipboardText(snippet);
       setCopyState("copied");
     } catch {
       setCopyState("error");
@@ -108,18 +183,53 @@ export function ComponentIntro() {
           <span aria-hidden="true">/</span>
           <span>{versionLabel}</span>
         </div>
-        <ul aria-label={isChinese ? "可用接入方式" : "Available integrations"}>
-          <li>HTML</li>
-          <li>React</li>
-          <li>Vue</li>
-        </ul>
+        <div className="component-intro__frameworks tabs">
+          <div
+            role="tablist"
+            aria-label={isChinese ? "选择接入方式" : "Choose integration"}
+            aria-orientation="horizontal"
+            data-variant="line"
+            onKeyDown={handleFrameworkKeyDown}
+          >
+            {frameworks.map((candidate) => {
+              const label =
+                candidate === "html"
+                  ? "HTML"
+                  : candidate === "react"
+                    ? "React"
+                    : "Vue";
+              return (
+                <button
+                  key={candidate}
+                  type="button"
+                  role="tab"
+                  id={`${frameworkId}-${candidate}-tab`}
+                  aria-controls={`${frameworkId}-panel`}
+                  aria-selected={candidate === framework}
+                  tabIndex={candidate === framework ? 0 : -1}
+                  onClick={() => selectFramework(candidate)}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      <div className="component-intro__install">
-        <code>{command}</code>
+      <div
+        id={`${frameworkId}-panel`}
+        className="component-intro__snippet"
+        role="tabpanel"
+        aria-labelledby={`${frameworkId}-${framework}-tab`}
+        tabIndex={0}
+      >
+        <pre>
+          <code>{snippet}</code>
+        </pre>
         <button
           type="button"
-          onClick={copyCommand}
+          onClick={copySnippet}
           aria-label={copyLabel}
           title={copyLabel}
           data-state={copyState}

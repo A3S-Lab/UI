@@ -68,6 +68,16 @@ export function WorkspacePlayground() {
     }
   }, []);
 
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      tabListRef.current
+        ?.querySelector<HTMLElement>(`[data-playground-scene-tab="${sceneId}"]`)
+        ?.scrollIntoView({ block: "nearest", inline: "center" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [sceneId]);
+
   const selectScene = (nextScene: PlaygroundSceneId) => {
     const nextSceneDefinition = playgroundScenes.find(
       (candidate) => candidate.id === nextScene,
@@ -152,6 +162,7 @@ export function WorkspacePlayground() {
               id={`${headingId}-${candidate.id}-tab`}
               aria-controls={`${headingId}-scene-panel`}
               aria-selected={candidate.id === scene.id}
+              data-playground-scene-tab={candidate.id}
               tabIndex={candidate.id === scene.id ? 0 : -1}
               onClick={() => selectScene(candidate.id)}
             >

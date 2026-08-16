@@ -1,0 +1,133 @@
+.a3s-framework-tabs {
+  position: relative;
+  overflow: hidden;
+  margin-block: 1.25rem 2rem;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 12px;
+  background: var(--ui-paper);
+}
+
+.a3s-framework-tabs > header {
+  display: flex;
+  min-height: 46px;
+  padding: 0 8px 0 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-block-end: 1px solid var(--ui-line);
+  background: color-mix(in srgb, var(--ui-panel) 52%, var(--ui-paper));
+}
+
+.a3s-framework-tabs [role="tablist"] {
+  display: flex;
+  min-width: 0;
+  align-self: stretch;
+  align-items: end;
+  gap: 2px;
+}
+
+.a3s-framework-tabs [role="tab"] {
+  position: relative;
+  min-width: 64px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.a3s-framework-tabs [role="tab"]::after {
+  position: absolute;
+  inset-inline: 12px;
+  inset-block-end: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  content: "";
+}
+
+.a3s-framework-tabs [role="tab"][aria-selected="true"] {
+  color: var(--ui-ink);
+}
+
+.a3s-framework-tabs [role="tab"][aria-selected="true"]::after {
+  background: var(--ui-blue);
+}
+
+.a3s-framework-tabs__copy {
+  display: inline-flex;
+  min-width: 76px;
+  min-height: 32px;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 8px;
+  background: var(--ui-paper);
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.a3s-framework-tabs__copy:hover {
+  color: var(--ui-ink);
+}
+
+.a3s-framework-tabs__copy svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.a3s-framework-tabs > [role="tabpanel"] {
+  min-width: 0;
+  max-height: 520px;
+  overflow: auto;
+  background: var(--rp-code-block-bg);
+}
+
+.a3s-framework-tabs__code {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.a3s-framework-tabs__feedback {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+}
+
+@media (max-width: 520px) {
+  .a3s-framework-tabs > header {
+    padding-inline: 4px;
+  }
+
+  .a3s-framework-tabs [role="tab"] {
+    min-width: 54px;
+    padding-inline: 8px;
+  }
+
+  .a3s-framework-tabs__copy span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+
+  .a3s-framework-tabs__copy {
+    min-width: 36px;
+    padding: 0;
+  }
+}

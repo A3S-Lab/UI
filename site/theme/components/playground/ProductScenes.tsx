@@ -35,7 +35,7 @@ export function AutomationScene({ locale }: { locale: PlaygroundLocale }) {
       </header>
       <div data-page-content>
         <section className="setting-row playground-automation-policy">
-          <div>
+          <div data-setting-identity>
             <strong>
               {locale === "zh"
                 ? "仅运行已启用的任务"
@@ -47,14 +47,16 @@ export function AutomationScene({ locale }: { locale: PlaygroundLocale }) {
                 : "Turning this off pauses schedules without deleting their history."}
             </p>
           </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              defaultChecked
-              aria-label={locale === "zh" ? "保持启用" : "Keep enabled"}
-            />
-            <span />
-          </label>
+          <div data-setting-control>
+            <label className="switch">
+              <input
+                type="checkbox"
+                defaultChecked
+                aria-label={locale === "zh" ? "保持启用" : "Keep enabled"}
+              />
+              <span />
+            </label>
+          </div>
         </section>
         <article className="playground-schedule" data-state="success">
           <header>
@@ -191,49 +193,40 @@ export function CatalogScene({ locale }: { locale: PlaygroundLocale }) {
         </button>
       </header>
       <form className="filter-bar" role="search">
-        <label data-filter-search>
-          <span className="sr-only">
-            {locale === "zh" ? "搜索能力" : "Search capabilities"}
-          </span>
-          <PlaygroundIcon name="search" width="16" height="16" />
-          <input
-            className="input"
-            type="search"
-            placeholder={
-              locale === "zh" ? "搜索名称或用途…" : "Search by name or job…"
-            }
-          />
-        </label>
         <div data-filter-controls>
-          <button
-            type="button"
-            className="btn"
-            data-size="sm"
-            data-variant="secondary"
-            aria-pressed="true"
-          >
-            {locale === "zh" ? "全部" : "All"}
-          </button>
-          <button
-            type="button"
-            className="btn"
-            data-size="sm"
-            data-variant="ghost"
-          >
-            {locale === "zh" ? "已安装" : "Installed"}
-          </button>
-          <button
-            type="button"
-            className="btn"
-            data-size="sm"
-            data-variant="ghost"
-          >
-            {locale === "zh" ? "可更新" : "Updates"}
-          </button>
+          <div data-filter-primary>
+            <label data-filter-search>
+              <span className="sr-only">
+                {locale === "zh" ? "搜索能力" : "Search capabilities"}
+              </span>
+              <PlaygroundIcon name="search" width="16" height="16" />
+              <input
+                className="input"
+                type="search"
+                placeholder={
+                  locale === "zh" ? "搜索名称或用途…" : "Search by name or job…"
+                }
+              />
+            </label>
+            <div
+              data-filter-group
+              aria-label={locale === "zh" ? "能力状态" : "Capability status"}
+            >
+              <button type="button" data-filter-toggle aria-pressed="true">
+                {locale === "zh" ? "全部" : "All"}
+              </button>
+              <button type="button" data-filter-toggle aria-pressed="false">
+                {locale === "zh" ? "已安装" : "Installed"}
+              </button>
+              <button type="button" data-filter-toggle aria-pressed="false">
+                {locale === "zh" ? "可更新" : "Updates"}
+              </button>
+            </div>
+          </div>
+          <output data-filter-count>
+            {resources.length} {locale === "zh" ? "项能力" : "capabilities"}
+          </output>
         </div>
-        <output data-filter-summary>
-          {resources.length} {locale === "zh" ? "项能力" : "capabilities"}
-        </output>
       </form>
       <div className="resource-grid">
         {resources.map((resource) => (
@@ -375,37 +368,39 @@ export function ChannelsScene({ locale }: { locale: PlaygroundLocale }) {
         <div className="playground-channel-list">
           {channels.map((channel) => (
             <article className="setting-row" key={channel.name}>
-              <div>
+              <div data-setting-identity>
                 <strong>{channel.name}</strong>
                 <p>{channel.detail}</p>
               </div>
-              <span className="status-badge" data-state={channel.state}>
-                {channel.state === "success"
-                  ? locale === "zh"
-                    ? "在线"
-                    : "Online"
-                  : channel.state === "warning"
+              <div data-setting-control>
+                <span className="status-badge" data-state={channel.state}>
+                  {channel.state === "success"
                     ? locale === "zh"
-                      ? "待处理"
-                      : "Action needed"
+                      ? "在线"
+                      : "Online"
+                    : channel.state === "warning"
+                      ? locale === "zh"
+                        ? "待处理"
+                        : "Action needed"
+                      : locale === "zh"
+                        ? "未连接"
+                        : "Not connected"}
+                </span>
+                <button
+                  type="button"
+                  className="btn"
+                  data-size="sm"
+                  data-variant="outline"
+                >
+                  {channel.state === "success"
+                    ? locale === "zh"
+                      ? "管理"
+                      : "Manage"
                     : locale === "zh"
-                      ? "未连接"
-                      : "Not connected"}
-              </span>
-              <button
-                type="button"
-                className="btn"
-                data-size="sm"
-                data-variant="outline"
-              >
-                {channel.state === "success"
-                  ? locale === "zh"
-                    ? "管理"
-                    : "Manage"
-                  : locale === "zh"
-                    ? "配置"
-                    : "Configure"}
-              </button>
+                      ? "配置"
+                      : "Configure"}
+                </button>
+              </div>
             </article>
           ))}
         </div>
@@ -453,7 +448,7 @@ export function SettingsScene({ locale }: { locale: PlaygroundLocale }) {
         </header>
         <section>
           <article className="setting-row">
-            <div>
+            <div data-setting-identity>
               <label htmlFor="playground-language">
                 <strong>
                   {locale === "zh" ? "界面语言" : "Interface language"}
@@ -465,17 +460,19 @@ export function SettingsScene({ locale }: { locale: PlaygroundLocale }) {
                   : "The current page is preserved when language changes."}
               </p>
             </div>
-            <select
-              id="playground-language"
-              className="select"
-              defaultValue={locale}
-            >
-              <option value="zh">简体中文</option>
-              <option value="en">English</option>
-            </select>
+            <div data-setting-control>
+              <select
+                id="playground-language"
+                className="select"
+                defaultValue={locale}
+              >
+                <option value="zh">简体中文</option>
+                <option value="en">English</option>
+              </select>
+            </div>
           </article>
           <article className="setting-row">
-            <div>
+            <div data-setting-identity>
               <strong>
                 {locale === "zh" ? "恢复上次工作区" : "Restore last workspace"}
               </strong>
@@ -485,19 +482,23 @@ export function SettingsScene({ locale }: { locale: PlaygroundLocale }) {
                   : "Reopen the last accessible task at launch."}
               </p>
             </div>
-            <label className="switch">
-              <input
-                type="checkbox"
-                defaultChecked
-                aria-label={
-                  locale === "zh" ? "恢复上次工作区" : "Restore last workspace"
-                }
-              />
-              <span />
-            </label>
+            <div data-setting-control>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  aria-label={
+                    locale === "zh"
+                      ? "恢复上次工作区"
+                      : "Restore last workspace"
+                  }
+                />
+                <span />
+              </label>
+            </div>
           </article>
           <article className="setting-row">
-            <div>
+            <div data-setting-identity>
               <strong>
                 {locale === "zh" ? "自动更新" : "Automatic updates"}
               </strong>
@@ -507,32 +508,36 @@ export function SettingsScene({ locale }: { locale: PlaygroundLocale }) {
                   : "You decide when to restart after an update is downloaded."}
               </p>
             </div>
-            <span className="status-badge" data-state="success">
-              {locale === "zh" ? "已是最新" : "Up to date"}
-            </span>
-            <button
-              type="button"
-              className="btn"
-              data-size="sm"
-              data-variant="outline"
-            >
-              <PlaygroundIcon name="refresh" width="15" height="15" />
-              {locale === "zh" ? "检查" : "Check"}
-            </button>
+            <div data-setting-control>
+              <span className="status-badge" data-state="success">
+                {locale === "zh" ? "已是最新" : "Up to date"}
+              </span>
+              <button
+                type="button"
+                className="btn"
+                data-size="sm"
+                data-variant="outline"
+              >
+                <PlaygroundIcon name="refresh" width="15" height="15" />
+                {locale === "zh" ? "检查" : "Check"}
+              </button>
+            </div>
           </article>
           <article className="setting-row">
-            <div>
+            <div data-setting-identity>
               <strong>{locale === "zh" ? "本地数据" : "Local data"}</strong>
               <p dir="ltr">/Users/demo/Library/Application Support/A3S</p>
             </div>
-            <button
-              type="button"
-              className="btn"
-              data-size="sm"
-              data-variant="outline"
-            >
-              {locale === "zh" ? "更改位置" : "Change location"}
-            </button>
+            <div data-setting-control>
+              <button
+                type="button"
+                className="btn"
+                data-size="sm"
+                data-variant="outline"
+              >
+                {locale === "zh" ? "更改位置" : "Change location"}
+              </button>
+            </div>
           </article>
         </section>
       </main>

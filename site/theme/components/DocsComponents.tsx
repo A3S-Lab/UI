@@ -550,15 +550,38 @@ export function Preview({
 
   useEffect(() => {
     const preview = previewRef.current;
+    let overlayFrame: number | null = null;
     const syncOverlayState = () => {
-      preview?.toggleAttribute(
-        "data-overlay-open",
-        Boolean(
-          preview.querySelector(
-            '[data-popover][aria-hidden="false"], [data-context-content][aria-hidden="false"]',
-          ),
-        ),
+      const openOverlays = Array.from(
+        preview?.querySelectorAll<HTMLElement>(
+          '[data-popover][aria-hidden="false"], [data-context-content][aria-hidden="false"]',
+        ) ?? [],
       );
+      preview?.toggleAttribute("data-overlay-open", openOverlays.length > 0);
+
+      const stage = preview?.querySelector<HTMLElement>(".a3s-preview__stage");
+      if (!stage) return;
+      if (overlayFrame !== null) window.cancelAnimationFrame(overlayFrame);
+      stage.style.removeProperty("--a3s-preview-overlay-extension");
+      if (openOverlays.length === 0) return;
+
+      overlayFrame = window.requestAnimationFrame(() => {
+        const stageBounds = stage.getBoundingClientRect();
+        const overlayBottom = Math.max(
+          ...openOverlays.map(
+            (overlay) => overlay.getBoundingClientRect().bottom,
+          ),
+        );
+        const extension = Math.max(
+          0,
+          Math.ceil(overlayBottom - stageBounds.bottom + 24),
+        );
+        stage.style.setProperty(
+          "--a3s-preview-overlay-extension",
+          `${extension}px`,
+        );
+        overlayFrame = null;
+      });
     };
 
     const overlayObserver = new MutationObserver(syncOverlayState);
@@ -590,6 +613,7 @@ export function Preview({
     syncOverlayState();
     return () => {
       overlayObserver.disconnect();
+      if (overlayFrame !== null) window.cancelAnimationFrame(overlayFrame);
     };
   }, [children, source]);
 

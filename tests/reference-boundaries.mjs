@@ -65,6 +65,27 @@ async function listTextFiles(relativePath) {
   return files;
 }
 
+function documentsFramework(source, framework) {
+  const heading = new RegExp(`^## ${framework}$`, "mu");
+  const tabProp = framework.toLowerCase();
+  const frameworkTabs = new RegExp(
+    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    "u",
+  );
+  return heading.test(source) || frameworkTabs.test(source);
+}
+
+function collectMetadataLinks(value, links = new Set()) {
+  if (Array.isArray(value)) {
+    value.forEach((entry) => collectMetadataLinks(entry, links));
+    return links;
+  }
+  if (!value || typeof value !== "object") return links;
+  if (typeof value.link === "string") links.add(value.link);
+  Object.values(value).forEach((entry) => collectMetadataLinks(entry, links));
+  return links;
+}
+
 for (const component of components) {
   const componentName = pascal(component.slug);
   const hookName = `use${componentName}`;
@@ -73,12 +94,14 @@ for (const component of components) {
   for (const locale of locales) {
     const relativePath = `site/docs/next/${locale}/components/${component.slug}.mdx`;
     const source = await read(relativePath);
-    assert.match(
-      source,
-      /^## React$/mu,
+    assert.ok(
+      documentsFramework(source, "React"),
       `${relativePath} must document React.`,
     );
-    assert.match(source, /^## Vue$/mu, `${relativePath} must document Vue.`);
+    assert.ok(
+      documentsFramework(source, "Vue"),
+      `${relativePath} must document Vue.`,
+    );
     assert.match(
       source,
       new RegExp(`import \\{[^}]*\\b${componentName}\\b`, "u"),
@@ -101,13 +124,27 @@ for (const locale of locales) {
   const harnessCatalog = await read(
     `site/docs/next/${locale}/harness/index.mdx`,
   );
+  const catalogLinks = collectMetadataLinks([
+    JSON.parse(
+      await read(`site/docs/next/${locale}/components/_meta.json`),
+    ),
+    JSON.parse(await read(`site/docs/next/${locale}/harness/_meta.json`)),
+  ]);
+  assert.ok(
+    generalCatalog.includes("<ComponentCatalog />"),
+    `${locale} component index must render the searchable catalog.`,
+  );
   for (const component of components) {
-    const catalog =
-      component.category === "harness" ? harnessCatalog : generalCatalog;
     assert.ok(
-      catalog.includes(`](/components/${component.slug})`),
-      `${locale} catalog must link the ${component.slug} component.`,
+      catalogLinks.has(`components/${component.slug}`),
+      `${locale} metadata must include the ${component.slug} component.`,
     );
+    if (component.category === "harness") {
+      assert.ok(
+        harnessCatalog.includes(`](/components/${component.slug})`),
+        `${locale} Harness index must link the ${component.slug} component.`,
+      );
+    }
   }
 }
 

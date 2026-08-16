@@ -1,0 +1,71 @@
+# 3D Code Graph
+
+3D Code Graph reveals entry points, modules, components, tests, and configuration relationships in a large codebase. It combines spatial exploration, search, neighbourhood highlighting, and property inspection while keeping an operable list fallback.
+
+<Preview class="w-full max-w-5xl" title="Workspace dependency graph">
+  <section class="code-graph" data-state="ready" data-view="graph" data-selected-node="task-composer" aria-labelledby="code-graph-title-en">
+    <header><div data-code-graph-identity><strong id="code-graph-title-en">workspace / dependencies</strong><small>8 nodes · 10 relationships · TypeScript</small></div><div data-code-graph-actions><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="zoom-out" aria-label="Zoom out"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="zoom-in" aria-label="Zoom in"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6m-3-3v6M20 20l-4-4"/></svg></button><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="reset" aria-label="Reset view"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button></div></header>
+    <div data-code-graph-toolbar><div class="input-group"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" data-code-graph-search aria-label="Filter code nodes" placeholder="Filter files, symbols, or types" /></div><div class="button-group" aria-label="Graph view"><button type="button" class="btn" data-size="sm" data-code-graph-action="view-graph" data-code-graph-view="graph" aria-pressed="true">3D</button><button type="button" class="btn" data-size="sm" data-variant="outline" data-code-graph-action="view-list" data-code-graph-view="list" aria-pressed="false">List</button></div><div data-code-graph-legend aria-label="Node types"><span><i data-tone="entry"></i>Entry</span><span><i data-tone="component"></i>Component</span><span><i data-tone="test"></i>Test</span><span><i></i>Module</span></div></div>
+    <div data-code-graph-surface>
+      <div data-code-graph-viewport role="img" aria-label="Rotatable 3D code dependency graph; use arrow keys to rotate and plus or minus to zoom" tabindex="0"><canvas data-code-graph-canvas aria-hidden="true"></canvas><div data-code-graph-empty hidden>No nodes match the current filter.<button type="button" class="btn" data-size="sm" data-code-graph-action="clear-filter">Clear filter</button></div></div>
+      <ul data-code-graph-list hidden aria-label="Code node list">
+        <li data-code-node data-node-id="main" data-node-label="main.ts" data-node-path="src/main.ts" data-node-kind="entry" data-node-tone="entry" data-node-size="9" data-node-x="-110" data-node-y="18" data-node-z="34" aria-selected="false"><button type="button"><i data-node-tone="entry"></i><span data-node-copy><strong data-node-label>main.ts</strong><small>src/main.ts</small></span><span data-node-degree>4</span></button></li>
+        <li data-code-node data-node-id="router" data-node-label="router.ts" data-node-path="src/router.ts" data-node-kind="module" data-node-tone="module" data-node-size="7" data-node-x="-58" data-node-y="-54" data-node-z="-18" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>router.ts</strong><small>src/router.ts</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="workspace" data-node-label="Workspace" data-node-path="src/workspace.tsx" data-node-kind="component" data-node-tone="component" data-node-size="10" data-node-x="-24" data-node-y="20" data-node-z="72" aria-selected="false"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>Workspace</strong><small>src/workspace.tsx</small></span><span data-node-degree>6</span></button></li>
+        <li data-code-node data-node-id="task-composer" data-node-label="TaskComposer" data-node-path="src/tasks/task-composer.tsx" data-node-kind="component" data-node-tone="component" data-node-size="12" data-node-x="46" data-node-y="-14" data-node-z="96" aria-selected="true"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>TaskComposer</strong><small>src/tasks/task-composer.tsx</small></span><span data-node-degree>7</span></button></li>
+        <li data-code-node data-node-id="prompt-editor" data-node-label="PromptEditor" data-node-path="src/tasks/prompt-editor.tsx" data-node-kind="component" data-node-tone="component" data-node-size="8" data-node-x="112" data-node-y="-38" data-node-z="42" aria-selected="false"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>PromptEditor</strong><small>src/tasks/prompt-editor.tsx</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="resources" data-node-label="resource-store.ts" data-node-path="src/state/resource-store.ts" data-node-kind="module" data-node-tone="module" data-node-size="7" data-node-x="18" data-node-y="78" data-node-z="22" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>resource-store.ts</strong><small>src/state/resource-store.ts</small></span><span data-node-degree>4</span></button></li>
+        <li data-code-node data-node-id="composer-test" data-node-label="task-composer.test.tsx" data-node-path="src/tasks/task-composer.test.tsx" data-node-kind="test" data-node-tone="test" data-node-size="7" data-node-x="72" data-node-y="-92" data-node-z="-48" aria-selected="false"><button type="button"><i data-node-tone="test"></i><span data-node-copy><strong data-node-label>task-composer.test.tsx</strong><small>src/tasks/task-composer.test.tsx</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="config" data-node-label="runtime.acl" data-node-path="config/runtime.acl" data-node-kind="config" data-node-tone="config" data-node-size="5" data-node-x="-92" data-node-y="66" data-node-z="-92" aria-selected="false"><button type="button"><i data-node-tone="config"></i><span data-node-copy><strong data-node-label>runtime.acl</strong><small>config/runtime.acl</small></span><span data-node-degree>2</span></button></li>
+      </ul>
+      <div data-code-edges hidden><i data-code-edge data-from="main" data-to="router" data-edge-weight="2"></i><i data-code-edge data-from="main" data-to="workspace" data-edge-weight="3"></i><i data-code-edge data-from="router" data-to="workspace"></i><i data-code-edge data-from="workspace" data-to="task-composer" data-edge-weight="3"></i><i data-code-edge data-from="task-composer" data-to="prompt-editor" data-edge-weight="3"></i><i data-code-edge data-from="task-composer" data-to="resources"></i><i data-code-edge data-from="task-composer" data-to="config"></i><i data-code-edge data-from="composer-test" data-to="task-composer" data-edge-kind="test"></i><i data-code-edge data-from="resources" data-to="workspace"></i><i data-code-edge data-from="config" data-to="router"></i></div>
+      <aside data-code-graph-inspector aria-label="Selected node details"><header><strong>Selected node</strong><p>Select the background to clear; connected nodes remain highlighted.</p></header><dl><div><dt>Name</dt><dd data-code-graph-field="label">TaskComposer</dd></div><div><dt>Path</dt><dd data-code-graph-field="path">src/tasks/task-composer.tsx</dd></div><div><dt>Kind</dt><dd data-code-graph-field="kind">component</dd></div><div><dt>Links</dt><dd data-code-graph-field="connections">7</dd></div></dl><button type="button" class="btn" data-size="sm" data-variant="outline" data-code-graph-action="clear-selection">Clear selection</button></aside>
+    </div>
+    <footer><output data-code-graph-status aria-live="polite">Complete graph shown</output><span>Drag to orbit · scroll to zoom · keyboard operable</span></footer>
+  </section>
+</Preview>
+
+## Why a graph
+
+A file tree answers where a file lives. A graph answers what a change may affect. The projection prioritizes entry points, high-degree nodes, and direct neighbours of the selection. Above 600 nodes or 4,000 edges it enters `partial`, preserves complete totals in status, and keeps search and list access available.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section class="code-graph" data-state="loading" data-view="graph">
+  <div data-code-graph-viewport tabindex="0"><canvas data-code-graph-canvas></canvas></div>
+  <ul data-code-graph-list hidden></ul>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/code-graph";
+  const graph = document.querySelector(".code-graph");
+  graph.setData(await loadDependencyGraph());
+  graph.setState("ready", { message: "Graph updated" });
+</script>`}
+  react={`import { CodeGraph, useCodeGraph } from "@a3s-lab/ui/react";
+export function DependencyGraph({ graph }) {
+  const control = useCodeGraph({
+    events: {
+      "a3s:code-graph-selection-change": event => inspectNode(event.detail.node),
+      "a3s:code-graph-before-filter-change": event => auditFilter(event.detail),
+    },
+    onReady(element) { element.setData(graph); },
+  });
+  return <CodeGraph ref={control.ref} aria-label="Code dependency graph">{/* Canvas, list, inspector */}</CodeGraph>;
+}`}
+  vue={`<script setup lang="ts">
+import { onMounted } from "vue";
+import { CodeGraph, useCodeGraph } from "@a3s-lab/ui/vue";
+const props = defineProps<{ graph: DependencyGraph }>();
+const control = useCodeGraph({ events: {
+  "a3s:code-graph-selection-change": event => inspectNode(event.detail.node),
+} });
+onMounted(() => control.call("setData", props.graph));
+</script>
+<template><CodeGraph :ref="control.componentRef" aria-label="Code dependency graph"><!-- Canvas, list, inspector --></CodeGraph></template>`}
+/>
+
+## Interaction and fallback
+
+Drag to orbit, scroll or use plus and minus to zoom, use arrow keys to rotate, and press Home to reset. Selection sends a cancelable `a3s:code-graph-before-selection-change` followed by `a3s:code-graph-selection-change`. If Canvas is unavailable, the component switches to the button-based list. Accessibility never depends on Canvas hit targets.

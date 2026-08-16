@@ -395,15 +395,6 @@ export function Root({ children }: RootProps) {
           return;
         }
 
-        const openDetails = document.querySelector<HTMLDetailsElement>(
-          ".docs-switcher[open], .docs-desktop-navigation[open]",
-        );
-        if (openDetails) {
-          event.preventDefault();
-          openDetails.open = false;
-          openDetails.querySelector<HTMLElement>("summary")?.focus();
-          return;
-        }
       }
 
       if (
@@ -432,18 +423,6 @@ export function Root({ children }: RootProps) {
       if (interactive) event.stopPropagation();
     };
 
-    const dismissDocumentationMenus = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      document
-        .querySelectorAll<HTMLDetailsElement>(
-          ".docs-switcher[open], .docs-desktop-navigation[open]",
-        )
-        .forEach((details) => {
-          if (!details.contains(target)) details.open = false;
-        });
-    };
-
     synchronizeDocumentationControls();
     const observer = new MutationObserver(synchronizeDocumentationControls);
     observer.observe(document.documentElement, {
@@ -468,7 +447,6 @@ export function Root({ children }: RootProps) {
     outlineQuery.addEventListener("change", synchronizeDocumentationControls);
     window.addEventListener("resize", synchronizeDocumentationControls);
     document.body.addEventListener("keydown", handleDocumentationKeyboard);
-    document.body.addEventListener("pointerdown", dismissDocumentationMenus);
 
     return () => {
       observer.disconnect();
@@ -482,10 +460,6 @@ export function Root({ children }: RootProps) {
       );
       window.removeEventListener("resize", synchronizeDocumentationControls);
       document.body.removeEventListener("keydown", handleDocumentationKeyboard);
-      document.body.removeEventListener(
-        "pointerdown",
-        dismissDocumentationMenus,
-      );
     };
   }, [location.pathname]);
 

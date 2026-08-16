@@ -14,14 +14,14 @@
 .playground-automation-scene > header h2,
 .playground-channels-scene > header h2,
 .playground-catalog-scene > header h2 {
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
 .playground-automation-scene > header p,
 .playground-channels-scene > header p,
 .playground-catalog-scene > header p {
   margin-block-start: 0.25rem;
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
 }
 
 .playground-automation-scene > [data-page-content],
@@ -60,13 +60,13 @@
 }
 
 .playground-schedule > header h3 {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .playground-schedule > header p,
 .playground-schedule > section p {
   margin-block-start: 0.2rem;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 
 .playground-schedule [data-schedule-actions] {
@@ -95,6 +95,14 @@
 
 .playground-catalog-scene > .filter-bar {
   margin-block: 0.875rem;
+}
+
+.playground-catalog-scene .filter-bar [data-filter-primary] {
+  flex-basis: auto;
+}
+
+.playground-catalog-scene .filter-bar [data-filter-group] {
+  flex: none;
 }
 
 .playground-catalog-scene .resource-grid {
@@ -130,7 +138,7 @@
 
 .playground-catalog-scene .resource-card > section strong,
 .playground-catalog-scene .resource-card > section p {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 
 .playground-channel-list {
@@ -150,6 +158,10 @@
   border-block-end: 0;
 }
 
+.playground-channel-list .setting-row > [data-setting-control] {
+  --setting-control-size: 14rem;
+}
+
 .playground-settings-scene {
   --settings-navigation-size: 11rem;
   --settings-layout-height: 100%;
@@ -163,7 +175,7 @@
 
 .playground-settings-scene > aside > header {
   padding: 0.375rem 0.5rem 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .playground-settings-scene > aside nav button {
@@ -173,7 +185,7 @@
   border-radius: 0.375rem;
   background: transparent;
   color: var(--muted-foreground);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-align: start;
 }
 
@@ -186,6 +198,8 @@
 
 .playground-settings-scene > main {
   padding: clamp(0.875rem, 2vw, 1.5rem);
+  align-content: start;
+  grid-template-rows: auto auto;
 }
 
 .playground-settings-scene > main > header h2 {
@@ -194,7 +208,7 @@
 
 .playground-settings-scene > main > header p {
   margin-block-start: 0.25rem;
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
 }
 
 .playground-settings-scene > main > section {
@@ -228,7 +242,7 @@
 .playground-scene-state p {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
 }
 
 .a3s-workspace-playground [data-playground-state-panel] {

@@ -155,6 +155,16 @@ ${explanation}
 `;
 }
 
+function hasFrameworkGuide(source, framework) {
+  const heading = new RegExp(`^## ${framework}$`, "mu");
+  const tabProp = framework.toLowerCase();
+  const frameworkTabs = new RegExp(
+    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    "u",
+  );
+  return heading.test(source) || frameworkTabs.test(source);
+}
+
 const missing = [];
 let written = 0;
 for (const component of components) {
@@ -169,8 +179,8 @@ for (const component of components) {
       `${component.slug}.mdx`,
     );
     const source = await readFile(filePath, "utf8");
-    const hasReact = /^## React$/mu.test(source);
-    const hasVue = /^## Vue$/mu.test(source);
+    const hasReact = hasFrameworkGuide(source, "React");
+    const hasVue = hasFrameworkGuide(source, "Vue");
     if (hasReact && hasVue) {
       const normalized = `${source.trimEnd()}\n`;
       if (!checkOnly && normalized !== source) {

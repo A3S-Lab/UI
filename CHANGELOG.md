@@ -8,7 +8,7 @@
 - Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts plus complete Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations composition guides.
 - Added Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, and Execution Evidence contracts.
 - Added the root `DESIGN.md` contract for task-centered application geometry, typography, color, elevation, responsive behavior, and component states.
-- Added a machine-readable 111-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
+- Added a machine-readable 114-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
 - Added 22 product-admitted contracts for code and Markdown reading, images, compact selection, inline editing, reusable forms, navigation recovery, floating inspection, sorting, and streaming output, with split CSS, controllers where behavior is required, and bilingual React and Vue guidance.
 - Added Device Simulator with phone, tablet, desktop, custom-size, orientation, URL navigation, iframe preview, and a cancelable structured event for trusted `a3s-webview` hosts.
 - Added the Harness documentation and manifest category for task, conversation, execution, review, evidence, and developer-tool components.
@@ -28,7 +28,7 @@
 - Rebuilt documentation previews around centered-control, flowing-content, bounded-overlay, and edge-to-edge-workspace layouts; phone and tablet controls now use isolated CSS viewports so responsive media queries evaluate against the selected width.
 - Reworked Device Simulator previews with scaled phone, tablet, and desktop hardware shells while preserving exact iframe viewport dimensions, orientation, and native preview arguments.
 - Rebuilt the documentation theme around Rspress routing with Chinese as the default language, page-preserving language and version switching, an official A3S logo, and first-load navigation that works before hydration.
-- Reorganized the 111-component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
+- Reorganized the 114-component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
 - Added a first-principles product admission gate to `DESIGN.md`, separating durable components from extracted patterns, compositions, and rejected application-specific implementations.
 - Deepened Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with cancelable precondition hooks, controlled snapshots, source-aware completion events, asynchronous recovery, read-only behavior, filtering, and reversible inline rename.
 - Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, and overlays with the Focused Intelligence palette, 4/6/8/12-pixel radii, A3S OS blue action hierarchy, and 120/160/220-millisecond motion system.
@@ -36,7 +36,7 @@
 
 ### Fixed
 
-- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 111-component contract while preserving historical version counts.
+- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 114-component contract while preserving historical version counts.
 - Made component-specific browser scenarios serial by default to prevent shared-browser resource contention from introducing nondeterministic control-state failures.
 
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.

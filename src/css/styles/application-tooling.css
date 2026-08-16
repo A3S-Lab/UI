@@ -259,4 +259,256 @@
       min-height: 2.75rem;
     }
   }
+
+  /* Code Graph */
+  .code-graph {
+    --code-graph-background: #f3f7fd;
+    --code-graph-edge: rgb(76 104 145 / 30%);
+    --code-graph-edge-active: #1456f0;
+    --code-graph-label: #142033;
+    --code-graph-label-muted: #526078;
+    --code-graph-node: #748095;
+    --code-graph-node-accent: #1456f0;
+    --code-graph-node-config: #a86412;
+    --code-graph-node-entry: #16845b;
+    --code-graph-node-test: #6f55c8;
+    --code-graph-selected: #0f46c7;
+    min-height: 32rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  :is(.dark, [data-theme='dark']) .code-graph,
+  .code-graph.dark {
+    --code-graph-background: #0d1118;
+    --code-graph-edge: rgb(122 142 170 / 34%);
+    --code-graph-edge-active: #6ca3ff;
+    --code-graph-label: #eef4ff;
+    --code-graph-label-muted: #a8b3c6;
+    --code-graph-node: #7c899f;
+    --code-graph-node-accent: #6ca3ff;
+    --code-graph-node-config: #efb861;
+    --code-graph-node-entry: #69d3a5;
+    --code-graph-node-test: #9b92ff;
+    --code-graph-selected: #ffffff;
+  }
+
+  .code-graph > header {
+    min-height: 3rem;
+    gap: 0.75rem;
+    padding: 0.5rem 0.625rem 0.5rem 0.875rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .code-graph > header [data-code-graph-identity] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .code-graph > header [data-code-graph-identity] strong {
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .code-graph > header [data-code-graph-identity] small {
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+  }
+
+  .code-graph [data-code-graph-actions] {
+    flex: none;
+    gap: 0.25rem;
+  }
+
+  .code-graph [data-code-graph-toolbar] {
+    min-height: 2.75rem;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    border-block-end: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 34%, var(--card));
+  }
+
+  .code-graph [data-code-graph-toolbar] > .input-group {
+    width: min(18rem, 52%);
+  }
+
+  .code-graph [data-code-graph-legend] {
+    gap: 0.625rem;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+  }
+
+  .code-graph [data-code-graph-legend] > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+  }
+
+  .code-graph [data-code-graph-legend] i,
+  .code-graph [data-node-tone] {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--code-graph-node);
+  }
+
+  .code-graph [data-tone='entry'],
+  .code-graph [data-node-tone='entry'] {
+    background: var(--code-graph-node-entry);
+  }
+
+  .code-graph [data-tone='component'],
+  .code-graph [data-node-tone='component'] {
+    background: var(--code-graph-node-accent);
+  }
+
+  .code-graph [data-tone='test'],
+  .code-graph [data-node-tone='test'] {
+    background: var(--code-graph-node-test);
+  }
+
+  .code-graph [data-code-graph-viewport] {
+    min-height: 26rem;
+    background: var(--code-graph-background);
+    cursor: grab;
+  }
+
+  .code-graph[data-dragging] [data-code-graph-viewport] {
+    cursor: grabbing;
+  }
+
+  .code-graph [data-code-graph-viewport]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -3px;
+  }
+
+  .code-graph [data-code-graph-empty] {
+    padding: 2rem;
+    background: color-mix(in srgb, var(--code-graph-background) 92%, transparent);
+    color: var(--code-graph-label-muted);
+    font-size: 0.8125rem;
+  }
+
+  .code-graph [data-code-graph-list] {
+    gap: 0.25rem;
+    min-height: 26rem;
+    max-height: 32rem;
+    padding: 0.5rem;
+    background: var(--card);
+  }
+
+  .code-graph [data-code-node] > button {
+    min-height: 2.75rem;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--foreground);
+  }
+
+  .code-graph [data-code-node] > button:hover {
+    background: var(--muted);
+  }
+
+  .code-graph [data-code-node][aria-selected='true'] > button {
+    border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+    background: color-mix(in srgb, var(--primary) 8%, var(--card));
+  }
+
+  .code-graph [data-node-copy] > strong {
+    font-size: 0.8125rem;
+    font-weight: 620;
+  }
+
+  .code-graph [data-node-copy] > small {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+  }
+
+  .code-graph [data-node-degree] {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+  }
+
+  .code-graph [data-code-graph-inspector] {
+    padding: 0.75rem;
+    border-inline-start: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .code-graph [data-code-graph-inspector] > header {
+    padding: 0.25rem 0.25rem 0.75rem;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .code-graph [data-code-graph-inspector] > header strong {
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .code-graph [data-code-graph-inspector] > header p {
+    margin: 0.1875rem 0 0;
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+  }
+
+  .code-graph [data-code-graph-inspector] dl {
+    gap: 0;
+  }
+
+  .code-graph [data-code-graph-inspector] dl > div {
+    gap: 0.5rem;
+    padding: 0.5rem 0.25rem;
+    border-block-end: 1px solid var(--border);
+    font-size: 0.75rem;
+  }
+
+  .code-graph [data-code-graph-inspector] dt {
+    color: var(--muted-foreground);
+  }
+
+  .code-graph [data-code-graph-inspector] dd {
+    color: var(--foreground);
+    font-family: var(--font-mono);
+  }
+
+  .code-graph > footer {
+    min-height: 2.25rem;
+    gap: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-block-start: 1px solid var(--border);
+    color: var(--muted-foreground);
+    font-size: 0.6875rem;
+  }
+
+  @media (max-width: 46rem) {
+    .code-graph {
+      min-height: 38rem;
+    }
+
+    .code-graph [data-code-graph-inspector] {
+      border-block-start: 1px solid var(--border);
+      border-inline-start: 0;
+    }
+
+    .code-graph [data-code-graph-toolbar] > .input-group {
+      width: 100%;
+      flex: 1 0 100%;
+    }
+
+    .code-graph [data-code-graph-legend] {
+      width: 100%;
+      overflow-x: auto;
+    }
+  }
 }

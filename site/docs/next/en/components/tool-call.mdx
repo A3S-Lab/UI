@@ -1,69 +1,132 @@
 # Tool Call
 
-Tool Call is a native disclosure for one named integration invocation. It separates structured input from structured output while keeping provider details optional.
+Tool Call turns one external capability execution into an auditable name, input, progress, result, and recovery path. Its collapsed summary answers what is happening, which integration owns it, and its current state; potentially long input and output stay behind the disclosure.
 
-<Preview class="w-full max-w-3xl">
-  <details class="tool-call" data-state="success" open>
-    <summary><span data-tool-kind aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.9 7.9l-5.7 5.7a2.1 2.1 0 0 1-3-3l5.7-5.7a6 6 0 0 1 7.9-7.9z"/></svg></span><span data-tool-identity><strong>Read repository status</strong><small>shell · git status --short</small></span><span class="status-badge" data-state="success" data-tool-status>Success</span><span aria-hidden="true">›</span></summary>
-    <section><div><strong>Input</strong><pre data-tool-input>{`{"workdir":"/workspace/a3s-ui"}`}</pre></div><div><strong>Output</strong><pre data-tool-output>M src/css/styles/application.css\n?? src/css/components/task-plan.css</pre></div></section>
-    <footer><button type="button" class="btn" data-size="sm" data-variant="outline">Copy output</button></footer>
+<Preview class="w-full max-w-4xl" title="Repository search in progress">
+  <details class="tool-call" data-state="running" open>
+    <summary>
+      <span data-tool-kind aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+      <span data-tool-identity><strong>Find permission boundary implementations</strong><small data-tool-operation>search · rg "permission|policy" src</small></span>
+      <span data-tool-duration>1.8 s</span>
+      <span class="status-badge" data-state="info" data-tool-status>Running</span>
+      <span data-tool-chevron aria-hidden="true">›</span>
+    </summary>
+    <section data-tool-content>
+      <div data-tool-metadata><span>Working directory <code>/workspace/ui</code></span><span>Call ID <code>call_8f42</code></span><span>Output redacted</span></div>
+      <div data-tool-view>
+        <header><strong>Arguments</strong><span>JSON</span></header>
+        <pre data-tool-input>{`{"query":"permission|policy","path":"src","limit":200}`}</pre>
+      </div>
+      <div data-tool-view>
+        <header><strong>Live output</strong><span>3 matches</span></header>
+        <pre data-tool-output>{`src/security/policy.ts:42: export function authorize(...)
+src/runtime/permission.ts:18: type PermissionDecision = ...
+tests/policy.spec.ts:71: expect(decision).toEqual(...)`}</pre>
+      </div>
+      <progress data-tool-progress value="68" max="100" aria-label="Tool call progress">68%</progress>
+      <p data-tool-error hidden>The call failed. Review permissions and retry.</p>
+    </section>
+    <footer>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-action="copy-output">Copy output</button>
+      <button type="button" class="btn" data-size="sm" data-variant="outline" data-tool-action="cancel">Stop</button>
+    </footer>
   </details>
 </Preview>
 
-## Usage
+## Product boundary
 
-```html
-<details class="tool-call" data-state="success">
-  <summary><span data-tool-identity><strong>Read repository status</strong><small>shell</small></span><span data-tool-status>Success</span></summary>
-  <section><pre data-tool-input>...</pre><pre data-tool-output>...</pre></section>
+Tool Call is not a generic log container. It preserves the information a person needs to decide whether an execution is trustworthy without dumping provider-internal fields into the interface.
+
+- Use an intent-level title such as “Read configuration,” not only `shell_command`.
+- Distinguish preparing, awaiting approval, running, succeeded, denied, failed, timed out, and interrupted.
+- Enter `awaiting` before a risky operation and let the host render explicit approve and deny actions.
+- Separate input, output, and error. Long content keeps its own scroll boundary instead of expanding the task timeline indefinitely.
+- Retry, stop, copy, and open-file actions emit events; networking, authorization, and auditing remain host responsibilities.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<details class="tool-call" data-state="preparing">
+  <summary>
+    <span data-tool-kind aria-hidden="true">…</span>
+    <span data-tool-identity><strong>Read repository status</strong><small data-tool-operation>shell · git status --short</small></span>
+    <span data-tool-duration>0 ms</span>
+    <span data-tool-status>Preparing</span>
+    <span data-tool-chevron aria-hidden="true">›</span>
+  </summary>
+  <section data-tool-content>
+    <pre data-tool-input>{"workdir":"/workspace/ui"}</pre>
+    <pre data-tool-output></pre>
+    <p data-tool-error hidden></p>
+  </section>
+  <footer><button type="button" data-tool-action="copy-output">Copy output</button></footer>
 </details>
-```
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tool-call";
+  const call = document.querySelector(".tool-call");
+  call.setState("running", { label: "Running" });
+  call.appendOutput("M src/runtime.ts\\n");
+  call.setState("succeeded", { label: "Succeeded", duration: "824 ms" });
+</script>`}
+  react={`import { ToolCall, useToolCall } from "@a3s-lab/ui/react";
 
-### Parameters
+export function RepositoryStatus() {
+  const control = useToolCall({
+    events: {
+      "a3s:tool-before-action": event => authorizeToolAction(event.detail),
+      "a3s:tool-state-change": event => recordToolState(event.detail),
+    },
+  });
 
-| API | Values | Purpose |
-| --- | --- | --- |
-| Root `<details>` | Required | Native disclosure behavior |
-| `data-state` | `queued`, `running`, `waiting`, `success`, `cancelled`, `error` | Invocation state |
-| `data-tool-input` | Optional | Structured parameters |
-| `data-tool-output` | Optional | Structured result or error |
-
-## States and variants
-
-Use Tool Call when input/output structure matters. Use Execution Item for a higher-level action and Terminal for continuous command output.
-
-## Accessibility
-
-The visible title names the action without relying on the provider or icon. Redact secrets before rendering input or output.
-
-## React
-
-```tsx
-import { ToolCall, useToolCall } from "@a3s-lab/ui/react";
-
-export function Example() {
-  const control = useToolCall();
   return (
-    <ToolCall ref={control.ref}><summary>View details</summary><div>Component content</div></ToolCall>
+    <ToolCall ref={control.ref} data-state="preparing">
+      <summary><span data-tool-identity><strong>Read repository status</strong><small>shell · git status --short</small></span><span data-tool-status>Preparing</span></summary>
+      <section data-tool-content><pre data-tool-output /></section>
+    </ToolCall>
   );
 }
-```
 
-`useToolCall` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
-## Vue
-
-```vue
-<script setup>
+control.call("setState", "running", { label: "Running" });
+control.call("appendOutput", chunk);`}
+  vue={`<script setup lang="ts">
 import { ToolCall, useToolCall } from "@a3s-lab/ui/vue";
 
-const control = useToolCall();
-const componentRef = control.componentRef;
+const control = useToolCall({
+  events: {
+    "a3s:tool-before-action": event => authorizeToolAction(event.detail),
+    "a3s:tool-state-change": event => recordToolState(event.detail),
+  },
+});
+
+function append(chunk: string) {
+  control.call("setState", "running", { label: "Running" });
+  control.call("appendOutput", chunk);
+}
 </script>
 
 <template>
-  <ToolCall ref="componentRef"><summary>View details</summary><div>Component content</div></ToolCall>
-</template>
-```
+  <ToolCall :ref="control.componentRef" data-state="preparing">
+    <summary><span data-tool-identity><strong>Read repository status</strong><small>shell · git status --short</small></span><span data-tool-status>Preparing</span></summary>
+    <section data-tool-content><pre data-tool-output /></section>
+  </ToolCall>
+</template>`}
+/>
 
-`useToolCall` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## Controller
+
+| Method | Result |
+| --- | --- |
+| `setState(state, options)` | Synchronizes state, label, duration, and error, then emits a state event |
+| `setProgress(value)` | Sets determinate `0–100` progress; a non-number restores indeterminate progress |
+| `appendOutput(chunk)` | Appends streaming output and emits `a3s:tool-output-change` |
+| `setOutput(output)` | Atomically replaces output for non-streaming results |
+| `openCall()` / `close()` / `toggle(force)` | Controls the native `<details>` disclosure |
+| `runAction(action)` | Emits a host action after a cancelable authorization event |
+| `getState()` | Returns an immutable state, progress, duration, output, and disclosure snapshot |
+
+Prefer `preparing`, `awaiting`, `running`, `succeeded`, `failed`, `denied`, `timed-out`, and `interrupted`. The legacy `queued`, `waiting`, `success`, `cancelled`, and `error` states remain compatible.
+
+## Accessibility and security
+
+The action name and state in the summary cannot rely on color or an icon alone. The runtime exposes running state through `aria-busy`; an approval flow moves focus to real buttons, and completion produces one polite status announcement. Remove tokens, cookies, secrets, and personal data before rendering. Copy only the already-redacted visible output.

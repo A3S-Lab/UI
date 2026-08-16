@@ -62,10 +62,12 @@ const config: UserConfig = {
     ],
     globalComponents: [
       path.join(__dirname, "theme/mdx/A3SAssetImage.tsx"),
+      path.join(__dirname, "theme/mdx/AgentComposerDemo.tsx"),
       path.join(__dirname, "theme/mdx/Callout.tsx"),
       path.join(__dirname, "theme/mdx/ChartDemo.tsx"),
       path.join(__dirname, "theme/mdx/ComponentCatalog.tsx"),
       path.join(__dirname, "theme/mdx/ComponentIntro.tsx"),
+      path.join(__dirname, "theme/mdx/FrameworkTabs.tsx"),
       path.join(__dirname, "theme/mdx/MonacoWorkbenchDemo.tsx"),
       path.join(__dirname, "theme/mdx/CodeGroup.tsx"),
       path.join(__dirname, "theme/mdx/Preview.tsx"),

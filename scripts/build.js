@@ -81,6 +81,7 @@ async function build() {
   const srcCssStylesDir = path.join(srcCssDir, "styles");
   const srcCssCompatDir = path.join(srcCssDir, "compat");
   const srcJsDir = path.join(srcDir, "js");
+  const srcIntegrationsDir = path.join(srcDir, "integrations");
   const srcNunjucksDir = path.join(srcDir, "templates", "nunjucks");
   const srcJinjaDir = path.join(srcDir, "templates", "jinja");
   const generatedAiDir = path.join(projectRoot, "generated", "ai");
@@ -128,10 +129,12 @@ async function build() {
   const componentsToCombine = [
     "basecoat.js",
     "accordion.js",
+    "agent-composer.js",
     "app-shell.js",
     "back-to-bottom.js",
     "bulk-action-bar.js",
     "code-editor.js",
+    "code-graph.js",
     "command.js",
     "combobox.js",
     "context-menu.js",
@@ -157,6 +160,8 @@ async function build() {
     "tabs.js",
     "table-of-contents.js",
     "task-workspace.js",
+    "tool-call.js",
+    "tool-call-timeline.js",
     "tree.js",
     "toast.js",
   ];
@@ -247,6 +252,7 @@ async function build() {
   const cssComponentsDistDir = path.join(cssDistDir, "components");
   const aiDistDir = path.join(cssDistDir, "ai");
   const frameworksDistDir = path.join(cssDistDir, "frameworks");
+  const integrationsDistDir = path.join(cssDistDir, "integrations");
   const cssStylesDistDir = path.join(cssDistDir, "styles");
   const cssCompatDistDir = path.join(cssDistDir, "compat");
   await copyDirRecursive(cssBaseSrcDir, cssBaseDistDir);
@@ -269,6 +275,7 @@ async function build() {
     path.join(generatedAiDir, "frameworks"),
     frameworksDistDir,
   );
+  await copyDirRecursive(srcIntegrationsDir, integrationsDistDir);
   console.log(`Copied split CSS folders to ${cssDistDir}`);
 
   await copyDirRecursive(

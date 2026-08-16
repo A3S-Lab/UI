@@ -1,16 +1,15 @@
 /* Agent Composer */
 @layer components {
   .agent-composer {
+    position: relative;
     display: grid;
     width: 100%;
     min-width: 0;
-    gap: 0.625rem;
+    overflow: visible;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .agent-composer[data-layout='compact'] > textarea {
-    min-height: var(--agent-composer-compact-min-height, 3.5rem);
-  }
-
+  .agent-composer > [data-composer-resources],
   .agent-composer > [data-composer-context] {
     display: flex;
     min-width: 0;
@@ -18,27 +17,112 @@
     padding: 0;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.375rem;
     list-style: none;
   }
 
-  .agent-composer > [data-composer-context] > li {
+  .agent-composer
+    > :is([data-composer-resources], [data-composer-context])
+    > li {
     display: inline-flex;
     min-width: 0;
     max-width: 100%;
     align-items: center;
   }
 
-  .agent-composer > [data-composer-context] button {
-    flex: none;
+  .agent-composer [data-resource-label] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .agent-composer > textarea {
+  .agent-composer-editor {
+    position: relative;
+    min-width: 0;
+  }
+
+  .agent-composer-editor > div,
+  .agent-composer-editor .tiptap {
+    min-width: 0;
+  }
+
+  .agent-composer-editor__content,
+  .agent-composer [data-composer-input] {
     width: 100%;
     min-width: 0;
-    min-height: var(--agent-composer-min-height, 5.5rem);
+    min-height: var(--agent-composer-min-height, 6rem);
     max-height: var(--agent-composer-max-height, 18rem);
-    resize: vertical;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .agent-composer[data-layout='compact']
+    :is(.agent-composer-editor__content, [data-composer-input]) {
+    min-height: var(--agent-composer-compact-min-height, 4rem);
+  }
+
+  .agent-composer-editor__content > :first-child,
+  .agent-composer [data-composer-input] > :first-child {
+    margin-block-start: 0;
+  }
+
+  .agent-composer-editor__content > :last-child,
+  .agent-composer [data-composer-input] > :last-child {
+    margin-block-end: 0;
+  }
+
+  .agent-composer [data-composer-suggestions] {
+    position: absolute;
+    z-index: var(--a3s-z-popover, 60);
+    inset-inline: 0.75rem;
+    inset-block-end: calc(100% + 0.5rem);
+    display: grid;
+    width: auto;
+    min-width: 0;
+    max-height: min(24rem, calc(100vh - 12rem));
+    overflow: hidden;
+  }
+
+  .agent-composer [data-composer-suggestions][hidden] {
+    display: none;
+  }
+
+  .agent-composer [data-composer-suggestions] > header,
+  .agent-composer [data-composer-suggestions] > footer {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .agent-composer [data-composer-suggestions] :is([role='listbox'], [role='tree']) {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .agent-composer [data-composer-suggestions] [role='option'],
+  .agent-composer [data-composer-suggestions] [role='treeitem'] {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .agent-composer [data-composer-suggestion-copy] {
+    display: grid;
+    min-width: 0;
+  }
+
+  .agent-composer [data-composer-suggestion-copy] > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .agent-composer > footer,
@@ -52,16 +136,10 @@
 
   .agent-composer > footer {
     justify-content: space-between;
-    gap: 0.75rem;
-  }
-
-  .agent-composer
-    > footer
-    > :is([data-composer-tools], [data-composer-actions]) {
-    gap: 0.375rem;
   }
 
   .agent-composer > footer > [data-composer-tools] {
+    flex: 1 1 auto;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scrollbar-width: thin;
@@ -72,7 +150,12 @@
     justify-content: flex-end;
   }
 
+  .agent-composer [data-composer-setting] {
+    flex: none;
+  }
+
   .agent-composer [data-composer-status] {
+    display: block;
     min-width: 0;
     overflow-wrap: anywhere;
   }
@@ -80,47 +163,90 @@
   .agent-composer > [data-composer-queue] {
     display: grid;
     min-width: 0;
-    margin: 0;
-    padding: 0;
-    gap: 0.375rem;
-    list-style: none;
   }
 
-  .agent-composer > [data-composer-queue] > li {
+  .agent-composer > [data-composer-queue] > header,
+  .agent-composer > [data-composer-queue] > footer {
     display: flex;
     min-width: 0;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
   }
 
-  .agent-composer > [data-composer-queue] > li > span {
+  .agent-composer > [data-composer-queue] > :is(ol, ul),
+  .agent-composer > :is(ol, ul)[data-composer-queue] {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .agent-composer [data-composer-queue] li,
+  .agent-composer > :is(ol, ul)[data-composer-queue] > li {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .agent-composer [data-queue-message] {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  @media (max-width: 36rem) {
-    .agent-composer > footer {
-      align-items: stretch;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+  .agent-composer [data-composer-dropzone] {
+    position: absolute;
+    z-index: 2;
+    inset: 0.5rem;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
 
-    .agent-composer > footer > [data-composer-tools] {
-      width: 100%;
-      overflow: visible;
-      flex: none;
+  .agent-composer [data-composer-dropzone][hidden] {
+    display: none;
+  }
+
+  @media (max-width: 40rem) {
+    .agent-composer > footer {
+      align-items: flex-end;
       flex-wrap: wrap;
     }
 
-    .agent-composer > footer > [data-composer-tools] > [data-composer-status] {
-      flex: 1 0 100%;
+    .agent-composer > footer > [data-composer-tools] {
+      width: calc(100% - 3rem);
+      flex: 1 1 calc(100% - 3rem);
+    }
+
+    .agent-composer [data-setting-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .agent-composer > footer > [data-composer-tools] {
+      width: 100%;
+      flex-basis: 100%;
     }
 
     .agent-composer > footer > [data-composer-actions] {
-      width: 100%;
+      margin-inline-start: auto;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .agent-composer [data-composer-suggestions] [role='option'],
+    .agent-composer [data-composer-suggestions] [role='treeitem'] {
+      min-height: 2.75rem;
     }
   }
 }

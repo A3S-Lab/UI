@@ -3,6 +3,7 @@
   min-width: 0;
   min-height: 0;
   color: var(--foreground);
+  font-size: 0.8125rem;
 }
 
 .a3s-workspace-playground [data-playground-scene] :is(h1, h2, h3, p) {
@@ -64,7 +65,7 @@
 }
 
 .playground-code-main .agent-transcript article {
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
 }
 
 .playground-code-main .agent-transcript [data-role="user"] article {
@@ -79,7 +80,7 @@
   overflow: hidden;
   color: var(--muted-foreground);
   font-family: var(--ui-mono);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -91,7 +92,7 @@
 .a3s-workspace-playground .agent-composer textarea {
   min-height: 3.25rem;
   max-height: 5.5rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   resize: vertical;
 }
 
@@ -122,7 +123,7 @@
 
 .playground-inspector .change-review [data-review-files] code {
   overflow: hidden;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   text-overflow: ellipsis;
 }
 
@@ -139,7 +140,7 @@
   overflow: hidden;
   color: var(--muted-foreground);
   font-family: var(--ui-mono);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -186,12 +187,12 @@
   padding: 0.625rem 0.75rem;
   align-items: center;
   border-block-end: 1px solid var(--border);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
 .playground-layers .tree {
   padding: 0.5rem;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 
 .playground-canvas,
@@ -311,7 +312,7 @@
   display: grid;
   gap: 0.75rem;
   overflow-y: auto;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 
 .playground-design-scene .playground-inspector .agent-composer {
@@ -347,7 +348,7 @@
   overflow: hidden;
   background: transparent;
   color: var(--muted-foreground);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -397,7 +398,7 @@
 .playground-document > article p,
 .playground-document > article li {
   max-width: 34rem;
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   line-height: 1.65;
 }
 
@@ -488,18 +489,18 @@
 
 .playground-flow-node small {
   color: var(--muted-foreground);
-  font-size: 0.5rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .playground-flow-node strong {
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
 }
 
 .playground-flow-node p {
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
 }
 
 .playground-flow-node [data-port] {
@@ -521,7 +522,7 @@
   inset-inline-end: -0.25rem;
 }
 
-.playground-flow-canvas svg {
+.playground-flow-canvas .playground-flow-links {
   position: absolute;
   z-index: 1;
   inset: 0;
@@ -533,7 +534,9 @@
   vector-effect: non-scaling-stroke;
 }
 
-.a3s-workspace-playground[dir="rtl"] .playground-flow-canvas svg {
+.a3s-workspace-playground[dir="rtl"]
+  .playground-flow-canvas
+  .playground-flow-links {
   transform: scaleX(-1);
 }
 

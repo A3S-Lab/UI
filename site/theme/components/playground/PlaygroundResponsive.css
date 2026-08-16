@@ -159,6 +159,42 @@
 
 .a3s-workspace-playground[data-playground-viewport="phone"]
   .playground-catalog-scene
+  .filter-bar
+  > [data-filter-controls],
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .playground-catalog-scene
+  .filter-bar
+  [data-filter-primary] {
+  display: grid;
+  width: 100%;
+  align-items: stretch;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .playground-catalog-scene
+  .filter-bar
+  [data-filter-search] {
+  width: 100%;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .playground-catalog-scene
+  .filter-bar
+  [data-filter-group] {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .playground-catalog-scene
+  .filter-bar
+  [data-filter-toggle] {
+  min-height: 2.25rem;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .playground-catalog-scene
   .resource-grid {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -174,6 +210,13 @@
   max-width: 100%;
   grid-column: 1;
   justify-self: start;
+}
+
+.a3s-workspace-playground[data-playground-viewport="phone"]
+  .setting-row
+  > [data-setting-control] {
+  width: 100%;
+  justify-content: space-between;
 }
 
 .a3s-workspace-playground[data-playground-viewport="phone"]
@@ -234,6 +277,7 @@
 .a3s-workspace-playground[data-playground-viewport="phone"]
   .playground-settings-scene
   .setting-row
+  > [data-setting-control]
   > .select {
   width: min(100%, 16rem);
 }

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This plan turns the current 111-route catalog into a defensible product system. It does not assume that every existing route deserves to remain a standalone component. Each item must first prove a durable user job, a clear ownership boundary, and a complete state model. Visual refinement starts only after those questions are settled.
+This plan turns the current 114-route catalog into a defensible product system. It does not assume that every existing route deserves to remain a standalone component. Each item must first prove a durable user job, a clear ownership boundary, and a complete state model. Visual refinement starts only after those questions are settled.
 
 The plan applies to native HTML, CSS, optional controllers, React and Vue adapters, bilingual documentation, the standalone Playground, and regression evidence. Compatibility is preserved through documented aliases and migration paths; it is not used to protect an incoherent contract indefinitely.
 
@@ -10,10 +10,10 @@ The plan applies to native HTML, CSS, optional controllers, React and Vue adapte
 
 The baseline was inspected from the current worktree rather than inferred from catalog claims.
 
-- There are 111 English and 111 Chinese component pages: 86 general components and 25 Harness components.
-- The machine manifest exposes 111 contracts. Fifty-eight declare events or methods; fifty-three are presentation-only.
+- There are 114 English and 114 Chinese component pages: 86 general components and 28 Harness components.
+- The machine manifest exposes 114 contracts. Sixty declare events or methods; fifty-four are presentation-only.
 - The five component ACL files contain 114 scenarios. Eighty-seven execute an interaction, twenty-seven only establish presence or static state, and forty-three capture a screenshot.
-- Existing snapshot folders contain 31 unique image names, including compositions and state variants. They do not provide systematic visual proof for all 111 components.
+- Existing snapshot folders contain 31 unique image names, including compositions and state variants. They do not provide systematic visual proof for all 114 components.
 - Seventy-seven English guides still contain a generic `Component content` framework example. Presence of React and Vue headings therefore does not prove a truthful integration example.
 - The older primitive guides frequently open with markup instead of a user job and omit explicit state, ownership, or accessibility sections. The newer application and Harness guides have stronger product descriptions but still require behavioral and visual proof.
 - Contract contradictions already exist. Spinner is described as having no dedicated component while the manifest and adapters publish one. Scroll Area is a scrollbar utility presented as a component. Radio Group lacks a canonical root class. Theme Switcher resolves through several incidental selectors instead of one public root.
@@ -84,7 +84,7 @@ Every retained component is complete only when all applicable proof exists:
 
 ## Shared kernels and execution order
 
-The catalog must not be optimized as 111 unrelated mini-products. Work proceeds through shared kernels so later components inherit proven behavior.
+The catalog must not be optimized as 114 unrelated mini-products. Work proceeds through shared kernels so later components inherit proven behavior.
 
 ```text
 Foundations and semantic contract

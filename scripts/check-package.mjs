@@ -97,7 +97,7 @@ const componentManifest = JSON.parse(
 if (
   componentManifest.name !== manifest.name ||
   componentManifest.version !== 2 ||
-  componentManifest.components.length !== 111
+  componentManifest.components.length !== 114
 ) {
   throw new Error("AI component manifest metadata or coverage is invalid.");
 }

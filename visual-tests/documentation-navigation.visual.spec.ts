@@ -6,13 +6,13 @@ async function openDocumentationPage(page: Page, route: string) {
 }
 
 async function openResponsiveNavigation(page: Page) {
-  const navigation = page.locator(".docs-mobile-navigation");
-  const trigger = page.locator(".docs-mobile-navigation__trigger");
+  const trigger = page.locator(".rp-nav-hamburger");
 
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
   await trigger.click();
-  await expect(navigation).toHaveAttribute("open", "");
+  const navigation = page.getByRole("dialog");
+  await expect(navigation).toBeVisible();
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
 
   return navigation;
@@ -35,22 +35,35 @@ test("index routes hydrate with complete desktop navigation", async ({
 
   await openDocumentationPage(page, "components/index.html");
 
-  const switchers = page.locator(".rp-nav__others > .docs-switchers");
-  await expect(switchers).toBeVisible();
+  const header = page.locator(".rp-nav");
+  const utilities = header.locator(".rp-nav__others");
+  await expect(utilities).toBeVisible();
+  await expect(utilities).toContainText("简体中文");
+  await expect(utilities).toContainText("next");
   await expect(
-    switchers.locator('[data-switcher="language"] > summary'),
-  ).toContainText("简体中文");
+    utilities.getByRole("button", { name: "切换到深色主题" }),
+  ).toBeVisible();
   await expect(
-    switchers.locator('[data-switcher="version"] > summary'),
-  ).toContainText("开发版");
+    utilities.getByRole("link", { name: "在 GitHub 查看 A3S UI" }),
+  ).toBeVisible();
+  await expect(header.locator(".rp-nav-hamburger")).not.toBeVisible();
 
   const titleBox = await page.locator(".rp-nav__title").boundingBox();
   const menuBox = await page.locator(".rp-nav-menu--left").boundingBox();
+  const logoBox = await page.locator(".rp-nav__title__logo").boundingBox();
+  const logoImageBox = await page.locator("img.rspress-logo").boundingBox();
   expect(titleBox).not.toBeNull();
   expect(menuBox).not.toBeNull();
+  expect(logoBox).not.toBeNull();
+  expect(logoImageBox).not.toBeNull();
   expect(menuBox!.x - (titleBox!.x + titleBox!.width)).toBeGreaterThanOrEqual(
-    24,
+    28,
   );
+  expect(Math.abs(logoBox!.width - logoBox!.height)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(logoImageBox!.width - logoImageBox!.height)).toBeLessThanOrEqual(
+    0.5,
+  );
+  await expect(header).toHaveCSS("height", "72px");
   expect(hydrationWarnings).toEqual([]);
 });
 
@@ -63,37 +76,39 @@ test("documentation header uses one navigation model at each breakpoint", async 
   const header = page.locator(".rp-nav");
   const headerBox = await header.boundingBox();
   expect(headerBox).not.toBeNull();
-  expect(headerBox!.height).toBeLessThanOrEqual(65);
+  expect(headerBox!.height).toBe(72);
   await expect(header).toHaveCSS("display", "flex");
-  await expect(page.locator(".rp-nav__others")).toBeVisible();
-  await expect(
-    page.locator(".docs-mobile-navigation__trigger"),
-  ).not.toBeVisible();
+  await expect(page.locator(".rp-nav__others")).not.toBeVisible();
+  await expect(page.locator(".rp-nav-hamburger")).toBeVisible();
 
   await page.setViewportSize({ width: 1024, height: 800 });
   await expect(page.locator(".rp-nav__others")).not.toBeVisible();
   const navigation = await openResponsiveNavigation(page);
+  await expect(navigation.getByRole("link", { name: "指南" })).toBeVisible();
   await expect(
-    navigation.getByRole("navigation", { name: "主导航" }),
+    navigation.getByRole("button", { name: "语言 简体中文" }),
   ).toBeVisible();
   await expect(
-    navigation.locator(".docs-switchers[data-compact]"),
+    navigation.getByRole("button", { name: "版本 next" }),
   ).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(navigation).not.toBeVisible();
+  await expect(page.locator(".rp-nav-hamburger")).toBeFocused();
 });
 
 test("responsive switchers preserve the page and produce one route prefix", async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-1280");
-  await page.setViewportSize({ width: 1024, height: 800 });
+  await page.setViewportSize({ width: 390, height: 844 });
   await openDocumentationPage(page, "components/device-simulator.html");
 
   let navigation = await openResponsiveNavigation(page);
-  const compactSwitchers = navigation.locator(".docs-switchers[data-compact]");
-  await compactSwitchers
-    .locator('[data-switcher="language"] > summary')
+  await navigation
+    .getByRole("button", { name: "语言 简体中文" })
     .click();
-  await compactSwitchers.locator('a[lang="en"]').click();
+  await navigation.getByRole("link", { name: "English" }).click();
   await expect(page).toHaveURL(/\/UI\/en\/components\/device-simulator\.html$/);
   await expect(
     page.getByRole("heading", { name: "Device Simulator" }),
@@ -101,11 +116,8 @@ test("responsive switchers preserve the page and produce one route prefix", asyn
 
   await openDocumentationPage(page, "en/components/button.html");
   navigation = await openResponsiveNavigation(page);
-  const versionSwitcher = navigation.locator(
-    '.docs-switchers[data-compact] [data-switcher="version"]',
-  );
-  await versionSwitcher.locator(":scope > summary").click();
-  await versionSwitcher.getByRole("link", { name: "v0.1.0" }).click();
+  await navigation.getByRole("button", { name: "Versions next" }).click();
+  await navigation.getByRole("link", { name: "v0.1.0" }).click();
   await expect(page).toHaveURL(/\/UI\/v0\.1\.0\/en\/components\/button\.html$/);
   expect(new URL(page.url()).pathname).not.toMatch(
     /\/(?:en\/en|v0\.1\.0\/v0\.1\.0)\//,
@@ -124,7 +136,7 @@ test("component catalog searches both languages and filters by product group", a
 
   let catalog = page.locator("[data-component-catalog]");
   let search = catalog.getByRole("searchbox", { name: "搜索组件" });
-  await expect(catalog).toContainText("111 个组件");
+  await expect(catalog).toContainText("114 个组件");
   await search.fill("device simulator");
   await expect(catalog.getByRole("status")).toHaveText("找到 1 个匹配组件");
   await expect(
@@ -137,7 +149,7 @@ test("component catalog searches both languages and filters by product group", a
     .filter({ hasText: "Harness" });
   await harnessFilter.click();
   await expect(harnessFilter).toHaveAttribute("aria-pressed", "true");
-  await expect(catalog.getByRole("status")).toHaveText("显示 25 个组件");
+  await expect(catalog.getByRole("status")).toHaveText("显示 28 个组件");
 
   await openDocumentationPage(page, "en/components/index.html");
   catalog = page.locator("[data-component-catalog]");

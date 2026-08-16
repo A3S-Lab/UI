@@ -1,0 +1,111 @@
+# 3D 代码图谱
+
+3D 代码图谱用于理解大型代码库的入口、模块、组件、测试和配置关系。它将三维探索、搜索、选中邻域和属性检查组合在同一工作面，并始终保留可操作的列表视图。
+
+<Preview class="w-full max-w-5xl" title="工作区依赖图谱">
+  <section class="code-graph" data-state="ready" data-view="graph" data-selected-node="task-composer" aria-labelledby="code-graph-title-zh">
+    <header>
+      <div data-code-graph-identity>
+        <strong id="code-graph-title-zh">workspace / 依赖关系</strong>
+        <small>12 个节点 · 15 条关系 · TypeScript</small>
+      </div>
+      <div data-code-graph-actions>
+        <button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="zoom-out" aria-label="缩小图谱"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
+        <button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="zoom-in" aria-label="放大图谱"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6m-3-3v6M20 20l-4-4"/></svg></button>
+        <button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-code-graph-action="reset" aria-label="重置视角"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+      </div>
+    </header>
+    <div data-code-graph-toolbar>
+      <div class="input-group">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="search" data-code-graph-search aria-label="筛选代码节点" placeholder="筛选文件、符号或类型" />
+      </div>
+      <div class="button-group" aria-label="图谱视图">
+        <button type="button" class="btn" data-size="sm" data-code-graph-action="view-graph" data-code-graph-view="graph" aria-pressed="true">3D</button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" data-code-graph-action="view-list" data-code-graph-view="list" aria-pressed="false">列表</button>
+      </div>
+      <div data-code-graph-legend aria-label="节点类型">
+        <span><i data-tone="entry"></i>入口</span><span><i data-tone="component"></i>组件</span><span><i data-tone="test"></i>测试</span><span><i></i>模块</span>
+      </div>
+    </div>
+    <div data-code-graph-surface>
+      <div data-code-graph-viewport role="img" aria-label="可旋转的三维代码依赖图；使用方向键旋转，加减键缩放" tabindex="0">
+        <canvas data-code-graph-canvas aria-hidden="true"></canvas>
+        <div data-code-graph-empty hidden>没有节点符合当前筛选条件。<button type="button" class="btn" data-size="sm" data-code-graph-action="clear-filter">清除筛选</button></div>
+      </div>
+      <ul data-code-graph-list hidden aria-label="代码节点列表">
+        <li data-code-node data-node-id="main" data-node-label="main.ts" data-node-path="src/main.ts" data-node-kind="entry" data-node-tone="entry" data-node-size="9" data-node-x="-110" data-node-y="18" data-node-z="34" aria-selected="false"><button type="button"><i data-node-tone="entry"></i><span data-node-copy><strong data-node-label>main.ts</strong><small>src/main.ts</small></span><span data-node-degree>4</span></button></li>
+        <li data-code-node data-node-id="router" data-node-label="router.ts" data-node-path="src/router.ts" data-node-kind="module" data-node-tone="module" data-node-size="7" data-node-x="-58" data-node-y="-54" data-node-z="-18" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>router.ts</strong><small>src/router.ts</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="workspace" data-node-label="Workspace" data-node-path="src/workspace.tsx" data-node-kind="component" data-node-tone="component" data-node-size="10" data-node-x="-24" data-node-y="20" data-node-z="72" aria-selected="false"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>Workspace</strong><small>src/workspace.tsx</small></span><span data-node-degree>6</span></button></li>
+        <li data-code-node data-node-id="task-composer" data-node-label="TaskComposer" data-node-path="src/tasks/task-composer.tsx" data-node-kind="component" data-node-tone="component" data-node-size="12" data-node-x="46" data-node-y="-14" data-node-z="96" aria-selected="true"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>TaskComposer</strong><small>src/tasks/task-composer.tsx</small></span><span data-node-degree>7</span></button></li>
+        <li data-code-node data-node-id="prompt-editor" data-node-label="PromptEditor" data-node-path="src/tasks/prompt-editor.tsx" data-node-kind="component" data-node-tone="component" data-node-size="8" data-node-x="112" data-node-y="-38" data-node-z="42" aria-selected="false"><button type="button"><i data-node-tone="component"></i><span data-node-copy><strong data-node-label>PromptEditor</strong><small>src/tasks/prompt-editor.tsx</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="suggestions" data-node-label="composer-suggestions.ts" data-node-path="src/tasks/composer-suggestions.ts" data-node-kind="module" data-node-tone="module" data-node-size="6" data-node-x="86" data-node-y="48" data-node-z="-38" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>composer-suggestions.ts</strong><small>src/tasks/composer-suggestions.ts</small></span><span data-node-degree>2</span></button></li>
+        <li data-code-node data-node-id="resources" data-node-label="resource-store.ts" data-node-path="src/state/resource-store.ts" data-node-kind="module" data-node-tone="module" data-node-size="7" data-node-x="18" data-node-y="78" data-node-z="22" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>resource-store.ts</strong><small>src/state/resource-store.ts</small></span><span data-node-degree>4</span></button></li>
+        <li data-code-node data-node-id="api" data-node-label="task-api.ts" data-node-path="src/api/task-api.ts" data-node-kind="module" data-node-tone="module" data-node-size="6" data-node-x="-38" data-node-y="92" data-node-z="-64" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>task-api.ts</strong><small>src/api/task-api.ts</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="config" data-node-label="runtime.acl" data-node-path="config/runtime.acl" data-node-kind="config" data-node-tone="config" data-node-size="5" data-node-x="-92" data-node-y="66" data-node-z="-92" aria-selected="false"><button type="button"><i data-node-tone="config"></i><span data-node-copy><strong data-node-label>runtime.acl</strong><small>config/runtime.acl</small></span><span data-node-degree>2</span></button></li>
+        <li data-code-node data-node-id="composer-test" data-node-label="task-composer.test.tsx" data-node-path="src/tasks/task-composer.test.tsx" data-node-kind="test" data-node-tone="test" data-node-size="7" data-node-x="72" data-node-y="-92" data-node-z="-48" aria-selected="false"><button type="button"><i data-node-tone="test"></i><span data-node-copy><strong data-node-label>task-composer.test.tsx</strong><small>src/tasks/task-composer.test.tsx</small></span><span data-node-degree>3</span></button></li>
+        <li data-code-node data-node-id="editor-test" data-node-label="prompt-editor.test.tsx" data-node-path="src/tasks/prompt-editor.test.tsx" data-node-kind="test" data-node-tone="test" data-node-size="5" data-node-x="138" data-node-y="-76" data-node-z="-8" aria-selected="false"><button type="button"><i data-node-tone="test"></i><span data-node-copy><strong data-node-label>prompt-editor.test.tsx</strong><small>src/tasks/prompt-editor.test.tsx</small></span><span data-node-degree>1</span></button></li>
+        <li data-code-node data-node-id="events" data-node-label="task-events.ts" data-node-path="src/events/task-events.ts" data-node-kind="module" data-node-tone="module" data-node-size="5" data-node-x="-6" data-node-y="-84" data-node-z="-104" aria-selected="false"><button type="button"><i data-node-tone="module"></i><span data-node-copy><strong data-node-label>task-events.ts</strong><small>src/events/task-events.ts</small></span><span data-node-degree>2</span></button></li>
+      </ul>
+      <div data-code-edges hidden>
+        <i data-code-edge data-from="main" data-to="router" data-edge-weight="2"></i><i data-code-edge data-from="main" data-to="workspace" data-edge-weight="3"></i><i data-code-edge data-from="router" data-to="workspace"></i><i data-code-edge data-from="workspace" data-to="task-composer" data-edge-weight="3"></i><i data-code-edge data-from="task-composer" data-to="prompt-editor" data-edge-weight="3"></i><i data-code-edge data-from="task-composer" data-to="suggestions"></i><i data-code-edge data-from="task-composer" data-to="resources" data-edge-weight="2"></i><i data-code-edge data-from="task-composer" data-to="api"></i><i data-code-edge data-from="task-composer" data-to="events"></i><i data-code-edge data-from="config" data-to="api"></i><i data-code-edge data-from="composer-test" data-to="task-composer" data-edge-kind="test"></i><i data-code-edge data-from="editor-test" data-to="prompt-editor" data-edge-kind="test"></i><i data-code-edge data-from="resources" data-to="api"></i><i data-code-edge data-from="events" data-to="api"></i><i data-code-edge data-from="workspace" data-to="resources"></i>
+      </div>
+      <aside data-code-graph-inspector aria-label="选中节点详情">
+        <header><strong>选中节点</strong><p>点击背景清除选择；相邻关系保持高亮。</p></header>
+        <dl><div><dt>名称</dt><dd data-code-graph-field="label">TaskComposer</dd></div><div><dt>路径</dt><dd data-code-graph-field="path">src/tasks/task-composer.tsx</dd></div><div><dt>类型</dt><dd data-code-graph-field="kind">component</dd></div><div><dt>连接</dt><dd data-code-graph-field="connections">7</dd></div></dl>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" data-code-graph-action="clear-selection">清除选择</button>
+      </aside>
+    </div>
+    <footer><output data-code-graph-status aria-live="polite">已显示完整图谱</output><span>拖动旋转 · 滚轮缩放 · 方向键可操作</span></footer>
+  </section>
+</Preview>
+
+## 为什么是图谱
+
+文件树适合回答“文件在哪里”，图谱适合回答“改动会影响谁”。默认视图优先显示入口、高连接节点以及当前选择的直接邻居；超过 600 个节点或 4000 条边时进入 `partial`，完整数量仍显示在状态区，列表和搜索继续可用。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section class="code-graph" data-state="loading" data-view="graph">
+  <div data-code-graph-viewport tabindex="0"><canvas data-code-graph-canvas></canvas></div>
+  <ul data-code-graph-list hidden></ul>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/code-graph";
+  const graph = document.querySelector(".code-graph");
+  graph.setData(await loadDependencyGraph());
+  graph.setState("ready", { message: "图谱已更新" });
+</script>`}
+  react={`import { CodeGraph, useCodeGraph } from "@a3s-lab/ui/react";
+
+export function DependencyGraph({ graph }) {
+  const control = useCodeGraph({
+    events: {
+      "a3s:code-graph-selection-change": event => inspectNode(event.detail.node),
+      "a3s:code-graph-before-filter-change": event => auditFilter(event.detail),
+    },
+    onReady(element) {
+      element.setData(graph);
+    },
+  });
+  return <CodeGraph ref={control.ref} aria-label="代码依赖图谱">{/* 画布、列表与检查器 */}</CodeGraph>;
+}`}
+  vue={`<script setup lang="ts">
+import { onMounted } from "vue";
+import { CodeGraph, useCodeGraph } from "@a3s-lab/ui/vue";
+const props = defineProps<{ graph: DependencyGraph }>();
+const control = useCodeGraph({
+  events: {
+    "a3s:code-graph-selection-change": event => inspectNode(event.detail.node),
+  },
+});
+onMounted(() => control.call("setData", props.graph));
+</script>
+<template><CodeGraph :ref="control.componentRef" aria-label="代码依赖图谱"><!-- 画布、列表与检查器 --></CodeGraph></template>`}
+/>
+
+## 交互与降级
+
+拖动旋转，滚轮或加减键缩放，方向键旋转，Home 重置视角。节点选择发送可取消的 `a3s:code-graph-before-selection-change`，随后发送 `a3s:code-graph-selection-change`。Canvas 不可用时自动切到列表视图；列表使用真实按钮，不能把可访问性寄托在 Canvas 命中区域上。

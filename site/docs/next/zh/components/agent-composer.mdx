@@ -1,182 +1,162 @@
-# Agent 输入框
+# 任务输入器
 
-Agent 输入框用于提交下一条指令，并呈现附加上下文、排队消息以及发送或停止操作。上传、快捷键、提交、取消和队列持久化由宿主应用负责。
+任务输入器负责把指令、文件、源码范围、Skill、运行设置和后续队列组织成一次可恢复的提交。主输入区必须由 TipTap 驱动；普通 `textarea` 无法可靠承载 Markdown、输入触发、结构化选择、输入法和受控草稿，因此不属于该组件的生产契约。
 
-<Preview class="w-full max-w-3xl">
-  <form
-    class="agent-composer"
-    aria-label="向编码 Agent 发送消息"
-    data-state="streaming"
-  >
-    <ul data-composer-context aria-label="已附加上下文">
-      <li>
-        <span>AGENTS.md</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="移除 AGENTS.md"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-      <li>
-        <span>src/runtime.ts:42–96</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="移除 runtime 源码范围"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-    </ul>
-    <textarea
-      name="prompt"
-      aria-label="指令"
-      placeholder="让 A3S Code 检查、修改或解释当前项目……"
-      defaultValue="为流式执行路径补充取消测试。"
-    />
-    <footer>
-      <div data-composer-tools>
-        <button type="button" class="btn" data-size="sm" data-variant="ghost">附加</button>
-        <button type="button" class="btn" data-size="sm" data-variant="ghost">上下文</button>
-        <span data-composer-status aria-live="polite">Agent 正在运行，此消息将进入队列</span>
-      </div>
-      <div data-composer-actions>
-        <button type="button" class="btn" data-size="sm" data-variant="outline">停止</button>
-        <button type="submit" class="btn" data-size="sm">加入队列</button>
-      </div>
-    </footer>
-    <ol data-composer-queue aria-label="排队消息">
-      <li>
-        <span>随后更新中英文 API 示例。</span>
-        <button
-          type="button"
-          class="btn"
-          data-size="icon-xs"
-          data-variant="ghost"
-          aria-label="移除排队消息"
-        >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-        </button>
-      </li>
-    </ol>
-  </form>
+<Preview class="w-full max-w-4xl" title="生产级任务输入器">
+  <AgentComposerDemo />
 </Preview>
 
-## 用法
+## 设计边界
 
-```html
-<form class="agent-composer" aria-label="向编码 Agent 发送消息">
-  <ul data-composer-context aria-label="已附加上下文">
-    ...
-  </ul>
-  <textarea name="prompt" aria-label="指令"></textarea>
-  <footer>
-    <div data-composer-tools>...</div>
-    <div data-composer-actions>
-      <button type="submit" class="btn">发送</button>
-    </div>
-  </footer>
-</form>
-```
+输入器回答四个问题：用户要做什么、允许参考哪些资源、按什么运行设置执行、当前操作会发送还是排队。上传、模型请求、权限判断和持久化仍由宿主拥有，组件只维护可见交互与稳定事件。
 
-### HTML 结构
+- Enter 提交，Shift + Enter 换行；输入法组合期间不得拦截 Enter。
+- `@` 打开文件树，`$` 打开 Skill 列表，`/` 打开内置命令；菜单采用 listbox 或 tree，并通过 `aria-activedescendant` 保持焦点在编辑器。
+- 文件和目录可通过选择器或拖放进入资源区；资源必须可辨认、可移除，并保留类型和稳定标识。
+- 运行中必须明确区分立即发送、加入队列、停止和不可提交，不能只替换图标。
+- 提交失败保留 Markdown 草稿、选择、资源、设置与焦点；恢复动作直接说明下一步。
 
-| API                           | 取值                                                             | 用途                                        |
-| ----------------------------- | ---------------------------------------------------------------- | ------------------------------------------- |
-| `class="agent-composer"`      | 必须                                                             | 独立 `<form>`，或归外层 Form 所有的 Section |
-| `data-state`                  | `ready`、`submitting`、`streaming`、`queued`、`offline`、`error`、`disabled` | 由宿主管理的有限展示状态          |
-| `data-composer-context`       | 可选列表                                                         | 附件、文件、符号、源码范围、图片或 URL      |
-| `data-composer-tools`         | 可选容器                                                         | 附件与上下文控件                            |
-| `data-composer-actions`       | 推荐容器                                                         | 发送、排队、停止或重试操作                  |
-| `data-composer-status`        | 可选状态文本                                                     | 提交或排队反馈                              |
-| `data-composer-queue`         | 可选有序列表                                                     | 在当前 Turn 之后等待的消息                  |
-| `--agent-composer-min-height` | CSS 长度，默认 `5.5rem`                                          | 文本区域最小高度                            |
-| `--agent-composer-max-height` | CSS 长度，默认 `18rem`                                           | 文本区域开始内部滚动前的最大高度            |
+## 公开结构
 
-## 状态与变体
+| API | 用途 |
+| --- | --- |
+| `.agent-composer` | `<form>` 根边界；祖先已经是表单时才改用 `<section>` |
+| `data-composer-editor` | TipTap 编辑器宿主，不直接承载业务状态 |
+| `data-composer-input` | TipTap 创建的 ProseMirror 根节点，也是自动化和无障碍文本框 |
+| `data-composer-resources` | 文件、目录、源码范围、图片、URL 或 Skill 的有序资源列表 |
+| `data-composer-suggestions` | `@`、`$`、`/` 触发的 listbox 或 tree |
+| `data-composer-setting` | 模式、上下文、模型、推理强度等宿主控制 |
+| `data-composer-actions` | 发送、加入队列、停止和重试 |
+| `data-composer-status` | 一条礼貌型状态播报，不逐 Token 更新 |
+| `data-composer-queue` | 后续指令队列，可编辑、移除、排序、暂停和恢复 |
 
-单个控件使用原生 `disabled`。只有整个输入框均不可用时才使用 `aria-disabled="true"`。提交失败时保留输入内容。流式执行期间，应用可以立即发送、加入队列或禁用提交，但按钮文案和状态文本必须明确说明实际行为。
+`ready`、`submitting`、`streaming`、`queued`、`stopping`、`offline`、`error` 和 `disabled` 是根状态。局部按钮仍使用原生 `disabled`。
 
-附件和排队消息都是应用数据。A3S UI 不上传文件，也不修改队列。原生 `submit` 与按钮事件就是集成点。只有祖先 Form 已经提供提交边界时才使用 `<section class="agent-composer">`，嵌套 Form 是无效标记。
+## 框架用法
 
-## React
+TipTap 依赖位于独立入口，不会增加只使用 CSS 或普通组件的应用体积。三个框架共享同一 DOM、事件和 Markdown 数据格式。
 
-```tsx
-import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+<FrameworkTabs
+  html={`import { Editor } from "@tiptap/core";
+import Placeholder from "@tiptap/extension-placeholder";
+import { Markdown } from "@tiptap/markdown";
+import StarterKit from "@tiptap/starter-kit";
+import "@a3s-lab/ui";
+import "@a3s-lab/ui/agent-composer";
 
-type Props = { onSubmit(message: string): void };
-
-export function Example({ onSubmit }: Props) {
-  const control = useAgentComposer({
-    events: {
-      submit(event) {
-        event.preventDefault();
-        const form = event.currentTarget as HTMLFormElement;
-        const message = new FormData(form).get("prompt")?.toString().trim();
-        if (message) onSubmit(message);
-      },
+const form = document.querySelector(".agent-composer");
+const editor = new Editor({
+  element: form.querySelector("[data-composer-input]"),
+  extensions: [
+    StarterKit.configure({ heading: false, codeBlock: false }),
+    Placeholder.configure({ placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…" }),
+    Markdown,
+  ],
+  contentType: "markdown",
+  content: "检查权限边界。",
+  editorProps: {
+    attributes: {
+      role: "textbox",
+      "aria-label": "任务指令",
+      "aria-multiline": "true",
+      "data-composer-input": "",
     },
+    handleKeyDown: (_view, event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
+      event.preventDefault();
+      form.requestSubmit();
+      return true;
+    },
+  },
+});
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  submitTask({ markdown: editor.getMarkdown() });
+});`}
+  react={`import { useState } from "react";
+import { EditorContent } from "@tiptap/react";
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/react";
+
+export function TaskInput() {
+  const [draft, setDraft] = useState("");
+  const composer = useAgentComposer({
+    events: {
+      "a3s:composer-submit": event => saveTask(event.detail),
+      "a3s:composer-action": event => runComposerAction(event.detail),
+    },
+  });
+  const editor = useAgentComposerEditor({
+    value: draft,
+    onChange: setDraft,
+    onSubmit: markdown => submitTask({ markdown }),
+    onTriggerChange: trigger => openSuggestionSource(trigger),
+    placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…",
   });
 
   return (
-    <AgentComposer ref={control.ref} aria-label="发送下一条指令" data-state="ready">
-      <ul data-composer-context aria-label="已附加上下文">
-        <li><span>src/runtime.ts:42–96</span><button type="button" aria-label="移除 runtime 源码范围">移除</button></li>
-      </ul>
-      <textarea name="prompt" aria-label="指令" placeholder="描述要检查或修改的内容" />
+    <AgentComposer ref={composer.ref} aria-label="任务输入器" data-state="ready">
+      <section className="agent-composer-editor" data-composer-editor>
+        {editor.editor && <EditorContent editor={editor.editor} />}
+      </section>
       <footer>
-        <div data-composer-tools><button type="button">附加文件</button></div>
+        <div data-composer-tools>{/* 资源与运行设置 */}</div>
         <div data-composer-actions><button type="submit">发送</button></div>
       </footer>
     </AgentComposer>
   );
-}
-```
-
-`useAgentComposer` 在同一根元素上订阅原生 `input` 与 `submit` 事件。示例阻止浏览器默认提交后把文本交给宿主；上传、队列、传输和错误恢复仍不进入组件内部。
-
-## Vue
-
-```vue
-<script setup lang="ts">
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { EditorContent } from "@tiptap/vue-3";
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/vue";
 
-const props = defineProps<{ onSubmit(message: string): void }>();
-const control = useAgentComposer({
+const draft = ref("");
+const composer = useAgentComposer({
   events: {
-    submit(event) {
-      event.preventDefault();
-      const form = event.currentTarget as HTMLFormElement;
-      const message = new FormData(form).get("prompt")?.toString().trim();
-      if (message) props.onSubmit(message);
-    },
+    "a3s:composer-submit": event => saveTask(event.detail),
+    "a3s:composer-action": event => runComposerAction(event.detail),
   },
 });
-const componentRef = control.componentRef;
+const editor = useAgentComposerEditor({
+  value: draft,
+  onSubmit: markdown => submitTask({ markdown }),
+  onTriggerChange: trigger => openSuggestionSource(trigger),
+  placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…",
+});
+const tiptap = editor.editor;
 </script>
 
 <template>
-  <AgentComposer ref="componentRef" aria-label="发送下一条指令" data-state="ready">
-    <ul data-composer-context aria-label="已附加上下文">
-      <li><span>src/runtime.ts:42–96</span><button type="button" aria-label="移除 runtime 源码范围">移除</button></li>
-    </ul>
-    <textarea name="prompt" aria-label="指令" placeholder="描述要检查或修改的内容"></textarea>
+  <AgentComposer :ref="composer.componentRef" aria-label="任务输入器" data-state="ready">
+    <section class="agent-composer-editor" data-composer-editor>
+      <EditorContent v-if="tiptap" :editor="tiptap" />
+    </section>
     <footer>
-      <div data-composer-tools><button type="button">附加文件</button></div>
+      <div data-composer-tools><!-- 资源与运行设置 --></div>
       <div data-composer-actions><button type="submit">发送</button></div>
     </footer>
   </AgentComposer>
-</template>
-```
+</template>`}
+/>
 
-Vue composable 使用同一事件契约与根元素引用，不创建第二套提交状态。
+`useAgentComposer` 管理根组件事件与控制器；`useAgentComposerEditor` 管理 TipTap 实例、Markdown、焦点、插入内容和触发范围替换。不要同时创建两个编辑器实例；实际页面通常直接使用 `AgentComposerEditor`，只有需要完全自定义渲染时才单独调用编辑器 Hook。
 
-## 可访问性
+## 控制器
 
-为表单和文本区域提供不同且明确的名称。移除按钮应紧邻对应条目，名称中包含被移除的文件或范围。异步状态只用一个礼貌型实时区域播报“已排队”“发送失败”等粗粒度结果，不能逐 Token 播报流式内容。保留多行输入、输入法组合与浏览器撤销行为；快捷键在 `isComposing` 为真时不得拦截 Enter。错误发生后保留草稿、上下文和焦点，宿主完成上传、传输、权限检查与队列持久化，并把每个结果映射回可见状态和可执行的恢复操作。
+| 方法 | 结果 |
+| --- | --- |
+| `getDraft()` / `setDraft(markdown)` | 读取或受控更新 Markdown |
+| `focusInput()` | 把焦点送回 ProseMirror 输入面 |
+| `openSuggestions(trigger)` / `closeSuggestions()` | 管理触发菜单，不转移编辑焦点 |
+| `setState(state, options)` | 更新提交、流式、停止、离线或错误状态 |
+| `setError(message)` | 保留草稿并显示可恢复错误 |
+| `runAction(action, options)` | 经过可取消的授权事件后执行宿主动作 |
+
+关键事件包括 `a3s:composer-before-submit`、`a3s:composer-submit`、`a3s:composer-draft-change`、`a3s:composer-trigger-change`、`a3s:composer-before-action`、`a3s:composer-action` 与 `a3s:composer-queue-action`。
+
+## 产品验收
+
+在发布前至少验证中文输入法、撤销重做、长 Markdown、空草稿、失焦恢复、菜单键盘导航、文件夹拖放、资源去重、停止中的重复点击、离线重试、队列编辑与 320px 布局。测试只通过“能输入和能发送”仍不足以证明组件可用于真实任务工作台。

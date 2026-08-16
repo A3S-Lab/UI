@@ -175,6 +175,7 @@ test("Playground phone navigation is isolated from the documentation runtime", a
     playground.locator('[data-playground-scene="settings"]'),
   ).toBeVisible();
 
+  await page.setViewportSize({ width: 1024, height: 900 });
   await page.getByRole("button", { name: "打开主导航", exact: true }).click();
   await page.getByLabel("切换到深色主题").last().click();
   await expect(page.locator("html")).toHaveClass(/dark/);

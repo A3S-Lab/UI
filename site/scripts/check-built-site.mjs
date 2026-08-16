@@ -185,7 +185,7 @@ const homepageExpectations = [
       'data-mobile-expanded="false"',
       'aria-live="polite"',
       'aria-pressed="true"',
-      "<dt>111</dt>",
+      "<dt>114</dt>",
       "v0.2.0",
       "v0.1.0",
     ],
@@ -202,7 +202,7 @@ const homepageExpectations = [
       "PUBLIC COMPONENT COMPOSITION",
       "data-a3s-customizer",
       'aria-live="polite"',
-      "<dt>111</dt>",
+      "<dt>114</dt>",
       "v0.2.0",
     ],
   },
@@ -381,7 +381,7 @@ const nextCatalogExpectations = [
     markers: [
       "data-component-catalog",
       'placeholder="按名称、英文名或分组搜索…"',
-      "9 个职责分组，可搜索 111 个组件",
+      "9 个职责分组，可搜索 114 个组件",
       'data-component-group="harness"',
       'href="/UI/components/scroll-area.html"',
       'href="/UI/components/theme-switcher.html"',
@@ -392,7 +392,7 @@ const nextCatalogExpectations = [
     markers: [
       "data-component-catalog",
       'placeholder="Search by name, slug, or group…"',
-      "9 task groups across 111 searchable components",
+      "9 task groups across 114 searchable components",
       'data-component-group="harness"',
       'href="/UI/en/components/scroll-area.html"',
       'href="/UI/en/components/theme-switcher.html"',
@@ -561,7 +561,7 @@ const nextExtractedComponentExpectations = [
     markers: [
       'lang="zh"',
       'class="agent-composer"',
-      'aria-label="已附加上下文"',
+      'aria-label="已附加资源"',
       "data-composer-queue",
     ],
   },
@@ -569,9 +569,9 @@ const nextExtractedComponentExpectations = [
     file: "en/components/agent-composer.html",
     markers: [
       'lang="en"',
-      ">Agent Composer<",
+      ">Task Composer<",
       'class="agent-composer"',
-      'aria-label="Attached context"',
+      'aria-label="Attached resources"',
     ],
   },
   {
@@ -889,47 +889,47 @@ const switchExpectations = [
     file: "components/app-shell.html",
     links: [
       "/UI/en/components/app-shell.html",
-      "/UI/v0.2.0/components/app-shell.html",
-      "/UI/v0.1.0/components/app-shell.html",
+      "/UI/v0.2.0/components/app-shell",
+      "/UI/v0.1.0/components/app-shell",
     ],
   },
   {
     file: "en/components/app-shell.html",
     links: [
       "/UI/components/app-shell.html",
-      "/UI/v0.2.0/en/components/app-shell.html",
-      "/UI/v0.1.0/en/components/app-shell.html",
+      "/UI/v0.2.0/en/components/app-shell",
+      "/UI/v0.1.0/en/components/app-shell",
     ],
   },
   {
     file: "v0.2.0/components/app-shell.html",
     links: [
-      "/UI/components/app-shell.html",
+      "/UI/components/app-shell",
       "/UI/v0.2.0/en/components/app-shell.html",
-      "/UI/v0.1.0/components/app-shell.html",
+      "/UI/v0.1.0/components/app-shell",
     ],
   },
   {
     file: "v0.2.0/en/components/app-shell.html",
     links: [
-      "/UI/en/components/app-shell.html",
+      "/UI/en/components/app-shell",
       "/UI/v0.2.0/components/app-shell.html",
-      "/UI/v0.1.0/en/components/app-shell.html",
+      "/UI/v0.1.0/en/components/app-shell",
     ],
   },
   {
     file: "v0.1.0/components/app-shell.html",
     links: [
-      "/UI/components/app-shell.html",
-      "/UI/v0.2.0/components/app-shell.html",
+      "/UI/components/app-shell",
+      "/UI/v0.2.0/components/app-shell",
       "/UI/v0.1.0/en/components/app-shell.html",
     ],
   },
   {
     file: "v0.1.0/en/components/app-shell.html",
     links: [
-      "/UI/en/components/app-shell.html",
-      "/UI/v0.2.0/en/components/app-shell.html",
+      "/UI/en/components/app-shell",
+      "/UI/v0.2.0/en/components/app-shell",
       "/UI/v0.1.0/components/app-shell.html",
     ],
   },
