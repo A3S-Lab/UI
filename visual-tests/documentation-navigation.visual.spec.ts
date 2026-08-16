@@ -45,6 +45,26 @@ test("desktop menus remain operable before any client JavaScript runs", async ({
   await expect(page.getByRole("heading", { name: "Button", level: 1 })).toBeVisible();
 });
 
+test("responsive navigation remains operable before hydration", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.route(/\.js(?:\?|$)/, (route) => route.abort());
+  await page.goto("components/button.html", { waitUntil: "domcontentloaded" });
+
+  const navigation = page.locator(".a3s-responsive-navigation");
+  const trigger = navigation.locator(":scope > summary");
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+  await expect(navigation).toHaveAttribute("open", "");
+  await expect(
+    navigation.getByRole("link", { name: "Playground" }),
+  ).toBeVisible();
+  await navigation.getByRole("link", { name: "Playground" }).click();
+  await expect(page).toHaveURL(/\/UI\/playground\.html$/);
+});
+
 test("index routes hydrate with complete desktop navigation", async ({
   page,
 }, testInfo) => {

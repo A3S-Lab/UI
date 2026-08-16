@@ -1,6 +1,58 @@
 suite "a3s-ui-site-and-overlays" {
     version = 1
 
+    scenario "first-load-responsive-navigation" {
+        name = "Responsive navigation works before client hydration"
+        surface = "web"
+        timeout_ms = 90000
+
+        viewport "responsive" {
+            width = 1280
+            height = 900
+        }
+
+        network_route "block-client-javascript" {
+            pattern = "**/*.js"
+            abort = true
+        }
+
+        navigate "open-component" {
+            url = "http://127.0.0.1:4178/UI/components/button.html"
+        }
+
+        wait "server-rendered-page" {
+            load = "domcontentloaded"
+        }
+
+        click "open-primary-navigation" {
+            target = role("button", "打开主导航")
+        }
+
+        expect "navigation-open" {
+            visible = css(".a3s-responsive-navigation[open] .a3s-responsive-navigation__surface")
+        }
+
+        expect "playground-destination-visible" {
+            visible = css(".a3s-responsive-navigation[open] a[href='/UI/playground.html']")
+        }
+
+        screenshot "first-load-navigation" {
+            path = "documentation/first-load-navigation.png"
+        }
+
+        click "open-playground" {
+            target = css(".a3s-responsive-navigation[open] a[href='/UI/playground.html']")
+        }
+
+        wait "playground-loaded" {
+            url = "http://127.0.0.1:4178/UI/playground.html"
+        }
+
+        network_unroute "restore-client-javascript" {
+            pattern = "**/*.js"
+        }
+    }
+
     scenario "homepage-theme-customizer" {
         name = "Homepage theme customizer applies and persists product choices"
         surface = "web"
@@ -209,7 +261,7 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         expect "responsive-menu-visible" {
-            visible = css(".docs-mobile-navigation__trigger")
+            visible = css(".a3s-responsive-navigation > summary")
         }
 
         click "open-navigation" {
@@ -217,15 +269,15 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         expect "navigation-open" {
-            visible = css(".docs-mobile-navigation[open] .docs-mobile-navigation__panel")
+            visible = css(".a3s-responsive-navigation[open] .a3s-responsive-navigation__surface")
         }
 
         click "open-language-switcher" {
-            target = css(".docs-switchers[data-compact] [data-switcher=language] > summary")
+            target = css(".a3s-responsive-navigation [data-preference=language] > summary")
         }
 
         click "switch-to-english" {
-            target = css(".docs-switchers[data-compact] [data-switcher=language] a[lang=en]")
+            target = css(".a3s-responsive-navigation [data-preference=language] a[lang=en]")
         }
 
         wait "english-route-loaded" {
@@ -241,15 +293,15 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         click "open-component-navigation" {
-            target = role("button", "Open navigation")
+            target = role("button", "Open primary navigation")
         }
 
         click "open-version-switcher" {
-            target = css(".docs-switchers[data-compact] [data-switcher=version] > summary")
+            target = css(".a3s-responsive-navigation [data-preference=version] > summary")
         }
 
         focus "focus-v0-1" {
-            target = css(".docs-switchers[data-compact] [data-switcher=version] a[href='/UI/v0.1.0/en/components/button.html']")
+            target = css(".a3s-responsive-navigation [data-preference=version] a[href^='/UI/v0.1.0/en/components/button']")
         }
 
         press "switch-to-v0-1" {

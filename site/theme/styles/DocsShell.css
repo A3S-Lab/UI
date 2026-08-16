@@ -325,6 +325,173 @@ html .rp-switch-appearance:focus-visible {
   outline-offset: 2px;
 }
 
+.a3s-responsive-navigation {
+  height: 44px;
+  flex: 0 0 auto;
+}
+
+.a3s-responsive-navigation > summary {
+  list-style: none;
+}
+
+.a3s-responsive-navigation > summary::-webkit-details-marker,
+.a3s-responsive-navigation__group > summary::-webkit-details-marker,
+.a3s-responsive-navigation__preference > summary::-webkit-details-marker {
+  display: none;
+}
+
+.a3s-responsive-navigation[open] > summary {
+  background: var(--ui-panel);
+  color: var(--ui-blue);
+}
+
+.a3s-responsive-navigation__surface {
+  position: absolute;
+  z-index: var(--rp-z-index-nav-screen);
+  inset-block-start: 100%;
+  inset-block-end: auto;
+  inset-inline: 0;
+  box-sizing: border-box;
+  width: auto;
+  max-width: none;
+  height: calc(
+    100dvh - var(--rp-nav-height) - var(--rp-banner-height, 0px)
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--ui-line);
+  background: color-mix(in srgb, var(--ui-canvas) 98%, transparent);
+}
+
+.a3s-responsive-navigation__container {
+  width: min(100%, 720px);
+  align-items: stretch;
+  gap: 4px;
+  margin-inline: auto;
+}
+
+.a3s-responsive-navigation__container > nav,
+.a3s-responsive-navigation__list {
+  width: 100%;
+}
+
+.a3s-responsive-navigation__list {
+  display: grid;
+  gap: 2px;
+  list-style: none;
+}
+
+.a3s-responsive-navigation__link,
+.a3s-responsive-navigation__group > summary,
+.a3s-responsive-navigation__preference > summary,
+.a3s-responsive-navigation__appearance {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  border-radius: 9px;
+  color: var(--ui-ink);
+  font-size: 14px;
+  font-weight: 560;
+}
+
+.a3s-responsive-navigation__link,
+.a3s-responsive-navigation__group > summary {
+  padding-inline: 12px;
+}
+
+.a3s-responsive-navigation__link:hover,
+.a3s-responsive-navigation__group > summary:hover,
+.a3s-responsive-navigation__preference > summary:hover {
+  background: var(--ui-panel);
+  color: var(--ui-blue);
+}
+
+.a3s-responsive-navigation__link.is-current {
+  color: var(--ui-muted);
+}
+
+.a3s-responsive-navigation__group > summary,
+.a3s-responsive-navigation__preference > summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.a3s-responsive-navigation__group > summary {
+  justify-content: space-between;
+}
+
+.a3s-responsive-navigation__group > summary > svg,
+.a3s-responsive-navigation__preference > summary > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  transition: transform 140ms ease-out;
+}
+
+.a3s-responsive-navigation__group[open] > summary > svg,
+.a3s-responsive-navigation__preference[open] > summary > svg {
+  transform: rotate(180deg);
+}
+
+.a3s-responsive-navigation__group > .a3s-responsive-navigation__list,
+.a3s-responsive-navigation__preference > .a3s-responsive-navigation__list {
+  padding-block: 4px 8px;
+  padding-inline-start: 16px;
+  border-inline-start: 1px solid var(--ui-line);
+}
+
+.a3s-responsive-navigation__appearance,
+.a3s-responsive-navigation__preference > summary {
+  padding-inline: 12px 8px;
+}
+
+.a3s-responsive-navigation__appearance,
+.a3s-responsive-navigation__preference > summary {
+  justify-content: space-between;
+}
+
+.a3s-responsive-navigation__preference > summary > span {
+  margin-inline-end: auto;
+}
+
+.a3s-responsive-navigation__preference > summary > strong {
+  margin-inline: 12px 6px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 540;
+}
+
+.a3s-responsive-navigation__appearance .rp-switch-appearance {
+  display: grid;
+  place-items: center;
+}
+
+.a3s-responsive-navigation__container > .rp-social-links {
+  min-height: 44px;
+  align-items: center;
+  padding-inline: 12px;
+}
+
+@media (max-width: 1280px) {
+  body:has(.a3s-responsive-navigation[open]) {
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 1281px) {
+  .a3s-responsive-navigation[open]
+    > .a3s-responsive-navigation__surface {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .a3s-responsive-navigation__surface {
+    padding: 16px;
+  }
+}
+
 /* Rspress 2.0.19 can resolve the expanded mobile language grid to zero
    height in Chromium. Keep each preference row atomic. */
 .rp-nav-screen-langs-group {

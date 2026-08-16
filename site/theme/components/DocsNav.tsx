@@ -26,11 +26,8 @@ import {
   SvgDown,
 } from "@rspress/core/dist/theme/components/Nav/NavMenu.js";
 import { useLangsMenu } from "@rspress/core/dist/theme/components/Nav/hooks.js";
-import { NavScreen } from "@rspress/core/dist/theme/components/NavScreen/index.js";
-import { useNavScreen } from "@rspress/core/dist/theme/components/NavHamburger/useNavScreen.js";
 import "@rspress/core/dist/theme/components/Nav/index.css";
 import "@rspress/core/dist/theme/components/NavHamburger/index.css";
-import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef } from "react";
 
 function labelSocialLinks(root: ParentNode, language: string) {
@@ -248,7 +245,7 @@ function NavLanguages() {
   ) : null;
 }
 
-function NavVersions() {
+function useVersionMenuItems() {
   const { pathname } = useLocation();
   const { page } = usePage();
   const { pages } = usePages();
@@ -261,7 +258,7 @@ function NavVersions() {
     () => new Set(pages.map((candidate) => candidate.routePath)),
     [pages],
   );
-  const items = versions.map((version) => ({
+  const items: NavItem[] = versions.map((version) => ({
     text: version,
     link: versionHref(
       page.pageType === "404" ? "/" : pathname,
@@ -273,6 +270,12 @@ function NavVersions() {
       availableRoutes,
     ),
   }));
+
+  return { currentVersion, items };
+}
+
+function NavVersions() {
+  const { currentVersion, items } = useVersionMenuItems();
 
   return items.length > 1 ? (
     <ProgressiveMenu
@@ -302,190 +305,242 @@ function isVisibleControl(element: HTMLElement, screen: HTMLElement) {
   );
 }
 
-function NavHamburger() {
-  const { closeScreen, isScreenOpen, toggleScreen } = useNavScreen();
+function ResponsiveNavigationItems({ items }: { items: NavItem[] }) {
+  return (
+    <ul className="a3s-responsive-navigation__list">
+      {items.map((item, index) => {
+        const key = `${item.text ?? "item"}-${index}`;
+        if ("items" in item && item.items.length > 0) {
+          return (
+            <li key={key}>
+              <details
+                className="a3s-responsive-navigation__group"
+                suppressHydrationWarning
+              >
+                <summary role="button">
+                  <span>{item.text}</span>
+                  <SvgDown aria-hidden="true" />
+                </summary>
+                <ResponsiveNavigationItems items={item.items} />
+              </details>
+            </li>
+          );
+        }
+
+        if (!("link" in item)) return null;
+        return (
+          <li key={key}>
+            {item.link ? (
+              <Link
+                className="a3s-responsive-navigation__link"
+                download={"download" in item ? item.download : undefined}
+                href={item.link}
+                hrefLang={item.lang}
+                lang={item.lang}
+                rel={item.rel}
+              >
+                {item.text}
+              </Link>
+            ) : (
+              <span
+                aria-current="page"
+                className="a3s-responsive-navigation__link is-current"
+              >
+                {item.text}
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function ResponsivePreferenceMenu({
+  activeValue,
+  items,
+  kind,
+  label,
+}: {
+  activeValue: string;
+  items: NavItem[];
+  kind: "language" | "version";
+  label: string;
+}) {
+  return (
+    <details
+      className="a3s-responsive-navigation__preference"
+      data-preference={kind}
+      suppressHydrationWarning
+    >
+      <summary role="button">
+        <span>{label}</span>
+        <strong>{activeValue}</strong>
+        <SvgDown aria-hidden="true" />
+      </summary>
+      <ResponsiveNavigationItems items={items} />
+    </details>
+  );
+}
+
+function NavHamburger({ menuItems }: { menuItems: NavItem[] }) {
   const language = useLang();
   const { pathname } = useLocation();
-  const trigger = useRef<HTMLButtonElement>(null);
+  const { activeValue: activeLanguage, items: languageItems } = useLangsMenu();
+  const { currentVersion, items: versionItems } = useVersionMenuItems();
+  const navigation = useRef<HTMLDetailsElement>(null);
+  const surface = useRef<HTMLDivElement>(null);
   const routeRef = useRef(pathname);
-  const closeScreenRef = useRef(closeScreen);
-  closeScreenRef.current = closeScreen;
-  const activeClass = isScreenOpen ? " rp-nav-hamburger--active" : "";
   const openLabel =
     language === "zh" ? "打开主导航" : "Open primary navigation";
   const closeLabel =
     language === "zh" ? "关闭主导航" : "Close primary navigation";
+  const navigationLabel = language === "zh" ? "站点导航" : "Site navigation";
 
   useEffect(() => {
     if (routeRef.current === pathname) return;
     routeRef.current = pathname;
-    closeScreenRef.current();
+    if (navigation.current) navigation.current.open = false;
   }, [pathname]);
 
   useEffect(() => {
-    if (!isScreenOpen) return;
+    const root = navigation.current;
+    const screen = surface.current;
+    const trigger = root?.querySelector<HTMLElement>(":scope > summary");
+    if (!root || !screen || !trigger) return;
 
-    let dispose = () => {};
-    const frame = window.requestAnimationFrame(() => {
-      const screen = document.querySelector<HTMLElement>(
-        ".rp-nav-screen--open",
-      );
-      if (!screen) return;
+    labelSocialLinks(screen, language);
+    const focusableControls = () =>
+      Array.from(
+        screen.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), summary, [tabindex="0"]',
+        ),
+      ).filter((element) => isVisibleControl(element, screen));
 
-      screen.id = "a3s-ui-mobile-navigation";
-      screen.setAttribute(
-        "aria-label",
-        language === "zh" ? "站点导航" : "Site navigation",
-      );
-      screen.setAttribute("aria-modal", "true");
-      screen.setAttribute("role", "dialog");
-
-      const enhancedControls = new Map<HTMLElement, () => void>();
-      let controlIndex = 0;
-      const enhanceControls = () => {
-        labelSocialLinks(screen, language);
-
-        const controls = screen.querySelectorAll<HTMLElement>(
-          ".rp-nav-screen-menu-item:not(a), .rp-nav-screen-langs, .rp-nav-screen-versions, .rp-switch-appearance",
-        );
-
-        controls.forEach((control) => {
-          if (enhancedControls.has(control)) return;
-
-          const cleanups: Array<() => void> = [];
-          const isThemeControl = control.matches(".rp-switch-appearance");
-          control.setAttribute("role", "button");
-          control.tabIndex = 0;
-
-          if (isThemeControl) {
-            control.setAttribute(
-              "aria-label",
-              language === "zh" ? "切换主题" : "Toggle theme",
-            );
-          } else {
-            const group = control.nextElementSibling as HTMLElement | null;
-            const groupId = `a3s-ui-mobile-navigation-group-${controlIndex++}`;
-            if (group) {
-              group.id = groupId;
-              control.setAttribute("aria-controls", groupId);
-            }
-
-            const syncExpanded = () => {
-              const expanded =
-                control.classList.contains("rp-nav-screen-menu-item--open") ||
-                control.querySelector('[class*="__icon--open"]') !== null ||
-                group?.classList.contains(
-                  "rp-nav-screen-versions-group--open",
-                ) ||
-                group?.style.gridTemplateRows === "1fr";
-              control.setAttribute("aria-expanded", String(Boolean(expanded)));
-              group?.setAttribute("aria-hidden", String(!expanded));
-              group?.toggleAttribute("inert", !expanded);
-              group
-                ?.querySelectorAll<HTMLAnchorElement>("a[href]")
-                .forEach((link) => {
-                  link.tabIndex = expanded ? 0 : -1;
-                });
-            };
-            syncExpanded();
-
-            const syncAfterClick = () =>
-              window.requestAnimationFrame(syncExpanded);
-            control.addEventListener("click", syncAfterClick);
-            cleanups.push(() => {
-              control.removeEventListener("click", syncAfterClick);
-              group?.removeAttribute("aria-hidden");
-              group?.removeAttribute("inert");
-              group
-                ?.querySelectorAll<HTMLAnchorElement>("a[href]")
-                .forEach((link) => link.removeAttribute("tabindex"));
-            });
-          }
-
-          const activateWithKeyboard = (event: KeyboardEvent) => {
-            if (event.key !== "Enter" && event.key !== " ") return;
-            event.preventDefault();
-            control.click();
-          };
-          control.addEventListener("keydown", activateWithKeyboard);
-          cleanups.push(() =>
-            control.removeEventListener("keydown", activateWithKeyboard),
-          );
-          enhancedControls.set(control, () =>
-            cleanups.forEach((cleanup) => cleanup()),
-          );
-        });
-      };
-
-      enhanceControls();
-      const observer = new MutationObserver(enhanceControls);
-      observer.observe(screen, { childList: true, subtree: true });
-
-      const focusableControls = () =>
-        Array.from(
-          screen.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex="0"]',
-          ),
-        ).filter((element) => isVisibleControl(element, screen));
-
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-          event.preventDefault();
-          closeScreenRef.current();
-          return;
-        }
-        if (event.key !== "Tab") return;
-
-        const focusable = focusableControls();
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      };
-
-      screen.addEventListener("keydown", handleKeyDown);
-      focusableControls()[0]?.focus();
-      dispose = () => {
-        observer.disconnect();
-        screen.removeEventListener("keydown", handleKeyDown);
-        enhancedControls.forEach((cleanup) => cleanup());
-      };
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      dispose();
-      if (trigger.current && document.contains(trigger.current)) {
-        trigger.current.focus();
+    const synchronize = () => {
+      trigger.setAttribute("aria-expanded", String(root.open));
+      trigger.setAttribute("aria-label", root.open ? closeLabel : openLabel);
+      screen.setAttribute("aria-hidden", String(!root.open));
+      screen.toggleAttribute("inert", !root.open);
+      if (root.open) {
+        window.requestAnimationFrame(() => focusableControls()[0]?.focus());
       }
     };
-  }, [isScreenOpen, language]);
+    const close = (restoreFocus = true) => {
+      if (!root.open) return;
+      root.open = false;
+      if (restoreFocus) trigger.focus();
+    };
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target === screen || target.closest("a[href]")) close(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+        return;
+      }
+      if (event.key !== "Tab" || !root.open) return;
+
+      const focusable = focusableControls();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    const desktopQuery = window.matchMedia("(min-width: 1281px)");
+    const closeAtDesktop = () => {
+      if (desktopQuery.matches) close(false);
+    };
+    const disclosureCleanups = Array.from(
+      screen.querySelectorAll<HTMLDetailsElement>("details"),
+    ).map((disclosure, index) => {
+      const summary = disclosure.querySelector<HTMLElement>(":scope > summary");
+      const panel = summary?.nextElementSibling;
+      if (!summary || !(panel instanceof HTMLElement)) return () => {};
+
+      panel.id ||= `a3s-responsive-navigation-disclosure-${index}`;
+      summary.setAttribute("aria-controls", panel.id);
+      const synchronizeDisclosure = () =>
+        summary.setAttribute("aria-expanded", String(disclosure.open));
+      disclosure.addEventListener("toggle", synchronizeDisclosure);
+      synchronizeDisclosure();
+      return () =>
+        disclosure.removeEventListener("toggle", synchronizeDisclosure);
+    });
+
+    root.addEventListener("toggle", synchronize);
+    screen.addEventListener("click", handleClick);
+    screen.addEventListener("keydown", handleKeyDown);
+    desktopQuery.addEventListener("change", closeAtDesktop);
+    synchronize();
+
+    return () => {
+      root.removeEventListener("toggle", synchronize);
+      screen.removeEventListener("click", handleClick);
+      screen.removeEventListener("keydown", handleKeyDown);
+      desktopQuery.removeEventListener("change", closeAtDesktop);
+      disclosureCleanups.forEach((cleanup) => cleanup());
+      screen.removeAttribute("inert");
+    };
+  }, [closeLabel, language, openLabel]);
 
   return (
-    <>
-      {isScreenOpen &&
-        createPortal(
-          <NavScreen isScreenOpen={isScreenOpen} toggleScreen={toggleScreen} />,
-          document.getElementById("__rspress_modal_container")!,
-        )}
-      <button
+    <details
+      className="a3s-responsive-navigation"
+      ref={navigation}
+      suppressHydrationWarning
+    >
+      <summary
         aria-controls="a3s-ui-mobile-navigation"
-        aria-expanded={isScreenOpen}
-        aria-label={isScreenOpen ? closeLabel : openLabel}
-        className={`rp-nav-hamburger rp-nav-hamburger__sm rp-nav-hamburger__md${activeClass}`}
-        onClick={toggleScreen}
-        ref={trigger}
-        type="button"
+        aria-label={openLabel}
+        className="rp-nav-hamburger rp-nav-hamburger__sm rp-nav-hamburger__md"
+        role="button"
       >
         <SvgWrapper icon={IconSmallMenu} />
-      </button>
-    </>
+      </summary>
+      <div
+        aria-label={navigationLabel}
+        aria-modal="true"
+        className="rp-nav-screen rp-nav-screen--open a3s-responsive-navigation__surface"
+        id="a3s-ui-mobile-navigation"
+        ref={surface}
+        role="dialog"
+      >
+        <div className="rp-nav-screen__container a3s-responsive-navigation__container">
+          <nav aria-label={navigationLabel}>
+            <ResponsiveNavigationItems items={menuItems} />
+          </nav>
+          <div className="rp-nav-screen-divider" />
+          <div className="a3s-responsive-navigation__appearance">
+            <span>{language === "zh" ? "主题" : "Theme"}</span>
+            <SwitchAppearance />
+          </div>
+          <ResponsivePreferenceMenu
+            activeValue={activeLanguage ?? language}
+            items={languageItems}
+            kind="language"
+            label={language === "zh" ? "语言" : "Language"}
+          />
+          <ResponsivePreferenceMenu
+            activeValue={currentVersion}
+            items={versionItems}
+            kind="version"
+            label={language === "zh" ? "版本" : "Versions"}
+          />
+          <div className="rp-nav-screen-divider" />
+          <SocialLinks />
+        </div>
+      </div>
+    </details>
   );
 }
 
@@ -564,7 +619,7 @@ export function Nav({
           <SwitchAppearance />
           <SocialLinks />
         </div>
-        <NavHamburger />
+        <NavHamburger menuItems={navList} />
         {afterNavMenu}
       </div>
     </header>
