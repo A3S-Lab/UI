@@ -36,6 +36,8 @@
 
 ### Fixed
 
+- Kept Agent Composer status synchronization idempotent so its DOM observer cannot enter a self-triggering loop that freezes Playground and other composed surfaces after hydration.
+- Distinguished the site navigation from embedded workspace navigation with unambiguous accessible names and responsive navbar-to-Playground regression coverage.
 - Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 114-component contract while preserving historical version counts.
 - Made component-specific browser scenarios serial by default to prevent shared-browser resource contention from introducing nondeterministic control-state failures.
 

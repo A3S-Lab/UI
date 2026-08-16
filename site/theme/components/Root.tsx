@@ -292,12 +292,13 @@ export function Root({ children }: RootProps) {
               : "Open documentation navigation",
         );
         const visibleLabel = sidebarTrigger.querySelector("span");
+        const currentLabel = visibleLabel?.textContent?.trim() ?? "";
+        const nextLabel = isChinese ? "菜单" : "Menu";
         if (
-          ["菜单", "Menu", "文档导航", "Docs"].includes(
-            visibleLabel?.textContent?.trim() ?? "",
-          )
+          ["菜单", "Menu", "文档导航", "Docs"].includes(currentLabel) &&
+          currentLabel !== nextLabel
         ) {
-          visibleLabel!.textContent = isChinese ? "菜单" : "Menu";
+          visibleLabel!.textContent = nextLabel;
         }
       }
 
@@ -394,7 +395,6 @@ export function Root({ children }: RootProps) {
             ?.click();
           return;
         }
-
       }
 
       if (

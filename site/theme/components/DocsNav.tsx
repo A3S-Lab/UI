@@ -37,9 +37,7 @@ function labelSocialLinks(root: ParentNode, language: string) {
     .forEach((link) => {
       link.setAttribute(
         "aria-label",
-        language === "zh"
-          ? "在 GitHub 上查看 A3S UI"
-          : "View A3S UI on GitHub",
+        language === "zh" ? "在 GitHub 上查看 A3S UI" : "View A3S UI on GitHub",
       );
     });
 }
@@ -120,8 +118,10 @@ function NavHamburger() {
   const closeScreenRef = useRef(closeScreen);
   closeScreenRef.current = closeScreen;
   const activeClass = isScreenOpen ? " rp-nav-hamburger--active" : "";
-  const openLabel = language === "zh" ? "打开导航" : "Open navigation";
-  const closeLabel = language === "zh" ? "关闭导航" : "Close navigation";
+  const openLabel =
+    language === "zh" ? "打开主导航" : "Open primary navigation";
+  const closeLabel =
+    language === "zh" ? "关闭主导航" : "Close primary navigation";
 
   useEffect(() => {
     if (routeRef.current === pathname) return;

@@ -68,9 +68,7 @@
       error: state.error,
       resources: resourceValues(root),
       state: state.name,
-      suggestionsOpen: Boolean(
-        state.suggestions && !state.suggestions.hidden,
-      ),
+      suggestionsOpen: Boolean(state.suggestions && !state.suggestions.hidden),
     });
 
   const synchronize = (root, state) => {
@@ -84,7 +82,11 @@
     else if (root.getAttribute("aria-disabled") === "true") {
       root.removeAttribute("aria-disabled");
     }
-    if (state.status && state.message !== undefined) {
+    if (
+      state.status &&
+      state.message !== undefined &&
+      state.status.textContent !== state.message
+    ) {
       state.status.textContent = state.message;
     }
   };
@@ -310,8 +312,10 @@
     root.setState = (name, options = {}) => {
       const previous = state.name;
       state.name = String(name || "ready");
-      if (options.message !== undefined) state.message = String(options.message);
-      if (state.name !== "error" && options.preserveError !== true) state.error = null;
+      if (options.message !== undefined)
+        state.message = String(options.message);
+      if (state.name !== "error" && options.preserveError !== true)
+        state.error = null;
       synchronize(root, state);
       const snapshot = cloneSnapshot(root, state);
       if (previous !== state.name || options.force) {

@@ -20,6 +20,34 @@ function collectRuntimeErrors(page: Page) {
   return errors;
 }
 
+async function openPlaygroundFromNavbar(page: Page) {
+  await page.goto("");
+  const playgroundLink = page.getByRole("link", {
+    name: "Playground",
+    exact: true,
+  });
+  if (!(await playgroundLink.isVisible())) {
+    await page.getByRole("button", { name: "打开主导航", exact: true }).click();
+  }
+  await playgroundLink.click();
+}
+
+test("Playground remains responsive after navbar navigation", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  await openPlaygroundFromNavbar(page);
+  await expect(page).toHaveURL(/\/playground\.html$/);
+
+  const playground = page.locator(".a3s-workspace-playground");
+  await expect(playground).toBeVisible();
+  await playground.getByRole("tab", { name: "设计", exact: true }).click();
+  await expect(
+    playground.locator('[data-playground-scene="design"]'),
+  ).toBeVisible();
+  expect(runtimeErrors).toEqual([]);
+});
+
 test("Playground is a standalone route with eight operable scenes", async ({
   page,
 }) => {
@@ -177,7 +205,10 @@ test("Playground phone navigation is isolated from the documentation runtime", a
 
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.getByRole("button", { name: "打开主导航", exact: true }).click();
-  await page.getByLabel("切换到深色主题").last().click();
+  await page
+    .getByRole("dialog", { name: "站点导航", exact: true })
+    .getByRole("button", { name: "切换主题", exact: true })
+    .click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await expect(
     playground.locator(".a3s-workspace-playground__content"),
