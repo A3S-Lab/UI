@@ -223,6 +223,7 @@ export function needsRenderedPreviewSource(source: string) {
 const workspacePreviewComponents = new Set([
   "agent-workbench",
   "app-shell",
+  "code-graph",
   "code-editor",
   "data-grid",
   "device-simulator",

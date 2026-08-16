@@ -1,0 +1,211 @@
+# Dock 工作区
+
+Dock 工作区用于需要持续重排上下文、主画布、检查器、预览和输出的专业应用。A3S UI 直接重导出 Dockview 8.1.0 的 MIT API，并提供 A3S 主题、布局持久化以及 React/Vue Hooks；面板内容、权限、数据和窗口策略仍由宿主负责。
+
+<DockviewDemo mode="dock" />
+
+## 安装
+
+按宿主框架安装对应包。原生 JavaScript 只需要 `dockview`；React 与 Vue 入口分别依赖官方适配器。
+
+```bash
+npm install @a3s-lab/ui dockview@8.1.0
+npm install dockview-react@8.1.0 react react-dom # React
+npm install dockview-vue@8.1.0 vue             # Vue
+```
+
+```css
+@import "@a3s-lab/ui/dockview/css";
+```
+
+容器必须拥有可计算的宽高。不要用面板布局替代业务路由；仅保存用户可恢复的视图状态。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`import {
+  createDockview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel {
+element = document.createElement("section");
+init(parameters) {
+this.element.className = "workspace-panel";
+this.element.textContent = parameters.title ?? parameters.params.title;
+}
+dispose() {}
+}
+
+const api = createDockview(document.querySelector("#workspace"), {
+createComponent: () => new Panel(),
+theme: themeA3S,
+});
+
+api.addPanel({ id: "task", component: "panel", title: "任务" });
+api.addPanel({
+id: "editor",
+component: "panel",
+title: "编辑器",
+position: { direction: "right", referencePanel: "task" },
+});
+
+const dispose = api.onDidLayoutChange(() => {
+localStorage.setItem("workspace-layout", JSON.stringify(api.toJSON()));
+});`}
+  react={`import { useCallback } from "react";
+import {
+DockviewReact,
+themeA3S,
+useDockviewLayout,
+type DockviewApi,
+type IDockviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ api }: IDockviewPanelProps) => <section>{api.title}</section>;
+const components = { panel: Panel };
+
+export function Workspace() {
+  const initialize = useCallback((api: DockviewApi) => {
+    api.addPanel({ id: "task", component: "panel", title: "任务" });
+    api.addPanel({
+      id: "editor",
+      component: "panel",
+      title: "编辑器",
+      position: { direction: "right", referencePanel: "task" },
+    });
+  }, []);
+  const layout = useDockviewLayout({
+    initialize,
+    key: "product:workspace:v1",
+    version: 1,
+  });
+
+return (
+<section className="workspace-layout">
+<DockviewReact
+        components={components}
+        onReady={layout.onReady}
+        theme={themeA3S}
+      />
+<button type="button" onClick={layout.reset}>重置布局</button>
+</section>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent, type PropType } from "vue";
+import {
+DockviewVue,
+themeA3S,
+useDockviewLayout,
+type DockviewApi,
+type IDockviewVuePanelProps,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+props: {
+params: { type: Object as PropType<IDockviewVuePanelProps>, required: true },
+},
+template: "<section>{{ params.api.title }}</section>",
+});
+const components = { panel: Panel };
+const layout = useDockviewLayout({
+key: "product:workspace:v1",
+version: 1,
+initialize(api: DockviewApi) {
+api.addPanel({ id: "task", component: "panel", title: "任务" });
+api.addPanel({
+id: "editor",
+component: "panel",
+title: "编辑器",
+position: { direction: "right", referencePanel: "task" },
+});
+},
+});
+
+</script>
+
+<template>
+  <section class="workspace-layout">
+    <DockviewVue
+      :components="components"
+      :theme="themeA3S"
+      @ready="layout.onReady"
+    />
+    <button type="button" @click="layout.reset">重置布局</button>
+  </section>
+</template>`}
+/>
+
+`useDockviewLayout` 在布局就绪时恢复版本化快照，恢复失败时创建默认布局，并在变更后防抖保存。它返回 `api`、`status`、`save()`、`restore()`、`clear()` 和 `reset()`。重置时会先移除 Dockview 保留的 Edge Group 槽位，再重建默认布局；原生集成可调用 `resetDockviewLayout(api, initialize)` 获得相同行为。迁移旧快照时传入 `migrate` 与 `validate`；不要把业务数据写进布局快照。
+
+## MIT 能力范围
+
+| 区域         | 已接入能力                                                                                                  |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| 布局         | 可停靠二维网格、嵌套布局、分隔条调整、尺寸约束、自动调整、无边框模式、水印                                  |
+| 标签与标题栏 | 标题栏位置、无标题栏组、单标签占满、自定义标签、操作插槽、溢出菜单、拖动动画、Tab Group 与自定义 Group Chip |
+| 拖放         | 标签与组拖放、外部拖放、触控与笔、按能力禁用、边缘目标、后端策略、自定义覆盖层与拖动预览                    |
+| 组与窗口     | Floating Group、范围约束、自定义拖动柄、Popout Window、自定义弹出地址、Edge Group、锁定组、最大化与恢复     |
+| 状态         | `toJSON()` / `fromJSON()`、完整布局快照、自定义面板参数、空状态、版本化迁移与本机持久化                     |
+| 渲染与主题   | 多种渲染模式、自定义滚动条、严格 CSP、内置主题、CSS 变量、标签组色板、Shadow DOM                            |
+| API 与事件   | 编程式增删移动、方向定位、面板与组 API、活动面板、完整生命周期事件、运行时选项与自定义 UI 文案              |
+| 无障碍       | ARIA、读屏播报、可见焦点和基础键盘焦点导航                                                                  |
+| 独立视图     | [Grid View](/harness/grid-view)、[Split View](/harness/split-view)、[Pane View](/harness/pane-view)         |
+| 框架         | 原生 TypeScript/JavaScript、React、Vue 3                                                                    |
+
+## 关键编排
+
+### Edge、浮动、弹出与最大化
+
+```ts
+const explorer = api.addEdgeGroup("left", {
+  id: "explorer-edge",
+  initialSize: 240,
+  collapsedSize: 34,
+});
+api.addPanel({
+  id: "files",
+  component: "explorer",
+  position: { referenceGroup: explorer.id },
+});
+
+api.addFloatingGroup(api.getPanel("inspector"), {
+  width: 320,
+  height: 440,
+  position: { right: 24, top: 56 },
+});
+await api.addPopoutGroup(api.getPanel("preview"));
+api.activePanel?.api.maximize();
+api.activePanel?.api.exitMaximized();
+```
+
+### 外部拖放与事件
+
+外部资源必须先经过宿主授权，再创建面板。`onWillDrop` 可以拒绝落点，`onDidDrop` 只记录已完成结果。
+
+```tsx
+<DockviewReact
+  components={components}
+  onReady={layout.onReady}
+  onWillDrop={(event) => {
+    if (!canOpenResource(event)) event.preventDefault();
+  }}
+  onDidDrop={(event) => auditLayoutDrop(event)}
+/>
+```
+
+## 许可边界
+
+当前入口只依赖 MIT 版本，不复制商业模块。高级标签溢出、多行标签、固定标签、标签与 Group Chip 上下文菜单、拖放罗盘、智能参考线、自动隐藏 Edge Group、自动停靠到边缘、布局历史、空间键盘导航和键盘停靠不属于本集成。需要这些能力时应直接评估上游商业许可，不能用外观相似的本地实现规避边界。
+
+## 产品与无障碍要求
+
+- 每个面板应有稳定 ID、可理解标题和明确滚动所有者；不要用位置表达唯一语义。
+- Popout 可能被浏览器拦截，必须保留原面板并提供重试说明。
+- 保存失败不能阻止拖放和调整大小；恢复失败应回到可用默认布局。
+- 自定义标签、标题栏动作和面板内容必须保持可见焦点与可访问名称。
+- 触控设备需要足够大的标签和操作目标；复杂工作台在窄屏应合并为标签组，而不是压缩成不可读分栏。

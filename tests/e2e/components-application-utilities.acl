@@ -69,10 +69,10 @@ suite "a3s-ui-application-and-utilities" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "composer-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] form.agent-composer") }
-        expect "context-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-context] > li") }
-        expect "queue-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-queue] > li") }
-        focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=agent-composer] textarea[aria-label=Instruction]") }
-        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=agent-composer] textarea[aria-label=Instruction]:focus") }
+        expect "resources-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-resources] > li") }
+        expect "queue-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-queue] > ol > li") }
+        focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-input][aria-label='Task instruction']") }
+        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-input][aria-label='Task instruction']:focus") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-submit-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] button[type=submit]") }
     }
@@ -513,6 +513,28 @@ suite "a3s-ui-application-and-utilities" {
         expect "phone-suggestions-visible" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions") }
     }
 
+    scenario "code-graph" {
+        name = "Code Graph switches to its operable list, filters nodes, and selects a result"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-graph.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "graph-ready" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-state=ready][data-view=graph][data-code-graph-initialized=true]") }
+        expect "canvas-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-canvas]:not([hidden])") }
+        click "show-operable-list" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-view=list]") }
+        expect "list-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-view=list] [data-code-graph-list]:not([hidden])") }
+        fill "filter-prompt-editor" {
+            target = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-search]")
+            value = "PromptEditor"
+        }
+        expect "prompt-editor-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor]:not([hidden])") }
+        click "select-prompt-editor" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor] > button") }
+        expect "prompt-editor-selected" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor][aria-selected=true]") }
+        expect "selection-inspector-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-inspector]:not([data-empty]) [data-code-graph-field=path]") }
+        screenshot "filtered-list" { path = "components/code-graph-filtered-list.png" }
+    }
+
     scenario "tool-call" {
         name = "Tool Call opens and closes structured input and output through native disclosure"
         surface = "web"
@@ -520,12 +542,46 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tool-call.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "tool-call-open" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call[data-state=success][open]") }
+        expect "tool-call-open" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call[data-state=running][aria-busy=true][open]") }
         expect "tool-output-visible" { visible = css(".a3s-preview[data-preview-component=tool-call] [data-tool-output]") }
-        click "close-tool-call" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
-        expect "tool-call-closed" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call:not([open])") }
         focus "focus-summary" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
         expect "summary-focused" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary:focus") }
+        click "close-tool-call" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
+        expect "tool-call-closed" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call:not([open])") }
+    }
+
+    scenario "tool-call-timeline" {
+        name = "Tool Call Timeline preserves actionable calls while expanding and collapsing stable history"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tool-call-timeline.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "timeline-attention-state" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-state=attention][aria-busy=true][data-tool-call-timeline-initialized=true]") }
+        expect "actionable-call-visible" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-call-list] > li:not([data-tool-history]) .tool-call[data-state=awaiting]") }
+        expect "collapsed-history-hidden" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-history][hidden]") }
+        click "show-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]") }
+        expect "history-expanded" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-history-expanded] [data-tool-history]:not([hidden])") }
+        click "hide-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=collapse-history]") }
+        expect "history-collapsed" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline:not([data-history-expanded]) [data-tool-history][hidden]") }
+    }
+
+    scenario "tool-result" {
+        name = "Tool Result switches peer result views with pointer and keyboard navigation"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tool-result.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "result-ready" { visible = css(".a3s-preview[data-preview-component=tool-result] .tool-result[data-state=ready][data-tabs-initialized=true]") }
+        click "open-output" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
+        expect "output-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en[aria-selected=true]") }
+        expect "output-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-panel-en:not([hidden])") }
+        focus "focus-output-tab" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
+        press "move-to-metadata" { key = "End" }
+        expect "metadata-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-tab-en[aria-selected=true]:focus") }
+        expect "metadata-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-panel-en:not([hidden])") }
+        screenshot "metadata-view" { path = "components/tool-result-metadata.png" }
     }
 
     scenario "change-review" {

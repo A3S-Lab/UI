@@ -12,7 +12,10 @@
       .filter((element) => ownsElement(root, element))
       .map((element, index) => ({
         element,
-        id: element.dataset.nodeId || element.dataset.value || `node-${index + 1}`,
+        id:
+          element.dataset.nodeId ||
+          element.dataset.value ||
+          `node-${index + 1}`,
         kind: element.dataset.nodeKind || "module",
         label:
           element.dataset.nodeLabel ||
@@ -81,6 +84,25 @@
         (element) => ownsElement(root, element),
       ) || null,
   });
+
+  const synchronizeLiveElements = (root, state) => {
+    Object.assign(state, graphElements(root));
+    const liveNodes = new Map(
+      Array.from(root.querySelectorAll("[data-code-node]"))
+        .filter((element) => ownsElement(root, element))
+        .map((element, index) => [
+          element.dataset.nodeId ||
+            element.dataset.value ||
+            `node-${index + 1}`,
+          element,
+        ]),
+    );
+    state.nodes.forEach((node) => {
+      const element = liveNodes.get(node.id);
+      if (element) node.element = element;
+    });
+    return state;
+  };
 
   const snapshot = (state) =>
     Object.freeze({
@@ -173,6 +195,7 @@
   };
 
   const drawGraph = (root, state) => {
+    synchronizeLiveElements(root, state);
     const canvas = state.canvas;
     const viewport = state.viewport;
     const context = canvas?.getContext?.("2d");
@@ -215,7 +238,8 @@
           right.from.depth + right.to.depth - (left.from.depth + left.to.depth),
       )
       .forEach(({ edge, from, to }) => {
-        const active = activeId && (edge.from === activeId || edge.to === activeId);
+        const active =
+          activeId && (edge.from === activeId || edge.to === activeId);
         context.beginPath();
         context.moveTo(from.x, from.y);
         context.lineTo(to.x, to.y);
@@ -235,9 +259,17 @@
         const hovered = point.node.id === state.hoveredId;
         const dimmed = activeId && !connected.has(point.node.id);
         context.beginPath();
-        context.arc(point.x, point.y, selected ? point.radius * 1.45 : point.radius, 0, Math.PI * 2);
+        context.arc(
+          point.x,
+          point.y,
+          selected ? point.radius * 1.45 : point.radius,
+          0,
+          Math.PI * 2,
+        );
         context.globalAlpha = dimmed ? 0.2 : 0.96;
-        context.fillStyle = selected ? colors.selected : nodeColor(point.node, colors);
+        context.fillStyle = selected
+          ? colors.selected
+          : nodeColor(point.node, colors);
         context.fill();
         if (selected || hovered) {
           context.globalAlpha = 0.72;
@@ -260,7 +292,8 @@
       const label = truncate(point.node.label, 30);
       const x = point.x + point.radius + 5;
       const width = context.measureText(label).width;
-      context.globalAlpha = activeId && !connected.has(point.node.id) ? 0.28 : 0.92;
+      context.globalAlpha =
+        activeId && !connected.has(point.node.id) ? 0.28 : 0.92;
       context.fillStyle = colors.background;
       context.fillRect(x - 3, point.y - 9, width + 6, 18);
       context.fillStyle =
@@ -277,21 +310,26 @@
     if (!state.inspector) return;
     const node = state.nodes.find((item) => item.id === state.selectedId);
     state.inspector.toggleAttribute("data-empty", !node);
-    state.inspector.querySelectorAll("[data-code-graph-field]").forEach((field) => {
-      const key = field.dataset.codeGraphField;
-      if (!node) {
-        field.textContent = field.dataset.emptyValue || "—";
-      } else if (key === "connections") {
-        field.textContent = String(
-          state.edges.filter((edge) => edge.from === node.id || edge.to === node.id).length,
-        );
-      } else {
-        field.textContent = String(node[key] ?? "—");
-      }
-    });
+    state.inspector
+      .querySelectorAll("[data-code-graph-field]")
+      .forEach((field) => {
+        const key = field.dataset.codeGraphField;
+        if (!node) {
+          field.textContent = field.dataset.emptyValue || "—";
+        } else if (key === "connections") {
+          field.textContent = String(
+            state.edges.filter(
+              (edge) => edge.from === node.id || edge.to === node.id,
+            ).length,
+          );
+        } else {
+          field.textContent = String(node[key] ?? "—");
+        }
+      });
   };
 
   const applyFilter = (root, state, value, options = {}) => {
+    synchronizeLiveElements(root, state);
     const current = String(value ?? "");
     const previous = state.filter;
     const detail = {
@@ -316,7 +354,9 @@
     const query = current.trim().toLocaleLowerCase();
     state.visibleNodes = query
       ? state.nodes.filter((node) =>
-          `${node.label} ${node.path} ${node.kind}`.toLocaleLowerCase().includes(query),
+          `${node.label} ${node.path} ${node.kind}`
+            .toLocaleLowerCase()
+            .includes(query),
         )
       : [...state.nodes];
     const ids = new Set(state.visibleNodes.map((node) => node.id));
@@ -326,7 +366,8 @@
     state.nodes.forEach((node) => {
       node.element.hidden = !ids.has(node.id);
     });
-    if (state.search && state.search.value !== current) state.search.value = current;
+    if (state.search && state.search.value !== current)
+      state.search.value = current;
     if (state.empty) state.empty.hidden = state.visibleNodes.length > 0;
     root.toggleAttribute("data-filter-empty", state.visibleNodes.length === 0);
     if (state.selectedId && !ids.has(state.selectedId)) {
@@ -344,6 +385,7 @@
   };
 
   const selectNode = (root, state, id, options = {}) => {
+    synchronizeLiveElements(root, state);
     const node = id
       ? state.nodes.find((item) => item.id === String(id)) || null
       : null;
@@ -373,7 +415,9 @@
     state.nodes.forEach((item) => {
       const selected = item.id === current;
       item.element.setAttribute("aria-selected", String(selected));
-      item.element.querySelector("button")?.setAttribute("aria-pressed", String(selected));
+      item.element
+        .querySelector("button")
+        ?.setAttribute("aria-pressed", String(selected));
     });
     updateInspector(state);
     scheduleDraw(root, state);
@@ -387,14 +431,19 @@
   };
 
   const setView = (root, state, view, options = {}) => {
+    synchronizeLiveElements(root, state);
     const current = view === "list" ? "list" : "graph";
     const previous = state.view;
     state.view = current;
     root.dataset.view = current;
+    if (state.viewport) state.viewport.hidden = current !== "graph";
     if (state.canvas) state.canvas.hidden = current !== "graph";
     if (state.list) state.list.hidden = current !== "list";
     root.querySelectorAll("[data-code-graph-view]").forEach((control) => {
-      control.setAttribute("aria-pressed", String(control.dataset.codeGraphView === current));
+      control.setAttribute(
+        "aria-pressed",
+        String(control.dataset.codeGraphView === current),
+      );
     });
     if (current === "graph") scheduleDraw(root, state);
     if (previous !== current || options.force) {
@@ -409,6 +458,7 @@
   };
 
   const setGraphState = (root, state, name, options = {}) => {
+    synchronizeLiveElements(root, state);
     const previous = state.name;
     state.name = String(name || "ready");
     root.dataset.state = state.name;
@@ -433,7 +483,8 @@
 
   const fitScaleFor = (nodes) => {
     const extent = nodes.reduce(
-      (value, node) => Math.max(value, Math.abs(node.x), Math.abs(node.y), Math.abs(node.z)),
+      (value, node) =>
+        Math.max(value, Math.abs(node.x), Math.abs(node.y), Math.abs(node.z)),
       1,
     );
     return clamp(125 / extent, 0.45, 2.2);
@@ -443,7 +494,9 @@
     const totalNodes = nodes.length;
     const totalEdges = edges.length;
     const nodeIds = new Set(nodes.map((node) => node.id));
-    const degree = new Map(nodes.map((node) => [node.id, { count: 0, weight: 0 }]));
+    const degree = new Map(
+      nodes.map((node) => [node.id, { count: 0, weight: 0 }]),
+    );
     const neighbours = new Set();
     edges.forEach((edge) => {
       if (!nodeIds.has(edge.from) || !nodeIds.has(edge.to)) return;
@@ -462,7 +515,13 @@
     });
     const rankedNodes = [...nodes].sort((left, right) => {
       const rank = (node) =>
-        node.id === selectedId ? 4 : neighbours.has(node.id) ? 3 : node.tone === "entry" ? 2 : 1;
+        node.id === selectedId
+          ? 4
+          : neighbours.has(node.id)
+            ? 3
+            : node.tone === "entry"
+              ? 2
+              : 1;
       const leftDegree = degree.get(left.id) || { count: 0, weight: 0 };
       const rightDegree = degree.get(right.id) || { count: 0, weight: 0 };
       return (
@@ -479,8 +538,12 @@
       .filter((edge) => kept.has(edge.from) && kept.has(edge.to))
       .sort((left, right) => {
         const leftSelected = left.from === selectedId || left.to === selectedId;
-        const rightSelected = right.from === selectedId || right.to === selectedId;
-        return Number(rightSelected) - Number(leftSelected) || right.weight - left.weight;
+        const rightSelected =
+          right.from === selectedId || right.to === selectedId;
+        return (
+          Number(rightSelected) - Number(leftSelected) ||
+          right.weight - left.weight
+        );
       })
       .slice(0, EDGE_RENDER_LIMIT);
     return {
@@ -488,7 +551,8 @@
       nodes: limitedNodes,
       totalEdges,
       totalNodes,
-      truncated: limitedNodes.length < totalNodes || limitedEdges.length < totalEdges,
+      truncated:
+        limitedNodes.length < totalNodes || limitedEdges.length < totalEdges,
     };
   };
 
@@ -496,7 +560,11 @@
     if (root.dataset.codeGraphInitialized) return;
     const elements = graphElements(root);
     const sourceData = elementData(root);
-    const data = limitGraph(sourceData.nodes, sourceData.edges, root.dataset.selectedNode || null);
+    const data = limitGraph(
+      sourceData.nodes,
+      sourceData.edges,
+      root.dataset.selectedNode || null,
+    );
     const context = elements.canvas?.getContext?.("2d") || null;
     const state = {
       ...elements,
@@ -523,16 +591,33 @@
     };
     states.set(root, state);
     if (!state.viewport || !state.canvas || !state.list) return;
-    state.viewport.tabIndex = state.viewport.tabIndex >= 0 ? state.viewport.tabIndex : 0;
+    state.viewport.tabIndex =
+      state.viewport.tabIndex >= 0 ? state.viewport.tabIndex : 0;
 
     const resizeObserver = new ResizeObserver(() => scheduleDraw(root, state));
-    resizeObserver.observe(state.viewport);
-    const handleSearch = (event) =>
-      applyFilter(root, state, event.target.value, { source: "user" });
-    state.search?.addEventListener("input", handleSearch);
+    resizeObserver.observe(root);
+    const eventOwnsViewport = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return false;
+      const viewport = target.closest("[data-code-graph-viewport]");
+      return Boolean(viewport && ownsElement(root, viewport));
+    };
+    const handleSearch = (event) => {
+      const target = event.target;
+      if (
+        !(target instanceof HTMLInputElement) ||
+        !target.matches("[data-code-graph-search]") ||
+        !ownsElement(root, target)
+      ) {
+        return;
+      }
+      applyFilter(root, state, target.value, { source: "user" });
+    };
 
     let pointer = null;
     const handlePointerDown = (event) => {
+      synchronizeLiveElements(root, state);
+      if (!eventOwnsViewport(event)) return;
       if (state.view !== "graph" || event.button !== 0) return;
       pointer = {
         id: event.pointerId,
@@ -544,6 +629,8 @@
       root.toggleAttribute("data-dragging", true);
     };
     const handlePointerMove = (event) => {
+      synchronizeLiveElements(root, state);
+      if (!eventOwnsViewport(event)) return;
       if (state.view !== "graph") return;
       const bounds = state.canvas.getBoundingClientRect();
       const x = event.clientX - bounds.left;
@@ -575,20 +662,31 @@
       }
     };
     const handlePointerUp = (event) => {
+      synchronizeLiveElements(root, state);
+      if (!eventOwnsViewport(event)) return;
       if (pointer?.id !== event.pointerId) return;
       const moved = pointer.moved;
       pointer = null;
       root.removeAttribute("data-dragging");
       state.viewport.releasePointerCapture?.(event.pointerId);
-      if (moved < 5) selectNode(root, state, state.hoveredId, { source: "canvas" });
+      if (moved < 5)
+        selectNode(root, state, state.hoveredId, { source: "canvas" });
     };
     const handleWheel = (event) => {
+      synchronizeLiveElements(root, state);
+      if (!eventOwnsViewport(event)) return;
       if (state.view !== "graph") return;
       event.preventDefault();
-      state.zoom = clamp(state.zoom * (event.deltaY > 0 ? 0.9 : 1.1), 0.45, 2.8);
+      state.zoom = clamp(
+        state.zoom * (event.deltaY > 0 ? 0.9 : 1.1),
+        0.45,
+        2.8,
+      );
       scheduleDraw(root, state);
     };
     const handleKeydown = (event) => {
+      synchronizeLiveElements(root, state);
+      if (!eventOwnsViewport(event)) return;
       if (state.view !== "graph") return;
       const actions = {
         ArrowDown: () => (state.pitch = clamp(state.pitch + 0.1, -1.18, 1.18)),
@@ -607,6 +705,7 @@
       scheduleDraw(root, state);
     };
     const handleClick = (event) => {
+      synchronizeLiveElements(root, state);
       const target = event.target;
       if (!(target instanceof Element)) return;
       const node = target.closest("[data-code-node]");
@@ -631,16 +730,18 @@
       if (value === "clear-selection") root.clearSelection();
     };
 
-    state.viewport.addEventListener("pointerdown", handlePointerDown);
-    state.viewport.addEventListener("pointermove", handlePointerMove);
-    state.viewport.addEventListener("pointerup", handlePointerUp);
-    state.viewport.addEventListener("pointercancel", handlePointerUp);
-    state.viewport.addEventListener("wheel", handleWheel, { passive: false });
-    state.viewport.addEventListener("keydown", handleKeydown);
+    root.addEventListener("input", handleSearch);
+    root.addEventListener("pointerdown", handlePointerDown);
+    root.addEventListener("pointermove", handlePointerMove);
+    root.addEventListener("pointerup", handlePointerUp);
+    root.addEventListener("pointercancel", handlePointerUp);
+    root.addEventListener("wheel", handleWheel, { passive: false });
+    root.addEventListener("keydown", handleKeydown);
     root.addEventListener("click", handleClick);
 
     root.clearFilter = (options = {}) => applyFilter(root, state, "", options);
-    root.clearSelection = (options = {}) => selectNode(root, state, null, options);
+    root.clearSelection = (options = {}) =>
+      selectNode(root, state, null, options);
     root.getFilter = () => state.filter;
     root.getSelection = () =>
       state.nodes.find((node) => node.id === state.selectedId) || null;
@@ -655,7 +756,10 @@
       state.totalNodes = next.totalNodes;
       state.truncated = next.truncated;
       state.fitScale = fitScaleFor(next.nodes);
-      applyFilter(root, state, state.filter, { before: false, source: "refresh" });
+      applyFilter(root, state, state.filter, {
+        before: false,
+        source: "refresh",
+      });
       return snapshot(state);
     };
     root.resetView = () => {
@@ -668,8 +772,14 @@
     };
     root.select = (id, options = {}) => selectNode(root, state, id, options);
     root.setData = (value, options = {}) => {
-      if (!value || !Array.isArray(value.nodes) || !Array.isArray(value.edges)) {
-        throw new TypeError("CodeGraph.setData expects { nodes, edges } arrays.");
+      if (
+        !value ||
+        !Array.isArray(value.nodes) ||
+        !Array.isArray(value.edges)
+      ) {
+        throw new TypeError(
+          "CodeGraph.setData expects { nodes, edges } arrays.",
+        );
       }
       const nextNodes = value.nodes.map((node, index) => ({
         element: node.element || document.createElement("li"),
@@ -710,8 +820,10 @@
       });
       return snapshot(state);
     };
-    root.setFilter = (value, options = {}) => applyFilter(root, state, value, options);
-    root.setState = (name, options = {}) => setGraphState(root, state, name, options);
+    root.setFilter = (value, options = {}) =>
+      applyFilter(root, state, value, options);
+    root.setState = (name, options = {}) =>
+      setGraphState(root, state, name, options);
     root.setView = (view, options = {}) => setView(root, state, view, options);
     root.zoomIn = () => {
       state.zoom = clamp(state.zoom * 1.2, 0.45, 2.8);
@@ -726,13 +838,13 @@
     root._destroy = () => {
       cancelAnimationFrame(state.frame);
       resizeObserver.disconnect();
-      state.search?.removeEventListener("input", handleSearch);
-      state.viewport.removeEventListener("pointerdown", handlePointerDown);
-      state.viewport.removeEventListener("pointermove", handlePointerMove);
-      state.viewport.removeEventListener("pointerup", handlePointerUp);
-      state.viewport.removeEventListener("pointercancel", handlePointerUp);
-      state.viewport.removeEventListener("wheel", handleWheel);
-      state.viewport.removeEventListener("keydown", handleKeydown);
+      root.removeEventListener("input", handleSearch);
+      root.removeEventListener("pointerdown", handlePointerDown);
+      root.removeEventListener("pointermove", handlePointerMove);
+      root.removeEventListener("pointerup", handlePointerUp);
+      root.removeEventListener("pointercancel", handlePointerUp);
+      root.removeEventListener("wheel", handleWheel);
+      root.removeEventListener("keydown", handleKeydown);
       root.removeEventListener("click", handleClick);
       states.delete(root);
       [
@@ -756,7 +868,8 @@
     applyFilter(root, state, state.filter, { before: false, source: "init" });
     setView(root, state, state.view, { force: true, source: "init" });
     setGraphState(root, state, state.name, { force: true, source: "init" });
-    if (state.selectedId) selectNode(root, state, state.selectedId, { before: false, force: true });
+    if (state.selectedId)
+      selectNode(root, state, state.selectedId, { before: false, force: true });
     root.dataset.codeGraphInitialized = "true";
     root.dispatchEvent(new CustomEvent("basecoat:initialized"));
   };

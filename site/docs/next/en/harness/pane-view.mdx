@@ -1,0 +1,143 @@
+# Pane View
+
+Pane View is a tool-pane stack with headers, expansion state, and resizable content heights. It suits outlines, symbols, filters, history, and property sections. Use [Split View](/harness/split-view) when every region must remain visible and does not need collapse.
+
+<DockviewDemo mode="pane" />
+
+## Framework usage
+
+<FrameworkTabs
+  html={`import {
+  Orientation,
+  PaneviewPanel,
+  createPaneview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Pane extends PaneviewPanel {
+  body = { element: document.createElement("section"), dispose() {} };
+  header = { element: document.createElement("strong"), dispose() {} };
+  constructor(id, component) {
+    super({
+      id,
+      component,
+      headerComponent: "header",
+      orientation: Orientation.VERTICAL,
+      isExpanded: true,
+      isHeaderVisible: true,
+      headerSize: 32,
+      minimumBodySize: 48,
+      maximumBodySize: Number.MAX_SAFE_INTEGER,
+    });
+    this.header.element.textContent = id;
+    this.body.element.textContent = "Pane content";
+  }
+  getBodyComponent() { return this.body; }
+  getHeaderComponent() { return this.header; }
+}
+
+const root = document.querySelector("#pane-view");
+const api = createPaneview(root, {
+  className: themeA3S.className,
+  createComponent: options => new Pane(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+api.addPanel({ id: "files", component: "pane", title: "Files", size: 160 });
+api.addPanel({ id: "symbols", component: "pane", title: "Symbols", size: 120 });`}
+  react={`import {
+  PaneviewReact,
+  themeA3S,
+  usePaneview,
+  type IPaneviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Pane = ({ params }: IPaneviewPanelProps<{ description: string }>) => (
+  <section>{params.description}</section>
+);
+
+export function InspectorPanes() {
+  const panes = usePaneview({
+    onReady({ api }) {
+      api.addPanel({
+        id: "files",
+        component: "pane",
+        title: "Files",
+        params: { description: "Current project files" },
+        size: 160,
+      });
+      api.addPanel({
+        id: "history",
+        component: "pane",
+        title: "History",
+        params: { description: "Recent operations" },
+        isExpanded: false,
+        size: 120,
+      });
+    },
+  });
+  return (
+    <PaneviewReact
+      className={themeA3S.className}
+      components={{ pane: Pane }}
+      onReady={panes.onReady}
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  PaneviewVue,
+  themeA3S,
+  usePaneview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Pane = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.description }}</section>",
+});
+const panes = usePaneview({
+  onReady({ api }) {
+    api.addPanel({
+      id: "files",
+      component: "pane",
+      title: "Files",
+      params: { description: "Current project files" },
+      size: 160,
+    });
+    api.addPanel({
+      id: "history",
+      component: "pane",
+      title: "History",
+      params: { description: "Recent operations" },
+      isExpanded: false,
+      size: 120,
+    });
+  },
+});
+</script>
+
+<template>
+  <PaneviewVue
+    :class="themeA3S.className"
+    :components="{ pane: Pane }"
+    @ready="panes.onReady"
+  />
+</template>`}
+/>
+
+React `usePaneview` returns `api`, `ready`, and a stable `onReady`; the Vue composable returns an `api` shallow ref and `onReady`. Expansion, resizing, and order remain on the native `PaneviewApi` and panel APIs.
+
+## State and behavior
+
+- A header names its pane; it must not show only an icon or internal ID.
+- Expand high-frequency content by default. Low-frequency, expensive, or contextual regions may start collapsed.
+- Observe `onDidExpansionChange` to persist a user preference, but do not collapse merely because asynchronous data is empty.
+- A custom header retains expansion state, pointer and keyboard operation, focus treatment, and an accessible name.
+- Drag reordering changes presentation only; data ownership and permission do not follow pane position.
+
+## Accessibility
+
+Associate each header with its content and expose expansion state to assistive technology. Collapsed content leaves the focus order; reopening a pane must not forcibly move focus. Header targets are at least 44px high for coarse pointers.

@@ -67,6 +67,7 @@ const config: UserConfig = {
       path.join(__dirname, "theme/mdx/ChartDemo.tsx"),
       path.join(__dirname, "theme/mdx/ComponentCatalog.tsx"),
       path.join(__dirname, "theme/mdx/ComponentIntro.tsx"),
+      path.join(__dirname, "theme/mdx/DockviewDemo.tsx"),
       path.join(__dirname, "theme/mdx/FrameworkTabs.tsx"),
       path.join(__dirname, "theme/mdx/MonacoWorkbenchDemo.tsx"),
       path.join(__dirname, "theme/mdx/CodeGroup.tsx"),

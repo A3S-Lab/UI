@@ -1,28 +1,24 @@
 .a3s-playground-page {
-  width: min(100%, 92rem);
+  width: 100%;
   min-width: 0;
-  min-height: calc(100dvh - var(--rp-nav-height));
-  margin-inline: auto;
-  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) 4rem;
+  height: calc(100dvh - var(--rp-nav-height));
+  min-height: 38rem;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .a3s-workspace-playground {
-  --playground-control: color-mix(
-    in srgb,
-    var(--ui-paper) 94%,
-    var(--ui-panel)
-  );
-  --playground-control-hover: color-mix(
-    in srgb,
-    var(--ui-blue) 7%,
-    var(--ui-paper)
-  );
   display: grid;
   width: 100%;
+  height: 100%;
   min-width: 0;
-  margin: 2rem 0 3.5rem;
-  gap: 1rem;
-  color: var(--ui-ink);
+  min-height: 0;
+  grid-template-rows: 2.875rem minmax(0, 1fr) 1.625rem;
+  overflow: hidden;
+  background: var(--ui-canvas, var(--a3s-bg));
+  color: var(--ui-ink, var(--a3s-ink));
+  font-family: var(--a3s-ui-font, ui-sans-serif, system-ui, sans-serif);
 }
 
 .a3s-workspace-playground *,
@@ -31,251 +27,236 @@
   box-sizing: border-box;
 }
 
-.a3s-workspace-playground button,
-.a3s-workspace-playground input,
-.a3s-workspace-playground select,
-.a3s-workspace-playground textarea {
+.a3s-workspace-playground :is(button, input, select, textarea) {
   font: inherit;
 }
 
-.a3s-workspace-playground__header {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
-  align-items: end;
-  gap: 1.5rem;
+.a3s-workspace-playground
+  :is(button, summary, select, input, [contenteditable]):focus-visible {
+  outline: 2px solid var(--ui-blue, var(--a3s-blue));
+  outline-offset: -2px;
 }
 
-.a3s-workspace-playground__header > div {
-  min-width: 0;
-}
-
-.a3s-workspace-playground__header :is(h1, h2) {
-  margin: 0;
-  color: var(--ui-ink);
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  font-weight: 690;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-}
-
-.a3s-workspace-playground__header p {
-  max-width: 44rem;
-  margin: 0.5rem 0 0;
-  color: var(--ui-muted);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.a3s-workspace-playground__header output {
-  display: grid;
-  min-width: 0;
-  min-height: 4.25rem;
-  padding: 0.75rem 0.875rem;
-  border: 1px solid color-mix(in srgb, var(--ui-blue) 18%, var(--ui-line));
-  border-radius: 0.625rem;
-  align-content: center;
-  gap: 0.2rem;
-  background: color-mix(in srgb, var(--ui-blue) 5%, transparent);
-}
-
-.a3s-workspace-playground__header output strong {
-  color: var(--ui-ink);
-  font-size: 0.8125rem;
-  font-weight: 680;
-}
-
-.a3s-workspace-playground__header output span {
-  overflow: hidden;
-  color: var(--ui-muted);
-  font-size: 0.75rem;
-  line-height: 1.45;
-  text-overflow: ellipsis;
-}
-
-.a3s-workspace-playground__controls {
-  display: grid;
-  min-width: 0;
-  border: 1px solid var(--ui-line);
-  border-radius: 0.875rem;
-  overflow: hidden;
-  background: var(--ui-paper);
-}
-
-.a3s-workspace-playground__scenes {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: repeat(8, minmax(6.75rem, 1fr));
-  overflow-x: auto;
-  border-block-end: 1px solid var(--ui-line);
-  scrollbar-color: var(--ui-line-strong) transparent;
-  scrollbar-width: thin;
-}
-
-.a3s-workspace-playground__scenes button {
+.workbench-commandbar {
   position: relative;
-  display: flex;
-  min-width: 0;
-  min-height: 3rem;
-  padding: 0.625rem 0.75rem;
-  border: 0;
-  border-inline-end: 1px solid var(--ui-line);
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  background: transparent;
-  color: var(--ui-muted);
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-weight: 610;
-  white-space: nowrap;
-  scroll-margin-inline: 1rem;
-}
-
-.a3s-workspace-playground__scenes button:last-child {
-  border-inline-end: 0;
-}
-
-.a3s-workspace-playground__scenes button:hover {
-  background: var(--playground-control-hover);
-  color: var(--ui-ink);
-}
-
-.a3s-workspace-playground__scenes button[aria-selected="true"] {
-  background: color-mix(in srgb, var(--ui-blue) 6%, var(--ui-paper));
-  color: var(--ui-blue-deep);
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--ui-blue) 24%, transparent);
-}
-
-.a3s-workspace-playground__options {
-  display: flex;
-  min-width: 0;
-  padding: 0.625rem;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 0.625rem;
-}
-
-.a3s-workspace-playground__options fieldset {
+  z-index: 1300;
   display: grid;
   min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  gap: 0.25rem;
+  padding-inline: 0.625rem;
+  grid-template-columns: minmax(9rem, 1fr) minmax(14rem, 32rem) minmax(
+      9rem,
+      1fr
+    );
+  align-items: center;
+  gap: 0.75rem;
+  border-block-end: 1px solid var(--ui-line, var(--a3s-line));
+  background: var(--ui-paper, var(--a3s-panel));
 }
 
-.a3s-workspace-playground__options legend,
-.a3s-workspace-playground__options > label > span {
+.workbench-commandbar__brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workbench-commandbar__brand img {
   display: block;
-  padding: 0;
-  color: var(--ui-faint);
-  font-size: 0.75rem;
-  font-weight: 680;
-  line-height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  object-fit: contain;
 }
 
-.a3s-workspace-playground__options fieldset > div {
-  display: flex;
-  padding: 0.125rem;
-  border: 1px solid var(--ui-line);
-  border-radius: 0.625rem;
-  background: var(--ui-panel);
-}
-
-.a3s-workspace-playground__options fieldset button,
-.a3s-workspace-playground__utility {
-  min-height: 2.25rem;
-  padding: 0 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 0.5rem;
-  background: transparent;
-  color: var(--ui-muted);
-  cursor: pointer;
+.workbench-commandbar__brand h1 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ui-ink, var(--a3s-ink));
   font-size: 0.8125rem;
-  font-weight: 620;
+  font-weight: 690;
+  letter-spacing: -0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.a3s-workspace-playground__options fieldset button[aria-pressed="true"] {
-  border-color: var(--ui-line);
-  background: var(--ui-paper);
-  color: var(--ui-ink);
-  box-shadow: 0 1px 2px rgb(20 24 40 / 6%);
-}
-
-.a3s-workspace-playground__options > label {
+.workbench-commandbar__project {
   display: grid;
-  min-width: 8rem;
-  gap: 0.25rem;
-}
-
-.a3s-workspace-playground__options select {
-  min-height: 2.5rem;
-  padding: 0 2rem 0 0.75rem;
-  border: 1px solid var(--ui-line);
-  border-radius: 0.5rem;
-  background: var(--ui-paper);
-  color: var(--ui-ink);
-  font-size: 0.8125rem;
-}
-
-.a3s-workspace-playground__utility {
-  display: inline-flex;
-  min-height: 2.5rem;
-  border-color: var(--ui-line);
+  min-width: 0;
+  min-height: 2rem;
+  padding: 0 0.5rem 0 0.625rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.4rem;
-  background: var(--playground-control);
+  gap: 0.375rem;
+  border: 1px solid var(--ui-line-strong, var(--a3s-line-strong));
+  border-radius: 0.4375rem;
+  background: color-mix(
+    in srgb,
+    var(--ui-panel, var(--a3s-panel-soft)) 58%,
+    var(--ui-paper, var(--a3s-panel))
+  );
+  color: var(--ui-muted, var(--a3s-muted));
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: start;
 }
 
-.a3s-workspace-playground__utility:hover,
-.a3s-workspace-playground__utility[aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--ui-blue) 35%, var(--ui-line));
-  background: var(--playground-control-hover);
-  color: var(--ui-blue-deep);
+.workbench-commandbar__project:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--ui-blue, var(--a3s-blue)) 38%,
+    var(--ui-line-strong, var(--a3s-line-strong))
+  );
 }
 
-.a3s-workspace-playground__utility:disabled {
-  border-color: var(--ui-line);
-  background: var(--ui-panel);
-  color: var(--ui-faint);
-  cursor: not-allowed;
-  opacity: 0.62;
+.workbench-commandbar__project strong {
+  overflow: hidden;
+  color: var(--ui-ink, var(--a3s-ink));
+  font-weight: 620;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.a3s-workspace-playground :is(button, select, input, textarea):focus-visible,
-.a3s-workspace-playground [contenteditable]:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--ui-blue) 34%, transparent);
-  outline-offset: 2px;
+.workbench-commandbar__project kbd,
+.workbench-layout-menu kbd {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ui-faint, var(--a3s-faint));
+  font-family: var(--a3s-ui-font, sans-serif);
+  font-size: 0.625rem;
 }
 
-.a3s-workspace-playground__stage {
+.workbench-commandbar__actions {
   display: flex;
-  width: 100%;
   min-width: 0;
-  padding: clamp(0.5rem, 2vw, 1.5rem);
-  border: 1px solid var(--ui-line);
-  border-radius: 1rem;
-  align-items: flex-start;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--ui-panel);
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.375rem;
 }
 
-.a3s-workspace-playground__device {
+.workbench-commandbar__actions select,
+.workbench-layout-menu > summary,
+.workbench-icon-button {
+  min-height: 1.875rem;
+  padding: 0 0.625rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--ui-muted, var(--a3s-muted));
+  cursor: pointer;
+  font-size: 0.6875rem;
+  font-weight: 610;
+}
+
+.workbench-commandbar__actions select:hover,
+.workbench-layout-menu > summary:hover,
+.workbench-layout-menu[open] > summary,
+.workbench-icon-button:hover,
+.workbench-icon-button[aria-pressed="true"] {
+  background: var(--ui-panel, var(--a3s-panel-soft));
+  color: var(--ui-ink, var(--a3s-ink));
+}
+
+.workbench-body {
   display: grid;
-  width: 100%;
-  max-width: 80rem;
   min-width: 0;
-  aspect-ratio: 1280 / 800;
-  grid-template-rows: 2.125rem minmax(0, 1fr);
-  border: 1px solid var(--ui-line-strong);
-  border-radius: 0.75rem;
+  min-height: 0;
+  grid-template-columns: 2.875rem minmax(0, 1fr);
   overflow: hidden;
-  background: var(--background);
-  box-shadow: 0 1.5rem 4rem rgb(20 24 40 / 16%);
-  transition:
-    width 240ms ease,
-    max-width 240ms ease;
+}
+
+.workbench-activity {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  padding-block: 0.25rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  border-inline-end: 1px solid var(--ui-line, var(--a3s-line));
+  overflow: auto;
+  background: var(--ui-panel, var(--a3s-panel-soft));
+  scrollbar-width: none;
+}
+
+.workbench-activity::-webkit-scrollbar {
+  display: none;
+}
+
+.workbench-activity button {
+  position: relative;
+  display: grid;
+  width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.4375rem;
+  background: transparent;
+  color: var(--ui-faint, var(--a3s-faint));
+  cursor: pointer;
+  place-items: center;
+}
+
+.workbench-activity button:hover {
+  background: color-mix(
+    in srgb,
+    var(--ui-paper, var(--a3s-panel)) 70%,
+    transparent
+  );
+  color: var(--ui-ink, var(--a3s-ink));
+}
+
+.workbench-activity button[aria-selected="true"] {
+  background: var(--ui-paper, var(--a3s-panel));
+  color: var(--ui-blue, var(--a3s-blue));
+  box-shadow: 0 1px 3px rgb(20 32 51 / 8%);
+}
+
+.workbench-activity button[aria-selected="true"]::before {
+  position: absolute;
+  inset-block: 0.5rem;
+  inset-inline-start: -0.1875rem;
+  width: 0.1875rem;
+  border-radius: 0 0.1875rem 0.1875rem 0;
+  background: var(--ui-blue, var(--a3s-blue));
+  content: "";
+}
+
+.workbench-statusbar {
+  display: grid;
+  min-width: 0;
+  padding-inline: 0.625rem;
+  grid-template-columns: 1fr minmax(0, 2fr) 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  border-block-start: 1px solid
+    color-mix(in srgb, var(--ui-blue, var(--a3s-blue)) 36%, transparent);
+  background: var(--ui-blue-deep, var(--a3s-action-hover));
+  color: #fff;
+  font-size: 0.625rem;
+}
+
+.workbench-statusbar > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.workbench-statusbar > div:last-child {
+  justify-content: flex-end;
+}
+
+.workbench-statusbar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.workbench-statusbar output {
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

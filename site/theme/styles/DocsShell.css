@@ -220,6 +220,78 @@ html img.rspress-logo {
   color: var(--ui-blue);
 }
 
+.a3s-progressive-menu,
+.a3s-progressive-menu > details {
+  height: 100%;
+}
+
+.a3s-progressive-menu > details > summary {
+  list-style: none;
+  user-select: none;
+}
+
+.a3s-progressive-menu > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.a3s-progressive-menu > details[open] > summary,
+.a3s-progressive-menu > details > summary:hover {
+  color: var(--ui-blue);
+}
+
+.a3s-progressive-menu > details[open] .rp-nav-menu__item__icon {
+  transform: rotate(180deg);
+}
+
+.a3s-progressive-menu__popover {
+  position: absolute;
+  z-index: 1200;
+  inset-block-start: calc(100% - 8px);
+  inset-inline-end: -8px;
+  display: grid;
+  min-width: 148px;
+  margin: 0;
+  padding: 6px;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 10px;
+  background: var(--ui-paper);
+  box-shadow: 0 12px 34px rgb(22 34 58 / 16%);
+  color: var(--ui-ink);
+  list-style: none;
+}
+
+.a3s-progressive-menu__option {
+  min-width: 0;
+  padding-inline-end: 8px;
+  border-radius: 7px;
+}
+
+.a3s-progressive-menu__option:hover {
+  background: var(--ui-panel);
+}
+
+.a3s-progressive-menu__option.is-active {
+  background: color-mix(in srgb, var(--ui-blue) 10%, transparent);
+  color: var(--ui-blue);
+}
+
+.a3s-progressive-menu__link {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  white-space: nowrap;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 560;
+}
+
+.a3s-progressive-menu__link:focus-visible,
+.a3s-progressive-menu > details > summary:focus-visible {
+  border-radius: 7px;
+  outline: 3px solid color-mix(in srgb, var(--ui-blue) 42%, transparent);
+  outline-offset: 2px;
+}
+
 .rp-search-button {
   border-color: var(--ui-line) !important;
   border-radius: 9px !important;

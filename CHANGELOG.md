@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
 - Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts plus complete Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations composition guides.
 - Added Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, and Execution Evidence contracts.
@@ -36,6 +37,7 @@
 
 ### Fixed
 
+- Made resource, language, and version navigation progressively operable before hydration, and removed legacy Playground selectors that conflicted with the dockable responsive workspace.
 - Kept Agent Composer status synchronization idempotent so its DOM observer cannot enter a self-triggering loop that freezes Playground and other composed surfaces after hydration.
 - Distinguished the site navigation from embedded workspace navigation with unambiguous accessible names and responsive navbar-to-Playground regression coverage.
 - Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 114-component contract while preserving historical version counts.

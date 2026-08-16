@@ -20,65 +20,65 @@ function collectRuntimeErrors(page: Page) {
   return errors;
 }
 
-async function openPlaygroundFromNavbar(page: Page) {
-  await page.goto("");
-  const playgroundLink = page.getByRole("link", {
-    name: "Playground",
-    exact: true,
-  });
-  if (!(await playgroundLink.isVisible())) {
-    await page.getByRole("button", { name: "打开主导航", exact: true }).click();
-  }
-  await playgroundLink.click();
-}
-
-test("Playground remains responsive after navbar navigation", async ({
-  page,
-}) => {
-  const runtimeErrors = collectRuntimeErrors(page);
-  await openPlaygroundFromNavbar(page);
-  await expect(page).toHaveURL(/\/playground\.html$/);
-
+async function openPlayground(page: Page) {
+  await page.goto("playground.html", { waitUntil: "networkidle" });
   const playground = page.locator(".a3s-workspace-playground");
   await expect(playground).toBeVisible();
-  await playground.getByRole("tab", { name: "设计", exact: true }).click();
-  await expect(
-    playground.locator('[data-playground-scene="design"]'),
-  ).toBeVisible();
-  expect(runtimeErrors).toEqual([]);
-});
+  await expect(playground.locator(".dv-dockview")).toBeVisible();
+  return playground;
+}
 
-test("Playground is a standalone route with eight operable scenes", async ({
+async function openLayoutMenu(page: Page) {
+  const menu = page.locator(".workbench-layout-menu");
+  if ((await menu.getAttribute("open")) === null) {
+    await menu.locator("summary").click();
+  }
+  await expect(menu).toHaveAttribute("open", "");
+  return menu;
+}
+
+test("Playground is a standalone Dockview workspace with all six production panels", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("playground.html");
+  const playground = await openPlayground(page);
 
-  const playground = page.locator(".a3s-workspace-playground");
-  const tabs = playground.getByRole("tab");
   await expect(page.locator(".a3s-playground-page")).toBeVisible();
   await expect(page.locator(".rp-doc-layout")).toHaveCount(0);
-  await expect(tabs).toHaveCount(scenarios.length);
+  await expect(
+    playground.locator(".workbench-activity [role=tab]"),
+  ).toHaveCount(scenarios.length);
+  const dock = playground.locator(".workbench-dock");
+  for (const [label, selector] of [
+    ["资源管理器", ".workbench-explorer"],
+    ["任务", ".workbench-task"],
+    ["工作区", ".workbench-code"],
+    ["设备预览", ".playground-device-preview"],
+    ["检查器", ".workbench-inspector"],
+    ["终端", ".workbench-terminal"],
+  ] as const) {
+    const tab = dock.getByRole("tab", { name: label, exact: true }).first();
+    const panel = dock.locator(selector);
+    await expect(tab).toBeVisible();
+    if (!(await panel.isVisible())) {
+      await tab.click();
+    }
+    await expect(panel).toBeVisible();
+    if (label === "任务") {
+      await expect(dock.locator(".ProseMirror")).toBeVisible();
+    }
+  }
 
   for (const [label, id] of scenarios) {
     await playground.getByRole("tab", { name: label, exact: true }).click();
     await expect(
-      playground.locator(`[data-playground-scene="${id}"]`),
+      playground.locator(`[data-workbench-surface="${id}"]`),
     ).toBeVisible();
-    await expect(playground).toHaveAttribute("data-playground-state", "ready");
   }
 
-  await expect(
-    playground.getByRole("button", { name: "检查器", exact: true }),
-  ).toBeDisabled();
-
   const codeTab = playground.getByRole("tab", { name: "代码", exact: true });
-  await codeTab.click();
-  await expect(
-    playground.getByRole("button", { name: "检查器", exact: true }),
-  ).toBeEnabled();
   await codeTab.focus();
-  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowDown");
   await expect(
     playground.getByRole("tab", { name: "设计", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
@@ -92,78 +92,161 @@ test("Playground is a standalone route with eight operable scenes", async ({
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Playground exposes recovery, direction, inspector, and phone states", async ({
+test("Dockview layout actions float, maximize, save, reset, and restore real groups", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("playground.html");
+  const playground = await openPlayground(page);
 
-  const playground = page.locator(".a3s-workspace-playground");
-  const stateSelect = playground.locator(
-    ".a3s-workspace-playground__options select",
+  let menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "显示终端" }).click();
+  await expect(playground.locator(".workbench-terminal")).toBeVisible();
+
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "浮动检查器" }).click();
+  await expect(
+    playground.locator(".dv-resize-container .workbench-inspector"),
+  ).toBeVisible();
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "检查器已浮动",
   );
-  for (const state of [
+
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "保存布局" }).click();
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "布局已保存",
+  );
+
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "浮动检查器" }).click();
+  await expect(
+    playground.locator(".dv-resize-container .workbench-inspector"),
+  ).toHaveCount(0);
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "检查器已停靠",
+  );
+
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "恢复布局" }).click();
+  await expect(
+    playground.locator(".dv-resize-container .workbench-inspector"),
+  ).toBeVisible();
+
+  const editorTab = playground
+    .locator(".dv-tab")
+    .filter({ hasText: "工作区" })
+    .first();
+  await editorTab.click();
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "最大化当前组" }).click();
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "已最大化",
+  );
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "最大化当前组" }).click();
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "已恢复",
+  );
+
+  menu = await openLayoutMenu(page);
+  await menu.getByRole("button", { name: "重置布局" }).click();
+  await expect(
+    playground.locator(".dv-resize-container .workbench-inspector"),
+  ).toHaveCount(0);
+  await expect(playground.locator(".workbench-statusbar output")).toContainText(
+    "布局已重置",
+  );
+
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Device Preview uses a real hardware shell and preserves selected viewport state", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openPlayground(page);
+  await playground
+    .locator(".dv-tab")
+    .filter({ hasText: "设备预览" })
+    .first()
+    .click();
+
+  const device = playground.locator(".playground-device-preview");
+  await expect(device).toBeVisible();
+  await expect(device.locator("[data-device-simulator-frame]")).toBeVisible();
+  await expect(
+    device.locator("iframe[data-device-simulator-preview]"),
+  ).toBeVisible();
+  await expect(device).toHaveAttribute("data-device", "iphone-15-pro");
+
+  await device
+    .getByRole("combobox", { name: "设备预设" })
+    .selectOption("pixel-8");
+  await expect(device).toHaveAttribute("data-device", "pixel-8");
+  await expect(device.locator("[data-device-simulator-width]")).toHaveValue(
+    "412",
+  );
+  await expect(device.locator("[data-device-simulator-height]")).toHaveValue(
+    "915",
+  );
+
+  await device.getByRole("button", { name: "横屏" }).click();
+  await expect(device).toHaveAttribute("data-orientation", "landscape");
+  await expect(device.locator("[data-device-simulator-width]")).toHaveValue(
+    "915",
+  );
+  await expect(device.locator("[data-device-simulator-height]")).toHaveValue(
+    "412",
+  );
+
+  const shellGeometry = await device
+    .locator("[data-device-simulator-frame]")
+    .evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        borderRadius: style.borderRadius,
+        boxShadow: style.boxShadow,
+        pseudoDisplay: getComputedStyle(element, "::before").display,
+      };
+    });
+  expect(shellGeometry.borderRadius).not.toBe("0px");
+  expect(shellGeometry.boxShadow).not.toBe("none");
+  expect(shellGeometry.pseudoDisplay).not.toBe("none");
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Playground recovery states and compact workspace do not overflow", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openPlayground(page);
+
+  const state = playground.locator(".workbench-commandbar__actions select");
+  for (const value of [
     "loading",
     "empty",
     "error",
     "offline",
     "permission-denied",
   ]) {
-    await stateSelect.selectOption(state);
-    await expect(playground).toHaveAttribute("data-playground-state", state);
+    await state.selectOption(value);
+    await expect(playground).toHaveAttribute("data-playground-state", value);
     await expect(
       playground.locator(
         ".playground-scene-state, [data-playground-state-panel]",
       ),
     ).toBeVisible();
   }
-
-  await stateSelect.selectOption("ready");
-  await playground.getByRole("button", { name: "手机", exact: true }).click();
-  await expect(playground).toHaveAttribute("data-playground-viewport", "phone");
-  await expect(playground).toHaveAttribute(
-    "data-playground-inspector",
-    "closed",
-  );
-
-  const device = playground.locator(".a3s-workspace-playground__device");
-  await expect
-    .poll(async () => {
-      const box = await device.boundingBox();
-      return box ? Number((box.width / box.height).toFixed(3)) : 0;
-    })
-    .toBeCloseTo(390 / 844, 2);
+  await state.selectOption("ready");
 
   for (const [label, id] of scenarios) {
     await playground.getByRole("tab", { name: label, exact: true }).click();
-    const overflow = await playground
-      .locator(`[data-playground-scene="${id}"]`)
-      .evaluate((element) => element.scrollWidth - element.clientWidth);
-    expect(overflow).toBeLessThanOrEqual(1);
+    await expect(
+      playground.locator(`[data-workbench-surface="${id}"]`),
+    ).toBeVisible();
   }
-
-  await playground.getByRole("tab", { name: "代码", exact: true }).click();
-  const inspectorButton = playground.getByRole("button", {
-    name: "检查器",
-    exact: true,
-  });
-  await inspectorButton.click();
-  await expect(playground).toHaveAttribute("data-playground-inspector", "open");
-  await expect(playground.locator(".playground-inspector")).toBeVisible();
-  await inspectorButton.click();
-
-  const directionButton = playground.getByRole("button", {
-    name: "LTR",
-    exact: true,
-  });
-  await directionButton.click();
-  await expect(playground).toHaveAttribute("dir", "rtl");
-  const codeTab = playground.getByRole("tab", { name: "代码", exact: true });
-  await codeTab.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(
-    playground.getByRole("tab", { name: "设置", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
 
   expect(
     await page.evaluate(
@@ -172,102 +255,34 @@ test("Playground exposes recovery, direction, inspector, and phone states", asyn
         document.documentElement.clientWidth,
     ),
   ).toBe(0);
+  const bounds = await playground.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.width).toBeLessThanOrEqual(390);
+  expect(bounds!.height).toBeLessThanOrEqual(844);
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Playground phone navigation is isolated from the documentation runtime", async ({
+test("Dockview documentation demos and framework tabs render without page errors", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("playground.html");
-
-  const playground = page.locator(".a3s-workspace-playground");
-  await playground.getByRole("button", { name: "手机", exact: true }).click();
-  const navigation = playground.locator(
-    ".a3s-workspace-playground__shell > [data-app-navigation]",
-  );
-  const trigger = playground.locator("[data-app-navigation-trigger]");
-  await expect(navigation).toBeHidden();
-  await expect(trigger).toHaveAttribute("aria-expanded", "false");
-
-  await trigger.click();
-  await expect(navigation).toBeVisible();
-  await expect(trigger).toHaveAttribute("aria-expanded", "true");
-  await expect(trigger).toHaveAttribute("aria-label", "关闭导航");
-  await navigation
-    .getByRole("button", { name: "设置", exact: true })
-    .first()
-    .click();
-  await expect(navigation).toBeHidden();
-  await expect(
-    playground.locator('[data-playground-scene="settings"]'),
-  ).toBeVisible();
-
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await page.getByRole("button", { name: "打开主导航", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "站点导航", exact: true })
-    .getByRole("button", { name: "切换主题", exact: true })
-    .click();
-  await expect(page.locator("html")).toHaveClass(/dark/);
-  await expect(
-    playground.locator(".a3s-workspace-playground__content"),
-  ).toHaveCSS("background-color", "rgb(13, 13, 15)");
-
-  expect(runtimeErrors).toEqual([]);
-});
-
-test("Playground picks a usable simulated device on compact browsers", async ({
-  page,
-}, testInfo) => {
-  test.skip(testInfo.project.name !== "compact-768");
-  const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("playground.html");
-
-  const playground = page.locator(".a3s-workspace-playground");
-  await expect(playground).toHaveAttribute(
-    "data-playground-viewport",
-    "tablet",
-  );
-  expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth -
-        document.documentElement.clientWidth,
-    ),
-  ).toBe(0);
-
-  await playground.getByRole("button", { name: "手机", exact: true }).click();
-  await expect(playground).toHaveAttribute("data-playground-viewport", "phone");
-  await expect(
-    playground.locator(".a3s-workspace-playground__device"),
-  ).toBeVisible();
-  expect(runtimeErrors).toEqual([]);
-});
-
-test("Playground starts in phone mode on phone-sized browsers", async ({
-  page,
-}, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop-1280");
-  await page.setViewportSize({ width: 390, height: 844 });
-  const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("playground.html");
-
-  const playground = page.locator(".a3s-workspace-playground");
-  await expect(playground).toHaveAttribute("data-playground-viewport", "phone");
-  await expect(playground).toHaveAttribute(
-    "data-playground-inspector",
-    "closed",
-  );
-  await expect(
-    playground.locator(".a3s-workspace-playground__windowbar small"),
-  ).toHaveText("390 × 844");
-  expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth -
-        document.documentElement.clientWidth,
-    ),
-  ).toBe(0);
+  for (const route of [
+    "dock-workspace",
+    "grid-view",
+    "split-view",
+    "pane-view",
+  ]) {
+    await page.goto(`harness/${route}.html`, { waitUntil: "networkidle" });
+    await expect(page.locator(".dockview-demo")).toBeVisible();
+    await expect(page.locator(".a3s-framework-tabs")).toBeVisible();
+    await expect(page.locator(".a3s-framework-tabs [role=tab]")).toHaveCount(3);
+    await page
+      .locator(".a3s-framework-tabs [role=tab]")
+      .filter({ hasText: "React" })
+      .click();
+    await expect(
+      page.locator(".a3s-framework-tabs [role=tabpanel]"),
+    ).toContainText(/use(?:DockviewLayout|Gridview|Splitview|Paneview)/);
+  }
   expect(runtimeErrors).toEqual([]);
 });

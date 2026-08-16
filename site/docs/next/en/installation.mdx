@@ -131,6 +131,25 @@ window.a3sUI.initAll({ force: true });
 window.a3sUI.refresh(document.querySelector(".split-pane"));
 ```
 
+## Dockview layout integration
+
+Install the Dockview 8.1 MIT package and the host-framework adapter when an application needs a dockable workspace. This integration is separate from the 114 semantic components and does not enter the default CSS or JavaScript runtime.
+
+```bash
+npm install @a3s-lab/ui dockview@8.1.0
+npm install dockview-react@8.1.0 react react-dom # React
+npm install dockview-vue@8.1.0 vue             # Vue
+```
+
+| Import | Contents |
+| --- | --- |
+| `@a3s-lab/ui/dockview` | Vanilla Dockview, Gridview, Splitview, and Paneview APIs, A3S theme, and layout persistence |
+| `@a3s-lab/ui/dockview/react` | Complete React API plus `useDockviewLayout`, `useGridview`, `useSplitview`, and `usePaneview` |
+| `@a3s-lab/ui/dockview/vue` | Complete Vue 3 API and matching composables |
+| `@a3s-lab/ui/dockview/css` | Dockview base styles and A3S light/dark theme variables |
+
+See [Dock Workspace](/harness/dock-workspace) for complete capability and licence boundaries.
+
 ## Server-rendered templates
 
 Optional Nunjucks and Jinja templates ship with the package.

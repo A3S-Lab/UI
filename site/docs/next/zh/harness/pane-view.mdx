@@ -1,0 +1,143 @@
+# Pane View
+
+Pane View 是带标题、折叠状态和可调整内容高度的工具窗格栈。它适合文件大纲、符号、筛选器、历史记录和属性分区；当每个区域必须同时可见且不需要折叠时，使用 [Split View](/harness/split-view)。
+
+<DockviewDemo mode="pane" />
+
+## 框架用法
+
+<FrameworkTabs
+  html={`import {
+  Orientation,
+  PaneviewPanel,
+  createPaneview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Pane extends PaneviewPanel {
+  body = { element: document.createElement("section"), dispose() {} };
+  header = { element: document.createElement("strong"), dispose() {} };
+  constructor(id, component) {
+    super({
+      id,
+      component,
+      headerComponent: "header",
+      orientation: Orientation.VERTICAL,
+      isExpanded: true,
+      isHeaderVisible: true,
+      headerSize: 32,
+      minimumBodySize: 48,
+      maximumBodySize: Number.MAX_SAFE_INTEGER,
+    });
+    this.header.element.textContent = id;
+    this.body.element.textContent = "窗格内容";
+  }
+  getBodyComponent() { return this.body; }
+  getHeaderComponent() { return this.header; }
+}
+
+const root = document.querySelector("#pane-view");
+const api = createPaneview(root, {
+  className: themeA3S.className,
+  createComponent: options => new Pane(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+api.addPanel({ id: "files", component: "pane", title: "文件", size: 160 });
+api.addPanel({ id: "symbols", component: "pane", title: "符号", size: 120 });`}
+  react={`import {
+  PaneviewReact,
+  themeA3S,
+  usePaneview,
+  type IPaneviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Pane = ({ params }: IPaneviewPanelProps<{ description: string }>) => (
+  <section>{params.description}</section>
+);
+
+export function InspectorPanes() {
+  const panes = usePaneview({
+    onReady({ api }) {
+      api.addPanel({
+        id: "files",
+        component: "pane",
+        title: "文件",
+        params: { description: "当前项目文件" },
+        size: 160,
+      });
+      api.addPanel({
+        id: "history",
+        component: "pane",
+        title: "历史记录",
+        params: { description: "最近操作" },
+        isExpanded: false,
+        size: 120,
+      });
+    },
+  });
+  return (
+    <PaneviewReact
+      className={themeA3S.className}
+      components={{ pane: Pane }}
+      onReady={panes.onReady}
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  PaneviewVue,
+  themeA3S,
+  usePaneview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Pane = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.description }}</section>",
+});
+const panes = usePaneview({
+  onReady({ api }) {
+    api.addPanel({
+      id: "files",
+      component: "pane",
+      title: "文件",
+      params: { description: "当前项目文件" },
+      size: 160,
+    });
+    api.addPanel({
+      id: "history",
+      component: "pane",
+      title: "历史记录",
+      params: { description: "最近操作" },
+      isExpanded: false,
+      size: 120,
+    });
+  },
+});
+</script>
+
+<template>
+  <PaneviewVue
+    :class="themeA3S.className"
+    :components="{ pane: Pane }"
+    @ready="panes.onReady"
+  />
+</template>`}
+/>
+
+React `usePaneview` 返回 `api`、`ready` 与稳定的 `onReady`；Vue composable 返回 `api` shallow ref 与 `onReady`。折叠、展开、调整尺寸和顺序仍由原生 `PaneviewApi` 与面板 API 管理。
+
+## 状态与行为
+
+- 标题必须描述窗格内容，不能只显示图标或内部 ID。
+- 默认展开高频内容；低频、昂贵或上下文相关的区域可以默认折叠。
+- 监听 `onDidExpansionChange` 同步宿主偏好，但不要因为异步数据为空而自动折叠。
+- 自定义 Header 必须保留展开状态、点击目标、键盘操作、焦点样式和可访问名称。
+- 拖放重排只改变展示顺序；数据所有权和权限不会随窗格位置变化。
+
+## 无障碍
+
+标题与内容应形成明确关联，展开状态必须可被读屏识别。折叠后把内容从焦点顺序中移除，展开后不要强行移动用户焦点。粗指针环境下标题目标至少 44px 高。

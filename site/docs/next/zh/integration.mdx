@@ -211,6 +211,26 @@ function selectSettings() {
 </template>
 ```
 
+## Dockview 工作区
+
+可停靠布局通过独立入口接入，避免只使用语义组件的应用下载布局引擎。原生、React 与 Vue 入口重导出上游 MIT API，并共享 `themeA3S` 与版本化持久化。
+
+```ts
+import {
+  DockviewReact,
+  themeA3S,
+  useDockviewLayout,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const layout = useDockviewLayout({
+  key: "product:workspace:v1",
+  initialize: createDefaultWorkspace,
+});
+```
+
+Grid、Split 与 Pane View 分别提供 `useGridview`、`useSplitview` 与 `usePaneview`；Vue 使用同名 composable。它们只暴露真实 API 与就绪状态，不复制宿主布局状态。完整示例、拖放、浮动、Popout、Edge Group、事件与许可边界见 [Dock 工作区](/harness/dock-workspace)。
+
 ## 确定性测试
 
 面向用户的行为优先使用命名角色与标签，结构部件和机器状态则使用生成的选择器。包中通过 `@a3s-lab/ui/a3s-test` 提供一份精简的 A3S Test 示例，并通过 `@a3s-lab/ui/a3s-test/selectors` 提供可导入的选择器辅助函数。

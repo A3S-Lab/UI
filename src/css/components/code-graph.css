@@ -1,6 +1,8 @@
 /* Code Graph */
 @layer components {
   .code-graph {
+    container-name: code-graph;
+    container-type: inline-size;
     display: grid;
     width: 100%;
     min-width: 0;
@@ -72,6 +74,7 @@
     list-style: none;
   }
 
+  .code-graph [data-code-graph-viewport][hidden],
   .code-graph [data-code-graph-list][hidden],
   .code-graph [data-code-edges][hidden] {
     display: none;
@@ -123,7 +126,7 @@
     overflow-wrap: anywhere;
   }
 
-  @media (max-width: 46rem) {
+  @container code-graph (max-width: 46rem) {
     .code-graph [data-code-graph-surface] {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: minmax(20rem, 1fr) auto;

@@ -58,6 +58,9 @@ try {
       "react-dom@19.2.8",
       "@types/react@19.2.17",
       "vue@3.5.41",
+      "dockview@8.1.0",
+      "dockview-react@8.1.0",
+      "dockview-vue@8.1.0",
       "typescript@6.0.3",
       "vite@7.3.6",
     ],
@@ -74,6 +77,15 @@ import { createSSRApp, h } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 import * as VueAdapters from '@a3s-lab/ui/vue';
 import {
+  createDockviewLayoutPersistence,
+  dockviewCommercialOnlyCapabilities,
+  dockviewOpenSourceCapabilities,
+  resetDockviewLayout,
+  themeA3S,
+} from '@a3s-lab/ui/dockview';
+import * as DockviewReactAdapters from '@a3s-lab/ui/dockview/react';
+import * as DockviewVueAdapters from '@a3s-lab/ui/dockview/vue';
+import {
   actionSelector,
   componentSelector,
   partSelector,
@@ -82,6 +94,84 @@ import {
   stateSelector,
 } from '@a3s-lab/ui/a3s-test/selectors';
 import manifest from '@a3s-lab/ui/components.json' with { type: 'json' };
+
+assert.equal(themeA3S.className, 'dockview-theme-a3s');
+assert.equal(typeof DockviewReactAdapters.DockviewReact, 'object');
+assert.equal(typeof DockviewReactAdapters.GridviewReact, 'object');
+assert.equal(typeof DockviewReactAdapters.SplitviewReact, 'object');
+assert.equal(typeof DockviewReactAdapters.PaneviewReact, 'object');
+assert.equal(typeof DockviewVueAdapters.DockviewVue, 'object');
+assert.equal(typeof DockviewVueAdapters.GridviewVue, 'object');
+assert.equal(typeof DockviewVueAdapters.SplitviewVue, 'object');
+assert.equal(typeof DockviewVueAdapters.PaneviewVue, 'object');
+for (const hook of ['useDockviewLayout', 'useGridview', 'useSplitview', 'usePaneview']) {
+  assert.equal(typeof DockviewReactAdapters[hook], 'function');
+  assert.equal(typeof DockviewVueAdapters[hook], 'function');
+}
+assert.ok(dockviewOpenSourceCapabilities.length >= 60);
+assert.ok(dockviewOpenSourceCapabilities.includes('floating-groups'));
+assert.ok(dockviewOpenSourceCapabilities.includes('popout-windows'));
+assert.ok(dockviewOpenSourceCapabilities.includes('gridview'));
+assert.ok(dockviewOpenSourceCapabilities.includes('splitview'));
+assert.ok(dockviewOpenSourceCapabilities.includes('paneview'));
+assert.ok(dockviewCommercialOnlyCapabilities.includes('layout-history'));
+assert.equal(
+  dockviewOpenSourceCapabilities.some((capability) =>
+    dockviewCommercialOnlyCapabilities.includes(capability),
+  ),
+  false,
+);
+
+const dockviewStorageValues = new Map();
+const dockviewStorage = {
+  getItem: key => dockviewStorageValues.get(key) ?? null,
+  removeItem: key => dockviewStorageValues.delete(key),
+  setItem: (key, value) => dockviewStorageValues.set(key, value),
+};
+let restoredDockviewLayout;
+const dockviewLayoutApi = {
+  fromJSON: layout => { restoredDockviewLayout = layout; },
+  onDidLayoutChange: listener => ({ dispose() { void listener; } }),
+  toJSON: () => ({ grid: { root: { type: 'leaf', data: { views: [] } }, width: 0, height: 0 }, panels: {} }),
+};
+const dockviewPersistence = createDockviewLayoutPersistence({
+  debounce: 0,
+  key: 'fixture-layout',
+  storage: dockviewStorage,
+  version: 2,
+});
+assert.equal(dockviewPersistence.save(dockviewLayoutApi), true);
+assert.equal(dockviewPersistence.restore(dockviewLayoutApi).status, 'restored');
+assert.deepEqual(restoredDockviewLayout, dockviewLayoutApi.toJSON());
+dockviewStorage.setItem('fixture-layout', JSON.stringify({ layout: { legacy: true }, version: 1 }));
+const migratedPersistence = createDockviewLayoutPersistence({
+  key: 'fixture-layout',
+  migrate: (_layout, fromVersion, toVersion) => ({ migrated: [fromVersion, toVersion] }),
+  storage: dockviewStorage,
+  validate: layout => Array.isArray(layout?.migrated),
+  version: 2,
+});
+assert.equal(migratedPersistence.restore(dockviewLayoutApi).status, 'restored');
+assert.deepEqual(restoredDockviewLayout, { migrated: [1, 2] });
+const resetOrder = [];
+const resetEdgeGroups = new Set(['bottom', 'left']);
+const resetApi = {
+  clear: () => resetOrder.push('clear'),
+  getEdgeGroup: position => resetEdgeGroups.has(position) ? {} : undefined,
+  removeEdgeGroup: position => {
+    resetOrder.push('remove:' + position);
+    resetEdgeGroups.delete(position);
+  },
+};
+resetDockviewLayout(resetApi, () => resetOrder.push('initialize'));
+assert.deepEqual(resetOrder, [
+  'remove:bottom',
+  'remove:left',
+  'clear',
+  'initialize',
+]);
+const dockviewCss = await readFile(new URL(import.meta.resolve('@a3s-lab/ui/dockview/css')), 'utf8');
+assert.match(dockviewCss, /dockview-theme-a3s/);
 
 const { AgentComposer, Button, TaskWorkspace } = ReactAdapters;
 const {
@@ -287,6 +377,29 @@ import {
   type TabsMethod as VueTabsMethod,
 } from '@a3s-lab/ui/vue';
 import { actionSelector, selectors } from '@a3s-lab/ui/a3s-test/selectors';
+import {
+  DockviewReact,
+  GridviewReact,
+  PaneviewReact,
+  SplitviewReact,
+  themeA3S,
+  useDockviewLayout,
+  useGridview,
+  usePaneview,
+  useSplitview,
+  type DockviewLayoutHandle,
+  type ViewApiHandle,
+} from '@a3s-lab/ui/dockview/react';
+import {
+  DockviewVue,
+  GridviewVue,
+  PaneviewVue,
+  SplitviewVue,
+  useDockviewLayout as useVueDockviewLayout,
+  useGridview as useVueGridview,
+  usePaneview as useVuePaneview,
+  useSplitview as useVueSplitview,
+} from '@a3s-lab/ui/dockview/vue';
 
 const ref = createRef<HTMLElement>();
 const shared: A3SComponentProps = { id: 'root', title: 'Root', 'aria-label': 'Root' };
@@ -340,6 +453,12 @@ void [
 ];
 void actionSelector('agent-composer', 'fill');
 void selectors['task-workspace'].ready;
+void [DockviewReact, GridviewReact, PaneviewReact, SplitviewReact, themeA3S];
+void [DockviewVue, GridviewVue, PaneviewVue, SplitviewVue];
+void [useDockviewLayout, useGridview, usePaneview, useSplitview];
+void [useVueDockviewLayout, useVueGridview, useVuePaneview, useVueSplitview];
+void (null as DockviewLayoutHandle | null);
+void (null as ViewApiHandle<unknown, unknown> | null);
 `;
   await writeFile(path.join(fixtureRoot, "consumer.ts"), typeConsumer);
   await writeFile(
@@ -928,6 +1047,15 @@ window.frameworkConfigure = (prefix, locale, theme) => {
   );
   assert.equal(packageManifest.peerDependenciesMeta.react.optional, true);
   assert.equal(packageManifest.peerDependenciesMeta.vue.optional, true);
+  assert.equal(packageManifest.peerDependenciesMeta.dockview.optional, true);
+  assert.equal(
+    packageManifest.peerDependenciesMeta["dockview-react"].optional,
+    true,
+  );
+  assert.equal(
+    packageManifest.peerDependenciesMeta["dockview-vue"].optional,
+    true,
+  );
   assert.equal(sourceComponents.length, 114);
   console.log(
     "Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.",

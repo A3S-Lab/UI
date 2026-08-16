@@ -131,6 +131,25 @@ window.a3sUI.initAll({ force: true });
 window.a3sUI.refresh(document.querySelector(".split-pane"));
 ```
 
+## Dockview 布局集成
+
+需要可停靠工作区时，安装 Dockview 8.1 的 MIT 包与宿主框架适配器。该集成独立于 114 个语义组件，不会进入默认 CSS 或 JavaScript 运行时。
+
+```bash
+npm install @a3s-lab/ui dockview@8.1.0
+npm install dockview-react@8.1.0 react react-dom # React
+npm install dockview-vue@8.1.0 vue             # Vue
+```
+
+| 导入 | 内容 |
+| --- | --- |
+| `@a3s-lab/ui/dockview` | 原生 Dockview、Gridview、Splitview、Paneview API，A3S 主题与布局持久化 |
+| `@a3s-lab/ui/dockview/react` | 完整 React API、`useDockviewLayout`、`useGridview`、`useSplitview`、`usePaneview` |
+| `@a3s-lab/ui/dockview/vue` | 完整 Vue 3 API与对应 composable |
+| `@a3s-lab/ui/dockview/css` | Dockview 基础样式与 A3S 明暗主题变量 |
+
+完整能力和许可边界见 [Dock 工作区](/harness/dock-workspace)。
+
 ## 服务器渲染模板
 
 可选的 Nunjucks 和 Jinja 模板随软件包一起提供。

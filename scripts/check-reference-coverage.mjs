@@ -55,6 +55,16 @@ const expectedEvidenceKind = new Map([
   ["Host integration", "integration"],
 ]);
 
+function hasFrameworkGuide(guide, framework) {
+  const heading = new RegExp(`^## ${framework}$`, "mu");
+  const tabProp = framework.toLowerCase();
+  const frameworkTabs = new RegExp(
+    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    "u",
+  );
+  return heading.test(guide) || frameworkTabs.test(guide);
+}
+
 const expectedMetadata = `\`${expectedReference.packageName}\` v${expectedReference.version} at revision \`${expectedReference.revision}\``;
 if (!source.includes(expectedMetadata)) {
   throw new Error(
@@ -200,7 +210,10 @@ if (strict) {
           );
           try {
             const guide = await readFile(guidePath, "utf8");
-            if (!/^## React$/mu.test(guide) || !/^## Vue$/mu.test(guide)) {
+            if (
+              !hasFrameworkGuide(guide, "React") ||
+              !hasFrameworkGuide(guide, "Vue")
+            ) {
               evidenceErrors.push(
                 `${row.sourcePath}: ${locale}/${slug} lacks aligned framework guides`,
               );

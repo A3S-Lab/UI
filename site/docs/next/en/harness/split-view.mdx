@@ -1,0 +1,153 @@
+# Split View
+
+Split View arranges continuous resizable regions on one axis. It suits stable compositions such as explorer and editor, document and inspector, or canvas and preview. It intentionally has no tabs, collapsible headers, or two-dimensional docking.
+
+<DockviewDemo mode="split" />
+
+## Framework usage
+
+<FrameworkTabs
+  html={`import {
+  SplitviewPanel,
+  createSplitview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel extends SplitviewPanel {
+  part = {
+    update: parameters => {
+      this.element.textContent = parameters.params.title;
+    },
+    dispose() {},
+  };
+  constructor(id, component) {
+    super(id, component);
+    this.api.initialize(this);
+  }
+  getComponent() { return this.part; }
+}
+
+const root = document.querySelector("#split-view");
+const api = createSplitview(root, {
+  className: themeA3S.className,
+  createComponent: options => new Panel(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+api.addPanel({
+  id: "explorer",
+  component: "panel",
+  minimumSize: 180,
+  params: { title: "Explorer" },
+  size: 240,
+});
+api.addPanel({
+  id: "editor",
+  component: "panel",
+  minimumSize: 320,
+  params: { title: "Editor" },
+  size: 720,
+});`}
+  react={`import {
+  Orientation,
+  SplitviewReact,
+  themeA3S,
+  useSplitview,
+  type ISplitviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ params }: ISplitviewPanelProps<{ title: string }>) => (
+  <section>{params.title}</section>
+);
+
+export function EditorSplit() {
+  const split = useSplitview({
+    onReady({ api }) {
+      api.addPanel({
+        id: "explorer",
+        component: "panel",
+        minimumSize: 180,
+        params: { title: "Explorer" },
+        size: 240,
+      });
+      api.addPanel({
+        id: "editor",
+        component: "panel",
+        minimumSize: 320,
+        params: { title: "Editor" },
+        size: 720,
+      });
+    },
+  });
+  return (
+    <SplitviewReact
+      className={themeA3S.className}
+      components={{ panel: Panel }}
+      onReady={split.onReady}
+      orientation={Orientation.HORIZONTAL}
+      proportionalLayout={false}
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  Orientation,
+  SplitviewVue,
+  themeA3S,
+  useSplitview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.title }}</section>",
+});
+const split = useSplitview({
+  onReady({ api }) {
+    api.addPanel({
+      id: "explorer",
+      component: "panel",
+      minimumSize: 180,
+      params: { title: "Explorer" },
+      size: 240,
+    });
+    api.addPanel({
+      id: "editor",
+      component: "panel",
+      minimumSize: 320,
+      params: { title: "Editor" },
+      size: 720,
+    });
+  },
+});
+</script>
+
+<template>
+  <SplitviewVue
+    :class="themeA3S.className"
+    :components="{ panel: Panel }"
+    :orientation="Orientation.HORIZONTAL"
+    :proportional-layout="false"
+    @ready="split.onReady"
+  />
+</template>`}
+/>
+
+React `useSplitview` and the Vue composable expose the native `SplitviewApi`; they do not duplicate size, order, or business state.
+
+## Sizing strategy
+
+- Give context rails an explicit initial size and useful `minimumSize`, then let the primary canvas absorb remaining space.
+- Enable `proportionalLayout` when regions should scale with the container. Keep it off when tool widths must remain stable.
+- Loading, error, and empty states inside remote content must not restructure the split, or spatial memory will drift.
+- Do not squeeze three regions into one narrow row. Switching to one panel, tabs, or a drawer is a host-level responsive decision.
+
+## Lifecycle
+
+Use `addPanel()`, `removePanel()`, `movePanel()`, and panel APIs for order, size, and visibility. Vanilla integrations pass container measurements to `api.layout()` through `ResizeObserver`; React and Vue adapters observe their component container.
+
+## Accessibility
+
+A splitter changes layout; it is not navigation. Titles, landmarks, and focus order still come from panel content. If keyboard resizing is unavailable for a frequent task, provide equivalent size presets or a Reset layout action.

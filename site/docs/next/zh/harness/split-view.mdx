@@ -1,0 +1,153 @@
+# Split View
+
+Split View 在一条轴上排列可调整大小的连续区域。它适合文件树与编辑器、正文与检查器、画布与预览等稳定分栏；不提供标签、折叠标题或二维停靠。
+
+<DockviewDemo mode="split" />
+
+## 框架用法
+
+<FrameworkTabs
+  html={`import {
+  SplitviewPanel,
+  createSplitview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel extends SplitviewPanel {
+  part = {
+    update: parameters => {
+      this.element.textContent = parameters.params.title;
+    },
+    dispose() {},
+  };
+  constructor(id, component) {
+    super(id, component);
+    this.api.initialize(this);
+  }
+  getComponent() { return this.part; }
+}
+
+const root = document.querySelector("#split-view");
+const api = createSplitview(root, {
+  className: themeA3S.className,
+  createComponent: options => new Panel(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+api.addPanel({
+  id: "explorer",
+  component: "panel",
+  minimumSize: 180,
+  params: { title: "资源管理器" },
+  size: 240,
+});
+api.addPanel({
+  id: "editor",
+  component: "panel",
+  minimumSize: 320,
+  params: { title: "编辑器" },
+  size: 720,
+});`}
+  react={`import {
+  Orientation,
+  SplitviewReact,
+  themeA3S,
+  useSplitview,
+  type ISplitviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ params }: ISplitviewPanelProps<{ title: string }>) => (
+  <section>{params.title}</section>
+);
+
+export function EditorSplit() {
+  const split = useSplitview({
+    onReady({ api }) {
+      api.addPanel({
+        id: "explorer",
+        component: "panel",
+        minimumSize: 180,
+        params: { title: "资源管理器" },
+        size: 240,
+      });
+      api.addPanel({
+        id: "editor",
+        component: "panel",
+        minimumSize: 320,
+        params: { title: "编辑器" },
+        size: 720,
+      });
+    },
+  });
+  return (
+    <SplitviewReact
+      className={themeA3S.className}
+      components={{ panel: Panel }}
+      onReady={split.onReady}
+      orientation={Orientation.HORIZONTAL}
+      proportionalLayout={false}
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  Orientation,
+  SplitviewVue,
+  themeA3S,
+  useSplitview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.title }}</section>",
+});
+const split = useSplitview({
+  onReady({ api }) {
+    api.addPanel({
+      id: "explorer",
+      component: "panel",
+      minimumSize: 180,
+      params: { title: "资源管理器" },
+      size: 240,
+    });
+    api.addPanel({
+      id: "editor",
+      component: "panel",
+      minimumSize: 320,
+      params: { title: "编辑器" },
+      size: 720,
+    });
+  },
+});
+</script>
+
+<template>
+  <SplitviewVue
+    :class="themeA3S.className"
+    :components="{ panel: Panel }"
+    :orientation="Orientation.HORIZONTAL"
+    :proportional-layout="false"
+    @ready="split.onReady"
+  />
+</template>`}
+/>
+
+React `useSplitview` 与 Vue composable 暴露原生 `SplitviewApi`，不会复制尺寸、顺序或业务状态。
+
+## 尺寸策略
+
+- 上下文栏使用明确初始尺寸和合理 `minimumSize`，主画布吸收剩余空间。
+- 需要按容器比例缩放时开启 `proportionalLayout`；工具栏宽度必须稳定时保持关闭。
+- 远程内容加载、错误或空状态不得改变分栏结构，否则用户的空间记忆会持续漂移。
+- 在窄屏不应把三个区域压到同一行。改为单面板、标签或抽屉，是宿主的响应式编排责任。
+
+## 生命周期
+
+面板通过 `addPanel()`、`removePanel()`、`movePanel()` 和面板 API 管理顺序、尺寸与可见性。原生入口需用 `ResizeObserver` 把容器尺寸传给 `api.layout()`；React 和 Vue 适配器会处理组件容器布局。
+
+## 无障碍
+
+分隔条是调整布局的工具，不是导航。面板标题、地标和焦点顺序仍应来自内容本身。键盘无法操作的高频调整必须提供等效的尺寸预设或“恢复默认布局”动作。

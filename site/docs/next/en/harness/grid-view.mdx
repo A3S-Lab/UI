@@ -1,0 +1,152 @@
+# Grid View
+
+Grid View is a two-dimensional resizable grid without tab strips or panel drag and drop. Use it when product structure is fixed and users only resize regions, such as an analysis surface, monitor, or canvas. Use [Dock Workspace](/harness/dock-workspace) when users need to add, close, or re-dock panels dynamically.
+
+<DockviewDemo mode="grid" />
+
+## Framework usage
+
+<FrameworkTabs
+  html={`import {
+  GridviewPanel,
+  Orientation,
+  createGridview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel extends GridviewPanel {
+  part = {
+    update: parameters => {
+      this.element.textContent = parameters.params.title;
+    },
+    dispose() {},
+  };
+  constructor(id, component) {
+    super(id, component);
+    this.api.initialize(this);
+  }
+  getComponent() { return this.part; }
+}
+
+const root = document.querySelector("#grid-view");
+const api = createGridview(root, {
+  className: themeA3S.className,
+  orientation: Orientation.VERTICAL,
+  createComponent: options => new Panel(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+
+const canvas = api.addPanel({
+  id: "canvas",
+  component: "panel",
+  params: { title: "Canvas" },
+});
+api.addPanel({
+  id: "preview",
+  component: "panel",
+  params: { title: "Preview" },
+  position: { direction: "right", referencePanel: canvas.id },
+});`}
+  react={`import {
+  GridviewReact,
+  Orientation,
+  themeA3S,
+  useGridview,
+  type IGridviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ params }: IGridviewPanelProps<{ title: string }>) => (
+  <section>{params.title}</section>
+);
+
+export function AnalysisGrid() {
+  const grid = useGridview({
+    onReady({ api }) {
+      const canvas = api.addPanel({
+        id: "canvas",
+        component: "panel",
+        params: { title: "Canvas" },
+      });
+      api.addPanel({
+        id: "preview",
+        component: "panel",
+        params: { title: "Preview" },
+        position: { direction: "right", referencePanel: canvas.id },
+      });
+    },
+  });
+  return (
+    <GridviewReact
+      className={themeA3S.className}
+      components={{ panel: Panel }}
+      onReady={grid.onReady}
+      orientation={Orientation.VERTICAL}
+      proportionalLayout
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  GridviewVue,
+  Orientation,
+  themeA3S,
+  useGridview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.title }}</section>",
+});
+const grid = useGridview({
+  onReady({ api }) {
+    const canvas = api.addPanel({
+      id: "canvas",
+      component: "panel",
+      params: { title: "Canvas" },
+    });
+    api.addPanel({
+      id: "preview",
+      component: "panel",
+      params: { title: "Preview" },
+      position: { direction: "right", referencePanel: canvas.id },
+    });
+  },
+});
+</script>
+
+<template>
+  <GridviewVue
+    :class="themeA3S.className"
+    :components="{ panel: Panel }"
+    :orientation="Orientation.VERTICAL"
+    :proportional-layout="true"
+    @ready="grid.onReady"
+  />
+</template>`}
+/>
+
+React `useGridview` returns `api`, `ready`, and a stable `onReady`; the Vue composable returns an `api` shallow ref and `onReady`. They manage instance readiness only, leaving every layout operation on the native `GridviewApi`.
+
+## Selection guide
+
+| Requirement | Choose |
+| --- | --- |
+| Continuous regions on one axis | [Split View](/harness/split-view) |
+| Fixed two-dimensional grid without tabs or DnD | Grid View |
+| Collapsible tool regions | [Pane View](/harness/pane-view) |
+| User-managed add, close, dock, float, and popout | [Dock Workspace](/harness/dock-workspace) |
+
+## API and state
+
+- `addPanel()`, `removePanel()`, `movePanel()`, and directional placement change structure.
+- Panel APIs own size constraints, active state, and visibility; the host owns data inside each panel.
+- `proportionalLayout` suits regions that scale with the container. Fixed tools need explicit sizes and minimum constraints.
+- The vanilla entrypoint must call `layout(width, height)` before its first panel and again after container resize.
+
+## Accessibility
+
+Splitters need visible affordance, while panel content retains ordinary document or application semantics. Keep labels that are necessary for understanding inside each panel, and assign only one scroll owner to a region.

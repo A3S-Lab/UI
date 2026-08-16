@@ -118,13 +118,15 @@ function localizedItems(language: CatalogLanguage) {
       })),
   );
   const harnessItems = metadataGroups(metadata.harness).flatMap((group) =>
-    group.items.map((item) => ({
-      filterKey: "harness",
-      filterLabel: "Harness",
-      groupLabel: group.label,
-      label: item.label,
-      link: item.link,
-    })),
+    group.items
+      .filter((item) => item.link.startsWith("components/"))
+      .map((item) => ({
+        filterKey: "harness",
+        filterLabel: "Harness",
+        groupLabel: group.label,
+        label: item.label,
+        link: item.link,
+      })),
   );
 
   return [...componentItems, ...harnessItems];
@@ -192,7 +194,7 @@ export function catalogGroups(
         ? language === "zh"
           ? "覆盖任务、对话、执行、审阅、证据与开发工具。"
           : "Cover tasks, conversation, execution, review, evidence, and developer tooling."
-        : descriptionsByLanguage[language][componentIndex] ?? "";
+        : (descriptionsByLanguage[language][componentIndex] ?? "");
 
     groups.set(record.filterKey, {
       description,
@@ -205,10 +207,7 @@ export function catalogGroups(
   return [...groups.values()];
 }
 
-export function findCatalogRecord(
-  language: CatalogLanguage,
-  slug: string,
-) {
+export function findCatalogRecord(language: CatalogLanguage, slug: string) {
   return catalogRecords(language).find((record) => record.slug === slug);
 }
 

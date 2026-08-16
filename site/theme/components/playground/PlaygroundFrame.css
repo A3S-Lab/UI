@@ -1,442 +1,195 @@
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__device {
-  width: min(100%, 48rem);
-  aspect-ratio: 768 / 1024;
-  border: 0.375rem solid #171a22;
-  border-radius: 1.5rem;
-  grid-template-rows: 1.875rem minmax(0, 1fr);
-  box-shadow:
-    0 1.75rem 4rem rgb(15 23 42 / 18%),
-    inset 0 0 0 1px rgb(255 255 255 / 8%);
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__device {
-  width: min(100%, 24.375rem);
-  aspect-ratio: 390 / 844;
-  border: 0.4375rem solid #14171e;
-  border-radius: 2.375rem;
-  grid-template-rows: 1.875rem minmax(0, 1fr);
-  background: #14171e;
-  box-shadow:
-    0 1.75rem 4rem rgb(15 23 42 / 22%),
-    inset 0 0 0 1px rgb(255 255 255 / 10%);
-}
-
-.a3s-workspace-playground__windowbar {
-  display: grid;
+.workbench-dock {
+  position: relative;
   min-width: 0;
-  padding: 0 0.75rem;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  border-block-end: 1px solid var(--ui-line);
-  background: var(--ui-paper);
-  color: var(--ui-muted);
-}
-
-.a3s-workspace-playground__windowbar > span {
-  display: flex;
-  gap: 0.3rem;
-}
-
-.a3s-workspace-playground__windowbar > span i {
-  width: 0.45rem;
-  height: 0.45rem;
-  border: 1px solid var(--ui-line-strong);
-  border-radius: 50%;
-  background: var(--ui-panel);
-}
-
-.a3s-workspace-playground__windowbar > div {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-}
-
-.a3s-workspace-playground__windowbar img {
-  width: 1.125rem;
-  height: 1.125rem;
-  border-radius: 0.25rem;
-}
-
-.a3s-workspace-playground__windowbar small {
-  justify-self: end;
-  font-family: var(--ui-mono);
-  font-size: 0.6875rem;
-}
-
-.a3s-workspace-playground__shell.app-shell {
-  --app-shell-height: 100%;
-  --app-shell-min-height: 0;
-  --app-shell-navigation-size: 8.75rem;
-  --app-shell-navigation-max-size: 10rem;
-  height: 100%;
   min-height: 0;
-  border: 0;
-  border-radius: 0;
-  font-size: 0.8125rem;
+  overflow: hidden;
+  background: var(--ui-paper, var(--a3s-panel));
 }
 
-.a3s-workspace-playground__shell > [data-app-navigation] {
-  display: flex;
-  min-height: 0;
-  padding: 0.5rem;
-  flex-direction: column;
-  gap: 0.5rem;
-  background: var(--sidebar, var(--muted));
-}
-
-.a3s-workspace-playground__shell > [data-app-navigation] > header {
-  display: flex;
-  min-height: 2.25rem;
-  padding: 0 0.375rem;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--foreground);
-  font-size: 0.8125rem;
-}
-
-.a3s-workspace-playground__shell > [data-app-navigation] img {
-  width: 1.625rem;
-  height: 1.625rem;
-  border-radius: 0.375rem;
-}
-
-.a3s-workspace-playground__shell > [data-app-navigation] nav {
-  display: grid;
-  min-height: 0;
-  align-content: start;
-  flex: 1;
-  gap: 0.1875rem;
-  overflow-y: auto;
-}
-
-.a3s-workspace-playground__shell > [data-app-navigation] button {
-  display: flex;
+.workbench-dock > .dockview-theme-a3s,
+.workbench-dock .dv-dockview {
   width: 100%;
+  height: 100%;
   min-width: 0;
-  min-height: 2rem;
-  padding: 0 0.5rem;
-  border: 1px solid transparent;
-  border-radius: 0.4375rem;
+  min-height: 0;
+}
+
+.workbench-dock .dockview-theme-a3s {
+  --a3s-bg: var(--ui-canvas, var(--background));
+  --a3s-panel: var(--ui-paper, var(--card));
+  --a3s-panel-soft: var(--ui-panel, var(--muted));
+  --a3s-panel-strong: var(--ui-panel-raised, var(--secondary));
+  --a3s-ink: var(--ui-ink, var(--foreground));
+  --a3s-muted: var(--ui-muted, var(--muted-foreground));
+  --a3s-faint: var(--ui-faint, var(--muted-foreground));
+  --a3s-line: var(--ui-line, var(--border));
+  --a3s-line-strong: var(--ui-line-strong, var(--border));
+  --a3s-blue: var(--ui-blue, var(--primary));
+  --a3s-green: var(--ui-green, #16845b);
+  --a3s-purple: var(--ui-purple, #5b57d9);
+  --a3s-orange: var(--ui-amber, #a86412);
+  --a3s-red: var(--ui-red, #c93d45);
+  --a3s-shadow: var(--ui-shadow-floating, 0 12px 28px -14px rgb(0 0 0 / 42%));
+}
+
+.workbench-dock .dv-tabs-and-actions-container {
+  border-block-end: 1px solid var(--ui-line, var(--a3s-line));
+}
+
+.workbench-dock .dv-default-tab-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workbench-dock .dv-resize-container > .dv-grid-view,
+.workbench-dock .dv-groupview,
+.workbench-dock .dv-content-container {
+  min-width: 0;
+  min-height: 0;
+}
+
+.workbench-layout-menu {
+  position: relative;
+  height: 1.875rem;
+}
+
+.workbench-layout-menu > summary {
+  display: inline-flex;
+  height: 100%;
+  list-style: none;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  user-select: none;
+}
+
+.workbench-layout-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.workbench-layout-menu > div {
+  position: absolute;
+  z-index: 1600;
+  inset-block-start: calc(100% + 0.375rem);
+  inset-inline-end: 0;
+  display: grid;
+  width: 17.5rem;
+  padding: 0.375rem;
+  border: 1px solid var(--ui-line-strong, var(--a3s-line-strong));
+  border-radius: 0.625rem;
+  background: var(--ui-paper, var(--a3s-panel));
+  box-shadow: var(--ui-shadow-floating, var(--a3s-shadow-soft));
+}
+
+.workbench-layout-menu section {
+  display: grid;
+  padding: 0.25rem;
+  gap: 0.125rem;
+}
+
+.workbench-layout-menu section + section {
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid var(--ui-line, var(--a3s-line));
+}
+
+.workbench-layout-menu section > strong {
+  padding: 0.375rem 0.5rem 0.25rem;
+  color: var(--ui-faint, var(--a3s-faint));
+  font-size: 0.625rem;
+  font-weight: 680;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.workbench-layout-menu section > button {
+  display: flex;
+  min-height: 2rem;
+  padding-inline: 0.5rem;
+  border: 0;
+  border-radius: 0.375rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   background: transparent;
-  color: var(--muted-foreground);
+  color: var(--ui-ink, var(--a3s-ink));
   cursor: pointer;
   font-size: 0.75rem;
   text-align: start;
 }
 
-.a3s-workspace-playground__shell > [data-app-navigation] button:hover {
-  background: var(--sidebar-accent, var(--accent));
-  color: var(--foreground);
+.workbench-layout-menu section > button:hover {
+  background: var(--ui-panel, var(--a3s-panel-soft));
 }
 
-.a3s-workspace-playground__shell
-  > [data-app-navigation]
-  button[aria-current="page"] {
-  border-color: color-mix(in srgb, var(--primary) 14%, var(--border));
-  background: color-mix(in srgb, var(--primary) 9%, transparent);
-  color: var(--primary);
-  font-weight: 650;
+.workbench-layout-menu section > button[data-danger] {
+  color: var(--ui-red, var(--a3s-red));
 }
 
-.a3s-workspace-playground__shell > [data-app-navigation] footer {
-  padding-block-start: 0.5rem;
-  border-block-start: 1px solid var(--border);
-}
-
-.a3s-workspace-playground__shell > [data-app-main] {
-  position: relative;
-  min-width: 0;
+.playground-device-preview {
+  height: 100%;
   min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-.a3s-workspace-playground__shell .workspace-header {
-  --workspace-header-height: 3.25rem;
-  flex: none;
+.playground-device-preview > header {
+  padding: 0.5rem;
   gap: 0.5rem;
 }
 
-.a3s-workspace-playground__shell
-  .workspace-header
-  [data-app-navigation-trigger] {
-  display: none;
+.playground-device-preview [data-device-simulator-toolbar] {
+  grid-template-columns: minmax(10rem, 1fr) auto auto auto;
+  gap: 0.5rem;
 }
 
-.a3s-workspace-playground__shell .workspace-header [data-workspace-title] {
-  display: block;
-  overflow: hidden;
-  color: var(--foreground);
-  font-size: 0.875rem;
-  font-weight: 680;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.playground-device-preview [data-device-simulator-dimensions] input {
+  width: 4rem;
+  min-height: 1.75rem;
 }
 
-.a3s-workspace-playground__shell .workspace-header [data-workspace-actions] {
-  gap: 0.375rem;
+.playground-device-preview :is(select, input, button) {
+  min-height: 1.75rem;
+  font-size: 0.6875rem;
 }
 
-.a3s-workspace-playground__content {
-  position: relative;
-  display: grid;
-  min-width: 0;
+.playground-device-preview [data-device-simulator-workspace] {
   min-height: 0;
-  flex: 1;
-  overflow: hidden;
-  background: var(--background);
+  max-height: none;
+  padding: 1rem;
 }
 
-.a3s-workspace-playground__shell .status-bar {
-  min-height: 1.625rem;
-  flex: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__shell.app-shell {
-  --app-shell-navigation-size: 3.25rem;
-  --app-shell-navigation-max-size: 3.25rem;
-}
-
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation] {
-  position: static;
-  width: auto;
-  padding-inline: 0.375rem;
-  clip-path: none;
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  transition: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation]
-  :is(strong, button span) {
-  display: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation]
-  :is(header, button) {
-  justify-content: center;
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar {
-  min-height: 1.875rem;
-  padding-inline: 0.625rem;
-  border-block-end: 0;
-  background: var(--background);
-  color: var(--foreground);
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  > span {
-  position: relative;
-  min-width: 2.5rem;
-  min-height: 1rem;
-  align-items: center;
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  > span
-  i {
-  display: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  > span::after {
-  content: "9:41";
+.playground-device-preview > footer {
+  min-height: 2rem;
+  padding: 0.375rem 0.625rem;
+  border-block-start: 1px solid var(--ui-line, var(--a3s-line));
   font-size: 0.625rem;
-  font-weight: 680;
-  letter-spacing: -0.02em;
 }
 
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  > div {
-  width: 4.5rem;
-  height: 1rem;
-  border-radius: 999px;
-  background: #090b0f;
-  justify-self: center;
+.playground-device-preview > footer code {
+  font-size: 0.625rem;
 }
 
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  > div
-  > * {
-  display: none;
+.workbench-watermark {
+  display: grid;
+  height: 100%;
+  min-height: 12rem;
+  padding: 2rem;
+  align-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  color: var(--ui-faint, var(--a3s-faint));
+  text-align: center;
 }
 
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  small {
-  position: relative;
-  display: block;
-  width: 1rem;
-  height: 0.5rem;
-  margin-inline-end: 0.125rem;
-  border: 1px solid currentColor;
-  border-radius: 0.125rem;
-  font-size: 0;
-  opacity: 0.78;
+.workbench-watermark strong {
+  color: var(--ui-ink, var(--a3s-ink));
+  font-size: 0.875rem;
 }
 
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  small::before {
-  position: absolute;
-  inset: 1px 2px 1px 1px;
-  border-radius: 1px;
-  background: currentColor;
-  content: "";
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__windowbar
-  small::after {
-  position: absolute;
-  inset-block: 0.125rem;
-  inset-inline-end: -0.1875rem;
-  width: 0.125rem;
-  border-radius: 0 1px 1px 0;
-  background: currentColor;
-  content: "";
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell.app-shell {
-  --app-shell-navigation-size: 10.75rem;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation] {
-  position: absolute;
-  z-index: 30;
-  inset: 0 auto 0 0;
-  width: min(10.75rem, calc(100% - 2.75rem));
-  border-inline-end: 1px solid var(--border);
-  clip-path: none;
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  box-shadow: 1rem 0 2rem rgb(20 24 40 / 22%);
-  transition: none;
-}
-
-.a3s-workspace-playground[dir="rtl"][data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation] {
-  inset: 0 0 0 auto;
-  box-shadow: -1rem 0 2rem rgb(20 24 40 / 22%);
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell
-  > [data-app-navigation][hidden] {
-  display: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="tablet"]
-  .a3s-workspace-playground__shell::after,
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell::after {
-  display: none;
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .a3s-workspace-playground__shell
-  .workspace-header
-  [data-app-navigation-trigger] {
-  display: inline-flex;
-}
-
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .workspace-header
-  [data-workspace-identity]
-  > span,
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .workspace-header
-  .status-badge,
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .status-bar
-  [data-status-info]
-  > :nth-child(2),
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .status-bar
-  [data-status-actions]
-  > :last-child,
-.a3s-workspace-playground[data-playground-viewport="phone"]
-  .status-bar
-  [data-status-actions]
-  > hr {
-  display: none;
-}
-
-@media (max-width: 48rem) {
-  .a3s-workspace-playground__header {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.875rem;
-  }
-
-  .a3s-workspace-playground__header output {
-    min-height: 0;
-  }
-
-  .a3s-workspace-playground__options {
-    align-items: stretch;
-  }
-
-  .a3s-workspace-playground__options > label {
-    flex: 1;
-  }
-
-  .a3s-workspace-playground__utility {
-    min-height: 2.75rem;
-  }
-}
-
-@media (max-width: 30rem) {
-  .a3s-workspace-playground {
-    margin-block-start: 1.5rem;
-  }
-
-  .a3s-workspace-playground__options fieldset,
-  .a3s-workspace-playground__options > label {
-    width: 100%;
-  }
-
-  .a3s-workspace-playground__options fieldset > div {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .a3s-workspace-playground__stage {
-    padding: 0.375rem;
-    border-radius: 0.75rem;
-  }
-
-  .a3s-workspace-playground__device {
-    border-radius: 0.875rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .a3s-workspace-playground__device {
-    transition: none;
-  }
+.workbench-watermark p {
+  max-width: 28rem;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
 }

@@ -81,6 +81,8 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Harness              | Task Start, Task Workspace, Agent Composer, Agent Transcript, Agent Workbench, Context Selector, Message Status, Message Attachment, Message Citation, Follow-up Suggestions, Task Plan, Plan Step, Task Queue, Approval Request, Execution Item, Checkpoint, Tool Call, Change Review, Execution Evidence, Artifact Card, File Explorer, Code Editor, Terminal, Log Viewer, and Device Simulator |
 | Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                                    |
 
+The optional Dockview integration sits beside the semantic manifest and adds Dock Workspace, Grid View, Split View, and Pane View without changing the 114-component count. It re-exports the complete Dockview 8.1 MIT surface for native TypeScript, React, and Vue, then adds A3S theme tokens, versioned layout persistence, and an Edge Group-safe layout reset.
+
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Preview stages derive the correct control, content, overlay, or workspace layout, while phone and tablet modes run in isolated CSS viewports so responsive media queries use the selected width. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
 ## Design foundations
@@ -115,6 +117,12 @@ Harness
 ├── Approval Request + Execution Item + Tool Call
 ├── Change Review + Execution Evidence + Artifact Card + Checkpoint
 └── File Explorer + Code Editor + Terminal + Log Viewer + Device Simulator
+
+Dockview integration
+├── Dock Workspace + Tabs + Tab Groups + Edge Groups
+├── Floating Groups + Popout Windows + maximize/restore
+├── Save/restore + custom state + complete event API
+└── Grid View + Split View + Pane View
 ```
 
 These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320–380-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
@@ -156,6 +164,10 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/a3s-test/selectors`    | Component, part, action, ready, and state selector helpers                                                                   |
 | `@a3s-lab/ui/react`                 | Optional thin React adapters and typed controller hooks; React remains a peer dependency                                     |
 | `@a3s-lab/ui/vue`                   | Optional thin Vue adapters and typed controller composables; Vue remains a peer dependency                                   |
+| `@a3s-lab/ui/dockview`              | Complete native Dockview, Gridview, Splitview, and Paneview APIs plus A3S theme and persistence                              |
+| `@a3s-lab/ui/dockview/react`        | Complete React Dockview API plus layout and view hooks                                                                       |
+| `@a3s-lab/ui/dockview/vue`          | Complete Vue 3 Dockview API plus matching composables                                                                        |
+| `@a3s-lab/ui/dockview/css`          | Dockview base CSS and A3S light/dark theme variables                                                                         |
 | `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.

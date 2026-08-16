@@ -67,6 +67,13 @@ const requiredFiles = [
   "dist/frameworks/react.d.ts",
   "dist/frameworks/vue.js",
   "dist/frameworks/vue.d.ts",
+  "dist/integrations/dockview/shared.js",
+  "dist/integrations/dockview/shared.d.ts",
+  "dist/integrations/dockview/react.js",
+  "dist/integrations/dockview/react.d.ts",
+  "dist/integrations/dockview/vue.js",
+  "dist/integrations/dockview/vue.d.ts",
+  "dist/integrations/dockview/a3s.css",
 ];
 
 for (const requiredFile of requiredFiles) {

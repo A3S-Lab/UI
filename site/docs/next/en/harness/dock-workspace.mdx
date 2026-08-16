@@ -1,0 +1,203 @@
+# Dock Workspace
+
+Dock Workspace is for professional applications that continuously rearrange context, a primary canvas, inspectors, previews, and output. A3S UI re-exports the complete Dockview 8.1.0 MIT API and adds an A3S theme, versioned layout persistence, and React/Vue hooks. The host still owns panel content, permissions, data, and window policy.
+
+<DockviewDemo mode="dock" />
+
+## Installation
+
+Install the adapter used by the host. Vanilla JavaScript needs only `dockview`; React and Vue use the official framework packages.
+
+```bash
+npm install @a3s-lab/ui dockview@8.1.0
+npm install dockview-react@8.1.0 react react-dom # React
+npm install dockview-vue@8.1.0 vue             # Vue
+```
+
+```css
+@import "@a3s-lab/ui/dockview/css";
+```
+
+The container needs a computed width and height. Do not use panel layout as a replacement for business routing; persist only user-recoverable view state.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`import {
+  createDockview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel {
+element = document.createElement("section");
+init(parameters) {
+this.element.className = "workspace-panel";
+this.element.textContent = parameters.title ?? parameters.params.title;
+}
+dispose() {}
+}
+
+const api = createDockview(document.querySelector("#workspace"), {
+createComponent: () => new Panel(),
+theme: themeA3S,
+});
+
+api.addPanel({ id: "task", component: "panel", title: "Task" });
+api.addPanel({
+id: "editor",
+component: "panel",
+title: "Editor",
+position: { direction: "right", referencePanel: "task" },
+});
+
+const dispose = api.onDidLayoutChange(() => {
+localStorage.setItem("workspace-layout", JSON.stringify(api.toJSON()));
+});`}
+  react={`import { useCallback } from "react";
+import {
+DockviewReact,
+themeA3S,
+useDockviewLayout,
+type DockviewApi,
+type IDockviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ api }: IDockviewPanelProps) => <section>{api.title}</section>;
+const components = { panel: Panel };
+
+export function Workspace() {
+  const initialize = useCallback((api: DockviewApi) => {
+    api.addPanel({ id: "task", component: "panel", title: "Task" });
+    api.addPanel({
+      id: "editor",
+      component: "panel",
+      title: "Editor",
+      position: { direction: "right", referencePanel: "task" },
+    });
+  }, []);
+  const layout = useDockviewLayout({
+    initialize,
+    key: "product:workspace:v1",
+    version: 1,
+  });
+
+return (
+<section className="workspace-layout">
+<DockviewReact components={components} onReady={layout.onReady} theme={themeA3S} />
+<button type="button" onClick={layout.reset}>Reset layout</button>
+</section>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent, type PropType } from "vue";
+import {
+DockviewVue,
+themeA3S,
+useDockviewLayout,
+type DockviewApi,
+type IDockviewVuePanelProps,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+props: {
+params: { type: Object as PropType<IDockviewVuePanelProps>, required: true },
+},
+template: "<section>{{ params.api.title }}</section>",
+});
+const components = { panel: Panel };
+const layout = useDockviewLayout({
+key: "product:workspace:v1",
+version: 1,
+initialize(api: DockviewApi) {
+api.addPanel({ id: "task", component: "panel", title: "Task" });
+api.addPanel({
+id: "editor",
+component: "panel",
+title: "Editor",
+position: { direction: "right", referencePanel: "task" },
+});
+},
+});
+
+</script>
+
+<template>
+  <section class="workspace-layout">
+    <DockviewVue :components="components" :theme="themeA3S" @ready="layout.onReady" />
+    <button type="button" @click="layout.reset">Reset layout</button>
+  </section>
+</template>`}
+/>
+
+`useDockviewLayout` restores a versioned snapshot when the layout becomes ready, creates the default layout after an unsuccessful restore, and debounce-saves subsequent changes. It returns `api`, `status`, `save()`, `restore()`, `clear()`, and `reset()`. The reset path removes retained Edge Group slots before rebuilding the default layout; native integrations can call `resetDockviewLayout(api, initialize)` for the same behavior. Supply `migrate` and `validate` for older snapshots; never place business data in a layout snapshot.
+
+## MIT capability coverage
+
+| Area                | Integrated capabilities                                                                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Layout              | Dockable two-dimensional grid, nested layouts, resizable splitters, size constraints, auto-resize, borderless mode, and watermark                          |
+| Tabs and headers    | Header position, headerless groups, full-width single tab, custom tabs, action slots, overflow menu, animated dragging, Tab Groups, and custom Group Chips |
+| Drag and drop       | Tab and group DnD, external DnD, touch and pen, per-feature opt-out, edge targets, backend strategy, custom overlay, and custom drag preview               |
+| Groups and windows  | Floating Groups, bounds, custom drag handle, Popout Windows, custom popout URL, Edge Groups, locked groups, maximize, and restore                          |
+| State               | `toJSON()` / `fromJSON()`, full layout state, custom panel parameters, empty state, versioned migration, and local persistence                             |
+| Rendering and theme | Render modes, custom scrollbars, strict CSP, built-in themes, CSS variables, tab-group palette, and Shadow DOM                                             |
+| API and events      | Programmatic add/remove/move, directional placement, panel and group APIs, active-panel tracking, lifecycle events, runtime options, and custom UI strings |
+| Accessibility       | ARIA, screen-reader announcements, visible focus, and baseline keyboard focus navigation                                                                   |
+| Standalone views    | [Grid View](/harness/grid-view), [Split View](/harness/split-view), and [Pane View](/harness/pane-view)                                                    |
+| Frameworks          | Vanilla TypeScript/JavaScript, React, and Vue 3                                                                                                            |
+
+## Essential orchestration
+
+### Edge, floating, popout, and maximize
+
+```ts
+const explorer = api.addEdgeGroup("left", {
+  id: "explorer-edge",
+  initialSize: 240,
+  collapsedSize: 34,
+});
+api.addPanel({
+  id: "files",
+  component: "explorer",
+  position: { referenceGroup: explorer.id },
+});
+
+api.addFloatingGroup(api.getPanel("inspector"), {
+  width: 320,
+  height: 440,
+  position: { right: 24, top: 56 },
+});
+await api.addPopoutGroup(api.getPanel("preview"));
+api.activePanel?.api.maximize();
+api.activePanel?.api.exitMaximized();
+```
+
+### External drag and events
+
+External resources must pass host authorization before a panel is created. `onWillDrop` may reject a target; `onDidDrop` records only a completed result.
+
+```tsx
+<DockviewReact
+  components={components}
+  onReady={layout.onReady}
+  onWillDrop={(event) => {
+    if (!canOpenResource(event)) event.preventDefault();
+  }}
+  onDidDrop={(event) => auditLayoutDrop(event)}
+/>
+```
+
+## Licence boundary
+
+These entrypoints depend only on the MIT edition and do not reproduce commercial modules. Advanced overflow, multi-row tabs, pinned tabs, tab and Group Chip context menus, DnD compass, Smart Guides, auto-hide Edge Groups, automatic edge docking, layout history, spatial keyboard navigation, and keyboard docking are outside this integration. Evaluate the upstream commercial licence when those capabilities are required.
+
+## Product and accessibility requirements
+
+- Give every panel a stable ID, understandable title, and explicit scroll owner; position must not carry the only meaning.
+- A blocked popout must preserve the original panel and provide a retry path.
+- Persistence failure must not block dragging or resizing; failed restoration falls back to a usable default layout.
+- Custom tabs, header actions, and panel content need visible focus and accessible names.
+- Touch targets need sufficient size. On narrow screens, merge complex panes into a tab group instead of squeezing unreadable columns.

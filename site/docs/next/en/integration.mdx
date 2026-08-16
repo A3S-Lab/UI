@@ -213,6 +213,26 @@ function selectSettings() {
 </template>
 ```
 
+## Dockview workspace
+
+Dockable layouts use separate entrypoints so applications that only need semantic components do not download a layout engine. Vanilla, React, and Vue entrypoints re-export the upstream MIT API and share `themeA3S` plus versioned persistence.
+
+```ts
+import {
+  DockviewReact,
+  themeA3S,
+  useDockviewLayout,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const layout = useDockviewLayout({
+  key: "product:workspace:v1",
+  initialize: createDefaultWorkspace,
+});
+```
+
+Grid, Split, and Pane View expose `useGridview`, `useSplitview`, and `usePaneview`; Vue uses matching composables. They expose the real API and readiness state without duplicating host layout state. See [Dock Workspace](/harness/dock-workspace) for complete examples, DnD, floating and popout groups, Edge Groups, events, and licence boundaries.
+
 ## Deterministic testing
 
 Prefer named roles and labels for user-facing behavior, then use generated selectors for structural parts and machine states. The package ships a small A3S Test example at `@a3s-lab/ui/a3s-test` and importable selector helpers at `@a3s-lab/ui/a3s-test/selectors`.

@@ -18,6 +18,33 @@ async function openResponsiveNavigation(page: Page) {
   return navigation;
 }
 
+test("desktop menus remain operable before any client JavaScript runs", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.route(/\.js(?:\?|$)/, (route) => route.abort());
+  await page.goto("components/button.html", { waitUntil: "domcontentloaded" });
+
+  const menus = page.locator(".a3s-progressive-menu > details");
+  expect(await menus.count()).toBeGreaterThanOrEqual(2);
+  for (const menu of await menus.all()) {
+    await menu.locator(":scope > summary").click();
+    await expect(menu).toHaveAttribute("open", "");
+    await expect(menu.locator(".a3s-progressive-menu__popover")).toBeVisible();
+    await menu.locator(":scope > summary").click();
+    await expect(menu).not.toHaveAttribute("open", "");
+  }
+
+  const language = menus.filter({ hasText: "简体中文" });
+  await language.locator(":scope > summary").click();
+  const english = language.getByRole("link", { name: "English" });
+  await expect(english).toHaveAttribute("href", /\/UI\/en\/components\/button/);
+  await english.click();
+  await expect(page).toHaveURL(/\/UI\/en\/components\/button\.html$/);
+  await expect(page.getByRole("heading", { name: "Button", level: 1 })).toBeVisible();
+});
+
 test("index routes hydrate with complete desktop navigation", async ({
   page,
 }, testInfo) => {

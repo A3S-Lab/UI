@@ -1,0 +1,152 @@
+# Grid View
+
+Grid View 是没有标签栏和面板拖放的二维可调整网格。它适合结构由产品决定、用户只需要调整区域大小的分析台、监控台和画布；如果用户需要动态增加、关闭或重新停靠面板，应使用 [Dock 工作区](/harness/dock-workspace)。
+
+<DockviewDemo mode="grid" />
+
+## 框架用法
+
+<FrameworkTabs
+  html={`import {
+  GridviewPanel,
+  Orientation,
+  createGridview,
+  themeA3S,
+} from "@a3s-lab/ui/dockview";
+import "@a3s-lab/ui/dockview/css";
+
+class Panel extends GridviewPanel {
+  part = {
+    update: parameters => {
+      this.element.textContent = parameters.params.title;
+    },
+    dispose() {},
+  };
+  constructor(id, component) {
+    super(id, component);
+    this.api.initialize(this);
+  }
+  getComponent() { return this.part; }
+}
+
+const root = document.querySelector("#grid-view");
+const api = createGridview(root, {
+  className: themeA3S.className,
+  orientation: Orientation.VERTICAL,
+  createComponent: options => new Panel(options.id, options.name),
+});
+api.layout(root.clientWidth, root.clientHeight);
+
+const canvas = api.addPanel({
+  id: "canvas",
+  component: "panel",
+  params: { title: "画布" },
+});
+api.addPanel({
+  id: "preview",
+  component: "panel",
+  params: { title: "预览" },
+  position: { direction: "right", referencePanel: canvas.id },
+});`}
+  react={`import {
+  GridviewReact,
+  Orientation,
+  themeA3S,
+  useGridview,
+  type IGridviewPanelProps,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = ({ params }: IGridviewPanelProps<{ title: string }>) => (
+  <section>{params.title}</section>
+);
+
+export function AnalysisGrid() {
+  const grid = useGridview({
+    onReady({ api }) {
+      const canvas = api.addPanel({
+        id: "canvas",
+        component: "panel",
+        params: { title: "画布" },
+      });
+      api.addPanel({
+        id: "preview",
+        component: "panel",
+        params: { title: "预览" },
+        position: { direction: "right", referencePanel: canvas.id },
+      });
+    },
+  });
+  return (
+    <GridviewReact
+      className={themeA3S.className}
+      components={{ panel: Panel }}
+      onReady={grid.onReady}
+      orientation={Orientation.VERTICAL}
+      proportionalLayout
+    />
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { defineComponent } from "vue";
+import {
+  GridviewVue,
+  Orientation,
+  themeA3S,
+  useGridview,
+} from "@a3s-lab/ui/dockview/vue";
+import "@a3s-lab/ui/dockview/css";
+
+const Panel = defineComponent({
+  props: ["params"],
+  template: "<section>{{ params.title }}</section>",
+});
+const grid = useGridview({
+  onReady({ api }) {
+    const canvas = api.addPanel({
+      id: "canvas",
+      component: "panel",
+      params: { title: "画布" },
+    });
+    api.addPanel({
+      id: "preview",
+      component: "panel",
+      params: { title: "预览" },
+      position: { direction: "right", referencePanel: canvas.id },
+    });
+  },
+});
+</script>
+
+<template>
+  <GridviewVue
+    :class="themeA3S.className"
+    :components="{ panel: Panel }"
+    :orientation="Orientation.VERTICAL"
+    :proportional-layout="true"
+    @ready="grid.onReady"
+  />
+</template>`}
+/>
+
+React `useGridview` 返回 `api`、`ready` 和稳定的 `onReady`；Vue composable 返回 `api` shallow ref 与 `onReady`。它们只管理实例就绪状态，所有布局操作继续使用原生 `GridviewApi`。
+
+## 选择原则
+
+| 需求 | 选择 |
+| --- | --- |
+| 一条轴上的连续分栏 | [Split View](/harness/split-view) |
+| 固定二维网格，不需要标签和拖放 | Grid View |
+| 可折叠工具区 | [Pane View](/harness/pane-view) |
+| 用户可自由增加、关闭、拖放与弹出面板 | [Dock 工作区](/harness/dock-workspace) |
+
+## API 与状态
+
+- `addPanel()`、`removePanel()`、`movePanel()` 和方向定位负责结构变化。
+- 面板 API 负责尺寸约束、活动状态与可见性；宿主负责面板内数据。
+- `proportionalLayout` 适合需要随容器同比缩放的区域；固定工具宽度应使用显式尺寸与最小值。
+- 原生入口必须在首次增加面板前调用 `layout(width, height)`，并在容器尺寸变化后再次布局。
+
+## 无障碍
+
+分隔条必须可辨认，面板内容保持正常文档或应用语义。不要把只靠空间位置才能理解的标签移出面板，也不要让相邻面板同时拥有页面滚动。

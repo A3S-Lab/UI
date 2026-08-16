@@ -281,7 +281,7 @@
     color: var(--card-foreground);
   }
 
-  :is(.dark, [data-theme='dark']) .code-graph,
+  :is(.dark, [data-theme="dark"]) .code-graph,
   .code-graph.dark {
     --code-graph-background: #0d1118;
     --code-graph-edge: rgb(122 142 170 / 34%);
@@ -350,7 +350,7 @@
   }
 
   .code-graph [data-code-graph-legend] i,
-  .code-graph [data-node-tone] {
+  .code-graph i[data-node-tone] {
     width: 0.5rem;
     height: 0.5rem;
     flex: none;
@@ -358,18 +358,18 @@
     background: var(--code-graph-node);
   }
 
-  .code-graph [data-tone='entry'],
-  .code-graph [data-node-tone='entry'] {
+  .code-graph [data-tone="entry"],
+  .code-graph i[data-node-tone="entry"] {
     background: var(--code-graph-node-entry);
   }
 
-  .code-graph [data-tone='component'],
-  .code-graph [data-node-tone='component'] {
+  .code-graph [data-tone="component"],
+  .code-graph i[data-node-tone="component"] {
     background: var(--code-graph-node-accent);
   }
 
-  .code-graph [data-tone='test'],
-  .code-graph [data-node-tone='test'] {
+  .code-graph [data-tone="test"],
+  .code-graph i[data-node-tone="test"] {
     background: var(--code-graph-node-test);
   }
 
@@ -390,7 +390,11 @@
 
   .code-graph [data-code-graph-empty] {
     padding: 2rem;
-    background: color-mix(in srgb, var(--code-graph-background) 92%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--code-graph-background) 92%,
+      transparent
+    );
     color: var(--code-graph-label-muted);
     font-size: 0.8125rem;
   }
@@ -417,7 +421,7 @@
     background: var(--muted);
   }
 
-  .code-graph [data-code-node][aria-selected='true'] > button {
+  .code-graph [data-code-node][aria-selected="true"] > button {
     border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
     background: color-mix(in srgb, var(--primary) 8%, var(--card));
   }
@@ -491,9 +495,14 @@
     font-size: 0.6875rem;
   }
 
-  @media (max-width: 46rem) {
-    .code-graph {
-      min-height: 38rem;
+  @container code-graph (max-width: 46rem) {
+    .code-graph [data-code-graph-viewport],
+    .code-graph [data-code-graph-list] {
+      min-height: 20rem;
+    }
+
+    .code-graph [data-code-graph-list] {
+      max-height: 24rem;
     }
 
     .code-graph [data-code-graph-inspector] {
@@ -509,6 +518,12 @@
     .code-graph [data-code-graph-legend] {
       width: 100%;
       overflow-x: auto;
+    }
+  }
+
+  @media (max-width: 46rem) {
+    .code-graph {
+      min-height: 38rem;
     }
   }
 }

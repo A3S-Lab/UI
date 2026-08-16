@@ -1,0 +1,92 @@
+@import "dockview/dist/styles/dockview.css";
+
+.dockview-theme-a3s {
+  --dv-active-sash-color: var(--a3s-blue, #1456f0);
+  --dv-active-sash-transition-delay: 80ms;
+  --dv-active-sash-transition-duration: 120ms;
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--a3s-panel-soft, #f7f7f8);
+  --dv-activegroup-hiddenpanel-tab-color: var(--a3s-muted, #52525b);
+  --dv-activegroup-visiblepanel-tab-background-color: var(--a3s-panel, #fff);
+  --dv-activegroup-visiblepanel-tab-color: var(--a3s-ink, #111113);
+  --dv-border-radius: var(--a3s-radius-sm, 6px);
+  --dv-context-menu-background-color: var(--a3s-overlay-surface, #fff);
+  --dv-context-menu-color: var(--a3s-ink, #111113);
+  --dv-drag-over-background-color: color-mix(in srgb, var(--a3s-blue, #1456f0) 18%, transparent);
+  --dv-drag-over-border: 1px solid var(--a3s-blue, #1456f0);
+  --dv-drag-over-border-color: var(--a3s-blue, #1456f0);
+  --dv-dropdown-border-radius: var(--a3s-radius-sm, 6px);
+  --dv-edge-dock-indicator-color: color-mix(in srgb, var(--a3s-blue, #1456f0) 82%, transparent);
+  --dv-floating-border: 1px solid var(--a3s-line-strong, #dedee1);
+  --dv-floating-box-shadow: var(--a3s-shadow, 0 20px 20px -8px rgb(0 0 0 / 24%));
+  --dv-floating-group-border: 1px solid var(--a3s-line-strong, #dedee1);
+  --dv-floating-group-dragging-opacity: 0.76;
+  --dv-floating-titlebar-background-color: var(--a3s-panel-soft, #f7f7f8);
+  --dv-floating-titlebar-border-bottom: 1px solid var(--a3s-line, #e9e9eb);
+  --dv-floating-titlebar-height: 24px;
+  --dv-group-view-background-color: var(--a3s-panel, #fff);
+  --dv-icon-hover-background-color: var(--a3s-panel-strong, #eeeef0);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--a3s-panel-soft, #f7f7f8);
+  --dv-inactivegroup-hiddenpanel-tab-color: var(--a3s-faint, #71717a);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--a3s-panel, #fff);
+  --dv-inactivegroup-visiblepanel-tab-color: var(--a3s-muted, #52525b);
+  --dv-overlay-z-index: 1200;
+  --dv-paneview-active-outline-color: var(--a3s-blue, #1456f0);
+  --dv-paneview-header-border-color: var(--a3s-line, #e9e9eb);
+  --dv-sash-border-radius: 0;
+  --dv-sash-color: var(--a3s-line, #e9e9eb);
+  --dv-scrollbar-background-color: var(--a3s-scrollbar-thumb, rgb(82 82 91 / 38%));
+  --dv-separator-border: var(--a3s-line, #e9e9eb);
+  --dv-spacing-padding: 0;
+  --dv-tab-border-radius: 6px 6px 0 0;
+  --dv-tab-close-icon-size: 16px;
+  --dv-tab-divider-color: var(--a3s-line, #e9e9eb);
+  --dv-tab-font-size: 12px;
+  --dv-tab-group-chip-border-radius: 5px;
+  --dv-tab-group-chip-font-size: 11px;
+  --dv-tab-group-chip-padding: 3px 7px;
+  --dv-tab-group-color-blue: var(--a3s-blue, #1456f0);
+  --dv-tab-group-color-cyan: #007f91;
+  --dv-tab-group-color-green: var(--a3s-green, #16845b);
+  --dv-tab-group-color-grey: var(--a3s-subtle, #71717a);
+  --dv-tab-group-color-orange: var(--a3s-orange, #a86412);
+  --dv-tab-group-color-pink: #bd3b83;
+  --dv-tab-group-color-purple: var(--a3s-purple, #5b57d9);
+  --dv-tab-group-color-red: var(--a3s-red, #c93d45);
+  --dv-tab-group-color-yellow: #b57912;
+  --dv-tab-group-line-height: 2px;
+  --dv-tab-group-line-opacity: 0.72;
+  --dv-tab-margin: 0;
+  --dv-tabs-and-actions-container-background-color: var(--a3s-panel-soft, #f7f7f8);
+  --dv-tabs-and-actions-container-font-size: 12px;
+  --dv-tabs-and-actions-container-height: 34px;
+  --dv-tabs-container-scrollbar-color: var(--a3s-scrollbar-thumb, rgb(82 82 91 / 38%));
+  color: var(--a3s-ink, #111113);
+  font-family: var(--a3s-ui-font, ui-sans-serif, system-ui, sans-serif);
+}
+
+.dockview-theme-a3s .dv-drop-target-anchor,
+.dockview-theme-a3s .dv-drop-target-selection {
+  backdrop-filter: blur(3px);
+}
+
+.dockview-theme-a3s .dv-tab {
+  min-width: 0;
+}
+
+.dockview-theme-a3s .dv-tab:focus-visible::after,
+.dockview-theme-a3s .dv-tab:has(:focus-visible)::after {
+  outline: 2px solid var(--a3s-blue, #1456f0);
+  outline-offset: -2px;
+}
+
+.dockview-theme-a3s .dv-sash.dv-active {
+  box-shadow: 0 0 0 1px var(--a3s-blue, #1456f0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dockview-theme-a3s,
+  .dockview-theme-a3s * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -4,9 +4,12 @@ import {
   useLocation,
   useNav,
   usePage,
+  usePages,
   useSite,
   useVersion,
 } from "@rspress/core/runtime";
+import type { NavItem } from "@rspress/core";
+import { Link } from "@rspress/core/theme";
 import {
   IconSmallMenu,
   NavTitle,
@@ -17,17 +20,18 @@ import {
   type NavProps,
 } from "@rspress/core/theme-original";
 import {
-  NavLangs,
   NavMenu,
   NavMenuDivider,
-  NavMenuItemWithChildren,
+  NavMenuItemWithLink,
+  SvgDown,
 } from "@rspress/core/dist/theme/components/Nav/NavMenu.js";
+import { useLangsMenu } from "@rspress/core/dist/theme/components/Nav/hooks.js";
 import { NavScreen } from "@rspress/core/dist/theme/components/NavScreen/index.js";
 import { useNavScreen } from "@rspress/core/dist/theme/components/NavHamburger/useNavScreen.js";
 import "@rspress/core/dist/theme/components/Nav/index.css";
 import "@rspress/core/dist/theme/components/NavHamburger/index.css";
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 function labelSocialLinks(root: ParentNode, language: string) {
   root
@@ -48,6 +52,8 @@ function versionHref(
   targetVersion: string,
   defaultVersion: string,
   cleanUrls: boolean,
+  language: string,
+  availableRoutes: ReadonlySet<string>,
 ) {
   const parts = removeBase(pathname).split("/").filter(Boolean);
 
@@ -57,20 +63,204 @@ function versionHref(
   if (targetVersion !== defaultVersion) {
     parts.unshift(targetVersion);
   }
-  if (parts.length === 0) return "/";
   if (parts.length === 1 && targetVersion !== defaultVersion) {
     parts.push(cleanUrls ? "index" : "index.html");
   }
-  return `/${parts.join("/")}`;
+  const requestedHref = parts.length === 0 ? "/" : `/${parts.join("/")}`;
+  const normalizeRoute = (route: string) =>
+    route.replace(/\.html$/u, "").replace(/\/index$/u, "/");
+  if (availableRoutes.has(normalizeRoute(requestedHref))) {
+    return requestedHref;
+  }
+
+  const rootParts = [
+    targetVersion === defaultVersion ? "" : targetVersion,
+    language === "zh" ? "" : language,
+  ].filter(Boolean);
+  const fallbackParts = normalizeRoute(requestedHref)
+    .split("/")
+    .filter(Boolean);
+
+  while (fallbackParts.length > rootParts.length) {
+    fallbackParts.pop();
+    const ancestor = `/${fallbackParts.join("/")}/`;
+    if (availableRoutes.has(ancestor)) return ancestor;
+  }
+
+  return rootParts.length === 0 ? "/" : `/${rootParts.join("/")}/`;
+}
+
+type ProgressiveMenuProps = {
+  activeMatcher?: (item: NavItem) => boolean;
+  items: NavItem[];
+  label?: string;
+};
+
+function ProgressiveMenuLink({
+  activeMatcher,
+  depth = 0,
+  item,
+}: {
+  activeMatcher?: (item: NavItem) => boolean;
+  depth?: number;
+  item: NavItem;
+}) {
+  if ("items" in item && item.items.length > 0) {
+    const active = activeMatcher?.(item) ?? false;
+    return (
+      <>
+        {"link" in item && item.link ? (
+          <li
+            className={
+              active
+                ? "a3s-progressive-menu__option is-active"
+                : "a3s-progressive-menu__option"
+            }
+            style={{ paddingInlineStart: `${8 + depth * 10}px` }}
+          >
+            <Link
+              aria-current={active ? "page" : undefined}
+              className="a3s-progressive-menu__link"
+              href={item.link}
+              hrefLang={item.lang}
+              lang={item.lang}
+              rel={item.rel}
+            >
+              {item.text}
+            </Link>
+          </li>
+        ) : null}
+        {item.items.map((child, index) => (
+          <ProgressiveMenuLink
+            activeMatcher={activeMatcher}
+            depth={depth + 1}
+            item={child}
+            key={`${child.text ?? "item"}-${index}`}
+          />
+        ))}
+      </>
+    );
+  }
+
+  if (!("link" in item)) return null;
+  const active = activeMatcher?.(item) ?? false;
+  const content = item.link ? (
+    <Link
+      aria-current={active ? "page" : undefined}
+      className="a3s-progressive-menu__link"
+      download={"download" in item ? item.download : undefined}
+      href={item.link}
+      hrefLang={item.lang}
+      lang={item.lang}
+      rel={item.rel}
+    >
+      {item.text}
+    </Link>
+  ) : (
+    <span aria-current="page" className="a3s-progressive-menu__link">
+      {item.text}
+    </span>
+  );
+
+  return (
+    <li
+      className={
+        active
+          ? "a3s-progressive-menu__option is-active"
+          : "a3s-progressive-menu__option"
+      }
+      style={{ paddingInlineStart: `${8 + depth * 10}px` }}
+    >
+      {content}
+    </li>
+  );
+}
+
+function ProgressiveMenu({
+  activeMatcher,
+  items,
+  label,
+}: ProgressiveMenuProps) {
+  if (items.length === 0) return null;
+
+  return (
+    <li className="rp-nav-menu__item a3s-progressive-menu">
+      <details>
+        <summary className="rp-nav-menu__item__container">
+          <span>{label}</span>
+          <SvgDown aria-hidden="true" className="rp-nav-menu__item__icon" />
+        </summary>
+        <ul className="a3s-progressive-menu__popover">
+          {items.map((item, index) => (
+            <ProgressiveMenuLink
+              activeMatcher={activeMatcher}
+              item={item}
+              key={`${item.text ?? "item"}-${index}`}
+            />
+          ))}
+        </ul>
+      </details>
+    </li>
+  );
+}
+
+function ProgressiveNavMenu({
+  menuItems,
+  position,
+}: {
+  menuItems: NavItem[];
+  position: "left" | "right";
+}) {
+  const items = useMemo(
+    () => menuItems.filter((item) => (item.position ?? "right") === position),
+    [menuItems, position],
+  );
+  if (items.length === 0) return null;
+
+  return (
+    <ul className={`rp-nav-menu rp-nav-menu--${position}`}>
+      {items.map((item, index) =>
+        "items" in item && item.items.length > 0 ? (
+          <ProgressiveMenu
+            items={item.items}
+            key={`${item.text ?? "menu"}-${index}`}
+            label={item.text}
+          />
+        ) : "link" in item ? (
+          <NavMenuItemWithLink
+            key={`${item.text}-${item.link}`}
+            menuItem={item}
+          />
+        ) : null,
+      )}
+    </ul>
+  );
+}
+
+function NavLanguages() {
+  const { activeValue, items } = useLangsMenu();
+  return items.length > 1 ? (
+    <ProgressiveMenu
+      activeMatcher={(item) => item.text === activeValue}
+      items={items}
+      label={activeValue}
+    />
+  ) : null;
 }
 
 function NavVersions() {
   const { pathname } = useLocation();
   const { page } = usePage();
+  const { pages } = usePages();
   const { site } = useSite();
+  const language = useLang();
   const currentVersion = useVersion();
   const defaultVersion = site.multiVersion.default ?? "";
   const versions = site.multiVersion.versions ?? [];
+  const availableRoutes = useMemo(
+    () => new Set(pages.map((candidate) => candidate.routePath)),
+    [pages],
+  );
   const items = versions.map((version) => ({
     text: version,
     link: versionHref(
@@ -79,13 +269,16 @@ function NavVersions() {
       version,
       defaultVersion,
       site.route?.cleanUrls ?? false,
+      language,
+      availableRoutes,
     ),
   }));
 
   return items.length > 1 ? (
-    <NavMenuItemWithChildren
+    <ProgressiveMenu
       activeMatcher={(item) => item.text === currentVersion}
-      menuItem={{ text: currentVersion, items }}
+      items={items}
+      label={currentVersion}
     />
   ) : null;
 }
@@ -363,10 +556,10 @@ export function Nav({
       <div className="rp-nav__right">
         {beforeNavMenu}
         <Search />
-        <NavMenu menuItems={navList} position="right" />
+        <ProgressiveNavMenu menuItems={navList} position="right" />
         <div className="rp-nav__others">
           <NavMenuDivider />
-          <NavLangs />
+          <NavLanguages />
           <NavVersions />
           <SwitchAppearance />
           <SocialLinks />
