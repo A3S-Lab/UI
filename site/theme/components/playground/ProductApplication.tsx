@@ -30,6 +30,10 @@ import {
   ProductSearchDialog,
 } from "./ProductOverlayMenus";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import {
+  ProductProjectSessionSurface,
+  ProductProjectWorkspaceSurface,
+} from "./ProductProjectSurfaces";
 import { ProductSessionSurface } from "./ProductSessionSurface";
 import { ProductSettingsDialog } from "./ProductSettingsDialog";
 import type { SettingsSection } from "./ProductSettingsSections";
@@ -76,6 +80,12 @@ function ProductSidebar({
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterTime, setFilterTime] = useState("all");
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const projectRouteActive = view === "project" || view === "project-session";
+  const [projectExpanded, setProjectExpanded] = useState(projectRouteActive);
+
+  useEffect(() => {
+    if (projectRouteActive) setProjectExpanded(true);
+  }, [projectRouteActive]);
 
   const statusOptions = [
     ["all", zh ? "全部状态" : "All statuses"],
@@ -233,7 +243,11 @@ function ProductSidebar({
       >
         {productNavigation.map((item) => (
           <Link
-            aria-current={view === item.id ? "page" : undefined}
+            aria-current={
+              view === item.id || (item.id === "projects" && projectRouteActive)
+                ? "page"
+                : undefined
+            }
             href={viewHref(item.id)}
             key={item.id}
             onClick={closeNavigationLayers}
@@ -294,11 +308,48 @@ function ProductSidebar({
         </section>
         <section>
           <h2>{zh ? "空间 (1)" : "Spaces (1)"}</h2>
-          <Link href={viewHref("projects")} onClick={closeNavigationLayers}>
-            <ProductPlaygroundIcon name="project" />
-            <span>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</span>
-            <ProductPlaygroundIcon name="chevron" />
-          </Link>
+          <div
+            className="product-sidebar__project-group"
+            data-expanded={projectExpanded ? "true" : undefined}
+          >
+            <div>
+              <Link
+                aria-current={view === "project" ? "page" : undefined}
+                href={viewHref("project")}
+                onClick={closeNavigationLayers}
+              >
+                <ProductPlaygroundIcon name="project" />
+                <span>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</span>
+              </Link>
+              <button
+                aria-expanded={projectExpanded}
+                aria-label={
+                  projectExpanded
+                    ? zh
+                      ? "收起项目任务"
+                      : "Collapse project tasks"
+                    : zh
+                      ? "展开项目任务"
+                      : "Expand project tasks"
+                }
+                onClick={() => setProjectExpanded((value) => !value)}
+                type="button"
+              >
+                <ProductPlaygroundIcon name="chevron" />
+              </button>
+            </div>
+            {projectExpanded ? (
+              <Link
+                aria-current={view === "project-session" ? "page" : undefined}
+                className="product-sidebar__project-task"
+                href={viewHref("project-session")}
+                onClick={closeNavigationLayers}
+              >
+                <span>{zh ? "发布就绪检查" : "Release readiness"}</span>
+                <time>{zh ? "今天" : "Today"}</time>
+              </Link>
+            ) : null}
+          </div>
         </section>
       </div>
 
@@ -419,6 +470,8 @@ export function ProductApplication() {
       assistant: zh ? "助理" : "Assistant",
       automation: zh ? "自动化" : "Automations",
       catalog: zh ? "能力目录" : "Capabilities",
+      project: zh ? "A3S UI 体验优化" : "A3S UI experience",
+      "project-session": zh ? "发布就绪检查" : "Release readiness",
       projects: zh ? "项目" : "Projects",
       resources: zh ? "资源" : "Resources",
       session: zh ? "修复会话恢复" : "Fix session recovery",
@@ -499,7 +552,25 @@ export function ProductApplication() {
           />
         ) : null}
         {view === "projects" ? (
-          <ProductProjectsSurface locale={locale} />
+          <ProductProjectsSurface
+            locale={locale}
+            projectHref={routeHref("project")}
+          />
+        ) : null}
+        {view === "project" ? (
+          <ProductProjectWorkspaceSurface
+            locale={locale}
+            projectHref={routeHref("project")}
+            projectsHref={routeHref("projects")}
+            sessionHref={routeHref("project-session")}
+          />
+        ) : null}
+        {view === "project-session" ? (
+          <ProductProjectSessionSurface
+            locale={locale}
+            projectHref={routeHref("project")}
+            projectsHref={routeHref("projects")}
+          />
         ) : null}
         {view === "catalog" ? <ProductCatalogSurface locale={locale} /> : null}
         {view === "automation" ? (

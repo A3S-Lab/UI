@@ -25,6 +25,10 @@ const requiredFiles = [
   "en/playground.html",
   "app.html",
   "en/app.html",
+  "app/projects/a3s-ui-experience.html",
+  "en/app/projects/a3s-ui-experience.html",
+  "app/projects/a3s-ui-experience/sessions/release-readiness.html",
+  "en/app/projects/a3s-ui-experience/sessions/release-readiness.html",
   "sessions/fix-session-recovery.html",
   "en/sessions/fix-session-recovery.html",
   "sessions/fix-session-recovery/workspace.html",
@@ -926,6 +930,46 @@ const productApplicationExpectations = [
       'aria-label="Application navigation"',
       'href="/UI/en/sessions/fix-session-recovery.html"',
       "A3S, here to help",
+    ],
+  },
+  {
+    file: "app/projects/a3s-ui-experience.html",
+    markers: [
+      'data-view="project"',
+      'data-product-surface="project"',
+      'aria-label="项目路径"',
+      ">A3S UI 体验优化<",
+      'href="/UI/app/projects/a3s-ui-experience/sessions/release-readiness.html"',
+    ],
+  },
+  {
+    file: "en/app/projects/a3s-ui-experience.html",
+    markers: [
+      'data-view="project"',
+      'data-product-surface="project"',
+      'aria-label="Project path"',
+      ">A3S UI experience<",
+      'href="/UI/en/app/projects/a3s-ui-experience/sessions/release-readiness.html"',
+    ],
+  },
+  {
+    file: "app/projects/a3s-ui-experience/sessions/release-readiness.html",
+    markers: [
+      'data-view="project-session"',
+      'data-product-surface="project-session"',
+      ">发布就绪检查<",
+      'aria-label="打开项目产物"',
+      'aria-label="项目会话记录"',
+    ],
+  },
+  {
+    file: "en/app/projects/a3s-ui-experience/sessions/release-readiness.html",
+    markers: [
+      'data-view="project-session"',
+      'data-product-surface="project-session"',
+      ">Release readiness<",
+      'aria-label="Open project artifacts"',
+      'aria-label="Project conversation history"',
     ],
   },
   {

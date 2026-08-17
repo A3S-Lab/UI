@@ -16,6 +16,9 @@ const viewRoutePaths: Record<
   assistant: "/app/assistant",
   automation: "/app/automations",
   catalog: "/app/capabilities",
+  project: "/app/projects/a3s-ui-experience",
+  "project-session":
+    "/app/projects/a3s-ui-experience/sessions/release-readiness",
   projects: "/app/projects",
   session: "/sessions/fix-session-recovery",
   start: "/app",

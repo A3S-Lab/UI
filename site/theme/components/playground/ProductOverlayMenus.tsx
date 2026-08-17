@@ -30,7 +30,7 @@ const searchItems: readonly SearchItem[] = [
     description: { en: "Project", zh: "项目" },
     icon: "project",
     label: { en: "A3S UI experience", zh: "A3S UI 体验优化" },
-    view: "projects",
+    view: "project",
   },
 ];
 

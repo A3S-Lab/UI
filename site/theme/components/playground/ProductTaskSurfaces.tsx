@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { withBase } from "@rspress/core/runtime";
+import { Link } from "@rspress/core/theme";
 import {
   projectTemplates,
   type ProductPlaygroundLocale,
@@ -283,8 +284,10 @@ export function ProductAssistantSurface({
 
 export function ProductProjectsSurface({
   locale,
+  projectHref,
 }: {
   locale: ProductPlaygroundLocale;
+  projectHref: string;
 }) {
   const zh = locale === "zh";
   const [notice, setNotice] = useState("");
@@ -332,19 +335,14 @@ export function ProductProjectsSurface({
           </label>
         </div>
         {projectVisible ? (
-          <button
-            onClick={() =>
-              setNotice(zh ? "已打开项目概览。" : "Project overview opened.")
-            }
-            type="button"
-          >
+          <Link href={projectHref}>
             <span>
               <ProductPlaygroundIcon name="project" />
             </span>
             <strong>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</strong>
             <small>{zh ? "最近更新 · 今天" : "Updated today"}</small>
             <ProductPlaygroundIcon name="more" />
-          </button>
+          </Link>
         ) : (
           <p role="status">{zh ? "没有匹配的项目" : "No matching projects"}</p>
         )}

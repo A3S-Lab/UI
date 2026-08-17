@@ -339,6 +339,60 @@
   grid-template-columns: 1.125rem minmax(0, 1fr) 1rem;
 }
 
+.product-sidebar__project-group > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2rem;
+}
+
+.product-sidebar__project-group > div:first-child > a {
+  padding-inline-end: 0.25rem;
+  grid-template-columns: 1.125rem minmax(0, 1fr);
+}
+
+.product-sidebar__project-group > div:first-child > button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ui-faint);
+  cursor: pointer;
+  place-items: center;
+}
+
+.product-sidebar__project-group > div:first-child > button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-sidebar__project-group > div:first-child > button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: transform 140ms ease-out;
+}
+
+.product-sidebar__project-group[data-expanded="true"]
+  > div:first-child
+  > button
+  svg {
+  transform: rotate(180deg);
+}
+
+.product-sidebar__history section:last-child .product-sidebar__project-task {
+  min-height: 2rem;
+  padding-inline: 2rem 0.5rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.product-sidebar__history
+  section:last-child
+  .product-sidebar__project-task[aria-current="page"] {
+  background: var(--ui-panel-active);
+  font-weight: 600;
+}
+
 .product-sidebar__history a span {
   overflow: hidden;
   text-overflow: ellipsis;

@@ -12,14 +12,18 @@ export function ProductComposer({
   initialValue = "",
   locale,
   onSubmit,
+  placeholder,
   showPermissions = true,
+  submitSuccessMessage,
 }: {
   compact?: boolean;
   contextual?: boolean;
   initialValue?: string;
   locale: ProductPlaygroundLocale;
   onSubmit?: (value: string) => void;
+  placeholder?: string;
   showPermissions?: boolean;
+  submitSuccessMessage?: string;
 }) {
   const zh = locale === "zh";
   const editorRef = useRef<AgentComposerEditorHandle>(null);
@@ -49,7 +53,10 @@ export function ProductComposer({
       onSubmit(draft.trim());
       setDraft("");
       setStatus(
-        zh ? "消息已添加到当前会话。" : "Message added to the current session.",
+        submitSuccessMessage ??
+          (zh
+            ? "消息已添加到当前会话。"
+            : "Message added to the current session."),
       );
       return;
     }
@@ -74,9 +81,10 @@ export function ProductComposer({
         onChange={setDraft}
         onSubmit={() => submit()}
         placeholder={
-          zh
+          placeholder ??
+          (zh
             ? "今天帮你做些什么？ @ 引用对话文件，/ 调用技能与指令"
-            : "What can I help you accomplish? Use @ for files or / for commands"
+            : "What can I help you accomplish? Use @ for files or / for commands")
         }
         suggestionsOpen={false}
         value={draft}
