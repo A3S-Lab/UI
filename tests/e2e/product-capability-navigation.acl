@@ -1,0 +1,104 @@
+suite "a3s-ui-product-capability-navigation" {
+    version = 1
+
+    scenario "capability-menu-desktop" {
+        name = "Capability chooser anchors to the sidebar and keeps URL state"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
+        expect "trigger-current" { visible = css(".product-sidebar__capability > button[aria-current=page][aria-expanded=false]") }
+
+        click "open-chooser" { target = role("button", "专家·技能·连接器") }
+        expect "chooser-visible" { visible = css(".product-capability-menu[role=menu]") }
+        expect "active-item-focused" { visible = css(".product-capability-menu > button[aria-current=page]:focus") }
+        screenshot "capture-open-chooser" { path = "product/capability-menu-desktop.png" }
+
+        press "next-item" { key = "ArrowDown" }
+        expect "skills-focused" { visible = css(".product-capability-menu > button:nth-child(2):focus") }
+        press "last-item" { key = "End" }
+        expect "connectors-focused" { visible = css(".product-capability-menu > button:nth-child(3):focus") }
+        press "select-connectors" { key = "Enter" }
+        wait "connector-url" { url = "http://127.0.0.1:4178/UI/app/capabilities.html?capability=connectors" }
+        expect "connector-tab-selected" { visible = css("[data-product-surface=catalog] [role=tab][aria-selected=true]:nth-child(3)") }
+
+        click "reopen-chooser" { target = role("button", "专家·技能·连接器") }
+        press "close-with-escape" { key = "Escape" }
+        expect "focus-returned" { visible = css(".product-sidebar__capability > button[aria-expanded=false]:focus") }
+
+        click "open-for-outside-dismissal" { target = role("button", "专家·技能·连接器") }
+        click "dismiss-outside" { target = css(".product-application__main") }
+        expect "outside-dismissed" { visible = css(".product-sidebar__capability > button[aria-expanded=false]") }
+
+        console "console" { path = "product/capability-menu-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-menu-desktop-page-errors.json" clear = false }
+    }
+
+    scenario "capability-menu-mobile" {
+        name = "Capability chooser fits the mobile drawer and clears on dismissal"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html?capability=skills" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
+        click "open-navigation" { target = role("button", "打开应用导航") }
+        click "open-chooser" { target = role("button", "专家·技能·连接器") }
+        expect "chooser-visible" { visible = css(".product-sidebar[data-mobile-open=true] .product-capability-menu") }
+        expect "skills-current" { visible = css(".product-capability-menu > button:nth-child(2)[aria-current=page]") }
+        screenshot "mobile-chooser" { path = "product/capability-menu-mobile.png" }
+
+        click "dismiss-navigation" { target = css(".product-application__backdrop") }
+        expect "navigation-closed" { visible = css("button[aria-label='打开应用导航']") }
+        click "reopen-navigation" { target = role("button", "打开应用导航") }
+        expect "chooser-reset" { visible = css(".product-sidebar__capability > button[aria-expanded=false]") }
+
+        console "console" { path = "product/capability-menu-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-menu-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "capability-menu-english" {
+        name = "Capability chooser preserves the English route and labels"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/app/capabilities.html?capability=skills" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
+        expect "skills-selected" { visible = css("[role=tab][aria-selected=true]:nth-child(2)") }
+        click "open-chooser" { target = role("button", "Capabilities") }
+        expect "english-chooser" { visible = css(".product-capability-menu[aria-label='Choose capability type']") }
+        expect "english-skills-current" { visible = css(".product-capability-menu > button:nth-child(2)[aria-current=page]") }
+
+        screenshot "capture-english-chooser" { path = "product/capability-menu-english.png" }
+        console "console" { path = "product/capability-menu-english-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-menu-english-page-errors.json" clear = false }
+    }
+
+    scenario "capability-menu-dark" {
+        name = "Capability chooser preserves readable elevation in dark mode"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
+        click "open-settings" { target = role("button", "设置") }
+        click "open-personalization" { target = role("button", "个性化") }
+        click "choose-dark" { target = role("button", "深色") }
+        expect "dark-applied" { visible = css("html.dark [data-product-surface=catalog]") }
+        click "close-settings" { target = role("button", "关闭设置") }
+        click "open-chooser" { target = role("button", "专家·技能·连接器") }
+        expect "dark-chooser" { visible = css("html.dark .product-capability-menu") }
+
+        screenshot "capture-dark-chooser" { path = "product/capability-menu-dark.png" }
+        console "console" { path = "product/capability-menu-dark-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-menu-dark-page-errors.json" clear = false }
+    }
+}

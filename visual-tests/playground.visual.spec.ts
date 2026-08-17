@@ -14,7 +14,12 @@ const scenarios = [
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+    if (
+      message.type() === "error" ||
+      message.text().includes("hydrateRoot recoverable error")
+    ) {
+      errors.push(message.text());
+    }
   });
   page.on("pageerror", (error) => errors.push(error.message));
   return errors;
@@ -106,10 +111,14 @@ test("Product application opens in the approved task shell with complete navigat
 
   await revealProductNavigation(playground);
   await playground
-    .getByRole("link", { name: "专家·技能·连接器", exact: true })
+    .getByRole("button", { name: "专家·技能·连接器", exact: true })
     .click();
+  const capabilityMenu = playground.getByRole("menu", {
+    name: "选择能力类型",
+  });
+  await expect(capabilityMenu).toBeVisible();
+  await capabilityMenu.getByRole("menuitem", { name: "技能" }).click();
   await expect(playground).toHaveAttribute("data-view", "catalog");
-  await playground.getByRole("tab", { name: "技能", exact: true }).click();
   await expect(
     playground.getByRole("tab", { name: "技能", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
@@ -164,6 +173,74 @@ test("Product application opens in the approved task shell with complete navigat
     playground.getByText("继续检查移动端焦点顺序", { exact: true }),
   ).toBeVisible();
 
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Capability chooser behaves as an anchored keyboard menu", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  await revealProductNavigation(playground);
+
+  const trigger = playground.getByRole("button", {
+    name: "专家·技能·连接器",
+    exact: true,
+  });
+  await trigger.click();
+
+  const menu = playground.getByRole("menu", { name: "选择能力类型" });
+  const assistants = menu.getByRole("menuitem", { name: "专家" });
+  const skills = menu.getByRole("menuitem", { name: "技能" });
+  const connectors = menu.getByRole("menuitem", { name: "连接器" });
+  await expect(menu).toBeVisible();
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  await expect(assistants).toBeFocused();
+
+  await page.keyboard.press("ArrowDown");
+  await expect(skills).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await expect(assistants).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(connectors).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(assistants).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(connectors).toBeFocused();
+  await page.keyboard.press("Enter");
+
+  await expect(menu).not.toBeVisible();
+  await expect(playground).toHaveAttribute("data-view", "catalog");
+  await expect(
+    playground.getByRole("tab", { name: "连接器", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+
+  await revealProductNavigation(playground);
+  await trigger.click();
+  await expect(menu).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(menu).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+
+  await trigger.click();
+  await expect(menu).toBeVisible();
+  const backdrop = playground.locator(".product-application__backdrop");
+  if (await backdrop.isVisible()) {
+    await backdrop.click();
+  } else {
+    await playground.locator(".product-application__main").click({
+      position: { x: 12, y: 12 },
+    });
+  }
+  await expect(menu).not.toBeVisible();
+
+  await page.goto("en/app/capabilities.html?capability=skills", {
+    waitUntil: "networkidle",
+  });
+  await expect(
+    page.getByRole("tab", { name: "Skills", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("heading", { name: "Skills" })).toBeVisible();
   expect(runtimeErrors).toEqual([]);
 });
 

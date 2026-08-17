@@ -190,6 +190,7 @@
 }
 
 .product-sidebar__primary > a,
+.product-sidebar__capability > button,
 .product-sidebar__more > summary {
   display: grid;
   min-height: 2rem;
@@ -208,13 +209,19 @@
   text-align: start;
 }
 
+.product-sidebar__capability > button {
+  width: 100%;
+}
+
 .product-sidebar__more > summary::-webkit-details-marker {
   display: none;
 }
 
 .product-sidebar__primary > a:hover,
+.product-sidebar__capability > button:hover,
 .product-sidebar__more > summary:hover,
 .product-sidebar__primary > a[aria-current="page"],
+.product-sidebar__capability > button[aria-current="page"],
 .product-sidebar__more > summary[aria-current="page"],
 .product-sidebar__more[open] > summary {
   background: var(--ui-panel-active);
@@ -226,6 +233,7 @@
   height: 1.125rem;
 }
 
+.product-sidebar__capability,
 .product-sidebar__more {
   position: relative;
 }
@@ -477,6 +485,7 @@
     .product-sidebar__window > span,
     .product-sidebar__identity span,
     .product-sidebar__primary a span,
+    .product-sidebar__capability > button span,
     .product-sidebar__more summary span,
     .product-sidebar__more summary small,
     .product-sidebar__history,
@@ -504,7 +513,11 @@
 }
 
 .a3s-product-application[data-sidebar-collapsed="true"]
-  :is(.product-sidebar__primary > a, .product-sidebar__more > summary) {
+  :is(
+    .product-sidebar__primary > a,
+    .product-sidebar__capability > button,
+    .product-sidebar__more > summary
+  ) {
   padding: 0;
   grid-template-columns: 1fr;
   justify-items: center;

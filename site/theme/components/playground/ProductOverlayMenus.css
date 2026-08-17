@@ -12,6 +12,50 @@
   color: var(--ui-ink);
 }
 
+.product-capability-menu {
+  position: absolute;
+  z-index: 2200;
+  inset-block-start: 0;
+  inset-inline-start: calc(100% - 0.75rem);
+  display: grid;
+  width: 10rem;
+  padding: 0.5rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.75rem;
+  background: var(--ui-paper);
+  box-shadow: var(--ui-shadow-floating);
+  gap: 0.125rem;
+}
+
+.product-capability-menu > button {
+  display: grid;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: 0.5rem;
+  align-items: center;
+  grid-template-columns: 1.125rem minmax(0, 1fr);
+  gap: 0.625rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-align: start;
+}
+
+.product-capability-menu > button:hover,
+.product-capability-menu > button:focus-visible,
+.product-capability-menu > button[data-selected="true"] {
+  background: var(--ui-panel);
+}
+
+.product-capability-menu > button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--ui-muted);
+}
+
 .product-search-dialog::backdrop {
   background: rgb(15 18 24 / 62%);
 }
@@ -529,6 +573,12 @@
 }
 
 @media (max-width: 48rem) {
+  .product-capability-menu {
+    inset-block-start: calc(100% + 0.25rem);
+    inset-inline: 0;
+    width: auto;
+  }
+
   .product-sidebar__filter-popover {
     inset-block-start: 3.75rem;
     inset-inline: 0.5rem;

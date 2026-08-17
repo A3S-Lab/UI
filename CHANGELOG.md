@@ -37,6 +37,7 @@
 
 ### Fixed
 
+- Added a sidebar-anchored capability chooser with shared URL and page-tab state, complete arrow-key navigation, Escape focus return, outside dismissal, and responsive bilingual behavior.
 - Connected project cards to dedicated bilingual project-workspace and child-session routes, kept project context current in the sidebar, and added production checks for conversation search, TipTap input, artifact inspection, desktop, mobile, and dark appearance.
 - Kept session-detail routes focused on the conversation, moved generated files into an in-context artifact inspector with responsive and keyboard-complete behavior, and preserved legacy workspace URLs as session aliases.
 - Made responsive primary, resource, language, and version navigation progressively operable before hydration, and removed legacy Playground selectors that conflicted with the dockable responsive workspace.

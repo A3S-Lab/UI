@@ -1,4 +1,5 @@
 import type {
+  ProductCapabilityTab,
   ProductPlaygroundLocale,
   ProductPlaygroundView,
   ProductResourceView,
@@ -91,4 +92,19 @@ export function getProductApplicationRoutePath(
   const routePath =
     view === "resources" ? resourceRoutePaths[resource] : viewRoutePaths[view];
   return `${localizedPrefix}${routePath}.html`;
+}
+
+export function getProductCapabilityTab(search: string): ProductCapabilityTab {
+  const capability = new URLSearchParams(search).get("capability");
+  return capability === "skills" || capability === "connectors"
+    ? capability
+    : "assistants";
+}
+
+export function getProductCapabilityRoutePath(
+  tab: ProductCapabilityTab,
+  locale: ProductPlaygroundLocale,
+) {
+  const routePath = getProductApplicationRoutePath("catalog", locale);
+  return `${routePath}?capability=${tab}`;
 }

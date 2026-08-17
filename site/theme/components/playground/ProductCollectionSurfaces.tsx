@@ -131,11 +131,14 @@ export function ProductAutomationSurface({
 
 export function ProductCatalogSurface({
   locale,
+  onTabChange,
+  tab,
 }: {
   locale: ProductPlaygroundLocale;
+  onTabChange: (tab: ProductCapabilityTab) => void;
+  tab: ProductCapabilityTab;
 }) {
   const zh = locale === "zh";
-  const [tab, setTab] = useState<ProductCapabilityTab>("assistants");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<"all" | ProductCapabilityCategory>(
     "all",
@@ -214,7 +217,7 @@ export function ProductCatalogSurface({
               aria-selected={tab === id}
               key={id}
               onClick={() => {
-                setTab(id);
+                onTabChange(id);
                 setCategory("all");
                 setSelectedCapability("");
               }}

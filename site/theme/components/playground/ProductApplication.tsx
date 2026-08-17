@@ -10,11 +10,14 @@ import { Link } from "@rspress/core/theme";
 import {
   getProductApplicationRoutePath,
   getProductApplicationRouteState,
+  getProductCapabilityRoutePath,
+  getProductCapabilityTab,
 } from "../../../product-application-routes";
 import {
   localizeProductText,
   productNavigation,
   resourceNavigation,
+  type ProductCapabilityTab,
   type ProductPlaygroundLocale,
   type ProductPlaygroundView,
   type ProductResourceView,
@@ -26,6 +29,7 @@ import {
 } from "./ProductCollectionSurfaces";
 import {
   ProductAccountMenu,
+  ProductCapabilityMenu,
   ProductExitDialog,
   ProductSearchDialog,
 } from "./ProductOverlayMenus";
@@ -44,6 +48,7 @@ import {
 } from "./ProductTaskSurfaces";
 
 function ProductSidebar({
+  capabilityTab,
   collapsed,
   compact,
   locale,
@@ -52,12 +57,14 @@ function ProductSidebar({
   onOpenSearch,
   onOpenSettings,
   onRequestExit,
+  onSelectCapabilityTab,
   onToggleCollapsed,
   resourceHref,
   resource,
   viewHref,
   view,
 }: {
+  capabilityTab: ProductCapabilityTab;
   collapsed: boolean;
   compact: boolean;
   locale: ProductPlaygroundLocale;
@@ -66,6 +73,7 @@ function ProductSidebar({
   onOpenSearch: () => void;
   onOpenSettings: (section: SettingsSection) => void;
   onRequestExit: () => void;
+  onSelectCapabilityTab: (tab: ProductCapabilityTab) => void;
   onToggleCollapsed: () => void;
   resourceHref: (resource: ProductResourceView) => string;
   resource: ProductResourceView;
@@ -74,8 +82,10 @@ function ProductSidebar({
 }) {
   const zh = locale === "zh";
   const accountTriggerRef = useRef<HTMLButtonElement>(null);
+  const capabilityTriggerRef = useRef<HTMLButtonElement>(null);
   const moreRef = useRef<HTMLDetailsElement>(null);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [capabilityMenuOpen, setCapabilityMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterTime, setFilterTime] = useState("all");
@@ -86,6 +96,19 @@ function ProductSidebar({
   useEffect(() => {
     if (projectRouteActive) setProjectExpanded(true);
   }, [projectRouteActive]);
+
+  useEffect(() => {
+    if (view !== "catalog") setCapabilityMenuOpen(false);
+  }, [view]);
+
+  useEffect(() => {
+    if (!compact || mobileOpen) return;
+    setAccountOpen(false);
+    setCapabilityMenuOpen(false);
+    setFilterOpen(false);
+    setNotificationOpen(false);
+    moreRef.current?.removeAttribute("open");
+  }, [compact, mobileOpen]);
 
   const statusOptions = [
     ["all", zh ? "全部状态" : "All statuses"],
@@ -107,6 +130,7 @@ function ProductSidebar({
 
   const closeNavigationLayers = () => {
     setAccountOpen(false);
+    setCapabilityMenuOpen(false);
     setFilterOpen(false);
     setNotificationOpen(false);
     moreRef.current?.removeAttribute("open");
@@ -241,21 +265,57 @@ function ProductSidebar({
         className="product-sidebar__primary"
         aria-label={zh ? "主要页面" : "Primary pages"}
       >
-        {productNavigation.map((item) => (
-          <Link
-            aria-current={
-              view === item.id || (item.id === "projects" && projectRouteActive)
-                ? "page"
-                : undefined
-            }
-            href={viewHref(item.id)}
-            key={item.id}
-            onClick={closeNavigationLayers}
-          >
-            <ProductPlaygroundIcon name={item.icon} />
-            <span>{localizeProductText(item.label, locale)}</span>
-          </Link>
-        ))}
+        {productNavigation.map((item) => {
+          const current =
+            view === item.id || (item.id === "projects" && projectRouteActive);
+          if (item.id === "catalog") {
+            return (
+              <div className="product-sidebar__capability" key={item.id}>
+                <button
+                  aria-current={current ? "page" : undefined}
+                  aria-expanded={capabilityMenuOpen}
+                  aria-haspopup="menu"
+                  onClick={() => {
+                    setAccountOpen(false);
+                    setFilterOpen(false);
+                    setNotificationOpen(false);
+                    moreRef.current?.removeAttribute("open");
+                    setCapabilityMenuOpen((value) => !value);
+                  }}
+                  ref={capabilityTriggerRef}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name={item.icon} />
+                  <span>{localizeProductText(item.label, locale)}</span>
+                </button>
+                <ProductCapabilityMenu
+                  activeTab={capabilityTab}
+                  locale={locale}
+                  onClose={() => setCapabilityMenuOpen(false)}
+                  onSelect={(tab) => {
+                    onSelectCapabilityTab(tab);
+                    setCapabilityMenuOpen(false);
+                    onCloseMobile();
+                  }}
+                  open={capabilityMenuOpen}
+                  triggerRef={capabilityTriggerRef}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              aria-current={current ? "page" : undefined}
+              href={viewHref(item.id)}
+              key={item.id}
+              onClick={closeNavigationLayers}
+            >
+              <ProductPlaygroundIcon name={item.icon} />
+              <span>{localizeProductText(item.label, locale)}</span>
+            </Link>
+          );
+        })}
         <details className="product-sidebar__more" ref={moreRef}>
           <summary
             aria-current={view === "resources" ? "page" : undefined}
@@ -443,6 +503,10 @@ export function ProductApplication() {
   const { resource, view } = getProductApplicationRouteState(
     removeBase(location.pathname),
   );
+  const [hydrated, setHydrated] = useState(false);
+  const capabilityTab = hydrated
+    ? getProductCapabilityTab(location.search)
+    : "assistants";
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsSection, setSettingsSection] =
     useState<SettingsSection>("system");
@@ -451,6 +515,10 @@ export function ProductApplication() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 48rem)");
@@ -489,6 +557,9 @@ export function ProductApplication() {
     nextView: ProductPlaygroundView,
     nextResource: ProductResourceView = resource,
   ) => navigate(getProductApplicationRoutePath(nextView, locale, nextResource));
+
+  const navigateToCapabilityTab = (tab: ProductCapabilityTab) =>
+    navigate(getProductCapabilityRoutePath(tab, locale));
 
   const openSettings = (section: SettingsSection) => {
     setSettingsSection(section);
@@ -529,6 +600,7 @@ export function ProductApplication() {
         />
       ) : null}
       <ProductSidebar
+        capabilityTab={capabilityTab}
         collapsed={sidebarCollapsed}
         compact={compact}
         locale={locale}
@@ -537,6 +609,7 @@ export function ProductApplication() {
         onOpenSearch={() => setSearchOpen(true)}
         onOpenSettings={openSettings}
         onRequestExit={() => setExitOpen(true)}
+        onSelectCapabilityTab={navigateToCapabilityTab}
         onToggleCollapsed={() => setSidebarCollapsed((value) => !value)}
         resourceHref={(nextResource) => routeHref("resources", nextResource)}
         resource={resource}
@@ -572,7 +645,13 @@ export function ProductApplication() {
             projectsHref={routeHref("projects")}
           />
         ) : null}
-        {view === "catalog" ? <ProductCatalogSurface locale={locale} /> : null}
+        {view === "catalog" ? (
+          <ProductCatalogSurface
+            locale={locale}
+            onTabChange={navigateToCapabilityTab}
+            tab={capabilityTab}
+          />
+        ) : null}
         {view === "automation" ? (
           <ProductAutomationSurface locale={locale} />
         ) : null}

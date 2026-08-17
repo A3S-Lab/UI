@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { withBase } from "@rspress/core/runtime";
 import type {
+  ProductCapabilityTab,
   ProductPlaygroundLocale,
   ProductPlaygroundView,
 } from "./product-playground-data";
@@ -33,6 +34,123 @@ const searchItems: readonly SearchItem[] = [
     view: "project",
   },
 ];
+
+export function ProductCapabilityMenu({
+  activeTab,
+  locale,
+  onClose,
+  onSelect,
+  open,
+  triggerRef,
+}: {
+  activeTab: ProductCapabilityTab;
+  locale: ProductPlaygroundLocale;
+  onClose: () => void;
+  onSelect: (tab: ProductCapabilityTab) => void;
+  open: boolean;
+  triggerRef: RefObject<HTMLButtonElement | null>;
+}) {
+  const zh = locale === "zh";
+  const menuRef = useRef<HTMLElement>(null);
+  const items = [
+    ["assistants", zh ? "专家" : "Assistants", "assistant"],
+    ["skills", zh ? "技能" : "Skills", "checklist"],
+    ["connectors", zh ? "连接器" : "Connectors", "knowledge"],
+  ] as const;
+
+  useEffect(() => {
+    if (!open) return;
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      const selected = menuRef.current?.querySelector<HTMLButtonElement>(
+        '[role="menuitem"][data-selected="true"]',
+      );
+      const first =
+        menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]');
+      (selected ?? first)?.focus();
+    });
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (
+        !menuRef.current?.contains(target) &&
+        !triggerRef.current?.contains(target)
+      ) {
+        onClose();
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        triggerRef.current?.focus();
+        return;
+      }
+
+      if (!menuRef.current?.contains(document.activeElement)) return;
+      if (event.key === "Tab") {
+        onClose();
+        return;
+      }
+      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+        return;
+      }
+
+      const controls = [
+        ...(menuRef.current?.querySelectorAll<HTMLButtonElement>(
+          '[role="menuitem"]:not(:disabled)',
+        ) ?? []),
+      ];
+      if (controls.length === 0) return;
+      const currentIndex = controls.indexOf(
+        document.activeElement as HTMLButtonElement,
+      );
+      let nextIndex = 0;
+      if (event.key === "End") nextIndex = controls.length - 1;
+      if (event.key === "ArrowDown") {
+        nextIndex = (Math.max(currentIndex, -1) + 1) % controls.length;
+      }
+      if (event.key === "ArrowUp") {
+        nextIndex = (currentIndex <= 0 ? controls.length : currentIndex) - 1;
+      }
+      event.preventDefault();
+      controls[nextIndex]?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose, open, triggerRef]);
+
+  if (!open) return null;
+
+  return (
+    <section
+      aria-label={zh ? "选择能力类型" : "Choose capability type"}
+      className="product-capability-menu"
+      ref={menuRef}
+      role="menu"
+    >
+      {items.map(([id, label, icon]) => (
+        <button
+          aria-current={activeTab === id ? "page" : undefined}
+          data-selected={activeTab === id ? "true" : undefined}
+          key={id}
+          onClick={() => onSelect(id)}
+          role="menuitem"
+          type="button"
+        >
+          <ProductPlaygroundIcon name={icon} />
+          <span>{label}</span>
+        </button>
+      ))}
+    </section>
+  );
+}
 
 export function ProductSearchDialog({
   locale,
