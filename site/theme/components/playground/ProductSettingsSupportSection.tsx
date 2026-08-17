@@ -59,7 +59,7 @@ export function HelpSettings({ locale }: { locale: ProductPlaygroundLocale }) {
         <img alt="" height="56" src={withBase("/logo.png")} width="56" />
         <span>
           <strong>A3S UI</strong>
-          <small>v0.3.0 · {zh ? "演示工作区" : "Demo workspace"}</small>
+          <small>v0.3.0 · {zh ? "本地工作区" : "Local workspace"}</small>
         </span>
       </section>
       <section className="product-settings__rows">

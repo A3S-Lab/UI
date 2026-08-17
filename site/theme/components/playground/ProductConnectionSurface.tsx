@@ -125,8 +125,8 @@ export function ProductConnectionSurface({
       <p>
         {connected
           ? zh
-            ? "当前演示连接仅保留在浏览器中，可随时断开。"
-            : "This demo connection stays in the browser and can be disconnected at any time."
+            ? "当前连接状态仅在此页面生效，可随时断开。"
+            : "This connection state applies only to this page and can be disconnected at any time."
           : copy.body[locale]}
       </p>
       <section aria-label={zh ? "授权范围" : "Permission scope"}>
@@ -154,11 +154,7 @@ export function ProductConnectionSurface({
         onClick={() => setConnected((value) => !value)}
         type="button"
       >
-        {connected
-          ? zh
-            ? "断开演示连接"
-            : "Disconnect demo"
-          : copy.action[locale]}
+        {connected ? (zh ? "断开连接" : "Disconnect") : copy.action[locale]}
       </button>
       <footer>
         <ProductPlaygroundIcon name="shield" />

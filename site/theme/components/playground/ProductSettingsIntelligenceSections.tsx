@@ -238,8 +238,8 @@ export function ModelSettings({ locale }: { locale: ProductPlaygroundLocale }) {
       <SettingsHeader
         description={
           zh
-            ? "为不同任务选择默认模型。以下为演示配置。"
-            : "Choose a default model for different tasks. These are demo configurations."
+            ? "为不同任务选择默认模型。设置仅在当前页面生效。"
+            : "Choose a default model for different tasks. Settings apply only to this page."
         }
         title={zh ? "模型" : "Models"}
       />
@@ -391,8 +391,8 @@ export function AssistantSettings({
                 <p>
                   {isConfigured
                     ? zh
-                      ? "演示连接已启用，可再次点击移除。"
-                      : "The demo connection is enabled and can be removed again."
+                      ? "连接已启用，可随时点击移除。"
+                      : "The connection is enabled and can be removed at any time."
                     : zh
                       ? "授权、数据与失败恢复由宿主管理。"
                       : "Authorization, data, and recovery remain host-owned."}

@@ -34,6 +34,7 @@ import {
   ProductSearchDialog,
 } from "./ProductOverlayMenus";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import type { ProductComposerContext } from "./ProductComposer";
 import {
   ProductProjectSessionSurface,
   ProductProjectWorkspaceSurface,
@@ -46,11 +47,22 @@ import {
   ProductProjectsSurface,
   ProductStartSurface,
 } from "./ProductTaskSurfaces";
+import {
+  appendProductTaskFollowUp,
+  createProductTaskSession,
+  formatProductTaskTitle,
+  getProductTaskPersistenceStatus,
+  readProductTaskSession,
+  writeProductTaskSession,
+  type ProductTaskOrigin,
+  type ProductTaskSession,
+} from "./product-task-session-state";
 
 function ProductSidebar({
   capabilityTab,
   collapsed,
   compact,
+  createdTaskTitle,
   locale,
   mobileOpen,
   onCloseMobile,
@@ -67,6 +79,7 @@ function ProductSidebar({
   capabilityTab: ProductCapabilityTab;
   collapsed: boolean;
   compact: boolean;
+  createdTaskTitle: string | null;
   locale: ProductPlaygroundLocale;
   mobileOpen: boolean;
   onCloseMobile: () => void;
@@ -352,16 +365,33 @@ function ProductSidebar({
 
       <div className="product-sidebar__history">
         <section>
-          <h2>{zh ? "任务 (1)" : "Tasks (1)"}</h2>
+          <h2>
+            {zh
+              ? `任务 (${createdTaskTitle ? 2 : 1})`
+              : `Tasks (${createdTaskTitle ? 2 : 1})`}
+          </h2>
           {taskVisible ? (
-            <Link
-              aria-current={view === "session" ? "page" : undefined}
-              href={viewHref("session")}
-              onClick={closeNavigationLayers}
-            >
-              <span>{zh ? "修复会话恢复" : "Fix session recovery"}</span>
-              <time>{zh ? "今天" : "Today"}</time>
-            </Link>
+            <>
+              {createdTaskTitle ? (
+                <Link
+                  aria-current={view === "created-session" ? "page" : undefined}
+                  data-created-task
+                  href={viewHref("created-session")}
+                  onClick={closeNavigationLayers}
+                >
+                  <span>{createdTaskTitle}</span>
+                  <time>{zh ? "刚刚" : "Now"}</time>
+                </Link>
+              ) : null}
+              <Link
+                aria-current={view === "session" ? "page" : undefined}
+                href={viewHref("session")}
+                onClick={closeNavigationLayers}
+              >
+                <span>{zh ? "修复会话恢复" : "Fix session recovery"}</span>
+                <time>{zh ? "今天" : "Today"}</time>
+              </Link>
+            </>
           ) : (
             <p>{zh ? "没有符合条件的任务" : "No matching tasks"}</p>
           )}
@@ -515,8 +545,19 @@ export function ProductApplication() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [compact, setCompact] = useState(false);
+  const [taskSession, setTaskSession] = useState<ProductTaskSession | null>(
+    null,
+  );
+  const [taskSessionReady, setTaskSessionReady] = useState(false);
+  const [taskPersistenceStatus, setTaskPersistenceStatus] = useState<
+    "memory" | "saved"
+  >("saved");
 
   useEffect(() => {
+    const storedSession = readProductTaskSession();
+    setTaskSession(storedSession);
+    setTaskPersistenceStatus(getProductTaskPersistenceStatus());
+    setTaskSessionReady(true);
     setHydrated(true);
   }, []);
 
@@ -538,6 +579,11 @@ export function ProductApplication() {
       assistant: zh ? "助理" : "Assistant",
       automation: zh ? "自动化" : "Automations",
       catalog: zh ? "能力目录" : "Capabilities",
+      "created-session": taskSession
+        ? formatProductTaskTitle(taskSession.prompt, locale)
+        : zh
+          ? "当前任务"
+          : "Current task",
       project: zh ? "A3S UI 体验优化" : "A3S UI experience",
       "project-session": zh ? "发布就绪检查" : "Release readiness",
       projects: zh ? "项目" : "Projects",
@@ -546,7 +592,7 @@ export function ProductApplication() {
       start: zh ? "新建任务" : "New task",
     };
     document.title = `${titles[view]} · A3S`;
-  }, [view, zh]);
+  }, [locale, taskSession, view, zh]);
 
   const routeHref = (
     nextView: ProductPlaygroundView,
@@ -560,6 +606,27 @@ export function ProductApplication() {
 
   const navigateToCapabilityTab = (tab: ProductCapabilityTab) =>
     navigate(getProductCapabilityRoutePath(tab, locale));
+
+  const createTask = (
+    value: string,
+    context: ProductComposerContext,
+    origin: ProductTaskOrigin,
+  ) => {
+    const session = createProductTaskSession(value, context, origin);
+    const persisted = writeProductTaskSession(session);
+    setTaskSession(session);
+    setTaskSessionReady(true);
+    setTaskPersistenceStatus(persisted ? "saved" : "memory");
+    navigateToView("created-session");
+  };
+
+  const addTaskFollowUp = (message: string) => {
+    if (!taskSession) return;
+    const nextSession = appendProductTaskFollowUp(taskSession, message);
+    const persisted = writeProductTaskSession(nextSession);
+    setTaskSession(nextSession);
+    setTaskPersistenceStatus(persisted ? "saved" : "memory");
+  };
 
   const openSettings = (section: SettingsSection) => {
     setSettingsSection(section);
@@ -603,6 +670,11 @@ export function ProductApplication() {
         capabilityTab={capabilityTab}
         collapsed={sidebarCollapsed}
         compact={compact}
+        createdTaskTitle={
+          taskSessionReady && taskSession
+            ? formatProductTaskTitle(taskSession.prompt, locale)
+            : null
+        }
         locale={locale}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
@@ -617,10 +689,20 @@ export function ProductApplication() {
         view={view}
       />
       <main className="product-application__main">
-        {view === "start" ? <ProductStartSurface locale={locale} /> : null}
+        {view === "start" ? (
+          <ProductStartSurface
+            locale={locale}
+            onCreateTask={(value, context) =>
+              createTask(value, context, "start")
+            }
+          />
+        ) : null}
         {view === "assistant" ? (
           <ProductAssistantSurface
             locale={locale}
+            onCreateTask={(value, context) =>
+              createTask(value, context, "assistant")
+            }
             onOpenSettings={() => openSettings("assistant")}
           />
         ) : null}
@@ -662,7 +744,20 @@ export function ProductApplication() {
             startHref={routeHref("start")}
           />
         ) : null}
-        {view === "session" ? <ProductSessionSurface locale={locale} /> : null}
+        {view === "session" ? (
+          <ProductSessionSurface locale={locale} variant="seeded" />
+        ) : null}
+        {view === "created-session" ? (
+          <ProductSessionSurface
+            locale={locale}
+            onFollowUp={addTaskFollowUp}
+            persistenceStatus={taskPersistenceStatus}
+            startHref={routeHref("start")}
+            taskSession={taskSession}
+            taskSessionReady={taskSessionReady}
+            variant="created"
+          />
+        ) : null}
       </main>
       <ProductSettingsDialog
         initialSection={settingsSection}

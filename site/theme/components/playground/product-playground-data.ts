@@ -5,6 +5,7 @@ export type ProductPlaygroundView =
   | "assistant"
   | "automation"
   | "catalog"
+  | "created-session"
   | "project"
   | "project-session"
   | "projects"
@@ -24,7 +25,7 @@ export type ProductNavigationItem = {
   icon: ProductPlaygroundIconName;
   id: Exclude<
     ProductPlaygroundView,
-    "project" | "project-session" | "resources" | "session"
+    "created-session" | "project" | "project-session" | "resources" | "session"
   >;
   label: ProductLocalizedText;
 };

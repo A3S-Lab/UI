@@ -131,7 +131,7 @@ Device Simulator preserves exact iframe viewport dimensions inside scaled phone,
 
 The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations. Applications continue to own repository, terminal, browser, transport, scheduling, persistence, and policy logic.
 
-The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) exercises eight complete workspace compositions across device sizes, recovery states, inspectors, dark mode, and RTL. It is a separate application route and does not appear in the documentation chapter hierarchy. The [product application](https://a3s-lab.github.io/UI/app.html) demonstrates durable task, project-workspace, child-session, search, composer, and artifact-inspector flows without mixing them into the component showcase.
+The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) exercises eight complete workspace compositions across device sizes, recovery states, inspectors, dark mode, and RTL. It is a separate application route and does not appear in the documentation chapter hierarchy. The [product application](https://a3s-lab.github.io/UI/app.html) demonstrates durable task, project-workspace, child-session, search, composer, and artifact-inspector flows, including a browser-persisted current session with continuous follow-ups, without mixing them into the component showcase.
 
 ## Documentation languages and versions
 

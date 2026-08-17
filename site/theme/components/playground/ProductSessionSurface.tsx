@@ -1,101 +1,69 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Link } from "@rspress/core/theme";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductComposer } from "./ProductComposer";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
-
-const sessionCopy = {
-  en: [
-    "After a failed sign-in token refresh, focus is lost and the return route is not preserved. Find the cause, fix it, and add regression coverage.",
-    "I reproduced the issue. The failure branch cleared the recovery target before redirecting and skipped focus restoration for the trigger.",
-    "I changed the cleanup order, restored focus after navigation, and added coverage for the return route and accessibility announcement.",
-    "The recovery path and its regression tests now pass.",
-  ],
-  zh: [
-    "登录令牌刷新失败后，焦点会丢失，返回路径也没有保留。请定位原因、修复并补充回归测试。",
-    "已复现问题。失败分支在重定向前清除了恢复目标，同时跳过了触发控件的焦点恢复。",
-    "我调整了清理顺序，在导航完成后恢复焦点，并为返回路由和无障碍公告增加覆盖。",
-    "恢复路径及其回归测试现已通过。",
-  ],
-} as const;
-
-const sessionArtifacts = [
-  {
-    content: `export async function restoreSession(returnTo: string) {
-  const recoveryTarget = normalizeReturnPath(returnTo);
-
-  await refreshSessionToken();
-  navigate(recoveryTarget);
-  restoreTriggerFocus();
-}`,
-    id: "session",
-    kind: "TypeScript",
-    name: "src/auth/session.ts",
-    summary: {
-      en: "Preserves the recovery target until navigation completes.",
-      zh: "保留恢复目标，直到导航完成。",
-    },
-  },
-  {
-    content: `export function SignInRecovery() {
-  const returnTo = useRecoveryTarget();
-
-  return (
-    <SignInForm
-      onRecovered={() => restoreSession(returnTo)}
-    />
-  );
-}`,
-    id: "sign-in",
-    kind: "TSX",
-    name: "src/routes/sign-in.tsx",
-    summary: {
-      en: "Restores focus after the return route is committed.",
-      zh: "在返回路由提交后恢复焦点。",
-    },
-  },
-  {
-    content: `test("keeps the return route after refresh failure", async () => {
-  await failNextTokenRefresh();
-  await recoverFromSignIn("/projects/alpha");
-
-  expect(currentRoute()).toBe("/projects/alpha");
-  expect(trigger()).toHaveFocus();
-});`,
-    id: "tests",
-    kind: "TypeScript",
-    name: "tests/session.test.ts",
-    summary: {
-      en: "Covers route recovery, focus, and status announcements.",
-      zh: "覆盖路由恢复、焦点与状态公告。",
-    },
-  },
-  {
-    content: `# Session recovery review
-
-- Recovery target survives token refresh failures.
-- Focus returns to the action that opened sign-in.
-- Status changes use a bounded live region.
-- All 12 focused regression tests pass.`,
-    id: "review",
-    kind: "Markdown",
-    name: "release-review.md",
-    summary: {
-      en: "Records verification scope and release evidence.",
-      zh: "记录验证范围与发布证据。",
-    },
-  },
-] as const;
+import {
+  seededSessionArtifacts,
+  seededSessionCopy,
+  seededSessionTitle,
+} from "./product-session-seeded-data";
+import {
+  formatProductTaskTitle,
+  getProductTaskArtifacts,
+  getProductTaskContextDetails,
+  getProductTaskConversation,
+  getProductTaskFollowUpReply,
+  type ProductTaskSession,
+} from "./product-task-session-state";
 
 export function ProductSessionSurface({
   locale,
+  onFollowUp,
+  persistenceStatus = "saved",
+  startHref,
+  taskSession = null,
+  taskSessionReady = true,
+  variant = "seeded",
 }: {
   locale: ProductPlaygroundLocale;
+  onFollowUp?: (message: string) => void;
+  persistenceStatus?: "memory" | "saved";
+  startHref?: string;
+  taskSession?: ProductTaskSession | null;
+  taskSessionReady?: boolean;
+  variant?: "created" | "seeded";
 }) {
   const zh = locale === "zh";
-  const copy = sessionCopy[locale];
+  const created = variant === "created";
+  const copy =
+    created && taskSession
+      ? getProductTaskConversation(taskSession, locale, persistenceStatus)
+      : seededSessionCopy[locale];
+  const artifacts =
+    created && taskSession
+      ? getProductTaskArtifacts(taskSession, locale)
+      : seededSessionArtifacts;
+  const contextDetails =
+    created && taskSession
+      ? getProductTaskContextDetails(taskSession, locale)
+      : null;
+  const title =
+    created && taskSession
+      ? formatProductTaskTitle(taskSession.prompt, locale)
+      : seededSessionTitle[locale];
+  const followUpReply = getProductTaskFollowUpReply(locale);
   const [activeArtifactId, setActiveArtifactId] = useState<string | null>(null);
   const [artifactCopyStatus, setArtifactCopyStatus] = useState("");
-  const [followUps, setFollowUps] = useState<string[]>([]);
+  const [seededFollowUps, setSeededFollowUps] = useState<string[]>([]);
+  const followUps = created ? (taskSession?.followUps ?? []) : seededFollowUps;
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
   const [query, setQuery] = useState("");
@@ -160,13 +128,17 @@ export function ProductSessionSurface({
   const matchCount = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(locale);
     if (!normalizedQuery) return 0;
-    return [...copy, ...followUps].reduce((count, value) => {
+    const messages = [
+      ...copy,
+      ...followUps.flatMap((message) => [message, followUpReply]),
+    ];
+    return messages.reduce((count, value) => {
       const matches = value
         .toLocaleLowerCase(locale)
         .split(normalizedQuery).length;
       return count + Math.max(0, matches - 1);
     }, 0);
-  }, [copy, followUps, locale, query]);
+  }, [copy, followUpReply, followUps, locale, query]);
 
   const shareSession = async () => {
     try {
@@ -177,7 +149,7 @@ export function ProductSessionSurface({
     }
   };
 
-  const activeArtifact = sessionArtifacts.find(
+  const activeArtifact = artifacts.find(
     (artifact) => artifact.id === activeArtifactId,
   );
 
@@ -191,15 +163,78 @@ export function ProductSessionSurface({
     }
   };
 
+  if (created && !taskSessionReady) {
+    return (
+      <section
+        aria-busy="true"
+        className="product-session"
+        data-product-surface="session"
+        data-session-state="loading"
+        data-variant="created"
+      >
+        <header className="product-session__header">
+          <h1>{zh ? "正在恢复任务" : "Restoring task"}</h1>
+        </header>
+        <div
+          aria-labelledby="product-session-loading-title"
+          className="product-session__state"
+        >
+          <span aria-hidden="true" data-state-indicator />
+          <h2 id="product-session-loading-title">
+            {zh ? "正在读取会话" : "Loading conversation"}
+          </h2>
+          <p>
+            {zh
+              ? "任务内容与最近进度将在此浏览器中恢复。"
+              : "The task and its latest progress are being restored from this browser."}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (created && !taskSession) {
+    return (
+      <section
+        className="product-session"
+        data-product-surface="session"
+        data-session-state="missing"
+        data-variant="created"
+      >
+        <header className="product-session__header">
+          <h1>{zh ? "当前任务" : "Current task"}</h1>
+        </header>
+        <div className="product-session__state" role="status">
+          <span aria-hidden="true">
+            <ProductPlaygroundIcon name="task-add" />
+          </span>
+          <h2 id="product-session-missing-title">
+            {zh ? "没有可恢复的任务" : "No task to restore"}
+          </h2>
+          <p>
+            {zh
+              ? "此地址会打开最近创建的任务。请先新建任务，再从最近任务中返回。"
+              : "This address opens the most recently created task. Create a task first, then return from Recent tasks."}
+          </p>
+          {startHref ? (
+            <Link href={startHref}>{zh ? "新建任务" : "Create a task"}</Link>
+          ) : null}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       className="product-session"
       data-product-surface="session"
       data-inspector-open={inspectorOpen ? "true" : undefined}
       data-search-open={searchOpen ? "true" : undefined}
+      data-session-state="ready"
+      data-variant={variant}
     >
       <header className="product-session__header">
-        <h1>{zh ? "修复会话恢复" : "Fix session recovery"}</h1>
+        <h1>{title}</h1>
         <div className="product-session__actions">
           <button
             aria-expanded={searchOpen}
@@ -297,84 +332,144 @@ export function ProductSessionSurface({
               <div className="product-session__response">
                 <p>{copy[1]}</p>
 
-                <details className="product-session__tool">
-                  <summary>
-                    <span data-tool-icon>
-                      <ProductPlaygroundIcon name="search" />
-                    </span>
-                    <span data-tool-identity>
-                      <strong>
-                        {zh
-                          ? "检查会话恢复路径"
-                          : "Inspect session recovery path"}
-                      </strong>
-                      <small>
-                        src/auth/session.ts · src/routes/sign-in.tsx
-                      </small>
-                    </span>
-                    <span data-tool-state>{zh ? "已完成" : "Complete"}</span>
-                    <ProductPlaygroundIcon
-                      data-tool-disclosure
-                      name="chevron"
-                    />
-                  </summary>
-                  <section>
-                    <dl>
-                      <div>
-                        <dt>{zh ? "操作" : "Action"}</dt>
-                        <dd>{zh ? "读取 2 个文件" : "Read 2 files"}</dd>
-                      </div>
-                      <div>
-                        <dt>{zh ? "结果" : "Result"}</dt>
-                        <dd>
-                          {zh
-                            ? "定位到失败分支中的状态清理顺序"
-                            : "Located state cleanup ordering in the failure branch"}
-                        </dd>
-                      </div>
-                    </dl>
-                  </section>
-                </details>
+                {created && contextDetails ? (
+                  <>
+                    <details className="product-session__tool" data-context>
+                      <summary>
+                        <span data-tool-icon>
+                          <ProductPlaygroundIcon name="workspace" />
+                        </span>
+                        <span data-tool-identity>
+                          <strong>
+                            {zh ? "任务上下文已准备" : "Task context ready"}
+                          </strong>
+                          <small>{contextDetails.workspace}</small>
+                        </span>
+                        <span data-tool-state>{zh ? "就绪" : "Ready"}</span>
+                        <ProductPlaygroundIcon
+                          data-tool-disclosure
+                          name="chevron"
+                        />
+                      </summary>
+                      <section>
+                        <dl>
+                          <div>
+                            <dt>{zh ? "工作空间" : "Workspace"}</dt>
+                            <dd>{contextDetails.workspace}</dd>
+                          </div>
+                          <div>
+                            <dt>{zh ? "权限" : "Permissions"}</dt>
+                            <dd>{contextDetails.permissions}</dd>
+                          </div>
+                          <div>
+                            <dt>{zh ? "模型" : "Model"}</dt>
+                            <dd>{contextDetails.model}</dd>
+                          </div>
+                        </dl>
+                      </section>
+                    </details>
+                    <p>{copy[2]}</p>
+                    <p>{copy[3]}</p>
+                  </>
+                ) : (
+                  <>
+                    <details className="product-session__tool">
+                      <summary>
+                        <span data-tool-icon>
+                          <ProductPlaygroundIcon name="search" />
+                        </span>
+                        <span data-tool-identity>
+                          <strong>
+                            {zh
+                              ? "检查会话恢复路径"
+                              : "Inspect session recovery path"}
+                          </strong>
+                          <small>
+                            src/auth/session.ts · src/routes/sign-in.tsx
+                          </small>
+                        </span>
+                        <span data-tool-state>
+                          {zh ? "已完成" : "Complete"}
+                        </span>
+                        <ProductPlaygroundIcon
+                          data-tool-disclosure
+                          name="chevron"
+                        />
+                      </summary>
+                      <section>
+                        <dl>
+                          <div>
+                            <dt>{zh ? "操作" : "Action"}</dt>
+                            <dd>{zh ? "读取 2 个文件" : "Read 2 files"}</dd>
+                          </div>
+                          <div>
+                            <dt>{zh ? "结果" : "Result"}</dt>
+                            <dd>
+                              {zh
+                                ? "定位到失败分支中的状态清理顺序"
+                                : "Located state cleanup ordering in the failure branch"}
+                            </dd>
+                          </div>
+                        </dl>
+                      </section>
+                    </details>
 
-                <p>{copy[2]}</p>
+                    <p>{copy[2]}</p>
 
-                <details className="product-session__tool" data-success>
-                  <summary>
-                    <span data-tool-icon>
-                      <ProductPlaygroundIcon name="check" />
-                    </span>
-                    <span data-tool-identity>
-                      <strong>
-                        {zh ? "运行会话测试" : "Run session tests"}
-                      </strong>
-                      <small>npm test -- session</small>
-                    </span>
-                    <span data-tool-state>{zh ? "通过" : "Passed"}</span>
-                    <ProductPlaygroundIcon
-                      data-tool-disclosure
-                      name="chevron"
-                    />
-                  </summary>
-                  <section>
-                    <pre>
-                      <code>
-                        PASS tests/session.test.ts{"\n"}
-                        12 passed · 0 failed · 4.8s
-                      </code>
-                    </pre>
-                  </section>
-                </details>
+                    <details className="product-session__tool" data-success>
+                      <summary>
+                        <span data-tool-icon>
+                          <ProductPlaygroundIcon name="check" />
+                        </span>
+                        <span data-tool-identity>
+                          <strong>
+                            {zh ? "运行会话测试" : "Run session tests"}
+                          </strong>
+                          <small>npm test -- session</small>
+                        </span>
+                        <span data-tool-state>{zh ? "通过" : "Passed"}</span>
+                        <ProductPlaygroundIcon
+                          data-tool-disclosure
+                          name="chevron"
+                        />
+                      </summary>
+                      <section>
+                        <pre>
+                          <code>
+                            PASS tests/session.test.ts{"\n"}
+                            12 passed · 0 failed · 4.8s
+                          </code>
+                        </pre>
+                      </section>
+                    </details>
 
-                <p>{copy[3]}</p>
+                    <p>{copy[3]}</p>
+                  </>
+                )}
               </div>
             </article>
           </li>
           {followUps.map((message, index) => (
-            <li data-role="user" key={`${message}-${index}`}>
-              <article>
-                <p>{message}</p>
-              </article>
-            </li>
+            <Fragment key={`${message}-${index}`}>
+              <li data-role="user">
+                <article>
+                  <p>{message}</p>
+                </article>
+              </li>
+              <li data-follow-up-reply data-role="assistant">
+                <article>
+                  <header>
+                    <span>
+                      <ProductPlaygroundIcon name="assistant" />
+                      <strong>A3S</strong>
+                    </span>
+                  </header>
+                  <div className="product-session__response">
+                    <p>{followUpReply}</p>
+                  </div>
+                </article>
+              </li>
+            </Fragment>
           ))}
         </ol>
       </div>
@@ -383,14 +478,26 @@ export function ProductSessionSurface({
         <ProductComposer
           compact
           locale={locale}
-          onSubmit={(message) =>
-            setFollowUps((current) => [...current, message])
-          }
+          onSubmit={(message) => {
+            if (created) onFollowUp?.(message);
+            else setSeededFollowUps((current) => [...current, message]);
+          }}
         />
-        <small>
-          {zh
-            ? "生成内容可能存在误差，请核实重要信息"
-            : "Generated content may contain errors. Verify important information."}
+        <small
+          data-persistence-warning={
+            created && persistenceStatus === "memory" ? "true" : undefined
+          }
+          role={
+            created && persistenceStatus === "memory" ? "status" : undefined
+          }
+        >
+          {created && persistenceStatus === "memory"
+            ? zh
+              ? "浏览器未允许保存，本次会话仅保留在当前页面。"
+              : "Browser storage is unavailable. This session remains only on the current page."
+            : zh
+              ? "生成内容可能存在误差，请核实重要信息"
+              : "Generated content may contain errors. Verify important information."}
         </small>
       </footer>
 
@@ -415,9 +522,13 @@ export function ProductSessionSurface({
               <div>
                 <strong>{zh ? "产物" : "Artifacts"}</strong>
                 <small>
-                  {zh
-                    ? `${sessionArtifacts.length} 个文件 · 测试已通过`
-                    : `${sessionArtifacts.length} files · Tests passed`}
+                  {created
+                    ? zh
+                      ? `${artifacts.length} 个文件 · 上下文已准备`
+                      : `${artifacts.length} files · Context ready`
+                    : zh
+                      ? `${artifacts.length} 个文件 · 测试已通过`
+                      : `${artifacts.length} files · Tests passed`}
                 </small>
               </div>
               <button
@@ -462,27 +573,47 @@ export function ProductSessionSurface({
               </section>
             ) : (
               <div className="product-session__artifact-overview">
-                <section>
+                <section data-context={created ? "true" : undefined}>
                   <span>
-                    <ProductPlaygroundIcon name="check" />
+                    <ProductPlaygroundIcon
+                      name={created ? "workspace" : "check"}
+                    />
                   </span>
                   <div>
                     <strong>
-                      {zh ? "会话恢复修复完成" : "Session recovery fixed"}
+                      {created
+                        ? zh
+                          ? "任务上下文已准备"
+                          : "Task context ready"
+                        : zh
+                          ? "会话恢复修复完成"
+                          : "Session recovery fixed"}
                     </strong>
                     <small>
-                      {zh
-                        ? "2 个源文件已更新，12 项回归测试通过。"
-                        : "2 source files updated and 12 regression tests passed."}
+                      {created
+                        ? zh
+                          ? "原始要求、执行上下文与首个可验证计划均已保留。"
+                          : "The original request, execution context, and first verifiable plan are preserved."
+                        : zh
+                          ? "2 个源文件已更新，12 项回归测试通过。"
+                          : "2 source files updated and 12 regression tests passed."}
                     </small>
                   </div>
                 </section>
                 <div>
                   <header>
-                    <strong>{zh ? "修复产物" : "Fix artifacts"}</strong>
-                    <small>{sessionArtifacts.length}</small>
+                    <strong>
+                      {created
+                        ? zh
+                          ? "任务文件"
+                          : "Task files"
+                        : zh
+                          ? "修复产物"
+                          : "Fix artifacts"}
+                    </strong>
+                    <small>{artifacts.length}</small>
                   </header>
-                  {sessionArtifacts.map((artifact) => (
+                  {artifacts.map((artifact) => (
                     <button
                       key={artifact.id}
                       onClick={() => {

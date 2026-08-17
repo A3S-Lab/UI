@@ -5,7 +5,10 @@ import {
   projectTemplates,
   type ProductPlaygroundLocale,
 } from "./product-playground-data";
-import { ProductComposer } from "./ProductComposer";
+import {
+  ProductComposer,
+  type ProductComposerContext,
+} from "./ProductComposer";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 function ProjectDiagram() {
@@ -93,8 +96,10 @@ function ProjectDiagram() {
 
 export function ProductStartSurface({
   locale,
+  onCreateTask,
 }: {
   locale: ProductPlaygroundLocale;
+  onCreateTask: (value: string, context: ProductComposerContext) => void;
 }) {
   const zh = locale === "zh";
   const [mode, setMode] = useState("office");
@@ -231,6 +236,7 @@ export function ProductStartSurface({
             initialValue={promptPreset.text}
             key={`${mode}-${promptPreset.revision}`}
             locale={locale}
+            onSubmit={onCreateTask}
           />
         </div>
       </div>
@@ -240,9 +246,11 @@ export function ProductStartSurface({
 
 export function ProductAssistantSurface({
   locale,
+  onCreateTask,
   onOpenSettings,
 }: {
   locale: ProductPlaygroundLocale;
+  onCreateTask: (value: string, context: ProductComposerContext) => void;
   onOpenSettings: () => void;
 }) {
   const zh = locale === "zh";
@@ -271,7 +279,12 @@ export function ProductAssistantSurface({
       </header>
       <div className="product-assistant__canvas" />
       <div className="product-assistant__composer">
-        <ProductComposer compact locale={locale} showPermissions={false} />
+        <ProductComposer
+          compact
+          locale={locale}
+          onSubmit={onCreateTask}
+          showPermissions={false}
+        />
         <p>
           {zh
             ? "内容由 A3S 生成，请核实重要信息"

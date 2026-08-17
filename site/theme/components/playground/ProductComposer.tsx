@@ -1,10 +1,57 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   AgentComposerEditor,
   type AgentComposerEditorHandle,
 } from "../../../../src/integrations/tiptap/react.js";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+
+export type ProductComposerContext = {
+  model: "auto" | "fast" | "reasoner";
+  permissions: "ask" | "edit" | "read";
+  workspace: "" | "local" | "ui";
+};
+
+const maxTaskLength = 8_000;
+
+type SpeechRecognitionResultLike = {
+  readonly 0?: { transcript: string };
+};
+
+type SpeechRecognitionEventLike = Event & {
+  readonly results: ArrayLike<SpeechRecognitionResultLike>;
+};
+
+type SpeechRecognitionErrorEventLike = Event & {
+  readonly error?: string;
+};
+
+type SpeechRecognitionLike = {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onend: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  abort: () => void;
+  start: () => void;
+  stop: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+function getSpeechRecognitionConstructor() {
+  if (typeof window === "undefined") return null;
+  const speechWindow = window as Window & {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  };
+  return (
+    speechWindow.SpeechRecognition ??
+    speechWindow.webkitSpeechRecognition ??
+    null
+  );
+}
 
 export function ProductComposer({
   compact = false,
@@ -20,18 +67,27 @@ export function ProductComposer({
   contextual?: boolean;
   initialValue?: string;
   locale: ProductPlaygroundLocale;
-  onSubmit?: (value: string) => void;
+  onSubmit?: (value: string, context: ProductComposerContext) => void;
   placeholder?: string;
   showPermissions?: boolean;
   submitSuccessMessage?: string;
 }) {
   const zh = locale === "zh";
   const editorRef = useRef<AgentComposerEditorHandle>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const speechOutcomeRef = useRef<"captured" | "error" | "idle" | "stopped">(
+    "idle",
+  );
   const workspaceMenuRef = useRef<HTMLDetailsElement>(null);
   const [draft, setDraft] = useState(initialValue);
   const [listening, setListening] = useState(false);
+  const [model, setModel] = useState<ProductComposerContext["model"]>("auto");
+  const [permissions, setPermissions] =
+    useState<ProductComposerContext["permissions"]>("ask");
+  const [speechSupported, setSpeechSupported] = useState(false);
   const [status, setStatus] = useState("");
-  const [workspace, setWorkspace] = useState("");
+  const [workspace, setWorkspace] =
+    useState<ProductComposerContext["workspace"]>("");
   const workspaceOptions = [
     ["ui", zh ? "A3S UI 体验优化" : "A3S UI experience"],
     ["local", zh ? "本地工作空间" : "Local workspace"],
@@ -39,6 +95,105 @@ export function ProductComposer({
   const workspaceLabel = workspaceOptions.find(
     ([value]) => value === workspace,
   )?.[1];
+
+  useEffect(() => {
+    setSpeechSupported(Boolean(getSpeechRecognitionConstructor()));
+    return () => {
+      const recognition = recognitionRef.current;
+      recognitionRef.current = null;
+      if (!recognition) return;
+      recognition.onend = null;
+      recognition.onerror = null;
+      recognition.onresult = null;
+      recognition.abort();
+    };
+  }, []);
+
+  const toggleSpeechInput = () => {
+    if (listening) {
+      speechOutcomeRef.current = "stopped";
+      recognitionRef.current?.stop();
+      setListening(false);
+      setStatus(zh ? "语音输入已停止。" : "Voice input stopped.");
+      return;
+    }
+
+    const SpeechRecognition = getSpeechRecognitionConstructor();
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      setStatus(
+        zh
+          ? "当前浏览器不支持语音输入，请继续使用键盘。"
+          : "Voice input is unavailable in this browser. Continue with the keyboard.",
+      );
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = zh ? "zh-CN" : "en-US";
+    speechOutcomeRef.current = "idle";
+    recognitionRef.current = recognition;
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(
+        event.results,
+        (result) => result[0]?.transcript ?? "",
+      )
+        .join(" ")
+        .trim();
+      if (!transcript) return;
+      speechOutcomeRef.current = "captured";
+      const currentValue = editorRef.current?.getMarkdown() ?? "";
+      editorRef.current?.insertContent(
+        `${currentValue.trim() ? " " : ""}${transcript}`,
+      );
+      setStatus(zh ? "语音内容已加入任务。" : "Voice input added.");
+    };
+    recognition.onerror = (event) => {
+      speechOutcomeRef.current = "error";
+      setListening(false);
+      recognitionRef.current = null;
+      const permissionDenied =
+        event.error === "not-allowed" || event.error === "service-not-allowed";
+      setStatus(
+        permissionDenied
+          ? zh
+            ? "无法使用麦克风，请检查浏览器权限。"
+            : "Microphone access was denied. Check browser permissions."
+          : zh
+            ? "没有识别到语音，请重试或使用键盘。"
+            : "No speech was recognized. Try again or use the keyboard.",
+      );
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      if (speechOutcomeRef.current === "idle") {
+        setStatus(
+          zh
+            ? "没有识别到语音，请重试或使用键盘。"
+            : "No speech was recognized. Try again or use the keyboard.",
+        );
+      }
+    };
+
+    try {
+      recognition.start();
+      setListening(true);
+      setStatus(zh ? "正在聆听…" : "Listening…");
+    } catch {
+      recognitionRef.current = null;
+      speechOutcomeRef.current = "error";
+      setListening(false);
+      setStatus(
+        zh
+          ? "暂时无法启动语音输入，请重试。"
+          : "Voice input could not start. Try again.",
+      );
+    }
+  };
 
   const submit = (event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -49,8 +204,18 @@ export function ProductComposer({
       editorRef.current?.focus();
       return;
     }
+    const normalizedDraft = draft.trim();
+    if (normalizedDraft.length > maxTaskLength) {
+      setStatus(
+        zh
+          ? `任务内容不能超过 ${maxTaskLength.toLocaleString("zh-CN")} 个字符。`
+          : `Keep the task under ${maxTaskLength.toLocaleString("en-US")} characters.`,
+      );
+      editorRef.current?.focus();
+      return;
+    }
     if (onSubmit) {
-      onSubmit(draft.trim());
+      onSubmit(normalizedDraft, { model, permissions, workspace });
       setDraft("");
       setStatus(
         submitSuccessMessage ??
@@ -62,8 +227,8 @@ export function ProductComposer({
     }
     setStatus(
       zh
-        ? "任务已进入演示队列，输入内容已保留在本地。"
-        : "Task added to the demo queue and kept locally.",
+        ? "当前页面没有可接收此任务的会话。"
+        : "This page does not have a session destination for the task.",
     );
   };
 
@@ -111,7 +276,13 @@ export function ProductComposer({
               <ProductPlaygroundIcon name="shield" />
               <select
                 aria-label={zh ? "权限" : "Permissions"}
-                defaultValue="ask"
+                onChange={(event) =>
+                  setPermissions(
+                    event.currentTarget
+                      .value as ProductComposerContext["permissions"],
+                  )
+                }
+                value={permissions}
               >
                 <option value="ask">
                   {zh ? "默认权限" : "Default permissions"}
@@ -125,7 +296,15 @@ export function ProductComposer({
         <div data-composer-actions>
           <label>
             <span className="sr-only">{zh ? "模型" : "Model"}</span>
-            <select aria-label={zh ? "模型" : "Model"} defaultValue="auto">
+            <select
+              aria-label={zh ? "模型" : "Model"}
+              onChange={(event) =>
+                setModel(
+                  event.currentTarget.value as ProductComposerContext["model"],
+                )
+              }
+              value={model}
+            >
               <option value="auto">Auto</option>
               <option value="reasoner">A3S Reasoner</option>
               <option value="fast">A3S Fast</option>
@@ -137,24 +316,25 @@ export function ProductComposer({
                 ? zh
                   ? "停止语音输入"
                   : "Stop voice input"
-                : zh
-                  ? "开始语音输入"
-                  : "Start voice input"
+                : speechSupported
+                  ? zh
+                    ? "开始语音输入"
+                    : "Start voice input"
+                  : zh
+                    ? "当前浏览器不支持语音输入"
+                    : "Voice input is unavailable in this browser"
             }
             aria-pressed={listening}
+            disabled={!speechSupported}
+            title={
+              speechSupported
+                ? undefined
+                : zh
+                  ? "当前浏览器不支持语音输入"
+                  : "Voice input is unavailable in this browser"
+            }
             type="button"
-            onClick={() => {
-              setListening((value) => !value);
-              setStatus(
-                listening
-                  ? zh
-                    ? "语音输入已停止。"
-                    : "Voice input stopped."
-                  : zh
-                    ? "语音输入演示已开启。"
-                    : "Voice input demo started.",
-              );
-            }}
+            onClick={toggleSpeechInput}
           >
             <ProductPlaygroundIcon name="microphone" />
           </button>
@@ -210,8 +390,11 @@ export function ProductComposer({
             <ProductPlaygroundIcon name="shield" />
             <select
               aria-label={zh ? "权限设置" : "Permission settings"}
-              defaultValue="ask"
               onChange={(event) => {
+                setPermissions(
+                  event.currentTarget
+                    .value as ProductComposerContext["permissions"],
+                );
                 const label = event.currentTarget.selectedOptions[0]?.text;
                 setStatus(
                   zh
@@ -219,6 +402,7 @@ export function ProductComposer({
                     : `Permissions set to ${label}.`,
                 );
               }}
+              value={permissions}
             >
               <option value="ask">
                 {zh ? "默认权限" : "Default permissions"}

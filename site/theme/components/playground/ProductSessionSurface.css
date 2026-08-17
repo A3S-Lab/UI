@@ -1,4 +1,8 @@
-.a3s-product-application[data-view="session"] .product-application__main {
+.a3s-product-application:is(
+    [data-view="session"],
+    [data-view="created-session"]
+  )
+  .product-application__main {
   overflow: hidden;
 }
 
@@ -42,6 +46,85 @@
   letter-spacing: -0.018em;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.product-session__state {
+  display: grid;
+  width: min(100% - 2rem, 30rem);
+  margin: auto;
+  padding: 2rem 1rem;
+  justify-items: center;
+  align-content: center;
+  gap: 0.625rem;
+  grid-row: 2 / -1;
+  grid-column: 1;
+  color: var(--ui-muted);
+  text-align: center;
+}
+
+.product-session__state > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0.375rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-paper));
+  color: var(--ui-blue);
+  place-items: center;
+}
+
+.product-session__state > span svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.product-session__state > span[data-state-indicator] {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid color-mix(in srgb, var(--ui-blue) 18%, transparent);
+  border-top-color: var(--ui-blue);
+  background: transparent;
+  animation: product-session-spin 700ms linear infinite;
+}
+
+.product-session__state h2 {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: 1.0625rem;
+  font-weight: 660;
+  letter-spacing: -0.016em;
+}
+
+.product-session__state p {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+
+.product-session__state a {
+  display: inline-flex;
+  min-height: 2.25rem;
+  margin-top: 0.375rem;
+  padding: 0 0.875rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  background: var(--ui-blue);
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.product-session__state a:hover {
+  background: var(--ui-blue-deep);
+}
+
+@keyframes product-session-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .product-session__actions {
@@ -278,6 +361,11 @@
   color: var(--ui-green);
 }
 
+.product-session__tool[data-context] [data-tool-icon],
+.product-session__tool[data-context] [data-tool-state] {
+  color: var(--ui-blue);
+}
+
 .product-session__tool [data-tool-icon] svg,
 .product-session__tool [data-tool-disclosure] {
   width: 0.9375rem;
@@ -408,6 +496,10 @@
   text-align: center;
 }
 
+.product-session__composer > small[data-persistence-warning="true"] {
+  color: var(--ui-amber);
+}
+
 .product-session__inspector-backdrop {
   display: none;
 }
@@ -509,6 +601,11 @@
   width: 1rem;
   height: 1rem;
   stroke-width: 2.25;
+}
+
+.product-session__artifact-overview > section[data-context="true"] > span {
+  background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-paper));
+  color: var(--ui-blue);
 }
 
 .product-session__artifact-overview > section > div {
@@ -761,7 +858,11 @@
 }
 
 @media (max-width: 48rem) {
-  .a3s-product-application[data-view="session"] .product-application__main {
+  .a3s-product-application:is(
+      [data-view="session"],
+      [data-view="created-session"]
+    )
+    .product-application__main {
     padding-top: 0;
   }
 
@@ -827,6 +928,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .product-session__state > span[data-state-indicator] {
+    animation: none;
+  }
+
   .product-session__tool [data-tool-disclosure] {
     transition: none;
   }
