@@ -27,7 +27,7 @@
 
 @media (max-width: 52rem) {
   .a3s-playground-page {
-    min-height: 32rem;
+    min-height: min(32rem, calc(100dvh - var(--rp-nav-height)));
   }
 
   .workbench-commandbar {
@@ -92,6 +92,16 @@
 }
 
 @media (max-width: 40rem) {
+  .workbench-app-link span {
+    display: none;
+  }
+
+  .workbench-app-link {
+    width: 2rem;
+    padding: 0;
+    justify-content: center;
+  }
+
   .a3s-workspace-playground {
     grid-template-rows: 5.25rem minmax(0, 1fr) 1.75rem;
   }

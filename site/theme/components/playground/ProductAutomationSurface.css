@@ -1,0 +1,229 @@
+.product-automation {
+  display: grid;
+  min-height: 100%;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  background: color-mix(in srgb, var(--ui-paper) 50%, var(--ui-canvas));
+}
+
+.product-automation > header {
+  min-height: 3.5rem;
+  padding: 0.75rem 1.5rem;
+  background: color-mix(in srgb, var(--ui-paper) 50%, var(--ui-canvas));
+}
+
+.product-automation > header > div {
+  display: inline-flex;
+  min-height: 2rem;
+  padding: 0.0625rem;
+  border-radius: 0.625rem;
+  background: var(--ui-panel);
+}
+
+.product-automation > header button {
+  min-height: 1.875rem;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+}
+
+.product-automation > header button[aria-selected="true"] {
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: 0 1px 3px rgb(15 35 70 / 8%);
+  font-weight: 650;
+}
+
+.product-automation__status {
+  display: grid;
+  min-height: 21.75rem;
+  padding: 3rem 2rem;
+  align-content: center;
+  justify-items: center;
+  background: color-mix(in srgb, var(--ui-paper) 50%, var(--ui-canvas));
+  text-align: center;
+}
+
+.product-automation__status > svg {
+  width: 3.75rem;
+  height: 3.75rem;
+  color: var(--ui-line-strong);
+  stroke-width: 1.5;
+}
+
+.product-automation__status > p {
+  margin: 1rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.9375rem;
+}
+
+.product-automation__status > button[data-primary] {
+  margin-top: 1.25rem;
+}
+
+.product-automation__status > button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.product-automation__status > article {
+  display: grid;
+  width: min(100%, 44rem);
+  min-height: 5.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.75rem;
+  align-items: center;
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  gap: 0.875rem;
+  background: var(--ui-paper);
+  text-align: start;
+}
+
+.product-automation__status > article > span {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-green) 12%, var(--ui-paper));
+  color: var(--ui-green);
+  place-items: center;
+}
+
+.product-automation__status > article svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.product-automation__status > article div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.product-automation__status > article strong {
+  color: var(--ui-ink);
+  font-size: 0.9375rem;
+}
+
+.product-automation__status > article small {
+  color: var(--ui-muted);
+  font-size: 0.8125rem;
+}
+
+.product-automation__status > article button {
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+}
+
+.product-automation__templates {
+  padding: 1.0625rem 1.5rem 4rem;
+  background: color-mix(in srgb, var(--ui-paper) 50%, var(--ui-canvas));
+}
+
+.product-automation__templates h1 {
+  margin: 0;
+  font-size: 1.3125rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.75rem;
+}
+
+.product-automation__templates > div {
+  display: grid;
+  margin-top: 0.6875rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.product-automation__templates > div > button {
+  display: grid;
+  min-height: 4.625rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  align-items: center;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  text-align: start;
+}
+
+.product-automation__templates > div > button:hover {
+  border-color: var(--ui-line-strong);
+}
+
+.product-automation__templates > div > button > svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.product-automation__templates > div > button > span {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.product-automation__templates strong {
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+}
+
+.product-automation__templates small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ui-muted);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.product-automation__history {
+  display: grid;
+  min-height: 30rem;
+  padding: 4rem 2rem;
+  align-content: center;
+  justify-items: center;
+  background: var(--ui-paper);
+  text-align: center;
+}
+
+.product-automation__history > svg {
+  width: 3rem;
+  height: 3rem;
+  color: var(--ui-line-strong);
+}
+
+.product-automation__history h1 {
+  margin: 1rem 0 0;
+  font-size: 1.125rem;
+}
+
+.product-automation__history p {
+  max-width: 32rem;
+  margin: 0.5rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.product-automation__history button {
+  min-height: 2.375rem;
+  margin-top: 1.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+}

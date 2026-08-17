@@ -18,6 +18,7 @@ import {
   resetDockviewLayout,
   themeA3S,
 } from "../../../../src/integrations/dockview/shared.js";
+import { getProductApplicationRoutePath } from "../../../product-application-routes";
 import { PlaygroundIcon } from "./PlaygroundIcon";
 import {
   playgroundScenes,
@@ -276,7 +277,11 @@ function LayoutActions({
   );
 }
 
-export function WorkspacePlayground() {
+export function WorkspacePlayground({
+  mode = "playground",
+}: {
+  mode?: "playground" | "session";
+}) {
   const language = useLang();
   const locale: PlaygroundLocale = language === "zh" ? "zh" : "en";
   const zh = locale === "zh";
@@ -317,7 +322,7 @@ export function WorkspacePlayground() {
     (event: DockviewReadyEvent) => {
       const compact = window.matchMedia("(max-width: 52rem)").matches;
       const persistence = createDockviewLayoutPersistence({
-        key: `a3s-ui:playground:${locale}:${compact ? "compact" : "desktop"}:v1`,
+        key: `a3s-ui:${mode}:${locale}:${compact ? "compact" : "desktop"}:v1`,
         onError: (_error, operation) =>
           setFeedback(
             zh
@@ -342,7 +347,7 @@ export function WorkspacePlayground() {
             : "Default workspace created. Drag tabs to rearrange it.",
       );
     },
-    [initialize, locale, zh],
+    [initialize, locale, mode, zh],
   );
 
   useEffect(
@@ -428,13 +433,20 @@ export function WorkspacePlayground() {
       <section
         className="a3s-workspace-playground rp-not-doc"
         aria-labelledby={headingId}
+        data-workspace-mode={mode}
         data-playground-state={state}
         dir={direction}
       >
         <header className="workbench-commandbar">
           <div className="workbench-commandbar__brand">
             <img src={withBase("/logo.png")} alt="" width="24" height="24" />
-            <h1 id={headingId}>Playground</h1>
+            <h1 id={headingId}>
+              {mode === "session"
+                ? zh
+                  ? "修复会话恢复"
+                  : "Fix session recovery"
+                : "Playground"}
+            </h1>
           </div>
           <button
             type="button"
@@ -446,6 +458,15 @@ export function WorkspacePlayground() {
             <kbd>⌘K</kbd>
           </button>
           <div className="workbench-commandbar__actions">
+            {mode === "playground" ? (
+              <a
+                className="workbench-app-link"
+                href={withBase(getProductApplicationRoutePath("start", locale))}
+              >
+                <PlaygroundIcon name="play" width="15" height="15" />
+                <span>{zh ? "产品体验" : "Product app"}</span>
+              </a>
+            ) : null}
             <label>
               <span className="sr-only">
                 {zh ? "工作区状态" : "Workspace state"}

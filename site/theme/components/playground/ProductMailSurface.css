@@ -1,0 +1,280 @@
+.product-mail {
+  min-height: 100%;
+  padding: 2rem 1.5rem 5rem;
+  background: var(--ui-paper);
+}
+
+.product-mail__back {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  color: var(--ui-ink);
+  place-items: center;
+}
+
+.product-mail__back:hover {
+  background: var(--ui-panel);
+}
+
+.product-mail__back:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.product-mail__back svg {
+  width: 1rem;
+  height: 1rem;
+  transform: rotate(180deg);
+}
+
+.product-mail > header {
+  margin-top: 1.5rem;
+}
+
+.product-mail > header h1 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.875rem;
+}
+
+.product-mail > header p {
+  margin: 0.375rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+}
+
+.product-mail__service {
+  margin-top: 1.5rem;
+  border-radius: 0.875rem;
+  background: var(--ui-canvas);
+  overflow: hidden;
+}
+
+.product-mail__service > header {
+  display: grid;
+  min-height: 6.875rem;
+  padding: 1.5rem;
+  align-items: center;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.product-mail__service > header > span {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-blue) 14%, var(--ui-paper));
+  color: var(--ui-blue);
+  place-items: center;
+}
+
+.product-mail__service[data-connected="true"] > header > span {
+  background: color-mix(in srgb, var(--ui-green) 14%, var(--ui-paper));
+  color: var(--ui-green);
+}
+
+.product-mail__service > header svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.product-mail__service > header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 680;
+  line-height: 1.5rem;
+}
+
+.product-mail__service > header p {
+  margin: 0.125rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+}
+
+.product-mail__consent,
+.product-mail__ready {
+  display: flex;
+  min-height: 4.75rem;
+  margin-inline: 1.5rem;
+  border-top: 1px solid var(--ui-line);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.product-mail__consent label {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+}
+
+.product-mail__consent input {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  accent-color: var(--ui-blue);
+}
+
+.product-mail__consent > button,
+.product-mail__ready > button {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.625rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 640;
+}
+
+.product-mail__consent > button[data-details] {
+  margin-inline-start: auto;
+  border-color: transparent;
+  background: transparent;
+  color: var(--ui-blue);
+}
+
+.product-mail__consent > button[data-primary] {
+  border-color: var(--ui-ink);
+  background: var(--ui-ink);
+  color: var(--ui-paper);
+}
+
+.product-mail__consent > button[data-primary]:disabled {
+  border-color: var(--ui-line);
+  background: var(--ui-line);
+  color: var(--ui-faint);
+  cursor: not-allowed;
+}
+
+.product-mail__details {
+  display: grid;
+  margin: 0 1.5rem 1.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: var(--ui-paper);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.product-mail__details > div {
+  display: grid;
+  align-items: start;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.product-mail__details svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.125rem;
+  color: var(--ui-blue);
+}
+
+.product-mail__details span {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.product-mail__details strong {
+  font-size: 0.8125rem;
+}
+
+.product-mail__details small {
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
+.product-mail__ready > div {
+  display: grid;
+  margin-inline-end: auto;
+  gap: 0.125rem;
+}
+
+.product-mail__ready small {
+  color: var(--ui-faint);
+  font-size: 0.75rem;
+}
+
+.product-mail__ready strong {
+  font-size: 0.875rem;
+}
+
+.product-mail__ready > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-mail__ready > button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-mail__ready > button[data-danger] {
+  color: var(--ui-red);
+}
+
+.product-mail > output {
+  display: block;
+  min-height: 1.25rem;
+  margin-top: 0.75rem;
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 48rem) {
+  .product-mail {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .product-mail__back {
+    display: none;
+  }
+
+  .product-mail > header {
+    margin-top: 0;
+  }
+
+  .product-mail__service > header {
+    padding: 1.25rem;
+    align-items: start;
+  }
+
+  .product-mail__consent,
+  .product-mail__ready {
+    margin-inline: 1.25rem;
+    padding-block: 1rem;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .product-mail__consent > button[data-details] {
+    margin-inline-start: 0;
+  }
+
+  .product-mail__details {
+    margin: 0 1.25rem 1.25rem;
+    grid-template-columns: 1fr;
+  }
+
+  .product-mail__ready > div {
+    margin-inline-end: 0;
+  }
+
+  .product-mail__ready > button {
+    justify-content: center;
+  }
+}

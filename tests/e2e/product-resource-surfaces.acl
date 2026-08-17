@@ -1,0 +1,56 @@
+suite "a3s-ui-product-resource-surfaces" {
+    version = 1
+
+    scenario "mailbox-activation" {
+        name = "Mailbox activation requires informed consent and exposes a usable ready state"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/mail.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "mailbox-ready" { visible = css(".a3s-product-application[data-view=resources] .product-mail[data-resource=mail]") }
+
+        expect "mailbox-title" { text = "智能体邮箱" }
+        expect "consent-required" { visible = css(".product-mail__consent button[data-primary]:disabled") }
+        click "show-scope" { target = role("button", "查看说明") }
+        expect "scope-visible" { visible = css(".product-mail__details[role=note]") }
+        check "accept-scope" { target = css(".product-mail__consent input[type=checkbox]") }
+        expect "activation-enabled" { visible = css(".product-mail__consent button[data-primary]:not(:disabled)") }
+        click "activate" { target = role("button", "确认开通") }
+
+        expect "ready-heading" { text = "智能体邮箱已开通" }
+        expect "mailbox-address" { text = "tasks@local.a3s.dev" }
+        expect "copy-action" { visible = css(".product-mail__ready button:not([data-danger])") }
+        expect "disconnect-action" { visible = css(".product-mail__ready button[data-danger]") }
+
+        screenshot "desktop-evidence" { path = "product/mailbox-activation-desktop.png" }
+        console "console" { path = "product/mailbox-activation-console.json" clear = false }
+        page_errors "page-errors" { path = "product/mailbox-activation-page-errors.json" clear = false }
+    }
+
+    scenario "files-mobile-hierarchy" {
+        name = "Task files remain readable as a compact mobile hierarchy"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "files-ready" { visible = css(".a3s-product-application[data-view=resources] [data-resource=files]") }
+
+        expect "mobile-navigation" { visible = css("button[aria-label='打开应用导航']") }
+        expect "group-visible" { text = "未分组" }
+        expect "task-visible" { text = "修复会话恢复" }
+        expect "updated-column" { visible = css(".product-resources__table [data-header] [data-mobile-label='更新']") }
+
+        fill "find-release-review" { target = css("input[aria-label='搜索文件']") value = "release-review" }
+        expect "matching-file" { text = "release-review.md" }
+        click "select-file" { target = css(".product-resources__table > button[role=row]") }
+        expect "selection-feedback" { text = "已选择 release-review.md" }
+
+        screenshot "mobile-evidence" { path = "product/files-mobile-hierarchy.png" }
+        console "console" { path = "product/files-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/files-mobile-page-errors.json" clear = false }
+    }
+}

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const scenarios = [
   ["代码", "code"],
@@ -20,6 +20,22 @@ function collectRuntimeErrors(page: Page) {
   return errors;
 }
 
+async function openProductApplication(page: Page) {
+  await page.goto("app.html", { waitUntil: "networkidle" });
+  const application = page.locator(".a3s-product-application");
+  await expect(application).toBeVisible();
+  await expect(application).toHaveAttribute("data-view", "start");
+  await expect(page.locator(".rp-nav")).toHaveCount(0);
+  return application;
+}
+
+async function revealProductNavigation(playground: Locator) {
+  const mobileMenu = playground.getByRole("button", {
+    name: "打开应用导航",
+  });
+  if (await mobileMenu.isVisible()) await mobileMenu.click();
+}
+
 async function openPlayground(page: Page) {
   await page.goto("playground.html", { waitUntil: "networkidle" });
   const playground = page.locator(".a3s-workspace-playground");
@@ -36,6 +52,493 @@ async function openLayoutMenu(page: Page) {
   await expect(menu).toHaveAttribute("open", "");
   return menu;
 }
+
+test("Product application opens in the approved task shell with complete navigation", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+
+  await expect(
+    playground.getByRole("navigation", { name: "主要页面" }),
+  ).toBeVisible();
+  await expect(
+    playground.locator(".product-composer .ProseMirror"),
+  ).toBeVisible();
+  await expect(
+    playground.locator(".product-start__prompts > button"),
+  ).toHaveCount(8);
+  await expect(
+    playground.getByRole("tab", { name: "日常办公", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+
+  await playground.getByRole("button", { name: "文档处理" }).click();
+  await expect(
+    playground.locator(".product-composer .ProseMirror"),
+  ).toContainText("文档处理");
+  const workspaceSelector = playground.locator(
+    ".product-composer__context summary",
+  );
+  await workspaceSelector.click();
+  await playground.getByRole("menuitem", { name: "A3S UI 体验优化" }).click();
+  await expect(workspaceSelector).toContainText("A3S UI 体验优化");
+  await playground
+    .getByRole("combobox", { name: "权限设置" })
+    .selectOption("edit");
+  await expect(playground.locator(".product-composer > output")).toContainText(
+    "允许修改",
+  );
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("link", { name: "助理", exact: true }).click();
+  await expect(playground).toHaveAttribute("data-view", "assistant");
+  await expect(
+    playground.locator('[data-product-surface="assistant"]'),
+  ).toBeVisible();
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("link", { name: "项目", exact: true }).click();
+  await expect(playground).toHaveAttribute("data-view", "projects");
+  await playground.getByRole("button", { name: /产品需求全流程/ }).click();
+  await expect(playground.locator(".product-projects > output")).toContainText(
+    "产品需求全流程",
+  );
+
+  await revealProductNavigation(playground);
+  await playground
+    .locator(".product-sidebar__primary > a")
+    .filter({ hasText: "专家 · 技能 · 连接器" })
+    .click();
+  await expect(playground).toHaveAttribute("data-view", "catalog");
+  await playground.getByRole("tab", { name: "技能", exact: true }).click();
+  await expect(
+    playground.getByRole("tab", { name: "技能", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+  await playground.getByRole("button", { name: "我的能力" }).click();
+  await expect(
+    playground.getByRole("button", { name: "我的能力" }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("link", { name: "自动化", exact: true }).click();
+  await expect(playground).toHaveAttribute("data-view", "automation");
+  await expect(
+    playground.locator('[data-product-surface="automation"]'),
+  ).toBeVisible();
+
+  await revealProductNavigation(playground);
+  const more = playground.locator(".product-sidebar__more");
+  await more.locator("summary").click();
+  await expect(more).toHaveAttribute("open", "");
+  await more.getByRole("menuitem", { name: "我的文件" }).click();
+  await expect(playground).toHaveAttribute("data-view", "resources");
+  await expect(playground.locator('[data-resource="files"]')).toBeVisible();
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("button", { name: "设置", exact: true }).click();
+  const settings = page.getByRole("dialog", { name: "设置" });
+  await expect(settings).toBeVisible();
+  await settings.getByRole("button", { name: "关闭设置" }).click();
+  await expect(settings).not.toBeVisible();
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("button", { name: "搜索", exact: true }).click();
+  const search = page.getByRole("dialog", { name: "搜索任务" });
+  await expect(search).toBeVisible();
+  await search.getByRole("searchbox", { name: "搜索任务" }).fill("恢复");
+  await search.getByRole("button", { name: /修复会话恢复/ }).click();
+  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(playground).toHaveAttribute("data-view", "session");
+  await expect(
+    playground.locator('[data-product-surface="session"]'),
+  ).toBeVisible();
+  await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
+  await expect(
+    playground.getByRole("heading", { name: "修复会话恢复", exact: true }),
+  ).toBeVisible();
+  await expect(playground.locator(".product-session__tool")).toHaveCount(2);
+  await playground
+    .locator(".product-session__composer .ProseMirror")
+    .fill("继续检查移动端焦点顺序");
+  await playground.getByRole("button", { name: "发送任务" }).click();
+  await expect(
+    playground.getByText("继续检查移动端焦点顺序", { exact: true }),
+  ).toBeVisible();
+
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Session detail is a focused conversation and keeps the workspace secondary", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 577 });
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+
+  await playground.getByRole("link", { name: /修复会话恢复/ }).click();
+
+  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(playground).toHaveAttribute("data-view", "session");
+  await expect(
+    playground.locator('[data-product-surface="session"]'),
+  ).toBeVisible();
+  await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
+  await expect(
+    playground.getByRole("heading", { name: "修复会话恢复", exact: true }),
+  ).toBeVisible();
+  await expect(playground.locator(".product-session__composer")).toBeVisible();
+  await expect(
+    playground.locator(".product-session__composer .ProseMirror"),
+  ).toBeVisible();
+  await expect(playground.locator(".product-session__header p")).toHaveCount(0);
+  await expect(
+    playground.getByRole("button", { name: "发送任务" }),
+  ).toBeDisabled();
+
+  await playground.getByRole("button", { name: "在会话中搜索" }).click();
+  const conversationSearch = playground.getByRole("searchbox", {
+    name: "搜索当前会话",
+  });
+  await conversationSearch.fill("焦点");
+  await expect(
+    playground.locator(".product-session__search > output"),
+  ).toHaveText("3 个结果");
+  await playground.getByRole("button", { name: "关闭会话搜索" }).click();
+
+  await playground.getByRole("link", { name: "打开会话工作区" }).click();
+  await expect(page).toHaveURL(
+    /\/sessions\/fix-session-recovery\/workspace\.html$/u,
+  );
+  await expect(playground).toHaveAttribute("data-view", "workbench");
+  await expect(playground.locator(".a3s-workspace-playground")).toBeVisible();
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Account menu closes predictably and routes every account action", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  await revealProductNavigation(playground);
+  const accountTrigger = playground
+    .locator(".product-sidebar__footer > button")
+    .first();
+  const accountMenu = page.getByRole("menu", { name: "账户菜单" });
+
+  await accountTrigger.click();
+  await expect(accountMenu).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(accountMenu).not.toBeVisible();
+  await expect(accountTrigger).toBeFocused();
+
+  await accountTrigger.click();
+  await expect(accountMenu).toBeVisible();
+  const backdrop = playground.locator(".product-application__backdrop");
+  if (await backdrop.isVisible()) {
+    await backdrop.click();
+  } else {
+    await playground.locator(".product-application__main").click({
+      position: { x: 12, y: 12 },
+    });
+  }
+  await expect(accountMenu).not.toBeVisible();
+
+  await revealProductNavigation(playground);
+  await accountTrigger.click();
+  const appearance = accountMenu.getByRole("menuitemcheckbox", {
+    name: "深色外观",
+  });
+  await expect(appearance).toHaveAttribute("aria-checked", "false");
+  await appearance.click();
+  await expect(appearance).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  await accountMenu.getByRole("menuitem", { name: /社区版本/ }).click();
+  const settings = page.getByRole("dialog", { name: "设置" });
+  await expect(settings).toBeVisible();
+  await expect(
+    settings.getByRole("button", { name: "账户管理", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect(
+    settings.getByRole("heading", { level: 2, name: "账户管理" }),
+  ).toBeVisible();
+  await settings.getByRole("button", { name: "关闭设置" }).click();
+
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Settings entry points open the intended section and every section is reachable", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  await revealProductNavigation(playground);
+  const settings = page.getByRole("dialog", { name: "设置" });
+
+  await playground.getByRole("button", { name: "设置", exact: true }).click();
+  await expect(settings).toBeVisible();
+  await expect(
+    settings.getByRole("button", { name: "系统设置", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await settings.getByRole("button", { name: "关闭设置" }).click();
+
+  await revealProductNavigation(playground);
+  await playground.getByRole("link", { name: "助理", exact: true }).click();
+  await playground.getByRole("button", { name: "助理设置" }).click();
+  await expect(settings).toBeVisible();
+  await expect(
+    settings.getByRole("button", { name: "助理设置", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+
+  const sections = [
+    ["系统设置", "设置"],
+    ["账户管理", "账户管理"],
+    ["执行设置", "执行设置"],
+    ["个性化", "个性化"],
+    ["记忆", "记忆"],
+    ["模型", "模型"],
+    ["助理设置", "助理设置"],
+    ["数据管理", "数据管理"],
+    ["快捷键", "快捷键"],
+    ["安全中心", "安全中心"],
+    ["帮助与反馈", "帮助与反馈"],
+  ] as const;
+  for (const [navigationLabel, heading] of sections) {
+    const button = settings.getByRole("button", {
+      name: navigationLabel,
+      exact: true,
+    });
+    await button.click();
+    await expect(button).toHaveAttribute("aria-current", "page");
+    await expect(
+      settings.getByRole("heading", { level: 2, name: heading }),
+    ).toBeVisible();
+  }
+
+  await settings.getByRole("button", { name: "关闭设置" }).click();
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Settings actions update local state instead of leaving inert controls", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  const settings = page.getByRole("dialog", { name: "设置" });
+  await playground.getByRole("button", { name: "设置", exact: true }).click();
+
+  const workspacePath = settings.getByRole("textbox", {
+    name: "默认工作区路径",
+  });
+  await settings.getByRole("button", { name: "更改", exact: true }).click();
+  await workspacePath.fill("~/Projects/A3S");
+  await settings.getByRole("button", { name: "保存", exact: true }).click();
+  await expect(workspacePath).toHaveValue("~/Projects/A3S");
+  await expect(workspacePath).toHaveAttribute("readonly", "");
+
+  await settings.getByRole("button", { name: "账户管理", exact: true }).click();
+  await settings.getByRole("button", { name: "编辑资料" }).click();
+  const displayName = settings.getByRole("textbox", { name: "显示名称" });
+  await displayName.fill("A3S Designer");
+  await settings.getByRole("button", { name: "保存资料" }).click();
+  await expect(
+    settings.getByText("A3S Designer", { exact: true }),
+  ).toBeVisible();
+
+  await settings.getByRole("button", { name: "助理设置", exact: true }).click();
+  const browserIntegration = settings
+    .locator(".product-settings__integration")
+    .filter({ hasText: "浏览器预览" });
+  const configure = browserIntegration.getByRole("button", { name: "配置" });
+  await configure.click();
+  await expect(
+    browserIntegration.getByRole("button", { name: "移除" }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  await settings.getByRole("button", { name: "快捷键", exact: true }).click();
+  const shortcut = settings.getByRole("button", { name: "修改打开搜索" });
+  await shortcut.click();
+  await page.keyboard.press("Control+Shift+P");
+  await expect(shortcut.locator("kbd")).toHaveText(["Ctrl", "⇧", "P"]);
+
+  await settings.getByRole("button", { name: "安全中心", exact: true }).click();
+  await settings.getByRole("button", { name: "管理 1 个路径" }).click();
+  await settings
+    .getByRole("textbox", { name: "新增受信任路径" })
+    .fill("~/Projects");
+  await settings.getByRole("button", { name: "添加路径" }).click();
+  await expect(settings.getByText("~/Projects", { exact: true })).toBeVisible();
+
+  await settings
+    .getByRole("button", { name: "帮助与反馈", exact: true })
+    .click();
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(page.url()).origin,
+  });
+  await settings.getByRole("button", { name: "复制诊断信息" }).click();
+  await expect(settings.getByRole("button", { name: "已复制" })).toBeVisible();
+
+  await settings.getByRole("button", { name: "关闭设置" }).click();
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Resource library pages preserve navigation and production connection states", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  const resources = [
+    ["我的邮箱", "mail"],
+    ["协作文档", "documents"],
+    ["知识库", "knowledge"],
+    ["灵感", "inspiration"],
+  ] as const;
+
+  for (const [label, id] of resources) {
+    await revealProductNavigation(playground);
+    const more = playground.locator(".product-sidebar__more");
+    await more.locator("summary").click();
+    await more.getByRole("menuitem", { name: label }).click();
+    await expect(playground).toHaveAttribute("data-view", "resources");
+    await expect(
+      playground.locator(
+        id === "inspiration"
+          ? '[data-product-surface="inspiration"]'
+          : `[data-resource="${id}"]`,
+      ),
+    ).toBeVisible();
+  }
+
+  await revealProductNavigation(playground);
+  let more = playground.locator(".product-sidebar__more");
+  await more.locator("summary").click();
+  await more.getByRole("menuitem", { name: "我的邮箱" }).click();
+  const mailbox = playground.locator(".product-mail__service");
+  const activateMailbox = mailbox.getByRole("button", { name: "确认开通" });
+  await expect(activateMailbox).toBeDisabled();
+  await mailbox.getByRole("button", { name: "查看说明" }).click();
+  await expect(mailbox.locator(".product-mail__details")).toBeVisible();
+  await mailbox.getByRole("checkbox").check();
+  await expect(activateMailbox).toBeEnabled();
+  await activateMailbox.click();
+  await expect(mailbox).toHaveAttribute("data-connected", "true");
+  await expect(
+    mailbox.getByRole("heading", { name: "智能体邮箱已开通" }),
+  ).toBeVisible();
+
+  await revealProductNavigation(playground);
+  more = playground.locator(".product-sidebar__more");
+  await more.locator("summary").click();
+  await more.getByRole("menuitem", { name: "协作文档" }).click();
+  const connection = playground.locator(".product-connection");
+  await connection.getByRole("button", { name: "连接协作文档" }).click();
+  await expect(connection).toHaveAttribute("data-connected", "true");
+  await expect(
+    connection.getByRole("heading", { name: "连接已就绪" }),
+  ).toBeVisible();
+
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Product shell mobile drawer, resource menu, and backdrop stay usable", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+  const sidebar = playground.locator(".product-sidebar");
+  const menuButton = playground.getByRole("button", {
+    name: "打开应用导航",
+  });
+
+  await menuButton.click();
+  await expect(sidebar).toHaveAttribute("data-mobile-open", "true");
+  const more = sidebar.locator(".product-sidebar__more");
+  await more.locator("summary").click();
+  await expect(more.getByRole("menu")).toBeVisible();
+  await more.getByRole("menuitem", { name: "我的文件" }).click();
+  await expect(playground).toHaveAttribute("data-view", "resources");
+  await expect(sidebar).not.toHaveAttribute("data-mobile-open", "true");
+  const fileTable = playground.locator(".product-resources__table");
+  await expect(
+    fileTable.getByRole("columnheader", { name: "更新时间" }),
+  ).toBeVisible();
+  expect(
+    await fileTable.evaluate(
+      (element) => element.scrollWidth - element.clientWidth,
+    ),
+  ).toBe(0);
+
+  await menuButton.click();
+  await playground.getByRole("button", { name: "关闭应用导航" }).last().click();
+  await expect(sidebar).not.toHaveAttribute("data-mobile-open", "true");
+
+  await menuButton.click();
+  await playground.getByRole("button", { name: "设置", exact: true }).click();
+  const settings = page.getByRole("dialog", { name: "设置" });
+  await expect(settings).toBeVisible();
+  const closeButton = settings.getByRole("button", { name: "关闭设置" });
+  await expect(closeButton).toBeVisible();
+  const closeStyle = await closeButton.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      background: style.backgroundColor,
+      zIndex: Number(style.zIndex),
+    };
+  });
+  expect(closeStyle.background).not.toBe("rgba(0, 0, 0, 0)");
+  expect(closeStyle.zIndex).toBeGreaterThan(0);
+  await closeButton.click();
+
+  expect(
+    await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    ),
+  ).toBe(0);
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Product project and inspiration surfaces preserve mobile width", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const runtimeErrors = collectRuntimeErrors(page);
+
+  await page.goto("app/projects.html", { waitUntil: "networkidle" });
+  const projects = page.locator('[data-product-surface="projects"]');
+  await expect(projects).toBeVisible();
+  expect(
+    await projects
+      .locator(".product-projects__hero")
+      .evaluate((element) => element.scrollWidth - element.clientWidth),
+  ).toBeLessThanOrEqual(0);
+
+  await page.goto("app/resources/inspiration.html", {
+    waitUntil: "networkidle",
+  });
+  const inspiration = page.locator('[data-product-surface="inspiration"]');
+  await expect(inspiration).toBeVisible();
+  const categories = inspiration.locator(".product-inspiration__categories");
+  await expect(categories.getByRole("tab")).toHaveCount(6);
+  expect(
+    await categories.evaluate(
+      (element) => element.scrollWidth - element.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(0);
+  expect(
+    await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    ),
+  ).toBe(0);
+  expect(runtimeErrors).toEqual([]);
+});
 
 test("Playground is a standalone Dockview workspace with all six production panels", async ({
   page,

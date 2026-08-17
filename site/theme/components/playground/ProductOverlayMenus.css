@@ -1,0 +1,559 @@
+.product-search-dialog {
+  width: min(30rem, calc(100vw - 2rem));
+  height: min(70dvh, 42rem);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 1rem;
+  border: 0;
+  border-radius: 1.5rem;
+  background: var(--ui-paper);
+  box-shadow: 0 26px 70px -24px rgb(0 0 0 / 56%);
+  color: var(--ui-ink);
+}
+
+.product-search-dialog::backdrop {
+  background: rgb(15 18 24 / 62%);
+}
+
+.product-search-dialog > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-search-dialog > header label {
+  display: grid;
+  min-height: 3rem;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--ui-panel);
+  color: var(--ui-muted);
+}
+
+.product-search-dialog > header label:focus-within {
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--ui-blue) 58%, var(--ui-line));
+}
+
+.product-search-dialog > header label svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-inline-start: 0.875rem;
+}
+
+.product-search-dialog > header input {
+  width: 100%;
+  height: 3rem;
+  padding: 0 0.875rem 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ui-ink);
+  font-size: 1rem;
+}
+
+.a3s-product-application .product-search-dialog > header input:focus-visible {
+  outline: 0;
+}
+
+.product-search-dialog > header > button,
+.product-sidebar__notifications header button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.625rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.product-search-dialog > header > button:hover,
+.product-sidebar__notifications header button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-search-dialog > header > button svg,
+.product-sidebar__notifications header button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.product-search-dialog > section {
+  padding: 1.25rem 0.5rem 0;
+}
+
+.product-search-dialog h2 {
+  margin: 0 0 0.625rem;
+  color: var(--ui-faint);
+  font-size: 0.8125rem;
+  font-weight: 620;
+}
+
+.product-search-dialog section > div {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.product-search-dialog section button {
+  display: grid;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: 0.625rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  text-align: start;
+}
+
+.product-search-dialog section button:hover {
+  background: var(--ui-panel);
+}
+
+.product-search-dialog section button > span {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-search-dialog section button small {
+  display: flex;
+  max-width: 11rem;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--ui-faint);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.product-search-dialog section button small svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-search-dialog section > p {
+  margin: 3rem 0 0;
+  color: var(--ui-faint);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.product-sidebar__filter-popover {
+  position: absolute;
+  z-index: 120;
+  inset-block-start: 3.75rem;
+  inset-inline-start: calc(100% - 2.5rem);
+  display: grid;
+  width: 15rem;
+  padding: 0.5rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 1rem;
+  background: var(--ui-paper);
+  box-shadow: var(--ui-shadow-floating);
+}
+
+.product-sidebar__filter-popover fieldset {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0.25rem 0 0.625rem;
+  border: 0;
+}
+
+.product-sidebar__filter-popover fieldset + fieldset {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ui-line);
+}
+
+.product-sidebar__filter-popover legend {
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  color: var(--ui-faint);
+  font-size: 0.75rem;
+  font-weight: 540;
+}
+
+.product-sidebar__filter-popover button {
+  display: grid;
+  width: 100%;
+  min-height: 2.375rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: 0.5rem;
+  grid-template-columns: minmax(0, 1fr) 1rem;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  text-align: start;
+}
+
+.product-sidebar__filter-popover button:hover,
+.product-sidebar__filter-popover button[aria-pressed="true"] {
+  background: var(--ui-panel);
+}
+
+.product-sidebar__filter-popover button svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--ui-blue);
+}
+
+.product-sidebar__filter-popover > button:last-child {
+  margin-top: 0.125rem;
+  border-top: 1px solid var(--ui-line);
+  border-radius: 0;
+  color: var(--ui-muted);
+  grid-template-columns: 1fr;
+}
+
+.product-sidebar__filter-popover > button:last-child:disabled {
+  color: var(--ui-faint);
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.product-sidebar__history p {
+  margin: 0;
+  padding: 0.5rem;
+  color: var(--ui-faint);
+  font-size: 0.75rem;
+}
+
+.product-sidebar__notifications {
+  position: absolute;
+  z-index: 120;
+  inset-block-end: 4.25rem;
+  inset-inline: 0.75rem;
+  padding: 0.625rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.875rem;
+  background: var(--ui-paper);
+  box-shadow: var(--ui-shadow-floating);
+}
+
+.product-sidebar__notifications header {
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-sidebar__notifications header > strong {
+  padding-inline-start: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.product-sidebar__notifications article {
+  display: grid;
+  padding: 0.625rem 0.375rem;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  gap: 0.625rem;
+  border-top: 1px solid var(--ui-line);
+}
+
+.product-sidebar__notifications article > span {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-green) 14%, transparent);
+  color: var(--ui-green);
+  place-items: center;
+}
+
+.product-sidebar__notifications article > span svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-sidebar__notifications article div {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.product-sidebar__notifications article strong {
+  font-size: 0.8125rem;
+  font-weight: 620;
+}
+
+.product-sidebar__notifications article small {
+  color: var(--ui-faint);
+  font-size: 0.6875rem;
+}
+
+.a3s-product-application[data-sidebar-collapsed="true"]
+  .product-sidebar__filter-popover {
+  inset-inline-start: calc(100% - 0.25rem);
+}
+
+.a3s-product-application[data-sidebar-collapsed="true"]
+  .product-sidebar__notifications {
+  display: none;
+}
+
+.product-account-menu {
+  position: absolute;
+  z-index: 180;
+  inset-block-end: 4.25rem;
+  inset-inline: 0.75rem;
+  display: grid;
+  padding: 0.5rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.75rem;
+  background: var(--ui-paper);
+  box-shadow: var(--ui-shadow-floating);
+  gap: 0.125rem;
+}
+
+.product-account-menu > header {
+  display: grid;
+  min-height: 3.5rem;
+  padding: 0.5rem;
+  align-items: center;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.625rem;
+}
+
+.product-account-menu > header img {
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  object-fit: contain;
+}
+
+.product-account-menu > header span,
+.product-account-menu > button > span {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.product-account-menu > header strong,
+.product-account-menu > button strong {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-account-menu > header small,
+.product-account-menu > button small {
+  color: var(--ui-faint);
+  font-size: 0.6875rem;
+  font-weight: 450;
+  line-height: 1.35;
+}
+
+.product-account-menu > hr {
+  width: 100%;
+  height: 1px;
+  margin: 0.375rem 0;
+  border: 0;
+  background: var(--ui-line);
+}
+
+.product-account-menu > button {
+  display: grid;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 0;
+  border-radius: 0.5rem;
+  align-items: center;
+  grid-template-columns: 1.125rem minmax(0, 1fr) auto;
+  gap: 0.625rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  text-align: start;
+}
+
+.product-account-menu > button:first-of-type {
+  min-height: 3.25rem;
+}
+
+.product-account-menu > button:hover {
+  background: var(--ui-panel);
+}
+
+.product-account-menu > button > svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--ui-muted);
+}
+
+.product-account-menu > button:first-of-type > svg:last-child {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--ui-faint);
+}
+
+.product-account-menu__switch {
+  position: relative;
+  display: block;
+  width: 2rem;
+  height: 1.125rem;
+  border-radius: 0.5625rem;
+  background: var(--ui-line-strong);
+}
+
+.product-account-menu__switch b {
+  position: absolute;
+  inset-block-start: 0.1875rem;
+  inset-inline-start: 0.1875rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--ui-paper);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
+  transition: transform 150ms ease-out;
+}
+
+.product-account-menu
+  > button[role="menuitemcheckbox"][aria-checked="true"]
+  .product-account-menu__switch {
+  background: var(--ui-blue);
+}
+
+.product-account-menu
+  > button[role="menuitemcheckbox"][aria-checked="true"]
+  .product-account-menu__switch
+  b {
+  transform: translateX(0.875rem);
+}
+
+.product-account-menu > button.product-account-menu__danger,
+.product-account-menu > button.product-account-menu__danger > svg {
+  color: var(--ui-red);
+}
+
+.product-exit-dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  max-width: none;
+  margin: auto;
+  padding: 1.25rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.75rem;
+  background: var(--ui-paper);
+  box-shadow: 0 20px 36px -14px rgb(0 0 0 / 48%);
+  color: var(--ui-ink);
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.875rem;
+}
+
+.product-exit-dialog[open] {
+  display: grid;
+}
+
+.product-exit-dialog::backdrop {
+  background: rgb(15 18 24 / 58%);
+}
+
+.product-exit-dialog > svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.625rem;
+  border-radius: 0.625rem;
+  background: color-mix(in srgb, var(--ui-red) 10%, var(--ui-panel));
+  color: var(--ui-red);
+}
+
+.product-exit-dialog h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 680;
+  letter-spacing: -0.01em;
+}
+
+.product-exit-dialog p {
+  margin: 0.375rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.product-exit-dialog footer {
+  display: flex;
+  margin-top: 0.5rem;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+  gap: 0.5rem;
+}
+
+.product-exit-dialog footer button {
+  min-height: 2.375rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 560;
+}
+
+.product-exit-dialog footer button:hover {
+  border-color: var(--ui-line-strong);
+  background: var(--ui-panel);
+}
+
+.product-exit-dialog footer button[data-danger] {
+  border-color: var(--ui-red);
+  background: var(--ui-red);
+  color: var(--ui-paper);
+}
+
+.product-exit-dialog footer button[data-danger]:hover {
+  background: color-mix(in srgb, var(--ui-red) 88%, black);
+}
+
+@media (max-width: 48rem) {
+  .product-sidebar__filter-popover {
+    inset-block-start: 3.75rem;
+    inset-inline: 0.5rem;
+    width: auto;
+  }
+
+  .product-search-dialog {
+    width: calc(100vw - 1.5rem);
+    height: min(76dvh, 38rem);
+    padding: 0.75rem;
+    border-radius: 1rem;
+  }
+
+  .product-search-dialog section button {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .product-account-menu {
+    inset-inline: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-account-menu__switch b {
+    transition: none;
+  }
+}

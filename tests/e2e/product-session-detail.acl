@@ -1,0 +1,54 @@
+suite "a3s-ui-product-session-detail" {
+    version = 1
+
+    scenario "session-detail-conversation" {
+        name = "Session detail stays a focused conversation instead of a component showcase"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/sessions/fix-session-recovery.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "session-ready" { visible = css(".a3s-product-application[data-view=session] [data-product-surface=session]") }
+
+        expect "session-title" { text = "修复会话恢复" }
+        expect "conversation-only" { visible = css("[data-product-surface=session]:not(:has(.a3s-workspace-playground))") }
+        expect "search-action" { visible = css("button[aria-label='在会话中搜索']") }
+        expect "workspace-secondary" { visible = css("a[aria-label='打开会话工作区']") }
+        expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
+
+        click "open-search" { target = css("button[aria-label='在会话中搜索']") }
+        fill "search-focus" { target = css("input[aria-label='搜索当前会话']") value = "焦点" }
+        expect "search-results" { text = "3 个结果" }
+        click "close-search" { target = css("button[aria-label='关闭会话搜索']") }
+
+        fill "continue-session" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续检查移动端焦点顺序" }
+        expect "send-enabled" { visible = css(".product-session__composer button[aria-label='发送任务']:not(:disabled)") }
+        click "send-follow-up" { target = css(".product-session__composer button[aria-label='发送任务']") }
+        expect "follow-up-visible" { text = "继续检查移动端焦点顺序" }
+
+        screenshot "desktop-evidence" { path = "product/session-detail-desktop.png" }
+        console "console" { path = "product/session-detail-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/session-detail-desktop-page-errors.json" clear = false }
+    }
+
+    scenario "session-detail-mobile" {
+        name = "Session detail preserves the conversation and composer on a phone viewport"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/sessions/fix-session-recovery.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "session-ready" { visible = css(".a3s-product-application[data-view=session] [data-product-surface=session]") }
+
+        expect "mobile-navigation" { visible = css("button[aria-label='打开应用导航']") }
+        expect "mobile-composer" { visible = css(".product-session__composer .ProseMirror") }
+        expect "mobile-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
+        expect "mobile-tool-calls" { visible = css(".product-session__tool[data-success]") }
+
+        screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
+        console "console" { path = "product/session-detail-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/session-detail-mobile-page-errors.json" clear = false }
+    }
+}

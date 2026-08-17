@@ -23,6 +23,12 @@ const requiredFiles = [
   "en/installation.html",
   "playground.html",
   "en/playground.html",
+  "app.html",
+  "en/app.html",
+  "sessions/fix-session-recovery.html",
+  "en/sessions/fix-session-recovery.html",
+  "sessions/fix-session-recovery/workspace.html",
+  "en/sessions/fix-session-recovery/workspace.html",
   "v0.2.0/installation.html",
   "v0.2.0/en/installation.html",
   "v0.1.0/installation.html",
@@ -154,6 +160,8 @@ const requiredFiles = [
   "en/components/status-bar.html",
   "en/components/task-pane.html",
   "foundations/color.html",
+  "patterns/index.html",
+  "en/patterns/index.html",
   "patterns/task-workspace.html",
   "en/patterns/task-workspace.html",
   "patterns/new-task.html",
@@ -761,6 +769,32 @@ const nextExtractedComponentExpectations = [
 
 const nextTaskPatternExpectations = [
   {
+    file: "patterns/index.html",
+    markers: [
+      'lang="zh"',
+      "data-pattern-catalog",
+      'aria-label="组合模式菜单"',
+      'class="pattern-menu__primary"',
+      ">组合模式<",
+      "推荐起点",
+      "治理与配置",
+      'href="/UI/patterns/task-workspace.html"',
+    ],
+  },
+  {
+    file: "en/patterns/index.html",
+    markers: [
+      'lang="en"',
+      "data-pattern-catalog",
+      'aria-label="Pattern menu"',
+      'class="pattern-menu__primary"',
+      ">Composition patterns<",
+      "Recommended starting point",
+      "Governance",
+      'href="/UI/en/patterns/task-workspace.html"',
+    ],
+  },
+  {
     file: "patterns/task-workspace.html",
     markers: [
       'lang="zh"',
@@ -842,6 +876,7 @@ const playgroundExpectations = [
       'aria-label="能力目录"',
       'aria-label="连接"',
       'aria-label="设置"',
+      "产品体验",
       "Dockview 8.1",
     ],
   },
@@ -863,7 +898,82 @@ const playgroundExpectations = [
       'aria-label="Catalog"',
       'aria-label="Connections"',
       'aria-label="Settings"',
+      "Product app",
       "Dockview 8.1",
+    ],
+  },
+];
+const productApplicationExpectations = [
+  {
+    file: "app.html",
+    markers: [
+      'lang="zh"',
+      'class="a3s-product-application-page"',
+      "data-product-application",
+      'data-view="start"',
+      'aria-label="应用导航"',
+      'href="/UI/sessions/fix-session-recovery.html"',
+      "A3S，我帮你",
+    ],
+  },
+  {
+    file: "en/app.html",
+    markers: [
+      'lang="en"',
+      'class="a3s-product-application-page"',
+      "data-product-application",
+      'data-view="start"',
+      'aria-label="Application navigation"',
+      'href="/UI/en/sessions/fix-session-recovery.html"',
+      "A3S, here to help",
+    ],
+  },
+  {
+    file: "sessions/fix-session-recovery.html",
+    markers: [
+      'data-view="session"',
+      'data-product-surface="session"',
+      ">修复会话恢复<",
+      'href="/UI/sessions/fix-session-recovery/workspace.html"',
+    ],
+  },
+  {
+    file: "en/sessions/fix-session-recovery.html",
+    markers: [
+      'data-view="session"',
+      'data-product-surface="session"',
+      ">Fix session recovery<",
+      'href="/UI/en/sessions/fix-session-recovery/workspace.html"',
+    ],
+  },
+  {
+    file: "sessions/fix-session-recovery/workspace.html",
+    markers: [
+      'data-view="workbench"',
+      'data-product-surface="workbench"',
+      'class="a3s-workspace-playground rp-not-doc"',
+      'data-workspace-mode="session"',
+      ">修复会话恢复<",
+    ],
+  },
+  {
+    file: "app/resources/mail.html",
+    markers: [
+      'data-view="resources"',
+      'data-product-surface="mail"',
+      'data-resource="mail"',
+      ">智能体邮箱<",
+      ">确认开通<",
+    ],
+  },
+  {
+    file: "en/app/resources/mail.html",
+    markers: [
+      'data-view="resources"',
+      'data-product-surface="mail"',
+      'data-resource="mail"',
+      ">Agent mailbox<",
+      ">Activate mailbox<",
     ],
   },
 ];
@@ -1114,6 +1224,7 @@ for (const { file, markers } of [
   ...nextExtractedComponentExpectations,
   ...nextTaskPatternExpectations,
   ...playgroundExpectations,
+  ...productApplicationExpectations,
   ...nextExtractedComponentHistoricalExpectations,
 ]) {
   const html = await readFile(path.join(outputRoot, file), "utf8");
@@ -1235,7 +1346,12 @@ const standalonePageNames = standalonePageFiles
     path.relative(standalonePagesRoot, file).split(path.sep).join("/"),
   )
   .sort();
-const expectedStandalonePageNames = ["playground.en.mdx", "playground.zh.mdx"];
+const expectedStandalonePageNames = [
+  "app.en.mdx",
+  "app.zh.mdx",
+  "playground.en.mdx",
+  "playground.zh.mdx",
+];
 if (
   standalonePageNames.length !== expectedStandalonePageNames.length ||
   standalonePageNames.some(

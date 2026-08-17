@@ -2,7 +2,7 @@
   width: 100%;
   min-width: 0;
   height: calc(100dvh - var(--rp-nav-height));
-  min-height: 38rem;
+  min-height: min(38rem, calc(100dvh - var(--rp-nav-height)));
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -132,6 +132,30 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.375rem;
+}
+
+.workbench-app-link {
+  display: inline-flex;
+  min-height: 1.875rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--ui-line-strong, var(--a3s-line-strong));
+  border-radius: 0.375rem;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--ui-paper, var(--a3s-panel));
+  color: var(--ui-ink, var(--a3s-ink));
+  font-size: 0.6875rem;
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.workbench-app-link:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--ui-blue, var(--a3s-blue)) 38%,
+    var(--ui-line-strong, var(--a3s-line-strong))
+  );
+  background: var(--ui-panel, var(--a3s-panel-soft));
 }
 
 .workbench-commandbar__actions select,
