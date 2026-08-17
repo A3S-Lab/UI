@@ -19,8 +19,11 @@ const viewRoutePaths: Record<
   projects: "/app/projects",
   session: "/sessions/fix-session-recovery",
   start: "/app",
-  workbench: "/sessions/fix-session-recovery/workspace",
 };
+
+const legacySessionRoutePaths = [
+  "/sessions/fix-session-recovery/workspace",
+] as const;
 
 const resourceRoutePaths: Record<ProductResourceView, string> = {
   documents: "/app/resources/documents",
@@ -33,6 +36,7 @@ const resourceRoutePaths: Record<ProductResourceView, string> = {
 export const productApplicationRoutePaths = [
   ...Object.values(viewRoutePaths),
   ...Object.values(resourceRoutePaths),
+  ...legacySessionRoutePaths,
 ] as const;
 
 function normalizeProductPath(pathname: string) {
@@ -47,6 +51,12 @@ export function getProductApplicationRouteState(
   pathname: string,
 ): ProductApplicationRouteState {
   const normalizedPath = normalizeProductPath(pathname);
+
+  if (
+    legacySessionRoutePaths.some((routePath) => routePath === normalizedPath)
+  ) {
+    return { resource: "files", view: "session" };
+  }
 
   for (const [resource, routePath] of Object.entries(resourceRoutePaths)) {
     if (normalizedPath === routePath) {

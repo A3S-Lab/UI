@@ -14,13 +14,24 @@ suite "a3s-ui-product-session-detail" {
         expect "session-title" { text = "修复会话恢复" }
         expect "conversation-only" { visible = css("[data-product-surface=session]:not(:has(.a3s-workspace-playground))") }
         expect "search-action" { visible = css("button[aria-label='在会话中搜索']") }
-        expect "workspace-secondary" { visible = css("a[aria-label='打开会话工作区']") }
+        expect "artifacts-secondary" { visible = css("button[aria-label='打开产物面板']") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
 
         click "open-search" { target = css("button[aria-label='在会话中搜索']") }
         fill "search-focus" { target = css("input[aria-label='搜索当前会话']") value = "焦点" }
         expect "search-results" { text = "3 个结果" }
         click "close-search" { target = css("button[aria-label='关闭会话搜索']") }
+
+        click "open-artifacts" { target = css("button[aria-label='打开产物面板']") }
+        expect "artifacts-visible" { visible = css("aside[aria-label='会话产物']") }
+        expect "artifacts-stay-in-session" { visible = css(".a3s-product-application[data-view=session]:not(:has(.a3s-workspace-playground))") }
+        expect "artifacts-close-focused" { visible = css(".product-session__inspector > header button[aria-label='关闭产物面板']:focus") }
+        press "close-artifacts-with-escape" { key = "Escape" }
+        expect "artifacts-trigger-restored" { visible = css("button[aria-label='打开产物面板']:focus") }
+        click "reopen-artifacts" { target = css("button[aria-label='打开产物面板']") }
+        click "open-session-artifact" { target = css(".product-session__artifact-overview button") }
+        expect "artifact-preview-visible" { visible = css(".product-session__artifact-preview pre code") }
+        click "close-artifacts" { target = css(".product-session__inspector > header button[aria-label='关闭产物面板']") }
 
         fill "continue-session" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续检查移动端焦点顺序" }
         expect "send-enabled" { visible = css(".product-session__composer button[aria-label='发送任务']:not(:disabled)") }
@@ -46,6 +57,10 @@ suite "a3s-ui-product-session-detail" {
         expect "mobile-composer" { visible = css(".product-session__composer .ProseMirror") }
         expect "mobile-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
         expect "mobile-tool-calls" { visible = css(".product-session__tool[data-success]") }
+
+        click "open-mobile-artifacts" { target = css("button[aria-label='打开产物面板']") }
+        expect "mobile-artifacts" { visible = css("aside[aria-label='会话产物']") }
+        expect "mobile-artifacts-full-width" { visible = css(".product-session__inspector") }
 
         screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
         console "console" { path = "product/session-detail-mobile-console.json" clear = false }

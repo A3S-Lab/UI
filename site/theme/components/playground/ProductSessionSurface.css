@@ -3,12 +3,18 @@
 }
 
 .product-session {
+  position: relative;
   display: grid;
   width: 100%;
   height: 100%;
   min-height: 0;
-  grid-template-rows: 4rem max-content minmax(0, 1fr) max-content;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 3.5rem max-content minmax(0, 1fr) max-content;
   background: var(--ui-paper);
+}
+
+.product-session[data-inspector-open="true"] {
+  grid-template-columns: minmax(0, 1fr) clamp(14rem, 23vw, 20rem);
 }
 
 .product-session__header {
@@ -21,6 +27,7 @@
   justify-content: space-between;
   gap: 1rem;
   grid-row: 1;
+  grid-column: 1;
   background: var(--ui-paper);
 }
 
@@ -103,6 +110,7 @@
   grid-template-columns: 1rem minmax(0, 1fr) auto 2rem;
   gap: 0.5rem;
   grid-row: 2;
+  grid-column: 1;
   background: var(--ui-canvas);
 }
 
@@ -133,6 +141,7 @@
   min-height: 0;
   overflow-y: auto;
   grid-row: 3;
+  grid-column: 1;
   overscroll-behavior: contain;
   scrollbar-color: var(--ui-line-strong) transparent;
 }
@@ -343,6 +352,7 @@
   position: relative;
   z-index: 2;
   grid-row: 4;
+  grid-column: 1;
   padding: 0.5rem 1.5rem max(0.75rem, env(safe-area-inset-bottom));
   background: linear-gradient(
     to bottom,
@@ -352,17 +362,19 @@
 }
 
 .product-session__composer > .product-composer {
-  width: min(100%, 48rem);
-  min-height: 8.25rem;
+  width: min(100%, 50rem);
+  min-height: 8rem;
   margin: 0 auto;
-  grid-template-rows: minmax(3.75rem, 1fr) auto;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  grid-template-rows: minmax(4.25rem, 1fr) auto;
   box-shadow: 0 12px 34px -24px rgb(15 35 70 / 44%);
 }
 
 .product-session__composer
   .product-composer
   :is(.agent-composer-editor, .agent-composer-editor__content) {
-  min-height: 3.75rem;
+  min-height: 4.25rem;
 }
 
 .product-session__composer .product-composer > output {
@@ -392,7 +404,367 @@
   text-align: center;
 }
 
+.product-session__inspector-backdrop {
+  display: none;
+}
+
+.product-session__inspector {
+  position: relative;
+  z-index: 12;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  border-inline-start: 1px solid var(--ui-line);
+  grid-column: 2;
+  grid-row: 1 / -1;
+  grid-template-rows: 3.5rem minmax(0, 1fr);
+  background: var(--ui-paper);
+}
+
+.product-session__inspector > header {
+  display: flex;
+  min-width: 0;
+  min-height: 3.5rem;
+  padding: 0 0.75rem 0 1rem;
+  border-bottom: 1px solid var(--ui-line);
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.product-session__inspector > header > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.product-session__inspector > header strong {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.product-session__inspector > header small {
+  overflow: hidden;
+  color: var(--ui-faint);
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-session__inspector > header > button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.product-session__inspector > header > button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-session__inspector > header > button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-session__artifact-overview {
+  min-height: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  scrollbar-color: var(--ui-line-strong) transparent;
+}
+
+.product-session__artifact-overview > section {
+  display: grid;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid var(--ui-line);
+  align-items: start;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.product-session__artifact-overview > section > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ui-green) 10%, var(--ui-paper));
+  color: var(--ui-green);
+  place-items: center;
+}
+
+.product-session__artifact-overview > section > span svg {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 2.25;
+}
+
+.product-session__artifact-overview > section > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.product-session__artifact-overview > section strong {
+  font-size: 0.8125rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.product-session__artifact-overview > section small {
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.product-session__artifact-overview > div {
+  margin-top: 1rem;
+}
+
+.product-session__artifact-overview > div > header {
+  display: flex;
+  min-height: 1.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.product-session__artifact-overview > div > header strong {
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.product-session__artifact-overview > div > header small {
+  display: grid;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.375rem;
+  border-radius: 999px;
+  background: var(--ui-panel);
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
+  place-items: center;
+}
+
+.product-session__artifact-overview > div > button {
+  display: grid;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  border-bottom: 1px solid var(--ui-line);
+  align-items: center;
+  grid-template-columns: 1.75rem minmax(0, 1fr) 1rem;
+  gap: 0.625rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  text-align: start;
+}
+
+.product-session__artifact-overview > div > button:hover {
+  background: var(--ui-panel);
+}
+
+.product-session__artifact-overview > div > button > span:first-child {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background: var(--ui-canvas);
+  color: var(--ui-blue);
+  place-items: center;
+}
+
+.product-session__artifact-overview > div > button > span:first-child svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+.product-session__artifact-overview > div > button > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.product-session__artifact-overview > div > button strong {
+  overflow: hidden;
+  font-family: var(--rp-font-family-mono);
+  font-size: 0.75rem;
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-session__artifact-overview > div > button small {
+  color: var(--ui-faint);
+  font-size: 0.6875rem;
+}
+
+.product-session__artifact-overview > div > button > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--ui-faint);
+  transform: rotate(-90deg);
+}
+
+.product-session__artifact-preview {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.75rem;
+  grid-template-rows: 2rem auto minmax(0, 1fr) 1.25rem;
+  gap: 0.75rem;
+}
+
+.product-session__artifact-preview > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.product-session__artifact-preview > header button {
+  display: inline-flex;
+  min-height: 2rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  align-items: center;
+  gap: 0.375rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.product-session__artifact-preview > header button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-session__artifact-preview > header button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.product-session__artifact-preview > header button:first-child svg {
+  transform: rotate(180deg);
+}
+
+.product-session__artifact-preview > div {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.125rem 0.625rem;
+}
+
+.product-session__artifact-preview > div > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  background: var(--ui-panel);
+  color: var(--ui-blue);
+  grid-row: 1 / 3;
+  place-items: center;
+}
+
+.product-session__artifact-preview > div > span svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.product-session__artifact-preview > div strong {
+  overflow: hidden;
+  align-self: end;
+  font-family: var(--rp-font-family-mono);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-session__artifact-preview > div small {
+  color: var(--ui-faint);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
+.product-session__artifact-preview pre {
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  overflow: auto;
+  background: var(--ui-code, var(--ui-canvas));
+  color: var(--ui-ink);
+  font-family: var(--rp-font-family-mono);
+  font-size: 0.6875rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.product-session__artifact-preview code {
+  font: inherit;
+  white-space: pre;
+}
+
+.product-session__artifact-preview > output {
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
+  line-height: 1.25rem;
+  text-align: end;
+}
+
+.product-session__artifact-preview > output:empty {
+  visibility: hidden;
+}
+
+@media (max-width: 60rem) {
+  .product-session[data-inspector-open="true"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-session__inspector-backdrop {
+    position: absolute;
+    z-index: 55;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgb(15 23 42 / 22%);
+  }
+
+  .product-session__inspector {
+    position: absolute;
+    z-index: 60;
+    inset: 0 0 0 auto;
+    width: min(22rem, calc(100% - 3rem));
+    border-inline-start: 0;
+    grid-column: auto;
+    grid-row: auto;
+    box-shadow: var(--ui-shadow-floating);
+  }
+}
+
 @media (max-width: 48rem) {
+  .a3s-product-application[data-view="session"] .product-application__main {
+    padding-top: 0;
+  }
+
+  .product-session {
+    grid-template-rows: 3.5rem max-content minmax(0, 1fr) max-content;
+  }
+
   .product-session__header {
     height: 3.5rem;
     padding: 0 0.75rem 0 3.75rem;
@@ -443,6 +815,10 @@
 
   .product-session__tool [data-tool-state] {
     display: none;
+  }
+
+  .product-session__inspector {
+    width: 100%;
   }
 }
 

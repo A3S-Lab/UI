@@ -934,7 +934,7 @@ const productApplicationExpectations = [
       'data-view="session"',
       'data-product-surface="session"',
       ">修复会话恢复<",
-      'href="/UI/sessions/fix-session-recovery/workspace.html"',
+      'aria-label="打开产物面板"',
     ],
   },
   {
@@ -943,17 +943,25 @@ const productApplicationExpectations = [
       'data-view="session"',
       'data-product-surface="session"',
       ">Fix session recovery<",
-      'href="/UI/en/sessions/fix-session-recovery/workspace.html"',
+      'aria-label="Open artifacts panel"',
     ],
   },
   {
     file: "sessions/fix-session-recovery/workspace.html",
     markers: [
-      'data-view="workbench"',
-      'data-product-surface="workbench"',
-      'class="a3s-workspace-playground rp-not-doc"',
-      'data-workspace-mode="session"',
+      'data-view="session"',
+      'data-product-surface="session"',
+      'aria-label="打开产物面板"',
       ">修复会话恢复<",
+    ],
+  },
+  {
+    file: "en/sessions/fix-session-recovery/workspace.html",
+    markers: [
+      'data-view="session"',
+      'data-product-surface="session"',
+      'aria-label="Open artifacts panel"',
+      ">Fix session recovery<",
     ],
   },
   {

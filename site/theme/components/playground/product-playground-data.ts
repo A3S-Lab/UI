@@ -8,8 +8,7 @@ export type ProductPlaygroundView =
   | "projects"
   | "resources"
   | "session"
-  | "start"
-  | "workbench";
+  | "start";
 export type ProductResourceView =
   "documents" | "files" | "inspiration" | "knowledge" | "mail";
 
@@ -21,7 +20,7 @@ export type ProductCapabilityCategory =
 
 export type ProductNavigationItem = {
   icon: ProductPlaygroundIconName;
-  id: Exclude<ProductPlaygroundView, "resources" | "session" | "workbench">;
+  id: Exclude<ProductPlaygroundView, "resources" | "session">;
   label: ProductLocalizedText;
 };
 
@@ -44,7 +43,7 @@ export const productNavigation: readonly ProductNavigationItem[] = [
   {
     id: "catalog",
     icon: "catalog",
-    label: { en: "Capabilities", zh: "专家 · 技能 · 连接器" },
+    label: { en: "Capabilities", zh: "专家·技能·连接器" },
   },
   {
     id: "automation",

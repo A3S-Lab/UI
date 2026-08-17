@@ -106,8 +106,7 @@ test("Product application opens in the approved task shell with complete navigat
 
   await revealProductNavigation(playground);
   await playground
-    .locator(".product-sidebar__primary > a")
-    .filter({ hasText: "专家 · 技能 · 连接器" })
+    .getByRole("link", { name: "专家·技能·连接器", exact: true })
     .click();
   await expect(playground).toHaveAttribute("data-view", "catalog");
   await playground.getByRole("tab", { name: "技能", exact: true }).click();
@@ -168,7 +167,7 @@ test("Product application opens in the approved task shell with complete navigat
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Session detail is a focused conversation and keeps the workspace secondary", async ({
+test("Session detail keeps artifacts in a focused secondary inspector", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 577 });
@@ -205,12 +204,32 @@ test("Session detail is a focused conversation and keeps the workspace secondary
   ).toHaveText("3 个结果");
   await playground.getByRole("button", { name: "关闭会话搜索" }).click();
 
-  await playground.getByRole("link", { name: "打开会话工作区" }).click();
-  await expect(page).toHaveURL(
-    /\/sessions\/fix-session-recovery\/workspace\.html$/u,
-  );
-  await expect(playground).toHaveAttribute("data-view", "workbench");
-  await expect(playground.locator(".a3s-workspace-playground")).toBeVisible();
+  const artifactsTrigger = playground.getByRole("button", {
+    name: "打开产物面板",
+  });
+  await artifactsTrigger.click();
+  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(playground).toHaveAttribute("data-view", "session");
+  const artifacts = playground.getByRole("complementary", {
+    name: "会话产物",
+  });
+  await expect(artifacts).toBeVisible();
+  await expect(
+    artifacts.getByRole("button", { name: "关闭产物面板" }),
+  ).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(artifacts).not.toBeVisible();
+  await expect(artifactsTrigger).toBeFocused();
+
+  await artifactsTrigger.click();
+  await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
+  await playground
+    .locator(".product-session__artifact-overview > div > button")
+    .first()
+    .click();
+  await expect(
+    playground.locator(".product-session__artifact-preview pre"),
+  ).toContainText("restoreSession");
   expect(runtimeErrors).toEqual([]);
 });
 

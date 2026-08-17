@@ -38,7 +38,6 @@ import {
   ProductProjectsSurface,
   ProductStartSurface,
 } from "./ProductTaskSurfaces";
-import { WorkspacePlayground } from "./WorkspacePlayground";
 
 function ProductSidebar({
   collapsed,
@@ -424,7 +423,6 @@ export function ProductApplication() {
       resources: zh ? "资源" : "Resources",
       session: zh ? "修复会话恢复" : "Fix session recovery",
       start: zh ? "新建任务" : "New task",
-      workbench: zh ? "会话工作区" : "Session workspace",
     };
     document.title = `${titles[view]} · A3S`;
   }, [view, zh]);
@@ -514,20 +512,7 @@ export function ProductApplication() {
             startHref={routeHref("start")}
           />
         ) : null}
-        {view === "session" ? (
-          <ProductSessionSurface
-            locale={locale}
-            workspaceHref={routeHref("workbench")}
-          />
-        ) : null}
-        {view === "workbench" ? (
-          <section
-            className="product-application__workspace"
-            data-product-surface="workbench"
-          >
-            <WorkspacePlayground mode="session" />
-          </section>
-        ) : null}
+        {view === "session" ? <ProductSessionSurface locale={locale} /> : null}
       </main>
       <ProductSettingsDialog
         initialSection={settingsSection}

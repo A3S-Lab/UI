@@ -37,6 +37,7 @@
 
 ### Fixed
 
+- Kept session-detail routes focused on the conversation, moved generated files into an in-context artifact inspector with responsive and keyboard-complete behavior, and preserved legacy workspace URLs as session aliases.
 - Made responsive primary, resource, language, and version navigation progressively operable before hydration, and removed legacy Playground selectors that conflicted with the dockable responsive workspace.
 - Made nested documentation sidebar disclosures operable before hydration through native details and summary semantics at every hierarchy level.
 - Kept Agent Composer status synchronization idempotent so its DOM observer cannot enter a self-triggering loop that freezes Playground and other composed surfaces after hydration.
