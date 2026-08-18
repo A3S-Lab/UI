@@ -7,10 +7,11 @@
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
+- Added production File Manager and Knowledge Library contracts with multi-selection, search, views, preview, indexing phases, recovery, cancelable host authorization, generated React/Vue hooks, bilingual documentation, and Playground compositions.
 - Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts plus complete Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations composition guides.
 - Added Task Plan, Plan Step, Message Status, Message Attachment, Message Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call, Change Review, Terminal, and Execution Evidence contracts.
 - Added the root `DESIGN.md` contract for task-centered application geometry, typography, color, elevation, responsive behavior, and component states.
-- Added a machine-readable 114-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
+- Added a machine-readable 116-component manifest, DOM semantic runtime, optional React and Vue adapters, package-isolated adapter verification, and one deterministic component scenario per public guide.
 - Added 22 product-admitted contracts for code and Markdown reading, images, compact selection, inline editing, reusable forms, navigation recovery, floating inspection, sorting, and streaming output, with split CSS, controllers where behavior is required, and bilingual React and Vue guidance.
 - Added Device Simulator with phone, tablet, desktop, custom-size, orientation, URL navigation, iframe preview, and a cancelable structured event for trusted `a3s-webview` hosts.
 - Added the Harness documentation and manifest category for task, conversation, execution, review, evidence, and developer-tool components.
@@ -27,10 +28,11 @@
 
 ### Changed
 
+- Rebuilt the project workspace as a complete task surface with Activity, Plan, Tasks, and Assets views, scoped filtering and search, project configuration, collaboration state, and a context-aware TipTap composer; widened the application shell and conversation geometry for production-scale work.
 - Rebuilt documentation previews around centered-control, flowing-content, bounded-overlay, and edge-to-edge-workspace layouts; phone and tablet controls now use isolated CSS viewports so responsive media queries evaluate against the selected width.
 - Reworked Device Simulator previews with scaled phone, tablet, and desktop hardware shells while preserving exact iframe viewport dimensions, orientation, and native preview arguments.
 - Rebuilt the documentation theme around Rspress routing with Chinese as the default language, page-preserving language and version switching, an official A3S logo, and first-load navigation that works before hydration.
-- Reorganized the 114-component catalog into Input and Actions, Selection and Search, Navigation, Layout and Workspace, Overlays, Feedback and Status, Data and Content, Utilities, and Harness.
+- Reorganized the bilingual navigation into eight responsibility-based general-component groups, seven workflow-stage Harness groups, and three task-oriented pattern groups without changing public routes.
 - Added a first-principles product admission gate to `DESIGN.md`, separating durable components from extracted patterns, compositions, and rejected application-specific implementations.
 - Deepened Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with cancelable precondition hooks, controlled snapshots, source-aware completion events, asynchronous recovery, read-only behavior, filtering, and reversible inline rename.
 - Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, and overlays with the Focused Intelligence palette, 4/6/8/12-pixel radii, A3S OS blue action hierarchy, and 120/160/220-millisecond motion system.
@@ -38,6 +40,7 @@
 
 ### Fixed
 
+- Kept project configuration and artifact inspectors visible by default on desktop while presenting them as focus-contained, Escape-dismissible drawers on compact screens, preserving trigger focus and usable conversation width at 1280px and 390px.
 - Added a sidebar-anchored capability chooser with shared URL and page-tab state, complete arrow-key navigation, Escape focus return, outside dismissal, and responsive bilingual behavior.
 - Connected project cards to dedicated bilingual project-workspace and child-session routes, kept project context current in the sidebar, and added production checks for conversation search, TipTap input, artifact inspection, desktop, mobile, and dark appearance.
 - Kept session-detail routes focused on the conversation, moved generated files into an in-context artifact inspector with responsive and keyboard-complete behavior, and preserved legacy workspace URLs as session aliases.
@@ -45,7 +48,7 @@
 - Made nested documentation sidebar disclosures operable before hydration through native details and summary semantics at every hierarchy level.
 - Kept Agent Composer status synchronization idempotent so its DOM observer cannot enter a self-triggering loop that freezes Playground and other composed surfaces after hydration.
 - Distinguished the site navigation from embedded workspace navigation with unambiguous accessible names and responsive navbar-to-Playground regression coverage.
-- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 114-component contract while preserving historical version counts.
+- Kept assistant output open on the task canvas, flattened embedded execution disclosures, removed active-navigation side stripes, and synchronized homepage, package, framework, and site counts with the 116-component contract while preserving historical version counts.
 - Made component-specific browser scenarios serial by default to prevent shared-browser resource contention from introducing nondeterministic control-state failures.
 
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.

@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@rspress/core/theme";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductComposer } from "./ProductComposer";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import {
+  ProductProjectBreadcrumb,
+  ProductProjectPresence,
+} from "./ProductProjectPrimitives";
 
 const projectConversation = {
   en: [
@@ -70,202 +73,6 @@ const projectArtifacts = [
   },
 ] as const;
 
-function ProjectBreadcrumb({
-  current,
-  locale,
-  projectHref,
-  projectsHref,
-}: {
-  current?: string;
-  locale: ProductPlaygroundLocale;
-  projectHref: string;
-  projectsHref: string;
-}) {
-  const zh = locale === "zh";
-  return (
-    <nav
-      aria-label={zh ? "项目路径" : "Project path"}
-      className="product-project-breadcrumb"
-    >
-      <Link href={projectsHref}>
-        <ProductPlaygroundIcon name="folder" />
-        <span>{zh ? "项目" : "Projects"}</span>
-      </Link>
-      <span aria-hidden="true">/</span>
-      {current ? (
-        <>
-          <Link href={projectHref}>
-            {zh ? "A3S UI 体验优化" : "A3S UI experience"}
-          </Link>
-          <span aria-hidden="true">/</span>
-          <h1>{current}</h1>
-        </>
-      ) : (
-        <h1>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</h1>
-      )}
-    </nav>
-  );
-}
-
-function ProjectPresence({ locale }: { locale: ProductPlaygroundLocale }) {
-  const zh = locale === "zh";
-  return (
-    <div className="product-project-presence">
-      <span data-collaborating>
-        <i aria-hidden="true" />
-        {zh ? "协同中" : "Collaborating"}
-      </span>
-      <span aria-label={zh ? "3 位项目成员" : "3 project members"}>
-        <ProductPlaygroundIcon name="assistant" />3
-      </span>
-    </div>
-  );
-}
-
-export function ProductProjectWorkspaceSurface({
-  locale,
-  projectHref,
-  projectsHref,
-  sessionHref,
-}: {
-  locale: ProductPlaygroundLocale;
-  projectHref: string;
-  projectsHref: string;
-  sessionHref: string;
-}) {
-  const zh = locale === "zh";
-  const [draftTask, setDraftTask] = useState("");
-
-  return (
-    <section
-      className="product-project-workspace"
-      data-product-surface="project"
-    >
-      <header className="product-project-workspace__header">
-        <ProjectBreadcrumb
-          locale={locale}
-          projectHref={projectHref}
-          projectsHref={projectsHref}
-        />
-        <div>
-          <ProjectPresence locale={locale} />
-          <Link data-new-task href={sessionHref}>
-            <ProductPlaygroundIcon name="plus" />
-            {zh ? "新建任务" : "New task"}
-          </Link>
-        </div>
-      </header>
-
-      <div className="product-project-workspace__viewport">
-        <div className="product-project-workspace__content">
-          <section className="product-project-workspace__intro">
-            <span>
-              <ProductPlaygroundIcon name="project" />
-            </span>
-            <div>
-              <h2>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</h2>
-              <p>
-                {zh
-                  ? "集中管理界面规范、验收证据与发布任务，让每次调整都有明确上下文。"
-                  : "Keep interface decisions, acceptance evidence, and release tasks in one shared context."}
-              </p>
-            </div>
-            <ul aria-label={zh ? "项目概况" : "Project overview"}>
-              <li>
-                <strong>1</strong>
-                <span>{zh ? "进行中的任务" : "Active task"}</span>
-              </li>
-              <li>
-                <strong>6</strong>
-                <span>{zh ? "共享资料" : "Shared assets"}</span>
-              </li>
-              <li>
-                <strong>3</strong>
-                <span>{zh ? "项目成员" : "Members"}</span>
-              </li>
-            </ul>
-          </section>
-
-          <section className="product-project-workspace__tasks">
-            <header>
-              <div>
-                <h2>{zh ? "项目任务" : "Project tasks"}</h2>
-                <p>
-                  {zh
-                    ? "所有任务共享项目资料、约束与验收上下文。"
-                    : "Every task inherits the project's assets, constraints, and acceptance context."}
-                </p>
-              </div>
-              <Link href={sessionHref}>
-                <ProductPlaygroundIcon name="plus" />
-                {zh ? "创建任务" : "Create task"}
-              </Link>
-            </header>
-            <div>
-              {draftTask ? (
-                <div data-draft-task role="status">
-                  <span>
-                    <ProductPlaygroundIcon name="document" />
-                  </span>
-                  <span>
-                    <strong>{draftTask}</strong>
-                    <small>
-                      {zh ? "刚刚创建 · 草稿" : "Created now · Draft"}
-                    </small>
-                  </span>
-                  <small>{zh ? "待开始" : "Ready"}</small>
-                </div>
-              ) : null}
-              <Link href={sessionHref}>
-                <span>
-                  <ProductPlaygroundIcon name="checklist" />
-                </span>
-                <span>
-                  <strong>{zh ? "发布就绪检查" : "Release readiness"}</strong>
-                  <small>
-                    {zh
-                      ? "核对路由、交互与视觉验收证据"
-                      : "Review routes, interactions, and visual evidence"}
-                  </small>
-                </span>
-                <span data-task-state>
-                  <i aria-hidden="true" />
-                  {zh ? "进行中" : "In progress"}
-                </span>
-                <ProductPlaygroundIcon name="chevron" />
-              </Link>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <footer className="product-project-workspace__composer">
-        <ProductComposer
-          compact
-          locale={locale}
-          onSubmit={setDraftTask}
-          placeholder={
-            zh
-              ? "在项目中创建任务，@ 引用共享资料，/ 调用技能"
-              : "Create a project task. Use @ for shared assets or / for skills"
-          }
-          showPermissions={false}
-          submitSuccessMessage={
-            zh
-              ? "已在项目中创建任务草稿。"
-              : "A task draft was created in the project."
-          }
-        />
-        <small>
-          {zh
-            ? "此处创建的任务会继承项目上下文"
-            : "Tasks created here inherit the project context"}
-        </small>
-      </footer>
-    </section>
-  );
-}
-
 export function ProductProjectSessionSurface({
   locale,
   projectHref,
@@ -280,7 +87,7 @@ export function ProductProjectSessionSurface({
   const [activeArtifactId, setActiveArtifactId] = useState<string | null>(null);
   const [artifactCopyStatus, setArtifactCopyStatus] = useState("");
   const [followUps, setFollowUps] = useState<string[]>([]);
-  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -290,7 +97,10 @@ export function ProductProjectSessionSurface({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 60rem)");
-    const update = () => setInspectorOverlay(mediaQuery.matches);
+    const update = () => {
+      setInspectorOverlay(mediaQuery.matches);
+      setInspectorOpen(!mediaQuery.matches);
+    };
     update();
     mediaQuery.addEventListener("change", update);
     return () => mediaQuery.removeEventListener("change", update);
@@ -304,9 +114,9 @@ export function ProductProjectSessionSurface({
   useEffect(() => {
     if (!inspectorOpen) return undefined;
 
-    const focusFrame = window.requestAnimationFrame(() =>
-      inspectorCloseRef.current?.focus(),
-    );
+    const focusFrame = inspectorOverlay
+      ? window.requestAnimationFrame(() => inspectorCloseRef.current?.focus())
+      : undefined;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -335,7 +145,7 @@ export function ProductProjectSessionSurface({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.cancelAnimationFrame(focusFrame);
+      if (focusFrame) window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeInspector, inspectorOpen, inspectorOverlay]);
@@ -373,7 +183,7 @@ export function ProductProjectSessionSurface({
       data-search-open={searchOpen ? "true" : undefined}
     >
       <header className="product-session__header">
-        <ProjectBreadcrumb
+        <ProductProjectBreadcrumb
           current={zh ? "发布就绪检查" : "Release readiness"}
           locale={locale}
           projectHref={projectHref}
@@ -389,7 +199,7 @@ export function ProductProjectSessionSurface({
           >
             <ProductPlaygroundIcon name="search" />
           </button>
-          <ProjectPresence locale={locale} />
+          <ProductProjectPresence locale={locale} />
           <button
             aria-controls="product-project-session-artifacts"
             aria-expanded={inspectorOpen}
@@ -552,6 +362,8 @@ export function ProductProjectSessionSurface({
       <footer className="product-session__composer">
         <ProductComposer
           compact
+          contextual
+          initialWorkspace="ui"
           locale={locale}
           onSubmit={(message) =>
             setFollowUps((current) => [...current, message])

@@ -51,24 +51,24 @@ const metadataByLanguage = {
 
 const descriptionsByLanguage = {
   en: [
-    "Create, edit, and submit through actions, fields, and text entry.",
-    "Choose, filter, and search while preserving native state wherever possible.",
-    "Move through pages, hierarchy, and related content without losing context.",
-    "Structure application shells, toolbars, panes, and durable work regions.",
-    "Handle layered, positioned, or focus-protected interaction.",
-    "Explain loading, outcomes, exceptions, and the path to recovery.",
-    "Present structured content, media, code, and data collections.",
-    "Provide cross-page scrolling and appearance foundations.",
+    "Create, edit, and submit with actions, fields, and text entry.",
+    "Choose and narrow values while preserving native state wherever possible.",
+    "Move through pages, hierarchy, and scroll position without losing context.",
+    "Structure shells, toolbars, panes, durable regions, and appearance controls.",
+    "Handle menus and layered, positioned, or focus-protected interaction.",
+    "Explain loading, status, outcomes, exceptions, and recovery.",
+    "Present prose, media, code, and reusable content surfaces.",
+    "Organize collections, properties, progressions, and quantitative data.",
   ],
   zh: [
     "通过操作、字段和文本输入完成创建、编辑与提交。",
-    "完成选择、筛选与搜索，并尽量保留浏览器原生状态。",
-    "在页面、层级和相关内容之间移动，同时保留当前位置。",
-    "组织应用外壳、工具栏、窗格与长期存在的工作区域。",
-    "承载需要分层、定位或焦点保护的交互。",
-    "解释加载、结果、异常，以及下一步恢复方式。",
-    "呈现结构化内容、媒体、代码和数据集合。",
-    "提供跨页面的滚动与外观基础能力。",
+    "选择并收窄可用值，同时尽量保留浏览器原生状态。",
+    "在页面、层级和滚动位置之间移动，同时保留上下文。",
+    "组织应用外壳、工具栏、窗格、长期区域与外观控制。",
+    "承载菜单以及需要分层、定位或焦点保护的交互。",
+    "解释加载、状态、结果、异常与下一步恢复方式。",
+    "呈现正文、媒体、代码与可复用的内容表面。",
+    "组织集合、属性、过程与量化数据。",
   ],
 } as const;
 
@@ -192,8 +192,8 @@ export function catalogGroups(
     const description =
       record.filterKey === "harness"
         ? language === "zh"
-          ? "覆盖任务、对话、执行、审阅、证据与开发工具。"
-          : "Cover tasks, conversation, execution, review, evidence, and developer tooling."
+          ? "覆盖任务输入、会话、文件、执行授权、审阅证据与开发预览。"
+          : "Cover task input, conversation, files, execution approval, review evidence, and development preview."
         : (descriptionsByLanguage[language][componentIndex] ?? "");
 
     groups.set(record.filterKey, {

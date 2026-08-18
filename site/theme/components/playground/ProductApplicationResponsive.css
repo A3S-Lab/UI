@@ -1,6 +1,12 @@
+@media (max-width: 90rem) {
+  .a3s-product-application {
+    grid-template-columns: 20rem minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 72rem) {
   .a3s-product-application {
-    grid-template-columns: 15.5rem minmax(0, 1fr);
+    grid-template-columns: 18rem minmax(0, 1fr);
   }
 
   .product-projects {
@@ -29,7 +35,16 @@
   }
 
   .product-start__prompts {
-    margin-top: 3.5rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 3.5rem 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    transform: none;
+  }
+
+  .product-start__prompts::-webkit-scrollbar {
+    display: none;
   }
 
   .product-start__activity-trigger,

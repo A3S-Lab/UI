@@ -104,7 +104,7 @@ export function ProductStartSurface({
   const zh = locale === "zh";
   const [mode, setMode] = useState("office");
   const [promptPreset, setPromptPreset] = useState({ revision: 0, text: "" });
-  const [activityOpen, setActivityOpen] = useState(true);
+  const [activityOpen, setActivityOpen] = useState(false);
   const [activityDetail, setActivityDetail] = useState(false);
   const modes = [
     ["office", zh ? "日常办公" : "Everyday work", "coffee"],

@@ -1,0 +1,251 @@
+.product-file-manager [data-file-manager-quicklook] {
+  display: grid;
+  width: 20rem;
+  min-width: 0;
+  min-height: 0;
+  border-inline-start: 1px solid var(--ui-line);
+  background: var(--ui-paper);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.product-file-manager [data-file-manager-quicklook] > header {
+  display: flex;
+  min-height: 3.75rem;
+  padding: 0 0.75rem;
+  border-block-end: 1px solid var(--ui-line);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-file-manager [data-file-manager-quicklook] > header > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > header strong {
+  font-size: 0.75rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > header svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > header button {
+  display: grid;
+  width: 1.875rem;
+  height: 1.875rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.product-file-manager [data-quicklook-preview] {
+  min-height: 0;
+  padding: 1.5rem 1rem;
+  overflow: auto;
+  text-align: center;
+}
+
+.product-file-manager [data-quicklook-preview] > span {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  margin-inline: auto;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--ui-blue) 7%, var(--ui-panel));
+  color: var(--ui-blue);
+  place-items: center;
+}
+
+.product-file-manager [data-quicklook-preview] > span svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.product-file-manager [data-quicklook-preview] h2 {
+  margin: 0.75rem 0 1rem;
+  overflow-wrap: anywhere;
+  font-size: 0.875rem;
+}
+
+.product-file-manager [data-quicklook-preview] pre {
+  min-height: 12rem;
+  margin: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.625rem;
+  overflow: auto;
+  background: var(--ui-canvas);
+  color: var(--ui-muted);
+  font-family: var(--rp-font-family-mono);
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  text-align: start;
+  white-space: pre-wrap;
+}
+
+.product-file-manager [data-file-manager-quicklook] > dl {
+  display: grid;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-block-start: 1px solid var(--ui-line);
+  gap: 0.5rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.6875rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] dt {
+  color: var(--ui-faint);
+}
+
+.product-file-manager [data-file-manager-quicklook] dd {
+  margin: 0;
+  color: var(--ui-muted);
+  text-align: end;
+}
+
+.product-file-manager [data-file-manager-quicklook] > footer {
+  display: flex;
+  padding: 0.625rem 0.75rem;
+  border-block-start: 1px solid var(--ui-line);
+  gap: 0.375rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > footer button {
+  display: inline-flex;
+  min-height: 2.125rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--ui-paper);
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.6875rem;
+}
+
+.product-file-manager [data-file-manager-quicklook] > footer svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.product-file-context-menu {
+  position: fixed;
+  z-index: 5000;
+  inset-block-start: min(var(--context-y), calc(100dvh - 17rem));
+  inset-inline-start: min(var(--context-x), calc(100vw - 14rem));
+  display: grid;
+  width: 13rem;
+  padding: 0.375rem;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.75rem;
+  background: var(--ui-paper);
+  box-shadow: var(--ui-shadow-floating);
+  gap: 0.125rem;
+}
+
+.product-file-context-menu button {
+  display: grid;
+  min-height: 2.125rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 0.4375rem;
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: start;
+}
+
+.product-file-context-menu button:hover {
+  background: var(--ui-panel);
+}
+
+.product-file-context-menu button[data-danger] {
+  color: var(--ui-red);
+}
+
+.product-file-context-menu button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.product-file-context-menu hr {
+  width: 100%;
+  margin: 0.25rem 0;
+  border: 0;
+  border-block-start: 1px solid var(--ui-line);
+}
+
+.product-file-delete-dialog {
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.875rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: 0 20px 20px -8px rgb(0 0 0 / 24%);
+  text-align: center;
+}
+
+.product-file-delete-dialog::backdrop {
+  background: rgb(4 10 22 / 42%);
+}
+
+.product-file-delete-dialog > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--ui-red);
+}
+
+.product-file-delete-dialog h2 {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+}
+
+.product-file-delete-dialog p {
+  margin: 0.5rem 0 0;
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.product-file-delete-dialog footer {
+  display: flex;
+  margin-top: 1.25rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.product-file-delete-dialog button {
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 620;
+}
+
+.product-file-delete-dialog button[data-danger] {
+  border-color: var(--ui-red);
+  background: var(--ui-red);
+  color: #fff;
+}

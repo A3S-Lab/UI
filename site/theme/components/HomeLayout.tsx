@@ -20,57 +20,57 @@ type ComponentFamily = {
 const componentFamilies: ComponentFamily[] = [
   {
     category: { zh: "基础交互", en: "Core interaction" },
-    count: "08",
+    count: "12",
     description: {
-      zh: "按钮、字段、输入与文本编辑，覆盖高频创建动作。",
-      en: "Buttons, fields, inputs, and text editing for frequent creation tasks.",
+      zh: "按钮、字段、表单与文本编辑，覆盖高频创建动作。",
+      en: "Buttons, fields, forms, and text editing for frequent creation tasks.",
     },
-    href: "/components/field",
-    title: { zh: "输入与操作", en: "Input and actions" },
+    href: "/components/button",
+    title: { zh: "操作与输入", en: "Actions and input" },
   },
   {
     category: { zh: "选择控制", en: "Choice controls" },
-    count: "08",
+    count: "12",
     description: {
       zh: "选择器、组合框、开关与滑块，保持状态清楚可达。",
       en: "Selects, comboboxes, switches, and sliders with legible state.",
     },
     href: "/components/combobox",
-    title: { zh: "选择与搜索", en: "Selection and search" },
+    title: { zh: "选择与筛选", en: "Selection and filtering" },
   },
   {
     category: { zh: "定位与导航", en: "Orientation and wayfinding" },
-    count: "05",
+    count: "08",
     description: {
-      zh: "活动栏、面包屑、标签页、分页与产品侧边栏。",
-      en: "Activity rails, breadcrumbs, tabs, pagination, and product sidebars.",
+      zh: "活动栏、面包屑、标签页、分页、侧边栏与滚动定位。",
+      en: "Activity rails, breadcrumbs, tabs, pagination, sidebars, and scroll position.",
     },
     href: "/components/activity-bar",
-    title: { zh: "导航", en: "Navigation" },
+    title: { zh: "导航与定位", en: "Navigation and wayfinding" },
   },
   {
     category: { zh: "应用结构", en: "Application structure" },
-    count: "13",
+    count: "14",
     description: {
-      zh: "外壳、标题栏、工具栏、窗格与资源布局。",
-      en: "Shells, headers, toolbars, panes, and resource layout.",
+      zh: "外壳、标题栏、工具栏、窗格、资源布局与主题控制。",
+      en: "Shells, headers, toolbars, panes, resource layout, and theme control.",
     },
     href: "/components/app-shell",
-    title: { zh: "布局与工作区", en: "Layout and workspace" },
+    title: { zh: "应用结构", en: "Application structure" },
   },
   {
     category: { zh: "分层交互", en: "Layered interaction" },
-    count: "08",
+    count: "10",
     description: {
       zh: "对话框、抽屉、菜单、浮层、命令面板与上下文帮助。",
       en: "Dialogs, drawers, menus, popovers, commands, and contextual help.",
     },
     href: "/components/dialog",
-    title: { zh: "浮层", en: "Overlays" },
+    title: { zh: "浮层与菜单", en: "Overlays and menus" },
   },
   {
     category: { zh: "状态与反馈", en: "Status and feedback" },
-    count: "08",
+    count: "09",
     description: {
       zh: "警告、状态徽章、进度、骨架屏、加载状态与 Toast 反馈。",
       en: "Alerts, status badges, progress, skeletons, spinners, and toast feedback.",
@@ -79,34 +79,34 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "反馈与状态", en: "Feedback and status" },
   },
   {
-    category: { zh: "结构化内容", en: "Structured content" },
-    count: "12",
+    category: { zh: "内容表面", en: "Content surfaces" },
+    count: "13",
     description: {
-      zh: "卡片、属性列表、步骤条、时间线、表格与结构化信息。",
-      en: "Cards, property lists, steppers, timelines, tables, and structured information.",
+      zh: "正文、卡片、图像、代码、Markdown 与折叠内容。",
+      en: "Prose, cards, images, code, Markdown, and collapsible content.",
     },
-    href: "/components/card",
-    title: { zh: "数据与内容", en: "Data and content" },
+    href: "/components/markdown-surface",
+    title: { zh: "内容与媒体", en: "Content and media" },
   },
   {
-    category: { zh: "Agent 工作流", en: "Agent workflows" },
-    count: "28",
+    category: { zh: "数据组织", en: "Data organization" },
+    count: "08",
     description: {
-      zh: "任务、对话、执行、审阅、证据与开发预览工具。",
-      en: "Tasks, conversation, execution, review, evidence, and preview tooling.",
+      zh: "图表、属性、数据网格、表格、排序与过程展示。",
+      en: "Charts, properties, data grids, tables, ordering, and progressions.",
+    },
+    href: "/components/data-grid",
+    title: { zh: "数据展示", en: "Data display" },
+  },
+  {
+    category: { zh: "任务工作流", en: "Task workflows" },
+    count: "30",
+    description: {
+      zh: "任务输入、会话、文件、执行授权、审阅与开发预览。",
+      en: "Task input, conversation, files, execution approval, review, and preview.",
     },
     href: "/harness/",
     title: { zh: "Harness", en: "Harness" },
-  },
-  {
-    category: { zh: "系统工具", en: "System utilities" },
-    count: "02",
-    description: {
-      zh: "滚动区域与主题控制，补齐跨页面基础能力。",
-      en: "Scroll regions and theme control shared across product surfaces.",
-    },
-    href: "/components/scroll-area",
-    title: { zh: "工具", en: "Utilities" },
   },
 ];
 
@@ -115,7 +115,7 @@ const legacyComponentFamilies: ComponentFamily[] = [
   componentFamilies[2],
   { ...componentFamilies[4], count: "07" },
   componentFamilies[5],
-  { ...componentFamilies[6], count: "12" },
+  { ...componentFamilies[6], count: "12", href: "/components/card" },
   { ...componentFamilies[3], count: "12" },
 ];
 
@@ -681,7 +681,7 @@ export function HomeLayout() {
   const { site } = useSite();
   const defaultVersion = site.multiVersion.default;
   const isCurrentContract = !version || version === defaultVersion;
-  const componentCount = isCurrentContract ? "114" : "64";
+  const componentCount = isCurrentContract ? "116" : "64";
   const homepageFamilies = isCurrentContract
     ? componentFamilies
     : legacyComponentFamilies;

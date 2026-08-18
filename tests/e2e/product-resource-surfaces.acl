@@ -30,27 +30,51 @@ suite "a3s-ui-product-resource-surfaces" {
     }
 
     scenario "files-mobile-hierarchy" {
-        name = "Task files remain readable as a compact mobile hierarchy"
+        name = "Finder-style workspace files remain searchable, selectable, and previewable on mobile"
         surface = "web"
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/files.html" }
         wait "loaded" { load = "networkidle" }
-        wait "files-ready" { visible = css(".a3s-product-application[data-view=resources] [data-resource=files]") }
+        wait "files-ready" { visible = css(".a3s-product-application[data-view=resources] .product-file-manager[data-file-manager-initialized=true]") }
 
         expect "mobile-navigation" { visible = css("button[aria-label='打开应用导航']") }
-        expect "group-visible" { text = "未分组" }
-        expect "task-visible" { text = "修复会话恢复" }
-        expect "updated-column" { visible = css(".product-resources__table [data-header] [data-mobile-label='更新']") }
-
-        fill "find-release-review" { target = css("input[aria-label='搜索文件']") value = "release-review" }
-        expect "matching-file" { text = "release-review.md" }
-        click "select-file" { target = css(".product-resources__table > button[role=row]") }
-        expect "selection-feedback" { text = "已选择 release-review.md" }
+        expect "file-listbox" { visible = css(".product-file-manager [data-file-manager-viewport][role=listbox]") }
+        fill "find-release-readiness" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "release-readiness" }
+        expect "matching-file" { visible = css(".product-file-manager [data-file-manager-item] strong[title='release-readiness.md']") }
+        click "select-file" { target = css(".product-file-manager [data-file-manager-item] > button") }
+        expect "selection-visible" { visible = css(".product-file-manager [data-file-manager-item][aria-selected=true]") }
+        expect "selection-actions" { visible = css(".product-file-manager [data-file-manager-selection-toolbar]") }
+        press "open-quick-look" { key = "Enter" }
+        expect "quick-look-visible" { visible = css(".product-file-manager [data-file-manager-quicklook]") }
 
         screenshot "mobile-evidence" { path = "product/files-mobile-hierarchy.png" }
         console "console" { path = "product/files-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/files-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "knowledge-library-recovery" {
+        name = "Knowledge library management exposes a failed update and its recovery without losing the usable version"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/knowledge.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "library-ready" { visible = css(".product-knowledge-library[data-knowledge-library-initialized=true][data-layout=wide]") }
+        expect "initial-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-library-detail]") }
+        click "show-attention" { target = css(".product-knowledge-library [data-knowledge-filter=attention]") }
+        click "select-failed-library" { target = css(".product-knowledge-library [data-knowledge-library-item][data-phase=failed]") }
+        expect "failed-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=failed] [role=alert]") }
+        expect "recovery-action-visible" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=failed] button") }
+
+        viewport "mobile" { width = 390 height = 844 }
+        expect "mobile-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-library-detail] button[aria-label='关闭知识库详情']") }
+        screenshot "mobile-evidence" { path = "product/knowledge-library-recovery-mobile.png" }
+        click "close-detail" { target = css(".product-knowledge-library [data-knowledge-library-detail] button[aria-label='关闭知识库详情']") }
+        expect "library-list-restored" { visible = css(".product-knowledge-library [data-knowledge-library-group]") }
+        console "console" { path = "product/knowledge-library-console.json" clear = false }
+        page_errors "page-errors" { path = "product/knowledge-library-page-errors.json" clear = false }
     }
 }

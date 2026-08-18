@@ -81,7 +81,7 @@ test("sidebar disclosures remain operable before hydration", async ({
 
   const sidebar = page.locator(".rp-doc-layout__sidebar");
   const selection = sidebar.locator(
-    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与搜索"]',
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与筛选"]',
   );
   await expect(selection).not.toHaveAttribute("open", "");
   await selection.locator(":scope > summary").click();
@@ -95,7 +95,7 @@ test("sidebar disclosures remain operable before hydration", async ({
   );
   await harness.locator(":scope > summary").click();
   const conversations = harness.locator(
-    'details.a3s-docs-sidebar__group[data-sidebar-group-label="任务与对话"]',
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="会话与消息"]',
   );
   await conversations.locator(":scope > summary").click();
   const workbench = conversations.getByRole("link", { name: "Agent 工作台" });
@@ -123,7 +123,7 @@ test("sidebar state survives a click during hydration", async ({
     waitUntil: "domcontentloaded",
   });
   const selection = page.locator(
-    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与搜索"]',
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="选择与筛选"]',
   );
   await expect(selection).toBeVisible();
   await selection.locator(":scope > summary").click();
@@ -254,7 +254,7 @@ test("component catalog searches both languages and filters by product group", a
 
   let catalog = page.locator("[data-component-catalog]");
   let search = catalog.getByRole("searchbox", { name: "搜索组件" });
-  await expect(catalog).toContainText("114 个组件");
+  await expect(catalog).toContainText("116 个组件");
   await search.fill("device simulator");
   await expect(catalog.getByRole("status")).toHaveText("找到 1 个匹配组件");
   await expect(

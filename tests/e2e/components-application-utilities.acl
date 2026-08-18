@@ -722,4 +722,49 @@ suite "a3s-ui-application-and-utilities" {
         viewport "phone" { width = 390 height = 844 }
         expect "phone-explorer-visible" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer") }
     }
+
+    scenario "file-manager" {
+        name = "File Manager filters, selects, previews, and changes view without losing its workspace boundary"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-manager.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "manager-ready" { visible = css("#file-manager-demo-en[data-file-manager-initialized=true][data-state=ready]") }
+        fill "filter-report" { target = css("#file-manager-demo-en [data-file-manager-search] input") value = "visual" }
+        expect "report-visible" { visible = css("#file-manager-demo-en [data-file-value=report]:not([hidden])") }
+        fill "clear-filter" { target = css("#file-manager-demo-en [data-file-manager-search] input") value = "" }
+        click "select-design" { target = css("#file-manager-demo-en [data-file-value=design]") }
+        expect "design-selected" { visible = css("#file-manager-demo-en [data-file-value=design][aria-selected=true]") }
+        click "open-quick-look" { target = css("#file-manager-demo-en [data-file-action=preview]") }
+        expect "quick-look-visible" { visible = css("#file-manager-demo-en [data-file-manager-preview]:not([hidden]) [data-preview-for=design]:not([hidden])") }
+        click "close-quick-look" { target = css("#file-manager-demo-en [data-file-action=close-preview]") }
+        click "switch-grid" { target = css("#file-manager-demo-en [data-file-view=grid]") }
+        expect "grid-active" { visible = css("#file-manager-demo-en[data-view=grid] [data-file-manager-viewport][data-view=grid]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-manager-visible" { visible = css("#file-manager-demo-en.file-manager") }
+        screenshot "file-manager-phone" { path = "components/file-manager-phone.png" }
+    }
+
+    scenario "knowledge-library" {
+        name = "Knowledge Library filters phases and opens recoverable indexing details"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/knowledge-library.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "library-ready" { visible = css("#knowledge-library-demo-en[data-knowledge-library-initialized=true][data-state=ready]") }
+        fill "filter-migration" { target = css("#knowledge-library-demo-en [data-knowledge-library-search] input") value = "migration" }
+        expect "migration-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-value=migration]:not([hidden])") }
+        fill "clear-search" { target = css("#knowledge-library-demo-en [data-knowledge-library-search] input") value = "" }
+        click "show-updating" { target = css("#knowledge-library-demo-en [data-knowledge-filter=updating]") }
+        expect "release-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-value=release]:not([hidden])") }
+        click "show-all" { target = css("#knowledge-library-demo-en [data-knowledge-filter=all]") }
+        click "select-migration" { target = css("#knowledge-library-demo-en [data-knowledge-value=migration]") }
+        expect "migration-selected" { visible = css("#knowledge-library-demo-en [data-knowledge-value=migration][aria-selected=true]") }
+        expect "failure-recovery-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-detail-for=migration]:not([hidden]) [data-knowledge-action=retry]") }
+        viewport "phone" { width = 390 height = 844 }
+        expect "phone-library-visible" { visible = css("#knowledge-library-demo-en.knowledge-library") }
+        screenshot "knowledge-library-phone" { path = "components/knowledge-library-phone.png" }
+    }
 }

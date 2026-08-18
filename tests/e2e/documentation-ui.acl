@@ -85,11 +85,11 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         click "open-selection-group" {
-            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与搜索'] > summary")
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与筛选'] > summary")
         }
 
         expect "selection-link-visible" {
-            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与搜索'][open] a[href='/UI/components/select.html']")
+            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与筛选'][open] a[href='/UI/components/select.html']")
         }
 
         click "open-harness-group" {
@@ -97,11 +97,11 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         click "open-conversation-group" {
-            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'] > summary")
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='会话与消息'] > summary")
         }
 
         expect "workbench-link-visible" {
-            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'][open] a[href='/UI/components/agent-workbench.html']")
+            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='会话与消息'][open] a[href='/UI/components/agent-workbench.html']")
         }
 
         screenshot "first-load-sidebar" {
@@ -109,7 +109,7 @@ suite "a3s-ui-site-and-overlays" {
         }
 
         click "open-workbench" {
-            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='任务与对话'][open] a[href='/UI/components/agent-workbench.html']")
+            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='会话与消息'][open] a[href='/UI/components/agent-workbench.html']")
         }
 
         wait "workbench-loaded" {

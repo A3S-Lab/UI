@@ -35,10 +35,8 @@ import {
 } from "./ProductOverlayMenus";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { ProductComposerContext } from "./ProductComposer";
-import {
-  ProductProjectSessionSurface,
-  ProductProjectWorkspaceSurface,
-} from "./ProductProjectSurfaces";
+import { ProductProjectSessionSurface } from "./ProductProjectSurfaces";
+import { ProductProjectWorkspaceSurface } from "./ProductProjectWorkspaceSurface";
 import { ProductSessionSurface } from "./ProductSessionSurface";
 import { ProductSettingsDialog } from "./ProductSettingsDialog";
 import type { SettingsSection } from "./ProductSettingsSections";

@@ -18,6 +18,12 @@ suite "a3s-ui-product-project-workflow" {
         expect "projects-nav-current" { visible = css(".product-sidebar__primary a[href$='/app/projects.html'][aria-current=page]") }
         expect "project-group-expanded" { visible = css(".product-sidebar__project-group[data-expanded=true]") }
         expect "project-composer" { visible = css(".product-project-workspace__composer .ProseMirror") }
+        expect "tasks-tab-selected" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]") }
+        expect "configuration-visible" { visible = css("aside[aria-label='项目配置']") }
+        click "open-plan" { target = role("tab", "计划") }
+        expect "plan-visible" { text = "发布前质量收敛" }
+        press "move-to-tasks" { key = "ArrowRight" }
+        expect "tasks-visible" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(3)") }
 
         click "open-child-task" { target = css(".product-sidebar__project-task") }
         wait "session-route" { url = "**/app/projects/a3s-ui-experience/sessions/release-readiness.html" }
@@ -32,11 +38,12 @@ suite "a3s-ui-product-project-workflow" {
         expect "search-results" { text = "7 个结果" }
         click "close-search" { target = role("button", "关闭项目会话搜索") }
 
-        click "open-artifacts" { target = role("button", "打开项目产物") }
-        expect "artifacts-visible" { visible = css("aside[aria-label='项目产物']") }
-        expect "artifacts-close-focused" { visible = css("button[aria-label='关闭项目产物']:focus") }
+        expect "artifacts-visible-by-default" { visible = css("aside[aria-label='项目产物']") }
+        expect "artifacts-toggle-is-close" { visible = css("button[aria-label='关闭项目产物']") }
         press "close-artifacts" { key = "Escape" }
         expect "artifact-trigger-restored" { visible = css("button[aria-label='打开项目产物']:focus") }
+        click "reopen-artifacts" { target = role("button", "打开项目产物") }
+        expect "artifacts-visible-again" { visible = css("aside[aria-label='项目产物']") }
 
         fill "continue-task" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续执行暗色模式验收" }
         click "send-follow-up" { target = role("button", "发送任务") }
@@ -84,7 +91,11 @@ suite "a3s-ui-product-project-workflow" {
         wait "project-ready" { visible = css("[data-product-surface=project]") }
         expect "mobile-menu" { visible = css("button[aria-label='打开应用导航']") }
         expect "project-composer" { visible = css(".product-project-workspace__composer .ProseMirror") }
-        expect "project-task" { visible = css(".product-project-workspace__tasks a[href$='release-readiness.html']") }
+        expect "project-task" { visible = css(".product-project-workspace__task-list a[href$='release-readiness.html']") }
+        click "open-configuration" { target = role("button", "打开项目配置") }
+        expect "mobile-configuration" { visible = css("aside[aria-label='项目配置']") }
+        press "close-configuration" { key = "Escape" }
+        expect "configuration-trigger-restored" { visible = css("button[aria-label='打开项目配置']:focus") }
 
         screenshot "mobile-workspace-evidence" { path = "product/project-workspace-mobile.png" }
         console "console" { path = "product/project-workspace-mobile-console.json" clear = false }

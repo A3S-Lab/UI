@@ -1,0 +1,146 @@
+# Knowledge Library
+
+Knowledge Library manages durable source collections, indexing state, search, pinned libraries, recovery, and per-library settings without pretending that a visual component owns ingestion, embeddings, storage, or permissions.
+
+<Preview class="w-full" title="Knowledge library management">
+  <section id="knowledge-library-demo-en" class="knowledge-library" data-state="ready" aria-label="Knowledge library" style="height: 31rem">
+    <aside data-knowledge-library-navigation>
+      <header><strong>Knowledge</strong></header>
+      <nav aria-label="Knowledge filters">
+        <button type="button" data-knowledge-filter="all" aria-pressed="true">All knowledge</button>
+        <button type="button" data-knowledge-filter="updating" aria-pressed="false">Updating</button>
+        <button type="button" data-knowledge-filter="attention" aria-pressed="false">Needs attention</button>
+      </nav>
+    </aside>
+    <main>
+      <header data-knowledge-library-header><span><h2>Knowledge library</h2><p>Durable sources with explicit update and recovery state.</p></span><div><button type="button" data-knowledge-action="import">Import</button><button type="button" data-knowledge-action="create" data-variant="primary">New knowledge base</button></div></header>
+      <div data-knowledge-library-toolbar><label data-knowledge-library-search><span class="sr-only">Search knowledge</span><input type="search" placeholder="Search name, description, or path" /></label><span>3 knowledge bases</span></div>
+      <div data-knowledge-library-viewport>
+        <section data-knowledge-library-group>
+          <header><strong>Pinned</strong></header>
+          <ul data-knowledge-library-list>
+            <li><button type="button" data-knowledge-item data-knowledge-value="design" data-knowledge-phase="succeeded" aria-selected="false"><span data-knowledge-item-identity><strong>A3S UI design system</strong><small>Contracts, interaction decisions, and acceptance evidence</small></span><span data-knowledge-phase="succeeded">Up to date</span></button></li>
+            <li><button type="button" data-knowledge-item data-knowledge-value="release" data-knowledge-phase="running" aria-selected="false"><span data-knowledge-item-identity><strong>Release evidence</strong><small>Browser screenshots, reports, and compatibility notes</small></span><span data-knowledge-phase="running">Updating</span></button></li>
+            <li><button type="button" data-knowledge-item data-knowledge-value="migration" data-knowledge-phase="failed" aria-selected="false"><span data-knowledge-item-identity><strong>Migration research</strong><small>The previous searchable version remains available</small></span><span data-knowledge-phase="failed">Update failed</span></button></li>
+          </ul>
+        </section>
+      </div>
+      <section data-knowledge-library-state="loading" hidden>Loading knowledge bases…</section>
+      <section data-knowledge-library-state="offline" hidden>Knowledge is offline. The last searchable version remains available.</section>
+      <section data-knowledge-library-empty hidden>No knowledge bases match this filter.</section>
+      <footer data-knowledge-library-status><span>3 knowledge bases</span><output aria-live="polite">Select a knowledge base to manage it</output></footer>
+    </main>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="design" hidden>
+      <header><strong>A3S UI design system</strong><button type="button" data-knowledge-action="close-detail">Close</button></header>
+      <section><h3>Up to date</h3><p>The latest update succeeded. A failed future update keeps this searchable version.</p><button type="button" data-knowledge-action="update" data-knowledge-value="design">Update again</button></section>
+      <dl><div><dt>Sources</dt><dd>86</dd></div><div><dt>Concepts</dt><dd>1,428</dd></div></dl>
+    </aside>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="release" hidden><header><strong>Release evidence</strong><button type="button" data-knowledge-action="close-detail">Close</button></header><section><h3>Updating</h3><p>Sources are being organized into a new searchable version.</p></section></aside>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="migration" hidden><header><strong>Migration research</strong><button type="button" data-knowledge-action="close-detail">Close</button></header><section><h3>Update failed</h3><p>Two sources could not be read. Correct access and retry; the previous version is still usable.</p><button type="button" data-knowledge-action="retry" data-knowledge-value="migration">Retry update</button></section></aside>
+  </section>
+</Preview>
+
+## Product decisions
+
+A knowledge base is a durable, named boundary around approved sources. It is not a folder alias, a chat attachment list, or a decorative database card.
+
+- Every library exposes source count, freshness, indexing phase, and a recovery path.
+- `queued` and `running` are distinct because waiting for capacity and actively indexing require different expectations.
+- A failed update preserves the last usable searchable version. Destructive rebuilds require an explicit host flow.
+- Automatic updates need a stated policy, minimum interval, pause behavior, and a visible manual recovery action.
+- Source selection, authentication, parsing, chunking, embeddings, vector storage, retrieval quality, and access control remain host responsibilities.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section class="knowledge-library" data-state="ready" aria-label="Knowledge library">
+  <aside data-knowledge-library-navigation>
+    <nav aria-label="Knowledge filters"><button type="button" data-knowledge-filter="all" aria-pressed="true">All knowledge</button></nav>
+  </aside>
+  <main>
+    <div data-knowledge-library-toolbar>
+      <label data-knowledge-library-search><span class="sr-only">Search knowledge</span><input type="search" /></label>
+    </div>
+    <div data-knowledge-library-viewport>
+      <ul data-knowledge-library-list>
+        <li><button type="button" data-knowledge-item data-knowledge-value="design" data-knowledge-phase="succeeded" aria-selected="true"><span data-knowledge-item-identity><strong>Design system</strong><small>86 sources</small></span><span data-knowledge-phase="succeeded">Up to date</span></button></li>
+      </ul>
+    </div>
+  </main>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/knowledge-library";
+  const library = document.querySelector(".knowledge-library");
+  library.addEventListener("a3s:knowledge-before-action", event => {
+    if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+  });
+  library.addEventListener("a3s:knowledge-action", event => runKnowledgeAction(event.detail));
+</script>`}
+  react={`import { KnowledgeLibrary, useKnowledgeLibrary } from "@a3s-lab/ui/react";
+
+export function WorkspaceKnowledge({ libraries }) {
+  const knowledge = useKnowledgeLibrary({
+    events: {
+      "a3s:knowledge-before-action": event => {
+        if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+      },
+      "a3s:knowledge-action": event => runKnowledgeAction(event.detail),
+      "a3s:knowledge-selection-change": event => loadKnowledgeDetails(event.detail.value),
+    },
+  });
+
+  return (
+    <KnowledgeLibrary ref={knowledge.ref} data-state="ready" aria-label="Knowledge library">
+      <aside data-knowledge-library-navigation>{/* Status filters */}</aside>
+      <main>
+        <div data-knowledge-library-viewport>
+          <ul data-knowledge-library-list>{libraries.map(base => <li key={base.id}><button type="button" data-knowledge-item data-knowledge-value={base.id} data-knowledge-phase={base.phase} aria-selected="false">{base.name}</button></li>)}</ul>
+        </div>
+      </main>
+    </KnowledgeLibrary>
+  );
+}
+
+knowledge.call("setPhase", "design", "running");`}
+  vue={`<script setup lang="ts">
+import { KnowledgeLibrary, useKnowledgeLibrary } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{ libraries: Array<{ id: string; name: string; phase: string }> }>();
+const knowledge = useKnowledgeLibrary({
+  events: {
+    "a3s:knowledge-before-action": event => {
+      if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+    },
+    "a3s:knowledge-action": event => runKnowledgeAction(event.detail),
+    "a3s:knowledge-selection-change": event => loadKnowledgeDetails(event.detail.value),
+  },
+});
+</script>
+
+<template>
+  <KnowledgeLibrary :ref="knowledge.componentRef" data-state="ready" aria-label="Knowledge library">
+    <aside data-knowledge-library-navigation><!-- Status filters --></aside>
+    <main><div data-knowledge-library-viewport><ul data-knowledge-library-list><li v-for="base in props.libraries" :key="base.id"><button type="button" data-knowledge-item :data-knowledge-value="base.id" :data-knowledge-phase="base.phase" aria-selected="false">{{ base.name }}</button></li></ul></div></main>
+  </KnowledgeLibrary>
+</template>`}
+/>
+
+`useKnowledgeLibrary` exposes the same controller methods and DOM events to React and Vue. Application data remains in the host store; the hook does not duplicate indexing state.
+
+## Controller contract
+
+| Area | Contract |
+| --- | --- |
+| Root | `.knowledge-library`, preferably a `<section>` |
+| Layout | The default keeps navigation and replaces the list with an open detail view; use `data-layout="wide"` only when the host guarantees room for three readable panes |
+| Items | `data-knowledge-item`, stable `data-knowledge-value`, `data-knowledge-phase`, and `aria-selected` |
+| Phases | `ready`, `queued`, `running`, `succeeded`, `failed`, `paused` |
+| Methods | `select`, `clearSelection`, `getSelection`, `setFilter`, `clearFilter`, `getFilter`, `setPhase`, `runAction`, `setState`, `refresh`, `getState` |
+| Authorization | `a3s:knowledge-before-action`, `a3s:knowledge-before-filter-change`, `a3s:knowledge-before-selection-change` |
+| Observation | `a3s:knowledge-action`, `a3s:knowledge-filter-change`, `a3s:knowledge-selection-change`, `a3s:knowledge-phase-change`, `a3s:knowledge-state-change` |
+| Root states | `ready`, `loading`, `empty`, `partial`, `error`, `offline`, `permission-denied` |
+
+## Accessibility and ownership
+
+Library items remain ordinary named buttons in a list; arrow keys, Home, and End move between visible items while Enter or Space opens details. Status always includes text and never depends on color. Detail tabs, when present, use the Tabs contract. The host owns authorization, ingestion jobs, retries, source validation, storage, retrieval, deletion recovery, and localized user data.

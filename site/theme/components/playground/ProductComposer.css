@@ -1,132 +1,152 @@
 .product-composer {
+  --agent-composer-min-height: 6.5rem;
   position: relative;
   display: grid;
   width: 100%;
-  min-height: 10.75rem;
-  padding: 0.875rem;
-  border: 1px solid var(--ui-line);
+  min-width: 0;
+  min-height: 12.25rem;
+  padding: 0.625rem;
+  border: 1px solid var(--ui-line-strong);
   border-radius: 0.875rem;
   background: var(--ui-paper);
-  box-shadow: 0 12px 30px -24px rgb(15 35 70 / 38%);
-  grid-template-rows: minmax(5.5rem, 1fr) auto auto;
+  box-shadow:
+    0 12px 26px -20px rgb(15 35 70 / 32%),
+    0 1px 2px rgb(15 35 70 / 4%);
+  color: var(--ui-ink);
+  grid-template-rows: auto minmax(6.5rem, 1fr) auto auto auto;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.product-composer:focus-within {
+  border-color: color-mix(in srgb, var(--ui-blue) 56%, var(--ui-line-strong));
+  box-shadow:
+    0 12px 26px -20px rgb(15 35 70 / 32%),
+    0 0 0 3px color-mix(in srgb, var(--ui-blue) 13%, transparent);
 }
 
 .product-composer[data-compact="true"] {
-  min-height: 10rem;
+  --agent-composer-min-height: 4.75rem;
+  min-height: 10.75rem;
+  grid-template-rows: auto minmax(4.75rem, 1fr) auto auto auto;
 }
 
 .product-composer[data-contextual="true"] {
-  min-height: 10.875rem;
-  padding: 0.75rem 0.75rem 0;
-  border: 0;
-  border-radius: 1rem;
-  background: linear-gradient(
-    to bottom,
-    var(--ui-paper) 0 8.625rem,
-    color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-paper)) 8.625rem 100%
-  );
-  box-shadow:
-    0 12px 24px -8px rgb(15 23 42 / 4%),
-    0 2px 4px -4px rgb(15 23 42 / 8%);
-  grid-template-rows: 4.375rem 3.5rem 2.25rem;
+  border-color: var(--ui-line);
+}
+
+.product-composer > [data-composer-resources] {
+  display: flex;
+  max-height: 4.75rem;
+  margin: 0;
+  padding: 0.125rem 0.125rem 0.375rem;
+  align-items: center;
+  gap: 0.375rem;
+  overflow-y: auto;
+}
+
+.product-composer > [data-composer-resources] > li {
+  display: inline-flex;
+  min-width: 0;
+  max-width: min(17rem, 100%);
+  min-height: 1.875rem;
+  padding: 0.1875rem 0.25rem 0.1875rem 0.5rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  align-items: center;
+  gap: 0.3125rem;
+  background: color-mix(in srgb, var(--ui-panel) 68%, var(--ui-paper));
+  color: var(--ui-ink);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.product-composer > [data-composer-resources] > li > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+  color: var(--ui-blue);
+}
+
+.product-composer > [data-composer-resources] [data-resource-kind="skill"] > svg {
+  color: var(--ui-purple);
+}
+
+.product-composer > [data-composer-resources] [data-resource-label] {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 620;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-composer > [data-composer-resources] small {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ui-faint);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-composer > [data-composer-resources] button {
+  width: 1.375rem;
+  min-width: 1.375rem;
+  min-height: 1.375rem;
+  padding: 0;
+  border-radius: 0.3125rem;
 }
 
 .product-composer .agent-composer-editor {
   min-width: 0;
-  min-height: 5.5rem;
-  padding: 0;
+  min-height: var(--agent-composer-min-height);
+  padding: 0.375rem 0.5rem;
 }
 
 .product-composer .agent-composer-editor__content {
-  min-height: 5.5rem;
+  min-height: var(--agent-composer-min-height);
+  max-height: 18rem;
   padding: 0;
   outline: 0;
   color: var(--ui-ink);
+  font-family: var(--rp-font-family-base);
   font-size: 0.9375rem;
   line-height: 1.6;
 }
 
-.product-composer[data-contextual="true"] .agent-composer-editor,
-.product-composer[data-contextual="true"] .agent-composer-editor__content {
-  min-height: 4.375rem;
-}
-
-.product-composer[data-contextual="true"] .agent-composer-editor__content {
-  font-size: 0.9375rem;
-  line-height: 1.5625rem;
-}
-
 .product-composer .agent-composer-editor__content p {
-  margin: 0;
+  margin: 0 0 0.375rem;
+}
+
+.product-composer .agent-composer-editor__content p:last-child {
+  margin-bottom: 0;
 }
 
 .product-composer .agent-composer-editor__content p.is-editor-empty::before {
-  float: inline-start;
   height: 0;
+  float: inline-start;
   color: var(--ui-faint);
   content: attr(data-placeholder);
   pointer-events: none;
 }
 
+.product-composer .agent-composer-token {
+  color: var(--ui-blue);
+  font-weight: 650;
+}
+
+.product-composer .agent-composer-token--skill {
+  color: var(--ui-purple);
+}
+
 .product-composer > footer {
   display: flex;
   min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.125rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.product-composer[data-contextual="true"] > footer {
-  min-height: 3.5rem;
-}
-
-.product-composer[data-contextual="true"] [data-composer-tools] > button {
-  width: 1.5rem;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
-  padding: 0;
-}
-
-.product-composer[data-contextual="true"] [data-composer-actions] {
-  gap: 0.375rem;
-}
-
-.product-composer[data-contextual="true"] [data-composer-actions] > label {
-  width: 5.25rem;
-  padding: 0;
-}
-
-.product-composer[data-contextual="true"]
-  [data-composer-actions]
-  > label
-  select {
-  width: 5.25rem;
-}
-
-.product-composer[data-contextual="true"]
-  [data-composer-actions]
-  > button:not([data-primary]) {
-  width: 1.5rem;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
-  padding: 0;
-}
-
-.product-composer[data-contextual="true"]
-  [data-composer-actions]
-  > button[data-primary] {
-  width: 2rem;
-  min-width: 2rem;
-  min-height: 2rem;
-  padding: 0;
-}
-
-.product-composer[data-contextual="true"] :is(button, label) {
-  min-height: 2rem;
-}
-
-.product-composer[data-contextual="true"] button {
-  min-width: 2rem;
+  gap: 0.5rem;
 }
 
 .product-composer [data-composer-tools],
@@ -134,217 +154,263 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.25rem;
+  overflow: visible;
+}
+
+.product-composer [data-composer-tools] {
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
+
+.product-composer [data-composer-actions] {
+  flex: none;
 }
 
 .product-composer button,
-.product-composer label {
-  display: inline-flex;
-  min-height: 2.25rem;
-  border-radius: 0.5rem;
-  align-items: center;
-  gap: 0.375rem;
+.product-composer [data-composer-setting] {
+  font: inherit;
 }
 
-.product-composer button {
+.product-composer > footer button,
+.product-composer [data-composer-setting] {
+  display: inline-flex;
   min-width: 2.25rem;
+  min-height: 2.25rem;
   padding: 0 0.5rem;
-  border: 0;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  align-items: center;
   justify-content: center;
+  gap: 0.375rem;
   background: transparent;
   color: var(--ui-muted);
   cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
-.product-composer button:hover,
-.product-composer button[aria-pressed="true"] {
+.product-composer > footer button:hover,
+.product-composer > footer button[aria-expanded="true"],
+.product-composer [data-composer-setting]:hover,
+.product-composer [data-composer-setting][aria-expanded="true"] {
+  border-color: var(--ui-line);
   background: var(--ui-panel);
   color: var(--ui-ink);
 }
 
-.product-composer button:disabled:not([data-primary]) {
-  background: transparent;
-  color: var(--ui-faint);
+.product-composer button:focus-visible,
+.product-composer [data-composer-setting]:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.product-composer button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
+}
+
+.product-composer > footer svg,
+.product-composer [data-composer-setting] svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.product-composer [data-composer-setting] > svg:last-child {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--ui-faint);
+}
+
+.product-composer [data-composer-setting] > i {
+  padding: 0.0625rem 0.3125rem;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--ui-blue) 10%, var(--ui-panel));
+  color: var(--ui-blue);
+  font-size: 0.625rem;
+  font-style: normal;
+}
+
+.product-composer [data-composer-control] {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
 }
 
 .product-composer button[data-primary] {
+  width: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0;
+  border-color: var(--ui-blue);
   border-radius: 50%;
   background: var(--ui-blue);
   color: #fff;
 }
 
 .product-composer button[data-primary]:hover {
+  border-color: var(--ui-blue-deep);
   background: var(--ui-blue-deep);
   color: #fff;
 }
 
 .product-composer button[data-primary]:disabled {
+  border-color: var(--ui-line-strong);
   background: var(--ui-line-strong);
   color: var(--ui-paper);
-  cursor: not-allowed;
-  opacity: 0.72;
 }
 
-.product-composer button[data-primary]:disabled:hover {
-  background: var(--ui-line-strong);
-}
-
-html.dark .product-composer button[data-primary],
-html[data-theme="dark"] .product-composer button[data-primary] {
+:is(html.dark, html[data-theme="dark"]) .product-composer button[data-primary] {
   color: var(--ui-paper);
 }
 
-.product-composer svg {
-  width: 1.125rem;
-  height: 1.125rem;
-}
-
-.product-composer label {
-  padding: 0 0.5rem;
-  color: var(--ui-muted);
-}
-
-.product-composer label > svg {
-  flex: none;
-}
-
-.product-composer select {
-  max-width: 9rem;
-  min-width: 0;
-  height: 2rem;
-  padding: 0 1.25rem 0 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--ui-ink);
-  cursor: pointer;
-  font-size: 0.8125rem;
-}
-
-.product-composer__context {
-  position: relative;
+.product-composer [data-composer-run-summary] {
   display: flex;
   min-width: 0;
-  min-height: 2.25rem;
-  margin-inline: -0.75rem;
-  padding: 0 0.75rem;
-  align-items: flex-end;
-  gap: 0.25rem;
-  background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-paper));
-  border-radius: 0 0 1rem 1rem;
-}
-
-.product-composer__context details {
-  position: relative;
-  min-width: 0;
-}
-
-.product-composer__context summary {
-  display: flex;
-  min-width: 0;
-  min-height: 2rem;
-  padding: 0 0.5625rem;
-  border-radius: 0.5rem;
+  min-height: 2.125rem;
+  margin: 0.25rem -0.625rem -0.625rem;
+  padding: 0.25rem 0.75rem;
+  border-block-start: 1px solid var(--ui-line);
+  border-radius: 0 0 0.875rem 0.875rem;
   align-items: center;
-  gap: 0.375rem;
-  color: var(--ui-muted);
-  cursor: pointer;
-  font-size: 0.8125rem;
-  list-style: none;
-}
-
-.product-composer__context summary::-webkit-details-marker {
-  display: none;
-}
-
-.product-composer__context summary:hover,
-.product-composer__context details[open] summary {
-  background: var(--ui-panel);
-  color: var(--ui-ink);
-}
-
-.product-composer__context summary svg,
-.product-composer__context > label > svg {
-  width: 1rem;
-  height: 1rem;
-  flex: none;
-}
-
-.product-composer__context summary svg:last-child {
-  width: 0.875rem;
-  height: 0.875rem;
+  gap: 0.75rem;
+  overflow-x: auto;
+  background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-paper));
   color: var(--ui-faint);
+  font-size: 0.6875rem;
+  scrollbar-width: none;
 }
 
-.product-composer__context details > div {
-  position: absolute;
-  z-index: 2300;
-  inset-block-start: calc(100% + 0.375rem);
-  inset-inline-start: 0;
-  display: grid;
-  width: 13.5rem;
-  padding: 0.375rem;
-  border: 1px solid var(--ui-line);
-  border-radius: 0.75rem;
-  background: var(--ui-paper);
-  box-shadow: var(--ui-shadow-floating);
-  gap: 0.125rem;
-}
-
-.product-composer__context details > div button {
-  width: 100%;
-  min-height: 2.25rem;
-  padding: 0 0.625rem;
-  justify-content: space-between;
-  color: var(--ui-ink);
-  font-size: 0.8125rem;
-  text-align: start;
-}
-
-.product-composer__context details > div button svg {
-  width: 1rem;
-  height: 1rem;
-  color: var(--ui-blue);
-}
-
-.product-composer__context > label {
-  width: 6.9375rem;
+.product-composer [data-composer-run-summary] > span {
+  display: inline-flex;
   min-width: 0;
-  padding-inline: 0.25rem;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 0.3125rem;
+  white-space: nowrap;
 }
 
-.product-composer__context > label:hover {
-  background: var(--ui-panel);
-  color: var(--ui-ink);
+.product-composer [data-composer-run-summary] svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
 }
 
-.product-composer__context > label select {
-  width: 100%;
-  max-width: none;
-  flex: 1;
-  height: 2rem;
-  padding-inline-end: 1rem;
-}
-
-.product-composer > output {
-  min-height: 1.125rem;
-  padding-top: 0.25rem;
+.product-composer [data-composer-status] {
+  display: block;
+  min-height: 0;
+  padding: 0.25rem 0.5rem 0;
   color: var(--ui-muted);
-  font-size: 0.75rem;
-  line-height: 1.4;
+  font-size: 0.6875rem;
+  line-height: 1.1rem;
 }
 
-.product-composer > output:empty {
+.product-composer [data-composer-status]:empty {
   display: none;
 }
 
-.product-composer[data-contextual="true"] > output {
+.product-composer[data-contextual="true"] [data-composer-status] {
   position: absolute;
   inset-block-start: calc(100% + 0.25rem);
-  inset-inline: 0.75rem;
+  inset-inline: 0.5rem;
   padding: 0;
-  text-align: start;
+}
+
+.product-composer [data-composer-dropzone] {
+  position: absolute;
+  z-index: 4;
+  inset: 0.5rem;
+  display: grid;
+  padding: 1.5rem;
+  border: 1px dashed color-mix(in srgb, var(--ui-blue) 68%, var(--ui-line));
+  border-radius: 0.75rem;
+  align-content: center;
+  justify-items: center;
+  background: color-mix(in srgb, var(--ui-blue) 7%, var(--ui-paper));
+  color: var(--ui-ink);
+  pointer-events: none;
+  text-align: center;
+}
+
+.product-composer [data-composer-dropzone] > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: var(--ui-paper);
+  color: var(--ui-blue);
+  box-shadow: 0 4px 12px -8px rgb(15 35 70 / 40%);
+  place-items: center;
+}
+
+.product-composer [data-composer-dropzone] svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.product-composer [data-composer-dropzone] strong {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.product-composer [data-composer-dropzone] small {
+  margin-top: 0.25rem;
+  color: var(--ui-muted);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 48rem) {
+  .product-composer {
+    min-height: 11rem;
+  }
+
+  .product-composer [data-composer-tools] {
+    flex-wrap: nowrap;
+  }
+
+  .product-composer [data-composer-setting] [data-setting-label],
+  .product-composer > footer > [data-composer-tools] > button [data-setting-label] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .product-composer > footer button,
+  .product-composer [data-composer-setting] {
+    padding-inline: 0.4375rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .product-composer > footer {
+    align-items: flex-end;
+  }
+
+  .product-composer [data-composer-tools] {
+    max-width: calc(100% - 5rem);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .product-composer [data-composer-tools] > * {
+    flex: none;
+  }
+
+  .product-composer > [data-composer-resources] small {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .product-composer > footer button,
+  .product-composer [data-composer-setting] {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .product-composer button[data-primary] {
+    width: 2.75rem;
+  }
 }

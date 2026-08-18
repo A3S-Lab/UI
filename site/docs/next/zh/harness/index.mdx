@@ -1,29 +1,47 @@
-# Harness
+# Harness 总览
 
 Harness 集中放置构建 Coding Agent 工作流需要的组件。它把任务输入、对话、执行、权限、审阅、证据和预览工具从通用应用布局中分离出来，让组件选择从用户任务出发，而不是从页面外观出发。
 
-当前 Harness 包含 28 个公开组件，所有页面继续使用稳定的 `/components/*` 路由，现有链接与包导入方式不变。
+当前 Harness 包含 30 个公开组件，所有页面继续使用稳定的 `/components/*` 路由，现有链接与包导入方式不变。
 
-## 工作区布局
+## 工作区框架
 
 [Dock 工作区](/harness/dock-workspace) · [Grid View](/harness/grid-view) · [Split View](/harness/split-view) · [Pane View](/harness/pane-view)
 
-这一组是可选布局集成，不计入 114 个语义组件清单。Dock 工作区负责标签、拖放、浮动、弹出、Edge Group 和布局恢复；Grid、Split 与 Pane View 分别解决固定二维网格、单轴分栏和可折叠工具窗格。四类布局均保留原生、React、Vue 用法和对应 Hook。
+这一组是可选布局集成，不计入 116 个语义组件清单。Dock 工作区负责标签、拖放、浮动、弹出、Edge Group 和布局恢复；Grid、Split 与 Pane View 分别解决固定二维网格、单轴分栏和可折叠工具窗格。四类布局均保留原生、React、Vue 用法和对应 Hook。
 
-## 任务与对话
+## 任务与输入
 
-[任务启动页](/components/task-start) · [任务工作区](/components/task-workspace) · [任务输入器](/components/agent-composer) · [Agent 对话记录](/components/agent-transcript) · [Agent 工作台](/components/agent-workbench) · [上下文选择器](/components/context-selector) · [消息状态](/components/message-status) · [消息附件](/components/message-attachment) · [消息引用](/components/message-citation) · [后续建议](/components/follow-up-suggestions)
+[任务启动页](/components/task-start) · [任务工作区](/components/task-workspace) · [任务输入器](/components/agent-composer) · [上下文选择器](/components/context-selector)
 
-这一组负责收集目标与上下文、呈现连续对话，并在流式、排队、离线和完成状态之间保持清楚的任务边界。
+这一组负责建立任务、绑定工作区上下文并收集第一条有效指令。输入状态、可用能力与提交边界必须在执行开始前清楚可见。
 
-## 执行与审阅
+## 会话与消息
 
-[任务计划](/components/task-plan) · [计划步骤](/components/plan-step) · [任务队列](/components/task-queue) · [审批请求](/components/approval-request) · [执行项](/components/execution-item) · [检查点](/components/checkpoint) · [工具调用](/components/tool-call) · [工具调用时间线](/components/tool-call-timeline) · [工具结果](/components/tool-result) · [变更审阅](/components/change-review) · [执行证据](/components/execution-evidence) · [产物卡](/components/artifact-card)
+[Agent 对话记录](/components/agent-transcript) · [Agent 工作台](/components/agent-workbench) · [消息状态](/components/message-status) · [消息附件](/components/message-attachment) · [消息引用](/components/message-citation) · [后续建议](/components/follow-up-suggestions)
 
-这一组让计划、执行进度、权限边界、可恢复状态和最终证据保持可见。关键操作必须保留明确的来源、影响范围与结果，不能只依赖颜色表达状态。
+这一组呈现按时间排序的会话记录，并让流式、排队、离线、引用、附件和后续动作归属于对应消息。
 
-## 工具
+## 文件与知识
 
-[文件资源管理器](/components/file-explorer) · [3D 代码图谱](/components/code-graph) · [代码编辑器](/components/code-editor) · [终端](/components/terminal) · [日志查看器](/components/log-viewer) · [设备模拟器](/components/device-simulator)
+[文件资源管理器](/components/file-explorer) · [文件管理器](/components/file-manager) · [知识库](/components/knowledge-library)
 
-工具组件用于检查和操作真实工作结果。文件与设备能力保持沙箱边界；需要访问本机文件、进程或原生视图的操作通过结构化事件交给可信宿主执行。
+这一组管理任务可访问的工作区资料。文件资源管理器处理源码层级，文件管理器处理熟悉的文件操作，知识库处理带有明确索引与恢复状态的长期可搜索来源。
+
+## 执行与授权
+
+[任务计划](/components/task-plan) · [计划步骤](/components/plan-step) · [任务队列](/components/task-queue) · [审批请求](/components/approval-request) · [执行项](/components/execution-item) · [检查点](/components/checkpoint) · [工具调用](/components/tool-call) · [工具调用时间线](/components/tool-call-timeline) · [工具结果](/components/tool-result)
+
+这一组让计划、执行进度、权限边界和可恢复状态保持可见。高影响操作必须在执行前展示来源、影响范围与授权结果。
+
+## 审阅与证据
+
+[变更审阅](/components/change-review) · [执行证据](/components/execution-evidence) · [产物卡](/components/artifact-card)
+
+这一组负责把执行结果整理为可检查、可追溯的证据，并为接受、修订或回退提供明确依据。
+
+## 开发与预览
+
+[3D 代码图谱](/components/code-graph) · [代码编辑器](/components/code-editor) · [终端](/components/terminal) · [日志查看器](/components/log-viewer) · [设备模拟器](/components/device-simulator)
+
+开发与预览组件用于检查和操作真实工作结果。代码、终端、日志与设备能力保持沙箱边界；需要访问本机文件、进程或原生视图的操作通过结构化事件交给可信宿主执行。

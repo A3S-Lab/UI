@@ -4,14 +4,15 @@ import {
   automationTemplates,
   capabilityDirectory,
   capabilityGroups,
-  resourceFiles,
   type ProductCapabilityCategory,
   type ProductCapabilityTab,
   type ProductPlaygroundLocale,
   type ProductResourceView,
 } from "./product-playground-data";
 import { ProductConnectionSurface } from "./ProductConnectionSurface";
+import { ProductFileManagerSurface } from "./ProductFileManagerSurface";
 import { ProductInspirationSurface } from "./ProductInspirationSurface";
+import { ProductKnowledgeLibrarySurface } from "./ProductKnowledgeLibrarySurface";
 import { ProductMailSurface } from "./ProductMailSurface";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
@@ -435,34 +436,7 @@ export function ProductResourcesSurface({
   resource: ProductResourceView;
   startHref: string;
 }) {
-  const zh = locale === "zh";
-  const [query, setQuery] = useState("");
-  const [source, setSource] = useState<"cloud" | "tasks">("tasks");
-  const [fileType, setFileType] = useState<"all" | "markdown" | "typescript">(
-    "all",
-  );
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [selectedFile, setSelectedFile] = useState("");
   const copy = resourceTitles[resource];
-  const rows = resourceFiles
-    .map((row, index) => ({ favorite: index === 0 || index === 3, row }))
-    .filter(({ favorite, row }) => {
-      const matchesQuery = row
-        .join(" ")
-        .toLocaleLowerCase(locale)
-        .includes(query.toLocaleLowerCase(locale));
-      const matchesType =
-        fileType === "all" || row[1].toLocaleLowerCase() === fileType;
-      return matchesQuery && matchesType && (!favoritesOnly || favorite);
-    });
-  const fileTypeLabel =
-    fileType === "typescript"
-      ? "TypeScript"
-      : fileType === "markdown"
-        ? "Markdown"
-        : zh
-          ? "全部类型"
-          : "All types";
 
   if (resource === "inspiration") {
     return <ProductInspirationSurface locale={locale} />;
@@ -470,6 +444,14 @@ export function ProductResourcesSurface({
 
   if (resource === "mail") {
     return <ProductMailSurface locale={locale} startHref={startHref} />;
+  }
+
+  if (resource === "files") {
+    return <ProductFileManagerSurface locale={locale} />;
+  }
+
+  if (resource === "knowledge") {
+    return <ProductKnowledgeLibrarySurface locale={locale} />;
   }
 
   return (
@@ -482,171 +464,7 @@ export function ProductResourcesSurface({
         <h1>{copy.title[locale]}</h1>
         <p>{copy.description[locale]}</p>
       </header>
-      {resource === "files" ? (
-        <>
-          <div
-            className="product-resources__tabs"
-            role="tablist"
-            aria-label={zh ? "文件来源" : "File source"}
-          >
-            <button
-              aria-selected={source === "tasks"}
-              onClick={() => setSource("tasks")}
-              role="tab"
-              type="button"
-            >
-              <ProductPlaygroundIcon name="folder" />
-              {zh ? "任务成果" : "Task artifacts"}
-            </button>
-            <button
-              aria-selected={source === "cloud"}
-              onClick={() => setSource("cloud")}
-              role="tab"
-              type="button"
-            >
-              <ProductPlaygroundIcon name="knowledge" />
-              {zh ? "云端网盘" : "Cloud storage"}
-            </button>
-          </div>
-          {source === "tasks" ? (
-            <>
-              <div className="product-resources__filters">
-                <button
-                  aria-label={zh ? "切换文件类型" : "Change file type"}
-                  onClick={() =>
-                    setFileType((current) =>
-                      current === "all"
-                        ? "typescript"
-                        : current === "typescript"
-                          ? "markdown"
-                          : "all",
-                    )
-                  }
-                  type="button"
-                >
-                  <ProductPlaygroundIcon name="filter" />
-                  {fileTypeLabel}
-                  <ProductPlaygroundIcon name="chevron" />
-                </button>
-                <label>
-                  <ProductPlaygroundIcon name="search" />
-                  <input
-                    aria-label={zh ? "搜索文件" : "Search files"}
-                    onChange={(event) => setQuery(event.currentTarget.value)}
-                    placeholder={
-                      zh
-                        ? "搜索文件、任务或工作空间"
-                        : "Search files, tasks, or workspaces"
-                    }
-                    type="search"
-                    value={query}
-                  />
-                </label>
-                <label>
-                  <input
-                    checked={favoritesOnly}
-                    onChange={(event) =>
-                      setFavoritesOnly(event.currentTarget.checked)
-                    }
-                    type="checkbox"
-                  />
-                  {zh ? "我的收藏" : "Favorites"}
-                </label>
-              </div>
-              <div
-                className="product-resources__table"
-                role="table"
-                aria-label={zh ? "文件列表" : "Files"}
-              >
-                <div role="row" data-header>
-                  <span role="columnheader">{zh ? "名称" : "Name"}</span>
-                  <span role="columnheader">{zh ? "类型" : "Type"}</span>
-                  <span role="columnheader">{zh ? "更新人" : "Owner"}</span>
-                  <span
-                    data-mobile-label={zh ? "更新" : "Updated"}
-                    role="columnheader"
-                  >
-                    {zh ? "更新时间" : "Updated"}
-                  </span>
-                  <span role="columnheader">{zh ? "大小" : "Size"}</span>
-                </div>
-                <div role="row" data-group>
-                  <span role="cell">
-                    <ProductPlaygroundIcon name="chevron" />
-                    <strong>{zh ? "未分组" : "Uncategorized"}</strong>
-                    <small>1 {zh ? "个任务" : "task"}</small>
-                  </span>
-                </div>
-                <div role="row" data-task>
-                  <span role="cell">
-                    <ProductPlaygroundIcon name="task-add" />
-                    <strong>
-                      {zh ? "修复会话恢复" : "Fix session recovery"}
-                    </strong>
-                  </span>
-                </div>
-                {rows.map(({ row: [name, type, owner, updated, size] }) => (
-                  <button
-                    aria-pressed={selectedFile === name}
-                    key={name}
-                    onClick={() => setSelectedFile(name)}
-                    role="row"
-                    type="button"
-                  >
-                    <span role="cell">
-                      <ProductPlaygroundIcon name="document" />
-                      <span className="product-resources__file-name">
-                        {name}
-                      </span>
-                    </span>
-                    <span role="cell">{type}</span>
-                    <span role="cell">{owner}</span>
-                    <span role="cell">
-                      {zh ? (updated === "Today" ? "今天" : "昨天") : updated}
-                    </span>
-                    <span role="cell">{size}</span>
-                  </button>
-                ))}
-                {rows.length === 0 ? (
-                  <div data-empty role="row">
-                    <span role="cell">
-                      {zh ? "没有符合条件的文件" : "No matching files"}
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-              <output aria-live="polite">
-                {selectedFile
-                  ? zh
-                    ? `已选择 ${selectedFile}`
-                    : `${selectedFile} selected`
-                  : ""}
-              </output>
-            </>
-          ) : (
-            <section className="product-resources__empty product-resources__cloud">
-              <span>
-                <ProductPlaygroundIcon name="knowledge" />
-              </span>
-              <h2>{zh ? "连接云端网盘" : "Connect cloud storage"}</h2>
-              <p>
-                {zh
-                  ? "连接后，可在任务中引用已授权的云端文件。"
-                  : "Reference authorized cloud files after connecting a provider."}
-              </p>
-              <button
-                data-primary
-                onClick={() => setSource("tasks")}
-                type="button"
-              >
-                {zh ? "返回任务成果" : "Back to task artifacts"}
-              </button>
-            </section>
-          )}
-        </>
-      ) : (
-        <ProductConnectionSurface locale={locale} resource={resource} />
-      )}
+      <ProductConnectionSurface locale={locale} resource={resource} />
     </section>
   );
 }

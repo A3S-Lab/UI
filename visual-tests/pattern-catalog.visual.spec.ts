@@ -18,7 +18,7 @@ test("composition patterns open from a task-oriented catalog", async ({
   const catalog = page.locator("[data-pattern-catalog]");
   await expect(catalog).toBeVisible();
   await expect(
-    catalog.getByRole("heading", { level: 1, name: "Composition patterns" }),
+    catalog.getByRole("heading", { level: 1, name: "Patterns overview" }),
   ).toBeVisible();
 
   const menu = catalog.getByRole("complementary", { name: "Pattern menu" });

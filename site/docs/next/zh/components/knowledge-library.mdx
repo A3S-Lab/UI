@@ -1,0 +1,132 @@
+# 知识库
+
+知识库组件管理长期来源集合、索引状态、搜索、置顶、失败恢复与单库设置，同时明确界面组件并不拥有摄取、嵌入、存储或权限。
+
+<Preview class="w-full" title="知识库管理">
+  <section id="knowledge-library-demo-zh" class="knowledge-library" data-state="ready" aria-label="知识库" style="height: 31rem">
+    <aside data-knowledge-library-navigation>
+      <header><strong>知识库</strong></header>
+      <nav aria-label="知识库筛选"><button type="button" data-knowledge-filter="all" aria-pressed="true">全部知识库</button><button type="button" data-knowledge-filter="updating" aria-pressed="false">正在更新</button><button type="button" data-knowledge-filter="attention" aria-pressed="false">需要处理</button></nav>
+    </aside>
+    <main>
+      <header data-knowledge-library-header><span><h2>知识库</h2><p>具备明确更新与恢复状态的长期资料。</p></span><div><button type="button" data-knowledge-action="import">导入</button><button type="button" data-knowledge-action="create" data-variant="primary">新建知识库</button></div></header>
+      <div data-knowledge-library-toolbar><label data-knowledge-library-search><span class="sr-only">搜索知识库</span><input type="search" placeholder="搜索名称、说明或路径" /></label><span>3 个知识库</span></div>
+      <div data-knowledge-library-viewport>
+        <section data-knowledge-library-group>
+          <header><strong>已置顶</strong></header>
+          <ul data-knowledge-library-list>
+            <li><button type="button" data-knowledge-item data-knowledge-value="design" data-knowledge-phase="succeeded" aria-selected="false"><span data-knowledge-item-identity><strong>A3S UI 设计系统</strong><small>契约、交互决策与验收证据</small></span><span data-knowledge-phase="succeeded">已更新</span></button></li>
+            <li><button type="button" data-knowledge-item data-knowledge-value="release" data-knowledge-phase="running" aria-selected="false"><span data-knowledge-item-identity><strong>发布验收证据</strong><small>浏览器截图、报告与兼容记录</small></span><span data-knowledge-phase="running">正在更新</span></button></li>
+            <li><button type="button" data-knowledge-item data-knowledge-value="migration" data-knowledge-phase="failed" aria-selected="false"><span data-knowledge-item-identity><strong>组件迁移调研</strong><small>上一版可搜索内容仍然可用</small></span><span data-knowledge-phase="failed">更新失败</span></button></li>
+          </ul>
+        </section>
+      </div>
+      <section data-knowledge-library-state="loading" hidden>正在载入知识库…</section>
+      <section data-knowledge-library-state="offline" hidden>知识服务离线，上一版可搜索内容仍然可用。</section>
+      <section data-knowledge-library-empty hidden>没有知识库符合当前筛选。</section>
+      <footer data-knowledge-library-status><span>3 个知识库</span><output aria-live="polite">选择知识库后可查看与管理详情</output></footer>
+    </main>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="design" hidden><header><strong>A3S UI 设计系统</strong><button type="button" data-knowledge-action="close-detail">关闭</button></header><section><h3>已更新</h3><p>最近一次更新成功；未来更新失败时仍保留当前可搜索版本。</p><button type="button" data-knowledge-action="update" data-knowledge-value="design">再次更新</button></section><dl><div><dt>来源</dt><dd>86</dd></div><div><dt>概念</dt><dd>1,428</dd></div></dl></aside>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="release" hidden><header><strong>发布验收证据</strong><button type="button" data-knowledge-action="close-detail">关闭</button></header><section><h3>正在更新</h3><p>正在整理来源并生成新的可搜索版本。</p></section></aside>
+    <aside data-knowledge-library-detail data-knowledge-detail-for="migration" hidden><header><strong>组件迁移调研</strong><button type="button" data-knowledge-action="close-detail">关闭</button></header><section><h3>更新失败</h3><p>两个来源无法读取。修复访问权限后重试，上一版仍然可用。</p><button type="button" data-knowledge-action="retry" data-knowledge-value="migration">重试更新</button></section></aside>
+  </section>
+</Preview>
+
+## 产品决策
+
+知识库是围绕已批准来源建立的长期命名边界，不是文件夹别名、对话附件列表或装饰性的数据库卡片。
+
+- 每个知识库都应呈现来源数量、新鲜度、索引阶段与恢复路径。
+- `queued` 与 `running` 必须分开；等待资源和正在建立索引对应不同预期。
+- 更新失败时保留上一版可搜索内容；破坏性重建必须走单独的宿主流程。
+- 自动更新策略应说明最小间隔、暂停条件与可见的手动恢复动作。
+- 来源选择、认证、解析、切块、嵌入、向量存储、检索质量和访问控制由宿主负责。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section class="knowledge-library" data-state="ready" aria-label="知识库">
+  <aside data-knowledge-library-navigation>
+    <nav aria-label="知识库筛选"><button type="button" data-knowledge-filter="all" aria-pressed="true">全部知识库</button></nav>
+  </aside>
+  <main>
+    <div data-knowledge-library-toolbar><label data-knowledge-library-search><span class="sr-only">搜索知识库</span><input type="search" /></label></div>
+    <div data-knowledge-library-viewport>
+      <ul data-knowledge-library-list>
+        <li><button type="button" data-knowledge-item data-knowledge-value="design" data-knowledge-phase="succeeded" aria-selected="true"><span data-knowledge-item-identity><strong>设计系统</strong><small>86 个来源</small></span><span data-knowledge-phase="succeeded">已更新</span></button></li>
+      </ul>
+    </div>
+  </main>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/knowledge-library";
+  const library = document.querySelector(".knowledge-library");
+  library.addEventListener("a3s:knowledge-before-action", event => {
+    if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+  });
+  library.addEventListener("a3s:knowledge-action", event => runKnowledgeAction(event.detail));
+</script>`}
+  react={`import { KnowledgeLibrary, useKnowledgeLibrary } from "@a3s-lab/ui/react";
+
+export function WorkspaceKnowledge({ libraries }) {
+  const knowledge = useKnowledgeLibrary({
+    events: {
+      "a3s:knowledge-before-action": event => {
+        if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+      },
+      "a3s:knowledge-action": event => runKnowledgeAction(event.detail),
+      "a3s:knowledge-selection-change": event => loadKnowledgeDetails(event.detail.value),
+    },
+  });
+
+  return (
+    <KnowledgeLibrary ref={knowledge.ref} data-state="ready" aria-label="知识库">
+      <aside data-knowledge-library-navigation>{/* 状态筛选 */}</aside>
+      <main><div data-knowledge-library-viewport><ul data-knowledge-library-list>{libraries.map(base => <li key={base.id}><button type="button" data-knowledge-item data-knowledge-value={base.id} data-knowledge-phase={base.phase} aria-selected="false">{base.name}</button></li>)}</ul></div></main>
+    </KnowledgeLibrary>
+  );
+}
+
+knowledge.call("setPhase", "design", "running");`}
+  vue={`<script setup lang="ts">
+import { KnowledgeLibrary, useKnowledgeLibrary } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{ libraries: Array<{ id: string; name: string; phase: string }> }>();
+const knowledge = useKnowledgeLibrary({
+  events: {
+    "a3s:knowledge-before-action": event => {
+      if (!authorizeKnowledgeAction(event.detail)) event.preventDefault();
+    },
+    "a3s:knowledge-action": event => runKnowledgeAction(event.detail),
+    "a3s:knowledge-selection-change": event => loadKnowledgeDetails(event.detail.value),
+  },
+});
+</script>
+
+<template>
+  <KnowledgeLibrary :ref="knowledge.componentRef" data-state="ready" aria-label="知识库">
+    <aside data-knowledge-library-navigation><!-- 状态筛选 --></aside>
+    <main><div data-knowledge-library-viewport><ul data-knowledge-library-list><li v-for="base in props.libraries" :key="base.id"><button type="button" data-knowledge-item :data-knowledge-value="base.id" :data-knowledge-phase="base.phase" aria-selected="false">{{ base.name }}</button></li></ul></div></main>
+  </KnowledgeLibrary>
+</template>`}
+/>
+
+`useKnowledgeLibrary` 向 React 和 Vue 暴露同一套控制器方法与 DOM 事件。应用数据仍留在宿主 Store 中，hook 不会复制索引状态。
+
+## 控制器契约
+
+| 区域 | 契约 |
+| --- | --- |
+| 根元素 | `.knowledge-library`，推荐使用 `<section>` |
+| 布局 | 默认保留导航并以详情替换列表；仅在宿主能保证三栏可读宽度时使用 `data-layout="wide"` |
+| 项目 | `data-knowledge-item`、稳定的 `data-knowledge-value`、`data-knowledge-phase` 与 `aria-selected` |
+| 阶段 | `ready`、`queued`、`running`、`succeeded`、`failed`、`paused` |
+| 方法 | `select`、`clearSelection`、`getSelection`、`setFilter`、`clearFilter`、`getFilter`、`setPhase`、`runAction`、`setState`、`refresh`、`getState` |
+| 授权事件 | `a3s:knowledge-before-action`、`a3s:knowledge-before-filter-change`、`a3s:knowledge-before-selection-change` |
+| 观察事件 | `a3s:knowledge-action`、`a3s:knowledge-filter-change`、`a3s:knowledge-selection-change`、`a3s:knowledge-phase-change`、`a3s:knowledge-state-change` |
+| 根状态 | `ready`、`loading`、`empty`、`partial`、`error`、`offline`、`permission-denied` |
+
+## 无障碍与所有权
+
+知识库条目保持为列表中的具名按钮；方向键、Home 和 End 在可见条目间移动，Enter 或空格打开详情。状态必须同时包含文字，不能只依靠颜色。详情中的同级视图使用 Tabs 契约。宿主负责授权、摄取任务、重试、来源校验、存储、检索、删除恢复与用户内容本地化。

@@ -506,7 +506,7 @@ export function PatternCatalog() {
       <main className="pattern-catalog__content">
         <header className="pattern-catalog__hero">
           <div>
-            <h1 id={titleId}>{zh ? "组合模式" : "Composition patterns"}</h1>
+            <h1 id={titleId}>{zh ? "模式总览" : "Patterns overview"}</h1>
             <p>
               {zh
                 ? "把组件装配成完整、可恢复的产品工作流。"

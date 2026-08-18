@@ -1,29 +1,47 @@
-# Harness
+# Harness overview
 
 Harness groups the components needed to build Coding Agent workflows. It separates task input, conversation, execution, permission, review, evidence, and preview tools from general application layout so teams can choose components by user task instead of page appearance.
 
-Harness currently contains 28 public components. Every guide keeps its stable `/components/*` route, so existing links and package imports remain compatible.
+Harness currently contains 30 public components. Every guide keeps its stable `/components/*` route, so existing links and package imports remain compatible.
 
-## Workspace layout
+## Workspace framework
 
 [Dock Workspace](/harness/dock-workspace) · [Grid View](/harness/grid-view) · [Split View](/harness/split-view) · [Pane View](/harness/pane-view)
 
-These are optional layout integrations and do not change the 114-component semantic manifest. Dock Workspace owns tabs, DnD, floating and popout groups, Edge Groups, and layout recovery. Grid, Split, and Pane View cover a fixed two-dimensional grid, a one-axis split, and collapsible tool panes. Every layout guide includes vanilla, React, Vue, and matching hooks.
+These are optional layout integrations and do not change the 116-component semantic manifest. Dock Workspace owns tabs, DnD, floating and popout groups, Edge Groups, and layout recovery. Grid, Split, and Pane View cover a fixed two-dimensional grid, a one-axis split, and collapsible tool panes. Every layout guide includes vanilla, React, Vue, and matching hooks.
 
-## Task and conversation
+## Task and input
 
-[Task Start](/components/task-start) · [Task Workspace](/components/task-workspace) · [Task Composer](/components/agent-composer) · [Agent Transcript](/components/agent-transcript) · [Agent Workbench](/components/agent-workbench) · [Context Selector](/components/context-selector) · [Message Status](/components/message-status) · [Message Attachment](/components/message-attachment) · [Message Citation](/components/message-citation) · [Follow-up Suggestions](/components/follow-up-suggestions)
+[Task Start](/components/task-start) · [Task Workspace](/components/task-workspace) · [Task Composer](/components/agent-composer) · [Context Selector](/components/context-selector)
 
-This group captures goals and context, presents a continuous conversation, and keeps task boundaries legible across streaming, queued, offline, and complete states.
+This group establishes the task, binds workspace context, and captures the first actionable instruction. Input state, available capabilities, and the submission boundary remain explicit before execution begins.
 
-## Execution and review
+## Conversation and messages
 
-[Task Plan](/components/task-plan) · [Plan Step](/components/plan-step) · [Task Queue](/components/task-queue) · [Approval Request](/components/approval-request) · [Execution Item](/components/execution-item) · [Checkpoint](/components/checkpoint) · [Tool Call](/components/tool-call) · [Tool Call Timeline](/components/tool-call-timeline) · [Tool Result](/components/tool-result) · [Change Review](/components/change-review) · [Execution Evidence](/components/execution-evidence) · [Artifact Card](/components/artifact-card)
+[Agent Transcript](/components/agent-transcript) · [Agent Workbench](/components/agent-workbench) · [Message Status](/components/message-status) · [Message Attachment](/components/message-attachment) · [Message Citation](/components/message-citation) · [Follow-up Suggestions](/components/follow-up-suggestions)
 
-This group keeps plans, execution progress, permission boundaries, recoverable state, and final evidence visible. Critical actions must retain an explicit source, scope, and result rather than relying on color alone.
+This group presents the chronological conversation and keeps streaming, queued, offline, citation, attachment, and follow-up states attached to the message that owns them.
 
-## Tooling
+## Files and knowledge
 
-[File Explorer](/components/file-explorer) · [3D Code Graph](/components/code-graph) · [Code Editor](/components/code-editor) · [Terminal](/components/terminal) · [Log Viewer](/components/log-viewer) · [Device Simulator](/components/device-simulator)
+[File Explorer](/components/file-explorer) · [File Manager](/components/file-manager) · [Knowledge Library](/components/knowledge-library)
 
-Tooling components inspect and operate on real work results. File and device capabilities stay inside their sandbox boundary; operations that need local files, processes, or native views are handed to a trusted host through structured events.
+This group manages the workspace material a task may use. File Explorer handles source hierarchy, File Manager handles familiar file operations, and Knowledge Library handles durable searchable sources with explicit indexing and recovery states.
+
+## Execution and approval
+
+[Task Plan](/components/task-plan) · [Plan Step](/components/plan-step) · [Task Queue](/components/task-queue) · [Approval Request](/components/approval-request) · [Execution Item](/components/execution-item) · [Checkpoint](/components/checkpoint) · [Tool Call](/components/tool-call) · [Tool Call Timeline](/components/tool-call-timeline) · [Tool Result](/components/tool-result)
+
+This group keeps plans, execution progress, permission boundaries, and recoverable state visible. High-impact actions disclose their source, scope, and authorization result before execution.
+
+## Review and evidence
+
+[Change Review](/components/change-review) · [Execution Evidence](/components/execution-evidence) · [Artifact Card](/components/artifact-card)
+
+This group turns execution results into inspectable, traceable evidence and gives reviewers a clear basis for accepting, revising, or reverting the work.
+
+## Development and preview
+
+[3D Code Graph](/components/code-graph) · [Code Editor](/components/code-editor) · [Terminal](/components/terminal) · [Log Viewer](/components/log-viewer) · [Device Simulator](/components/device-simulator)
+
+Development and preview components inspect and operate on real work results. Code, terminal, log, and device capabilities stay inside their sandbox boundary; operations that need local files, processes, or native views are handed to a trusted host through structured events.

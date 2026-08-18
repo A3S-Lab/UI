@@ -86,6 +86,209 @@ function collectMetadataLinks(value, links = new Set()) {
   return links;
 }
 
+function collectMetadataGroups(value) {
+  assert.ok(Array.isArray(value), "Sidebar metadata must be an array.");
+  return value.filter(
+    (entry) =>
+      entry &&
+      typeof entry === "object" &&
+      entry.type === "custom-link" &&
+      typeof entry.label === "string" &&
+      Array.isArray(entry.items),
+  );
+}
+
+function groupLinkOrder(groups) {
+  return groups.map((group) => group.items.map((item) => item.link));
+}
+
+function assertUniqueLinks(links, scope) {
+  assert.equal(
+    new Set(links).size,
+    links.length,
+    `${scope} must not contain duplicate links.`,
+  );
+}
+
+const sidebarMetadata = {};
+for (const locale of locales) {
+  sidebarMetadata[locale] = {
+    components: JSON.parse(
+      await read(`site/docs/next/${locale}/components/_meta.json`),
+    ),
+    harness: JSON.parse(
+      await read(`site/docs/next/${locale}/harness/_meta.json`),
+    ),
+    patterns: JSON.parse(
+      await read(`site/docs/next/${locale}/patterns/_meta.json`),
+    ),
+    root: JSON.parse(await read(`site/docs/next/${locale}/_meta.json`)),
+  };
+}
+
+const componentGroupsByLocale = Object.fromEntries(
+  locales.map((locale) => [
+    locale,
+    collectMetadataGroups(sidebarMetadata[locale].components),
+  ]),
+);
+const harnessGroupsByLocale = Object.fromEntries(
+  locales.map((locale) => [
+    locale,
+    collectMetadataGroups(sidebarMetadata[locale].harness),
+  ]),
+);
+const patternGroupsByLocale = Object.fromEntries(
+  locales.map((locale) => [
+    locale,
+    collectMetadataGroups(sidebarMetadata[locale].patterns),
+  ]),
+);
+
+assert.deepEqual(
+  componentGroupsByLocale.zh.map((group) => group.label),
+  [
+    "操作与输入",
+    "选择与筛选",
+    "导航与定位",
+    "应用结构",
+    "浮层与菜单",
+    "反馈与状态",
+    "内容与媒体",
+    "数据展示",
+  ],
+);
+assert.deepEqual(
+  componentGroupsByLocale.en.map((group) => group.label),
+  [
+    "Actions and input",
+    "Selection and filtering",
+    "Navigation and wayfinding",
+    "Application structure",
+    "Overlays and menus",
+    "Feedback and status",
+    "Content and media",
+    "Data display",
+  ],
+);
+assert.deepEqual(
+  harnessGroupsByLocale.zh.map((group) => group.label),
+  [
+    "工作区框架",
+    "任务与输入",
+    "会话与消息",
+    "文件与知识",
+    "执行与授权",
+    "审阅与证据",
+    "开发与预览",
+  ],
+);
+assert.deepEqual(
+  harnessGroupsByLocale.en.map((group) => group.label),
+  [
+    "Workspace framework",
+    "Task and input",
+    "Conversation and messages",
+    "Files and knowledge",
+    "Execution and approval",
+    "Review and evidence",
+    "Development and preview",
+  ],
+);
+assert.deepEqual(
+  patternGroupsByLocale.zh.map((group) => group.label),
+  ["核心工作流", "能力编排", "适配指南"],
+);
+assert.deepEqual(
+  patternGroupsByLocale.en.map((group) => group.label),
+  ["Core workflows", "Capability orchestration", "Adaptation guides"],
+);
+
+assert.deepEqual(
+  groupLinkOrder(componentGroupsByLocale.zh),
+  groupLinkOrder(componentGroupsByLocale.en),
+  "Chinese and English general-component group order must match.",
+);
+assert.deepEqual(
+  groupLinkOrder(harnessGroupsByLocale.zh),
+  groupLinkOrder(harnessGroupsByLocale.en),
+  "Chinese and English Harness group order must match.",
+);
+assert.deepEqual(
+  groupLinkOrder(patternGroupsByLocale.zh),
+  groupLinkOrder(patternGroupsByLocale.en),
+  "Chinese and English pattern group order must match.",
+);
+
+for (const locale of locales) {
+  const allGroups = [
+    ...componentGroupsByLocale[locale],
+    ...harnessGroupsByLocale[locale],
+    ...patternGroupsByLocale[locale],
+  ];
+  assert.ok(
+    allGroups.every((group) => group.collapsed === true),
+    `${locale} sidebar groups must default to collapsed.`,
+  );
+}
+
+const generalComponentLinks = componentGroupsByLocale.en.flatMap((group) =>
+  group.items.map((item) => item.link),
+);
+const harnessLinks = harnessGroupsByLocale.en.flatMap((group) =>
+  group.items.map((item) => item.link),
+);
+const harnessComponentLinks = harnessLinks.filter((link) =>
+  link.startsWith("components/"),
+);
+const harnessLayoutLinks = harnessLinks.filter((link) =>
+  link.startsWith("harness/"),
+);
+const semanticCatalogLinks = [
+  ...generalComponentLinks,
+  ...harnessComponentLinks,
+];
+
+assert.equal(generalComponentLinks.length, 86);
+assert.equal(harnessComponentLinks.length, 30);
+assert.deepEqual(harnessLayoutLinks, [
+  "harness/dock-workspace",
+  "harness/grid-view",
+  "harness/split-view",
+  "harness/pane-view",
+]);
+assert.equal(semanticCatalogLinks.length, 116);
+assertUniqueLinks(semanticCatalogLinks, "Semantic component navigation");
+assertUniqueLinks(
+  [...generalComponentLinks, ...harnessLinks],
+  "General-component and Harness navigation",
+);
+assert.deepEqual(
+  [...semanticCatalogLinks].sort(),
+  components.map((component) => `components/${component.slug}`).sort(),
+  "The two component menus must cover the complete manifest exactly once.",
+);
+
+const patternLinks = patternGroupsByLocale.en.flatMap((group) =>
+  group.items.map((item) => item.link),
+);
+assert.equal(patternLinks.length, 9);
+assertUniqueLinks(patternLinks, "Pattern navigation");
+
+for (const [locale, expectedLabel] of [
+  ["zh", "通用组件"],
+  ["en", "General components"],
+]) {
+  const componentDirectory = sidebarMetadata[locale].root.find(
+    (entry) =>
+      entry &&
+      typeof entry === "object" &&
+      entry.type === "dir" &&
+      entry.name === "components",
+  );
+  assert.equal(componentDirectory?.label, expectedLabel);
+}
+
 for (const component of components) {
   const componentName = pascal(component.slug);
   const hookName = `use${componentName}`;
@@ -125,10 +328,8 @@ for (const locale of locales) {
     `site/docs/next/${locale}/harness/index.mdx`,
   );
   const catalogLinks = collectMetadataLinks([
-    JSON.parse(
-      await read(`site/docs/next/${locale}/components/_meta.json`),
-    ),
-    JSON.parse(await read(`site/docs/next/${locale}/harness/_meta.json`)),
+    sidebarMetadata[locale].components,
+    sidebarMetadata[locale].harness,
   ]);
   assert.ok(
     generalCatalog.includes("<ComponentCatalog />"),

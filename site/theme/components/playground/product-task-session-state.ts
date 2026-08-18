@@ -34,6 +34,16 @@ const modelLabels: Record<ProductComposerContext["model"], string> = {
   reasoner: "A3S Reasoner",
 };
 
+const effortLabels: Record<
+  ProductComposerContext["effort"],
+  ProductLocalizedText
+> = {
+  high: { en: "High", zh: "深入" },
+  low: { en: "Low", zh: "快速" },
+  max: { en: "Maximum", zh: "最高" },
+  medium: { en: "Medium", zh: "标准" },
+};
+
 export type ProductTaskOrigin = "assistant" | "start";
 
 export type ProductTaskSession = {
@@ -55,8 +65,10 @@ export type ProductTaskArtifact = {
 };
 
 export type ProductTaskContextDetails = {
+  effort: string;
   model: string;
   permissions: string;
+  resources: string;
   workspace: string;
 };
 
@@ -74,7 +86,37 @@ function normalizeContext(value: unknown): ProductComposerContext {
     context?.workspace === "ui" || context?.workspace === "local"
       ? context.workspace
       : "";
-  return { model, permissions, workspace };
+  const effort =
+    context?.effort === "low" ||
+    context?.effort === "high" ||
+    context?.effort === "max"
+      ? context.effort
+      : "medium";
+  const resources = Array.isArray(context?.resources)
+    ? context.resources
+        .filter(
+          (resource) =>
+            resource &&
+            typeof resource.id === "string" &&
+            typeof resource.label === "string" &&
+            ["file", "folder", "selection", "skill"].includes(resource.kind),
+        )
+        .slice(0, 50)
+        .map((resource) => ({
+          id: resource.id,
+          kind: resource.kind,
+          label: resource.label,
+          ...(typeof resource.meta === "string" ? { meta: resource.meta } : {}),
+        }))
+    : [];
+  return {
+    deepResearch: context?.deepResearch === true,
+    effort,
+    model,
+    permissions,
+    resources,
+    workspace,
+  };
 }
 
 function normalizeMessages(value: unknown) {
@@ -210,8 +252,13 @@ export function getProductTaskContextDetails(
   locale: ProductPlaygroundLocale,
 ): ProductTaskContextDetails {
   return {
+    effort: effortLabels[session.context.effort][locale],
     model: modelLabels[session.context.model],
     permissions: permissionLabels[session.context.permissions][locale],
+    resources:
+      locale === "zh"
+        ? `${session.context.resources.length} 项`
+        : `${session.context.resources.length} item${session.context.resources.length === 1 ? "" : "s"}`,
     workspace: workspaceLabels[session.context.workspace][locale],
   };
 }
@@ -221,7 +268,7 @@ function contextLabel(
   locale: ProductPlaygroundLocale,
 ) {
   const context = getProductTaskContextDetails(session, locale);
-  return `${context.workspace} · ${context.model}`;
+  return `${context.workspace} · ${context.model} · ${context.effort}`;
 }
 
 export function getProductTaskConversation(

@@ -64,7 +64,7 @@ export function ProductSessionSurface({
   const [artifactCopyStatus, setArtifactCopyStatus] = useState("");
   const [seededFollowUps, setSeededFollowUps] = useState<string[]>([]);
   const followUps = created ? (taskSession?.followUps ?? []) : seededFollowUps;
-  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -75,7 +75,10 @@ export function ProductSessionSurface({
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 60rem)");
-    const update = () => setInspectorOverlay(query.matches);
+    const update = () => {
+      setInspectorOverlay(query.matches);
+      setInspectorOpen(!query.matches);
+    };
     update();
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
@@ -89,9 +92,9 @@ export function ProductSessionSurface({
   useEffect(() => {
     if (!inspectorOpen) return undefined;
 
-    const focusFrame = window.requestAnimationFrame(() =>
-      inspectorCloseRef.current?.focus(),
-    );
+    const focusFrame = inspectorOverlay
+      ? window.requestAnimationFrame(() => inspectorCloseRef.current?.focus())
+      : undefined;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -120,7 +123,7 @@ export function ProductSessionSurface({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.cancelAnimationFrame(focusFrame);
+      if (focusFrame) window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeInspector, inspectorOpen, inspectorOverlay]);
@@ -365,6 +368,14 @@ export function ProductSessionSurface({
                             <dt>{zh ? "模型" : "Model"}</dt>
                             <dd>{contextDetails.model}</dd>
                           </div>
+                          <div>
+                            <dt>{zh ? "努力程度" : "Effort"}</dt>
+                            <dd>{contextDetails.effort}</dd>
+                          </div>
+                          <div>
+                            <dt>{zh ? "已附加资源" : "Attached resources"}</dt>
+                            <dd>{contextDetails.resources}</dd>
+                          </div>
                         </dl>
                       </section>
                     </details>
@@ -477,6 +488,10 @@ export function ProductSessionSurface({
       <footer className="product-session__composer">
         <ProductComposer
           compact
+          contextual
+          initialWorkspace={
+            created ? taskSession?.context.workspace || "local" : "local"
+          }
           locale={locale}
           onSubmit={(message) => {
             if (created) onFollowUp?.(message);

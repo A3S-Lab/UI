@@ -1,0 +1,150 @@
+# File Manager
+
+File Manager presents workspace locations, folder navigation, multi-selection, search, grid or list views, Quick Look, and recoverable file actions in one bounded surface. The trusted host still owns filesystem I/O, permissions, persistence, downloads, and trash recovery.
+
+<Preview class="w-full" title="Workspace file manager">
+  <section id="file-manager-demo-en" class="file-manager" data-state="ready" data-view="list" aria-label="Workspace files" style="height: 31rem">
+    <aside data-file-manager-navigation>
+      <header><strong>Files</strong></header>
+      <nav aria-label="File locations">
+        <button type="button" aria-current="page">Workspace</button>
+        <button type="button">Favorites</button>
+        <button type="button">Recent</button>
+      </nav>
+    </aside>
+    <main>
+      <header data-file-manager-header>
+        <nav aria-label="Current location"><button type="button">Workspace</button><span>/</span><button type="button" aria-current="page">design-system</button></nav>
+        <label data-file-manager-search><span class="sr-only">Search files</span><input type="search" placeholder="Search this folder" /></label>
+      </header>
+      <div data-file-manager-toolbar>
+        <div><button type="button" data-file-action="new-folder" data-variant="primary">New folder</button><button type="button" data-file-action="import">Import</button><button type="button" data-file-action="preview">Quick Look</button></div>
+        <div><button type="button" data-file-view="grid" aria-pressed="false">Grid</button><button type="button" data-file-view="list" aria-pressed="true">List</button></div>
+      </div>
+      <div data-file-manager-selection><strong>Selection</strong><span>Use Ctrl/Cmd or Shift for multiple items</span></div>
+      <div data-file-manager-viewport data-view="list" role="listbox" aria-label="Folder contents" aria-multiselectable="true">
+        <button type="button" role="option" data-file-item data-file-value="src" data-file-search="folder source" aria-selected="false"><strong data-file-label>src</strong><span>Folder</span><span>A3S Lab</span><span>Today</span></button>
+        <button type="button" role="option" data-file-item data-file-value="design" data-file-search="markdown design system" aria-selected="true"><strong data-file-label>DESIGN.md</strong><span>Markdown</span><span>A3S Lab</span><span>Today</span></button>
+        <button type="button" role="option" data-file-item data-file-value="report" data-file-search="report acceptance pdf" aria-selected="false"><strong data-file-label>visual-acceptance.pdf</strong><span>PDF</span><span>QA</span><span>Yesterday</span></button>
+      </div>
+      <section data-file-manager-state="loading" hidden>Loading workspace files…</section>
+      <section data-file-manager-state="permission-denied" hidden>Access was denied. Ask the workspace owner or choose another location.</section>
+      <section data-file-manager-empty hidden>No files match this search.</section>
+      <footer data-file-manager-status><span>3 items</span><output aria-live="polite">DESIGN.md selected</output></footer>
+    </main>
+    <aside data-file-manager-preview hidden>
+      <header><strong>Quick Look</strong><button type="button" data-file-action="close-preview" aria-label="Close Quick Look">Close</button></header>
+      <section data-preview-for="design"><h2>DESIGN.md</h2><p>Design principles, component contracts, and release acceptance criteria.</p></section>
+      <section data-preview-for="report" hidden><h2>visual-acceptance.pdf</h2><p>Visual acceptance evidence and issue disposition.</p></section>
+    </aside>
+  </section>
+</Preview>
+
+## Product decisions
+
+File Manager is not a code tree. Use [File Explorer](/components/file-explorer) for repository hierarchy, dirty states, and editor-focused rename flows. Use File Manager when users need familiar workspace navigation, multi-selection, sorting, import, preview, and lifecycle actions across many file types.
+
+- Selection is local UI state; the host authorizes every mutation through a cancelable `before-*` event.
+- Delete means a host-defined recoverable trash operation unless the product explicitly presents permanent deletion.
+- Loading and failure states retain the current location and user search. A failed refresh does not erase a usable listing.
+- Quick Look previews only trusted or sanitized content. Large, binary, or remote files use a host previewer or download action.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section class="file-manager" data-state="ready" data-view="list" aria-label="Workspace files">
+  <aside data-file-manager-navigation><nav aria-label="File locations">…</nav></aside>
+  <main>
+    <header data-file-manager-header>
+      <nav aria-label="Current location">…</nav>
+      <label data-file-manager-search><span class="sr-only">Search files</span><input type="search" /></label>
+    </header>
+    <div data-file-manager-toolbar>
+      <button type="button" data-file-action="new-folder">New folder</button>
+      <button type="button" data-file-view="list" aria-pressed="true">List</button>
+    </div>
+    <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+      <button type="button" role="option" data-file-item data-file-value="design" aria-selected="true"><strong data-file-label>DESIGN.md</strong><span>Markdown</span></button>
+    </div>
+  </main>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/file-manager";
+  const manager = document.querySelector(".file-manager");
+  manager.addEventListener("a3s:file-manager-before-action", event => {
+    if (!authorizeFileAction(event.detail)) event.preventDefault();
+  });
+  manager.addEventListener("a3s:file-manager-action", event => runFileAction(event.detail));
+</script>`}
+  react={`import { FileManager, useFileManager } from "@a3s-lab/ui/react";
+
+export function WorkspaceFiles({ files }) {
+  const manager = useFileManager({
+    events: {
+      "a3s:file-manager-before-action": event => {
+        if (!authorizeFileAction(event.detail)) event.preventDefault();
+      },
+      "a3s:file-manager-action": event => runFileAction(event.detail),
+      "a3s:file-manager-selection-change": event => rememberSelection(event.detail.values),
+    },
+  });
+
+  return (
+    <FileManager ref={manager.ref} data-state="ready" data-view="list" aria-label="Workspace files">
+      <aside data-file-manager-navigation>{/* Locations */}</aside>
+      <main>
+        <header data-file-manager-header>{/* Breadcrumb and search */}</header>
+        <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+          {files.map(file => <button key={file.id} type="button" role="option" data-file-item data-file-value={file.id} aria-selected="false">{file.name}</button>)}
+        </div>
+      </main>
+    </FileManager>
+  );
+}
+
+manager.call("openPreview", "design");`}
+  vue={`<script setup lang="ts">
+import { FileManager, useFileManager } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{ files: Array<{ id: string; name: string }> }>();
+const manager = useFileManager({
+  events: {
+    "a3s:file-manager-before-action": event => {
+      if (!authorizeFileAction(event.detail)) event.preventDefault();
+    },
+    "a3s:file-manager-action": event => runFileAction(event.detail),
+    "a3s:file-manager-selection-change": event => rememberSelection(event.detail.values),
+  },
+});
+</script>
+
+<template>
+  <FileManager :ref="manager.componentRef" data-state="ready" data-view="list" aria-label="Workspace files">
+    <aside data-file-manager-navigation><!-- Locations --></aside>
+    <main>
+      <header data-file-manager-header><!-- Breadcrumb and search --></header>
+      <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+        <button v-for="file in props.files" :key="file.id" type="button" role="option" data-file-item :data-file-value="file.id" aria-selected="false">{{ file.name }}</button>
+      </div>
+    </main>
+  </FileManager>
+</template>`}
+/>
+
+`useFileManager` exposes the canonical DOM controller through `ref`/`componentRef`, `ready`, event subscriptions, and `call()`. It does not mirror the file list into a second framework-only store.
+
+## Controller contract
+
+| Area | Contract |
+| --- | --- |
+| Root | `.file-manager`, preferably a `<section>` |
+| Items | `data-file-item`, stable `data-file-value`, `role="option"`, and `aria-selected` |
+| Methods | `select`, `clearSelection`, `getSelection`, `setFilter`, `clearFilter`, `setView`, `getView`, `openPreview`, `closePreview`, `runAction`, `setReadonly`, `setState`, `refresh`, `getState` |
+| Authorization | `a3s:file-manager-before-action`, `a3s:file-manager-before-filter-change`, `a3s:file-manager-before-selection-change` |
+| Observation | `a3s:file-manager-action`, `a3s:file-manager-filter-change`, `a3s:file-manager-selection-change`, `a3s:file-manager-view-change`, `a3s:file-manager-preview-change`, `a3s:file-manager-state-change` |
+| States | `ready`, `loading`, `empty`, `partial`, `error`, `offline`, `permission-denied`, `readonly` |
+
+## Accessibility and ownership
+
+The viewport is a multi-select listbox. Arrow keys move selection, Ctrl/Cmd + A selects visible items, Enter requests open, Space requests Quick Look, Delete requests a recoverable delete, and Escape closes preview before clearing selection. Search results update the operable set without moving page scroll. The host owns path resolution, symlink policy, conflict handling, upload limits, permissions, file content, persistence, and recovery.

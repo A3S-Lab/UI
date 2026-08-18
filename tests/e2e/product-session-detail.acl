@@ -14,7 +14,8 @@ suite "a3s-ui-product-session-detail" {
         expect "session-title" { text = "修复会话恢复" }
         expect "conversation-only" { visible = css("[data-product-surface=session]:not(:has(.a3s-workspace-playground))") }
         expect "search-action" { visible = css("button[aria-label='在会话中搜索']") }
-        expect "artifacts-secondary" { visible = css("button[aria-label='打开产物面板']") }
+        expect "artifacts-secondary" { visible = css(".product-session__actions button[aria-label='关闭产物面板']") }
+        expect "artifacts-visible-by-default" { visible = css("aside[aria-label='会话产物']") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
 
         click "open-search" { target = css("button[aria-label='在会话中搜索']") }
@@ -22,13 +23,11 @@ suite "a3s-ui-product-session-detail" {
         expect "search-results" { text = "3 个结果" }
         click "close-search" { target = css("button[aria-label='关闭会话搜索']") }
 
-        click "open-artifacts" { target = css("button[aria-label='打开产物面板']") }
-        expect "artifacts-visible" { visible = css("aside[aria-label='会话产物']") }
         expect "artifacts-stay-in-session" { visible = css(".a3s-product-application[data-view=session]:not(:has(.a3s-workspace-playground))") }
-        expect "artifacts-close-focused" { visible = css(".product-session__inspector > header button[aria-label='关闭产物面板']:focus") }
-        press "close-artifacts-with-escape" { key = "Escape" }
+        click "close-default-artifacts" { target = css(".product-session__actions button[aria-label='关闭产物面板']") }
         expect "artifacts-trigger-restored" { visible = css("button[aria-label='打开产物面板']:focus") }
         click "reopen-artifacts" { target = css("button[aria-label='打开产物面板']") }
+        expect "artifacts-visible-again" { visible = css("aside[aria-label='会话产物']") }
         click "open-session-artifact" { target = css(".product-session__artifact-overview button") }
         expect "artifact-preview-visible" { visible = css(".product-session__artifact-preview pre code") }
         click "close-artifacts" { target = css(".product-session__inspector > header button[aria-label='关闭产物面板']") }

@@ -1,0 +1,146 @@
+# 文件管理器
+
+文件管理器把工作空间位置、文件夹导航、多选、搜索、网格/列表视图、快速查看与可恢复操作组织在同一个有边界的界面中。可信宿主仍然负责文件系统读写、权限、持久化、下载与废纸篓恢复。
+
+<Preview class="w-full" title="工作空间文件管理器">
+  <section id="file-manager-demo-zh" class="file-manager" data-state="ready" data-view="list" aria-label="工作空间文件" style="height: 31rem">
+    <aside data-file-manager-navigation>
+      <header><strong>文件</strong></header>
+      <nav aria-label="文件位置"><button type="button" aria-current="page">工作空间</button><button type="button">收藏</button><button type="button">最近使用</button></nav>
+    </aside>
+    <main>
+      <header data-file-manager-header>
+        <nav aria-label="当前位置"><button type="button">工作空间</button><span>/</span><button type="button" aria-current="page">design-system</button></nav>
+        <label data-file-manager-search><span class="sr-only">搜索文件</span><input type="search" placeholder="搜索当前文件夹" /></label>
+      </header>
+      <div data-file-manager-toolbar>
+        <div><button type="button" data-file-action="new-folder" data-variant="primary">新建文件夹</button><button type="button" data-file-action="import">导入</button><button type="button" data-file-action="preview">快速查看</button></div>
+        <div><button type="button" data-file-view="grid" aria-pressed="false">图标</button><button type="button" data-file-view="list" aria-pressed="true">列表</button></div>
+      </div>
+      <div data-file-manager-selection><strong>选择</strong><span>按 Ctrl/Cmd 或 Shift 选择多个项目</span></div>
+      <div data-file-manager-viewport data-view="list" role="listbox" aria-label="文件夹内容" aria-multiselectable="true">
+        <button type="button" role="option" data-file-item data-file-value="src" data-file-search="文件夹 源码" aria-selected="false"><strong data-file-label>src</strong><span>文件夹</span><span>A3S Lab</span><span>今天</span></button>
+        <button type="button" role="option" data-file-item data-file-value="design" data-file-search="Markdown 设计系统" aria-selected="true"><strong data-file-label>DESIGN.md</strong><span>Markdown</span><span>A3S Lab</span><span>今天</span></button>
+        <button type="button" role="option" data-file-item data-file-value="report" data-file-search="报告 视觉验收 PDF" aria-selected="false"><strong data-file-label>visual-acceptance.pdf</strong><span>PDF</span><span>QA</span><span>昨天</span></button>
+      </div>
+      <section data-file-manager-state="loading" hidden>正在读取工作空间文件…</section>
+      <section data-file-manager-state="permission-denied" hidden>没有访问权限。请联系工作空间所有者或选择其他位置。</section>
+      <section data-file-manager-empty hidden>没有文件符合当前搜索。</section>
+      <footer data-file-manager-status><span>3 项</span><output aria-live="polite">已选择 DESIGN.md</output></footer>
+    </main>
+    <aside data-file-manager-preview hidden>
+      <header><strong>快速查看</strong><button type="button" data-file-action="close-preview" aria-label="关闭快速查看">关闭</button></header>
+      <section data-preview-for="design"><h2>DESIGN.md</h2><p>设计原则、组件契约与发布验收标准。</p></section>
+      <section data-preview-for="report" hidden><h2>visual-acceptance.pdf</h2><p>视觉验收证据与问题处置记录。</p></section>
+    </aside>
+  </section>
+</Preview>
+
+## 产品决策
+
+文件管理器不是源码树。仓库层级、未保存状态和编辑器重命名应使用[文件资源管理器](/components/file-explorer)。当用户需要熟悉的工作空间导航、多选、排序、导入、预览与跨文件类型生命周期操作时，使用文件管理器。
+
+- 选择属于本地界面状态；每项写操作都通过可取消的 `before-*` 事件交给宿主授权。
+- “删除”默认表示可恢复的宿主废纸篓流程，永久删除必须单独说明并再次确认。
+- 加载和失败状态保留当前位置与搜索条件；刷新失败不会清空仍然可用的列表。
+- 快速查看只渲染可信或已净化内容；大型、二进制或远程文件交给宿主预览器或下载动作。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section class="file-manager" data-state="ready" data-view="list" aria-label="工作空间文件">
+  <aside data-file-manager-navigation><nav aria-label="文件位置">…</nav></aside>
+  <main>
+    <header data-file-manager-header>
+      <nav aria-label="当前位置">…</nav>
+      <label data-file-manager-search><span class="sr-only">搜索文件</span><input type="search" /></label>
+    </header>
+    <div data-file-manager-toolbar>
+      <button type="button" data-file-action="new-folder">新建文件夹</button>
+      <button type="button" data-file-view="list" aria-pressed="true">列表</button>
+    </div>
+    <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+      <button type="button" role="option" data-file-item data-file-value="design" aria-selected="true"><strong data-file-label>DESIGN.md</strong><span>Markdown</span></button>
+    </div>
+  </main>
+</section>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/file-manager";
+  const manager = document.querySelector(".file-manager");
+  manager.addEventListener("a3s:file-manager-before-action", event => {
+    if (!authorizeFileAction(event.detail)) event.preventDefault();
+  });
+  manager.addEventListener("a3s:file-manager-action", event => runFileAction(event.detail));
+</script>`}
+  react={`import { FileManager, useFileManager } from "@a3s-lab/ui/react";
+
+export function WorkspaceFiles({ files }) {
+  const manager = useFileManager({
+    events: {
+      "a3s:file-manager-before-action": event => {
+        if (!authorizeFileAction(event.detail)) event.preventDefault();
+      },
+      "a3s:file-manager-action": event => runFileAction(event.detail),
+      "a3s:file-manager-selection-change": event => rememberSelection(event.detail.values),
+    },
+  });
+
+  return (
+    <FileManager ref={manager.ref} data-state="ready" data-view="list" aria-label="工作空间文件">
+      <aside data-file-manager-navigation>{/* 位置 */}</aside>
+      <main>
+        <header data-file-manager-header>{/* 面包屑与搜索 */}</header>
+        <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+          {files.map(file => <button key={file.id} type="button" role="option" data-file-item data-file-value={file.id} aria-selected="false">{file.name}</button>)}
+        </div>
+      </main>
+    </FileManager>
+  );
+}
+
+manager.call("openPreview", "design");`}
+  vue={`<script setup lang="ts">
+import { FileManager, useFileManager } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{ files: Array<{ id: string; name: string }> }>();
+const manager = useFileManager({
+  events: {
+    "a3s:file-manager-before-action": event => {
+      if (!authorizeFileAction(event.detail)) event.preventDefault();
+    },
+    "a3s:file-manager-action": event => runFileAction(event.detail),
+    "a3s:file-manager-selection-change": event => rememberSelection(event.detail.values),
+  },
+});
+</script>
+
+<template>
+  <FileManager :ref="manager.componentRef" data-state="ready" data-view="list" aria-label="工作空间文件">
+    <aside data-file-manager-navigation><!-- 位置 --></aside>
+    <main>
+      <header data-file-manager-header><!-- 面包屑与搜索 --></header>
+      <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
+        <button v-for="file in props.files" :key="file.id" type="button" role="option" data-file-item :data-file-value="file.id" aria-selected="false">{{ file.name }}</button>
+      </div>
+    </main>
+  </FileManager>
+</template>`}
+/>
+
+`useFileManager` 通过 `ref`/`componentRef`、`ready`、事件订阅和 `call()` 暴露同一套 DOM 控制器，不会再复制一份框架私有文件状态。
+
+## 控制器契约
+
+| 区域 | 契约 |
+| --- | --- |
+| 根元素 | `.file-manager`，推荐使用 `<section>` |
+| 项目 | `data-file-item`、稳定的 `data-file-value`、`role="option"` 与 `aria-selected` |
+| 方法 | `select`、`clearSelection`、`getSelection`、`setFilter`、`clearFilter`、`setView`、`getView`、`openPreview`、`closePreview`、`runAction`、`setReadonly`、`setState`、`refresh`、`getState` |
+| 授权事件 | `a3s:file-manager-before-action`、`a3s:file-manager-before-filter-change`、`a3s:file-manager-before-selection-change` |
+| 观察事件 | `a3s:file-manager-action`、`a3s:file-manager-filter-change`、`a3s:file-manager-selection-change`、`a3s:file-manager-view-change`、`a3s:file-manager-preview-change`、`a3s:file-manager-state-change` |
+| 状态 | `ready`、`loading`、`empty`、`partial`、`error`、`offline`、`permission-denied`、`readonly` |
+
+## 无障碍与所有权
+
+文件视口是多选列表框。方向键移动选择，Ctrl/Cmd + A 选择可见项目，Enter 请求打开，空格请求快速查看，Delete 请求可恢复删除，Escape 先关闭预览再清空选择。宿主负责路径解析、符号链接策略、冲突处理、上传限制、权限、文件内容、持久化与恢复。

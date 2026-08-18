@@ -850,44 +850,47 @@ test("component navigation exposes semantic collapsible groups", async ({
 
   await page.locator(".rp-sidebar-menu__left").click();
   const groups = page.locator('.rp-sidebar-group[data-depth="1"]');
-  await expect(groups).toHaveCount(11);
+  await expect(groups).toHaveCount(18);
 
-  const actions = groups.filter({ hasText: /^Input and actions$/ });
-  const forms = groups.filter({ hasText: /^Selection and search$/ });
-  const navigation = groups.filter({ hasText: /^Navigation$/ });
-  await expect(actions).toHaveAttribute("role", "button");
-  await expect(actions).toHaveAttribute("tabindex", "0");
-  await expect(actions).toHaveAttribute("aria-expanded", "true");
-  await expect(forms).toHaveAttribute("aria-expanded", "false");
-  await expect(navigation).toHaveAttribute("aria-expanded", "false");
+  const actionsDisclosure = page.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="Actions and input"]',
+  );
+  const formsDisclosure = page.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="Selection and filtering"]',
+  );
+  const navigationDisclosure = page.locator(
+    'details.a3s-docs-sidebar__group[data-sidebar-group-label="Navigation and wayfinding"]',
+  );
+  const actions = actionsDisclosure.locator(":scope > summary");
+  const forms = formsDisclosure.locator(":scope > summary");
+  const navigation = navigationDisclosure.locator(":scope > summary");
+  const actionsPanel = actionsDisclosure.locator(
+    ":scope > .a3s-docs-sidebar__panel",
+  );
+  const formsPanel = formsDisclosure.locator(
+    ":scope > .a3s-docs-sidebar__panel",
+  );
+  const navigationPanel = navigationDisclosure.locator(
+    ":scope > .a3s-docs-sidebar__panel",
+  );
 
-  const actionsPanelId = await actions.getAttribute("aria-controls");
-  const formsPanelId = await forms.getAttribute("aria-controls");
-  const navigationPanelId = await navigation.getAttribute("aria-controls");
-  expect(actionsPanelId).toBeTruthy();
-  expect(formsPanelId).toBeTruthy();
-  expect(navigationPanelId).toBeTruthy();
-
-  const actionsPanel = page.locator(`#${actionsPanelId}`);
-  const formsPanel = page.locator(`#${formsPanelId}`);
-  const navigationPanel = page.locator(`#${navigationPanelId}`);
-  await expect(actionsPanel).not.toHaveAttribute("inert", "");
-  await expect(actionsPanel).not.toHaveAttribute("aria-hidden", "true");
-  await expect(formsPanel).toHaveAttribute("inert", "");
-  await expect(formsPanel).toHaveAttribute("aria-hidden", "true");
-  await expect(navigationPanel).toHaveAttribute("inert", "");
+  await expect(actions).toHaveJSProperty("tagName", "SUMMARY");
+  await expect(actionsDisclosure).toHaveAttribute("open", "");
+  await expect(formsDisclosure).not.toHaveAttribute("open", "");
+  await expect(navigationDisclosure).not.toHaveAttribute("open", "");
+  await expect(actionsPanel).toBeVisible();
+  await expect(formsPanel).toBeHidden();
+  await expect(navigationPanel).toBeHidden();
 
   await forms.focus();
   await forms.press("Enter");
-  await expect(forms).toHaveAttribute("aria-expanded", "true");
-  await expect(formsPanel).not.toHaveAttribute("inert", "");
-  await expect(formsPanel).not.toHaveAttribute("aria-hidden", "true");
+  await expect(formsDisclosure).toHaveAttribute("open", "");
+  await expect(formsPanel).toBeVisible();
 
   await navigation.focus();
   await navigation.press("Space");
-  await expect(navigation).toHaveAttribute("aria-expanded", "true");
-  await expect(navigationPanel).not.toHaveAttribute("inert", "");
-  await expect(navigationPanel).not.toHaveAttribute("aria-hidden", "true");
+  await expect(navigationDisclosure).toHaveAttribute("open", "");
+  await expect(navigationPanel).toBeVisible();
 });
 
 test("page outline progressively discloses one heading group", async ({
