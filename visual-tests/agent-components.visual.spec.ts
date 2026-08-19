@@ -181,7 +181,7 @@ test("Brand Lockup preserves textual identity and compact proportions", async ({
   await expect(lockups).toHaveCount(2);
   await expect(linked).toHaveAccessibleName("A3S OS home");
   await expect(linked.locator("[data-brand-name]")).toHaveText("A3S OS");
-  await expect(compact.locator("[data-brand-name]")).toHaveText("A3S Web");
+  await expect(compact.locator("[data-brand-name]")).toHaveText("A3S Cloud");
   await expect(compact.locator("[data-brand-description]")).toHaveText(
     "Control plane",
   );

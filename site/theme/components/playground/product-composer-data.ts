@@ -7,7 +7,7 @@ export type ProductComposerResource = {
   meta?: string;
 };
 
-export type ProductComposerWorkspace = "" | "local" | "root" | "ui" | "web";
+export type ProductComposerWorkspace = "" | "local" | "root" | "ui";
 
 export type ProductTaskDraft = {
   prompt: string;

@@ -24,8 +24,8 @@
 ## Next
 
 - [x] Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
-- [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S Web's Agent Factory and operational evidence surfaces.
-- [x] Extracted Brand Lockup and Stepper contracts from repeated A3S Web identity and bounded process-path surfaces.
+- [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S agent and operational evidence surfaces.
+- [x] Extracted Brand Lockup and Stepper contracts from repeated A3S identity and bounded process-path surfaces.
 - [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Task Workspace and New Task compositions.
 - [x] Added App Page, Task Start, Task Workspace, Catalog, and Setting Row contracts with bilingual Capability Catalog, Settings Center, Projects, and Automations patterns.
 - [x] Added the 14 detailed task-workflow contracts for plans, message state, artifacts, context, queues, checkpoints, follow-ups, tools, change review, terminal output, and execution evidence.
@@ -37,7 +37,7 @@
 - [x] Added Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer after a product-level reuse and ownership review.
 - [x] Added aligned React and Vue examples for all 116 component guides plus `useA3SLocale`, `useA3STheme`, and `useA3SMotion` runtime configuration APIs.
 - [x] Closed the 160-item reference audit with checked component, composition, foundation, brand, integration, and standalone-route evidence instead of promoting every source concept into a component.
-- [x] Rebuilt the standalone Playground as a task-first A3S product application that combines the established desktop information architecture with admitted A3S Web composer, session, file, editor, Knowledge, Memory, extension, automation, and settings workflows.
+- [x] Rebuilt the standalone Playground as a task-first A3S product application that combines the established desktop information architecture with shared A3S composer, session, file, editor, Knowledge, Memory, extension, automation, and settings workflows.
 - [ ] Execute the first-principles and adversarial component review in [COMPONENT_OPTIMIZATION_PLAN.md](./COMPONENT_OPTIMIZATION_PLAN.md), promoting each contract only after its product, interaction, visual, framework, and regression evidence is complete.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.

@@ -24,7 +24,7 @@ export function ProductSessionOverviewPanel({
     model: "A3S Pro",
     permissions: zh ? "默认权限" : "Default permissions",
     resources: zh ? "4 个上下文资源" : "4 context resources",
-    workspace: project ? "A3S UI" : "a3s/apps/web",
+    workspace: project ? "A3S UI" : "a3s/packages/ui",
   };
   const steps = created
     ? [

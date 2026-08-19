@@ -17,11 +17,11 @@ suite "a3s-ui-product-automation-and-preview" {
         expect "prefilled-name" {
             visible = css("[data-product-surface=automation-builder] input[value='每日发布摘要']")
         }
-        expect "workspace-control" { visible = css(".product-automation-builder select option[value=a3s-web]") }
+        expect "workspace-control" { visible = css(".product-automation-builder select option[value=a3s-ui]") }
 
         select "workspace" {
             target = css(".product-automation-builder__field select")
-            values = ["a3s-web"]
+            values = ["a3s-ui"]
         }
         click "interval-schedule" { target = role("button", "按间隔") }
         fill "rename" {

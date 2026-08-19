@@ -158,7 +158,6 @@ export function ProductAutomationBuilder({
             value={workspace}
           >
             <option value="a3s-ui">a3s-ui · /workspace/a3s-ui</option>
-            <option value="a3s-web">a3s-web · /workspace/a3s/apps/web</option>
             <option value="none">{zh ? "不绑定工作区" : "No workspace"}</option>
           </select>
         </label>

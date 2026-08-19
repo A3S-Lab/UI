@@ -63,7 +63,7 @@ export function ProductCodeGraphPanel({
       <header>
         <div data-code-graph-identity>
           <strong id={`${id}-title`}>
-            {zh ? "A3S Web / 本次变更依赖" : "A3S Web / change dependencies"}
+            {zh ? "A3S UI / 本次变更依赖" : "A3S UI / change dependencies"}
           </strong>
           <small>
             {zh ? "12 个节点 · 15 条关系 · TypeScript" : "12 nodes · 15 relations · TypeScript"}

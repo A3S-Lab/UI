@@ -21,7 +21,6 @@ const workspaceLabels: Record<
   local: { en: "Local workspace", zh: "本地工作空间" },
   root: { en: "A3S monorepo", zh: "A3S 主仓库" },
   ui: { en: "A3S UI experience", zh: "A3S UI 体验优化" },
-  web: { en: "A3S Web", zh: "A3S Web" },
 };
 
 const modeLabels: Record<ProductComposerContext["mode"], ProductLocalizedText> =
@@ -114,7 +113,6 @@ function normalizeContext(value: unknown): ProductComposerContext {
       : "ask";
   const workspace =
     context?.workspace === "ui" ||
-    context?.workspace === "web" ||
     context?.workspace === "root" ||
     context?.workspace === "local"
       ? context.workspace

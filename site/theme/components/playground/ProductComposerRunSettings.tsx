@@ -4,6 +4,7 @@ import {
   productComposerModels,
   type ProductComposerEffort,
   type ProductComposerModel,
+  type ProductComposerWorkspace,
 } from "./product-composer-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
@@ -190,8 +191,8 @@ export function ProductComposerWorkspaceControl({
   activeControl: ComposerControlKey | null;
   locale: ProductPlaygroundLocale;
   onActiveControlChange: (control: ComposerControlKey | null) => void;
-  onWorkspaceChange: (workspace: "" | "local" | "root" | "ui" | "web") => void;
-  workspace: "" | "local" | "root" | "ui" | "web";
+  onWorkspaceChange: (workspace: ProductComposerWorkspace) => void;
+  workspace: ProductComposerWorkspace;
 }) {
   const zh = locale === "zh";
   const [query, setQuery] = useState("");
@@ -200,11 +201,6 @@ export function ProductComposerWorkspaceControl({
       id: "ui" as const,
       label: zh ? "a3s-ui" : "a3s-ui",
       path: "/workspace/a3s-ui",
-    },
-    {
-      id: "web" as const,
-      label: "a3s-web",
-      path: "/workspace/a3s/apps/web",
     },
     {
       id: "root" as const,
