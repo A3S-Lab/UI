@@ -3,6 +3,10 @@ import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductComposer } from "./ProductComposer";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
+  ProductSessionInspector,
+  type ProductSessionInspectorTab,
+} from "./ProductSessionInspector";
+import {
   ProductProjectBreadcrumb,
   ProductProjectPresence,
 } from "./ProductProjectPrimitives";
@@ -75,20 +79,22 @@ const projectArtifacts = [
 
 export function ProductProjectSessionSurface({
   locale,
+  onOpenModelSettings,
   projectHref,
   projectsHref,
 }: {
   locale: ProductPlaygroundLocale;
+  onOpenModelSettings: () => void;
   projectHref: string;
   projectsHref: string;
 }) {
   const zh = locale === "zh";
   const copy = projectConversation[locale];
-  const [activeArtifactId, setActiveArtifactId] = useState<string | null>(null);
-  const [artifactCopyStatus, setArtifactCopyStatus] = useState("");
   const [followUps, setFollowUps] = useState<string[]>([]);
-  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
+  const [inspectorTab, setInspectorTab] =
+    useState<ProductSessionInspectorTab>("overview");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const inspectorCloseRef = useRef<HTMLButtonElement>(null);
@@ -96,10 +102,10 @@ export function ProductProjectSessionSurface({
   const inspectorTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 60rem)");
+    const mediaQuery = window.matchMedia("(max-width: 68rem)");
     const update = () => {
       setInspectorOverlay(mediaQuery.matches);
-      setInspectorOpen(!mediaQuery.matches);
+      if (mediaQuery.matches) setInspectorOpen(false);
     };
     update();
     mediaQuery.addEventListener("change", update);
@@ -161,20 +167,6 @@ export function ProductProjectSessionSurface({
     }, 0);
   }, [copy, followUps, locale, query]);
 
-  const activeArtifact = projectArtifacts.find(
-    (artifact) => artifact.id === activeArtifactId,
-  );
-
-  const copyArtifact = async () => {
-    if (!activeArtifact) return;
-    try {
-      await navigator.clipboard.writeText(activeArtifact.content);
-      setArtifactCopyStatus(zh ? "内容已复制" : "Content copied");
-    } catch {
-      setArtifactCopyStatus(zh ? "无法复制内容" : "Unable to copy content");
-    }
-  };
-
   return (
     <section
       className="product-project-session product-session"
@@ -206,11 +198,11 @@ export function ProductProjectSessionSurface({
             aria-label={
               inspectorOpen
                 ? zh
-                  ? "关闭项目产物"
-                  : "Close project artifacts"
+                  ? "关闭项目详情"
+                  : "Close project details"
                 : zh
-                  ? "打开项目产物"
-                  : "Open project artifacts"
+                  ? "打开项目详情"
+                  : "Open project details"
             }
             data-active={inspectorOpen ? "true" : undefined}
             onClick={() =>
@@ -365,6 +357,7 @@ export function ProductProjectSessionSurface({
           contextual
           initialWorkspace="ui"
           locale={locale}
+          onConfigureModels={onOpenModelSettings}
           onSubmit={(message) =>
             setFollowUps((current) => [...current, message])
           }
@@ -391,108 +384,26 @@ export function ProductProjectSessionSurface({
             tabIndex={-1}
             type="button"
           />
-          <aside
-            aria-label={zh ? "项目产物" : "Project artifacts"}
-            aria-modal={inspectorOverlay ? true : undefined}
-            className="product-session__inspector"
+          <ProductSessionInspector
+            activeTab={inspectorTab}
+            artifacts={projectArtifacts}
+            closeButtonRef={inspectorCloseRef}
+            contextDetails={{
+              effort: zh ? "高" : "High",
+              mode: zh ? "默认" : "Default",
+              model: "A3S Pro",
+              permissions: zh ? "项目默认权限" : "Project defaults",
+              resources: zh ? "6 个项目资源" : "6 project resources",
+              workspace: "A3S UI",
+            }}
             id="product-project-session-artifacts"
-            ref={inspectorRef}
-            role={inspectorOverlay ? "dialog" : undefined}
-          >
-            <header>
-              <div>
-                <strong>{zh ? "项目产物" : "Project artifacts"}</strong>
-                <small>
-                  {zh
-                    ? `${projectArtifacts.length} 个文件 · 发布就绪检查`
-                    : `${projectArtifacts.length} files · Release readiness`}
-                </small>
-              </div>
-              <button
-                aria-label={zh ? "关闭项目产物" : "Close project artifacts"}
-                onClick={closeInspector}
-                ref={inspectorCloseRef}
-                type="button"
-              >
-                <ProductPlaygroundIcon name="close" />
-              </button>
-            </header>
-
-            {activeArtifact ? (
-              <section className="product-session__artifact-preview">
-                <header>
-                  <button
-                    onClick={() => {
-                      setActiveArtifactId(null);
-                      setArtifactCopyStatus("");
-                    }}
-                    type="button"
-                  >
-                    <ProductPlaygroundIcon name="arrow" />
-                    {zh ? "返回" : "Back"}
-                  </button>
-                  <button onClick={copyArtifact} type="button">
-                    <ProductPlaygroundIcon name="document" />
-                    {zh ? "复制" : "Copy"}
-                  </button>
-                </header>
-                <div>
-                  <span>
-                    <ProductPlaygroundIcon name="document" />
-                  </span>
-                  <strong>{activeArtifact.name}</strong>
-                  <small>{activeArtifact.summary[locale]}</small>
-                </div>
-                <pre>
-                  <code>{activeArtifact.content}</code>
-                </pre>
-                <output aria-live="polite">{artifactCopyStatus}</output>
-              </section>
-            ) : (
-              <div className="product-session__artifact-overview">
-                <section>
-                  <span>
-                    <ProductPlaygroundIcon name="check" />
-                  </span>
-                  <div>
-                    <strong>
-                      {zh ? "项目工作流已建立" : "Project workflow established"}
-                    </strong>
-                    <small>
-                      {zh
-                        ? "项目入口、子任务路径与验收范围现已关联。"
-                        : "Project entry, child-task routing, and acceptance scope are now connected."}
-                    </small>
-                  </div>
-                </section>
-                <div>
-                  <header>
-                    <strong>{zh ? "验收产物" : "Acceptance artifacts"}</strong>
-                    <small>{projectArtifacts.length}</small>
-                  </header>
-                  {projectArtifacts.map((artifact) => (
-                    <button
-                      key={artifact.id}
-                      onClick={() => {
-                        setActiveArtifactId(artifact.id);
-                        setArtifactCopyStatus("");
-                      }}
-                      type="button"
-                    >
-                      <span>
-                        <ProductPlaygroundIcon name="document" />
-                      </span>
-                      <span>
-                        <strong>{artifact.name}</strong>
-                        <small>{artifact.kind}</small>
-                      </span>
-                      <ProductPlaygroundIcon name="chevron" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </aside>
+            locale={locale}
+            onClose={closeInspector}
+            onTabChange={setInspectorTab}
+            overlay={inspectorOverlay}
+            panelRef={inspectorRef}
+            project
+          />
         </>
       ) : null}
     </section>

@@ -28,6 +28,8 @@
 
 ### Changed
 
+- Replaced the legacy workspace-composition Playground with a bilingual task-first product application that unifies durable sessions, project work, the production composer, execution review, local files and editors, Knowledge, Memory, extensions, automations, and settings under canonical `/playground` routes.
+- Rebuilt model settings as a production configuration workspace with host-managed and custom providers, connection fields, credential visibility, model capabilities and limits, default selection, staged save/reset behavior, and compact-screen operation without inventing vendor-specific models.
 - Rebuilt the project workspace as a complete task surface with Activity, Plan, Tasks, and Assets views, scoped filtering and search, project configuration, collaboration state, and a context-aware TipTap composer; widened the application shell and conversation geometry for production-scale work.
 - Rebuilt documentation previews around centered-control, flowing-content, bounded-overlay, and edge-to-edge-workspace layouts; phone and tablet controls now use isolated CSS viewports so responsive media queries evaluate against the selected width.
 - Reworked Device Simulator previews with scaled phone, tablet, and desktop hardware shells while preserving exact iframe viewport dimensions, orientation, and native preview arguments.

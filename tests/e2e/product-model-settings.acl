@@ -1,0 +1,62 @@
+suite "a3s-ui-product-model-settings" {
+    version = 1
+
+    scenario "model-provider-workflow" {
+        name = "Model settings manage providers, catalog entries, defaults, and staged saves"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
+        click "open-models" { target = role("button", "模型") }
+        expect "manager-visible" { visible = css(".product-model-manager") }
+        expect "runtime-read-only" { visible = css(".product-model-manager__workspace > aside > button:first-child [data-ready=true]") }
+
+        click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
+        expect "local-empty-state" { visible = css(".product-model-catalog__empty") }
+        click "add-first-model" { target = role("button", "添加第一个模型") }
+        fill "model-id" { target = label("模型 ID") value = "host-synced" }
+        fill "model-name" { target = label("显示名称") value = "Host-synced model" }
+        fill "context-limit" { target = label("上下文上限") value = "128000" }
+        fill "output-limit" { target = label("输出上限") value = "8192" }
+        click "add-to-catalog" { target = role("button", "添加到目录") }
+        expect "model-listed" { text = "Host-synced model" }
+        expect "dirty-save-enabled" { visible = css(".product-model-toolbar button[data-primary]:not(:disabled)") }
+
+        click "make-default" { target = role("button", "将 Host-synced model 设为默认模型") }
+        expect "default-selected" { visible = css(".product-model-toolbar select:has(option[value='local-endpoint/host-synced']:checked)") }
+        click "save" { target = role("button", "保存更改") }
+        expect "save-complete" { text = "配置已保存在当前产品预览中" }
+        expect "save-disabled" { visible = css(".product-model-toolbar button[data-primary]:disabled") }
+
+        screenshot "desktop-evidence" { path = "product/model-settings-desktop.png" }
+        console "console" { path = "product/model-settings-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/model-settings-desktop-page-errors.json" clear = false }
+    }
+
+    scenario "model-provider-mobile" {
+        name = "Model provider settings remain operable in the mobile settings surface"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-navigation" { target = role("button", "打开应用导航") }
+        click "open-settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
+        click "open-models" { target = role("button", "模型") }
+        expect "mobile-manager" { visible = css(".product-model-manager") }
+        expect "provider-strip" { visible = css(".product-model-manager__workspace > aside") }
+        click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
+        click "add-first-model" { target = role("button", "添加第一个模型") }
+        expect "mobile-model-form" { visible = css(".product-model-catalog__draft") }
+
+        screenshot "mobile-evidence" { path = "product/model-settings-mobile.png" }
+        console "console" { path = "product/model-settings-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/model-settings-mobile-page-errors.json" clear = false }
+    }
+}

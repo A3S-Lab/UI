@@ -1,0 +1,269 @@
+@media (max-width: 72rem) {
+  .product-file-workbench[data-assistant-open="true"]
+    .product-file-workbench__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-file-workbench [data-file-assistant] {
+    position: absolute;
+    z-index: 25;
+    inset-block: 3.75rem 1.875rem;
+    inset-inline-end: 0;
+    width: min(21rem, 86vw);
+    box-shadow: -14px 0 24px -20px rgb(0 0 0 / 48%);
+  }
+
+  .product-document-workbench [data-document-layout] {
+    grid-template-columns: 7rem minmax(0, 1fr);
+  }
+
+  .product-document-workbench [data-document-review] {
+    display: none;
+  }
+}
+
+@media (max-width: 52rem) {
+  .product-file-workbench__header {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+  }
+
+  .product-file-workbench__header > nav > button span,
+  .product-file-workbench__header > nav > div button span {
+    display: none;
+  }
+
+  .product-file-workbench__header > nav > button {
+    width: 2.25rem;
+    padding: 0;
+  }
+
+  .product-file-workbench__header > nav > div button {
+    width: 1.875rem;
+    padding: 0;
+  }
+
+  .product-document-workbench [data-document-layout] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-document-workbench [data-document-layout] > aside:first-child {
+    display: none;
+  }
+
+  .product-document-workbench [data-document-stage] {
+    padding: 1rem;
+  }
+
+  .product-document-workbench [data-document-page] {
+    padding: 2.5rem 2rem;
+  }
+}
+
+@media (max-width: 38rem) {
+  .product-file-workbench {
+    min-height: calc(100dvh - 4rem);
+  }
+
+  .product-file-workbench__header {
+    min-height: 6.25rem;
+    padding: 0.5rem;
+    align-content: center;
+    grid-template-columns: auto auto minmax(0, 1fr);
+  }
+
+  .product-file-workbench__header > nav {
+    width: 100%;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .product-file-workbench__header > nav > button:last-child {
+    margin-inline-start: auto;
+  }
+
+  .product-file-workbench [data-file-version-panel] {
+    inset-block-start: 6rem;
+    inset-inline: 0.5rem;
+    width: auto;
+  }
+
+  .product-code-workbench [data-code-toolbar] > span {
+    display: none;
+  }
+
+  .product-code-workbench [data-code-toolbar] > div {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .product-document-workbench [data-document-page] {
+    min-height: 48rem;
+    padding: 2rem 1.25rem;
+  }
+
+  .product-document-workbench [data-document-page] h1 {
+    margin-top: 2rem;
+    font-size: 1.625rem;
+  }
+
+  .product-document-workbench [data-document-page] li {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .product-file-workbench__status > span:last-child {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .product-file-workbench__header > button,
+  .product-file-workbench__header > nav > button,
+  .product-file-workbench [data-office-ribbon] > nav button,
+  .product-code-workbench [data-code-toolbar] button {
+    min-height: 2.75rem;
+  }
+}
+
+@media (max-width: 68rem) {
+  .product-spreadsheet-workbench [data-spreadsheet-layout] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-spreadsheet-workbench [data-spreadsheet-insights] {
+    display: none;
+  }
+
+  .product-presentation-workbench [data-slide-orbit] {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 52rem) {
+  .product-pdf-workbench [data-pdf-toolbar] {
+    grid-template-columns: auto minmax(8rem, 1fr);
+  }
+
+  .product-pdf-workbench [data-pdf-toolbar] > div:last-child {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .product-pdf-workbench [data-pdf-layout] {
+    grid-template-columns: 7rem minmax(0, 1fr);
+  }
+
+  .product-presentation-workbench [data-presentation-layout] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .product-presentation-workbench [data-presentation-layout] > aside {
+    display: flex;
+    padding: 0.5rem;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ui-line);
+    overflow-x: auto;
+  }
+
+  .product-presentation-workbench
+    [data-presentation-layout]
+    > aside
+    > button:not([data-add-slide]) {
+    width: 7rem;
+    min-width: 7rem;
+    grid-template-columns: 1fr;
+  }
+
+  .product-presentation-workbench
+    [data-presentation-layout]
+    > aside
+    > button
+    > small {
+    display: none;
+  }
+
+  .product-presentation-workbench [data-add-slide] {
+    width: 7rem;
+    min-width: 7rem;
+    margin: 0;
+  }
+}
+
+@media (max-width: 38rem) {
+  .product-spreadsheet-workbench [data-sheet-tabs] > span {
+    display: none;
+  }
+
+  .product-presentation-workbench [data-presentation-stage] {
+    padding: 0.75rem;
+  }
+
+  .product-presentation-workbench [data-slide-canvas] {
+    padding: 1.5rem;
+  }
+
+  .product-presentation-workbench [data-slide-canvas] > header,
+  .product-presentation-workbench [data-slide-canvas] > footer {
+    inset-inline: 1.5rem;
+  }
+
+  .product-presentation-workbench [data-slide-orbit] {
+    display: none;
+  }
+
+  .product-presentation-workbench [data-slide-flow] {
+    grid-template-columns: 1fr;
+    margin-top: 1rem;
+    gap: 0.25rem;
+  }
+
+  .product-presentation-workbench [data-slide-flow] i {
+    display: none;
+  }
+
+  .product-pdf-workbench [data-pdf-toolbar] {
+    grid-template-columns: 1fr;
+  }
+
+  .product-pdf-workbench [data-pdf-toolbar] > div:first-child {
+    display: none;
+  }
+
+  .product-pdf-workbench [data-pdf-toolbar] > div:last-child {
+    grid-column: 1;
+    overflow-x: auto;
+  }
+
+  .product-pdf-workbench [data-pdf-layout] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-pdf-workbench [data-pdf-layout] > aside {
+    display: none;
+  }
+
+  .product-pdf-workbench [data-pdf-stage] {
+    padding: 0.75rem;
+  }
+
+  .product-pdf-workbench [data-pdf-page] {
+    width: 100%;
+    min-height: 44rem;
+    padding: 2rem 1.25rem;
+  }
+
+  .product-pdf-workbench [data-pdf-page] h1 {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .product-pdf-workbench [data-pdf-evidence] {
+    grid-template-columns: 1fr;
+  }
+
+  .product-pdf-workbench [data-pdf-evidence] > div {
+    min-height: 9rem;
+  }
+}

@@ -18,13 +18,21 @@ export function SettingsHeader({
 export function SettingsSwitch({
   checked = false,
   label,
+  onCheckedChange,
 }: {
   checked?: boolean;
   label: string;
+  onCheckedChange?: (checked: boolean) => void;
 }) {
   return (
     <span className="product-settings__switch">
-      <input aria-label={label} defaultChecked={checked} type="checkbox" />
+      <input
+        aria-label={label}
+        checked={onCheckedChange ? checked : undefined}
+        defaultChecked={onCheckedChange ? undefined : checked}
+        onChange={(event) => onCheckedChange?.(event.currentTarget.checked)}
+        type="checkbox"
+      />
       <span />
     </span>
   );

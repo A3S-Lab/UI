@@ -1,92 +1,90 @@
 suite "a3s-ui-product-capability-navigation" {
     version = 1
 
-    scenario "capability-menu-desktop" {
-        name = "Capability chooser anchors to the sidebar and keeps URL state"
+    scenario "capability-first-navigation-desktop" {
+        name = "Capability navigation works on the first visit and keeps URL state"
         surface = "web"
         timeout_ms = 60000
         viewport "desktop" { width = 1478 height = 852 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
-        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
-        expect "trigger-current" { visible = css(".product-sidebar__capability > button[aria-current=page][aria-expanded=false]") }
+        expect "direct-capability-link" { visible = css(".product-sidebar__capability-link[href*='capability=assistants']") }
+        click "open-capabilities" { target = css(".product-sidebar__capability-link") }
+        wait "assistant-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
+        expect "catalog-ready" { visible = css("[data-product-surface=catalog][data-catalog-tab=assistants]") }
+        expect "sidebar-current" { visible = css(".product-sidebar__capability-link[aria-current=page]") }
+        expect "assistant-tab-selected" { visible = css("[data-product-surface=catalog] [role=tab][aria-selected=true]:nth-child(1)") }
+        expect "featured-scenarios" { visible = css(".product-catalog__featured--scenarios .product-catalog__scenario") }
 
-        click "open-chooser" { target = role("button", "专家·技能·连接器") }
-        expect "chooser-visible" { visible = css(".product-capability-menu[role=menu]") }
-        expect "active-item-focused" { visible = css(".product-capability-menu > button[aria-current=page]:focus") }
-        screenshot "capture-open-chooser" { path = "product/capability-menu-desktop.png" }
+        click "open-skills" { target = role("tab", "技能") }
+        wait "skills-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
+        expect "skills-layout" { visible = css("[data-directory-layout=skills]") }
+        click "open-connectors" { target = role("tab", "连接器") }
+        wait "connector-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=connectors" }
+        expect "connector-layout" { visible = css("[data-directory-layout=connectors]") }
 
-        press "next-item" { key = "ArrowDown" }
-        expect "skills-focused" { visible = css(".product-capability-menu > button:nth-child(2):focus") }
-        press "last-item" { key = "End" }
-        expect "connectors-focused" { visible = css(".product-capability-menu > button:nth-child(3):focus") }
-        press "select-connectors" { key = "Enter" }
-        wait "connector-url" { url = "http://127.0.0.1:4178/UI/app/capabilities.html?capability=connectors" }
-        expect "connector-tab-selected" { visible = css("[data-product-surface=catalog] [role=tab][aria-selected=true]:nth-child(3)") }
-
-        click "reopen-chooser" { target = role("button", "专家·技能·连接器") }
-        press "close-with-escape" { key = "Escape" }
-        expect "focus-returned" { visible = css(".product-sidebar__capability > button[aria-expanded=false]:focus") }
-
-        click "open-for-outside-dismissal" { target = role("button", "专家·技能·连接器") }
-        click "dismiss-outside" { target = css(".product-application__main") }
-        expect "outside-dismissed" { visible = css(".product-sidebar__capability > button[aria-expanded=false]") }
-
-        console "console" { path = "product/capability-menu-desktop-console.json" clear = false }
-        page_errors "page-errors" { path = "product/capability-menu-desktop-page-errors.json" clear = false }
+        screenshot "capture-connectors" { path = "product/capability-navigation-desktop.png" }
+        console "console" { path = "product/capability-navigation-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-navigation-desktop-page-errors.json" clear = false }
     }
 
-    scenario "capability-menu-mobile" {
-        name = "Capability chooser fits the mobile drawer and clears on dismissal"
+    scenario "capability-first-navigation-mobile" {
+        name = "Capability navigation closes the mobile drawer and remains usable"
         surface = "web"
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html?capability=skills" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
-        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
         click "open-navigation" { target = role("button", "打开应用导航") }
-        click "open-chooser" { target = role("button", "专家·技能·连接器") }
-        expect "chooser-visible" { visible = css(".product-sidebar[data-mobile-open=true] .product-capability-menu") }
-        expect "skills-current" { visible = css(".product-capability-menu > button:nth-child(2)[aria-current=page]") }
-        screenshot "mobile-chooser" { path = "product/capability-menu-mobile.png" }
-
-        click "dismiss-navigation" { target = css(".product-application__backdrop") }
+        click "open-capabilities" { target = css(".product-sidebar__capability-link") }
+        wait "assistant-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
         expect "navigation-closed" { visible = css("button[aria-label='打开应用导航']") }
+        expect "mobile-catalog" { visible = css("[data-product-surface=catalog][data-catalog-tab=assistants]") }
+        click "open-skills" { target = role("tab", "技能") }
+        expect "skills-current" { visible = css("[role=tab][aria-selected=true]:nth-child(2)") }
+
         click "reopen-navigation" { target = role("button", "打开应用导航") }
-        expect "chooser-reset" { visible = css(".product-sidebar__capability > button[aria-expanded=false]") }
+        click "open-settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
+        click "open-personalization" { target = role("button", "个性化") }
+        expect "personalization-ready" { visible = css(".product-settings__choice-group") }
+        click "close-settings" { target = role("button", "关闭设置") }
+        expect "catalog-restored" { visible = css("[data-product-surface=catalog][data-catalog-tab=skills]") }
+        click "close-navigation" { target = css(".product-sidebar[data-mobile-open=true] .product-sidebar__window button:first-child") }
 
-        console "console" { path = "product/capability-menu-mobile-console.json" clear = false }
-        page_errors "page-errors" { path = "product/capability-menu-mobile-page-errors.json" clear = false }
+        screenshot "mobile-skills" { path = "product/capability-navigation-mobile.png" }
+        console "console" { path = "product/capability-navigation-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-navigation-mobile-page-errors.json" clear = false }
     }
 
-    scenario "capability-menu-english" {
-        name = "Capability chooser preserves the English route and labels"
+    scenario "capability-navigation-english" {
+        name = "Capability navigation preserves the English route and labels"
         surface = "web"
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/app/capabilities.html?capability=skills" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/playground.html" }
         wait "loaded" { load = "networkidle" }
-        wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
+        click "open-capabilities" { target = css(".product-sidebar__capability-link") }
+        wait "assistant-url" { url = "http://127.0.0.1:4178/UI/en/playground/capabilities.html?capability=assistants" }
+        expect "featured-scenarios" { text = "Featured scenarios" }
+        click "open-skills" { target = role("tab", "Skills") }
         expect "skills-selected" { visible = css("[role=tab][aria-selected=true]:nth-child(2)") }
-        click "open-chooser" { target = role("button", "Capabilities") }
-        expect "english-chooser" { visible = css(".product-capability-menu[aria-label='Choose capability type']") }
-        expect "english-skills-current" { visible = css(".product-capability-menu > button:nth-child(2)[aria-current=page]") }
 
-        screenshot "capture-english-chooser" { path = "product/capability-menu-english.png" }
-        console "console" { path = "product/capability-menu-english-console.json" clear = false }
-        page_errors "page-errors" { path = "product/capability-menu-english-page-errors.json" clear = false }
+        screenshot "capture-english" { path = "product/capability-navigation-english.png" }
+        console "console" { path = "product/capability-navigation-english-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-navigation-english-page-errors.json" clear = false }
     }
 
-    scenario "capability-menu-dark" {
-        name = "Capability chooser preserves readable elevation in dark mode"
+    scenario "capability-navigation-dark" {
+        name = "Capability surfaces preserve readable hierarchy in dark mode"
         surface = "web"
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/capabilities.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
         wait "loaded" { load = "networkidle" }
         wait "catalog-ready" { visible = css("[data-product-surface=catalog]") }
         click "open-settings" { target = role("button", "设置") }
@@ -94,11 +92,37 @@ suite "a3s-ui-product-capability-navigation" {
         click "choose-dark" { target = role("button", "深色") }
         expect "dark-applied" { visible = css("html.dark [data-product-surface=catalog]") }
         click "close-settings" { target = role("button", "关闭设置") }
-        click "open-chooser" { target = role("button", "专家·技能·连接器") }
-        expect "dark-chooser" { visible = css("html.dark .product-capability-menu") }
+        expect "dark-scenarios" { visible = css("html.dark .product-catalog__featured--scenarios") }
 
-        screenshot "capture-dark-chooser" { path = "product/capability-menu-dark.png" }
-        console "console" { path = "product/capability-menu-dark-console.json" clear = false }
-        page_errors "page-errors" { path = "product/capability-menu-dark-page-errors.json" clear = false }
+        screenshot "capture-dark" { path = "product/capability-navigation-dark.png" }
+        console "console" { path = "product/capability-navigation-dark-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-navigation-dark-page-errors.json" clear = false }
+    }
+
+    scenario "global-search-navigation" {
+        name = "Global search reaches settings, resources, and task destinations"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-search" { target = css(".product-sidebar__window button[aria-label='搜索']") }
+        expect "search-ready" { visible = css("dialog.product-search-dialog[open]") }
+        expect "resource-group" { text = "资源" }
+        fill "find-model-settings" { target = label("搜索任务、文件和操作") value = "模型设置" }
+        click "open-model-settings" { target = css("#product-search-option-model-settings") }
+        expect "model-settings-ready" { visible = css("dialog[aria-label='设置'][open] .product-model-toolbar") }
+        click "close-settings" { target = role("button", "关闭设置") }
+
+        click "reopen-search" { target = css(".product-sidebar__window button[aria-label='搜索']") }
+        fill "find-documents" { target = label("搜索任务、文件和操作") value = "协作文档" }
+        press "open-first-result" { key = "Enter" }
+        wait "documents-url" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
+        expect "documents-ready" { visible = css("[data-product-surface='resources'][data-resource='documents']") }
+
+        screenshot "search-evidence" { path = "product/global-search-navigation.png" }
+        console "console" { path = "product/global-search-navigation-console.json" clear = false }
+        page_errors "page-errors" { path = "product/global-search-navigation-page-errors.json" clear = false }
     }
 }

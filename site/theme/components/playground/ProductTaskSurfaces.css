@@ -324,7 +324,7 @@
   stroke-width: 2.5;
 }
 
-.product-assistant > header button {
+.product-assistant > header :is(button, a) {
   display: grid;
   width: 1.75rem;
   height: 1.75rem;
@@ -335,9 +335,10 @@
   color: var(--ui-muted);
   cursor: pointer;
   place-items: center;
+  text-decoration: none;
 }
 
-.product-assistant > header button:hover {
+.product-assistant > header :is(button, a):hover {
   background: var(--ui-panel);
   color: var(--ui-ink);
 }
@@ -449,17 +450,36 @@
 
 .product-projects__hero {
   display: grid;
-  min-height: 10rem;
+  min-height: 11rem;
+  padding-block-end: 2rem;
   align-items: center;
-  justify-content: space-between;
-  grid-template-columns: 22.5rem 30.125rem;
-  gap: 1.5rem;
+  grid-template-columns: minmax(18rem, 0.8fr) minmax(28rem, 1.2fr);
+  gap: 3rem;
 }
 
 .product-projects__hero > div {
   width: 100%;
-  max-width: 22.5rem;
+  max-width: 36rem;
   min-width: 0;
+}
+
+.product-projects__hero figure {
+  display: flex;
+  min-width: 0;
+  min-height: 9rem;
+  margin: 0;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.product-projects__hero figure img {
+  display: block;
+  width: min(100%, 34rem);
+  height: auto;
+  max-height: 11rem;
+  object-fit: contain;
+  object-position: center right;
 }
 
 .product-projects__hero h1 {
@@ -503,41 +523,6 @@
 .product-projects__hero button svg {
   width: 1rem;
   height: 1rem;
-}
-
-.product-projects__diagram {
-  display: block;
-  width: min(100%, 30.125rem);
-  min-width: 0;
-  height: auto;
-  justify-self: end;
-  color: var(--ui-ink);
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.55;
-}
-
-.product-projects__diagram [data-link] {
-  stroke: var(--ui-line-strong);
-  stroke-dasharray: 4 6;
-}
-
-.product-projects__diagram [data-accent] {
-  stroke: var(--ui-blue);
-}
-
-.product-projects__diagram [data-surface] {
-  fill: var(--ui-paper);
-}
-
-.product-projects__diagram [data-solid] {
-  fill: currentcolor;
-  stroke: none;
-}
-
-.product-projects__diagram [data-accent] {
-  stroke-width: 3;
 }
 
 .product-projects__owned,

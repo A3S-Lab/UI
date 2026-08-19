@@ -1,0 +1,172 @@
+@media (max-width: 72rem) {
+  .product-project-workspace[data-configuration-open="true"]
+    .product-project-workspace__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-project-workspace__configuration-backdrop {
+    position: absolute;
+    z-index: 55;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgb(15 23 42 / 22%);
+  }
+
+  .product-project-workspace__configuration {
+    position: absolute;
+    z-index: 60;
+    inset: 0 0 0 auto;
+    width: min(28rem, calc(100% - 3rem));
+    border-inline-start: 0;
+    box-shadow: var(--ui-shadow-floating);
+  }
+
+  .product-project-workspace__toolbar > div > span {
+    display: none;
+  }
+}
+
+@media (max-width: 48rem) {
+  .product-project-workspace {
+    grid-template-rows: 3.5rem minmax(0, 1fr);
+  }
+
+  .product-project-workspace__header {
+    min-height: 3.5rem;
+    padding-inline: 4.25rem 0.75rem;
+  }
+
+  .product-project-workspace__header .product-project-presence {
+    display: none;
+  }
+
+  .product-project-workspace__header button[data-invite] {
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .product-project-workspace__header button[data-configuration-trigger] {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .product-project-workspace__tabs {
+    min-height: 3.5rem;
+    padding-inline: 1rem;
+    gap: 1.5rem;
+  }
+
+  .product-project-workspace__tabs button {
+    min-height: 3rem;
+    font-size: 0.9375rem;
+  }
+
+  .product-project-workspace__toolbar {
+    min-height: 0;
+    padding: 0.75rem 1rem;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .product-project-workspace__toolbar > div {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .product-project-workspace__toolbar [data-plan-navigation],
+  .product-project-workspace__toolbar [data-plan-actions] {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .product-project-workspace__toolbar [data-plan-actions] {
+    justify-content: flex-end;
+  }
+
+  .product-project-workspace__toolbar label[data-plan-search][data-open="true"],
+  .product-project-workspace__toolbar label[data-plan-search]:focus-within {
+    width: min(100%, 16rem);
+  }
+
+  .product-project-workspace__toolbar label[data-search] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .product-project-workspace__panel {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .product-project-workspace__task-list > :is(a, article) {
+    grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem;
+    gap: 0.75rem;
+  }
+
+  .product-project-workspace__task-list
+    :is([data-collaborators], [data-progress], [data-task-state]) {
+    display: none;
+  }
+
+  .product-project-workspace__task-list > :is(a, article) > svg {
+    grid-column: 3;
+  }
+
+  .product-project-workspace__activity li {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+  }
+
+  .product-project-workspace__activity time {
+    grid-column: 2;
+  }
+
+  .product-project-workspace__assets > button {
+    grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem;
+  }
+
+  .product-project-workspace__assets > button > :is(span:nth-child(3), time) {
+    display: none;
+  }
+
+  .product-project-workspace__assets > button > svg {
+    grid-column: 3;
+  }
+
+  .product-project-workspace__assets > footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .product-project-workspace__assets > footer button {
+    justify-content: center;
+  }
+
+  .product-project-workspace__composer {
+    padding-inline: 0.75rem;
+  }
+
+  .product-project-workspace__configuration {
+    width: min(25rem, calc(100% - 2.5rem));
+  }
+}
+
+@media (max-width: 34rem) {
+  .product-project-workspace__workbench {
+    grid-template-rows: auto auto minmax(0, 1fr) max-content;
+  }
+
+  .product-project-workspace__toolbar > div {
+    gap: 0.5rem;
+  }
+
+  .product-project-workspace__toolbar select {
+    min-width: 7rem;
+  }
+
+  .product-project-workspace__configuration {
+    width: 100%;
+  }
+}

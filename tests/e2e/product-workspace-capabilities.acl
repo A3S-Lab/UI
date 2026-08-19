@@ -1,0 +1,137 @@
+suite "a3s-ui-product-workspace-capabilities" {
+    version = 1
+
+    scenario "all-file-workbenches" {
+        name = "Every admitted A3S file type opens in a task-appropriate workbench"
+        surface = "web"
+        timeout_ms = 120000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-files" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-workspace" { target = role("tab", "工作区") }
+        wait "files-ready" { visible = css(".product-file-manager[data-file-manager-initialized=true]") }
+
+        fill "find-code" { target = label("搜索文件") value = "release-readiness.md" }
+        click "select-code" { target = css(".product-file-manager [data-file-manager-item]") }
+        press "quick-look-code" { key = "Enter" }
+        click "open-code" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "code-workbench" { visible = css(".product-file-workbench[data-workbench-kind=code] .product-code-workbench") }
+        click "preview-markdown" { target = role("button", "预览文件") }
+        expect "markdown-preview" { visible = css(".product-code-workbench [data-markdown-preview]") }
+        click "back-from-code" { target = css("[data-file-workbench-back]") }
+
+        fill "find-document" { target = label("搜索文件") value = "experience-brief.docx" }
+        click "select-document" { target = css(".product-file-manager [data-file-manager-item]") }
+        press "quick-look-document" { key = "Enter" }
+        click "open-document" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "document-workbench" { visible = css(".product-file-workbench[data-workbench-kind=document] .product-document-workbench") }
+        click "document-review" { target = role("tab", "审阅") }
+        expect "document-review-toolbar" { text = "修订" }
+        click "back-from-document" { target = css("[data-file-workbench-back]") }
+
+        fill "find-spreadsheet" { target = label("搜索文件") value = "quality-scorecard.xlsx" }
+        click "select-spreadsheet" { target = css(".product-file-manager [data-file-manager-item]") }
+        press "quick-look-spreadsheet" { key = "Enter" }
+        click "open-spreadsheet" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "spreadsheet-workbench" { visible = css(".product-file-workbench[data-workbench-kind=spreadsheet] .product-spreadsheet-workbench") }
+        click "spreadsheet-data" { target = role("tab", "数据") }
+        expect "spreadsheet-data-toolbar" { text = "数据验证" }
+        click "back-from-spreadsheet" { target = css("[data-file-workbench-back]") }
+
+        fill "find-presentation" { target = label("搜索文件") value = "release-review.pptx" }
+        click "select-presentation" { target = css(".product-file-manager [data-file-manager-item]") }
+        press "quick-look-presentation" { key = "Enter" }
+        click "open-presentation" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "presentation-workbench" { visible = css(".product-file-workbench[data-workbench-kind=presentation] .product-presentation-workbench") }
+        click "select-second-slide" { target = css(".product-presentation-workbench aside[aria-label='幻灯片'] > button:nth-child(2)") }
+        expect "second-slide" { text = "细节问题会累积成信任问题" }
+        click "back-from-presentation" { target = css("[data-file-workbench-back]") }
+
+        fill "find-pdf" { target = label("搜索文件") value = "visual-acceptance-report.pdf" }
+        click "select-pdf" { target = css(".product-file-manager [data-file-manager-item]") }
+        press "quick-look-pdf" { key = "Enter" }
+        click "open-pdf" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "pdf-workbench" { visible = css(".product-file-workbench[data-workbench-kind=pdf] .product-pdf-workbench") }
+        click "next-pdf-page" { target = role("button", "下一页") }
+        expect "pdf-page-updated" { visible = css(".product-pdf-workbench input[aria-label='页码'][value='2']") }
+        click "open-file-assistant" { target = role("button", "打开文件助手") }
+        expect "file-assistant" { visible = css("[data-file-assistant]") }
+
+        screenshot "desktop-evidence" { path = "product/file-workbenches-desktop.png" }
+        console "console" { path = "product/file-workbenches-console.json" clear = false }
+        page_errors "page-errors" { path = "product/file-workbenches-page-errors.json" clear = false }
+    }
+
+    scenario "memory-evolution-workflow" {
+        name = "Memory supports timeline, relationship inspection, and human-reviewed evolution"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-memory" { url = "http://127.0.0.1:4178/UI/playground/memory.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "memory-ready" { visible = css("[data-product-surface=memory]") }
+        expect "timeline-default" { visible = css(".product-memory__timeline[role=tabpanel]") }
+
+        click "open-graph" { target = role("tab", "关系图谱") }
+        expect "graph-canvas" { visible = css(".product-memory__graph [data-memory-graph-canvas]") }
+        click "zoom-graph" { target = role("button", "放大") }
+
+        click "open-evolution" { target = role("tab", "演化候选") }
+        expect "pending-candidate" { visible = css(".product-memory__evolution article[data-state=pending]") }
+        click "accept-candidate" { target = css(".product-memory__evolution article:first-child button[data-primary]") }
+        expect "candidate-accepted" { visible = css(".product-memory__evolution article:first-child[data-state=accepted]") }
+
+        screenshot "desktop-evidence" { path = "product/memory-evolution-desktop.png" }
+        console "console" { path = "product/memory-evolution-console.json" clear = false }
+        page_errors "page-errors" { path = "product/memory-evolution-page-errors.json" clear = false }
+    }
+
+    scenario "extension-host-boundary" {
+        name = "Installed extensions open in an isolated host and require review before contributing context"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-extensions" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "marketplace-ready" { visible = css("[data-product-surface=marketplace]") }
+        expect "permissions-visible" { text = "请求的权限" }
+        click "open-extension" { target = role("button", "打开扩展") }
+        expect "isolated-host" { visible = css("[data-product-surface=extension-host]") }
+        expect "proposal-pending" { visible = css(".product-extension-host__proposal[data-state=pending]") }
+        click "accept-proposal" { target = role("button", "添加到当前任务") }
+        expect "proposal-accepted" { visible = css(".product-extension-host__proposal[data-state=accepted]") }
+        click "back-to-marketplace" { target = role("button", "返回扩展市场") }
+        click "open-sources" { target = role("tab", "来源") }
+        expect "sources-table" { visible = css("[role=table][aria-label='扩展来源']") }
+
+        screenshot "desktop-evidence" { path = "product/extension-host-desktop.png" }
+        console "console" { path = "product/extension-host-console.json" clear = false }
+        page_errors "page-errors" { path = "product/extension-host-page-errors.json" clear = false }
+    }
+
+    scenario "automation-run-recovery" {
+        name = "Automation history exposes inputs, outputs, failed steps, and bounded retry"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-automations" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "automation-ready" { visible = css("[data-product-surface=automation]") }
+        click "open-history" { target = role("tab", "运行记录") }
+        expect "history-ready" { visible = css(".product-run-history[aria-label='运行记录']") }
+        click "filter-failed" { target = role("button", "失败") }
+        expect "failed-run" { visible = css(".product-run-history__list [role=option] [data-state=failed]") }
+        click "select-failed-run" { target = css(".product-run-history__list [role=option]:first-of-type") }
+        expect "recovery-action" { visible = css(".product-run-history__detail footer button") }
+        click "retry-failed-step" { target = role("button", "从失败步骤重试") }
+        expect "retrying" { text = "正在重试" }
+
+        screenshot "desktop-evidence" { path = "product/automation-recovery-desktop.png" }
+        console "console" { path = "product/automation-recovery-console.json" clear = false }
+        page_errors "page-errors" { path = "product/automation-recovery-page-errors.json" clear = false }
+    }
+}

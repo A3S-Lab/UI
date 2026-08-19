@@ -20,10 +20,10 @@
 }
 
 .product-composer:focus-within {
-  border-color: color-mix(in srgb, var(--ui-blue) 56%, var(--ui-line-strong));
+  border-color: color-mix(in srgb, var(--ui-ink) 18%, var(--ui-line-strong));
   box-shadow:
     0 12px 26px -20px rgb(15 35 70 / 32%),
-    0 0 0 3px color-mix(in srgb, var(--ui-blue) 13%, transparent);
+    0 1px 2px rgb(15 35 70 / 5%);
 }
 
 .product-composer[data-compact="true"] {
@@ -69,7 +69,10 @@
   color: var(--ui-blue);
 }
 
-.product-composer > [data-composer-resources] [data-resource-kind="skill"] > svg {
+.product-composer
+  > [data-composer-resources]
+  [data-resource-kind="skill"]
+  > svg {
   color: var(--ui-purple);
 }
 
@@ -366,13 +369,14 @@
     flex-wrap: nowrap;
   }
 
-  .product-composer [data-composer-setting] [data-setting-label],
-  .product-composer > footer > [data-composer-tools] > button [data-setting-label] {
-    position: absolute;
-    width: 1px;
-    height: 1px;
+  .product-composer [data-composer-setting] [data-setting-label] {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: 5.5rem;
     overflow: hidden;
-    clip-path: inset(50%);
+    clip-path: none;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
@@ -388,10 +392,8 @@
   }
 
   .product-composer [data-composer-tools] {
-    max-width: calc(100% - 5rem);
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scrollbar-width: none;
+    max-width: none;
+    overflow: visible;
   }
 
   .product-composer [data-composer-tools] > * {

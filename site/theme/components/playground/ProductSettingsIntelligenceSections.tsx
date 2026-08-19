@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { withBase } from "@rspress/core/runtime";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import { ProductModelSettings } from "./ProductSettingsModelManager";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
   announceProductSetting,
@@ -211,105 +212,7 @@ export function MemorySettings({
 }
 
 export function ModelSettings({ locale }: { locale: ProductPlaygroundLocale }) {
-  const zh = locale === "zh";
-  const [model, setModel] = useState("reasoner");
-  const models = [
-    [
-      "reasoner",
-      "A3S Reasoner",
-      zh ? "复杂规划与多步骤分析" : "Complex planning and multi-step analysis",
-      "ready",
-    ],
-    [
-      "fast",
-      "A3S Fast",
-      zh ? "快速问答与轻量编辑" : "Fast responses and lightweight edits",
-      "ready",
-    ],
-    [
-      "local",
-      zh ? "本地模型" : "Local model",
-      zh ? "需要宿主完成配置" : "Requires host configuration",
-      "setup",
-    ],
-  ] as const;
-  return (
-    <>
-      <SettingsHeader
-        description={
-          zh
-            ? "为不同任务选择默认模型。设置仅在当前页面生效。"
-            : "Choose a default model for different tasks. Settings apply only to this page."
-        }
-        title={zh ? "模型" : "Models"}
-      />
-      <section className="product-settings__models">
-        {models.map(([id, name, description, state]) => (
-          <label data-selected={model === id} key={id}>
-            <input
-              checked={model === id}
-              name="model"
-              onChange={() => {
-                setModel(id);
-                announceProductSetting("model", id);
-              }}
-              type="radio"
-            />
-            <span>
-              <ProductPlaygroundIcon name="workspace" />
-            </span>
-            <span>
-              <strong>{name}</strong>
-              <small>{description}</small>
-            </span>
-            <em data-state={state}>
-              {state === "ready"
-                ? zh
-                  ? "可用"
-                  : "Ready"
-                : zh
-                  ? "配置"
-                  : "Set up"}
-            </em>
-          </label>
-        ))}
-      </section>
-      <section className="product-settings__rows">
-        <SettingsRow
-          description={
-            zh
-              ? "在模型不可用时切换到已配置模型。"
-              : "Switch to an available configured model when needed."
-          }
-          title={zh ? "自动回退" : "Automatic fallback"}
-        >
-          <SettingsSwitch
-            checked
-            label={zh ? "自动回退" : "Automatic fallback"}
-          />
-        </SettingsRow>
-        <SettingsRow
-          description={
-            zh
-              ? "控制默认回答的分析与解释程度。"
-              : "Control the default amount of analysis and explanation."
-          }
-          title={zh ? "回答深度" : "Response depth"}
-        >
-          <select
-            defaultValue="balanced"
-            onChange={(event) =>
-              announceProductSetting("responseDepth", event.currentTarget.value)
-            }
-          >
-            <option value="concise">{zh ? "简洁" : "Concise"}</option>
-            <option value="balanced">{zh ? "平衡" : "Balanced"}</option>
-            <option value="deep">{zh ? "深入" : "Deep"}</option>
-          </select>
-        </SettingsRow>
-      </section>
-    </>
-  );
+  return <ProductModelSettings locale={locale} />;
 }
 
 const integrations = [

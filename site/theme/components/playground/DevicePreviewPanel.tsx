@@ -1,9 +1,24 @@
 import { useEffect, useRef } from "react";
 import { withBase } from "@rspress/core/runtime";
 import { useWorkspace } from "./WorkspaceContext";
+import type { ProductPlaygroundLocale } from "./product-playground-data";
 
 export function DevicePreviewPanel() {
   const { locale } = useWorkspace();
+  return <DeviceSimulatorSurface locale={locale} />;
+}
+
+export function DeviceSimulatorSurface({
+  className = "",
+  id,
+  locale,
+  role,
+}: {
+  className?: string;
+  id?: string;
+  locale: ProductPlaygroundLocale;
+  role?: "tabpanel";
+}) {
   const root = useRef<HTMLElement>(null);
   const zh = locale === "zh";
   const previewUrl = withBase(`/device-preview.html?lang=${locale}`);
@@ -16,13 +31,15 @@ export function DevicePreviewPanel() {
   return (
     <section
       ref={root}
-      className="device-simulator playground-device-preview"
+      className={`device-simulator playground-device-preview ${className}`.trim()}
       aria-label={zh ? "设备预览" : "Device preview"}
       data-device="iphone-15-pro"
       data-device-kind="phone"
       data-device-title={zh ? "A3S 设备预览" : "A3S device preview"}
       data-orientation="portrait"
       data-state="ready"
+      id={id}
+      role={role}
     >
       <header>
         <div data-device-simulator-toolbar>

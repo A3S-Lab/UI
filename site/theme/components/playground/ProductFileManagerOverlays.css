@@ -8,6 +8,10 @@
   grid-template-rows: auto minmax(0, 1fr) auto auto;
 }
 
+.product-file-manager [data-file-manager-backdrop] {
+  display: none;
+}
+
 .product-file-manager [data-file-manager-quicklook] > header {
   display: flex;
   min-height: 3.75rem;
@@ -136,6 +140,22 @@
   font-size: 0.6875rem;
 }
 
+.product-file-manager
+  [data-file-manager-quicklook]
+  > footer
+  button[data-primary] {
+  border-color: var(--ui-blue);
+  background: var(--ui-blue);
+  color: white;
+}
+
+.product-file-manager
+  [data-file-manager-quicklook]
+  > footer
+  button[data-primary]:hover {
+  background: var(--ui-blue-deep);
+}
+
 .product-file-manager [data-file-manager-quicklook] > footer svg {
   width: 0.8125rem;
   height: 0.8125rem;
@@ -248,4 +268,35 @@
   border-color: var(--ui-red);
   background: var(--ui-red);
   color: #fff;
+}
+
+@media (max-width: 44rem) {
+  .product-file-manager [data-file-manager-quicklook] {
+    position: fixed;
+    z-index: 5000;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .product-file-manager [data-file-manager-quicklook] > header {
+    min-height: 3.5rem;
+    padding-block-start: env(safe-area-inset-top);
+  }
+
+  .product-file-manager [data-file-manager-quicklook] > footer {
+    display: grid;
+    padding-block-end: max(0.75rem, env(safe-area-inset-bottom));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-file-manager [data-file-manager-quicklook] > footer button {
+    justify-content: center;
+  }
+
+  .product-file-manager [data-file-manager-backdrop] {
+    display: none;
+  }
 }

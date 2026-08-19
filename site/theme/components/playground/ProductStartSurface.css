@@ -1,0 +1,223 @@
+.product-start {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  padding: clamp(7rem, 18vh, 10.5rem) 2rem 4rem;
+  align-content: start;
+  justify-items: center;
+  overflow: visible;
+  background: color-mix(in srgb, var(--ui-paper) 68%, var(--ui-canvas));
+}
+
+.product-start__content {
+  width: min(50rem, 100%);
+  min-width: 0;
+  text-align: center;
+}
+
+.product-start h1 {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 690;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.product-start__content > [role="tablist"] {
+  display: inline-flex;
+  min-height: 2.25rem;
+  margin-top: 1.125rem;
+  padding: 0.125rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-panel) 88%, var(--ui-line));
+  gap: 0.125rem;
+}
+
+.product-start__content > [role="tablist"] button {
+  display: inline-flex;
+  min-width: 6.25rem;
+  min-height: 2rem;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3125rem;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 540;
+}
+
+.product-start__content > [role="tablist"] button svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+.product-start__content > [role="tablist"] button[aria-selected="true"] {
+  background: color-mix(in srgb, var(--ui-ink) 88%, transparent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+  color: var(--ui-paper);
+  font-weight: 640;
+}
+
+.product-start__prompts {
+  display: flex;
+  width: max-content;
+  max-width: min(100vw - 19rem, 60rem);
+  margin: 4rem 0 0 50%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.375rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  transform: translateX(-50%);
+}
+
+.product-start__prompts::-webkit-scrollbar {
+  display: none;
+}
+
+.product-start__prompts button {
+  display: inline-flex;
+  min-height: 2.125rem;
+  padding: 0 0.6875rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.3125rem;
+  background: var(--ui-paper);
+  color: var(--ui-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 520;
+  white-space: nowrap;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.product-start__prompts button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.product-start__prompts button:hover,
+.product-start__prompts button[aria-pressed="true"] {
+  border-color: var(--ui-line);
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-start__prompts button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--ui-blue) 32%, var(--ui-line));
+  background: color-mix(in srgb, var(--ui-blue) 7%, var(--ui-paper));
+  color: var(--ui-blue);
+}
+
+.product-start__composer {
+  position: relative;
+  width: 100%;
+  margin: 0.75rem auto 0;
+  text-align: start;
+}
+
+.product-start__composer > .product-composer {
+  border-color: var(--ui-line);
+  border-radius: 0.875rem;
+  box-shadow:
+    0 1rem 2.5rem -1.75rem rgb(15 35 70 / 30%),
+    0 1px 2px rgb(15 35 70 / 5%);
+}
+
+.product-start__composer > .product-composer:focus-within {
+  border-color: color-mix(in srgb, var(--ui-ink) 18%, var(--ui-line-strong));
+  box-shadow:
+    0 1rem 2.5rem -1.75rem rgb(15 35 70 / 30%),
+    0 1px 2px rgb(15 35 70 / 5%);
+}
+
+.product-start__assurance {
+  display: flex;
+  min-height: 1.25rem;
+  margin: 0.625rem 0 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.product-start__assurance svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+  flex: none;
+}
+
+@media (pointer: coarse) {
+  .product-start__content > [role="tablist"] button,
+  .product-start__prompts button {
+    min-height: 2.75rem;
+  }
+
+  .product-start__prompts button {
+    padding-inline: 0.875rem;
+  }
+}
+
+@container product-main (max-width: 55rem) {
+  .product-start {
+    padding-inline: 1.5rem;
+  }
+
+  .product-start__prompts {
+    width: 100%;
+    max-width: 100%;
+    margin-inline-start: 0;
+    transform: none;
+  }
+}
+
+@media (max-width: 48rem) {
+  .product-start {
+    min-height: calc(100% - 3.5rem);
+    padding: 3rem 1rem 2.5rem;
+  }
+
+  .product-start__content > [role="tablist"] {
+    width: 100%;
+  }
+
+  .product-start__content > [role="tablist"] button {
+    min-width: 0;
+    flex: 1;
+    padding-inline: 0.5rem;
+  }
+
+  .product-start__prompts {
+    margin-top: 2.75rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .product-start {
+    padding-inline: 0.75rem;
+  }
+
+  .product-start h1 {
+    font-size: 1.5rem;
+  }
+
+  .product-start__content > [role="tablist"] button {
+    font-size: 0.6875rem;
+  }
+}

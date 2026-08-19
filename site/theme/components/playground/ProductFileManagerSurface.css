@@ -84,12 +84,19 @@
   text-align: start;
 }
 
-.product-file-manager [data-file-manager-sidebar] nav button:is(:hover, [aria-current="page"], [aria-pressed="true"]) {
+.product-file-manager
+  [data-file-manager-sidebar]
+  nav
+  button:is(:hover, [aria-current="page"], [aria-pressed="true"]) {
   background: var(--ui-panel);
   color: var(--ui-ink);
 }
 
-.product-file-manager [data-file-manager-sidebar] nav button[aria-current="page"] svg {
+.product-file-manager
+  [data-file-manager-sidebar]
+  nav
+  button[aria-current="page"]
+  svg {
   color: var(--ui-blue);
 }
 
@@ -229,11 +236,15 @@
   white-space: nowrap;
 }
 
-.product-file-manager [data-file-manager-breadcrumb] button:is(:hover, [aria-current="page"]) {
+.product-file-manager
+  [data-file-manager-breadcrumb]
+  button:is(:hover, [aria-current="page"]) {
   color: var(--ui-ink);
 }
 
-.product-file-manager [data-file-manager-breadcrumb] button[aria-current="page"] {
+.product-file-manager
+  [data-file-manager-breadcrumb]
+  button[aria-current="page"] {
   font-weight: 650;
 }
 
@@ -373,7 +384,10 @@
   background: transparent;
 }
 
-.product-file-manager [data-file-manager-toolbar] [role="group"] button[aria-pressed="true"] {
+.product-file-manager
+  [data-file-manager-toolbar]
+  [role="group"]
+  button[aria-pressed="true"] {
   background: var(--ui-paper);
   color: var(--ui-blue);
   box-shadow: 0 1px 3px rgb(15 35 70 / 8%);
@@ -383,7 +397,8 @@
   display: flex;
   min-height: 3rem;
   padding: 0.375rem 0.75rem;
-  border-block-end: 1px solid color-mix(in srgb, var(--ui-blue) 24%, var(--ui-line));
+  border-block-end: 1px solid
+    color-mix(in srgb, var(--ui-blue) 24%, var(--ui-line));
   align-items: center;
   gap: 0.25rem;
   background: color-mix(in srgb, var(--ui-blue) 6%, var(--ui-paper));
@@ -414,7 +429,23 @@
   color: var(--ui-ink);
 }
 
-.product-file-manager [data-file-manager-selection-toolbar] button[data-danger] {
+.product-file-manager
+  [data-file-manager-selection-toolbar]
+  button[data-primary] {
+  background: var(--ui-blue);
+  color: #fff;
+}
+
+.product-file-manager
+  [data-file-manager-selection-toolbar]
+  button[data-primary]:hover {
+  background: color-mix(in srgb, var(--ui-blue) 88%, #000);
+  color: #fff;
+}
+
+.product-file-manager
+  [data-file-manager-selection-toolbar]
+  button[data-danger] {
   color: var(--ui-red);
 }
 
@@ -465,7 +496,7 @@
   min-width: 0;
 }
 
-.product-file-manager [data-file-manager-item] > button {
+.product-file-manager [data-file-manager-item] > [data-file-entry-control] {
   width: 100%;
   border: 1px solid transparent;
   background: transparent;
@@ -474,7 +505,10 @@
   font: inherit;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-item] > button {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-item]
+  > [data-file-entry-control] {
   display: grid;
   min-height: 7.75rem;
   padding: 0.75rem 0.5rem 0.5rem;
@@ -486,13 +520,21 @@
   text-align: center;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-item] > button:is(:hover, :focus-visible),
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-item][aria-selected="true"] > button {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-item]:hover
+  > [data-file-entry-control],
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-item][aria-selected="true"]
+  > [data-file-entry-control] {
   border-color: color-mix(in srgb, var(--ui-blue) 16%, var(--ui-line));
   background: color-mix(in srgb, var(--ui-blue) 6%, var(--ui-paper));
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-icon] {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-icon] {
   position: relative;
   display: grid;
   width: 3.25rem;
@@ -501,14 +543,21 @@
   place-items: center;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-icon] > svg:first-child {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-icon]
+  > svg:first-child {
   width: 2.75rem;
   height: 2.75rem;
   color: var(--ui-blue);
   stroke-width: 1.35;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-kind="file"] [data-file-icon] > svg:first-child {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-kind="file"]
+  [data-file-icon]
+  > svg:first-child {
   color: var(--ui-muted);
 }
 
@@ -521,7 +570,10 @@
   color: var(--ui-blue);
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-item] strong {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-item]
+  strong {
   max-width: 100%;
   overflow: hidden;
   font-size: 0.75rem;
@@ -531,11 +583,21 @@
   white-space: nowrap;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] :is([data-file-kind], [data-file-owner], [data-file-modified], [data-file-size]) {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  :is(
+    [data-file-kind],
+    [data-file-owner],
+    [data-file-modified],
+    [data-file-size]
+  ) {
   display: none;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item] > button {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-manager-item]
+  > [data-file-entry-control] {
   display: grid;
   min-height: 2.75rem;
   padding: 0 0.75rem;
@@ -548,14 +610,22 @@
   text-align: start;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item] > button:is(:hover, :focus-visible),
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item][aria-selected="true"] > button {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-manager-item]:hover
+  > [data-file-entry-control],
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-manager-item][aria-selected="true"]
+  > [data-file-entry-control] {
   border-color: color-mix(in srgb, var(--ui-blue) 16%, var(--ui-line));
   background: color-mix(in srgb, var(--ui-blue) 6%, var(--ui-paper));
   color: var(--ui-ink);
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-icon] {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-icon] {
   position: relative;
   display: grid;
   width: 1.5rem;
@@ -564,17 +634,26 @@
   place-items: center;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-icon] > svg:first-child {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-icon]
+  > svg:first-child {
   width: 1.125rem;
   height: 1.125rem;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-icon] [data-favorite] {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-icon]
+  [data-favorite] {
   width: 0.5625rem;
   height: 0.5625rem;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item] strong {
+.product-file-manager
+  [data-file-manager-viewport][data-view="list"]
+  [data-file-manager-item]
+  strong {
   overflow: hidden;
   color: var(--ui-ink);
   font-size: 0.75rem;
@@ -595,15 +674,23 @@
   background: color-mix(in srgb, var(--ui-blue) 5%, var(--ui-paper));
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] > [data-file-inline-editor],
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-item] [data-file-inline-editor] {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  > [data-file-inline-editor],
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-item]
+  [data-file-inline-editor] {
   min-height: 7.75rem;
   align-content: center;
   grid-column: auto;
   grid-template-columns: minmax(0, 1fr) auto auto;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-inline-editor] > svg {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-inline-editor]
+  > svg {
   grid-column: 1 / -1;
   width: 2.5rem;
   height: 2.5rem;
@@ -672,7 +759,9 @@
   text-align: center;
 }
 
-.product-file-manager [data-file-manager-viewport][data-view="grid"] [data-file-manager-empty] {
+.product-file-manager
+  [data-file-manager-viewport][data-view="grid"]
+  [data-file-manager-empty] {
   grid-column: 1 / -1;
 }
 
@@ -757,7 +846,10 @@
   }
 
   .product-file-manager [data-file-list-header],
-  .product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item] > button {
+  .product-file-manager
+    [data-file-manager-viewport][data-view="list"]
+    [data-file-manager-item]
+    > [data-file-entry-control] {
     grid-template-columns: auto minmax(10rem, 1fr) 6rem 7rem 5rem;
   }
 
@@ -786,6 +878,14 @@
     inset-inline-end: 0;
     width: min(21rem, 86vw);
     box-shadow: -12px 0 24px -20px rgb(15 35 70 / 42%);
+  }
+
+  .product-file-manager [data-file-manager-backdrop] {
+    position: absolute;
+    z-index: 19;
+    inset: 0;
+    display: block;
+    background: rgb(11 16 28 / 28%);
   }
 }
 
@@ -835,7 +935,10 @@
   }
 
   .product-file-manager [data-file-list-header],
-  .product-file-manager [data-file-manager-viewport][data-view="list"] [data-file-manager-item] > button {
+  .product-file-manager
+    [data-file-manager-viewport][data-view="list"]
+    [data-file-manager-item]
+    > [data-file-entry-control] {
     grid-template-columns: auto minmax(0, 1fr) 5rem;
   }
 
@@ -843,8 +946,12 @@
     grid-template-columns: minmax(0, 1fr) 5rem;
   }
 
-  .product-file-manager [data-file-list-header] > :is(:nth-child(2), :nth-child(3), :nth-child(5)),
-  .product-file-manager [data-file-manager-viewport][data-view="list"] :is([data-file-kind], [data-file-owner], [data-file-size]) {
+  .product-file-manager
+    [data-file-list-header]
+    > :is(:nth-child(2), :nth-child(3), :nth-child(5)),
+  .product-file-manager
+    [data-file-manager-viewport][data-view="list"]
+    :is([data-file-kind], [data-file-owner], [data-file-size]) {
     display: none;
   }
 

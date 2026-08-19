@@ -1,0 +1,108 @@
+suite "a3s-ui-product-composer-controls" {
+    version = 1
+
+    scenario "composer-context-and-run-controls" {
+        name = "The production composer attaches every supported context type and preserves run configuration"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "composer-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+
+        click "open-context-for-file" { target = role("button", "添加任务上下文") }
+        click "open-file-menu" { target = role("menuitem", "添加文件") }
+        click "choose-workspace-file" { target = role("menuitem", "工作区文件") }
+        expect "workspace-tree" { visible = css("[data-composer-suggestions][aria-label='工作区文件'] [role=tree]") }
+        screenshot "workspace-picker-evidence" { path = "product/composer-workspace-picker-desktop.png" }
+        click "expand-css-folder" { target = css("[data-composer-suggestions] [role=treeitem]:nth-child(2)") }
+        click "attach-file" { target = css("[data-composer-suggestions] [role=treeitem]:nth-child(3)") }
+        expect "file-chip" { visible = css("[data-composer-resources] [data-resource-kind=file]") }
+
+        click "open-context-for-skill" { target = role("button", "添加任务上下文") }
+        click "choose-skill" { target = role("menuitem", "技能") }
+        expect "skill-list" { visible = css("[data-composer-suggestions][aria-label='选择技能'] [role=listbox]") }
+        click "attach-skill" { target = css("[data-composer-suggestions] [role=option]:first-child") }
+        expect "skill-chip" { visible = css("[data-composer-resources] [data-resource-kind=skill]") }
+
+        click "open-context-for-assistant" { target = role("button", "添加任务上下文") }
+        click "choose-assistant" { target = role("menuitem", "专家") }
+        expect "assistant-picker" { visible = css("[data-composer-resource-picker=assistant][role=dialog]") }
+        click "attach-assistant" { target = css("[data-composer-resource-picker=assistant] [role=option][data-configured=true]:first-child") }
+        expect "assistant-chip" { visible = css("[data-composer-resources] [data-resource-kind=assistant]") }
+
+        click "open-context-for-connector" { target = role("button", "添加任务上下文") }
+        click "choose-connector" { target = role("menuitem", "连接器") }
+        expect "connector-picker" { visible = css("[data-composer-resource-picker=connector][role=dialog]") }
+        click "attach-connector" { target = css("[data-composer-resource-picker=connector] [role=option][data-configured=true]:first-child") }
+        expect "connector-chip" { visible = css("[data-composer-resources] [data-resource-kind=connector]") }
+
+        click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
+        expect "run-panel" { visible = css(".product-start [data-control-panel=run][role=dialog]") }
+        click "enable-research" { target = css(".product-start [data-control-panel=run] [data-run-settings-row] > button") }
+        expect "research-enabled" { visible = css(".product-start [data-run-settings-row] button[data-research-active=true][aria-pressed=true]") }
+
+        click "open-effort" { target = css(".product-start [data-run-settings-row] > div > button:first-child") }
+        expect "effort-picker" { visible = css(".product-start [data-run-detail=effort]") }
+        focus "focus-effort" { target = css(".product-start [data-run-detail=effort] input[type=range]") }
+        press "increase-effort" { key = "ArrowRight" }
+        expect "effort-updated" { visible = css(".product-start [data-run-detail=effort] input[aria-valuetext='深入']") }
+        click "close-effort" { target = role("button", "关闭努力程度") }
+
+        click "open-models" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
+        expect "model-picker" { visible = css(".product-start [data-run-detail=model]") }
+        fill "find-default-model" { target = label("搜索模型") value = "当前默认" }
+        click "choose-default-model" { target = css(".product-start [data-run-detail=model] [role=option]:first-child") }
+        expect "model-selected" { visible = css(".product-start [data-composer-control=run] > button[aria-label*='当前默认模型']") }
+
+        click "reopen-models" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
+        click "configure-models" { target = role("button", "配置模型与提供方") }
+        expect "model-settings-open" { visible = css(".product-settings[open] > aside button[aria-current=page]") }
+        expect "model-settings-heading" { text = "管理默认模型、Provider 连接、模型目录与运行参数" }
+        click "close-model-settings" { target = role("button", "关闭设置") }
+
+        click "open-execution-mode" { target = css(".product-start [data-composer-control=mode] > button") }
+        click "choose-automatic-mode" { target = css(".product-start [data-mode-options] [role=option]:nth-child(3)") }
+        expect "automatic-mode-selected" { visible = css(".product-start [data-composer-control=mode] [data-setting-label]") }
+
+        click "open-workspaces" { target = css(".product-start [data-composer-control=workspace] > button") }
+        click "choose-local-workspace" { target = css(".product-start [data-workspace-options] [role=option]:nth-child(2)") }
+        expect "local-workspace-selected" { text = "本地工作区" }
+
+        click "remove-file" { target = role("button", "移除 agent-composer.css") }
+        click "remove-skill" { target = role("button", "移除 $a3s-office") }
+        click "remove-assistant" { target = role("button", "移除 产品交付负责人") }
+        click "remove-connector" { target = role("button", "移除 Git 仓库") }
+        expect "composer-remains-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+
+        screenshot "desktop-evidence" { path = "product/composer-controls-desktop.png" }
+        console "console" { path = "product/composer-controls-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/composer-controls-desktop-page-errors.json" clear = false }
+    }
+
+    scenario "composer-overlays-mobile" {
+        name = "Composer overlays remain reachable and contained on a phone viewport"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "composer-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+
+        click "open-context" { target = role("button", "添加任务上下文") }
+        expect "context-menu" { visible = css(".product-start [data-composer-attachment-menu][role=menu]") }
+        click "open-connector-picker" { target = role("menuitem", "连接器") }
+        expect "connector-picker" { visible = css(".product-start [data-composer-resource-picker=connector][role=dialog]") }
+        press "close-picker" { key = "Escape" }
+        expect "trigger-focus-restored" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+
+        click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
+        expect "run-panel" { visible = css(".product-start [data-control-panel=run][role=dialog]") }
+
+        screenshot "mobile-evidence" { path = "product/composer-controls-mobile.png" }
+        console "console" { path = "product/composer-controls-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/composer-controls-mobile-page-errors.json" clear = false }
+    }
+}

@@ -8,8 +8,17 @@ import {
 } from "react";
 import { Link } from "@rspress/core/theme";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
-import { ProductComposer } from "./ProductComposer";
+import {
+  ProductComposer,
+  type ProductComposerContext,
+} from "./ProductComposer";
+import { ProductFollowUpQueue } from "./ProductFollowUpQueue";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import { ProductSessionExecution } from "./ProductSessionExecution";
+import {
+  ProductSessionInspector,
+  type ProductSessionInspectorTab,
+} from "./ProductSessionInspector";
 import {
   seededSessionArtifacts,
   seededSessionCopy,
@@ -26,7 +35,14 @@ import {
 
 export function ProductSessionSurface({
   locale,
+  onOpenModelSettings,
   onFollowUp,
+  onMoveQueuedFollowUp,
+  onPauseQueue,
+  onRemoveQueuedFollowUp,
+  onResumeQueue,
+  onRunNextQueuedFollowUp,
+  onUpdateQueuedFollowUp,
   persistenceStatus = "saved",
   startHref,
   taskSession = null,
@@ -34,7 +50,14 @@ export function ProductSessionSurface({
   variant = "seeded",
 }: {
   locale: ProductPlaygroundLocale;
-  onFollowUp?: (message: string) => void;
+  onOpenModelSettings?: () => void;
+  onFollowUp?: (message: string, context: ProductComposerContext) => void;
+  onMoveQueuedFollowUp?: (id: string, offset: -1 | 1) => void;
+  onPauseQueue?: () => void;
+  onRemoveQueuedFollowUp?: (id: string) => void;
+  onResumeQueue?: () => void;
+  onRunNextQueuedFollowUp?: () => void;
+  onUpdateQueuedFollowUp?: (id: string, message: string) => void;
   persistenceStatus?: "memory" | "saved";
   startHref?: string;
   taskSession?: ProductTaskSession | null;
@@ -60,28 +83,37 @@ export function ProductSessionSurface({
       ? formatProductTaskTitle(taskSession.prompt, locale)
       : seededSessionTitle[locale];
   const followUpReply = getProductTaskFollowUpReply(locale);
-  const [activeArtifactId, setActiveArtifactId] = useState<string | null>(null);
-  const [artifactCopyStatus, setArtifactCopyStatus] = useState("");
   const [seededFollowUps, setSeededFollowUps] = useState<string[]>([]);
   const followUps = created ? (taskSession?.followUps ?? []) : seededFollowUps;
-  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const queuedFollowUps = created ? (taskSession?.queuedFollowUps ?? []) : [];
+  const [running, setRunning] = useState(created);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
+  const [inspectorTab, setInspectorTab] =
+    useState<ProductSessionInspectorTab>("overview");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [messageStatus, setMessageStatus] = useState("");
+  const [messageMenuOpen, setMessageMenuOpen] = useState(false);
   const inspectorCloseRef = useRef<HTMLButtonElement>(null);
   const inspectorRef = useRef<HTMLElement>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement>(null);
+  const messageMenuRef = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
-    const query = window.matchMedia("(max-width: 60rem)");
+    if (created && taskSession?.id) setRunning(true);
+  }, [created, taskSession?.id]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 68rem)");
     const update = () => {
-      setInspectorOverlay(query.matches);
-      setInspectorOpen(!query.matches);
+      setInspectorOverlay(mediaQuery.matches);
+      if (mediaQuery.matches) setInspectorOpen(false);
     };
     update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
   }, []);
 
   const closeInspector = useCallback(() => {
@@ -89,9 +121,13 @@ export function ProductSessionSurface({
     window.requestAnimationFrame(() => inspectorTriggerRef.current?.focus());
   }, []);
 
+  const openInspector = useCallback((tab: ProductSessionInspectorTab) => {
+    setInspectorTab(tab);
+    setInspectorOpen(true);
+  }, []);
+
   useEffect(() => {
     if (!inspectorOpen) return undefined;
-
     const focusFrame = inspectorOverlay
       ? window.requestAnimationFrame(() => inspectorCloseRef.current?.focus())
       : undefined;
@@ -102,16 +138,14 @@ export function ProductSessionSurface({
         return;
       }
       if (!inspectorOverlay || event.key !== "Tab") return;
-
       const controls = [
-        ...(inspectorRef.current?.querySelectorAll<HTMLButtonElement>(
-          "button:not(:disabled)",
+        ...(inspectorRef.current?.querySelectorAll<HTMLElement>(
+          "button:not(:disabled), a[href], input:not(:disabled)",
         ) ?? []),
       ].filter((control) => control.getClientRects().length > 0);
       const first = controls.at(0);
       const last = controls.at(-1);
       if (!first || !last) return;
-
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
@@ -120,7 +154,6 @@ export function ProductSessionSurface({
         first.focus();
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       if (focusFrame) window.cancelAnimationFrame(focusFrame);
@@ -128,12 +161,37 @@ export function ProductSessionSurface({
     };
   }, [closeInspector, inspectorOpen, inspectorOverlay]);
 
+  useEffect(() => {
+    if (!messageMenuOpen) return undefined;
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !messageMenuRef.current?.contains(event.target)
+      ) {
+        setMessageMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setMessageMenuOpen(false);
+      messageMenuRef.current?.querySelector<HTMLElement>("summary")?.focus();
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [messageMenuOpen]);
+
   const matchCount = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(locale);
     if (!normalizedQuery) return 0;
     const messages = [
       ...copy,
       ...followUps.flatMap((message) => [message, followUpReply]),
+      ...queuedFollowUps.map((item) => item.content),
     ];
     return messages.reduce((count, value) => {
       const matches = value
@@ -141,7 +199,7 @@ export function ProductSessionSurface({
         .split(normalizedQuery).length;
       return count + Math.max(0, matches - 1);
     }, 0);
-  }, [copy, followUpReply, followUps, locale, query]);
+  }, [copy, followUpReply, followUps, locale, query, queuedFollowUps]);
 
   const shareSession = async () => {
     try {
@@ -152,18 +210,52 @@ export function ProductSessionSurface({
     }
   };
 
-  const activeArtifact = artifacts.find(
-    (artifact) => artifact.id === activeArtifactId,
-  );
-
-  const copyArtifact = async () => {
-    if (!activeArtifact) return;
+  const copyResponse = async () => {
     try {
-      await navigator.clipboard.writeText(activeArtifact.content);
-      setArtifactCopyStatus(zh ? "内容已复制" : "Content copied");
+      await navigator.clipboard.writeText(copy.slice(1).join("\n\n"));
+      setMessageStatus(zh ? "回复已复制" : "Response copied");
     } catch {
-      setArtifactCopyStatus(zh ? "无法复制内容" : "Unable to copy content");
+      setMessageStatus(zh ? "无法复制回复" : "Unable to copy response");
     }
+  };
+
+  const saveResponseToMemory = () => {
+    try {
+      const key = "a3s-playground-saved-responses";
+      const stored = JSON.parse(window.localStorage.getItem(key) ?? "[]");
+      const items = Array.isArray(stored) ? stored : [];
+      window.localStorage.setItem(
+        key,
+        JSON.stringify([
+          {
+            content: copy.slice(1).join("\n\n"),
+            savedAt: new Date().toISOString(),
+            title,
+          },
+          ...items,
+        ]),
+      );
+      setMessageStatus(zh ? "回复已保存到记忆" : "Response saved to memory");
+    } catch {
+      setMessageStatus(
+        zh ? "浏览器未允许保存记忆" : "Browser storage is unavailable",
+      );
+    }
+    setMessageMenuOpen(false);
+  };
+
+  const exportConversation = () => {
+    const body = [`# ${title}`, "", ...copy, ...followUps].join("\n\n");
+    const href = URL.createObjectURL(
+      new Blob([body], { type: "text/markdown;charset=utf-8" }),
+    );
+    const link = document.createElement("a");
+    link.download = `${title.replace(/[\\/:*?"<>|]/gu, "-")}.md`;
+    link.href = href;
+    link.click();
+    URL.revokeObjectURL(href);
+    setMessageStatus(zh ? "会话已导出" : "Conversation exported");
+    setMessageMenuOpen(false);
   };
 
   if (created && !taskSessionReady) {
@@ -173,7 +265,6 @@ export function ProductSessionSurface({
         className="product-session"
         data-product-surface="session"
         data-session-state="loading"
-        data-variant="created"
       >
         <header className="product-session__header">
           <h1>{zh ? "正在恢复任务" : "Restoring task"}</h1>
@@ -202,7 +293,6 @@ export function ProductSessionSurface({
         className="product-session"
         data-product-surface="session"
         data-session-state="missing"
-        data-variant="created"
       >
         <header className="product-session__header">
           <h1>{zh ? "当前任务" : "Current task"}</h1>
@@ -211,9 +301,7 @@ export function ProductSessionSurface({
           <span aria-hidden="true">
             <ProductPlaygroundIcon name="task-add" />
           </span>
-          <h2 id="product-session-missing-title">
-            {zh ? "没有可恢复的任务" : "No task to restore"}
-          </h2>
+          <h2>{zh ? "没有可恢复的任务" : "No task to restore"}</h2>
           <p>
             {zh
               ? "此地址会打开最近创建的任务。请先新建任务，再从最近任务中返回。"
@@ -230,14 +318,34 @@ export function ProductSessionSurface({
   return (
     <section
       className="product-session"
-      data-product-surface="session"
       data-inspector-open={inspectorOpen ? "true" : undefined}
+      data-product-surface="session"
       data-search-open={searchOpen ? "true" : undefined}
       data-session-state="ready"
       data-variant={variant}
     >
       <header className="product-session__header">
-        <h1>{title}</h1>
+        <div className="product-session__heading">
+          <h1>{title}</h1>
+          <small>
+            <i
+              data-state={
+                created ? (running ? "active" : "stopped") : "complete"
+              }
+            />
+            {created
+              ? running
+                ? zh
+                  ? "正在执行"
+                  : "In progress"
+                : zh
+                  ? "已停止"
+                  : "Stopped"
+              : zh
+                ? "已完成"
+                : "Completed"}
+          </small>
+        </div>
         <div className="product-session__actions">
           <button
             aria-expanded={searchOpen}
@@ -256,25 +364,25 @@ export function ProductSessionSurface({
             <ProductPlaygroundIcon name="share" />
           </button>
           <button
-            aria-controls="product-session-artifacts"
+            aria-controls="product-session-details"
             aria-expanded={inspectorOpen}
             aria-label={
               inspectorOpen
                 ? zh
-                  ? "关闭产物面板"
-                  : "Close artifacts panel"
+                  ? "关闭任务详情"
+                  : "Close task details"
                 : zh
-                  ? "打开产物面板"
-                  : "Open artifacts panel"
+                  ? "打开任务详情"
+                  : "Open task details"
             }
             data-active={inspectorOpen ? "true" : undefined}
             onClick={() =>
-              inspectorOpen ? closeInspector() : setInspectorOpen(true)
+              inspectorOpen ? closeInspector() : openInspector("overview")
             }
             ref={inspectorTriggerRef}
             type="button"
           >
-            <ProductPlaygroundIcon name="workspace" />
+            <ProductPlaygroundIcon name="collapse" />
           </button>
           <output aria-live="polite">{shareStatus}</output>
         </div>
@@ -331,133 +439,84 @@ export function ProductSessionSurface({
                   <ProductPlaygroundIcon name="assistant" />
                   <strong>A3S</strong>
                 </span>
+                <small>{created ? (zh ? "刚刚" : "Now") : "2m 18s"}</small>
               </header>
               <div className="product-session__response">
                 <p>{copy[1]}</p>
-
-                {created && contextDetails ? (
-                  <>
-                    <details className="product-session__tool" data-context>
-                      <summary>
-                        <span data-tool-icon>
-                          <ProductPlaygroundIcon name="workspace" />
-                        </span>
-                        <span data-tool-identity>
-                          <strong>
-                            {zh ? "任务上下文已准备" : "Task context ready"}
-                          </strong>
-                          <small>{contextDetails.workspace}</small>
-                        </span>
-                        <span data-tool-state>{zh ? "就绪" : "Ready"}</span>
-                        <ProductPlaygroundIcon
-                          data-tool-disclosure
-                          name="chevron"
-                        />
-                      </summary>
-                      <section>
-                        <dl>
-                          <div>
-                            <dt>{zh ? "工作空间" : "Workspace"}</dt>
-                            <dd>{contextDetails.workspace}</dd>
-                          </div>
-                          <div>
-                            <dt>{zh ? "权限" : "Permissions"}</dt>
-                            <dd>{contextDetails.permissions}</dd>
-                          </div>
-                          <div>
-                            <dt>{zh ? "模型" : "Model"}</dt>
-                            <dd>{contextDetails.model}</dd>
-                          </div>
-                          <div>
-                            <dt>{zh ? "努力程度" : "Effort"}</dt>
-                            <dd>{contextDetails.effort}</dd>
-                          </div>
-                          <div>
-                            <dt>{zh ? "已附加资源" : "Attached resources"}</dt>
-                            <dd>{contextDetails.resources}</dd>
-                          </div>
-                        </dl>
-                      </section>
-                    </details>
-                    <p>{copy[2]}</p>
-                    <p>{copy[3]}</p>
-                  </>
-                ) : (
-                  <>
-                    <details className="product-session__tool">
-                      <summary>
-                        <span data-tool-icon>
-                          <ProductPlaygroundIcon name="search" />
-                        </span>
-                        <span data-tool-identity>
-                          <strong>
-                            {zh
-                              ? "检查会话恢复路径"
-                              : "Inspect session recovery path"}
-                          </strong>
-                          <small>
-                            src/auth/session.ts · src/routes/sign-in.tsx
-                          </small>
-                        </span>
-                        <span data-tool-state>
-                          {zh ? "已完成" : "Complete"}
-                        </span>
-                        <ProductPlaygroundIcon
-                          data-tool-disclosure
-                          name="chevron"
-                        />
-                      </summary>
-                      <section>
-                        <dl>
-                          <div>
-                            <dt>{zh ? "操作" : "Action"}</dt>
-                            <dd>{zh ? "读取 2 个文件" : "Read 2 files"}</dd>
-                          </div>
-                          <div>
-                            <dt>{zh ? "结果" : "Result"}</dt>
-                            <dd>
-                              {zh
-                                ? "定位到失败分支中的状态清理顺序"
-                                : "Located state cleanup ordering in the failure branch"}
-                            </dd>
-                          </div>
-                        </dl>
-                      </section>
-                    </details>
-
-                    <p>{copy[2]}</p>
-
-                    <details className="product-session__tool" data-success>
-                      <summary>
-                        <span data-tool-icon>
-                          <ProductPlaygroundIcon name="check" />
-                        </span>
-                        <span data-tool-identity>
-                          <strong>
-                            {zh ? "运行会话测试" : "Run session tests"}
-                          </strong>
-                          <small>npm test -- session</small>
-                        </span>
-                        <span data-tool-state>{zh ? "通过" : "Passed"}</span>
-                        <ProductPlaygroundIcon
-                          data-tool-disclosure
-                          name="chevron"
-                        />
-                      </summary>
-                      <section>
-                        <pre>
-                          <code>
-                            PASS tests/session.test.ts{"\n"}
-                            12 passed · 0 failed · 4.8s
-                          </code>
-                        </pre>
-                      </section>
-                    </details>
-
-                    <p>{copy[3]}</p>
-                  </>
-                )}
+                <ProductSessionExecution
+                  contextDetails={contextDetails}
+                  created={created}
+                  locale={locale}
+                  onOpenInspector={openInspector}
+                />
+                <p data-conclusion>
+                  {created ? `${copy[2]} ${copy[3]}` : copy[3]}
+                </p>
               </div>
+              <footer className="product-session__message-actions">
+                <button
+                  aria-label={zh ? "复制回复" : "Copy response"}
+                  onClick={copyResponse}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="copy" />
+                </button>
+                <button
+                  aria-label={zh ? "回复有帮助" : "Helpful response"}
+                  onClick={() =>
+                    setMessageStatus(
+                      zh ? "感谢反馈" : "Thanks for the feedback",
+                    )
+                  }
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="check" />
+                </button>
+                <details
+                  className="product-session__message-menu"
+                  onToggle={(event) =>
+                    setMessageMenuOpen(event.currentTarget.open)
+                  }
+                  open={messageMenuOpen}
+                  ref={messageMenuRef}
+                >
+                  <summary
+                    aria-label={zh ? "更多回复操作" : "More response actions"}
+                  >
+                    <ProductPlaygroundIcon name="more" />
+                  </summary>
+                  <div role="menu">
+                    <button
+                      onClick={() => {
+                        openInspector("artifacts");
+                        setMessageMenuOpen(false);
+                      }}
+                      role="menuitem"
+                      type="button"
+                    >
+                      <ProductPlaygroundIcon name="document" />
+                      {zh ? "查看交付产物" : "Review deliverables"}
+                    </button>
+                    <button
+                      onClick={saveResponseToMemory}
+                      role="menuitem"
+                      type="button"
+                    >
+                      <ProductPlaygroundIcon name="brain" />
+                      {zh ? "保存到记忆" : "Save to memory"}
+                    </button>
+                    <button
+                      onClick={exportConversation}
+                      role="menuitem"
+                      type="button"
+                    >
+                      <ProductPlaygroundIcon name="download" />
+                      {zh ? "导出会话" : "Export conversation"}
+                    </button>
+                  </div>
+                </details>
+                <output aria-live="polite">{messageStatus}</output>
+              </footer>
             </article>
           </li>
           {followUps.map((message, index) => (
@@ -474,6 +533,7 @@ export function ProductSessionSurface({
                       <ProductPlaygroundIcon name="assistant" />
                       <strong>A3S</strong>
                     </span>
+                    <small>{zh ? "刚刚" : "Now"}</small>
                   </header>
                   <div className="product-session__response">
                     <p>{followUpReply}</p>
@@ -486,17 +546,58 @@ export function ProductSessionSurface({
       </div>
 
       <footer className="product-session__composer">
+        {created && queuedFollowUps.length > 0 ? (
+          <ProductFollowUpQueue
+            items={queuedFollowUps}
+            locale={locale}
+            onMove={(id, offset) => onMoveQueuedFollowUp?.(id, offset)}
+            onPause={() => onPauseQueue?.()}
+            onRemove={(id) => onRemoveQueuedFollowUp?.(id)}
+            onResume={() => onResumeQueue?.()}
+            onRunNext={() => {
+              onRunNextQueuedFollowUp?.();
+              setRunning(true);
+            }}
+            onUpdate={(id, message) => onUpdateQueuedFollowUp?.(id, message)}
+            paused={taskSession?.queuePaused ?? false}
+            running={running}
+          />
+        ) : null}
         <ProductComposer
+          busy={created && running}
           compact
           contextual
           initialWorkspace={
             created ? taskSession?.context.workspace || "local" : "local"
           }
           locale={locale}
-          onSubmit={(message) => {
-            if (created) onFollowUp?.(message);
+          onConfigureModels={onOpenModelSettings}
+          onStop={
+            created
+              ? () => {
+                  setRunning(false);
+                  onPauseQueue?.();
+                }
+              : undefined
+          }
+          onSubmit={(message, context) => {
+            if (created) onFollowUp?.(message, context);
             else setSeededFollowUps((current) => [...current, message]);
           }}
+          placeholder={
+            created && running
+              ? zh
+                ? "添加后续指令；Enter 加入队列，@ 添加文件，$ 使用 Skill…"
+                : "Add a follow-up; press Enter to queue, use @ for files or $ for Skills…"
+              : undefined
+          }
+          submitSuccessMessage={
+            created
+              ? zh
+                ? "后续指令已加入队列。"
+                : "Follow-up instruction added to the queue."
+              : undefined
+          }
         />
         <small
           data-persistence-warning={
@@ -525,132 +626,19 @@ export function ProductSessionSurface({
             tabIndex={-1}
             type="button"
           />
-          <aside
-            aria-label={zh ? "会话产物" : "Session artifacts"}
-            aria-modal={inspectorOverlay ? true : undefined}
-            className="product-session__inspector"
-            id="product-session-artifacts"
-            ref={inspectorRef}
-            role={inspectorOverlay ? "dialog" : undefined}
-          >
-            <header>
-              <div>
-                <strong>{zh ? "产物" : "Artifacts"}</strong>
-                <small>
-                  {created
-                    ? zh
-                      ? `${artifacts.length} 个文件 · 上下文已准备`
-                      : `${artifacts.length} files · Context ready`
-                    : zh
-                      ? `${artifacts.length} 个文件 · 测试已通过`
-                      : `${artifacts.length} files · Tests passed`}
-                </small>
-              </div>
-              <button
-                aria-label={zh ? "关闭产物面板" : "Close artifacts panel"}
-                onClick={closeInspector}
-                ref={inspectorCloseRef}
-                type="button"
-              >
-                <ProductPlaygroundIcon name="close" />
-              </button>
-            </header>
-
-            {activeArtifact ? (
-              <section className="product-session__artifact-preview">
-                <header>
-                  <button
-                    onClick={() => {
-                      setActiveArtifactId(null);
-                      setArtifactCopyStatus("");
-                    }}
-                    type="button"
-                  >
-                    <ProductPlaygroundIcon name="arrow" />
-                    {zh ? "返回" : "Back"}
-                  </button>
-                  <button onClick={copyArtifact} type="button">
-                    <ProductPlaygroundIcon name="document" />
-                    {zh ? "复制" : "Copy"}
-                  </button>
-                </header>
-                <div>
-                  <span>
-                    <ProductPlaygroundIcon name="document" />
-                  </span>
-                  <strong>{activeArtifact.name}</strong>
-                  <small>{activeArtifact.summary[locale]}</small>
-                </div>
-                <pre>
-                  <code>{activeArtifact.content}</code>
-                </pre>
-                <output aria-live="polite">{artifactCopyStatus}</output>
-              </section>
-            ) : (
-              <div className="product-session__artifact-overview">
-                <section data-context={created ? "true" : undefined}>
-                  <span>
-                    <ProductPlaygroundIcon
-                      name={created ? "workspace" : "check"}
-                    />
-                  </span>
-                  <div>
-                    <strong>
-                      {created
-                        ? zh
-                          ? "任务上下文已准备"
-                          : "Task context ready"
-                        : zh
-                          ? "会话恢复修复完成"
-                          : "Session recovery fixed"}
-                    </strong>
-                    <small>
-                      {created
-                        ? zh
-                          ? "原始要求、执行上下文与首个可验证计划均已保留。"
-                          : "The original request, execution context, and first verifiable plan are preserved."
-                        : zh
-                          ? "2 个源文件已更新，12 项回归测试通过。"
-                          : "2 source files updated and 12 regression tests passed."}
-                    </small>
-                  </div>
-                </section>
-                <div>
-                  <header>
-                    <strong>
-                      {created
-                        ? zh
-                          ? "任务文件"
-                          : "Task files"
-                        : zh
-                          ? "修复产物"
-                          : "Fix artifacts"}
-                    </strong>
-                    <small>{artifacts.length}</small>
-                  </header>
-                  {artifacts.map((artifact) => (
-                    <button
-                      key={artifact.id}
-                      onClick={() => {
-                        setActiveArtifactId(artifact.id);
-                        setArtifactCopyStatus("");
-                      }}
-                      type="button"
-                    >
-                      <span>
-                        <ProductPlaygroundIcon name="document" />
-                      </span>
-                      <span>
-                        <strong>{artifact.name}</strong>
-                        <small>{artifact.kind}</small>
-                      </span>
-                      <ProductPlaygroundIcon name="chevron" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </aside>
+          <ProductSessionInspector
+            activeTab={inspectorTab}
+            artifacts={artifacts}
+            closeButtonRef={inspectorCloseRef}
+            contextDetails={contextDetails}
+            created={created}
+            id="product-session-details"
+            locale={locale}
+            onClose={closeInspector}
+            onTabChange={setInspectorTab}
+            overlay={inspectorOverlay}
+            panelRef={inspectorRef}
+          />
         </>
       ) : null}
     </section>

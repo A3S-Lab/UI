@@ -7,26 +7,36 @@ suite "a3s-ui-product-project-workflow" {
         timeout_ms = 60000
         viewport "desktop" { width = 1478 height = 852 }
 
-        navigate "open-projects" { url = "http://127.0.0.1:4178/UI/app/projects.html" }
+        navigate "open-projects" { url = "http://127.0.0.1:4178/UI/playground/projects.html" }
         wait "projects-loaded" { load = "networkidle" }
         wait "projects-ready" { visible = css("[data-product-surface=projects]") }
         expect "project-card-is-link" { visible = css(".product-projects__owned > a[href$='a3s-ui-experience.html']") }
 
         click "open-project" { target = css(".product-projects__owned > a") }
-        wait "workspace-route" { url = "**/app/projects/a3s-ui-experience.html" }
+        wait "workspace-route" { url = "**/playground/projects/a3s-ui-experience.html" }
         expect "workspace-visible" { visible = css("[data-product-surface=project]") }
-        expect "projects-nav-current" { visible = css(".product-sidebar__primary a[href$='/app/projects.html'][aria-current=page]") }
+        expect "projects-nav-current" { visible = css(".product-sidebar__primary a[href$='/playground/projects.html'][aria-current=page]") }
         expect "project-group-expanded" { visible = css(".product-sidebar__project-group[data-expanded=true]") }
         expect "project-composer" { visible = css(".product-project-workspace__composer .ProseMirror") }
-        expect "tasks-tab-selected" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]") }
+        expect "activity-tab-selected" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(1)") }
         expect "configuration-visible" { visible = css("aside[aria-label='项目配置']") }
+        expect "activity-actions-visible" { visible = css("button[data-activity-compose]") }
+        click "open-project-update" { target = role("button", "发布留言") }
+        fill "write-project-update" { target = label("项目留言") value = "设备预览与文件工作台已进入验收" }
+        click "publish-project-update" { target = css(".product-project-workspace__activity-composer button[type=submit]") }
+        expect "project-update-visible" { visible = css(".product-project-workspace__activity li[data-posted]") }
         click "open-plan" { target = role("tab", "计划") }
-        expect "plan-visible" { text = "发布前质量收敛" }
+        expect "plan-visible" { visible = css(".product-project-plan") }
+        expect "backlog-group" { visible = css(".product-project-plan button[aria-label='折叠待开始']") }
+        expect "active-group" { visible = css(".product-project-plan button[aria-label='折叠进行中']") }
+        expect "paused-group" { visible = css(".product-project-plan button[aria-label='折叠已暂停']") }
+        expect "complete-group" { visible = css(".product-project-plan button[aria-label='折叠已完成']") }
+        expect "product-flow-copy" { text = "统一产品体验与任务流" }
         press "move-to-tasks" { key = "ArrowRight" }
         expect "tasks-visible" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(3)") }
 
         click "open-child-task" { target = css(".product-sidebar__project-task") }
-        wait "session-route" { url = "**/app/projects/a3s-ui-experience/sessions/release-readiness.html" }
+        wait "session-route" { url = "**/playground/projects/a3s-ui-experience/sessions/release-readiness.html" }
         expect "session-visible" { visible = css("[data-product-surface=project-session]") }
         expect "child-task-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
         expect "project-path" { visible = css("nav[aria-label='项目路径']") }
@@ -38,12 +48,11 @@ suite "a3s-ui-product-project-workflow" {
         expect "search-results" { text = "7 个结果" }
         click "close-search" { target = role("button", "关闭项目会话搜索") }
 
-        expect "artifacts-visible-by-default" { visible = css("aside[aria-label='项目产物']") }
-        expect "artifacts-toggle-is-close" { visible = css("button[aria-label='关闭项目产物']") }
-        press "close-artifacts" { key = "Escape" }
-        expect "artifact-trigger-restored" { visible = css("button[aria-label='打开项目产物']:focus") }
-        click "reopen-artifacts" { target = role("button", "打开项目产物") }
-        expect "artifacts-visible-again" { visible = css("aside[aria-label='项目产物']") }
+        expect "details-hidden-by-default" { visible = css("[data-product-surface=project-session]:not(:has(aside[aria-label='项目详情']))") }
+        click "reopen-details" { target = role("button", "打开项目详情") }
+        expect "details-visible-again" { visible = css("aside[aria-label='项目详情']") }
+        press "close-details" { key = "Escape" }
+        expect "details-trigger-restored" { visible = css("button[aria-label='打开项目详情']:focus") }
 
         fill "continue-task" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续执行暗色模式验收" }
         click "send-follow-up" { target = role("button", "发送任务") }
@@ -60,7 +69,7 @@ suite "a3s-ui-product-project-workflow" {
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open-session" { url = "http://127.0.0.1:4178/UI/app/projects/a3s-ui-experience/sessions/release-readiness.html" }
+        navigate "open-session" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience/sessions/release-readiness.html" }
         wait "session-loaded" { load = "networkidle" }
         wait "session-ready" { visible = css("[data-product-surface=project-session]") }
         expect "mobile-menu" { visible = css("button[aria-label='打开应用导航']") }
@@ -72,8 +81,8 @@ suite "a3s-ui-product-project-workflow" {
         expect "mobile-project-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
         click "close-navigation" { target = role("button", "关闭应用导航") }
 
-        click "open-mobile-artifacts" { target = role("button", "打开项目产物") }
-        expect "mobile-artifacts" { visible = css("aside[aria-label='项目产物']") }
+        click "open-mobile-details" { target = role("button", "打开项目详情") }
+        expect "mobile-details" { visible = css("aside[aria-label='项目详情']") }
 
         screenshot "mobile-evidence" { path = "product/project-workflow-mobile.png" }
         console "console" { path = "product/project-workflow-mobile-console.json" clear = false }
@@ -86,11 +95,13 @@ suite "a3s-ui-product-project-workflow" {
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open-project" { url = "http://127.0.0.1:4178/UI/app/projects/a3s-ui-experience.html" }
+        navigate "open-project" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
         wait "project-loaded" { load = "networkidle" }
         wait "project-ready" { visible = css("[data-product-surface=project]") }
         expect "mobile-menu" { visible = css("button[aria-label='打开应用导航']") }
         expect "project-composer" { visible = css(".product-project-workspace__composer .ProseMirror") }
+        expect "activity-tab-selected" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(1)") }
+        click "open-tasks" { target = role("tab", "任务") }
         expect "project-task" { visible = css(".product-project-workspace__task-list a[href$='release-readiness.html']") }
         click "open-configuration" { target = role("button", "打开项目配置") }
         expect "mobile-configuration" { visible = css("aside[aria-label='项目配置']") }
@@ -108,7 +119,7 @@ suite "a3s-ui-product-project-workflow" {
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open-session" { url = "http://127.0.0.1:4178/UI/app/projects/a3s-ui-experience/sessions/release-readiness.html" }
+        navigate "open-session" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience/sessions/release-readiness.html" }
         wait "session-loaded" { load = "networkidle" }
         wait "session-ready" { visible = css("[data-product-surface=project-session]") }
 

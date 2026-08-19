@@ -413,16 +413,31 @@
 }
 
 .product-connection > button {
+  display: inline-flex;
   width: 100%;
   min-height: 2.75rem;
   margin-top: 1.25rem;
   padding: 0 1rem;
   border: 1px solid var(--ui-line);
   border-radius: 0.625rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   background: var(--ui-paper);
   color: var(--ui-ink);
   cursor: pointer;
   font-weight: 640;
+}
+
+.product-connection > button[data-secondary] {
+  margin-top: 0.5rem;
+  border-color: color-mix(in srgb, var(--ui-blue) 42%, var(--ui-line));
+  color: var(--ui-blue);
+}
+
+.product-connection > button > svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .product-connection > button[data-primary] {

@@ -1,16 +1,11 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent,
-} from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   productKnowledgeBases,
   type ProductKnowledgeBase,
   type ProductKnowledgePhase,
 } from "./product-knowledge-library-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import type { ProductTaskDraft } from "./product-composer-data";
 import {
   knowledgePhasePresentation,
   ProductKnowledgeDetailPanel,
@@ -22,8 +17,10 @@ type KnowledgeFormMode = "create" | "import" | null;
 
 export function ProductKnowledgeLibrarySurface({
   locale,
+  onStartTask,
 }: {
   locale: ProductPlaygroundLocale;
+  onStartTask: (draft: Omit<ProductTaskDraft, "revision">) => void;
 }) {
   const zh = locale === "zh";
   const timers = useRef<number[]>([]);
@@ -40,8 +37,9 @@ export function ProductKnowledgeLibrarySurface({
     })),
   );
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState("design-system");
+  const [selectedId, setSelectedId] = useState("");
   const [status, setStatus] = useState("");
+  const [compactDetail, setCompactDetail] = useState(false);
   const selected = libraries.find((base) => base.id === selectedId);
   const deleteTarget = libraries.find((base) => base.id === deleteId);
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);
@@ -50,6 +48,20 @@ export function ProductKnowledgeLibrarySurface({
     () => () => timers.current.forEach((timer) => window.clearTimeout(timer)),
     [],
   );
+
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 75rem)").matches) {
+      setSelectedId("design-system");
+    }
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 54rem)");
+    const update = () => setCompactDetail(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
 
   const counts = useMemo(
     () => ({
@@ -112,9 +124,7 @@ export function ProductKnowledgeLibrarySurface({
       error: undefined,
       phase: "queued",
     }));
-    setStatus(
-      zh ? "知识库已加入更新队列。" : "Knowledge update queued.",
-    );
+    setStatus(zh ? "知识库已加入更新队列。" : "Knowledge update queued.");
     const runningTimer = window.setTimeout(() => {
       updateLibrary(id, (base) => ({ ...base, phase: "running" }));
       setStatus(zh ? "正在整理来源。" : "Organizing knowledge sources.");
@@ -149,7 +159,9 @@ export function ProductKnowledgeLibrarySurface({
     }
     if (libraries.some((base) => base.name[locale] === name)) {
       setFormError(
-        zh ? "已经存在同名知识库。" : "A knowledge base with this name already exists.",
+        zh
+          ? "已经存在同名知识库。"
+          : "A knowledge base with this name already exists.",
       );
       return;
     }
@@ -236,6 +248,7 @@ export function ProductKnowledgeLibrarySurface({
   ];
   const pinned = visibleLibraries.filter((base) => base.pinned);
   const remaining = visibleLibraries.filter((base) => !base.pinned);
+  const detailModalOpen = compactDetail && Boolean(selected);
 
   return (
     <section
@@ -245,9 +258,14 @@ export function ProductKnowledgeLibrarySurface({
       data-knowledge-library-initialized="true"
       data-state="ready"
     >
-      <aside data-knowledge-library-navigation>
+      <aside
+        data-knowledge-library-navigation
+        inert={detailModalOpen ? true : undefined}
+      >
         <header>
-          <span><ProductPlaygroundIcon name="knowledge" /></span>
+          <span>
+            <ProductPlaygroundIcon name="knowledge" />
+          </span>
           <strong>{zh ? "知识库" : "Knowledge"}</strong>
         </header>
         <nav aria-label={zh ? "知识库筛选" : "Knowledge filters"}>
@@ -278,7 +296,9 @@ export function ProductKnowledgeLibrarySurface({
         <footer>
           <span>{zh ? "本地知识存储" : "Local knowledge storage"}</span>
           <strong>{formatKnowledgeStorage(libraries, locale)}</strong>
-          <div aria-hidden="true"><i /></div>
+          <div aria-hidden="true">
+            <i />
+          </div>
           <small>
             {zh
               ? "索引、同步和权限由宿主负责。"
@@ -287,7 +307,7 @@ export function ProductKnowledgeLibrarySurface({
         </footer>
       </aside>
 
-      <main>
+      <main inert={detailModalOpen ? true : undefined}>
         <header data-knowledge-library-header>
           <span>
             <h1>{zh ? "知识库" : "Knowledge library"}</h1>
@@ -315,7 +335,11 @@ export function ProductKnowledgeLibrarySurface({
               <ProductPlaygroundIcon name="upload" />
               {zh ? "导入" : "Import"}
             </button>
-            <button data-primary onClick={() => openForm("create")} type="button">
+            <button
+              data-primary
+              onClick={() => openForm("create")}
+              type="button"
+            >
               <ProductPlaygroundIcon name="plus" />
               {zh ? "新建知识库" : "New knowledge base"}
             </button>
@@ -328,7 +352,11 @@ export function ProductKnowledgeLibrarySurface({
             <input
               aria-label={zh ? "搜索知识库" : "Search knowledge bases"}
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder={zh ? "搜索名称、说明或路径" : "Search name, description, or path"}
+              placeholder={
+                zh
+                  ? "搜索名称、说明或路径"
+                  : "Search name, description, or path"
+              }
               type="search"
               value={query}
             />
@@ -344,40 +372,82 @@ export function ProductKnowledgeLibrarySurface({
           <form data-knowledge-library-form onSubmit={submitForm}>
             <header>
               <span>
-                <ProductPlaygroundIcon name={formMode === "create" ? "plus" : "upload"} />
+                <ProductPlaygroundIcon
+                  name={formMode === "create" ? "plus" : "upload"}
+                />
                 <span>
                   <strong>
                     {formMode === "create"
-                      ? zh ? "新建知识库" : "Create knowledge base"
-                      : zh ? "导入现有资料" : "Import existing sources"}
+                      ? zh
+                        ? "新建知识库"
+                        : "Create knowledge base"
+                      : zh
+                        ? "导入现有资料"
+                        : "Import existing sources"}
                   </strong>
                   <small>
                     {formMode === "create"
-                      ? zh ? "先建立边界，再按需添加来源。" : "Create the boundary first, then add sources."
-                      : zh ? "导入后先排队，不覆盖当前可用版本。" : "Imports queue safely without replacing a usable version."}
+                      ? zh
+                        ? "先建立边界，再按需添加来源。"
+                        : "Create the boundary first, then add sources."
+                      : zh
+                        ? "导入后先排队，不覆盖当前可用版本。"
+                        : "Imports queue safely without replacing a usable version."}
                   </small>
                 </span>
               </span>
-              <button aria-label={zh ? "关闭表单" : "Close form"} onClick={() => setFormMode(null)} type="button">
+              <button
+                aria-label={zh ? "关闭表单" : "Close form"}
+                onClick={() => setFormMode(null)}
+                type="button"
+              >
                 <ProductPlaygroundIcon name="close" />
               </button>
             </header>
             <div>
               <label>
                 <span>{zh ? "名称" : "Name"}</span>
-                <input autoFocus maxLength={80} onChange={(event) => { setFormName(event.currentTarget.value); setFormError(""); }} placeholder={zh ? "例如：发布规范" : "For example: Release standards"} value={formName} />
+                <input
+                  autoFocus
+                  maxLength={80}
+                  onChange={(event) => {
+                    setFormName(event.currentTarget.value);
+                    setFormError("");
+                  }}
+                  placeholder={
+                    zh ? "例如：发布规范" : "For example: Release standards"
+                  }
+                  value={formName}
+                />
               </label>
               {formMode === "import" ? (
                 <label>
                   <span>{zh ? "来源路径" : "Source path"}</span>
-                  <input onChange={(event) => { setFormSource(event.currentTarget.value); setFormError(""); }} placeholder="/workspace/docs" value={formSource} />
+                  <input
+                    onChange={(event) => {
+                      setFormSource(event.currentTarget.value);
+                      setFormError("");
+                    }}
+                    placeholder="/workspace/docs"
+                    value={formSource}
+                  />
                 </label>
               ) : null}
             </div>
             {formError ? <p role="alert">{formError}</p> : null}
             <footer>
-              <button onClick={() => setFormMode(null)} type="button">{zh ? "取消" : "Cancel"}</button>
-              <button data-primary type="submit">{formMode === "create" ? (zh ? "创建" : "Create") : (zh ? "导入并更新" : "Import and update")}</button>
+              <button onClick={() => setFormMode(null)} type="button">
+                {zh ? "取消" : "Cancel"}
+              </button>
+              <button data-primary type="submit">
+                {formMode === "create"
+                  ? zh
+                    ? "创建"
+                    : "Create"
+                  : zh
+                    ? "导入并更新"
+                    : "Import and update"}
+              </button>
             </footer>
           </form>
         ) : null}
@@ -397,7 +467,15 @@ export function ProductKnowledgeLibrarySurface({
               {remaining.length > 0 ? (
                 <KnowledgeLibraryGroup
                   bases={remaining}
-                  label={filter === "all" && pinned.length > 0 ? (zh ? "全部知识库" : "All knowledge") : zh ? "知识库" : "Knowledge bases"}
+                  label={
+                    filter === "all" && pinned.length > 0
+                      ? zh
+                        ? "全部知识库"
+                        : "All knowledge"
+                      : zh
+                        ? "知识库"
+                        : "Knowledge bases"
+                  }
                   locale={locale}
                   onSelect={setSelectedId}
                   selectedId={selectedId}
@@ -406,26 +484,85 @@ export function ProductKnowledgeLibrarySurface({
             </>
           ) : (
             <section data-knowledge-library-empty role="status">
-              <ProductPlaygroundIcon name={normalizedQuery ? "search" : "knowledge"} />
-              <strong>{normalizedQuery ? (zh ? "没有匹配的知识库" : "No matching knowledge bases") : zh ? "此分组为空" : "This group is empty"}</strong>
-              <span>{normalizedQuery ? (zh ? "更换关键词或清除筛选条件。" : "Try another query or clear the active filter.") : zh ? "新建知识库或从工作空间导入资料。" : "Create a knowledge base or import workspace sources."}</span>
-              <button onClick={() => { setQuery(""); setFilter("all"); }} type="button">{zh ? "查看全部" : "View all"}</button>
+              <ProductPlaygroundIcon
+                name={normalizedQuery ? "search" : "knowledge"}
+              />
+              <strong>
+                {normalizedQuery
+                  ? zh
+                    ? "没有匹配的知识库"
+                    : "No matching knowledge bases"
+                  : zh
+                    ? "此分组为空"
+                    : "This group is empty"}
+              </strong>
+              <span>
+                {normalizedQuery
+                  ? zh
+                    ? "更换关键词或清除筛选条件。"
+                    : "Try another query or clear the active filter."
+                  : zh
+                    ? "新建知识库或从工作空间导入资料。"
+                    : "Create a knowledge base or import workspace sources."}
+              </span>
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setFilter("all");
+                }}
+                type="button"
+              >
+                {zh ? "查看全部" : "View all"}
+              </button>
             </section>
           )}
         </div>
-        <output aria-live="polite" data-knowledge-library-status>{status}</output>
+        <output aria-live="polite" data-knowledge-library-status>
+          {status}
+        </output>
       </main>
 
       {selected ? (
         <ProductKnowledgeDetailPanel
           base={selected}
           locale={locale}
+          modal={detailModalOpen}
           onClose={() => setSelectedId("")}
           onDelete={() => setDeleteId(selected.id)}
-          onPinChange={(pinnedValue) => updateLibrary(selected.id, (base) => ({ ...base, pinned: pinnedValue }))}
-          onPolicyChange={(policy) => updateLibrary(selected.id, (base) => ({ ...base, policy }))}
-          onRename={(name) => updateLibrary(selected.id, (base) => ({ ...base, name: { en: name, zh: name } }))}
+          onPinChange={(pinnedValue) =>
+            updateLibrary(selected.id, (base) => ({
+              ...base,
+              pinned: pinnedValue,
+            }))
+          }
+          onPolicyChange={(policy) =>
+            updateLibrary(selected.id, (base) => ({ ...base, policy }))
+          }
+          onRename={(name) =>
+            updateLibrary(selected.id, (base) => ({
+              ...base,
+              name: { en: name, zh: name },
+            }))
+          }
           onRequestCompilation={() => requestCompilation(selected.id)}
+          onUseInTask={() =>
+            onStartTask({
+              prompt: zh
+                ? `基于“${selected.name.zh}”知识库回答问题，并为关键结论标注可追溯来源。`
+                : `Use the “${selected.name.en}” knowledge base to answer the task and cite traceable sources for key conclusions.`,
+              resources: [
+                {
+                  id: `knowledge:${selected.id}`,
+                  kind: "selection",
+                  label: selected.name[locale],
+                  meta: zh
+                    ? `知识库 · ${selected.conceptCount.toLocaleString("zh-CN")} 个概念`
+                    : `Knowledge · ${selected.conceptCount.toLocaleString("en-US")} concepts`,
+                },
+              ],
+              workspace: "ui",
+            })
+          }
         />
       ) : null}
 
@@ -455,7 +592,10 @@ function KnowledgeLibraryGroup({
   const zh = locale === "zh";
   return (
     <section data-knowledge-library-group>
-      <header><h2>{label}</h2><small>{bases.length}</small></header>
+      <header>
+        <h2>{label}</h2>
+        <small>{bases.length}</small>
+      </header>
       <ul>
         {bases.map((base) => {
           const phase = knowledgePhasePresentation(base, locale);
@@ -469,8 +609,16 @@ function KnowledgeLibraryGroup({
                 type="button"
               >
                 <span data-knowledge-item-mark>
-                  <ProductPlaygroundIcon name={base.phase === "failed" || base.phase === "paused" ? "warning" : "knowledge"} />
-                  {base.pinned ? <ProductPlaygroundIcon data-pinned name="pin" /> : null}
+                  <ProductPlaygroundIcon
+                    name={
+                      base.phase === "failed" || base.phase === "paused"
+                        ? "warning"
+                        : "knowledge"
+                    }
+                  />
+                  {base.pinned ? (
+                    <ProductPlaygroundIcon data-pinned name="pin" />
+                  ) : null}
                 </span>
                 <span data-knowledge-item-identity>
                   <strong>{base.name[locale]}</strong>
@@ -478,8 +626,16 @@ function KnowledgeLibraryGroup({
                   <em title={base.path}>{base.path}</em>
                 </span>
                 <span data-knowledge-item-stats>
-                  <small>{zh ? `${base.sourceCount} 个来源` : `${base.sourceCount} sources`}</small>
-                  <small>{zh ? `${base.conceptCount.toLocaleString("zh-CN")} 个概念` : `${base.conceptCount.toLocaleString("en-US")} concepts`}</small>
+                  <small>
+                    {zh
+                      ? `${base.sourceCount} 个来源`
+                      : `${base.sourceCount} sources`}
+                  </small>
+                  <small>
+                    {zh
+                      ? `${base.conceptCount.toLocaleString("zh-CN")} 个概念`
+                      : `${base.conceptCount.toLocaleString("en-US")} concepts`}
+                  </small>
                 </span>
                 <span data-knowledge-item-phase>
                   <i aria-hidden="true" />
@@ -518,7 +674,10 @@ function KnowledgeDeleteDialog({
     <dialog
       aria-labelledby="product-knowledge-delete-title"
       className="product-knowledge-delete-dialog"
-      onCancel={(event) => { event.preventDefault(); onCancel(); }}
+      onCancel={(event) => {
+        event.preventDefault();
+        onCancel();
+      }}
       ref={dialogRef}
     >
       <ProductPlaygroundIcon name="trash" />
@@ -531,8 +690,12 @@ function KnowledgeDeleteDialog({
           : "The knowledge base leaves this workspace. The host should retain a recovery or re-import path."}
       </p>
       <footer>
-        <button onClick={onCancel} type="button">{zh ? "取消" : "Cancel"}</button>
-        <button data-danger onClick={onConfirm} type="button">{zh ? "移除知识库" : "Remove knowledge base"}</button>
+        <button onClick={onCancel} type="button">
+          {zh ? "取消" : "Cancel"}
+        </button>
+        <button data-danger onClick={onConfirm} type="button">
+          {zh ? "移除知识库" : "Remove knowledge base"}
+        </button>
       </footer>
     </dialog>
   );

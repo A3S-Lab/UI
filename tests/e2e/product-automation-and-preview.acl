@@ -1,0 +1,76 @@
+suite "a3s-ui-product-automation-and-preview" {
+    version = 1
+
+    scenario "automation-builder-workflow" {
+        name = "An automation template becomes an editable scheduled task"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "automation-ready" { visible = css("[data-product-surface=automation]") }
+
+        click "open-template" { target = css(".product-automation__templates > div > button:first-child") }
+        wait "builder-ready" { visible = css("[data-product-surface=automation-builder]") }
+        expect "tiptap-editor" { visible = css(".product-automation-builder .ProseMirror") }
+        expect "prefilled-name" {
+            visible = css("[data-product-surface=automation-builder] input[value='每日发布摘要']")
+        }
+        expect "workspace-control" { visible = css(".product-automation-builder select option[value=a3s-web]") }
+
+        select "workspace" {
+            target = css(".product-automation-builder__field select")
+            values = ["a3s-web"]
+        }
+        click "interval-schedule" { target = role("button", "按间隔") }
+        fill "rename" {
+            target = css("[data-product-surface=automation-builder] input[aria-label='名称']")
+            value = "发布就绪巡检"
+        }
+        click "save" { target = role("button", "保存") }
+
+        wait "saved-list" { visible = css("[data-product-surface=automation] .product-automation__status article") }
+        expect "saved-name" { text = "发布就绪巡检" }
+        expect "saved-schedule" { text = "每 6 小时" }
+        click "edit" { target = role("button", "编辑") }
+        expect "editable-again" { visible = css("[data-product-surface=automation-builder] input[value='发布就绪巡检']") }
+
+        screenshot "builder" { path = "product/automation-builder.png" }
+        console "console" { path = "product/automation-builder-console.json" clear = false }
+        page_errors "page-errors" { path = "product/automation-builder-page-errors.json" clear = false }
+    }
+
+    scenario "device-presets-and-more-menu" {
+        name = "The session inspector switches concrete preview sizes and the More menu exposes the complete resource sequence"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open-session" { url = "http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "session-ready" { visible = css("[data-product-surface=session]") }
+        click "open-details" { target = role("button", "打开任务详情") }
+        click "preview-tab" { target = role("tab", "预览") }
+        expect "preset-picker" { visible = css(".product-inspector-preview__toolbar select") }
+        select "laptop" {
+            target = css(".product-inspector-preview__toolbar select")
+            values = ["laptop"]
+        }
+        expect "laptop-shell" { visible = css(".product-device-stage[data-preset=laptop]") }
+        expect "webview-status" { text = "a3s-webview" }
+
+        click "more" { target = css(".product-sidebar__more > summary") }
+        expect "files-link" { visible = css(".product-sidebar__more a[href$='/playground/resources/files.html']") }
+        expect "mail-link" { visible = css(".product-sidebar__more a[href$='/playground/resources/mail.html']") }
+        expect "documents-link" { visible = css(".product-sidebar__more a[href$='/playground/resources/documents.html']") }
+        expect "knowledge-link" { visible = css(".product-sidebar__more a[href$='/playground/resources/knowledge.html']") }
+        expect "inspiration-link" { visible = css(".product-sidebar__more a[href$='/playground/resources/inspiration.html']") }
+        expect "memory-link" { visible = css(".product-sidebar__more a[href$='/playground/memory.html']") }
+        expect "extensions-link" { visible = css(".product-sidebar__more a[href$='/playground/extensions.html']") }
+
+        screenshot "device-preview" { path = "product/device-preview-laptop.png" }
+        console "console" { path = "product/device-preview-console.json" clear = false }
+        page_errors "page-errors" { path = "product/device-preview-page-errors.json" clear = false }
+    }
+}

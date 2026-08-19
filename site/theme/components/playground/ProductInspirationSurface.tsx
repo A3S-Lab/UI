@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import type { ProductTaskDraft } from "./product-composer-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 type InspirationCategory =
@@ -132,8 +133,10 @@ function InspirationPreview({ name }: { name: string }) {
 
 export function ProductInspirationSurface({
   locale,
+  onStartTask,
 }: {
   locale: ProductPlaygroundLocale;
+  onStartTask: (draft: Omit<ProductTaskDraft, "revision">) => void;
 }) {
   const zh = locale === "zh";
   const [category, setCategory] = useState<InspirationCategory>("all");
@@ -141,6 +144,7 @@ export function ProductInspirationSurface({
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("");
+  const detailRef = useRef<HTMLDialogElement>(null);
   const categories = [
     ["all", zh ? "全部" : "All"],
     ["workspace", zh ? "个人工作台" : "Workspaces"],
@@ -169,6 +173,14 @@ export function ProductInspirationSurface({
       return matchesCategory && matchesFavorite && matchesQuery;
     });
   }, [category, favorites, favoritesOnly, locale, query]);
+  const selectedItem = inspirationItems.find((item) => item.id === selected);
+
+  useEffect(() => {
+    const dialog = detailRef.current;
+    if (!dialog) return;
+    if (selectedItem && !dialog.open) dialog.showModal();
+    if (!selectedItem && dialog.open) dialog.close();
+  }, [selectedItem]);
 
   return (
     <section className="product-inspiration" data-product-surface="inspiration">
@@ -291,15 +303,93 @@ export function ProductInspirationSurface({
           </button>
         </section>
       )}
+      <dialog
+        aria-labelledby="product-inspiration-detail-title"
+        className="product-inspiration__detail"
+        onCancel={(event) => {
+          event.preventDefault();
+          setSelected("");
+        }}
+        onClose={() => setSelected("")}
+        ref={detailRef}
+      >
+        {selectedItem ? (
+          <>
+            <header>
+              <span>
+                <small>{selectedItem.type}</small>
+                <h2 id="product-inspiration-detail-title">
+                  {selectedItem.title[locale]}
+                </h2>
+              </span>
+              <button
+                aria-label={zh ? "关闭灵感详情" : "Close inspiration details"}
+                onClick={() => setSelected("")}
+                type="button"
+              >
+                <ProductPlaygroundIcon name="close" />
+              </button>
+            </header>
+            <div data-inspiration-detail-preview>
+              <InspirationPreview name={selectedItem.preview} />
+            </div>
+            <section>
+              <p>{selectedItem.description[locale]}</p>
+              <dl>
+                <div>
+                  <dt>{zh ? "形式" : "Format"}</dt>
+                  <dd>{selectedItem.type}</dd>
+                </div>
+                <div>
+                  <dt>{zh ? "任务上下文" : "Task context"}</dt>
+                  <dd>{zh ? "可在创建后继续编辑" : "Editable after creation"}</dd>
+                </div>
+              </dl>
+              <h3>{zh ? "从这里开始" : "Start from here"}</h3>
+              <ol>
+                <li>{zh ? "确认目标和期望产物" : "Confirm the goal and expected output"}</li>
+                <li>{zh ? "选择工作区文件与知识来源" : "Choose workspace files and knowledge sources"}</li>
+                <li>{zh ? "生成首版并保留验证步骤" : "Create the first version with verification steps"}</li>
+              </ol>
+            </section>
+            <footer>
+              <button onClick={() => setSelected("")} type="button">
+                {zh ? "返回" : "Back"}
+              </button>
+              <button
+                data-primary
+                onClick={() =>
+                  onStartTask({
+                    prompt: zh
+                      ? `以“${selectedItem.title.zh}”为起点：${selectedItem.description.zh} 先确认目标、可用资料和完成标准。`
+                      : `Use “${selectedItem.title.en}” as the starting point: ${selectedItem.description.en} First confirm the goal, available sources, and completion criteria.`,
+                    resources: [
+                      {
+                        id: `inspiration:${selectedItem.id}`,
+                        kind: "selection",
+                        label: selectedItem.title[locale],
+                        meta: zh
+                          ? `灵感模板 · ${selectedItem.type}`
+                          : `Inspiration template · ${selectedItem.type}`,
+                      },
+                    ],
+                    workspace: "ui",
+                  })
+                }
+                type="button"
+              >
+                <ProductPlaygroundIcon name="task-add" />
+                {zh ? "从此创建任务" : "Create task from this"}
+              </button>
+            </footer>
+          </>
+        ) : null}
+      </dialog>
       <output aria-live="polite">
-        {selected
+        {selectedItem
           ? zh
-            ? `已打开“${
-                inspirationItems.find((item) => item.id === selected)?.title.zh
-              }”预览。`
-            : `${
-                inspirationItems.find((item) => item.id === selected)?.title.en
-              } preview opened.`
+            ? `已打开“${selectedItem.title.zh}”详情。`
+            : `${selectedItem.title.en} details opened.`
           : ""}
       </output>
     </section>

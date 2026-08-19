@@ -6,6 +6,8 @@ export type ProductPlaygroundView =
   | "automation"
   | "catalog"
   | "created-session"
+  | "marketplace"
+  | "memory"
   | "project"
   | "project-session"
   | "projects"
@@ -80,6 +82,40 @@ export const resourceNavigation: readonly {
     icon: "inspiration",
     label: { en: "Inspiration", zh: "灵感" },
   },
+];
+
+export const productMoreNavigation: readonly {
+  icon: ProductPlaygroundIconName;
+  id: Extract<ProductPlaygroundView, "marketplace" | "memory">;
+  label: ProductLocalizedText;
+}[] = [
+  {
+    id: "memory",
+    icon: "brain",
+    label: { en: "Memory", zh: "记忆" },
+  },
+  {
+    id: "marketplace",
+    icon: "catalog",
+    label: { en: "Extensions", zh: "扩展" },
+  },
+];
+
+export type ProductMoreMenuItem =
+  | {
+      id: Extract<ProductPlaygroundView, "marketplace" | "memory">;
+      kind: "view";
+    }
+  | { id: ProductResourceView; kind: "resource" };
+
+export const productMoreMenuItems: readonly ProductMoreMenuItem[] = [
+  { id: "files", kind: "resource" },
+  { id: "mail", kind: "resource" },
+  { id: "documents", kind: "resource" },
+  { id: "knowledge", kind: "resource" },
+  { id: "inspiration", kind: "resource" },
+  { id: "memory", kind: "view" },
+  { id: "marketplace", kind: "view" },
 ];
 
 export const projectTemplates: readonly {
@@ -387,6 +423,33 @@ export const capabilityDirectory: Record<
       },
       tag: { en: "Workflow", zh: "工作流" },
     },
+    {
+      category: "knowledge",
+      label: { en: "Local file librarian", zh: "本地文件管理专家" },
+      description: {
+        en: "Organizes folders, naming, metadata, and recoverable file operations.",
+        zh: "负责文件夹、命名、元数据与可恢复文件操作。",
+      },
+      tag: { en: "Files", zh: "文件" },
+    },
+    {
+      category: "content",
+      label: { en: "Office document editor", zh: "办公文档编辑专家" },
+      description: {
+        en: "Prepares reviewed documents, spreadsheets, slides, and PDF deliverables.",
+        zh: "制作可审阅的文档、表格、演示稿与 PDF 交付物。",
+      },
+      tag: { en: "Office", zh: "办公" },
+    },
+    {
+      category: "data",
+      label: { en: "Data analysis partner", zh: "数据分析伙伴" },
+      description: {
+        en: "Finds trends and anomalies, then keeps the evidence beside each finding.",
+        zh: "识别趋势与异常，并为每项结论保留对应证据。",
+      },
+      tag: { en: "Analysis", zh: "分析" },
+    },
   ],
   skills: [
     {
@@ -472,6 +535,69 @@ export const capabilityDirectory: Record<
       },
       tag: { en: "Recovery", zh: "恢复" },
     },
+    {
+      category: "engineering",
+      label: { en: "Workspace quick open", zh: "工作区快速打开" },
+      description: {
+        en: "Searches open tabs and local workspace files from one keyboard flow.",
+        zh: "通过统一键盘流程搜索已打开标签与本地工作区文件。",
+      },
+      tag: { en: "Navigation", zh: "导航" },
+    },
+    {
+      category: "engineering",
+      label: { en: "Code graph navigation", zh: "代码图谱导航" },
+      description: {
+        en: "Explores symbols, ownership, and dependency paths in an interactive graph.",
+        zh: "在交互图谱中探索符号、归属与依赖路径。",
+      },
+      tag: { en: "Graph", zh: "图谱" },
+    },
+    {
+      category: "product",
+      label: { en: "Device preview", zh: "设备预览" },
+      description: {
+        en: "Reviews responsive output in realistic desktop and mobile hardware shells.",
+        zh: "在真实感桌面与移动设备外壳中检查响应式结果。",
+      },
+      tag: { en: "Preview", zh: "预览" },
+    },
+    {
+      category: "product",
+      label: { en: "Structured proposal review", zh: "结构化提案评审" },
+      description: {
+        en: "Compares targets, before and after values, stale state, and safe apply scope.",
+        zh: "对比目标、变更前后、过期状态与安全应用范围。",
+      },
+      tag: { en: "Review", zh: "评审" },
+    },
+    {
+      category: "knowledge",
+      label: { en: "Knowledge compilation", zh: "知识库编译" },
+      description: {
+        en: "Compiles approved sources with retry, quiet-window, and bulk-change safeguards.",
+        zh: "在重试、静默窗口与批量变更保护下编译已批准资料。",
+      },
+      tag: { en: "Knowledge", zh: "知识" },
+    },
+    {
+      category: "knowledge",
+      label: { en: "Memory retrieval", zh: "记忆检索" },
+      description: {
+        en: "Finds relevant local memories through filters, timeline, and graph context.",
+        zh: "通过筛选、时间线与图谱上下文查找相关本地记忆。",
+      },
+      tag: { en: "Memory", zh: "记忆" },
+    },
+    {
+      category: "content",
+      label: { en: "Office deliverable editing", zh: "Office 交付物编辑" },
+      description: {
+        en: "Edits documents, spreadsheets, presentations, and reviewed PDF output.",
+        zh: "编辑文档、表格、演示稿与经过审阅的 PDF 输出。",
+      },
+      tag: { en: "Office", zh: "办公" },
+    },
   ],
   connectors: [
     {
@@ -556,6 +682,34 @@ export const capabilityDirectory: Record<
         zh: "准备发布内容并在发布前要求确认。",
       },
       tag: { en: "Publish", zh: "发布" },
+    },
+    {
+      category: "engineering",
+      label: { en: "Local model runtime", zh: "本地模型运行时" },
+      description: {
+        en: "Uses configured local inference endpoints without exposing credentials.",
+        zh: "使用已配置的本地推理端点，同时避免暴露凭据。",
+      },
+      tag: { en: "Local", zh: "本地" },
+      owned: true,
+    },
+    {
+      category: "engineering",
+      label: { en: "MCP service", zh: "MCP 服务" },
+      description: {
+        en: "Connects reviewed tool servers through explicit capability and permission scope.",
+        zh: "通过明确的能力与权限范围连接已审核工具服务。",
+      },
+      tag: { en: "Tools", zh: "工具" },
+    },
+    {
+      category: "operations",
+      label: { en: "Automation runner", zh: "自动化运行器" },
+      description: {
+        en: "Runs declared schedules and retains status, history, and recovery evidence.",
+        zh: "按声明计划运行，并保留状态、历史与恢复证据。",
+      },
+      tag: { en: "Automation", zh: "自动化" },
     },
   ],
 };

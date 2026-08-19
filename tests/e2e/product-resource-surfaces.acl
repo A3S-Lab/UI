@@ -7,7 +7,7 @@ suite "a3s-ui-product-resource-surfaces" {
         timeout_ms = 60000
         viewport "desktop" { width = 1478 height = 852 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/mail.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
         wait "loaded" { load = "networkidle" }
         wait "mailbox-ready" { visible = css(".a3s-product-application[data-view=resources] .product-mail[data-resource=mail]") }
 
@@ -35,15 +35,24 @@ suite "a3s-ui-product-resource-surfaces" {
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/files.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
         wait "loaded" { load = "networkidle" }
+        wait "artifacts-ready" { visible = css(".product-file-artifacts table") }
+        expect "artifacts-default" { visible = css(".product-files[data-file-surface=artifacts]") }
+        click "open-artifact-workbench" { target = role("button", "release-readiness.md") }
+        wait "artifact-workbench-ready" { visible = css(".product-file-workbench[data-workbench-kind=code]") }
+        expect "matching-workbench-file" { visible = css(".product-file-workbench input[aria-label='文件名'][value='release-readiness.md']") }
+        click "back-to-workspace" { target = role("button", "返回文件") }
+        expect "quick-look-after-workbench" { visible = css(".product-file-manager [data-file-manager-quicklook]") }
+        click "close-quick-look" { target = role("button", "关闭快速查看") }
+        click "open-workspace" { target = role("tab", "工作区") }
         wait "files-ready" { visible = css(".a3s-product-application[data-view=resources] .product-file-manager[data-file-manager-initialized=true]") }
 
         expect "mobile-navigation" { visible = css("button[aria-label='打开应用导航']") }
         expect "file-listbox" { visible = css(".product-file-manager [data-file-manager-viewport][role=listbox]") }
         fill "find-release-readiness" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "release-readiness" }
         expect "matching-file" { visible = css(".product-file-manager [data-file-manager-item] strong[title='release-readiness.md']") }
-        click "select-file" { target = css(".product-file-manager [data-file-manager-item] > button") }
+        click "select-file" { target = css(".product-file-manager [data-file-manager-item]") }
         expect "selection-visible" { visible = css(".product-file-manager [data-file-manager-item][aria-selected=true]") }
         expect "selection-actions" { visible = css(".product-file-manager [data-file-manager-selection-toolbar]") }
         press "open-quick-look" { key = "Enter" }
@@ -60,7 +69,7 @@ suite "a3s-ui-product-resource-surfaces" {
         timeout_ms = 60000
         viewport "desktop" { width = 1478 height = 900 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app/resources/knowledge.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/knowledge.html" }
         wait "loaded" { load = "networkidle" }
         wait "library-ready" { visible = css(".product-knowledge-library[data-knowledge-library-initialized=true][data-layout=wide]") }
         expect "initial-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-library-detail]") }
@@ -76,5 +85,36 @@ suite "a3s-ui-product-resource-surfaces" {
         expect "library-list-restored" { visible = css(".product-knowledge-library [data-knowledge-library-group]") }
         console "console" { path = "product/knowledge-library-console.json" clear = false }
         page_errors "page-errors" { path = "product/knowledge-library-page-errors.json" clear = false }
+    }
+
+    scenario "knowledge-context-to-task" {
+        name = "Knowledge context survives the route transition into a new task and clears after task creation"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/knowledge.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "library-ready" { visible = css(".product-knowledge-library[data-knowledge-library-initialized=true]") }
+        expect "detail-ready" { visible = css(".product-knowledge-library [data-knowledge-library-detail]") }
+        click "use-in-task" { target = role("button", "引用到任务") }
+
+        wait "task-route" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
+        expect "knowledge-resource-preserved" { visible = css(".product-start [data-composer-resources] [data-resource-id^='knowledge:']") }
+        expect "knowledge-prompt-preserved" { text = "并为关键结论标注可追溯来源" }
+        expect "workspace-preserved" { visible = css(".product-start [data-context-workspace] button") }
+        click "create-task" { target = role("button", "发送任务") }
+
+        wait "created-route" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
+        wait "created-session" { visible = css("[data-product-surface=session][data-session-state=ready][data-variant=created]") }
+        click "start-another-task" { target = css(".product-sidebar__primary > a:first-of-type") }
+        wait "clean-task-route" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        expect "pending-draft-cleared" { visible = css(".product-start .product-composer:not(:has([data-resource-id^='knowledge:']))") }
+        expect "clean-composer-disabled" { visible = css(".product-start button[aria-label='发送任务']:disabled") }
+
+        screenshot "desktop-evidence" { path = "product/knowledge-context-to-task.png" }
+        console "console" { path = "product/knowledge-context-to-task-console.json" clear = false }
+        page_errors "page-errors" { path = "product/knowledge-context-to-task-page-errors.json" clear = false }
     }
 }

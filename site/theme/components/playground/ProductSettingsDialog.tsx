@@ -21,6 +21,10 @@ export function ProductSettingsDialog({
   const zh = locale === "zh";
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [section, setSection] = useState<SettingsSection>(initialSection);
+  const closeDialog = () => {
+    if (dialogRef.current?.open) dialogRef.current.close();
+    onClose();
+  };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -33,13 +37,18 @@ export function ProductSettingsDialog({
     if (dialog.open) dialog.close();
   }, [initialSection, open]);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!open && dialog?.open) dialog.close();
+  });
+
   return (
     <dialog
       aria-label={zh ? "设置" : "Settings"}
       className="product-settings"
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        closeDialog();
       }}
       onClose={onClose}
       ref={dialogRef}
@@ -63,7 +72,7 @@ export function ProductSettingsDialog({
       <button
         aria-label={zh ? "关闭设置" : "Close settings"}
         className="product-settings__close"
-        onClick={onClose}
+        onClick={closeDialog}
         type="button"
       >
         <ProductPlaygroundIcon name="close" />

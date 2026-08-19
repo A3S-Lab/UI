@@ -45,6 +45,7 @@ export const ProductComposerSuggestions = forwardRef<
     kind: ProductComposerSuggestionKind;
     locale: ProductPlaygroundLocale;
     onActiveDescendantChange: (id?: string) => void;
+    onClose: () => void;
     onSelectCommand: (id: string) => void;
     onSelectFile: (resource: ProductComposerResource) => void;
     onSelectSkill: (resource: ProductComposerResource) => void;
@@ -57,6 +58,7 @@ export const ProductComposerSuggestions = forwardRef<
     kind,
     locale,
     onActiveDescendantChange,
+    onClose,
     onSelectCommand,
     onSelectFile,
     onSelectSkill,
@@ -221,17 +223,26 @@ export const ProductComposerSuggestions = forwardRef<
       <header>
         <span>
           <ProductPlaygroundIcon
-            name={kind === "file" ? "folder" : kind === "skill" ? "brain" : "code"}
+            name={
+              kind === "file" ? "folder" : kind === "skill" ? "brain" : "code"
+            }
           />
           <strong>{title}</strong>
         </span>
-        <kbd>{marker}</kbd>
+        <div data-suggestion-header-actions>
+          <kbd>{marker}</kbd>
+          <button
+            aria-label={zh ? `关闭${title}` : `Close ${title}`}
+            data-suggestion-close
+            onClick={onClose}
+            onMouseDown={(event) => event.preventDefault()}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="close" />
+          </button>
+        </div>
       </header>
-      {query ? (
-        <p>
-          {zh ? `筛选“${query}”` : `Filtering “${query}”`}
-        </p>
-      ) : null}
+      {query ? <p>{zh ? `筛选“${query}”` : `Filtering “${query}”`}</p> : null}
       {kind === "file" ? (
         <div aria-label={title} id={id} role="tree">
           {fileRows.map((row, index) => {
@@ -254,11 +265,11 @@ export const ProductComposerSuggestions = forwardRef<
                 type="button"
               >
                 <span data-tree-chevron>
-                  {directory ? (
-                    <ProductPlaygroundIcon name="chevron" />
-                  ) : null}
+                  {directory ? <ProductPlaygroundIcon name="chevron" /> : null}
                 </span>
-                <ProductPlaygroundIcon name={directory ? "folder" : "document"} />
+                <ProductPlaygroundIcon
+                  name={directory ? "folder" : "document"}
+                />
                 <span data-composer-suggestion-copy>
                   <strong>{row.node.name}</strong>
                   <small>{row.node.meta[locale]}</small>
@@ -275,9 +286,13 @@ export const ProductComposerSuggestions = forwardRef<
           {fileRows.length === 0 ? (
             <div data-suggestion-empty role="status">
               <ProductPlaygroundIcon name="search" />
-              <strong>{zh ? "没有匹配的工作区文件" : "No matching workspace files"}</strong>
+              <strong>
+                {zh ? "没有匹配的工作区文件" : "No matching workspace files"}
+              </strong>
               <span>
-                {zh ? "换一个名称或路径继续搜索。" : "Try another name or path."}
+                {zh
+                  ? "换一个名称或路径继续搜索。"
+                  : "Try another name or path."}
               </span>
             </div>
           ) : null}
@@ -299,7 +314,9 @@ export const ProductComposerSuggestions = forwardRef<
                 type="button"
               >
                 <span data-composer-suggestion-icon>
-                  <ProductPlaygroundIcon name={kind === "skill" ? "brain" : "code"} />
+                  <ProductPlaygroundIcon
+                    name={kind === "skill" ? "brain" : "code"}
+                  />
                 </span>
                 <span data-composer-suggestion-copy>
                   <strong>{row.label}</strong>
@@ -326,9 +343,16 @@ export const ProductComposerSuggestions = forwardRef<
         </div>
       )}
       <footer>
-        <span><kbd>↑</kbd><kbd>↓</kbd> {zh ? "选择" : "select"}</span>
-        <span><kbd>Enter</kbd> {zh ? "展开 / 添加" : "open / add"}</span>
-        <span><kbd>Esc</kbd> {zh ? "关闭" : "close"}</span>
+        <span>
+          <kbd>↑</kbd>
+          <kbd>↓</kbd> {zh ? "选择" : "select"}
+        </span>
+        <span>
+          <kbd>Enter</kbd> {zh ? "展开 / 添加" : "open / add"}
+        </span>
+        <span>
+          <kbd>Esc</kbd> {zh ? "关闭" : "close"}
+        </span>
       </footer>
     </section>
   );
@@ -361,8 +385,12 @@ function flattenWorkspace(
   return rows;
 }
 
-function nodeMatches(node: ProductComposerWorkspaceNode, query: string): boolean {
-  const text = `${node.name} ${node.id} ${node.meta.en} ${node.meta.zh}`.toLocaleLowerCase();
+function nodeMatches(
+  node: ProductComposerWorkspaceNode,
+  query: string,
+): boolean {
+  const text =
+    `${node.name} ${node.id} ${node.meta.en} ${node.meta.zh}`.toLocaleLowerCase();
   return (
     text.includes(query) ||
     Boolean(node.children?.some((child) => nodeMatches(child, query)))

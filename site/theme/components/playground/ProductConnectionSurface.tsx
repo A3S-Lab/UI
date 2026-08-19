@@ -89,9 +89,11 @@ const connectionCopy = {
 
 export function ProductConnectionSurface({
   locale,
+  onUseInTask,
   resource,
 }: {
   locale: ProductPlaygroundLocale;
+  onUseInTask?: () => void;
   resource: Exclude<ProductResourceView, "files" | "inspiration">;
 }) {
   const zh = locale === "zh";
@@ -156,6 +158,12 @@ export function ProductConnectionSurface({
       >
         {connected ? (zh ? "断开连接" : "Disconnect") : copy.action[locale]}
       </button>
+      {connected && onUseInTask ? (
+        <button data-secondary onClick={onUseInTask} type="button">
+          <ProductPlaygroundIcon name="task-add" />
+          {zh ? "引用到新任务" : "Use in a new task"}
+        </button>
+      ) : null}
       <footer>
         <ProductPlaygroundIcon name="shield" />
         {zh

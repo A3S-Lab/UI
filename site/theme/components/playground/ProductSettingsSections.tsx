@@ -17,13 +17,19 @@ import {
   ShortcutSettings,
 } from "./ProductSettingsPrivacySections";
 import { HelpSettings } from "./ProductSettingsSupportSection";
+import {
+  ChannelSettings,
+  IntegrationSettings,
+} from "./ProductSettingsConnectivitySections";
 
 export type SettingsSection =
   | "account"
   | "agent"
   | "assistant"
+  | "channels"
   | "data"
   | "help"
+  | "integrations"
   | "memory"
   | "models"
   | "personalization"
@@ -55,6 +61,16 @@ export const settingsSections: readonly {
     icon: "assistant",
     label: { en: "Assistant", zh: "助理设置" },
   },
+  {
+    id: "integrations",
+    icon: "link",
+    label: { en: "Integrations", zh: "集成" },
+  },
+  {
+    id: "channels",
+    icon: "send",
+    label: { en: "Channels", zh: "渠道" },
+  },
   { id: "data", icon: "files", label: { en: "Data", zh: "数据管理" } },
   {
     id: "shortcuts",
@@ -80,6 +96,9 @@ export function ProductSettingsSectionContent({
   if (section === "memory") return <MemorySettings locale={locale} />;
   if (section === "models") return <ModelSettings locale={locale} />;
   if (section === "assistant") return <AssistantSettings locale={locale} />;
+  if (section === "integrations")
+    return <IntegrationSettings locale={locale} />;
+  if (section === "channels") return <ChannelSettings locale={locale} />;
   if (section === "data") return <DataSettings locale={locale} />;
   if (section === "shortcuts") return <ShortcutSettings locale={locale} />;
   if (section === "security") return <SecuritySettings locale={locale} />;

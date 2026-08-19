@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   removeBase,
   useLang,
@@ -6,35 +6,36 @@ import {
   useNavigate,
   withBase,
 } from "@rspress/core/runtime";
-import { Link } from "@rspress/core/theme";
 import {
+  getCanonicalProductApplicationRoutePath,
   getProductApplicationRoutePath,
   getProductApplicationRouteState,
   getProductCapabilityRoutePath,
   getProductCapabilityTab,
+  isLegacyProductApplicationRoute,
 } from "../../../product-application-routes";
-import {
-  localizeProductText,
-  productNavigation,
-  resourceNavigation,
-  type ProductCapabilityTab,
-  type ProductPlaygroundLocale,
-  type ProductPlaygroundView,
-  type ProductResourceView,
+import type {
+  ProductCapabilityTab,
+  ProductPlaygroundLocale,
+  ProductPlaygroundView,
+  ProductResourceView,
 } from "./product-playground-data";
 import {
   ProductAutomationSurface,
   ProductCatalogSurface,
   ProductResourcesSurface,
 } from "./ProductCollectionSurfaces";
+import { ProductNavigationSidebar } from "./ProductNavigationSidebar";
+import { ProductMarketplaceSurface } from "./ProductMarketplaceSurface";
+import { ProductMemorySurface } from "./ProductMemorySurface";
 import {
-  ProductAccountMenu,
-  ProductCapabilityMenu,
   ProductExitDialog,
   ProductSearchDialog,
+  type ProductSearchDestination,
 } from "./ProductOverlayMenus";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { ProductComposerContext } from "./ProductComposer";
+import type { ProductTaskDraft } from "./product-composer-data";
 import { ProductProjectSessionSurface } from "./ProductProjectSurfaces";
 import { ProductProjectWorkspaceSurface } from "./ProductProjectWorkspaceSurface";
 import { ProductSessionSurface } from "./ProductSessionSurface";
@@ -46,481 +47,32 @@ import {
   ProductStartSurface,
 } from "./ProductTaskSurfaces";
 import {
-  appendProductTaskFollowUp,
+  clearPendingProductTaskDraft,
   createProductTaskSession,
+  enqueueProductTaskFollowUp,
   formatProductTaskTitle,
   getProductTaskPersistenceStatus,
+  moveProductTaskQueuedFollowUp,
+  readPendingProductTaskDraft,
   readProductTaskSession,
+  removeProductTaskQueuedFollowUp,
+  runNextProductTaskQueuedFollowUp,
+  setProductTaskQueuePaused,
+  updateProductTaskQueuedFollowUp,
+  writePendingProductTaskDraft,
   writeProductTaskSession,
   type ProductTaskOrigin,
   type ProductTaskSession,
 } from "./product-task-session-state";
 
-function ProductSidebar({
-  capabilityTab,
-  collapsed,
-  compact,
-  createdTaskTitle,
-  locale,
-  mobileOpen,
-  onCloseMobile,
-  onOpenSearch,
-  onOpenSettings,
-  onRequestExit,
-  onSelectCapabilityTab,
-  onToggleCollapsed,
-  resourceHref,
-  resource,
-  viewHref,
-  view,
-}: {
-  capabilityTab: ProductCapabilityTab;
-  collapsed: boolean;
-  compact: boolean;
-  createdTaskTitle: string | null;
-  locale: ProductPlaygroundLocale;
-  mobileOpen: boolean;
-  onCloseMobile: () => void;
-  onOpenSearch: () => void;
-  onOpenSettings: (section: SettingsSection) => void;
-  onRequestExit: () => void;
-  onSelectCapabilityTab: (tab: ProductCapabilityTab) => void;
-  onToggleCollapsed: () => void;
-  resourceHref: (resource: ProductResourceView) => string;
-  resource: ProductResourceView;
-  viewHref: (view: ProductPlaygroundView) => string;
-  view: ProductPlaygroundView;
-}) {
-  const zh = locale === "zh";
-  const accountTriggerRef = useRef<HTMLButtonElement>(null);
-  const capabilityTriggerRef = useRef<HTMLButtonElement>(null);
-  const moreRef = useRef<HTMLDetailsElement>(null);
-  const [accountOpen, setAccountOpen] = useState(false);
-  const [capabilityMenuOpen, setCapabilityMenuOpen] = useState(false);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterTime, setFilterTime] = useState("all");
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const projectRouteActive = view === "project" || view === "project-session";
-  const [projectExpanded, setProjectExpanded] = useState(projectRouteActive);
-
-  useEffect(() => {
-    if (projectRouteActive) setProjectExpanded(true);
-  }, [projectRouteActive]);
-
-  useEffect(() => {
-    if (view !== "catalog") setCapabilityMenuOpen(false);
-  }, [view]);
-
-  useEffect(() => {
-    if (!compact || mobileOpen) return;
-    setAccountOpen(false);
-    setCapabilityMenuOpen(false);
-    setFilterOpen(false);
-    setNotificationOpen(false);
-    moreRef.current?.removeAttribute("open");
-  }, [compact, mobileOpen]);
-
-  const statusOptions = [
-    ["all", zh ? "全部状态" : "All statuses"],
-    ["running", zh ? "进行中" : "In progress"],
-    ["complete", zh ? "已完成" : "Completed"],
-    ["failed", zh ? "失败" : "Failed"],
-    ["pending", zh ? "待处理" : "Pending"],
-    ["planning", zh ? "规划中" : "Planning"],
-  ] as const;
-  const timeOptions = [
-    ["all", zh ? "全部时间" : "Any time"],
-    ["today", zh ? "今天" : "Today"],
-    ["week", zh ? "最近 7 天" : "Last 7 days"],
-    ["month", zh ? "最近 30 天" : "Last 30 days"],
-  ] as const;
-  const taskVisible =
-    (filterStatus === "all" || filterStatus === "running") &&
-    (filterTime === "all" || filterTime === "today");
-
-  const closeNavigationLayers = () => {
-    setAccountOpen(false);
-    setCapabilityMenuOpen(false);
-    setFilterOpen(false);
-    setNotificationOpen(false);
-    moreRef.current?.removeAttribute("open");
-    onCloseMobile();
-  };
-
-  return (
-    <aside
-      aria-label={zh ? "应用导航" : "Application navigation"}
-      className="product-sidebar"
-      data-collapsed={collapsed ? "true" : undefined}
-      data-mobile-open={mobileOpen ? "true" : undefined}
-      inert={compact && !mobileOpen ? true : undefined}
-    >
-      <header className="product-sidebar__window">
-        <span aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <div>
-          <button
-            aria-label={
-              compact
-                ? zh
-                  ? "关闭应用导航"
-                  : "Close application navigation"
-                : collapsed
-                  ? zh
-                    ? "展开侧边栏"
-                    : "Expand sidebar"
-                  : zh
-                    ? "收起侧边栏"
-                    : "Collapse sidebar"
-            }
-            onClick={compact ? onCloseMobile : onToggleCollapsed}
-            type="button"
-          >
-            <ProductPlaygroundIcon name="collapse" />
-          </button>
-          <button
-            aria-label={zh ? "搜索" : "Search"}
-            onClick={() => {
-              setAccountOpen(false);
-              setFilterOpen(false);
-              setNotificationOpen(false);
-              onOpenSearch();
-            }}
-            type="button"
-          >
-            <ProductPlaygroundIcon name="search" />
-          </button>
-          <button
-            aria-expanded={filterOpen}
-            aria-label={zh ? "筛选任务" : "Filter tasks"}
-            data-active={filterOpen ? "true" : undefined}
-            onClick={() => {
-              setAccountOpen(false);
-              setNotificationOpen(false);
-              setFilterOpen((value) => !value);
-            }}
-            type="button"
-          >
-            <ProductPlaygroundIcon name="filter" />
-          </button>
-        </div>
-      </header>
-
-      {filterOpen ? (
-        <section
-          aria-label={zh ? "任务筛选" : "Task filters"}
-          className="product-sidebar__filter-popover"
-        >
-          <fieldset>
-            <legend>{zh ? "筛选状态" : "Filter by status"}</legend>
-            {statusOptions.map(([value, label]) => (
-              <button
-                aria-pressed={filterStatus === value}
-                key={value}
-                onClick={() => setFilterStatus(value)}
-                type="button"
-              >
-                {label}
-                {filterStatus === value ? (
-                  <ProductPlaygroundIcon name="check" />
-                ) : null}
-              </button>
-            ))}
-          </fieldset>
-          <fieldset>
-            <legend>{zh ? "筛选时间" : "Filter by time"}</legend>
-            {timeOptions.map(([value, label]) => (
-              <button
-                aria-pressed={filterTime === value}
-                key={value}
-                onClick={() => setFilterTime(value)}
-                type="button"
-              >
-                {label}
-                {filterTime === value ? (
-                  <ProductPlaygroundIcon name="check" />
-                ) : null}
-              </button>
-            ))}
-          </fieldset>
-          <button
-            disabled={filterStatus === "all" && filterTime === "all"}
-            onClick={() => {
-              setFilterStatus("all");
-              setFilterTime("all");
-            }}
-            type="button"
-          >
-            {zh ? "重置筛选条件" : "Reset filters"}
-          </button>
-        </section>
-      ) : null}
-
-      <Link
-        className="product-sidebar__identity"
-        href={viewHref("start")}
-        onClick={closeNavigationLayers}
-      >
-        <img alt="" height="28" src={withBase("/logo.png")} width="28" />
-        <span>
-          <strong>A3S UI</strong>
-          <small>v0.3.0</small>
-        </span>
-      </Link>
-
-      <nav
-        className="product-sidebar__primary"
-        aria-label={zh ? "主要页面" : "Primary pages"}
-      >
-        {productNavigation.map((item) => {
-          const current =
-            view === item.id || (item.id === "projects" && projectRouteActive);
-          if (item.id === "catalog") {
-            return (
-              <div className="product-sidebar__capability" key={item.id}>
-                <button
-                  aria-current={current ? "page" : undefined}
-                  aria-expanded={capabilityMenuOpen}
-                  aria-haspopup="menu"
-                  onClick={() => {
-                    setAccountOpen(false);
-                    setFilterOpen(false);
-                    setNotificationOpen(false);
-                    moreRef.current?.removeAttribute("open");
-                    setCapabilityMenuOpen((value) => !value);
-                  }}
-                  ref={capabilityTriggerRef}
-                  type="button"
-                >
-                  <ProductPlaygroundIcon name={item.icon} />
-                  <span>{localizeProductText(item.label, locale)}</span>
-                </button>
-                <ProductCapabilityMenu
-                  activeTab={capabilityTab}
-                  locale={locale}
-                  onClose={() => setCapabilityMenuOpen(false)}
-                  onSelect={(tab) => {
-                    onSelectCapabilityTab(tab);
-                    setCapabilityMenuOpen(false);
-                    onCloseMobile();
-                  }}
-                  open={capabilityMenuOpen}
-                  triggerRef={capabilityTriggerRef}
-                />
-              </div>
-            );
-          }
-
-          return (
-            <Link
-              aria-current={current ? "page" : undefined}
-              href={viewHref(item.id)}
-              key={item.id}
-              onClick={closeNavigationLayers}
-            >
-              <ProductPlaygroundIcon name={item.icon} />
-              <span>{localizeProductText(item.label, locale)}</span>
-            </Link>
-          );
-        })}
-        <details className="product-sidebar__more" ref={moreRef}>
-          <summary
-            aria-current={view === "resources" ? "page" : undefined}
-            onClick={() => {
-              setAccountOpen(false);
-              setFilterOpen(false);
-              setNotificationOpen(false);
-            }}
-          >
-            <ProductPlaygroundIcon name="more" />
-            <span>{zh ? "更多" : "More"}</span>
-            <small>{zh ? "资料库 · 灵感" : "Resources"}</small>
-          </summary>
-          <div role="menu" aria-label={zh ? "更多资源" : "More resources"}>
-            {resourceNavigation.map((item) => (
-              <Link
-                aria-current={
-                  view === "resources" && resource === item.id
-                    ? "page"
-                    : undefined
-                }
-                href={resourceHref(item.id)}
-                key={item.id}
-                onClick={closeNavigationLayers}
-                role="menuitem"
-              >
-                <ProductPlaygroundIcon name={item.icon} />
-                {localizeProductText(item.label, locale)}
-              </Link>
-            ))}
-          </div>
-        </details>
-      </nav>
-
-      <div className="product-sidebar__history">
-        <section>
-          <h2>
-            {zh
-              ? `任务 (${createdTaskTitle ? 2 : 1})`
-              : `Tasks (${createdTaskTitle ? 2 : 1})`}
-          </h2>
-          {taskVisible ? (
-            <>
-              {createdTaskTitle ? (
-                <Link
-                  aria-current={view === "created-session" ? "page" : undefined}
-                  data-created-task
-                  href={viewHref("created-session")}
-                  onClick={closeNavigationLayers}
-                >
-                  <span>{createdTaskTitle}</span>
-                  <time>{zh ? "刚刚" : "Now"}</time>
-                </Link>
-              ) : null}
-              <Link
-                aria-current={view === "session" ? "page" : undefined}
-                href={viewHref("session")}
-                onClick={closeNavigationLayers}
-              >
-                <span>{zh ? "修复会话恢复" : "Fix session recovery"}</span>
-                <time>{zh ? "今天" : "Today"}</time>
-              </Link>
-            </>
-          ) : (
-            <p>{zh ? "没有符合条件的任务" : "No matching tasks"}</p>
-          )}
-        </section>
-        <section>
-          <h2>{zh ? "空间 (1)" : "Spaces (1)"}</h2>
-          <div
-            className="product-sidebar__project-group"
-            data-expanded={projectExpanded ? "true" : undefined}
-          >
-            <div>
-              <Link
-                aria-current={view === "project" ? "page" : undefined}
-                href={viewHref("project")}
-                onClick={closeNavigationLayers}
-              >
-                <ProductPlaygroundIcon name="project" />
-                <span>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</span>
-              </Link>
-              <button
-                aria-expanded={projectExpanded}
-                aria-label={
-                  projectExpanded
-                    ? zh
-                      ? "收起项目任务"
-                      : "Collapse project tasks"
-                    : zh
-                      ? "展开项目任务"
-                      : "Expand project tasks"
-                }
-                onClick={() => setProjectExpanded((value) => !value)}
-                type="button"
-              >
-                <ProductPlaygroundIcon name="chevron" />
-              </button>
-            </div>
-            {projectExpanded ? (
-              <Link
-                aria-current={view === "project-session" ? "page" : undefined}
-                className="product-sidebar__project-task"
-                href={viewHref("project-session")}
-                onClick={closeNavigationLayers}
-              >
-                <span>{zh ? "发布就绪检查" : "Release readiness"}</span>
-                <time>{zh ? "今天" : "Today"}</time>
-              </Link>
-            ) : null}
-          </div>
-        </section>
-      </div>
-
-      <footer className="product-sidebar__footer">
-        <button
-          aria-expanded={accountOpen}
-          aria-haspopup="menu"
-          onClick={() => {
-            setFilterOpen(false);
-            setNotificationOpen(false);
-            moreRef.current?.removeAttribute("open");
-            setAccountOpen((value) => !value);
-          }}
-          ref={accountTriggerRef}
-          type="button"
-        >
-          <img alt="" height="30" src={withBase("/logo.png")} width="30" />
-          <strong>{zh ? "本地用户" : "Local user"}</strong>
-        </button>
-        <button
-          aria-expanded={notificationOpen}
-          aria-label={zh ? "通知" : "Notifications"}
-          onClick={() => {
-            setAccountOpen(false);
-            setFilterOpen(false);
-            setNotificationOpen((value) => !value);
-          }}
-          type="button"
-        >
-          <ProductPlaygroundIcon name="notification" />
-        </button>
-        <button
-          aria-label={zh ? "设置" : "Settings"}
-          onClick={() => {
-            setAccountOpen(false);
-            onOpenSettings("system");
-          }}
-          type="button"
-        >
-          <ProductPlaygroundIcon name="settings" />
-        </button>
-      </footer>
-      <ProductAccountMenu
-        locale={locale}
-        onClose={() => setAccountOpen(false)}
-        onOpenSettings={onOpenSettings}
-        onRequestExit={onRequestExit}
-        open={accountOpen}
-        triggerRef={accountTriggerRef}
-      />
-      {notificationOpen ? (
-        <section
-          aria-label={zh ? "消息中心" : "Notifications"}
-          className="product-sidebar__notifications"
-        >
-          <header>
-            <strong>{zh ? "消息中心" : "Notifications"}</strong>
-            <button
-              aria-label={zh ? "关闭消息中心" : "Close notifications"}
-              onClick={() => setNotificationOpen(false)}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="close" />
-            </button>
-          </header>
-          <article>
-            <span>
-              <ProductPlaygroundIcon name="check" />
-            </span>
-            <div>
-              <strong>
-                {zh ? "视觉验收已完成" : "Visual review completed"}
-              </strong>
-              <small>
-                {zh ? "今天 · A3S UI 体验优化" : "Today · A3S UI experience"}
-              </small>
-            </div>
-          </article>
-        </section>
-      ) : null}
-    </aside>
-  );
-}
+/*
+THESIS: One task-first product workbench; refuse galleries, IDE chrome, and documentation scaffolds.
+OWN-WORLD: Neutral operating canvas, compact context rail, flat panels, precise controls, and sparse A3S blue.
+STORY: Start a task, bind context and run policy, follow execution, inspect artifacts, and manage durable resources.
+FIRST VIEWPORT: Context rail at left, quiet task canvas in the center, one dominant composer above the fold.
+FORM: User-confirmed pinned desktop-workbench canon; approval recorded 2026-08-19; seed user-pinned-operate-v5-3-3.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
+*/
 
 export function ProductApplication() {
   const language = useLang();
@@ -528,9 +80,8 @@ export function ProductApplication() {
   const navigate = useNavigate();
   const locale: ProductPlaygroundLocale = language === "en" ? "en" : "zh";
   const zh = locale === "zh";
-  const { resource, view } = getProductApplicationRouteState(
-    removeBase(location.pathname),
-  );
+  const routePathname = removeBase(location.pathname);
+  const { resource, view } = getProductApplicationRouteState(routePathname);
   const [hydrated, setHydrated] = useState(false);
   const capabilityTab = hydrated
     ? getProductCapabilityTab(location.search)
@@ -550,18 +101,37 @@ export function ProductApplication() {
   const [taskPersistenceStatus, setTaskPersistenceStatus] = useState<
     "memory" | "saved"
   >("saved");
+  const [taskDraft, setTaskDraft] = useState<ProductTaskDraft | null>(null);
 
   useEffect(() => {
     const storedSession = readProductTaskSession();
+    const pendingDraft = readPendingProductTaskDraft();
     setTaskSession(storedSession);
+    setTaskDraft(pendingDraft);
     setTaskPersistenceStatus(getProductTaskPersistenceStatus());
     setTaskSessionReady(true);
     setHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!isLegacyProductApplicationRoute(routePathname)) return;
+    const canonicalPath = getCanonicalProductApplicationRoutePath(
+      routePathname,
+      locale,
+    );
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${withBase(canonicalPath)}${window.location.search}${window.location.hash}`,
+    );
+  }, [locale, routePathname]);
+
+  useEffect(() => {
     const query = window.matchMedia("(max-width: 48rem)");
-    const update = () => setCompact(query.matches);
+    const update = () => {
+      setCompact(query.matches);
+      if (!query.matches) setMobileOpen(false);
+    };
     update();
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
@@ -570,7 +140,9 @@ export function ProductApplication() {
   useEffect(() => {
     setMobileOpen(false);
     setSearchOpen(false);
-  }, [location.pathname]);
+    setExitOpen(false);
+    setSettingsOpen(false);
+  }, [location.hash, location.key, location.pathname, location.search]);
 
   useEffect(() => {
     const titles: Record<ProductPlaygroundView, string> = {
@@ -582,6 +154,8 @@ export function ProductApplication() {
         : zh
           ? "当前任务"
           : "Current task",
+      marketplace: zh ? "扩展" : "Extensions",
+      memory: zh ? "记忆" : "Memory",
       project: zh ? "A3S UI 体验优化" : "A3S UI experience",
       "project-session": zh ? "发布就绪检查" : "Release readiness",
       projects: zh ? "项目" : "Projects",
@@ -615,15 +189,35 @@ export function ProductApplication() {
     setTaskSession(session);
     setTaskSessionReady(true);
     setTaskPersistenceStatus(persisted ? "saved" : "memory");
+    setTaskDraft(null);
+    clearPendingProductTaskDraft();
     navigateToView("created-session");
   };
 
-  const addTaskFollowUp = (message: string) => {
+  const startTaskWithContext = (
+    draft: Omit<ProductTaskDraft, "revision">,
+  ) => {
+    setTaskDraft(writePendingProductTaskDraft(draft));
+    navigateToView("start");
+  };
+
+  const updateTaskSession = (
+    update: (session: ProductTaskSession) => ProductTaskSession,
+  ) => {
     if (!taskSession) return;
-    const nextSession = appendProductTaskFollowUp(taskSession, message);
+    const nextSession = update(taskSession);
     const persisted = writeProductTaskSession(nextSession);
     setTaskSession(nextSession);
     setTaskPersistenceStatus(persisted ? "saved" : "memory");
+  };
+
+  const addTaskFollowUp = (
+    message: string,
+    context: ProductComposerContext,
+  ) => {
+    updateTaskSession((session) =>
+      enqueueProductTaskFollowUp(session, message, context),
+    );
   };
 
   const openSettings = (section: SettingsSection) => {
@@ -631,12 +225,48 @@ export function ProductApplication() {
     setSettingsOpen(true);
   };
 
+  const openGlobalSearch = () => {
+    setExitOpen(false);
+    setSettingsOpen(false);
+    setMobileOpen(false);
+    setSearchOpen(true);
+  };
+
+  const openSearchDestination = (destination: ProductSearchDestination) => {
+    setSearchOpen(false);
+    setMobileOpen(false);
+    if (destination.type === "view") {
+      navigateToView(destination.view);
+      return;
+    }
+    if (destination.type === "resource") {
+      navigateToView("resources", destination.resource);
+      return;
+    }
+    if (destination.type === "capability") {
+      navigateToCapabilityTab(destination.tab);
+      return;
+    }
+    openSettings(destination.section);
+  };
+
   return (
     <section
       className="a3s-product-application rp-not-doc"
+      data-direction-contract="user-pinned-operate-v5-3-3"
       data-product-application
       data-sidebar-collapsed={sidebarCollapsed ? "true" : undefined}
       data-view={view}
+      onKeyDown={(event) => {
+        if (
+          !(event.metaKey || event.ctrlKey) ||
+          event.key.toLowerCase() !== "k"
+        ) {
+          return;
+        }
+        event.preventDefault();
+        openGlobalSearch();
+      }}
     >
       <button
         aria-expanded={mobileOpen}
@@ -656,16 +286,17 @@ export function ProductApplication() {
         <ProductPlaygroundIcon name={mobileOpen ? "close" : "menu"} />
       </button>
       {mobileOpen ? (
-        <button
-          aria-label={zh ? "关闭应用导航" : "Close application navigation"}
+        <div
+          aria-hidden="true"
           className="product-application__backdrop"
           data-visible="true"
           onClick={() => setMobileOpen(false)}
-          type="button"
         />
       ) : null}
-      <ProductSidebar
-        capabilityTab={capabilityTab}
+      <ProductNavigationSidebar
+        capabilityHref={(tab) =>
+          withBase(getProductCapabilityRoutePath(tab, locale))
+        }
         collapsed={sidebarCollapsed}
         compact={compact}
         createdTaskTitle={
@@ -674,33 +305,46 @@ export function ProductApplication() {
             : null
         }
         locale={locale}
+        languageHref={withBase(
+          getProductApplicationRoutePath(
+            view,
+            locale === "zh" ? "en" : "zh",
+            resource,
+          ),
+        )}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
-        onOpenSearch={() => setSearchOpen(true)}
+        onOpenSearch={openGlobalSearch}
         onOpenSettings={openSettings}
         onRequestExit={() => setExitOpen(true)}
-        onSelectCapabilityTab={navigateToCapabilityTab}
         onToggleCollapsed={() => setSidebarCollapsed((value) => !value)}
-        resourceHref={(nextResource) => routeHref("resources", nextResource)}
         resource={resource}
-        viewHref={(nextView) => routeHref(nextView)}
+        resourceHref={(nextResource) => routeHref("resources", nextResource)}
         view={view}
+        viewHref={(nextView) => routeHref(nextView)}
       />
-      <main className="product-application__main">
+      <main
+        className="product-application__main"
+        inert={compact && mobileOpen ? true : undefined}
+      >
         {view === "start" ? (
           <ProductStartSurface
+            initialDraft={taskDraft}
             locale={locale}
             onCreateTask={(value, context) =>
               createTask(value, context, "start")
             }
+            onOpenModelSettings={() => openSettings("models")}
           />
         ) : null}
         {view === "assistant" ? (
           <ProductAssistantSurface
+            filesHref={routeHref("resources", "files")}
             locale={locale}
             onCreateTask={(value, context) =>
               createTask(value, context, "assistant")
             }
+            onOpenModelSettings={() => openSettings("models")}
             onOpenSettings={() => openSettings("assistant")}
           />
         ) : null}
@@ -713,6 +357,7 @@ export function ProductApplication() {
         {view === "project" ? (
           <ProductProjectWorkspaceSurface
             locale={locale}
+            onOpenModelSettings={() => openSettings("models")}
             projectHref={routeHref("project")}
             projectsHref={routeHref("projects")}
             sessionHref={routeHref("project-session")}
@@ -721,6 +366,7 @@ export function ProductApplication() {
         {view === "project-session" ? (
           <ProductProjectSessionSurface
             locale={locale}
+            onOpenModelSettings={() => openSettings("models")}
             projectHref={routeHref("project")}
             projectsHref={routeHref("projects")}
           />
@@ -735,19 +381,57 @@ export function ProductApplication() {
         {view === "automation" ? (
           <ProductAutomationSurface locale={locale} />
         ) : null}
+        {view === "memory" ? <ProductMemorySurface locale={locale} /> : null}
+        {view === "marketplace" ? (
+          <ProductMarketplaceSurface locale={locale} />
+        ) : null}
         {view === "resources" ? (
           <ProductResourcesSurface
             locale={locale}
+            onStartTask={startTaskWithContext}
             resource={resource}
             startHref={routeHref("start")}
           />
         ) : null}
         {view === "session" ? (
-          <ProductSessionSurface locale={locale} variant="seeded" />
+          <ProductSessionSurface
+            locale={locale}
+            onOpenModelSettings={() => openSettings("models")}
+            variant="seeded"
+          />
         ) : null}
         {view === "created-session" ? (
           <ProductSessionSurface
             locale={locale}
+            onMoveQueuedFollowUp={(id, offset) =>
+              updateTaskSession((session) =>
+                moveProductTaskQueuedFollowUp(session, id, offset),
+              )
+            }
+            onOpenModelSettings={() => openSettings("models")}
+            onPauseQueue={() =>
+              updateTaskSession((session) =>
+                setProductTaskQueuePaused(session, true),
+              )
+            }
+            onRemoveQueuedFollowUp={(id) =>
+              updateTaskSession((session) =>
+                removeProductTaskQueuedFollowUp(session, id),
+              )
+            }
+            onResumeQueue={() =>
+              updateTaskSession((session) =>
+                setProductTaskQueuePaused(session, false),
+              )
+            }
+            onRunNextQueuedFollowUp={() =>
+              updateTaskSession(runNextProductTaskQueuedFollowUp)
+            }
+            onUpdateQueuedFollowUp={(id, message) =>
+              updateTaskSession((session) =>
+                updateProductTaskQueuedFollowUp(session, id, message),
+              )
+            }
             onFollowUp={addTaskFollowUp}
             persistenceStatus={taskPersistenceStatus}
             startHref={routeHref("start")}
@@ -764,13 +448,14 @@ export function ProductApplication() {
         open={settingsOpen}
       />
       <ProductSearchDialog
+        createdTaskTitle={
+          taskSessionReady && taskSession
+            ? formatProductTaskTitle(taskSession.prompt, locale)
+            : null
+        }
         locale={locale}
         onClose={() => setSearchOpen(false)}
-        onSelectView={(next) => {
-          setSearchOpen(false);
-          setMobileOpen(false);
-          navigateToView(next);
-        }}
+        onSelect={openSearchDestination}
         open={searchOpen}
       />
       <ProductExitDialog

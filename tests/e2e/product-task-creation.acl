@@ -7,11 +7,11 @@ suite "a3s-ui-product-task-creation" {
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open-empty-session" { url = "http://127.0.0.1:4178/UI/sessions/current.html" }
+        navigate "open-empty-session" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
         wait "loaded" { load = "networkidle" }
         wait "missing-state" { visible = css("[data-product-surface=session][data-session-state=missing]") }
         expect "missing-heading" { text = "没有可恢复的任务" }
-        expect "recovery-action" { visible = css("[data-session-state=missing] a[href$='/app.html']") }
+        expect "recovery-action" { visible = css("[data-session-state=missing] a[href$='/playground.html']") }
 
         screenshot "empty-state" { path = "product/task-session-empty.png" }
         console "console" { path = "product/task-session-empty-console.json" clear = false }
@@ -24,39 +24,42 @@ suite "a3s-ui-product-task-creation" {
         timeout_ms = 90000
         viewport "desktop" { width = 1478 height = 852 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
         wait "composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
 
-        click "open-workspaces" { target = css(".product-start .product-composer__context summary") }
-        click "choose-workspace" { target = role("menuitem", "A3S UI 体验优化") }
-        select "allow-edits" { target = css(".product-start select[aria-label='权限设置']") values = ["edit"] }
-        select "choose-reasoner" { target = css(".product-start select[aria-label='模型']") values = ["reasoner"] }
+        click "open-workspaces" { target = css(".product-start [data-composer-control=workspace] > button") }
+        click "choose-workspace" { target = css(".product-start [data-workspace-options] [role=option]:first-child") }
+        click "open-execution-mode" { target = css(".product-start [data-composer-control=mode] > button") }
+        click "allow-edits" { target = css(".product-start [data-mode-options] [role=option]:nth-child(3)") }
+        click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
+        click "open-model-picker" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
+        click "choose-default-model" { target = css(".product-start #product-model-option-1") }
         fill "task" { target = css(".product-start [role=textbox][aria-label='任务指令']") value = "整理导航交互并补充移动端回归" }
         click "create" { target = role("button", "发送任务") }
 
-        wait "created-url" { url = "http://127.0.0.1:4178/UI/sessions/current.html" }
+        wait "created-url" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
         wait "session-ready" { visible = css("[data-product-surface=session][data-session-state=ready][data-variant=created]") }
         expect "dynamic-title" { visible = css(".product-session__header h1") }
         expect "original-task" { text = "整理导航交互并补充移动端回归" }
         expect "recent-task" { visible = css(".product-sidebar__history a[data-created-task][aria-current=page]") }
-        expect "context-ready" { visible = css(".product-session__tool[data-context]") }
-        click "open-context" { target = css(".product-session__tool[data-context] summary") }
+        expect "context-ready" { visible = css(".product-session-context[open]") }
         expect "workspace-preserved" { text = "A3S UI 体验优化" }
-        expect "model-preserved" { text = "A3S Reasoner" }
+        expect "model-preserved" { text = "当前默认模型" }
+        expect "permissions-preserved" { text = "允许修改" }
 
         fill "follow-up" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "先确认触控目标和返回后的焦点位置" }
-        click "send-follow-up" { target = role("button", "发送任务") }
-        expect "follow-up-visible" { text = "先确认触控目标和返回后的焦点位置" }
-        expect "assistant-reply" { text = "这条补充已加入当前任务上下文" }
+        press "queue-follow-up" { key = "Enter" }
+        expect "follow-up-queued" { visible = css(".product-follow-up-queue") }
+        expect "queued-copy-visible" { text = "先确认触控目标和返回后的焦点位置" }
 
         click "leave-session" { target = css(".product-sidebar__primary > a:first-of-type") }
-        wait "start-url" { url = "http://127.0.0.1:4178/UI/app.html" }
+        wait "start-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
         click "return-from-recent" { target = css(".product-sidebar__history a[data-created-task]") }
-        wait "returned-url" { url = "http://127.0.0.1:4178/UI/sessions/current.html" }
+        wait "returned-url" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
         expect "returned-follow-up" { text = "先确认触控目标和返回后的焦点位置" }
 
-        navigate "reload-directly" { url = "http://127.0.0.1:4178/UI/sessions/current.html" }
+        navigate "reload-directly" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
         wait "restored-session" { visible = css("[data-product-surface=session][data-session-state=ready]") }
         expect "restored-task" { text = "整理导航交互并补充移动端回归" }
         expect "restored-follow-up" { text = "先确认触控目标和返回后的焦点位置" }
@@ -72,11 +75,11 @@ suite "a3s-ui-product-task-creation" {
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
         fill "task" { target = css(".product-start [role=textbox][aria-label='任务指令']") value = "检查移动端任务导航" }
         click "create" { target = role("button", "发送任务") }
-        wait "created-url" { url = "http://127.0.0.1:4178/UI/sessions/current.html" }
+        wait "created-url" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
         expect "drawer-closed" { visible = css("button[aria-label='打开应用导航']") }
         expect "mobile-composer" { visible = css(".product-session__composer .ProseMirror") }
 
@@ -96,19 +99,19 @@ suite "a3s-ui-product-task-creation" {
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/app.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/playground.html" }
         wait "loaded" { load = "networkidle" }
         fill "task" { target = css(".product-start [role=textbox][aria-label='Task instruction']") value = "Review navigation continuity across breakpoints" }
         click "create" { target = role("button", "Send task") }
-        wait "created-url" { url = "http://127.0.0.1:4178/UI/en/sessions/current.html" }
+        wait "created-url" { url = "http://127.0.0.1:4178/UI/en/playground/sessions/current.html" }
         wait "session-ready" { visible = css("[data-product-surface=session][data-session-state=ready][data-variant=created]") }
         expect "english-title" { text = "Review navigation continuity across breakpoints" }
         expect "english-recent-task" { visible = css(".product-sidebar__history a[data-created-task][aria-current=page]") }
 
         fill "follow-up" { target = css(".product-session__composer [role=textbox][aria-label='Task instruction']") value = "Keep keyboard focus visible after returning" }
-        click "send-follow-up" { target = role("button", "Send task") }
+        press "queue-follow-up" { key = "Enter" }
+        expect "english-queue" { visible = css(".product-follow-up-queue") }
         expect "english-follow-up" { text = "Keep keyboard focus visible after returning" }
-        expect "english-reply" { text = "This update is now part of the task context" }
 
         screenshot "english-session" { path = "product/task-session-english.png" }
         console "console" { path = "product/task-session-english-console.json" clear = false }
@@ -121,7 +124,7 @@ suite "a3s-ui-product-task-creation" {
         timeout_ms = 60000
         viewport "desktop" { width = 1280 height = 900 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/app.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
         fill "task" { target = css(".product-start [role=textbox][aria-label='任务指令']") value = "检查深色会话的层级与可读性" }
         click "create" { target = role("button", "发送任务") }

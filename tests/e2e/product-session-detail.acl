@@ -7,15 +7,15 @@ suite "a3s-ui-product-session-detail" {
         timeout_ms = 60000
         viewport "desktop" { width = 1478 height = 852 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/sessions/fix-session-recovery.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html" }
         wait "loaded" { load = "networkidle" }
         wait "session-ready" { visible = css(".a3s-product-application[data-view=session] [data-product-surface=session]") }
 
         expect "session-title" { text = "修复会话恢复" }
         expect "conversation-only" { visible = css("[data-product-surface=session]:not(:has(.a3s-workspace-playground))") }
         expect "search-action" { visible = css("button[aria-label='在会话中搜索']") }
-        expect "artifacts-secondary" { visible = css(".product-session__actions button[aria-label='关闭产物面板']") }
-        expect "artifacts-visible-by-default" { visible = css("aside[aria-label='会话产物']") }
+        expect "details-secondary" { visible = css(".product-session__actions button[aria-label='打开任务详情']") }
+        expect "details-hidden-by-default" { visible = css("[data-product-surface=session]:not(:has(aside[aria-label='任务详情']))") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
 
         click "open-search" { target = css("button[aria-label='在会话中搜索']") }
@@ -24,13 +24,38 @@ suite "a3s-ui-product-session-detail" {
         click "close-search" { target = css("button[aria-label='关闭会话搜索']") }
 
         expect "artifacts-stay-in-session" { visible = css(".a3s-product-application[data-view=session]:not(:has(.a3s-workspace-playground))") }
-        click "close-default-artifacts" { target = css(".product-session__actions button[aria-label='关闭产物面板']") }
-        expect "artifacts-trigger-restored" { visible = css("button[aria-label='打开产物面板']:focus") }
-        click "reopen-artifacts" { target = css("button[aria-label='打开产物面板']") }
-        expect "artifacts-visible-again" { visible = css("aside[aria-label='会话产物']") }
-        click "open-session-artifact" { target = css(".product-session__artifact-overview button") }
-        expect "artifact-preview-visible" { visible = css(".product-session__artifact-preview pre code") }
-        click "close-artifacts" { target = css(".product-session__inspector > header button[aria-label='关闭产物面板']") }
+        click "reopen-details" { target = css("button[aria-label='打开任务详情']") }
+        expect "details-visible-again" { visible = css("aside[aria-label='任务详情']") }
+        click "open-artifacts-tab" { target = role("tab", "产物") }
+        click "open-session-artifact" { target = css(".product-inspector-file-list button") }
+        expect "artifact-preview-visible" { visible = css(".product-inspector-artifacts__preview pre code") }
+        click "close-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
+        expect "details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
+
+        click "open-device-preview" { target = role("button", "设备预览") }
+        expect "device-preview-visible" { visible = css(".product-session-inspector .product-device-shell") }
+        select "choose-desktop-preview" { target = css(".product-inspector-preview select[aria-label='预览设备尺寸']") values = ["desktop"] }
+        expect "desktop-shell-visible" { visible = css(".product-device-stage[data-device=desktop][data-preset=desktop] .product-device-shell") }
+        click "open-full-device-simulator" { target = role("button", "打开完整设备模拟器") }
+        expect "full-device-simulator-visible" { visible = css(".product-session-inspector[data-preview-expanded=true] .device-simulator[data-device-simulator-initialized=true]") }
+        select "choose-desktop-device" { target = css(".product-session-device-simulator [data-device-simulator-select]") values = ["desktop"] }
+        expect "desktop-device-ready" { visible = css(".product-session-device-simulator[data-device=desktop][data-device-kind=desktop][data-width='1920'][data-height='1080']") }
+        expect "webview-command-visible" { visible = css(".product-session-device-simulator [data-device-simulator-command]") }
+        click "collapse-device-simulator" { target = css(".product-inspector-preview .product-inspector-section-heading > button") }
+        wait "compact-device-preview-restored" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
+        click "open-code-graph" { target = role("tab", "图谱") }
+        expect "code-graph-visible" { visible = css(".product-session-inspector .product-session-code-graph [data-code-graph-canvas]") }
+        fill "filter-code-graph" { target = css(".product-session-code-graph [data-code-graph-search]") value = "ToolCall" }
+        click "show-code-list" { target = role("button", "列表") }
+        expect "filtered-code-node" { visible = css(".product-session-code-graph[data-view=list] [data-code-node][data-node-id='tool-calls']:not([hidden])") }
+        click "select-tool-call-node" { target = css(".product-session-code-graph [data-node-id='tool-calls'] > button") }
+        expect "tool-call-node-selected" { visible = css(".product-session-code-graph [data-node-id='tool-calls'][aria-selected=true]") }
+        click "close-result-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
+
+        click "open-response-menu" { target = css(".product-session__message-menu > summary") }
+        expect "response-menu-visible" { visible = css(".product-session__message-menu[open] [role=menu]") }
+        click "save-response-memory" { target = role("menuitem", "保存到记忆") }
+        expect "response-memory-status" { text = "回复已保存到记忆" }
 
         fill "continue-session" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续检查移动端焦点顺序" }
         expect "send-enabled" { visible = css(".product-session__composer button[aria-label='发送任务']:not(:disabled)") }
@@ -48,18 +73,18 @@ suite "a3s-ui-product-session-detail" {
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "open" { url = "http://127.0.0.1:4178/UI/sessions/fix-session-recovery.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html" }
         wait "loaded" { load = "networkidle" }
         wait "session-ready" { visible = css(".a3s-product-application[data-view=session] [data-product-surface=session]") }
 
         expect "mobile-navigation" { visible = css("button[aria-label='打开应用导航']") }
         expect "mobile-composer" { visible = css(".product-session__composer .ProseMirror") }
         expect "mobile-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
-        expect "mobile-tool-calls" { visible = css(".product-session__tool[data-success]") }
+        expect "mobile-tool-calls" { visible = css(".product-tool-timeline") }
 
-        click "open-mobile-artifacts" { target = css("button[aria-label='打开产物面板']") }
-        expect "mobile-artifacts" { visible = css("aside[aria-label='会话产物']") }
-        expect "mobile-artifacts-full-width" { visible = css(".product-session__inspector") }
+        click "open-mobile-details" { target = css("button[aria-label='打开任务详情']") }
+        expect "mobile-details" { visible = css("aside[aria-label='任务详情']") }
+        expect "mobile-details-full-width" { visible = css(".product-session-inspector[role=dialog]") }
 
         screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
         console "console" { path = "product/session-detail-mobile-console.json" clear = false }

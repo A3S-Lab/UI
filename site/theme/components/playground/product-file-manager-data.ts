@@ -1,5 +1,8 @@
 import type { ProductLocalizedText } from "./product-playground-data";
 
+export type ProductFileWorkbenchKind =
+  "code" | "document" | "pdf" | "presentation" | "spreadsheet";
+
 export type ProductFileEntry = {
   favorite?: boolean;
   id: string;
@@ -12,6 +15,7 @@ export type ProductFileEntry = {
   size: string;
   sizeBytes: number;
   type: string;
+  workbench?: ProductFileWorkbenchKind;
 };
 
 export const productFileEntries: readonly ProductFileEntry[] = [
@@ -76,6 +80,7 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     sizeBytes: 8_192,
     type: "Markdown",
     favorite: true,
+    workbench: "code",
   },
   {
     id: "component-inventory",
@@ -91,6 +96,71 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     size: "24 KB",
     sizeBytes: 24_576,
     type: "CSV",
+    workbench: "spreadsheet",
+  },
+  {
+    id: "experience-brief",
+    kind: "file",
+    modified: "2026-08-18T10:36:00.000Z",
+    name: "experience-brief.docx",
+    owner: "You",
+    parentId: "root",
+    preview: {
+      en: "Product experience brief with goals, acceptance criteria, cited evidence, and tracked review decisions.",
+      zh: "包含目标、验收标准、引用证据与修订决策的产品体验说明。",
+    },
+    size: "86 KB",
+    sizeBytes: 88_064,
+    type: "Word document",
+    workbench: "document",
+  },
+  {
+    id: "quality-scorecard",
+    kind: "file",
+    modified: "2026-08-18T10:29:00.000Z",
+    name: "quality-scorecard.xlsx",
+    owner: "Mina",
+    parentId: "root",
+    preview: {
+      en: "Acceptance scorecard covering interaction, accessibility, responsiveness, and visual consistency.",
+      zh: "覆盖交互、可访问性、响应式与视觉一致性的验收评分表。",
+    },
+    size: "124 KB",
+    sizeBytes: 126_976,
+    type: "Excel workbook",
+    workbench: "spreadsheet",
+  },
+  {
+    id: "release-review",
+    kind: "file",
+    modified: "2026-08-18T10:17:00.000Z",
+    name: "release-review.pptx",
+    owner: "Rui",
+    parentId: "root",
+    preview: {
+      en: "Release review deck with product decisions, before-and-after evidence, and rollout steps.",
+      zh: "包含产品决策、前后对比证据与发布步骤的评审演示文稿。",
+    },
+    size: "2.4 MB",
+    sizeBytes: 2_516_582,
+    type: "PowerPoint presentation",
+    workbench: "presentation",
+  },
+  {
+    id: "visual-acceptance-report",
+    kind: "file",
+    modified: "2026-08-18T09:54:00.000Z",
+    name: "visual-acceptance-report.pdf",
+    owner: "Automation",
+    parentId: "root",
+    preview: {
+      en: "Bounded visual acceptance report with desktop, mobile, focus, and overlay evidence.",
+      zh: "包含桌面、移动、焦点与浮层证据的视觉验收报告。",
+    },
+    size: "3.8 MB",
+    sizeBytes: 3_984_588,
+    type: "PDF document",
+    workbench: "pdf",
   },
   {
     id: "device-shell-review",
@@ -106,6 +176,22 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     size: "1.8 MB",
     sizeBytes: 1_887_437,
     type: "PNG image",
+  },
+  {
+    id: "device-shell-review-html",
+    kind: "file",
+    modified: "2026-08-17T14:08:00.000Z",
+    name: "device-shell-review.html",
+    owner: "Rui",
+    parentId: "root",
+    preview: {
+      en: '<main class="device-review">\n  <h1>Device shell acceptance</h1>\n  <p>Phone, tablet, laptop, and desktop frames preserve the selected CSS viewport.</p>\n</main>',
+      zh: '<main class="device-review">\n  <h1>设备外壳验收</h1>\n  <p>手机、平板、笔记本与桌面外壳会保留所选 CSS 视口。</p>\n</main>',
+    },
+    size: "19 KB",
+    sizeBytes: 19_456,
+    type: "HTML document",
+    workbench: "code",
   },
   {
     id: "components",
@@ -144,6 +230,7 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     sizeBytes: 5_939,
     type: "CSS",
     favorite: true,
+    workbench: "code",
   },
   {
     id: "file-manager-css",
@@ -159,6 +246,7 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     size: "4.9 KB",
     sizeBytes: 5_018,
     type: "CSS",
+    workbench: "code",
   },
   {
     id: "react-adapter",
@@ -174,6 +262,7 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     size: "7.4 KB",
     sizeBytes: 7_578,
     type: "JavaScript",
+    workbench: "code",
   },
   {
     id: "zh-docs",
@@ -211,6 +300,7 @@ export const productFileEntries: readonly ProductFileEntry[] = [
     size: "12 KB",
     sizeBytes: 12_288,
     type: "MDX",
+    workbench: "code",
   },
   {
     id: "desktop-evidence",

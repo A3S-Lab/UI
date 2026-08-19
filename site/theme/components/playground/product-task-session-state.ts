@@ -1,14 +1,17 @@
 import type { ProductComposerContext } from "./ProductComposer";
+import type { ProductTaskDraft } from "./product-composer-data";
 import type {
   ProductLocalizedText,
   ProductPlaygroundLocale,
 } from "./product-playground-data";
 
 const taskSessionStorageKey = "a3s-ui:product-task-session:v1";
+const pendingTaskDraftStorageKey = "a3s-ui:pending-task-draft:v1";
 const maxTaskLength = 8_000;
 const maxFollowUpCount = 100;
 let memoryTaskSession: ProductTaskSession | null = null;
 let memoryTaskSessionPersisted = false;
+let memoryPendingTaskDraft: ProductTaskDraft | null = null;
 
 const workspaceLabels: Record<
   ProductComposerContext["workspace"],
@@ -16,8 +19,17 @@ const workspaceLabels: Record<
 > = {
   "": { en: "No workspace selected", zh: "未选择工作空间" },
   local: { en: "Local workspace", zh: "本地工作空间" },
+  root: { en: "A3S monorepo", zh: "A3S 主仓库" },
   ui: { en: "A3S UI experience", zh: "A3S UI 体验优化" },
+  web: { en: "A3S Web", zh: "A3S Web" },
 };
+
+const modeLabels: Record<ProductComposerContext["mode"], ProductLocalizedText> =
+  {
+    agent: { en: "Default", zh: "默认" },
+    answer: { en: "Answer only", zh: "仅回答" },
+    plan: { en: "Plan", zh: "计划" },
+  };
 
 const permissionLabels: Record<
   ProductComposerContext["permissions"],
@@ -28,10 +40,13 @@ const permissionLabels: Record<
   read: { en: "Read only", zh: "仅查看" },
 };
 
-const modelLabels: Record<ProductComposerContext["model"], string> = {
-  auto: "Auto",
-  fast: "A3S Fast",
-  reasoner: "A3S Reasoner",
+const modelLabels: Record<
+  ProductComposerContext["model"],
+  ProductLocalizedText
+> = {
+  auto: { en: "Auto", zh: "自动" },
+  default: { en: "Current default", zh: "当前默认模型" },
+  local: { en: "Configured local model", zh: "已配置的本地模型" },
 };
 
 const effortLabels: Record<
@@ -40,8 +55,10 @@ const effortLabels: Record<
 > = {
   high: { en: "High", zh: "深入" },
   low: { en: "Low", zh: "快速" },
-  max: { en: "Maximum", zh: "最高" },
+  max: { en: "Max", zh: "最大" },
   medium: { en: "Medium", zh: "标准" },
+  ultracode: { en: "Ultra", zh: "极限" },
+  xhigh: { en: "XHigh", zh: "极高" },
 };
 
 export type ProductTaskOrigin = "assistant" | "start";
@@ -53,7 +70,16 @@ export type ProductTaskSession = {
   id: string;
   origin: ProductTaskOrigin;
   prompt: string;
-  version: 1;
+  queuePaused: boolean;
+  queuedFollowUps: ProductTaskQueuedFollowUp[];
+  version: 2;
+};
+
+export type ProductTaskQueuedFollowUp = {
+  content: string;
+  context: ProductComposerContext;
+  enqueuedAt: string;
+  id: string;
 };
 
 export type ProductTaskArtifact = {
@@ -66,6 +92,7 @@ export type ProductTaskArtifact = {
 
 export type ProductTaskContextDetails = {
   effort: string;
+  mode: string;
   model: string;
   permissions: string;
   resources: string;
@@ -74,22 +101,34 @@ export type ProductTaskContextDetails = {
 
 function normalizeContext(value: unknown): ProductComposerContext {
   const context = value as Partial<ProductComposerContext> | null;
+  const rawModel = context?.model as string | undefined;
   const model =
-    context?.model === "reasoner" || context?.model === "fast"
-      ? context.model
-      : "auto";
+    rawModel === "default" || rawModel === "reasoner"
+      ? "default"
+      : rawModel === "local" || rawModel === "fast"
+        ? "local"
+        : "auto";
   const permissions =
     context?.permissions === "read" || context?.permissions === "edit"
       ? context.permissions
       : "ask";
   const workspace =
-    context?.workspace === "ui" || context?.workspace === "local"
+    context?.workspace === "ui" ||
+    context?.workspace === "web" ||
+    context?.workspace === "root" ||
+    context?.workspace === "local"
       ? context.workspace
       : "";
+  const mode =
+    context?.mode === "plan" || context?.mode === "answer"
+      ? context.mode
+      : "agent";
   const effort =
     context?.effort === "low" ||
     context?.effort === "high" ||
-    context?.effort === "max"
+    context?.effort === "max" ||
+    context?.effort === "xhigh" ||
+    context?.effort === "ultracode"
       ? context.effort
       : "medium";
   const resources = Array.isArray(context?.resources)
@@ -99,7 +138,14 @@ function normalizeContext(value: unknown): ProductComposerContext {
             resource &&
             typeof resource.id === "string" &&
             typeof resource.label === "string" &&
-            ["file", "folder", "selection", "skill"].includes(resource.kind),
+            [
+              "assistant",
+              "connector",
+              "file",
+              "folder",
+              "selection",
+              "skill",
+            ].includes(resource.kind),
         )
         .slice(0, 50)
         .map((resource) => ({
@@ -112,6 +158,7 @@ function normalizeContext(value: unknown): ProductComposerContext {
   return {
     deepResearch: context?.deepResearch === true,
     effort,
+    mode,
     model,
     permissions,
     resources,
@@ -125,6 +172,26 @@ function normalizeMessages(value: unknown) {
     .filter((message): message is string => typeof message === "string")
     .map((message) => message.trim().slice(0, maxTaskLength))
     .filter(Boolean)
+    .slice(-maxFollowUpCount);
+}
+
+function normalizeQueuedFollowUps(value: unknown): ProductTaskQueuedFollowUp[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter(
+      (item) =>
+        item && typeof item.id === "string" && typeof item.content === "string",
+    )
+    .map((item) => ({
+      content: item.content.trim().slice(0, maxTaskLength),
+      context: normalizeContext(item.context),
+      enqueuedAt:
+        typeof item.enqueuedAt === "string"
+          ? item.enqueuedAt
+          : new Date(0).toISOString(),
+      id: item.id,
+    }))
+    .filter((item) => item.content)
     .slice(-maxFollowUpCount);
 }
 
@@ -144,7 +211,9 @@ export function createProductTaskSession(
         : `task-${Date.now()}`,
     origin,
     prompt: normalizedPrompt,
-    version: 1,
+    queuePaused: false,
+    queuedFollowUps: [],
+    version: 2,
   };
 }
 
@@ -159,9 +228,12 @@ export function readProductTaskSession(): ProductTaskSession | null {
       memoryTaskSessionPersisted = false;
       return memoryTaskSession;
     }
-    const value = JSON.parse(raw) as Partial<ProductTaskSession>;
+    const value = JSON.parse(raw) as Omit<
+      Partial<ProductTaskSession>,
+      "version"
+    > & { version?: number };
     if (
-      value.version !== 1 ||
+      (value.version !== 1 && value.version !== 2) ||
       typeof value.id !== "string" ||
       typeof value.prompt !== "string" ||
       (value.origin !== "assistant" && value.origin !== "start")
@@ -188,7 +260,9 @@ export function readProductTaskSession(): ProductTaskSession | null {
       id: value.id,
       origin: value.origin,
       prompt,
-      version: 1,
+      queuePaused: value.queuePaused === true,
+      queuedFollowUps: normalizeQueuedFollowUps(value.queuedFollowUps),
+      version: 2,
     };
     memoryTaskSessionPersisted = true;
     return memoryTaskSession;
@@ -220,17 +294,167 @@ export function getProductTaskPersistenceStatus(): "memory" | "saved" {
   return memoryTaskSessionPersisted ? "saved" : "memory";
 }
 
-export function appendProductTaskFollowUp(
+function normalizePendingTaskDraft(value: unknown): ProductTaskDraft | null {
+  if (!value || typeof value !== "object") return null;
+  const draft = value as Partial<ProductTaskDraft>;
+  const context = normalizeContext({
+    resources: draft.resources,
+    workspace: draft.workspace,
+  });
+  const prompt =
+    typeof draft.prompt === "string"
+      ? draft.prompt.trim().slice(0, maxTaskLength)
+      : "";
+  if (!prompt && context.resources.length === 0) return null;
+  return {
+    prompt,
+    resources: context.resources,
+    revision:
+      typeof draft.revision === "number" && Number.isFinite(draft.revision)
+        ? Math.max(0, Math.floor(draft.revision))
+        : Date.now(),
+    workspace: context.workspace,
+  };
+}
+
+export function readPendingProductTaskDraft(): ProductTaskDraft | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(pendingTaskDraftStorageKey);
+    if (!raw) return memoryPendingTaskDraft;
+    const draft = normalizePendingTaskDraft(JSON.parse(raw));
+    if (!draft) {
+      window.sessionStorage.removeItem(pendingTaskDraftStorageKey);
+      memoryPendingTaskDraft = null;
+      return null;
+    }
+    memoryPendingTaskDraft = draft;
+    return draft;
+  } catch {
+    return memoryPendingTaskDraft;
+  }
+}
+
+export function writePendingProductTaskDraft(
+  draft: Omit<ProductTaskDraft, "revision">,
+): ProductTaskDraft {
+  const pendingDraft = normalizePendingTaskDraft({
+    ...draft,
+    revision: Date.now(),
+  });
+  if (!pendingDraft) {
+    clearPendingProductTaskDraft();
+    return {
+      prompt: "",
+      resources: [],
+      revision: Date.now(),
+      workspace: "",
+    };
+  }
+  memoryPendingTaskDraft = pendingDraft;
+  if (typeof window !== "undefined") {
+    try {
+      window.sessionStorage.setItem(
+        pendingTaskDraftStorageKey,
+        JSON.stringify(pendingDraft),
+      );
+    } catch {
+      // The in-memory fallback still preserves the draft across client routes.
+    }
+  }
+  return pendingDraft;
+}
+
+export function clearPendingProductTaskDraft() {
+  memoryPendingTaskDraft = null;
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.removeItem(pendingTaskDraftStorageKey);
+  } catch {
+    // Storage can be unavailable in privacy-restricted browser contexts.
+  }
+}
+
+export function enqueueProductTaskFollowUp(
   session: ProductTaskSession,
   message: string,
+  context: ProductComposerContext,
 ): ProductTaskSession {
   const normalizedMessage = message.trim().slice(0, maxTaskLength);
   if (!normalizedMessage) return session;
   return {
     ...session,
-    followUps: [...session.followUps, normalizedMessage].slice(
-      -maxFollowUpCount,
+    queuedFollowUps: [
+      ...session.queuedFollowUps,
+      {
+        content: normalizedMessage,
+        context: normalizeContext(context),
+        enqueuedAt: new Date().toISOString(),
+        id:
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `queued-${Date.now()}`,
+      },
+    ].slice(-maxFollowUpCount),
+  };
+}
+
+export function moveProductTaskQueuedFollowUp(
+  session: ProductTaskSession,
+  id: string,
+  offset: -1 | 1,
+) {
+  const index = session.queuedFollowUps.findIndex((item) => item.id === id);
+  const nextIndex = index + offset;
+  if (index < 0 || nextIndex < 0 || nextIndex >= session.queuedFollowUps.length)
+    return session;
+  const queuedFollowUps = [...session.queuedFollowUps];
+  const [item] = queuedFollowUps.splice(index, 1);
+  if (!item) return session;
+  queuedFollowUps.splice(nextIndex, 0, item);
+  return { ...session, queuedFollowUps };
+}
+
+export function updateProductTaskQueuedFollowUp(
+  session: ProductTaskSession,
+  id: string,
+  message: string,
+) {
+  const content = message.trim().slice(0, maxTaskLength);
+  if (!content) return session;
+  return {
+    ...session,
+    queuedFollowUps: session.queuedFollowUps.map((item) =>
+      item.id === id ? { ...item, content } : item,
     ),
+  };
+}
+
+export function removeProductTaskQueuedFollowUp(
+  session: ProductTaskSession,
+  id: string,
+) {
+  return {
+    ...session,
+    queuedFollowUps: session.queuedFollowUps.filter((item) => item.id !== id),
+  };
+}
+
+export function setProductTaskQueuePaused(
+  session: ProductTaskSession,
+  queuePaused: boolean,
+) {
+  return { ...session, queuePaused };
+}
+
+export function runNextProductTaskQueuedFollowUp(session: ProductTaskSession) {
+  const [next, ...queuedFollowUps] = session.queuedFollowUps;
+  if (!next) return session;
+  return {
+    ...session,
+    followUps: [...session.followUps, next.content].slice(-maxFollowUpCount),
+    queuePaused: false,
+    queuedFollowUps,
   };
 }
 
@@ -253,7 +477,8 @@ export function getProductTaskContextDetails(
 ): ProductTaskContextDetails {
   return {
     effort: effortLabels[session.context.effort][locale],
-    model: modelLabels[session.context.model],
+    mode: modeLabels[session.context.mode][locale],
+    model: modelLabels[session.context.model][locale],
     permissions: permissionLabels[session.context.permissions][locale],
     resources:
       locale === "zh"
@@ -268,7 +493,7 @@ function contextLabel(
   locale: ProductPlaygroundLocale,
 ) {
   const context = getProductTaskContextDetails(session, locale);
-  return `${context.workspace} · ${context.model} · ${context.effort}`;
+  return `${context.workspace} · ${context.mode} · ${context.model} · ${context.effort}`;
 }
 
 export function getProductTaskConversation(

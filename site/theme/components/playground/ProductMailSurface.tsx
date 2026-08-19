@@ -1,14 +1,17 @@
 import { useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import type { ProductTaskDraft } from "./product-composer-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 const mailboxAddress = "tasks@local.a3s.dev";
 
 export function ProductMailSurface({
   locale,
+  onStartTask,
   startHref,
 }: {
   locale: ProductPlaygroundLocale;
+  onStartTask: (draft: Omit<ProductTaskDraft, "revision">) => void;
   startHref: string;
 }) {
   const zh = locale === "zh";
@@ -85,6 +88,29 @@ export function ProductMailSurface({
               <small>{zh ? "邮箱地址" : "Mailbox address"}</small>
               <strong>{mailboxAddress}</strong>
             </div>
+            <button
+              data-primary
+              onClick={() =>
+                onStartTask({
+                  prompt: zh
+                    ? "检查智能体邮箱中的待处理邮件，按紧急程度归类，并为需要回复的邮件准备待确认草稿。"
+                    : "Review pending messages in the agent mailbox, prioritize them, and prepare confirmation-required drafts for replies.",
+                  resources: [
+                    {
+                      id: "connector:agent-mailbox",
+                      kind: "connector",
+                      label: zh ? "智能体邮箱" : "Agent mailbox",
+                      meta: mailboxAddress,
+                    },
+                  ],
+                  workspace: "ui",
+                })
+              }
+              type="button"
+            >
+              <ProductPlaygroundIcon name="task-add" />
+              {zh ? "创建任务" : "Create task"}
+            </button>
             <button onClick={copyAddress} type="button">
               <ProductPlaygroundIcon name="document" />
               {zh ? "复制地址" : "Copy address"}

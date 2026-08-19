@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { withBase } from "@rspress/core/runtime";
+import { Link } from "@rspress/core/theme";
+import { getProductCapabilityRoutePath } from "../../../product-application-routes";
 import {
   automationTemplates,
   capabilityDirectory,
-  capabilityGroups,
   type ProductCapabilityCategory,
   type ProductCapabilityTab,
   type ProductPlaygroundLocale,
@@ -15,6 +16,13 @@ import { ProductInspirationSurface } from "./ProductInspirationSurface";
 import { ProductKnowledgeLibrarySurface } from "./ProductKnowledgeLibrarySurface";
 import { ProductMailSurface } from "./ProductMailSurface";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import { ProductAutomationRunHistory } from "./ProductAutomationRunHistory";
+import type { ProductTaskDraft } from "./product-composer-data";
+import {
+  ProductAutomationBuilder,
+  type ProductAutomationDraftResult,
+  type ProductAutomationTemplateDraft,
+} from "./ProductAutomationBuilder";
 
 export function ProductAutomationSurface({
   locale,
@@ -23,13 +31,44 @@ export function ProductAutomationSurface({
 }) {
   const zh = locale === "zh";
   const [tab, setTab] = useState<"scheduled" | "history">("scheduled");
-  const [created, setCreated] = useState<string[]>([]);
-  const activeAutomation = automationTemplates.find(
-    (template) => template.label.en === created[0],
-  );
+  const [automations, setAutomations] = useState<
+    { id: string; name: string; schedule: string }[]
+  >([]);
+  const [editor, setEditor] = useState<{
+    automationId?: string;
+    template?: ProductAutomationTemplateDraft;
+  } | null>(null);
+  const activeAutomation = automations[0];
+
+  if (editor) {
+    const existing = automations.find(
+      (automation) => automation.id === editor.automationId,
+    );
+    return (
+      <ProductAutomationBuilder
+        initialName={existing?.name}
+        key={editor.automationId ?? editor.template?.label.en ?? "new"}
+        locale={locale}
+        onCancel={() => setEditor(null)}
+        onSave={(result: ProductAutomationDraftResult) => {
+          const id = editor.automationId ?? `automation-${Date.now()}`;
+          setAutomations((current) => [
+            { id, ...result },
+            ...current.filter((automation) => automation.id !== id),
+          ]);
+          setEditor(null);
+        }}
+        template={editor.template}
+      />
+    );
+  }
 
   return (
-    <section className="product-automation" data-product-surface="automation">
+    <section
+      className="product-automation"
+      data-product-surface="automation"
+      data-tab={tab}
+    >
       <header>
         <div aria-label={zh ? "自动化视图" : "Automation view"} role="tablist">
           <button
@@ -54,7 +93,7 @@ export function ProductAutomationSurface({
       {tab === "scheduled" ? (
         <>
           <section className="product-automation__status">
-            {created.length === 0 ? (
+            {automations.length === 0 ? (
               <>
                 <ProductPlaygroundIcon name="automation" />
                 <p>
@@ -64,7 +103,7 @@ export function ProductAutomationSurface({
                 </p>
                 <button
                   data-primary
-                  onClick={() => setCreated([automationTemplates[0].label.en])}
+                  onClick={() => setEditor({})}
                   type="button"
                 >
                   <ProductPlaygroundIcon name="plus" />
@@ -77,14 +116,19 @@ export function ProductAutomationSurface({
                   <ProductPlaygroundIcon name="check" />
                 </span>
                 <div>
-                  <strong>{activeAutomation.label[locale]}</strong>
+                  <strong>{activeAutomation.name}</strong>
                   <small>
-                    {zh
-                      ? "工作日 09:30 · 已启用"
-                      : "Weekdays at 09:30 · Enabled"}
+                    {activeAutomation.schedule} · {zh ? "已启用" : "Enabled"}
                   </small>
                 </div>
-                <button type="button">{zh ? "查看" : "Open"}</button>
+                <button
+                  onClick={() =>
+                    setEditor({ automationId: activeAutomation.id })
+                  }
+                  type="button"
+                >
+                  {zh ? "编辑" : "Edit"}
+                </button>
               </article>
             ) : null}
           </section>
@@ -94,12 +138,7 @@ export function ProductAutomationSurface({
               {automationTemplates.map((template) => (
                 <button
                   key={template.label.en}
-                  onClick={() =>
-                    setCreated((current) => [
-                      template.label.en,
-                      ...current.filter((item) => item !== template.label.en),
-                    ])
-                  }
+                  onClick={() => setEditor({ template })}
                   type="button"
                 >
                   <ProductPlaygroundIcon name={template.icon} />
@@ -113,18 +152,7 @@ export function ProductAutomationSurface({
           </section>
         </>
       ) : (
-        <section className="product-automation__history">
-          <ProductPlaygroundIcon name="report" />
-          <h1>{zh ? "尚无运行记录" : "No runs yet"}</h1>
-          <p>
-            {zh
-              ? "自动化首次运行后，结果和恢复信息会显示在这里。"
-              : "Results and recovery details appear here after the first run."}
-          </p>
-          <button onClick={() => setTab("scheduled")} type="button">
-            {zh ? "返回定时任务" : "Back to scheduled"}
-          </button>
-        </section>
+        <ProductAutomationRunHistory locale={locale} />
       )}
     </section>
   );
@@ -145,7 +173,17 @@ export function ProductCatalogSurface({
     "all",
   );
   const [ownedOnly, setOwnedOnly] = useState(false);
-  const [selectedCapability, setSelectedCapability] = useState("");
+  const [enabledCapabilities, setEnabledCapabilities] = useState(
+    () =>
+      new Set(
+        Object.values(capabilityDirectory)
+          .flat()
+          .filter((capability) => capability.owned)
+          .map((capability) => capability.label.en),
+      ),
+  );
+  const [status, setStatus] = useState("");
+  const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const visibleCapabilities = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
     return capabilityDirectory[tab].filter((capability) => {
@@ -164,10 +202,16 @@ export function ProductCatalogSurface({
           .includes(normalized);
       const matchesCategory =
         category === "all" || capability.category === category;
-      const matchesOwned = !ownedOnly || capability.owned;
+      const matchesOwned =
+        !ownedOnly || enabledCapabilities.has(capability.label.en);
       return matchesQuery && matchesCategory && matchesOwned;
     });
-  }, [category, locale, ownedOnly, query, tab]);
+  }, [category, enabledCapabilities, locale, ownedOnly, query, tab]);
+
+  const featuredCapabilities = capabilityDirectory[tab].slice(0, 4);
+  const enabledCount = capabilityDirectory[tab].filter((capability) =>
+    enabledCapabilities.has(capability.label.en),
+  ).length;
 
   const tabs = [
     ["assistants", zh ? "专家" : "Assistants"],
@@ -183,47 +227,101 @@ export function ProductCatalogSurface({
     ["operations", zh ? "运营协作" : "Operations"],
     ["content", zh ? "内容创作" : "Content"],
   ] as const;
-  const sceneIcons = [
-    "product",
-    "chart",
-    "knowledge",
-    "automation",
-    "shield",
+  const assistantScenarios = [
+    {
+      members: [0, 2, 3],
+      title: zh ? "交付上线" : "Ship a release",
+    },
+    {
+      members: [0, 7, 5],
+      title: zh ? "产品体验" : "Product experience",
+    },
+    {
+      members: [6, 1, 8],
+      title: zh ? "故障恢复" : "Incident recovery",
+    },
+    {
+      members: [4, 5, 3],
+      title: zh ? "知识沉淀" : "Build shared knowledge",
+    },
+    {
+      members: [8, 3, 2],
+      title: zh ? "持续运营" : "Continuous operations",
+    },
   ] as const;
-  const categoryKeywords: Record<ProductCapabilityCategory, readonly string[]> =
-    zh
-      ? {
-          content: ["写作", "编辑"],
-          data: ["分析", "洞察"],
-          engineering: ["架构", "质量"],
-          knowledge: ["沉淀", "检索"],
-          operations: ["协作", "流程"],
-          product: ["交付", "评审"],
-        }
-      : {
-          content: ["Content", "Editing"],
-          data: ["Data", "Insight"],
-          engineering: ["Engineering", "Quality"],
-          knowledge: ["Knowledge", "Curation"],
-          operations: ["Operations", "Teamwork"],
-          product: ["Product", "Delivery"],
-        };
+  const toggleCapability = (
+    capability: (typeof capabilityDirectory)[ProductCapabilityTab][number],
+  ) => {
+    const key = capability.label.en;
+    const next = new Set(enabledCapabilities);
+    const removing = next.has(key);
+    if (removing) next.delete(key);
+    else next.add(key);
+    setEnabledCapabilities(next);
+    setStatus(
+      zh
+        ? `${removing ? "已移除" : "已添加"}“${capability.label.zh}”。`
+        : `${capability.label.en} ${removing ? "removed" : "added"}.`,
+    );
+  };
+  const changeTab = (nextTab: ProductCapabilityTab) => {
+    onTabChange(nextTab);
+    setCategory("all");
+    setStatus("");
+  };
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLAnchorElement>,
+    index: number,
+  ) => {
+    let nextIndex: number | undefined;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % tabs.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + tabs.length) % tabs.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = tabs.length - 1;
+    }
+    if (nextIndex === undefined) return;
+    const next = tabs[nextIndex];
+    if (!next) return;
+    event.preventDefault();
+    tabRefs.current[nextIndex]?.focus();
+    changeTab(next[0]);
+  };
 
   return (
-    <section className="product-catalog" data-product-surface="catalog">
+    <section
+      className="product-catalog"
+      data-catalog-tab={tab}
+      data-product-surface="catalog"
+    >
       <header>
         <div aria-label={zh ? "能力类型" : "Capability type"} role="tablist">
-          {tabs.map(([id, label]) => (
-            <button
+          {tabs.map(([id, label], index) => (
+            <Link
               aria-selected={tab === id}
+              href={withBase(getProductCapabilityRoutePath(id, locale))}
               key={id}
-              onClick={() => {
-                onTabChange(id);
-                setCategory("all");
-                setSelectedCapability("");
+              onClick={(event) => {
+                if (
+                  event.button === 0 &&
+                  !event.altKey &&
+                  !event.ctrlKey &&
+                  !event.metaKey &&
+                  !event.shiftKey
+                ) {
+                  event.preventDefault();
+                  changeTab(id);
+                }
+              }}
+              onKeyDown={(event) => handleTabKeyDown(event, index)}
+              ref={(node) => {
+                tabRefs.current[index] = node;
               }}
               role="tab"
-              type="button"
+              tabIndex={tab === id ? 0 : -1}
             >
               <ProductPlaygroundIcon
                 name={
@@ -235,16 +333,40 @@ export function ProductCatalogSurface({
                 }
               />
               {label}
-            </button>
+            </Link>
           ))}
         </div>
         <div>
           <label>
             <ProductPlaygroundIcon name="search" />
             <input
-              aria-label={zh ? "搜索能力" : "Search capabilities"}
+              aria-label={
+                tab === "assistants"
+                  ? zh
+                    ? "搜索专家"
+                    : "Search assistants"
+                  : tab === "skills"
+                    ? zh
+                      ? "搜索技能"
+                      : "Search skills"
+                    : zh
+                      ? "搜索连接器"
+                      : "Search connectors"
+              }
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder={zh ? "搜索名称或描述" : "Search name or description"}
+              placeholder={
+                tab === "assistants"
+                  ? zh
+                    ? "搜索专家名称或描述"
+                    : "Search assistants"
+                  : tab === "skills"
+                    ? zh
+                      ? "搜索技能"
+                      : "Search skills"
+                    : zh
+                      ? "搜索连接器"
+                      : "Search connectors"
+              }
               type="search"
               value={query}
             />
@@ -255,67 +377,183 @@ export function ProductCatalogSurface({
             type="button"
           >
             <ProductPlaygroundIcon name="catalog" />
-            {zh ? "我的能力" : "My capabilities"}
+            {tab === "assistants"
+              ? zh
+                ? "我的专家"
+                : "My assistants"
+              : tab === "skills"
+                ? zh
+                  ? "我的技能"
+                  : "My skills"
+              : zh
+                  ? "我的连接器"
+                  : "My connectors"}
+            <em aria-label={zh ? `${enabledCount} 个` : `${enabledCount} items`}>
+              {enabledCount}
+            </em>
+          </button>
+          <button
+            data-catalog-create
+            onClick={() =>
+              setStatus(
+                tab === "assistants"
+                  ? zh
+                    ? "专家创建流程已准备。"
+                    : "Assistant creation is ready."
+                  : tab === "skills"
+                    ? zh
+                      ? "技能添加流程已准备。"
+                      : "Skill installation is ready."
+                    : zh
+                      ? "连接器配置流程已准备。"
+                      : "Connector configuration is ready.",
+              )
+            }
+            type="button"
+          >
+            <ProductPlaygroundIcon name="plus" />
+            {tab === "assistants"
+              ? zh
+                ? "创建专家"
+                : "Create assistant"
+              : tab === "skills"
+                ? zh
+                  ? "添加技能"
+                  : "Add skill"
+                : zh
+                  ? "自定义连接器"
+                  : "Custom connector"}
           </button>
         </div>
       </header>
 
-      <section className="product-catalog__featured">
-        <h1>{zh ? "精选场景" : "Featured scenarios"}</h1>
-        <div>
-          {capabilityGroups.map((group, index) => (
-            <article key={group.label.en} data-scene={index + 1}>
-              <figure aria-hidden="true">
-                <ProductPlaygroundIcon
-                  name={sceneIcons[index % sceneIcons.length]}
-                />
-                <i />
-                <i />
-              </figure>
-              <h2>{group.label[locale]}</h2>
-              <ul>
-                {group.entries.map((entry) => (
-                  <li key={entry.en}>
-                    <span />
-                    {entry[locale]}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="product-catalog__directory">
-        <header>
-          <h1>{tabs.find(([id]) => id === tab)?.[1]}</h1>
-          <div
-            aria-label={zh ? "能力分组" : "Capability category"}
-            role="group"
-          >
-            {categories.map(([id, label]) => (
-              <button
-                aria-pressed={category === id}
-                key={id}
-                onClick={() => setCategory(id)}
-                type="button"
+      {tab === "assistants" ? (
+        <section
+          aria-labelledby="product-catalog-featured-title"
+          className="product-catalog__featured product-catalog__featured--scenarios"
+        >
+          <h1 id="product-catalog-featured-title">
+            {zh ? "精选场景" : "Featured scenarios"}
+          </h1>
+          <div>
+            {assistantScenarios.map((scenario, scenarioIndex) => (
+              <article
+                className="product-catalog__scenario"
+                data-capability-tone={(scenarioIndex % 5) + 1}
+                key={scenario.title}
               >
-                {label}
-              </button>
+                <img
+                  alt=""
+                  aria-hidden="true"
+                  src={withBase("/assets/images/project-collaboration.png")}
+                />
+                <h2>{scenario.title}</h2>
+                <ul>
+                  {scenario.members.map((memberIndex, memberPosition) => {
+                    const member = capabilityDirectory.assistants[memberIndex];
+                    if (!member) return null;
+                    return (
+                      <li key={member.label.en}>
+                        <img
+                          alt=""
+                          height="24"
+                          src={withBase(
+                            `/assets/images/avatar-${(memberPosition % 3) + 1}.png`,
+                          )}
+                          width="24"
+                        />
+                        <span>{member.label[locale]}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </article>
             ))}
           </div>
-        </header>
-        {visibleCapabilities.length > 0 ? (
+        </section>
+      ) : tab === "skills" ? (
+        <section className="product-catalog__featured">
+          <h1>{zh ? "精选技能" : "Featured skills"}</h1>
           <div>
+            {featuredCapabilities.map((capability, index) => {
+              const enabled = enabledCapabilities.has(capability.label.en);
+              return (
+                <article
+                  key={capability.label.en}
+                  data-capability-tone={index + 1}
+                >
+                  <span aria-hidden="true">
+                    <ProductPlaygroundIcon name="checklist" />
+                  </span>
+                  <div>
+                    <h2>{capability.label[locale]}</h2>
+                    <p>{capability.description[locale]}</p>
+                  </div>
+                  <button
+                    aria-label={
+                      enabled
+                        ? zh
+                          ? `移除${capability.label.zh}`
+                          : `Remove ${capability.label.en}`
+                        : zh
+                          ? `添加${capability.label.zh}`
+                          : `Add ${capability.label.en}`
+                    }
+                    aria-pressed={enabled}
+                    onClick={() => toggleCapability(capability)}
+                    type="button"
+                  >
+                    <ProductPlaygroundIcon name={enabled ? "check" : "plus"} />
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="product-catalog__directory">
+        {tab !== "connectors" ? (
+          <header>
+            <h1>
+              {tab === "assistants"
+                ? zh
+                  ? "专家"
+                  : "Assistants"
+                : zh
+                  ? "推荐"
+                  : "Recommended"}
+            </h1>
+            <div
+              aria-label={zh ? "能力分组" : "Capability category"}
+              role="group"
+            >
+              {categories.map(([id, label]) => (
+                <button
+                  aria-pressed={category === id}
+                  key={id}
+                  onClick={() => setCategory(id)}
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </header>
+        ) : (
+          <h1 className="product-catalog__visually-hidden">
+            {zh ? "连接器目录" : "Connector directory"}
+          </h1>
+        )}
+        {visibleCapabilities.length > 0 ? (
+          <div data-directory-layout={tab}>
             {visibleCapabilities.map((capability, index) => (
-              <button
-                aria-pressed={selectedCapability === capability.label.en}
+              <article
+                className="product-catalog__entry"
                 data-capability-tone={(index % 5) + 1}
                 key={capability.label.en}
-                onClick={() => setSelectedCapability(capability.label.en)}
-                type="button"
               >
-                <span>
+                <span aria-hidden="true">
                   {tab === "assistants" ? (
                     <img
                       alt=""
@@ -331,22 +569,48 @@ export function ProductCatalogSurface({
                     />
                   )}
                 </span>
-                <span>
+                <span className="product-catalog__entry-copy">
                   <strong>{capability.label[locale]}</strong>
                   <small>{capability.description[locale]}</small>
-                  <span data-capability-tags>
-                    {[
-                      ...new Set([
-                        capability.tag[locale],
-                        ...categoryKeywords[capability.category],
-                      ]),
-                    ].map((keyword) => (
-                      <em key={keyword}>{keyword}</em>
-                    ))}
-                  </span>
+                  {tab === "assistants" ? (
+                    <span className="product-catalog__entry-tags">
+                      <em>{capability.tag[locale]}</em>
+                      <em>
+                        {
+                          categories.find(
+                            ([id]) => id === capability.category,
+                          )?.[1]
+                        }
+                      </em>
+                      <em>{zh ? "可配置" : "Configurable"}</em>
+                    </span>
+                  ) : tab === "skills" ? (
+                    <em>{capability.tag[locale]}</em>
+                  ) : null}
                 </span>
-                <span data-capability-action>{zh ? "使用" : "Use"}</span>
-              </button>
+                <button
+                  aria-label={
+                    enabledCapabilities.has(capability.label.en)
+                      ? zh
+                        ? `移除${capability.label.zh}`
+                        : `Remove ${capability.label.en}`
+                      : zh
+                        ? `添加${capability.label.zh}`
+                        : `Add ${capability.label.en}`
+                  }
+                  aria-pressed={enabledCapabilities.has(capability.label.en)}
+                  onClick={() => toggleCapability(capability)}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon
+                    name={
+                      enabledCapabilities.has(capability.label.en)
+                        ? "check"
+                        : "plus"
+                    }
+                  />
+                </button>
+              </article>
             ))}
           </div>
         ) : (
@@ -367,17 +631,7 @@ export function ProductCatalogSurface({
             </button>
           </div>
         )}
-        <output aria-live="polite">
-          {selectedCapability
-            ? zh
-              ? `已选择“${
-                  capabilityDirectory[tab].find(
-                    (item) => item.label.en === selectedCapability,
-                  )?.label.zh ?? selectedCapability
-                }”。`
-              : `${selectedCapability} selected.`
-            : ""}
-        </output>
+        <output aria-live="polite">{status}</output>
       </section>
     </section>
   );
@@ -429,29 +683,46 @@ const resourceTitles: Record<
 
 export function ProductResourcesSurface({
   locale,
+  onStartTask,
   resource,
   startHref,
 }: {
   locale: ProductPlaygroundLocale;
+  onStartTask: (draft: Omit<ProductTaskDraft, "revision">) => void;
   resource: ProductResourceView;
   startHref: string;
 }) {
   const copy = resourceTitles[resource];
 
   if (resource === "inspiration") {
-    return <ProductInspirationSurface locale={locale} />;
+    return (
+      <ProductInspirationSurface locale={locale} onStartTask={onStartTask} />
+    );
   }
 
   if (resource === "mail") {
-    return <ProductMailSurface locale={locale} startHref={startHref} />;
+    return (
+      <ProductMailSurface
+        locale={locale}
+        onStartTask={onStartTask}
+        startHref={startHref}
+      />
+    );
   }
 
   if (resource === "files") {
-    return <ProductFileManagerSurface locale={locale} />;
+    return (
+      <ProductFileManagerSurface locale={locale} onStartTask={onStartTask} />
+    );
   }
 
   if (resource === "knowledge") {
-    return <ProductKnowledgeLibrarySurface locale={locale} />;
+    return (
+      <ProductKnowledgeLibrarySurface
+        locale={locale}
+        onStartTask={onStartTask}
+      />
+    );
   }
 
   return (
@@ -464,7 +735,30 @@ export function ProductResourcesSurface({
         <h1>{copy.title[locale]}</h1>
         <p>{copy.description[locale]}</p>
       </header>
-      <ProductConnectionSurface locale={locale} resource={resource} />
+      <ProductConnectionSurface
+        locale={locale}
+        onUseInTask={() =>
+          onStartTask({
+            prompt:
+              locale === "zh"
+                ? "基于已授权的协作文档，梳理关键信息、待确认事项和下一步行动。"
+                : "Review the authorized collaborative documents and summarize key information, open questions, and next actions.",
+            resources: [
+              {
+                id: "connector:documents",
+                kind: "connector",
+                label: locale === "zh" ? "协作文档" : "Collaborative documents",
+                meta:
+                  locale === "zh"
+                    ? "已授权连接器"
+                    : "Authorized connector",
+              },
+            ],
+            workspace: "ui",
+          })
+        }
+        resource={resource}
+      />
     </section>
   );
 }

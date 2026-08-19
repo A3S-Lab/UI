@@ -30,8 +30,10 @@ export type ProductPlaygroundIconName =
   | "gift"
   | "grid"
   | "help"
+  | "info"
   | "inspiration"
   | "knowledge"
+  | "language"
   | "link"
   | "list"
   | "logout"
@@ -188,6 +190,12 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
       <path d="M9.8 9a2.4 2.4 0 1 1 3.1 2.3c-.9.4-.9 1-.9 1.7M12 17h.01" />
     </>
   ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 10.5V17M12 7h.01" />
+    </>
+  ),
   inspiration: (
     <>
       <path d="M9 18h6M10 21h4" />
@@ -198,6 +206,12 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     <>
       <path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H12v18H7.5A3.5 3.5 0 0 0 4 23Z" />
       <path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H12v18h4.5A3.5 3.5 0 0 1 20 23Z" />
+    </>
+  ),
+  language: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c2.6 2.5 4 5.5 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.5-4-9s1.4-6.5 4-9Z" />
     </>
   ),
   link: (
