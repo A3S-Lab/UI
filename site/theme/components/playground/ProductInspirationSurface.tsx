@@ -105,27 +105,279 @@ const inspirationItems = [
   },
 ] as const;
 
-function InspirationPreview({ name }: { name: string }) {
+type InspirationPreviewName = (typeof inspirationItems)[number]["preview"];
+
+function DashboardPreview({
+  locale,
+  name,
+}: {
+  locale: ProductPlaygroundLocale;
+  name: Extract<InspirationPreviewName, "dashboard" | "report" | "workbench">;
+}) {
+  const zh = locale === "zh";
+  const content =
+    name === "workbench"
+      ? {
+          heading: zh ? "本周工作" : "This week",
+          metrics: [
+            [zh ? "已完成" : "Done", "12"],
+            [zh ? "待确认" : "Review", "3"],
+            [zh ? "完成率" : "Progress", "86%"],
+          ],
+          rows: zh
+            ? ["发布说明", "组件验收", "依赖更新"]
+            : ["Release notes", "UI review", "Dependency update"],
+        }
+      : name === "dashboard"
+        ? {
+            heading: zh ? "发布准备度" : "Release readiness",
+            metrics: [
+              [zh ? "检查" : "Checks", "48"],
+              [zh ? "通过" : "Passed", "45"],
+              [zh ? "风险" : "Risks", "3"],
+            ],
+            rows: zh
+              ? ["视觉验收", "端到端测试", "变更审阅"]
+              : ["Visual review", "End-to-end tests", "Change review"],
+          }
+        : {
+            heading: zh ? "体验验收" : "Experience review",
+            metrics: [
+              [zh ? "视觉" : "Visual", "96"],
+              [zh ? "交互" : "Behavior", "94"],
+              [zh ? "无障碍" : "A11y", "98"],
+            ],
+            rows: zh
+              ? ["宽屏布局", "移动端导航", "键盘路径"]
+              : ["Wide layout", "Mobile navigation", "Keyboard path"],
+          };
+
   return (
-    <figure aria-hidden="true" data-preview={name}>
-      <span data-preview-bar>
+    <span data-preview-dashboard>
+      <span data-preview-rail>
+        <b>{zh ? "概览" : "Overview"}</b>
         <i />
         <i />
         <i />
       </span>
-      <span data-preview-sidebar>
-        <i />
+      <span data-preview-workspace>
+        <strong>{content.heading}</strong>
+        <span data-preview-metrics>
+          {content.metrics.map(([label, value]) => (
+            <span key={label}>
+              <small>{label}</small>
+              <b>{value}</b>
+            </span>
+          ))}
+        </span>
+        <span data-preview-rows>
+          {content.rows.map((row, index) => (
+            <span key={row}>
+              <i
+                data-state={
+                  index === content.rows.length - 1 ? "pending" : "ready"
+                }
+              />
+              <b>{row}</b>
+              <small>
+                {index === content.rows.length - 1 ? "09:30" : "Done"}
+              </small>
+            </span>
+          ))}
+        </span>
+      </span>
+    </span>
+  );
+}
+
+function BoardPreview({ locale }: { locale: ProductPlaygroundLocale }) {
+  const zh = locale === "zh";
+  const columns = zh
+    ? [
+        ["待处理", "需求复核", "资料清点"],
+        ["进行中", "界面优化", "交互验收"],
+        ["已完成", "路由整理", "版本说明"],
+      ]
+    : [
+        ["To do", "Review brief", "Audit sources"],
+        ["In progress", "Refine UI", "Verify behavior"],
+        ["Done", "Organize routes", "Release notes"],
+      ];
+  return (
+    <span data-preview-board>
+      <strong>{zh ? "产品交付" : "Product delivery"}</strong>
+      <span>
+        {columns.map(([label, ...cards]) => (
+          <span key={label}>
+            <small>{label}</small>
+            {cards.map((card) => (
+              <b key={card}>{card}</b>
+            ))}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function DocumentPreview({ locale }: { locale: ProductPlaygroundLocale }) {
+  const zh = locale === "zh";
+  return (
+    <span data-preview-document>
+      <small>{zh ? "调研决策简报" : "Research decision brief"}</small>
+      <strong>
+        {zh ? "让证据进入下一步决策" : "Turn evidence into the next decision"}
+      </strong>
+      <p>
+        {zh
+          ? "整理来源、权衡与仍需验证的假设，让结论能够被复核。"
+          : "Organize sources, tradeoffs, and assumptions so every conclusion can be reviewed."}
+      </p>
+      <span>
+        <b>{zh ? "结论" : "Decision"}</b>
         <i />
         <i />
         <i />
       </span>
-      <span data-preview-canvas>
-        <i />
-        <i />
-        <i />
-        <i />
-        <i />
-        <i />
+      <em>{zh ? "8 个来源 · 3 项行动" : "8 sources · 3 actions"}</em>
+    </span>
+  );
+}
+
+function GraphPreview({ locale }: { locale: ProductPlaygroundLocale }) {
+  const zh = locale === "zh";
+  return (
+    <span data-preview-graph>
+      <span>
+        <strong>{zh ? "代码关系" : "Code relationships"}</strong>
+        <small>
+          {zh ? "包 · 模块 · 依赖" : "Packages · modules · dependencies"}
+        </small>
+      </span>
+      <svg viewBox="0 0 320 190">
+        <path d="M58 96 128 45m-70 51 70 54m0-105 72 18m-72 87 72-24m0-63 62 34m-62 29 62-29" />
+        <g>
+          <rect height="32" rx="8" width="74" x="21" y="80" />
+          <rect height="32" rx="8" width="74" x="91" y="29" />
+          <rect height="32" rx="8" width="74" x="91" y="134" />
+          <rect height="36" rx="9" width="82" x="159" y="45" />
+          <rect height="36" rx="9" width="82" x="159" y="108" />
+          <circle cx="269" cy="97" r="27" />
+        </g>
+      </svg>
+      <em>{zh ? "12 个模块 · 18 条边" : "12 modules · 18 edges"}</em>
+    </span>
+  );
+}
+
+function TimelinePreview({ locale }: { locale: ProductPlaygroundLocale }) {
+  const zh = locale === "zh";
+  const rows = zh
+    ? [
+        ["09:30", "回归结果"],
+        ["11:00", "发布评审"],
+        ["15:30", "证据归档"],
+      ]
+    : [
+        ["09:30", "Regression results"],
+        ["11:00", "Release review"],
+        ["15:30", "Archive evidence"],
+      ];
+  return (
+    <span data-preview-timeline>
+      <strong>{zh ? "发布协作日程" : "Release coordination"}</strong>
+      <span>
+        {rows.map(([time, label], index) => (
+          <span key={time}>
+            <small>{time}</small>
+            <i data-state={index === 0 ? "ready" : "pending"} />
+            <b>{label}</b>
+          </span>
+        ))}
+      </span>
+      <em>{zh ? "下一次更新 16:00" : "Next update at 16:00"}</em>
+    </span>
+  );
+}
+
+function LibraryPreview({ locale }: { locale: ProductPlaygroundLocale }) {
+  const zh = locale === "zh";
+  const rows = zh
+    ? [
+        ["设计规范", "已索引"],
+        ["发布流程", "已索引"],
+        ["故障恢复", "待更新"],
+      ]
+    : [
+        ["Design system", "Indexed"],
+        ["Release process", "Indexed"],
+        ["Recovery", "Update due"],
+      ];
+  return (
+    <span data-preview-library>
+      <span>
+        <strong>{zh ? "团队知识" : "Team knowledge"}</strong>
+        <small>{zh ? "搜索资料" : "Search sources"}</small>
+      </span>
+      <span>
+        {rows.map(([label, state], index) => (
+          <span key={label}>
+            <i data-state={index === rows.length - 1 ? "pending" : "ready"} />
+            <b>{label}</b>
+            <small>{state}</small>
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function InspirationPreview({
+  detail = false,
+  locale,
+  name,
+}: {
+  detail?: boolean;
+  locale: ProductPlaygroundLocale;
+  name: InspirationPreviewName;
+}) {
+  const zh = locale === "zh";
+  const labels: Record<InspirationPreviewName, string> = {
+    board: zh ? "产品交付" : "Product delivery",
+    dashboard: zh ? "发布准备度" : "Release readiness",
+    document: zh ? "决策简报" : "Decision brief",
+    graph: zh ? "依赖图谱" : "Dependency map",
+    library: zh ? "团队知识" : "Team knowledge",
+    report: zh ? "体验验收" : "Experience review",
+    timeline: zh ? "发布协作" : "Release coordination",
+    workbench: zh ? "个人工作台" : "Personal workbench",
+  };
+  return (
+    <figure
+      aria-hidden="true"
+      data-detail={detail ? "true" : undefined}
+      data-preview={name}
+    >
+      <span data-preview-window>
+        <span data-preview-bar>
+          <span>
+            <i />
+            <i />
+            <i />
+          </span>
+          <strong>{labels[name]}</strong>
+          <small>A3S</small>
+        </span>
+        <span data-preview-canvas>
+          {name === "workbench" || name === "dashboard" || name === "report" ? (
+            <DashboardPreview locale={locale} name={name} />
+          ) : null}
+          {name === "board" ? <BoardPreview locale={locale} /> : null}
+          {name === "document" ? <DocumentPreview locale={locale} /> : null}
+          {name === "graph" ? <GraphPreview locale={locale} /> : null}
+          {name === "timeline" ? <TimelinePreview locale={locale} /> : null}
+          {name === "library" ? <LibraryPreview locale={locale} /> : null}
+        </span>
       </span>
     </figure>
   );
@@ -174,6 +426,17 @@ export function ProductInspirationSurface({
     });
   }, [category, favorites, favoritesOnly, locale, query]);
   const selectedItem = inspirationItems.find((item) => item.id === selected);
+  const selectedCategoryLabel = selectedItem
+    ? categories.find(([id]) => id === selectedItem.category)?.[1]
+    : undefined;
+
+  const toggleFavorite = (id: string) => {
+    setFavorites((current) =>
+      current.includes(id)
+        ? current.filter((favoriteId) => favoriteId !== id)
+        : [...current, id],
+    );
+  };
 
   useEffect(() => {
     const dialog = detailRef.current;
@@ -199,7 +462,7 @@ export function ProductInspirationSurface({
             onClick={() => setFavoritesOnly((value) => !value)}
             type="button"
           >
-            <ProductPlaygroundIcon name="check" />
+            <ProductPlaygroundIcon name="heart" />
             {zh ? "我的收藏" : "Favorites"}
           </button>
           <label>
@@ -218,14 +481,13 @@ export function ProductInspirationSurface({
       <div
         aria-label={zh ? "灵感分类" : "Inspiration categories"}
         className="product-inspiration__categories"
-        role="tablist"
+        role="group"
       >
         {categories.map(([id, label]) => (
           <button
-            aria-selected={category === id}
+            aria-pressed={category === id}
             key={id}
             onClick={() => setCategory(id)}
-            role="tab"
             type="button"
           >
             {label}
@@ -238,11 +500,14 @@ export function ProductInspirationSurface({
           {visibleItems.map((item) => (
             <article data-size={item.size} key={item.id}>
               <button
+                aria-label={
+                  zh ? `打开${item.title.zh}` : `Open ${item.title.en}`
+                }
                 className="product-inspiration__open"
                 onClick={() => setSelected(item.id)}
                 type="button"
               >
-                <InspirationPreview name={item.preview} />
+                <InspirationPreview locale={locale} name={item.preview} />
                 <span className="product-inspiration__copy">
                   <span>
                     <strong>{item.title[locale]}</strong>
@@ -264,16 +529,10 @@ export function ProductInspirationSurface({
                 }
                 aria-pressed={favorites.includes(item.id)}
                 className="product-inspiration__favorite"
-                onClick={() =>
-                  setFavorites((current) =>
-                    current.includes(item.id)
-                      ? current.filter((id) => id !== item.id)
-                      : [...current, item.id],
-                  )
-                }
+                onClick={() => toggleFavorite(item.id)}
                 type="button"
               >
-                <ProductPlaygroundIcon name="inspiration" />
+                <ProductPlaygroundIcon name="heart" />
               </button>
             </article>
           ))}
@@ -316,46 +575,47 @@ export function ProductInspirationSurface({
         {selectedItem ? (
           <>
             <header>
+              <h2 id="product-inspiration-detail-title">
+                {selectedItem.title[locale]}
+              </h2>
               <span>
-                <small>{selectedItem.type}</small>
-                <h2 id="product-inspiration-detail-title">
-                  {selectedItem.title[locale]}
-                </h2>
+                <button
+                  aria-label={
+                    favorites.includes(selectedItem.id)
+                      ? zh
+                        ? `取消收藏${selectedItem.title.zh}`
+                        : `Remove ${selectedItem.title.en} from favorites`
+                      : zh
+                        ? `收藏${selectedItem.title.zh}`
+                        : `Add ${selectedItem.title.en} to favorites`
+                  }
+                  aria-pressed={favorites.includes(selectedItem.id)}
+                  onClick={() => toggleFavorite(selectedItem.id)}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="heart" />
+                </button>
+                <button
+                  aria-label={zh ? "关闭灵感详情" : "Close inspiration details"}
+                  onClick={() => setSelected("")}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="close" />
+                </button>
               </span>
-              <button
-                aria-label={zh ? "关闭灵感详情" : "Close inspiration details"}
-                onClick={() => setSelected("")}
-                type="button"
-              >
-                <ProductPlaygroundIcon name="close" />
-              </button>
             </header>
-            <div data-inspiration-detail-preview>
-              <InspirationPreview name={selectedItem.preview} />
-            </div>
-            <section>
+            <section className="product-inspiration__detail-intro">
               <p>{selectedItem.description[locale]}</p>
-              <dl>
-                <div>
-                  <dt>{zh ? "形式" : "Format"}</dt>
-                  <dd>{selectedItem.type}</dd>
-                </div>
-                <div>
-                  <dt>{zh ? "任务上下文" : "Task context"}</dt>
-                  <dd>{zh ? "可在创建后继续编辑" : "Editable after creation"}</dd>
-                </div>
-              </dl>
-              <h3>{zh ? "从这里开始" : "Start from here"}</h3>
-              <ol>
-                <li>{zh ? "确认目标和期望产物" : "Confirm the goal and expected output"}</li>
-                <li>{zh ? "选择工作区文件与知识来源" : "Choose workspace files and knowledge sources"}</li>
-                <li>{zh ? "生成首版并保留验证步骤" : "Create the first version with verification steps"}</li>
-              </ol>
+              <small>{selectedCategoryLabel}</small>
             </section>
+            <div data-inspiration-detail-preview>
+              <InspirationPreview
+                detail
+                locale={locale}
+                name={selectedItem.preview}
+              />
+            </div>
             <footer>
-              <button onClick={() => setSelected("")} type="button">
-                {zh ? "返回" : "Back"}
-              </button>
               <button
                 data-primary
                 onClick={() =>
@@ -378,8 +638,8 @@ export function ProductInspirationSurface({
                 }
                 type="button"
               >
-                <ProductPlaygroundIcon name="task-add" />
-                {zh ? "从此创建任务" : "Create task from this"}
+                {zh ? "一键创建任务" : "Create task"}
+                <ProductPlaygroundIcon name="arrow" />
               </button>
             </footer>
           </>

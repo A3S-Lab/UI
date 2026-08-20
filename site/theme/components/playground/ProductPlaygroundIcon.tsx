@@ -29,6 +29,7 @@ export type ProductPlaygroundIconName =
   | "forward"
   | "gift"
   | "grid"
+  | "heart"
   | "help"
   | "info"
   | "inspiration"
@@ -186,6 +187,9 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   grid: <path d="M4 4h6v6H4ZM14 4h6v6h-6ZM4 14h6v6H4ZM14 14h6v6h-6Z" />,
+  heart: (
+    <path d="M20.8 5.8a5.1 5.1 0 0 0-7.2 0L12 7.4l-1.6-1.6a5.1 5.1 0 0 0-7.2 7.2L12 21l8.8-8a5.1 5.1 0 0 0 0-7.2Z" />
+  ),
   help: (
     <>
       <circle cx="12" cy="12" r="9" />

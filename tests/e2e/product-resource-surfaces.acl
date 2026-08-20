@@ -183,4 +183,39 @@ suite "a3s-ui-product-resource-surfaces" {
         console "console" { path = "product/knowledge-context-to-task-console.json" clear = false }
         page_errors "page-errors" { path = "product/knowledge-context-to-task-page-errors.json" clear = false }
     }
+
+    scenario "inspiration-gallery-to-task" {
+        name = "Inspiration keeps a dense gallery, focused detail, and usable task handoff across viewports"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/inspiration.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "gallery-ready" { visible = css(".product-inspiration__gallery article:nth-child(4)") }
+        expect "all-category-selected" { visible = css(".product-inspiration__categories button[aria-pressed=true]") }
+        expect "favorites-filter-idle" { visible = css(".product-inspiration > header button[aria-pressed=false]") }
+        screenshot "desktop-gallery" { path = "product/inspiration-gallery-desktop.png" }
+
+        click "open-personal-workbench" { target = role("button", "打开个人工作台") }
+        expect "focused-detail" { visible = css(".product-inspiration__detail[open][aria-labelledby='product-inspiration-detail-title']") }
+        expect "detail-preview" { visible = css(".product-inspiration__detail [data-inspiration-detail-preview] [data-preview=workbench]") }
+        click "favorite-detail" { target = css(".product-inspiration__detail button[aria-label='收藏个人工作台']") }
+        expect "favorite-selected" { visible = css(".product-inspiration__detail button[aria-pressed=true][aria-label='取消收藏个人工作台']") }
+        screenshot "desktop-detail" { path = "product/inspiration-detail-desktop.png" }
+
+        viewport "mobile" { width = 390 height = 844 }
+        expect "mobile-detail-controls" { visible = css(".product-inspiration__detail[open] > footer button[data-primary]") }
+        screenshot "mobile-detail" { path = "product/inspiration-detail-mobile.png" }
+
+        click "create-task" { target = role("button", "一键创建任务") }
+        wait "task-route" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
+        expect "inspiration-resource-preserved" { visible = css(".product-start [data-composer-resources] [data-resource-id='inspiration:personal-workbench']") }
+        expect "inspiration-prompt-preserved" { text = "以“个人工作台”为起点" }
+        screenshot "task-handoff" { path = "product/inspiration-task-handoff-mobile.png" }
+
+        console "console" { path = "product/inspiration-gallery-console.json" clear = false }
+        page_errors "page-errors" { path = "product/inspiration-gallery-page-errors.json" clear = false }
+    }
 }

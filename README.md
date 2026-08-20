@@ -131,7 +131,7 @@ Device Simulator preserves exact iframe viewport dimensions inside scaled phone,
 
 The bilingual pattern guides cover Task Workspace, New Task, Capability Catalog, Settings Center, Projects, and Automations. Applications continue to own repository, terminal, browser, transport, scheduling, persistence, and policy logic.
 
-The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) is a bilingual, task-first A3S product application rather than a component showcase or dockable IDE. Its canonical `/playground` route family combines durable task and project sessions, a TipTap-based composer, model and effort controls, workspace references, follow-up queues, permission review, tool-call evidence, Finder-style local files, code and Office/PDF workbenches, Knowledge, Memory, extensions, automations, and production settings in one coherent desktop and compact-screen flow. Legacy `/app` URLs remain route aliases. The Playground stays outside the documentation chapter hierarchy.
+The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) is a bilingual, task-first A3S product application rather than a component showcase or dockable IDE. Its canonical `/playground` route family combines durable task and project sessions, a TipTap-based composer, model and effort controls, workspace references, follow-up queues, permission review, tool-call evidence, Finder-style local files, code and Office/PDF workbenches, Knowledge, Memory, screenshot-led Inspiration workflows, extensions, automations, and production settings in one coherent desktop and compact-screen flow. Legacy `/app` URLs remain route aliases. The Playground stays outside the documentation chapter hierarchy.
 
 ## Documentation languages and versions
 

@@ -632,7 +632,10 @@ test("Product project and inspiration surfaces preserve mobile width", async ({
   const inspiration = page.locator('[data-product-surface="inspiration"]');
   await expect(inspiration).toBeVisible();
   const categories = inspiration.locator(".product-inspiration__categories");
-  await expect(categories.getByRole("tab")).toHaveCount(6);
+  await expect(categories.getByRole("button")).toHaveCount(6);
+  await expect(
+    categories.getByRole("button", { name: "全部", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   expect(
     await categories.evaluate(
       (element) => element.scrollWidth - element.clientWidth,

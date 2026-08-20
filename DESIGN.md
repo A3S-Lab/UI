@@ -318,6 +318,12 @@ Highlighter and Snippet use the code surface, Geist Mono, theme-aware syntax tok
 
 Device Simulator keeps the iframe at the exact selected CSS viewport and places hardware geometry outside that measurement. Phones expose an edge rail, sensor treatment, and gesture region; tablets expose a bezel and camera; laptops expose a display frame, hinge, and base; desktop monitors expose a bezel, chin, and stand. The complete shell scales as one unit to fit its workspace and remains a visual boundary only: it does not claim to emulate user agents, pixel density, touch, safe areas, network conditions, or operating-system browser behavior.
 
+### Resource galleries and detail flows
+
+Resource libraries use a compact page identity, primary filters, search, and one collection surface; they do not introduce a second dashboard shell. Screenshot-led inspiration libraries use content-first masonry with four columns on wide application canvases, two at intermediate widths, and one on phones. Variable preview height may express different artifact shapes, while title, format, provenance, and favorite state keep a stable reading order.
+
+Opening a gallery item retains the collection behind a modal backdrop and presents one focused detail task. On wide screens the reference geometry is a centered surface near 640px wide and 644px tall with title, favorite and close actions, concise description, category, one internally scrollable preview, and one neutral primary handoff. On phones the dialog becomes a near-full-viewport surface; the embedded preview adapts to its width and must not create page or nested horizontal overflow. Escape and close restore collection focus. A task handoff preserves the selected resource's stable identifier, human label, prompt, and workspace context in the composer.
+
 ### Automation workflows
 
 Automation separates the schedule from manual execution: pausing prevents future scheduled starts but never removes an authorized manual run. Every definition exposes cadence and an actual next occurrence, with interval anchors, weekly day selection, and explicit time zones. Model, effort, workspace, connector, permission, skill, reviewer, and notification choices persist together. Every run snapshots those inputs and renders its own truthful steps, states, and durations; retry changes only the failed step, preserves completed evidence, and keeps the active detail visible while filters reconcile.
