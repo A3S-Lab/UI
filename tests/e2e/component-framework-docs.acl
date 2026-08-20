@@ -15,8 +15,8 @@ suite "a3s-ui-component-framework-docs" {
         expect "integrated-source" { visible = css(".a3s-preview__source > .a3s-preview-integration[data-mode=complete]") }
         expect "html-selected" { visible = css(".a3s-preview-integration [role=tab][aria-selected=true]") }
         expect "install" { text = "安装" }
-        expect "setup" { text = "项目入口" }
-        expect "example" { text = "最小示例" }
+        expect "workspace" { visible = css(".a3s-preview-integration__workspace") }
+        expect "example" { visible = css(".a3s-preview-integration__source[data-code-file=example]") }
         click "react" { target = role("tab", "React") }
         expect "react-selected" { visible = css(".a3s-preview-integration [role=tab][aria-selected=true]") }
         expect "react-hook" { text = "useTabs" }
@@ -29,8 +29,8 @@ suite "a3s-ui-component-framework-docs" {
         click "show-english-integration" { target = role("button", "Show integration code") }
         click "vue" { target = role("tab", "Vue") }
         expect "english-install" { text = "Install" }
-        expect "english-setup" { text = "Project entry" }
-        expect "english-example" { text = "Minimal example" }
+        expect "english-example" { text = "Example" }
+        expect "english-entry" { text = "Entry" }
         expect "vue-composable" { text = "Composable" }
         expect "vue-install" { text = "npm install @a3s-lab/ui vue" }
         screenshot "english-vue" { path = "documentation/framework-preview-integration-vue-en.png" }
@@ -42,6 +42,7 @@ suite "a3s-ui-component-framework-docs" {
         click "show-published-integration" { target = role("button", "展开接入代码") }
         click "published-react" { target = role("tab", "React") }
         expect "published-install" { text = "npm install @a3s-lab/ui@0.3.0 react react-dom" }
+        click "published-entry" { target = role("tab", "入口 main.ts") }
         expect "published-runtime" { text = "@a3s-lab/ui/all" }
         expect "published-boundary" { text = "尚未提供框架适配器" }
         screenshot "published-react-evidence" { path = "documentation/framework-preview-integration-published-react.png" }

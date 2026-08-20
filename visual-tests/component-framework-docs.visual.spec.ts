@@ -68,17 +68,28 @@ test.describe("component framework quick starts", () => {
       ".a3s-preview__source > .a3s-preview-integration",
     );
     await expect(integration).toBeVisible();
-    await expect(integration.getByRole("tab", { name: "HTML" })).toBeFocused();
-    await expect(integration.getByRole("tab")).toHaveCount(3);
     await expect(
-      integration.locator(".a3s-preview-integration__step"),
+      integration.getByRole("tab", { name: "HTML", exact: true }),
+    ).toBeFocused();
+    await expect(
+      integration.locator(".a3s-preview-integration__tabs").getByRole("tab"),
     ).toHaveCount(3);
+    await expect(
+      integration.locator(".a3s-preview-integration__workspace"),
+    ).toHaveCount(1);
     await expect(integration.locator(".rp-codeblock")).toHaveCount(3);
+    await expect(integration.locator(".rp-codeblock:visible")).toHaveCount(2);
     await expect(integration.locator(".rp-code-copy-button")).toHaveCount(3);
     await expect(integration.locator(".rp-code-wrap-button")).toHaveCount(0);
     await expect(integration).toContainText("安装");
-    await expect(integration).toContainText("项目入口");
-    await expect(integration).toContainText("最小示例");
+    await expect(
+      integration.locator('.a3s-preview-integration__files [role="tab"]'),
+    ).toHaveCount(2);
+    await expect(
+      integration.locator(
+        '.a3s-preview-integration__source[data-code-file="example"]',
+      ),
+    ).toBeVisible();
     await expect(
       page.getByRole("heading", { level: 2, name: /^(React|Vue)$/ }),
     ).toHaveCount(0);
@@ -86,27 +97,34 @@ test.describe("component framework quick starts", () => {
     await expect
       .poll(() =>
         integration
-          .locator(".a3s-preview-integration__example .line span[style]")
+          .locator(".a3s-preview-integration__source .line span[style]")
           .count(),
       )
       .toBeGreaterThan(0);
 
-    const htmlTab = integration.getByRole("tab", { name: "HTML" });
+    const htmlTab = integration.getByRole("tab", {
+      name: "HTML",
+      exact: true,
+    });
     await htmlTab.focus();
     await page.keyboard.press("ArrowRight");
-    const reactTab = integration.getByRole("tab", { name: "React" });
+    const reactTab = integration.getByRole("tab", {
+      name: "React",
+      exact: true,
+    });
     await expect(reactTab).toHaveAttribute("aria-selected", "true");
     await expect(
       integration.locator(".a3s-preview-integration__install code"),
     ).toHaveText("npm install @a3s-lab/ui react react-dom");
     await expect(
-      integration.locator(".a3s-preview-integration__setup code"),
-    ).toHaveText('import "@a3s-lab/ui/a3s.css";');
-    await expect(
-      integration.locator(".a3s-preview-integration__example code"),
+      integration.locator(
+        ".a3s-preview-integration__source:not([hidden]) code",
+      ),
     ).toContainText("SaveButton");
     await expect(
-      integration.locator(".a3s-preview-integration__example code"),
+      integration.locator(
+        ".a3s-preview-integration__source:not([hidden]) code",
+      ),
     ).toContainText('from "@a3s-lab/ui/react"');
     await expect(
       integration.locator(".a3s-preview-integration__note"),
@@ -114,11 +132,13 @@ test.describe("component framework quick starts", () => {
 
     const exampleCode = (
       await integration
-        .locator(".a3s-preview-integration__example code")
+        .locator(".a3s-preview-integration__source:not([hidden]) code")
         .innerText()
     ).trim();
     await integration
-      .locator(".a3s-preview-integration__example .rp-code-copy-button")
+      .locator(
+        ".a3s-preview-integration__source:not([hidden]) .rp-code-copy-button",
+      )
       .click();
     await expect
       .poll(() =>
@@ -129,7 +149,7 @@ test.describe("component framework quick starts", () => {
       .toBe(exampleCode);
     await preview
       .locator(".a3s-preview__header")
-      .getByRole("button", { name: "复制当前示例" })
+      .getByRole("button", { name: "复制当前代码" })
       .click();
     await expect
       .poll(() =>
@@ -139,9 +159,23 @@ test.describe("component framework quick starts", () => {
       )
       .toBe(exampleCode);
 
-    await integration.getByRole("tab", { name: "Vue" }).click();
+    const entryTab = integration.getByRole("tab", { name: /入口.*main\.ts/u });
+    await entryTab.click();
     await expect(
-      integration.locator(".a3s-preview-integration__example code"),
+      integration.locator(
+        '.a3s-preview-integration__source[data-code-file="setup"] code',
+      ),
+    ).toHaveText('import "@a3s-lab/ui/a3s.css";');
+    await expect(
+      preview.getByRole("button", { name: "复制当前代码" }),
+    ).toBeVisible();
+
+    await integration.getByRole("tab", { name: "Vue", exact: true }).click();
+    await integration.getByRole("tab", { name: /示例.*Example\.vue/u }).click();
+    await expect(
+      integration.locator(
+        ".a3s-preview-integration__source:not([hidden]) code",
+      ),
     ).toContainText('<script setup lang="ts">');
     await expect
       .poll(() =>
@@ -161,10 +195,12 @@ test.describe("component framework quick starts", () => {
     const chinesePreview = integratedPreview(page, "tabs");
     const chineseQuickStart = await revealIntegration(chinesePreview);
     await expect(
-      chineseQuickStart.getByRole("tab", { name: "Vue" }),
+      chineseQuickStart.getByRole("tab", { name: "Vue", exact: true }),
     ).toHaveAttribute("aria-selected", "true");
     await expect(
-      chineseQuickStart.locator(".a3s-preview-integration__example code"),
+      chineseQuickStart.locator(
+        ".a3s-preview-integration__source:not([hidden]) code",
+      ),
     ).toContainText("useTabs");
     await expect(
       chineseQuickStart.locator(".a3s-preview-integration__note code"),
@@ -177,11 +213,11 @@ test.describe("component framework quick starts", () => {
     const englishPreview = integratedPreview(page, "tabs");
     const englishQuickStart = await revealIntegration(englishPreview, "en");
     await expect(
-      englishQuickStart.getByRole("tab", { name: "Vue" }),
+      englishQuickStart.getByRole("tab", { name: "Vue", exact: true }),
     ).toHaveAttribute("aria-selected", "true");
     await expect(englishQuickStart).toContainText("Install");
-    await expect(englishQuickStart).toContainText("Project entry");
-    await expect(englishQuickStart).toContainText("Minimal example");
+    await expect(englishQuickStart).toContainText("Example");
+    await expect(englishQuickStart).toContainText("Entry");
     await expect(
       englishQuickStart.locator(".a3s-preview-integration__note"),
     ).toContainText("Composable");
@@ -201,19 +237,20 @@ test.describe("component framework quick starts", () => {
       "semantic",
     );
     const quickStart = await revealIntegration(preview);
-    await quickStart.getByRole("tab", { name: "React" }).click();
+    await quickStart.getByRole("tab", { name: "React", exact: true }).click();
     await expect(
       quickStart.locator(".a3s-preview-integration__install code"),
     ).toHaveText("npm install @a3s-lab/ui@0.3.0 react react-dom");
     await expect(
-      quickStart.locator(".a3s-preview-integration__setup code"),
-    ).toContainText('import "@a3s-lab/ui/all";');
-    await expect(
-      quickStart.locator(".a3s-preview-integration__example code"),
+      quickStart.locator(".a3s-preview-integration__source:not([hidden]) code"),
     ).toContainText("TabsExample");
     await expect(
-      quickStart.locator(".a3s-preview-integration__example code"),
+      quickStart.locator(".a3s-preview-integration__source:not([hidden]) code"),
     ).not.toContainText("@a3s-lab/ui/react");
+    await quickStart.getByRole("tab", { name: /入口.*main\.ts/u }).click();
+    await expect(
+      quickStart.locator(".a3s-preview-integration__source:not([hidden]) code"),
+    ).toContainText('import "@a3s-lab/ui/all";');
     await expect(
       quickStart.locator(".a3s-preview-integration__note"),
     ).toContainText("尚未提供框架适配器");
@@ -235,18 +272,18 @@ test.describe("component framework quick starts", () => {
     const preview = integratedPreview(page, "agent-composer");
     await expect(preview).toBeVisible();
     const quickStart = await revealIntegration(preview);
-    await expect(quickStart.getByRole("tab")).toHaveCount(3);
-    await quickStart.getByRole("tab", { name: "React" }).click();
+    await expect(
+      quickStart.locator(".a3s-preview-integration__tabs").getByRole("tab"),
+    ).toHaveCount(3);
+    await quickStart.getByRole("tab", { name: "React", exact: true }).click();
     await expect(
       quickStart.locator(".a3s-preview-integration__note code"),
     ).toHaveText("useAgentComposer");
     await expect(
-      quickStart.locator(".a3s-preview-integration__example code"),
+      quickStart.locator(".a3s-preview-integration__source:not([hidden]) code"),
     ).toContainText("useAgentComposerEditor");
     await expect(
-      quickStart.locator(
-        ".a3s-preview-integration__example .a3s-preview-integration__step-label span",
-      ),
+      quickStart.getByRole("tab", { name: /示例.*AgentComposerExample\.tsx/u }),
     ).toHaveAttribute("title", "AgentComposerExample.tsx");
     await expect(
       quickStart.locator(".a3s-preview-integration__install code"),
@@ -260,7 +297,9 @@ test.describe("component framework quick starts", () => {
       ),
     ).toBe(0);
     const quickStartBox = await preview.boundingBox();
-    const tabListBox = await quickStart.getByRole("tablist").boundingBox();
+    const tabListBox = await quickStart
+      .locator(".a3s-preview-integration__tabs")
+      .boundingBox();
     expect(quickStartBox).not.toBeNull();
     expect(tabListBox).not.toBeNull();
     expect(tabListBox!.width).toBeLessThanOrEqual(quickStartBox!.width);
@@ -308,25 +347,36 @@ test.describe("component framework quick starts", () => {
       await expect(harnessPreview).toBeVisible();
       await expect(page.locator(".a3s-framework-tabs")).toHaveCount(0);
       const harnessQuickStart = await revealIntegration(harnessPreview);
-      await expect(harnessQuickStart.getByRole("tab")).toHaveCount(3);
+      await expect(
+        harnessQuickStart
+          .locator(".a3s-preview-integration__tabs")
+          .getByRole("tab"),
+      ).toHaveCount(3);
       await expect(
         harnessQuickStart.locator(".rp-code-wrap-button"),
       ).toHaveCount(0);
-      await expect(
-        harnessQuickStart.locator(".a3s-preview-integration__setup code"),
-      ).toHaveText('import "@a3s-lab/ui/a3s.css";');
       await harnessQuickStart
-        .getByRole("tab", { name: guide.framework })
+        .getByRole("tab", { name: guide.framework, exact: true })
         .click();
       await expect(
         harnessQuickStart.locator(".a3s-preview-integration__install code"),
       ).toContainText(guide.dependency);
       await expect(
-        harnessQuickStart.locator(".a3s-preview-integration__example code"),
+        harnessQuickStart.locator(
+          ".a3s-preview-integration__source:not([hidden]) code",
+        ),
       ).toContainText(guide.hook);
       await expect(
         harnessQuickStart.locator(".a3s-preview-integration__note code"),
       ).toHaveText(guide.hook);
+      await harnessQuickStart
+        .getByRole("tab", { name: /入口.*main\.ts/u })
+        .click();
+      await expect(
+        harnessQuickStart.locator(
+          ".a3s-preview-integration__source:not([hidden]) code",
+        ),
+      ).toHaveText('import "@a3s-lab/ui/a3s.css";');
     }
 
     await page.setViewportSize({ width: 390, height: 844 });

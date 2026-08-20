@@ -7,6 +7,7 @@ import { useEffect, useId, useState, type KeyboardEvent } from "react";
 import "./ComponentPreviewIntegration.css";
 
 type Framework = "html" | "react" | "vue";
+type IntegrationFile = "example" | "setup";
 
 export type ComponentPreviewIntegrationProps = {
   hasController?: boolean;
@@ -168,7 +169,9 @@ export function ComponentPreviewIntegration({
   const componentName = adapterName(slug);
   const hookName = integrationHook ?? `use${componentName}`;
   const frameworkId = useId();
+  const fileId = useId();
   const [framework, setFramework] = useState<Framework>("html");
+  const [activeFile, setActiveFile] = useState<IntegrationFile>("example");
   const examples = { html, react, vue };
   const installs = {
     html: htmlInstall,
@@ -186,6 +189,23 @@ export function ComponentPreviewIntegration({
     installs,
     isHarnessGuide,
   );
+  const sourceFiles = [
+    {
+      code: content.example,
+      file: content.exampleFile,
+      kind: "example" as const,
+      language: content.exampleLanguage,
+    },
+    {
+      code: content.setup,
+      file: content.setupFile,
+      kind: "setup" as const,
+      language: content.setupLanguage,
+    },
+  ];
+  const activeSource =
+    sourceFiles.find((sourceFile) => sourceFile.kind === activeFile) ??
+    sourceFiles[0];
 
   useEffect(() => {
     try {
@@ -201,8 +221,8 @@ export function ComponentPreviewIntegration({
   }, []);
 
   useEffect(() => {
-    onExampleChange?.(content.example);
-  }, [content.example, onExampleChange]);
+    onExampleChange?.(activeSource.code);
+  }, [activeSource.code, onExampleChange]);
 
   const selectFramework = (nextFramework: Framework) => {
     setFramework(nextFramework);
@@ -237,6 +257,33 @@ export function ComponentPreviewIntegration({
     const nextFramework = frameworks[nextIndex];
     selectFramework(nextFramework);
     document.getElementById(`${frameworkId}-${nextFramework}-tab`)?.focus();
+  };
+
+  const handleFileKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      return;
+    }
+    event.preventDefault();
+    const files: readonly IntegrationFile[] = ["example", "setup"];
+    const currentIndex = files.indexOf(activeFile);
+    const direction = getComputedStyle(event.currentTarget).direction;
+    const arrowDelta =
+      event.key === "ArrowRight"
+        ? direction === "rtl"
+          ? -1
+          : 1
+        : direction === "rtl"
+          ? 1
+          : -1;
+    const nextIndex =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? files.length - 1
+          : (currentIndex + arrowDelta + files.length) % files.length;
+    const nextFile = files[nextIndex];
+    setActiveFile(nextFile);
+    document.getElementById(`${fileId}-${nextFile}-tab`)?.focus();
   };
 
   const integrationNote = semanticFrameworks
@@ -317,8 +364,8 @@ export function ComponentPreviewIntegration({
         role="tabpanel"
         aria-labelledby={`${frameworkId}-${framework}-tab`}
       >
-        <section className="a3s-preview-integration__step a3s-preview-integration__install">
-          <div className="a3s-preview-integration__step-label">
+        <section className="a3s-preview-integration__install">
+          <div className="a3s-preview-integration__install-label">
             <strong>{isChinese ? "安装" : "Install"}</strong>
             <span>Terminal</span>
           </div>
@@ -330,33 +377,65 @@ export function ComponentPreviewIntegration({
           />
         </section>
 
-        <section className="a3s-preview-integration__step a3s-preview-integration__setup">
-          <div className="a3s-preview-integration__step-label">
-            <strong>{isChinese ? "项目入口" : "Project entry"}</strong>
-            <span title={content.setupFile}>{content.setupFile}</span>
+        <section className="a3s-preview-integration__workspace">
+          <div
+            className="a3s-preview-integration__files"
+            role="tablist"
+            aria-label={isChinese ? "选择代码文件" : "Choose code file"}
+            aria-orientation="horizontal"
+            onKeyDown={handleFileKeyDown}
+          >
+            <button
+              id={`${fileId}-example-tab`}
+              type="button"
+              role="tab"
+              aria-controls={`${fileId}-example-source`}
+              aria-label={`${isChinese ? "示例" : "Example"} ${content.exampleFile}`}
+              aria-selected={activeFile === "example"}
+              tabIndex={activeFile === "example" ? 0 : -1}
+              title={content.exampleFile}
+              onClick={() => setActiveFile("example")}
+            >
+              <span>{isChinese ? "示例" : "Example"}</span>
+              <code>{content.exampleFile}</code>
+            </button>
+            <button
+              id={`${fileId}-setup-tab`}
+              type="button"
+              role="tab"
+              aria-controls={`${fileId}-setup-source`}
+              aria-label={`${isChinese ? "入口" : "Entry"} ${content.setupFile}`}
+              aria-selected={activeFile === "setup"}
+              tabIndex={activeFile === "setup" ? 0 : -1}
+              title={content.setupFile}
+              onClick={() => setActiveFile("setup")}
+            >
+              <span>{isChinese ? "入口" : "Entry"}</span>
+              <code>{content.setupFile}</code>
+            </button>
           </div>
-          <CodeBlockRuntime
-            lang={content.setupLanguage}
-            code={content.setup}
-            containerElementClassName="a3s-preview-integration__code"
-            codeButtonGroupProps={copyOnlyCodeActions}
-          />
+          {sourceFiles.map((sourceFile) => (
+            <div
+              key={sourceFile.kind}
+              id={`${fileId}-${sourceFile.kind}-source`}
+              className="a3s-preview-integration__source"
+              role="tabpanel"
+              aria-labelledby={`${fileId}-${sourceFile.kind}-tab`}
+              data-code-file={sourceFile.kind}
+              data-code-filename={sourceFile.file}
+              hidden={activeFile !== sourceFile.kind}
+            >
+              <CodeBlockRuntime
+                lang={sourceFile.language}
+                code={sourceFile.code}
+                containerElementClassName="a3s-preview-integration__code"
+                codeButtonGroupProps={copyOnlyCodeActions}
+              />
+            </div>
+          ))}
         </section>
 
-        <section className="a3s-preview-integration__step a3s-preview-integration__example">
-          <div className="a3s-preview-integration__step-label">
-            <strong>{isChinese ? "最小示例" : "Minimal example"}</strong>
-            <span title={content.exampleFile}>{content.exampleFile}</span>
-          </div>
-          <CodeBlockRuntime
-            lang={content.exampleLanguage}
-            code={content.example}
-            containerElementClassName="a3s-preview-integration__code"
-            codeButtonGroupProps={copyOnlyCodeActions}
-          />
-        </section>
-
-        <div className="a3s-preview-integration__note">
+        <footer className="a3s-preview-integration__note">
           <strong>
             {semanticFrameworks
               ? isChinese
@@ -389,7 +468,7 @@ export function ComponentPreviewIntegration({
               integrationNote
             )}
           </p>
-        </div>
+        </footer>
       </div>
     </div>
   );

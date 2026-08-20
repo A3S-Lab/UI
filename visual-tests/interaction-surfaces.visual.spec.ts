@@ -509,10 +509,10 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const previewCopyButton = htmlPreview.locator(
     ".a3s-preview__controls button[data-state]",
   );
-  await expect(previewCopyButton).toHaveAccessibleName("Copy current example");
+  await expect(previewCopyButton).toHaveAccessibleName("Copy current code");
   await expect(previewCopyButton).toContainText("Copy");
   await previewCopyButton.click();
-  await expect(previewCopyButton).toHaveAccessibleName("Example copied");
+  await expect(previewCopyButton).toHaveAccessibleName("Code copied");
   await expect(previewCopyButton).toContainText("Copied");
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
@@ -524,8 +524,8 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   await expect(sourceToggle).toHaveAttribute("aria-expanded", "true");
   await expect(sourcePanel).toBeVisible();
   await expect(sourcePanel).toContainText("Install");
-  await expect(sourcePanel).toContainText("Project entry");
-  await expect(sourcePanel).toContainText("Minimal example");
+  await expect(sourcePanel).toContainText("Example");
+  await expect(sourcePanel).toContainText("Entry");
   await expect(sourcePanel).toContainText('<button type="button"');
   await expect(sourcePanel).toContainText('class="btn"');
   await expect(htmlPreview.locator("[data-reactroot]")).toHaveCount(0);
@@ -534,7 +534,7 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
     .toBeGreaterThan(0);
 
   const copyButton = sourcePanel.locator(
-    ".a3s-preview-integration__example .rp-code-copy-button",
+    '.a3s-preview-integration__source[data-code-file="example"] .rp-code-copy-button',
   );
   await expect(copyButton).toHaveAccessibleName("Copy code");
   await copyButton.click();
@@ -657,7 +657,7 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
     chinesePreview.locator("[data-preview-source-panel]"),
   ).toBeHidden();
   await expect(
-    chinesePreview.getByRole("button", { name: "复制当前示例" }),
+    chinesePreview.getByRole("button", { name: "复制当前代码" }),
   ).toContainText("复制");
 });
 

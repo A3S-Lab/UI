@@ -360,7 +360,7 @@ The documentation site shares the visual grammar of A3S Test while retaining A3S
 Every component document follows this order:
 
 1. Name and one-sentence job.
-2. One 14px live default Preview whose source disclosure contains the persistent HTML, React, and Vue tab set. Each framework panel includes its installation command, required import or initialization, a minimal runnable example, and the matching controller hook or composable when behavior exists. The preview toolbar copies the currently selected framework example.
+2. One 14px live default Preview whose source disclosure contains the persistent HTML, React, and Vue tab set. Framework choice, a compact copyable installation row, and the entry/example file tabs belong to one code workspace inside that Preview; installation, setup, and example must not become three stacked cards. The highlighted code pane shows one selected file at a time, and the preview toolbar copies that active file. Each framework still includes its required import or initialization, a minimal runnable example, and the matching controller hook or composable when behavior exists.
 3. Variants that correspond to real decisions. Their Preview source disclosures remain scoped to the authored semantic HTML instead of repeating the framework integration contract.
 4. Loading, empty, error, disabled, selected, narrow, dark, and RTL states where applicable.
 5. Native HTML contract.
@@ -368,7 +368,7 @@ Every component document follows this order:
 7. Framework-specific notes only when they add information beyond the integrated Preview source tabs.
 8. Accessibility and ownership boundaries.
 
-Do not render a separate quick-start card or separate React and Vue code chapters around the default Preview. Live output and integration code are one reading task and therefore share one frame. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example block must be syntax highlighted and copyable.
+Do not render a separate quick-start card or separate React and Vue code chapters around the default Preview. Live output and integration code are one reading task and therefore share one frame. Do not stack installation, setup, and example as sibling code cards: use the integrated dependency row and file tabs. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example must remain syntax highlighted and copyable.
 
 Harness integration guides use the same Preview source-disclosure contract as ordinary components. Their HTML, React, and Vue tabs live inside the owning live demo frame, install the actual peer dependencies, and provide a runnable mount example; they must not render a detached quick-start surface or a shared installation chapter outside the Preview.
 

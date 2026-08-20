@@ -90,7 +90,7 @@ test.describe("component preview source contracts", () => {
               .nth(index)
               .locator(
                 index === 0
-                  ? ".a3s-preview-integration__example code"
+                  ? '.a3s-preview-integration__source[data-code-file="example"] code'
                   : ".a3s-preview__source code",
               )
               .textContent()) ?? "";
@@ -123,7 +123,7 @@ test.describe("component preview source contracts", () => {
           .toBeGreaterThan(0);
 
         const copyButton = sourcePanel.locator(
-          ".a3s-preview-integration__example .rp-code-copy-button",
+          '.a3s-preview-integration__source[data-code-file="example"] .rp-code-copy-button',
         );
         await copyButton.click();
         await expect

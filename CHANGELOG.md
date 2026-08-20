@@ -27,6 +27,7 @@
 
 ### Changed
 
+- Unified every component Preview's HTML, React, and Vue guidance into one compact code workspace with a copyable install row and entry/example file tabs.
 - Integrated the persistent HTML, React, and Vue quick start into the first live Preview of all 116 bilingual component guides and all four Harness layout guides, so installation, setup, highlighted examples, framework hooks, source disclosure, and current-example copying share one 14px frame; variant previews remain scoped to their authored HTML, and no detached framework surface remains.
 - Retired the standalone Patterns documentation chapter across current and historical version trees; reusable contracts remain under Components and Harness, while app-scale compositions remain in Playground.
 - Rebuilt Playground Automations around predictable next-run timestamps, anchored and time-zoned schedules, persisted model/effort/permission boundaries, truthful per-run steps and durations, recoverable filtered retries, manual execution while schedules are paused, and focus-safe compact navigation.

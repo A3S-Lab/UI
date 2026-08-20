@@ -699,10 +699,10 @@ export function Preview({
     copyState === "copied"
       ? isChinese
         ? frameworkSnippets
-          ? "示例已复制"
+          ? "代码已复制"
           : "源码已复制"
         : frameworkSnippets
-          ? "Example copied"
+          ? "Code copied"
           : "Source copied"
       : copyState === "error"
         ? isChinese
@@ -710,10 +710,10 @@ export function Preview({
           : "Copy failed"
         : isChinese
           ? frameworkSnippets
-            ? "复制当前示例"
+            ? "复制当前代码"
             : "复制源码"
           : frameworkSnippets
-            ? "Copy current example"
+            ? "Copy current code"
             : "Copy source";
   const copyVisibleLabel =
     copyState === "copied"
@@ -905,6 +905,9 @@ export function Preview({
             title={sourceLabel}
           >
             <PreviewCodeIcon />
+            <span className="a3s-preview__code-label">
+              {isChinese ? "代码" : "Code"}
+            </span>
           </button>
           <span className="a3s-preview__control-divider" aria-hidden="true" />
           <button

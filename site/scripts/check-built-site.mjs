@@ -1516,8 +1516,8 @@ for (const mdxFile of mdxFiles) {
     );
     const localizedLabels =
       sourceParts[1] === "zh"
-        ? ["安装", "项目入口", "最小示例"]
-        : ["Install", "Project entry", "Minimal example"];
+        ? ["安装", "示例", "入口"]
+        : ["Install", "Example", "Entry"];
     const componentSlug = path.basename(mdxFile, path.extname(mdxFile));
     const version = sourceParts[0];
     const installMarker =
@@ -1543,6 +1543,8 @@ for (const mdxFile of mdxFiles) {
       "@a3s-lab/ui/a3s.css",
       `data-framework-contract="${version === "next" ? "adapter" : "semantic"}"`,
       'class="a3s-preview-integration__note"',
+      'class="a3s-preview-integration__workspace"',
+      'data-code-file="example"',
       'class="shiki css-variables"',
       ...integrationDependencyMarkers,
       ...localizedLabels,
@@ -1550,8 +1552,8 @@ for (const mdxFile of mdxFiles) {
     const missingMarkers = requiredMarkers.filter(
       (marker) => !preview.includes(marker),
     );
-    const stepCount = (
-      integration.match(/class="a3s-preview-integration__step /g) ?? []
+    const workspaceCount = (
+      integration.match(/class="a3s-preview-integration__workspace"/g) ?? []
     ).length;
     const copyCount = (
       integration.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
@@ -1559,9 +1561,7 @@ for (const mdxFile of mdxFiles) {
     const wrapCount = (
       integration.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
     ).length;
-    const exampleStart = integration.indexOf(
-      "a3s-preview-integration__example",
-    );
+    const exampleStart = integration.indexOf('data-code-file="example"');
     const exampleEnd = integration.indexOf(
       "a3s-preview-integration__note",
       exampleStart,
@@ -1587,7 +1587,7 @@ for (const mdxFile of mdxFiles) {
 
     if (
       missingMarkers.length > 0 ||
-      stepCount !== 3 ||
+      workspaceCount !== 1 ||
       copyCount !== 3 ||
       wrapCount !== 0 ||
       hasInvalidExample ||
@@ -1595,7 +1595,7 @@ for (const mdxFile of mdxFiles) {
       !integrationIsNestedInSource
     ) {
       componentFrameworkIntegrationViolations.push(
-        `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; steps=${stepCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}; nested=${integrationIsNestedInSource}`,
+        `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; workspaces=${workspaceCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}; nested=${integrationIsNestedInSource}`,
       );
     }
   }
