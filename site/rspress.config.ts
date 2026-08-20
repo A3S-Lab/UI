@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { defineConfig, type UserConfig } from "@rspress/core";
-import { componentIntroPlugin } from "./plugins/component-intro";
+import { componentPreviewIntegrationPlugin } from "./plugins/component-intro";
 import { normalizeMdxHtmlPlugin } from "./plugins/normalize-mdx-html";
 import { previewSourcePlugin } from "./plugins/preview-source";
 import { standalonePagesPlugin } from "./plugins/standalone-pages";
@@ -56,7 +56,7 @@ const config: UserConfig = {
   ],
   markdown: {
     remarkPlugins: [
-      componentIntroPlugin,
+      componentPreviewIntegrationPlugin,
       previewSourcePlugin,
       normalizeMdxHtmlPlugin,
     ],
@@ -66,7 +66,6 @@ const config: UserConfig = {
       path.join(__dirname, "theme/mdx/Callout.tsx"),
       path.join(__dirname, "theme/mdx/ChartDemo.tsx"),
       path.join(__dirname, "theme/mdx/ComponentCatalog.tsx"),
-      path.join(__dirname, "theme/mdx/ComponentIntro.tsx"),
       path.join(__dirname, "theme/mdx/DockviewDemo.tsx"),
       path.join(__dirname, "theme/mdx/FrameworkTabs.tsx"),
       path.join(__dirname, "theme/mdx/MonacoWorkbenchDemo.tsx"),

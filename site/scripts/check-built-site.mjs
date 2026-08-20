@@ -1127,6 +1127,31 @@ async function collectMdxFiles(directory) {
   return files;
 }
 
+function htmlElementByExactClass(markup, className) {
+  const classIndex = markup.indexOf(`class="${className}"`);
+  if (classIndex < 0) return "";
+
+  const elementStart = markup.lastIndexOf("<", classIndex);
+  const openingTag = markup.slice(elementStart).match(/^<([a-z][\w-]*)\b/iu);
+  if (!openingTag) return "";
+
+  const tagName = openingTag[1];
+  const tagPattern = new RegExp(`<\\/?${tagName}\\b[^>]*>`, "giu");
+  tagPattern.lastIndex = elementStart;
+  let depth = 0;
+
+  for (const match of markup.matchAll(tagPattern)) {
+    if (match.index < elementStart) continue;
+    if (match[0].startsWith("</")) depth -= 1;
+    else if (!match[0].endsWith("/>")) depth += 1;
+    if (depth === 0) {
+      return markup.slice(elementStart, match.index + match[0].length);
+    }
+  }
+
+  return "";
+}
+
 function builtPathForMdx(mdxFile) {
   const [version, locale, ...routeParts] = path
     .relative(docsRoot, mdxFile)
@@ -1273,16 +1298,24 @@ for (const file of [
   "en/components/combobox.html",
 ]) {
   const html = await readFile(path.join(outputRoot, file), "utf8");
-  const componentIntroIndex = html.indexOf('class="component-intro"');
   const firstPreviewIndex = html.indexOf('class="a3s-preview"');
+  const firstSourceIndex = html.indexOf(
+    'class="a3s-preview__source"',
+    firstPreviewIndex,
+  );
+  const integrationIndex = html.indexOf(
+    'class="a3s-preview-integration"',
+    firstPreviewIndex,
+  );
 
   if (
-    componentIntroIndex === -1 ||
     firstPreviewIndex === -1 ||
-    componentIntroIndex > firstPreviewIndex
+    firstSourceIndex === -1 ||
+    integrationIndex < firstSourceIndex ||
+    html.includes('class="component-intro"')
   ) {
     throw new Error(
-      `${file} must place the component quick start before its first preview.`,
+      `${file} must integrate framework code inside its first preview source disclosure.`,
     );
   }
 }
@@ -1376,8 +1409,8 @@ const mdxFiles = await collectMdxFiles(docsRoot);
 const standalonePageFiles = await collectMdxFiles(standalonePagesRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
 const previewSourceViolations = [];
-const componentQuickStartViolations = [];
-let componentQuickStartCount = 0;
+const componentFrameworkIntegrationViolations = [];
+let componentFrameworkIntegrationCount = 0;
 let mdxPreviewCount = 0;
 
 const documentationPlaygroundPages = mdxFiles.filter(
@@ -1448,14 +1481,26 @@ for (const mdxFile of mdxFiles) {
   }
 
   if (isVersionedComponentGuide && !isUnavailableComponentGuide) {
-    componentQuickStartCount += 1;
+    componentFrameworkIntegrationCount += 1;
     const relativeSource = path.relative(docsRoot, mdxFile);
-    const introStart = html.indexOf('<section class="component-intro"');
-    const firstPreview = html.indexOf('<section class="a3s-preview"');
-    const intro =
-      introStart >= 0 && firstPreview > introStart
-        ? html.slice(introStart, firstPreview)
+    const firstPreviewStart = html.indexOf('<section class="a3s-preview"');
+    const nextPreviewStart = html.indexOf(
+      '<section class="a3s-preview"',
+      firstPreviewStart + 1,
+    );
+    const preview =
+      firstPreviewStart >= 0
+        ? html.slice(
+            firstPreviewStart,
+            nextPreviewStart >= 0 ? nextPreviewStart : html.length,
+          )
         : "";
+    const sourcePanelStart = preview.indexOf('class="a3s-preview__source"');
+    const integrationStart = preview.indexOf('class="a3s-preview-integration"');
+    const integration = htmlElementByExactClass(
+      preview,
+      "a3s-preview-integration",
+    );
     const localizedLabels =
       sourceParts[1] === "zh"
         ? ["安装", "项目入口", "最小示例"]
@@ -1475,6 +1520,7 @@ for (const mdxFile of mdxFiles) {
           ? ["chart.js"]
           : [];
     const requiredMarkers = [
+      'data-preview-integration="complete"',
       'data-mode="complete"',
       ">HTML</button>",
       ">React</button>",
@@ -1482,27 +1528,33 @@ for (const mdxFile of mdxFiles) {
       installMarker,
       "@a3s-lab/ui/a3s.css",
       `data-framework-contract="${version === "next" ? "adapter" : "semantic"}"`,
-      'class="component-intro__note"',
+      'class="a3s-preview-integration__note"',
       'class="shiki css-variables"',
       ...integrationDependencyMarkers,
       ...localizedLabels,
     ];
     const missingMarkers = requiredMarkers.filter(
-      (marker) => !intro.includes(marker),
+      (marker) => !preview.includes(marker),
     );
-    const stepCount = (intro.match(/class="component-intro__step /g) ?? [])
-      .length;
+    const stepCount = (
+      integration.match(/class="a3s-preview-integration__step /g) ?? []
+    ).length;
     const copyCount = (
-      intro.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
+      integration.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
     ).length;
     const wrapCount = (
-      intro.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
+      integration.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
     ).length;
-    const exampleStart = intro.indexOf("component-intro__example");
-    const exampleEnd = intro.indexOf("component-intro__note", exampleStart);
+    const exampleStart = integration.indexOf(
+      "a3s-preview-integration__example",
+    );
+    const exampleEnd = integration.indexOf(
+      "a3s-preview-integration__note",
+      exampleStart,
+    );
     const htmlExample =
       exampleStart >= 0 && exampleEnd > exampleStart
-        ? intro.slice(exampleStart, exampleEnd)
+        ? integration.slice(exampleStart, exampleEnd)
         : "";
     const encodedExampleTags = [
       ...htmlExample.matchAll(/&lt;([a-z][\w-]*)\b/gu),
@@ -1514,7 +1566,10 @@ for (const mdxFile of mdxFiles) {
       );
     const hasLegacyFrameworkSections =
       /<h2\b[^>]*\bid="(?:react|vue)"/u.test(html) ||
-      html.includes("a3s-framework-tabs");
+      html.includes("a3s-framework-tabs") ||
+      html.includes("component-intro");
+    const integrationIsNestedInSource =
+      sourcePanelStart >= 0 && integrationStart > sourcePanelStart;
 
     if (
       missingMarkers.length > 0 ||
@@ -1522,10 +1577,11 @@ for (const mdxFile of mdxFiles) {
       copyCount !== 3 ||
       wrapCount !== 0 ||
       hasInvalidExample ||
-      hasLegacyFrameworkSections
+      hasLegacyFrameworkSections ||
+      !integrationIsNestedInSource
     ) {
-      componentQuickStartViolations.push(
-        `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; steps=${stepCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}`,
+      componentFrameworkIntegrationViolations.push(
+        `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; steps=${stepCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}; nested=${integrationIsNestedInSource}`,
       );
     }
   }
@@ -1570,7 +1626,7 @@ for (const locale of ["zh", "en"]) {
     ).length;
 
     if (missingMarkers.length > 0 || copyCount !== 2 || wrapCount !== 0) {
-      componentQuickStartViolations.push(
+      componentFrameworkIntegrationViolations.push(
         `${relativeFile}: missing=${missingMarkers.join(",") || "none"}; copy=${copyCount}; wrap=${wrapCount}`,
       );
     }
@@ -1596,7 +1652,7 @@ for (const htmlFile of htmlFiles) {
   builtPreviewCount += previewCount;
   const previewToggleCount = (
     html.match(
-      /<button\b(?=[^>]*\baria-controls="[^"]+")(?=[^>]*\baria-expanded="false")(?=[^>]*\btitle="(?:Show source|展开源码)")[^>]*>/g,
+      /<button\b(?=[^>]*\baria-controls="[^"]+")(?=[^>]*\baria-expanded="false")(?=[^>]*\btitle="(?:Show source|Show integration code|展开源码|展开接入代码)")[^>]*>/g,
     ) ?? []
   ).length;
   const previewSourcePanelCount = (
@@ -1711,9 +1767,9 @@ if (previewSourceViolations.length > 0) {
   );
 }
 
-if (componentQuickStartViolations.length > 0) {
+if (componentFrameworkIntegrationViolations.length > 0) {
   throw new Error(
-    `Component framework quick-start coverage failed:\n${componentQuickStartViolations
+    `Component framework integration coverage failed:\n${componentFrameworkIntegrationViolations
       .map((violation) => `  - ${violation}`)
       .join("\n")}`,
   );
@@ -1744,5 +1800,5 @@ if (chineseTerminologyLeaks.length > 0) {
 }
 
 console.log(
-  `Verified ${requiredFiles.length} required files, ${componentQuickStartCount} component framework quick starts, ${mdxPreviewCount} MDX preview contracts, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${componentFrameworkIntegrationCount} component framework integrations, ${mdxPreviewCount} MDX preview contracts, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
 );

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 declare global {
   interface Window {
@@ -9,6 +9,30 @@ declare global {
 async function openComponentGuide(page: Page, route: string) {
   await page.goto(route, { waitUntil: "networkidle" });
   await expect(page.locator("html")).not.toHaveAttribute("data-a3s-defer-init");
+}
+
+function integratedPreview(page: Page, slug: string) {
+  return page
+    .locator(
+      `.a3s-preview[data-preview-component="${slug}"][data-preview-integration="complete"]`,
+    )
+    .first();
+}
+
+async function revealIntegration(
+  preview: Locator,
+  language: "en" | "zh" = "zh",
+) {
+  await preview
+    .getByRole("button", {
+      name: language === "zh" ? "展开接入代码" : "Show integration code",
+    })
+    .click();
+  const integration = preview.locator(
+    ".a3s-preview__source > .a3s-preview-integration",
+  );
+  await expect(integration).toBeVisible();
+  return integration;
 }
 
 test.describe("component framework quick starts", () => {
@@ -26,61 +50,86 @@ test.describe("component framework quick starts", () => {
     });
   });
 
-  test("HTML, React, and Vue share one complete, copyable quick start", async ({
+  test("HTML, React, and Vue share the live preview's copyable source disclosure", async ({
     page,
   }) => {
     await openComponentGuide(page, "components/button.html");
 
-    const quickStart = page.locator(
-      '.component-intro[data-component-intro="button"][data-mode="complete"]',
+    const preview = integratedPreview(page, "button");
+    await expect(preview).toBeVisible();
+    await expect(preview).toHaveAttribute("data-framework-contract", "adapter");
+    await expect(page.locator(".component-intro")).toHaveCount(0);
+    const sourceToggle = preview.getByRole("button", {
+      name: "展开接入代码",
+    });
+    await sourceToggle.focus();
+    await page.keyboard.press("Enter");
+    const integration = preview.locator(
+      ".a3s-preview__source > .a3s-preview-integration",
     );
-    await expect(quickStart).toBeVisible();
-    await expect(quickStart.getByRole("tab")).toHaveCount(3);
-    await expect(quickStart.locator(".component-intro__step")).toHaveCount(3);
-    await expect(quickStart.locator(".rp-codeblock")).toHaveCount(3);
-    await expect(quickStart.locator(".rp-code-copy-button")).toHaveCount(3);
-    await expect(quickStart.locator(".rp-code-wrap-button")).toHaveCount(0);
-    await expect(quickStart).toContainText("安装");
-    await expect(quickStart).toContainText("项目入口");
-    await expect(quickStart).toContainText("最小示例");
+    await expect(integration).toBeVisible();
+    await expect(integration.getByRole("tab", { name: "HTML" })).toBeFocused();
+    await expect(integration.getByRole("tab")).toHaveCount(3);
+    await expect(
+      integration.locator(".a3s-preview-integration__step"),
+    ).toHaveCount(3);
+    await expect(integration.locator(".rp-codeblock")).toHaveCount(3);
+    await expect(integration.locator(".rp-code-copy-button")).toHaveCount(3);
+    await expect(integration.locator(".rp-code-wrap-button")).toHaveCount(0);
+    await expect(integration).toContainText("安装");
+    await expect(integration).toContainText("项目入口");
+    await expect(integration).toContainText("最小示例");
     await expect(
       page.getByRole("heading", { level: 2, name: /^(React|Vue)$/ }),
     ).toHaveCount(0);
     await expect(page.locator(".a3s-framework-tabs")).toHaveCount(0);
     await expect
       .poll(() =>
-        quickStart
-          .locator(".component-intro__example .line span[style]")
+        integration
+          .locator(".a3s-preview-integration__example .line span[style]")
           .count(),
       )
       .toBeGreaterThan(0);
 
-    const htmlTab = quickStart.getByRole("tab", { name: "HTML" });
+    const htmlTab = integration.getByRole("tab", { name: "HTML" });
     await htmlTab.focus();
     await page.keyboard.press("ArrowRight");
-    const reactTab = quickStart.getByRole("tab", { name: "React" });
+    const reactTab = integration.getByRole("tab", { name: "React" });
     await expect(reactTab).toHaveAttribute("aria-selected", "true");
     await expect(
-      quickStart.locator(".component-intro__install code"),
+      integration.locator(".a3s-preview-integration__install code"),
     ).toHaveText("npm install @a3s-lab/ui react react-dom");
-    await expect(quickStart.locator(".component-intro__setup code")).toHaveText(
-      'import "@a3s-lab/ui/a3s.css";',
-    );
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      integration.locator(".a3s-preview-integration__setup code"),
+    ).toHaveText('import "@a3s-lab/ui/a3s.css";');
+    await expect(
+      integration.locator(".a3s-preview-integration__example code"),
     ).toContainText("SaveButton");
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      integration.locator(".a3s-preview-integration__example code"),
     ).toContainText('from "@a3s-lab/ui/react"');
-    await expect(quickStart.locator(".component-intro__note")).toContainText(
-      "没有框架私有 Hook",
-    );
+    await expect(
+      integration.locator(".a3s-preview-integration__note"),
+    ).toContainText("没有框架私有 Hook");
 
     const exampleCode = (
-      await quickStart.locator(".component-intro__example code").innerText()
+      await integration
+        .locator(".a3s-preview-integration__example code")
+        .innerText()
     ).trim();
-    await quickStart
-      .locator(".component-intro__example .rp-code-copy-button")
+    await integration
+      .locator(".a3s-preview-integration__example .rp-code-copy-button")
+      .click();
+    await expect
+      .poll(() =>
+        page.evaluate(async () =>
+          (await navigator.clipboard.readText()).trim(),
+        ),
+      )
+      .toBe(exampleCode);
+    await preview
+      .locator(".a3s-preview__header")
+      .getByRole("button", { name: "复制当前示例" })
       .click();
     await expect
       .poll(() =>
@@ -90,9 +139,9 @@ test.describe("component framework quick starts", () => {
       )
       .toBe(exampleCode);
 
-    await quickStart.getByRole("tab", { name: "Vue" }).click();
+    await integration.getByRole("tab", { name: "Vue" }).click();
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      integration.locator(".a3s-preview-integration__example code"),
     ).toContainText('<script setup lang="ts">');
     await expect
       .poll(() =>
@@ -109,26 +158,24 @@ test.describe("component framework quick starts", () => {
     });
     await openComponentGuide(page, "components/tabs.html");
 
-    const chineseQuickStart = page.locator(
-      '.component-intro[data-component-intro="tabs"]',
-    );
+    const chinesePreview = integratedPreview(page, "tabs");
+    const chineseQuickStart = await revealIntegration(chinesePreview);
     await expect(
       chineseQuickStart.getByRole("tab", { name: "Vue" }),
     ).toHaveAttribute("aria-selected", "true");
     await expect(
-      chineseQuickStart.locator(".component-intro__example code"),
+      chineseQuickStart.locator(".a3s-preview-integration__example code"),
     ).toContainText("useTabs");
     await expect(
-      chineseQuickStart.locator(".component-intro__note code"),
+      chineseQuickStart.locator(".a3s-preview-integration__note code"),
     ).toHaveText("useTabs");
     await expect(
-      chineseQuickStart.locator(".component-intro__note"),
+      chineseQuickStart.locator(".a3s-preview-integration__note"),
     ).toContainText("组合式函数");
 
     await openComponentGuide(page, "en/components/tabs.html");
-    const englishQuickStart = page.locator(
-      '.component-intro[data-component-intro="tabs"]',
-    );
+    const englishPreview = integratedPreview(page, "tabs");
+    const englishQuickStart = await revealIntegration(englishPreview, "en");
     await expect(
       englishQuickStart.getByRole("tab", { name: "Vue" }),
     ).toHaveAttribute("aria-selected", "true");
@@ -136,10 +183,10 @@ test.describe("component framework quick starts", () => {
     await expect(englishQuickStart).toContainText("Project entry");
     await expect(englishQuickStart).toContainText("Minimal example");
     await expect(
-      englishQuickStart.locator(".component-intro__note"),
+      englishQuickStart.locator(".a3s-preview-integration__note"),
     ).toContainText("Composable");
     await expect(
-      englishQuickStart.locator(".component-intro__note code"),
+      englishQuickStart.locator(".a3s-preview-integration__note code"),
     ).toHaveText("useTabs");
   });
 
@@ -148,32 +195,33 @@ test.describe("component framework quick starts", () => {
   }) => {
     await openComponentGuide(page, "v0.3.0/components/tabs.html");
 
-    const quickStart = page.locator(
-      '.component-intro[data-component-intro="tabs"][data-mode="complete"]',
-    );
-    await expect(quickStart).toHaveAttribute(
+    const preview = integratedPreview(page, "tabs");
+    await expect(preview).toHaveAttribute(
       "data-framework-contract",
       "semantic",
     );
+    const quickStart = await revealIntegration(preview);
     await quickStart.getByRole("tab", { name: "React" }).click();
     await expect(
-      quickStart.locator(".component-intro__install code"),
+      quickStart.locator(".a3s-preview-integration__install code"),
     ).toHaveText("npm install @a3s-lab/ui@0.3.0 react react-dom");
     await expect(
-      quickStart.locator(".component-intro__setup code"),
+      quickStart.locator(".a3s-preview-integration__setup code"),
     ).toContainText('import "@a3s-lab/ui/all";');
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      quickStart.locator(".a3s-preview-integration__example code"),
     ).toContainText("TabsExample");
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      quickStart.locator(".a3s-preview-integration__example code"),
     ).not.toContainText("@a3s-lab/ui/react");
-    await expect(quickStart.locator(".component-intro__note")).toContainText(
-      "尚未提供框架适配器",
-    );
+    await expect(
+      quickStart.locator(".a3s-preview-integration__note"),
+    ).toContainText("尚未提供框架适配器");
 
     await openComponentGuide(page, "v0.2.0/components/agent-workbench.html");
-    await expect(page.locator(".component-intro")).toHaveCount(0);
+    await expect(
+      page.locator('[data-preview-integration="complete"]'),
+    ).toHaveCount(0);
     await expect(page.getByText("v0.2.0 不包含此组件")).toBeVisible();
   });
 
@@ -184,20 +232,24 @@ test.describe("component framework quick starts", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await openComponentGuide(page, "components/agent-composer.html");
 
-    const quickStart = page.locator(
-      '.component-intro[data-component-intro="agent-composer"]',
-    );
-    await expect(quickStart).toBeVisible();
+    const preview = integratedPreview(page, "agent-composer");
+    await expect(preview).toBeVisible();
+    const quickStart = await revealIntegration(preview);
     await expect(quickStart.getByRole("tab")).toHaveCount(3);
     await quickStart.getByRole("tab", { name: "React" }).click();
-    await expect(quickStart.locator(".component-intro__note code")).toHaveText(
-      "useAgentComposer",
-    );
     await expect(
-      quickStart.locator(".component-intro__example code"),
+      quickStart.locator(".a3s-preview-integration__note code"),
+    ).toHaveText("useAgentComposer");
+    await expect(
+      quickStart.locator(".a3s-preview-integration__example code"),
     ).toContainText("useAgentComposerEditor");
     await expect(
-      quickStart.locator(".component-intro__install code"),
+      quickStart.locator(
+        ".a3s-preview-integration__example .a3s-preview-integration__step-label span",
+      ),
+    ).toHaveAttribute("title", "AgentComposerExample.tsx");
+    await expect(
+      quickStart.locator(".a3s-preview-integration__install code"),
     ).toContainText("@tiptap/react");
 
     expect(
@@ -207,7 +259,7 @@ test.describe("component framework quick starts", () => {
           document.documentElement.clientWidth,
       ),
     ).toBe(0);
-    const quickStartBox = await quickStart.boundingBox();
+    const quickStartBox = await preview.boundingBox();
     const tabListBox = await quickStart.getByRole("tablist").boundingBox();
     expect(quickStartBox).not.toBeNull();
     expect(tabListBox).not.toBeNull();
@@ -218,11 +270,11 @@ test.describe("component framework quick starts", () => {
     page,
   }) => {
     await openComponentGuide(page, "components/chart.html");
-    const chartQuickStart = page.locator(
-      '.component-intro[data-component-intro="chart"]',
+    const chartQuickStart = await revealIntegration(
+      integratedPreview(page, "chart"),
     );
     await expect(
-      chartQuickStart.locator(".component-intro__install code"),
+      chartQuickStart.locator(".a3s-preview-integration__install code"),
     ).toContainText("chart.js");
 
     await openComponentGuide(page, "harness/grid-view.html");

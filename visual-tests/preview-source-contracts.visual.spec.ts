@@ -8,8 +8,12 @@ declare global {
 }
 
 const locales = [
-  { code: "en", path: "en/", sourceLabel: "Show source" },
-  { code: "zh", path: "", sourceLabel: "展开源码" },
+  {
+    code: "en",
+    integrationLabel: "Show integration code",
+    path: "en/",
+  },
+  { code: "zh", integrationLabel: "展开接入代码", path: "" },
 ] as const;
 
 const runtimeAttributePattern =
@@ -68,14 +72,29 @@ test.describe("component preview source contracts", () => {
           previews.locator("[data-preview-source-panel]"),
         ).toHaveCount(previewCount);
         await expect(previews.locator(".rp-code-copy-button")).toHaveCount(
-          previewCount,
+          previewCount + 2,
         );
 
-        const sources = await previews
-          .locator(".a3s-preview__source code")
-          .allTextContents();
-        expect(sources).toHaveLength(previewCount);
-        sources.forEach((source, index) => {
+        const firstPreview = previews.first();
+        await expect(firstPreview).toHaveAttribute(
+          "data-preview-integration",
+          "complete",
+        );
+        await expect(firstPreview.locator(".rp-code-copy-button")).toHaveCount(
+          3,
+        );
+        const sources: string[] = [];
+        for (let index = 0; index < previewCount; index += 1) {
+          const source =
+            (await previews
+              .nth(index)
+              .locator(
+                index === 0
+                  ? ".a3s-preview-integration__example code"
+                  : ".a3s-preview__source code",
+              )
+              .textContent()) ?? "";
+          sources.push(source);
           expect(
             source.trim().length,
             `${locale.code}/${component.slug} preview ${index + 1} source must not be empty`,
@@ -84,14 +103,15 @@ test.describe("component preview source contracts", () => {
             source,
             `${locale.code}/${component.slug} preview ${index + 1} source must omit runtime annotations`,
           ).not.toMatch(runtimeAttributePattern);
-        });
+        }
 
-        const firstPreview = previews.first();
         const sourcePanel = firstPreview.locator("[data-preview-source-panel]");
         const sourceToggle = firstPreview.locator(
           ".a3s-preview__controls button[aria-controls]",
         );
-        await expect(sourceToggle).toHaveAccessibleName(locale.sourceLabel);
+        await expect(sourceToggle).toHaveAccessibleName(
+          locale.integrationLabel,
+        );
         await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
         await expect(sourcePanel).toBeHidden();
         await sourceToggle.click();
@@ -102,7 +122,9 @@ test.describe("component preview source contracts", () => {
           .poll(() => sourcePanel.locator(".line span[style]").count())
           .toBeGreaterThan(0);
 
-        const copyButton = sourcePanel.locator(".rp-code-copy-button");
+        const copyButton = sourcePanel.locator(
+          ".a3s-preview-integration__example .rp-code-copy-button",
+        );
         await copyButton.click();
         await expect
           .poll(() =>

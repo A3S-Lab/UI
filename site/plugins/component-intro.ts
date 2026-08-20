@@ -262,25 +262,24 @@ function booleanAttribute(name: string): MdxAttribute {
   };
 }
 
-function componentIntroNode(
+function attachFrameworkIntegration(
+  preview: MdxNode,
   snippets: Required<FrameworkSnippets>,
   hasController = false,
   semanticFrameworks = false,
-): MdxNode {
-  const attributes = [
-    ...frameworkNames.map((framework) =>
-      stringAttribute(framework, snippets[framework]),
-    ),
+): void {
+  const attributes = preview.attributes ?? [];
+  attributes.push(
+    ...frameworkNames.map((framework) => {
+      const attributeName = `framework${
+        framework.charAt(0).toUpperCase() + framework.slice(1)
+      }`;
+      return stringAttribute(attributeName, snippets[framework]);
+    }),
     ...(hasController ? [booleanAttribute("hasController")] : []),
     ...(semanticFrameworks ? [booleanAttribute("semanticFrameworks")] : []),
-  ];
-
-  return {
-    attributes,
-    children: [],
-    name: "ComponentIntro",
-    type: "mdxJsxFlowElement",
-  };
+  );
+  preview.attributes = attributes;
 }
 
 function removeRanges(children: MdxNode[], ranges: NodeRange[]) {
@@ -289,39 +288,18 @@ function removeRanges(children: MdxNode[], ranges: NodeRange[]) {
     .forEach((range) => children.splice(range.start, range.end - range.start));
 }
 
-function insertIntro(children: MdxNode[], intro: MdxNode) {
-  const firstHeadingIndex = children.findIndex(
-    (node) => node.type === "heading",
-  );
-  const firstContentIndex = Math.max(firstHeadingIndex + 1, 0);
-  const firstContentNode = children[firstContentIndex];
-  const insertionIndex =
-    firstContentNode?.type === "paragraph"
-      ? firstContentIndex + 1
-      : firstContentIndex;
-
-  children.splice(insertionIndex, 0, intro);
-}
-
 /**
- * Gives every versioned component guide a shared quick-start surface. The
- * authored examples remain the source of truth while duplicate framework
- * chapters are normalized into one HTML/React/Vue tab set at build time.
+ * Gives the first preview in every versioned component guide a shared
+ * framework-integration source panel. The authored examples remain the source
+ * of truth while duplicate framework chapters are normalized into the
+ * preview's HTML/React/Vue tab set at build time.
  * Historical versions use semantic framework examples because their packages
  * predate the generated React and Vue adapters.
  */
-export function componentIntroPlugin() {
+export function componentPreviewIntegrationPlugin() {
   return (tree: MdxNode, file: VFileLike) => {
     if (!file.path || !componentSlug(file.path) || !tree.children) return;
     if (isUnavailableGuide(tree)) return;
-    if (
-      tree.children.some(
-        (node) =>
-          node.type === "mdxJsxFlowElement" && node.name === "ComponentIntro",
-      )
-    ) {
-      return;
-    }
 
     const slug = componentSlug(file.path)!;
     const componentName = slug
@@ -358,9 +336,27 @@ export function componentIntroPlugin() {
         );
 
     removeRanges(tree.children, ranges);
-    insertIntro(
-      tree.children,
-      componentIntroNode(completeSnippets, hasController, !useAdapters),
+    const firstPreview = tree.children.find(
+      (node) => node.type === "mdxJsxFlowElement" && node.name === "Preview",
+    );
+    if (!firstPreview) {
+      throw new Error(
+        `${normalizedPath(file.path)} requires a root-level Preview for its framework integration.`,
+      );
+    }
+    if (
+      firstPreview.attributes?.some(
+        (attribute) => attribute.name === "frameworkHtml",
+      )
+    ) {
+      return;
+    }
+
+    attachFrameworkIntegration(
+      firstPreview,
+      completeSnippets,
+      hasController,
+      !useAdapters,
     );
   };
 }

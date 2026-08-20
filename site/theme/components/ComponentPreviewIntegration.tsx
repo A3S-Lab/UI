@@ -2,24 +2,19 @@ import {
   CodeBlockRuntime,
   type CodeBlockRuntimeProps,
 } from "@rspress/core/theme";
-import {
-  useLang,
-  useLocation,
-  useVersion,
-  withBase,
-} from "@rspress/core/runtime";
+import { useLang, useLocation, useVersion } from "@rspress/core/runtime";
 import { useEffect, useId, useState, type KeyboardEvent } from "react";
-import {
-  findCatalogRecord,
-  type CatalogLanguage,
-} from "./componentCatalogData";
-import "./ComponentIntro.css";
+import "./ComponentPreviewIntegration.css";
 
 type Framework = "html" | "react" | "vue";
 
-type ComponentIntroProps = Partial<Record<Framework, string>> & {
+export type ComponentPreviewIntegrationProps = {
   hasController?: boolean;
+  html: string;
+  onExampleChange?: (source: string) => void;
+  react: string;
   semanticFrameworks?: boolean;
+  vue: string;
 };
 
 type IntegrationContent = {
@@ -142,22 +137,34 @@ function integrationContent(
   };
 }
 
-export function ComponentIntro({
+export function ComponentPreviewIntegration({
   hasController = false,
   html,
+  onExampleChange,
   react,
   semanticFrameworks = false,
   vue,
-}: ComponentIntroProps) {
-  const currentLanguage = useLang();
+}: ComponentPreviewIntegrationProps) {
+  const language = useLang();
   const location = useLocation();
   const version = useVersion();
-  const language: CatalogLanguage = currentLanguage === "en" ? "en" : "zh";
   const isChinese = language === "zh";
-  const slug = location.pathname.match(/\/components\/([^/.]+)/)?.[1];
-  const record = slug ? findCatalogRecord(language, slug) : undefined;
+  const slug =
+    location.pathname.match(/\/components\/([^/.]+)/)?.[1] ?? "component";
+  const componentName = adapterName(slug);
+  const hookName = `use${componentName}`;
   const frameworkId = useId();
   const [framework, setFramework] = useState<Framework>("html");
+  const examples = { html, react, vue };
+  const content = integrationContent(
+    framework,
+    slug,
+    componentName,
+    hasController,
+    semanticFrameworks,
+    version,
+    examples,
+  );
 
   useEffect(() => {
     try {
@@ -168,23 +175,13 @@ export function ComponentIntro({
         setFramework(storedFramework as Framework);
       }
     } catch {
-      // Storage is an enhancement; tabs remain fully operable without it.
+      // Storage is an enhancement; tabs remain operable without it.
     }
   }, []);
 
-  if (!record) return null;
-
-  const routeParts = [
-    version === "next" ? "" : version,
-    language === "zh" ? "" : language,
-    "components",
-  ].filter(Boolean);
-  const catalogHref = withBase(`/${routeParts.join("/")}/index.html`);
-  const componentName = adapterName(record.slug);
-  const hookName = `use${componentName}`;
-  const versionLabel =
-    version === "next" ? (isChinese ? "开发版" : "Development") : version;
-  const examples = html && react && vue ? { html, react, vue } : undefined;
+  useEffect(() => {
+    onExampleChange?.(content.example);
+  }, [content.example, onExampleChange]);
 
   const selectFramework = (nextFramework: Framework) => {
     setFramework(nextFramework);
@@ -221,17 +218,6 @@ export function ComponentIntro({
     document.getElementById(`${frameworkId}-${nextFramework}-tab`)?.focus();
   };
 
-  const content = examples
-    ? integrationContent(
-        framework,
-        record.slug,
-        componentName,
-        hasController,
-        semanticFrameworks,
-        version,
-        examples,
-      )
-    : undefined;
   const integrationNote = semanticFrameworks
     ? isChinese
       ? "该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。"
@@ -255,147 +241,123 @@ export function ComponentIntro({
         : isChinese
           ? `此组件没有框架私有 Hook；${frameworkLabel(framework)} 适配器只映射相同的语义根元素，状态由原生事件和宿主应用管理。`
           : `This component needs no framework-specific hook. The ${frameworkLabel(framework)} adapter maps the same semantic root while native events and the host own state.`;
+  const versionLabel =
+    version === "next" ? (isChinese ? "开发版" : "Development") : version;
 
   return (
-    <section
-      className="component-intro"
-      aria-label={isChinese ? "组件快速开始" : "Component quick start"}
-      data-component-intro={record.slug}
-      data-mode={content ? "complete" : "legacy"}
+    <div
+      className="a3s-preview-integration"
+      data-component-integration={slug}
+      data-framework={framework}
       data-framework-contract={semanticFrameworks ? "semantic" : "adapter"}
+      data-mode="complete"
     >
-      <header className="component-intro__header">
-        <div className="component-intro__context">
-          <strong>{isChinese ? "快速开始" : "Quick start"}</strong>
-          <span>
-            <a href={catalogHref}>{record.filterLabel}</a>
-            <span aria-hidden="true">·</span>
-            <span>{versionLabel}</span>
-          </span>
+      <header className="a3s-preview-integration__header">
+        <div
+          className="a3s-preview-integration__tabs"
+          role="tablist"
+          aria-label={isChinese ? "选择接入方式" : "Choose integration"}
+          aria-orientation="horizontal"
+          onKeyDown={handleFrameworkKeyDown}
+        >
+          {frameworks.map((candidate) => (
+            <button
+              key={candidate}
+              type="button"
+              role="tab"
+              id={`${frameworkId}-${candidate}-tab`}
+              aria-controls={`${frameworkId}-panel`}
+              aria-selected={candidate === framework}
+              tabIndex={candidate === framework ? 0 : -1}
+              onClick={() => selectFramework(candidate)}
+            >
+              {frameworkLabel(candidate)}
+            </button>
+          ))}
         </div>
-        <div className="component-intro__frameworks" role="presentation">
-          <div
-            role="tablist"
-            aria-label={isChinese ? "选择接入方式" : "Choose integration"}
-            aria-orientation="horizontal"
-            onKeyDown={handleFrameworkKeyDown}
-          >
-            {frameworks.map((candidate) => (
-              <button
-                key={candidate}
-                type="button"
-                role="tab"
-                id={`${frameworkId}-${candidate}-tab`}
-                aria-controls={`${frameworkId}-panel`}
-                aria-selected={candidate === framework}
-                tabIndex={candidate === framework ? 0 : -1}
-                onClick={() => selectFramework(candidate)}
-              >
-                {frameworkLabel(candidate)}
-              </button>
-            ))}
-          </div>
-        </div>
+        <span className="a3s-preview-integration__context">
+          {isChinese ? "接入代码" : "Integration code"}
+          <span aria-hidden="true">·</span>
+          {versionLabel}
+        </span>
       </header>
 
       <div
         id={`${frameworkId}-panel`}
-        className="component-intro__panel"
+        className="a3s-preview-integration__panel"
         role="tabpanel"
         aria-labelledby={`${frameworkId}-${framework}-tab`}
       >
-        {content ? (
-          <>
-            <section className="component-intro__step component-intro__install">
-              <div className="component-intro__step-label">
-                <strong>{isChinese ? "安装" : "Install"}</strong>
-                <span>Terminal</span>
-              </div>
-              <CodeBlockRuntime
-                lang="bash"
-                code={content.install}
-                containerElementClassName="component-intro__code"
-                codeButtonGroupProps={copyOnlyCodeActions}
-              />
-            </section>
-
-            <section className="component-intro__step component-intro__setup">
-              <div className="component-intro__step-label">
-                <strong>{isChinese ? "项目入口" : "Project entry"}</strong>
-                <span>{content.setupFile}</span>
-              </div>
-              <CodeBlockRuntime
-                lang={content.setupLanguage}
-                code={content.setup}
-                containerElementClassName="component-intro__code"
-                codeButtonGroupProps={copyOnlyCodeActions}
-              />
-            </section>
-
-            <section className="component-intro__step component-intro__example">
-              <div className="component-intro__step-label">
-                <strong>{isChinese ? "最小示例" : "Minimal example"}</strong>
-                <span>{content.exampleFile}</span>
-              </div>
-              <CodeBlockRuntime
-                lang={content.exampleLanguage}
-                code={content.example}
-                containerElementClassName="component-intro__code"
-                codeButtonGroupProps={copyOnlyCodeActions}
-              />
-            </section>
-
-            <div className="component-intro__note">
-              <strong>
-                {semanticFrameworks
-                  ? isChinese
-                    ? "版本合同"
-                    : "Version contract"
-                  : hasController
-                    ? framework === "vue"
-                      ? isChinese
-                        ? "组合式函数"
-                        : "Composable"
-                      : framework === "react"
-                        ? "Hook"
-                        : isChinese
-                          ? "控制器"
-                          : "Controller"
-                    : isChinese
-                      ? "状态归属"
-                      : "State ownership"}
-              </strong>
-              <p>
-                {hasController && framework !== "html" ? (
-                  <>
-                    <code>{hookName}</code> {integrationNote}
-                  </>
-                ) : (
-                  integrationNote
-                )}
-              </p>
-            </div>
-          </>
-        ) : (
-          <div className="component-intro__legacy">
-            <p>
-              {isChinese
-                ? "此版本保留发布时的原生 HTML 契约；框架适配器用法请切换到开发版文档。"
-                : "This version preserves its published native HTML contract. Switch to the development docs for framework adapter guidance."}
-            </p>
-            <CodeBlockRuntime
-              lang="js"
-              code={
-                framework === "html"
-                  ? 'import "@a3s-lab/ui/a3s.css";\nimport "@a3s-lab/ui/all";'
-                  : `import "@a3s-lab/ui/a3s.css";\nimport { ${componentName} } from "@a3s-lab/ui/${framework}";`
-              }
-              containerElementClassName="component-intro__code"
-              codeButtonGroupProps={copyOnlyCodeActions}
-            />
+        <section className="a3s-preview-integration__step a3s-preview-integration__install">
+          <div className="a3s-preview-integration__step-label">
+            <strong>{isChinese ? "安装" : "Install"}</strong>
+            <span>Terminal</span>
           </div>
-        )}
+          <CodeBlockRuntime
+            lang="bash"
+            code={content.install}
+            containerElementClassName="a3s-preview-integration__code"
+            codeButtonGroupProps={copyOnlyCodeActions}
+          />
+        </section>
+
+        <section className="a3s-preview-integration__step a3s-preview-integration__setup">
+          <div className="a3s-preview-integration__step-label">
+            <strong>{isChinese ? "项目入口" : "Project entry"}</strong>
+            <span title={content.setupFile}>{content.setupFile}</span>
+          </div>
+          <CodeBlockRuntime
+            lang={content.setupLanguage}
+            code={content.setup}
+            containerElementClassName="a3s-preview-integration__code"
+            codeButtonGroupProps={copyOnlyCodeActions}
+          />
+        </section>
+
+        <section className="a3s-preview-integration__step a3s-preview-integration__example">
+          <div className="a3s-preview-integration__step-label">
+            <strong>{isChinese ? "最小示例" : "Minimal example"}</strong>
+            <span title={content.exampleFile}>{content.exampleFile}</span>
+          </div>
+          <CodeBlockRuntime
+            lang={content.exampleLanguage}
+            code={content.example}
+            containerElementClassName="a3s-preview-integration__code"
+            codeButtonGroupProps={copyOnlyCodeActions}
+          />
+        </section>
+
+        <div className="a3s-preview-integration__note">
+          <strong>
+            {semanticFrameworks
+              ? isChinese
+                ? "版本合同"
+                : "Version contract"
+              : hasController
+                ? framework === "vue"
+                  ? isChinese
+                    ? "组合式函数"
+                    : "Composable"
+                  : framework === "react"
+                    ? "Hook"
+                    : isChinese
+                      ? "控制器"
+                      : "Controller"
+                : isChinese
+                  ? "状态归属"
+                  : "State ownership"}
+          </strong>
+          <p>
+            {hasController && framework !== "html" ? (
+              <>
+                <code>{hookName}</code> {integrationNote}
+              </>
+            ) : (
+              integrationNote
+            )}
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

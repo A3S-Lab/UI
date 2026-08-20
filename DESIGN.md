@@ -354,16 +354,15 @@ The documentation site shares the visual grammar of A3S Test while retaining A3S
 Every component document follows this order:
 
 1. Name and one-sentence job.
-2. One persistent HTML, React, and Vue tab set. Each panel includes its installation command, required import or initialization, a minimal runnable example, and the matching controller hook or composable when behavior exists.
-3. Live default example.
-4. Variants that correspond to real decisions.
-5. Loading, empty, error, disabled, selected, narrow, dark, and RTL states where applicable.
-6. Native HTML contract.
-7. JavaScript controller and events when present.
-8. Framework-specific notes only when they add information beyond the shared tabbed quick start.
-9. Accessibility and ownership boundaries.
+2. One 14px live default Preview whose source disclosure contains the persistent HTML, React, and Vue tab set. Each framework panel includes its installation command, required import or initialization, a minimal runnable example, and the matching controller hook or composable when behavior exists. The preview toolbar copies the currently selected framework example.
+3. Variants that correspond to real decisions. Their Preview source disclosures remain scoped to the authored semantic HTML instead of repeating the framework integration contract.
+4. Loading, empty, error, disabled, selected, narrow, dark, and RTL states where applicable.
+5. Native HTML contract.
+6. JavaScript controller and events when present.
+7. Framework-specific notes only when they add information beyond the integrated Preview source tabs.
+8. Accessibility and ownership boundaries.
 
-Do not render separate React and Vue code chapters after the shared quick start. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example block must be syntax highlighted and copyable.
+Do not render a separate quick-start card or separate React and Vue code chapters around the default Preview. Live output and integration code are one reading task and therefore share one frame. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example block must be syntax highlighted and copyable.
 
 Harness integration guides use the same tab contract. Each framework panel installs its actual peer dependencies and provides a runnable mount example; shared installation commands must not sit in a separate chapter outside the tabs.
 

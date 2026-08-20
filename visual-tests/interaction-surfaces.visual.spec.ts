@@ -509,29 +509,33 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   const previewCopyButton = htmlPreview.locator(
     ".a3s-preview__controls button[data-state]",
   );
-  await expect(previewCopyButton).toHaveAccessibleName("Copy source");
+  await expect(previewCopyButton).toHaveAccessibleName("Copy current example");
   await expect(previewCopyButton).toContainText("Copy");
   await previewCopyButton.click();
-  await expect(previewCopyButton).toHaveAccessibleName("Source copied");
+  await expect(previewCopyButton).toHaveAccessibleName("Example copied");
   await expect(previewCopyButton).toContainText("Copied");
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toContain("Save changes");
   await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
-  await expect(sourceToggle).toHaveAccessibleName("Show source");
+  await expect(sourceToggle).toHaveAccessibleName("Show integration code");
   await expect(sourcePanel).toBeHidden();
   await sourceToggle.click();
   await expect(sourceToggle).toHaveAttribute("aria-expanded", "true");
   await expect(sourcePanel).toBeVisible();
+  await expect(sourcePanel).toContainText("Install");
+  await expect(sourcePanel).toContainText("Project entry");
+  await expect(sourcePanel).toContainText("Minimal example");
   await expect(sourcePanel).toContainText('<button type="button"');
   await expect(sourcePanel).toContainText('class="btn"');
-  await expect(sourcePanel).toContainText('data-variant="outline"');
   await expect(htmlPreview.locator("[data-reactroot]")).toHaveCount(0);
   await expect
     .poll(() => sourcePanel.locator(".line span[style]").count())
     .toBeGreaterThan(0);
 
-  const copyButton = sourcePanel.locator(".rp-code-copy-button");
+  const copyButton = sourcePanel.locator(
+    ".a3s-preview-integration__example .rp-code-copy-button",
+  );
   await expect(copyButton).toHaveAccessibleName("Copy code");
   await copyButton.click();
   await expect
@@ -624,18 +628,18 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   );
 
   await openComponent(page, "slider");
-  const reactPreview = page
+  const variantPreview = page
     .locator(
       '.a3s-preview[data-preview-component=slider]:has([data-slider-demo="standalone"])',
     )
-    .first();
-  const reactSource = reactPreview.locator("[data-preview-source-panel]");
-  await reactPreview
+    .nth(1);
+  const variantSource = variantPreview.locator("[data-preview-source-panel]");
+  await variantPreview
     .getByRole("button", { name: "Show source", exact: true })
     .click();
-  await expect(reactSource).toContainText('type="range"');
-  await expect(reactSource).not.toContainText("SliderDemo");
-  await expect(reactSource).not.toContainText("data-range-initialized");
+  await expect(variantSource).toContainText('type="range"');
+  await expect(variantSource).not.toContainText("SliderDemo");
+  await expect(variantSource).not.toContainText("data-range-initialized");
 
   await page.goto("components/button.html", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
@@ -647,13 +651,13 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
     "常用操作",
   );
   await expect(
-    chinesePreview.getByRole("button", { name: "展开源码" }),
+    chinesePreview.getByRole("button", { name: "展开接入代码" }),
   ).toHaveAttribute("aria-expanded", "false");
   await expect(
     chinesePreview.locator("[data-preview-source-panel]"),
   ).toBeHidden();
   await expect(
-    chinesePreview.getByRole("button", { name: "复制源码" }),
+    chinesePreview.getByRole("button", { name: "复制当前示例" }),
   ).toContainText("复制");
 });
 

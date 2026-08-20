@@ -1,8 +1,8 @@
 suite "a3s-ui-component-framework-docs" {
     version = 1
 
-    scenario "framework-quick-start-desktop" {
-        name = "Component guides expose localized HTML, React, and Vue quick starts"
+    scenario "framework-preview-integration-desktop" {
+        name = "Component previews expose localized HTML, React, and Vue integration code"
         surface = "web"
         timeout_ms = 90000
         viewport "desktop" { width = 1440 height = 1000 }
@@ -10,45 +10,49 @@ suite "a3s-ui-component-framework-docs" {
         navigate "open-chinese" { url = "http://127.0.0.1:4178/UI/components/tabs.html" }
         wait "chinese-loaded" { load = "networkidle" }
         wait "chinese-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "complete-quick-start" { visible = css(".component-intro[data-component-intro=tabs][data-mode=complete]") }
-        expect "html-selected" { visible = css(".component-intro [role=tab][aria-selected=true]") }
+        expect "complete-preview" { visible = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete]") }
+        click "show-integration" { target = role("button", "展开接入代码") }
+        expect "integrated-source" { visible = css(".a3s-preview__source > .a3s-preview-integration[data-mode=complete]") }
+        expect "html-selected" { visible = css(".a3s-preview-integration [role=tab][aria-selected=true]") }
         expect "install" { text = "安装" }
         expect "setup" { text = "项目入口" }
         expect "example" { text = "最小示例" }
         click "react" { target = role("tab", "React") }
-        expect "react-selected" { visible = css(".component-intro [role=tab][aria-selected=true]") }
+        expect "react-selected" { visible = css(".a3s-preview-integration [role=tab][aria-selected=true]") }
         expect "react-hook" { text = "useTabs" }
         expect "react-install" { text = "npm install @a3s-lab/ui react react-dom" }
-        screenshot "chinese-react" { path = "documentation/framework-quick-start-react.png" }
+        screenshot "chinese-react" { path = "documentation/framework-preview-integration-react.png" }
 
         navigate "open-english" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
         wait "english-loaded" { load = "networkidle" }
         wait "english-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        click "show-english-integration" { target = role("button", "Show integration code") }
         click "vue" { target = role("tab", "Vue") }
         expect "english-install" { text = "Install" }
         expect "english-setup" { text = "Project entry" }
         expect "english-example" { text = "Minimal example" }
         expect "vue-composable" { text = "Composable" }
         expect "vue-install" { text = "npm install @a3s-lab/ui vue" }
-        screenshot "english-vue" { path = "documentation/framework-quick-start-vue-en.png" }
+        screenshot "english-vue" { path = "documentation/framework-preview-integration-vue-en.png" }
 
         navigate "open-published-version" { url = "http://127.0.0.1:4178/UI/v0.3.0/components/tabs.html" }
         wait "published-loaded" { load = "networkidle" }
         wait "published-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "published-semantic-contract" { visible = css(".component-intro[data-framework-contract=semantic][data-mode=complete]") }
+        expect "published-semantic-contract" { visible = css(".a3s-preview[data-framework-contract=semantic][data-preview-integration=complete]") }
+        click "show-published-integration" { target = role("button", "展开接入代码") }
         click "published-react" { target = role("tab", "React") }
         expect "published-install" { text = "npm install @a3s-lab/ui@0.3.0 react react-dom" }
         expect "published-runtime" { text = "@a3s-lab/ui/all" }
         expect "published-boundary" { text = "尚未提供框架适配器" }
-        screenshot "published-react-evidence" { path = "documentation/framework-quick-start-published-react.png" }
+        screenshot "published-react-evidence" { path = "documentation/framework-preview-integration-published-react.png" }
 
-        accessibility "desktop-tree" { path = "documentation/framework-quick-start-accessibility.json" interactive = true }
-        console "desktop-console" { path = "documentation/framework-quick-start-console.json" clear = false }
-        page_errors "desktop-errors" { path = "documentation/framework-quick-start-errors.json" clear = false }
+        accessibility "desktop-tree" { path = "documentation/framework-preview-integration-accessibility.json" interactive = true }
+        console "desktop-console" { path = "documentation/framework-preview-integration-console.json" clear = false }
+        page_errors "desktop-errors" { path = "documentation/framework-preview-integration-errors.json" clear = false }
     }
 
-    scenario "framework-quick-start-mobile" {
-        name = "Framework quick start stays usable on a narrow component guide"
+    scenario "framework-preview-integration-mobile" {
+        name = "Framework integration stays usable inside a narrow component preview"
         surface = "web"
         timeout_ms = 60000
         viewport "mobile" { width = 390 height = 844 }
@@ -56,13 +60,14 @@ suite "a3s-ui-component-framework-docs" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/components/agent-composer.html" }
         wait "loaded" { load = "networkidle" }
         wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "quick-start" { visible = css(".component-intro[data-component-intro=agent-composer][data-mode=complete]") }
+        expect "complete-preview" { visible = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete]") }
+        click "show-integration" { target = role("button", "展开接入代码") }
         click "react" { target = role("tab", "React") }
         expect "controller-hook" { text = "useAgentComposer" }
         expect "editor-hook" { text = "useAgentComposerEditor" }
         expect "tiptap-install" { text = "@tiptap/react" }
-        screenshot "mobile-react" { path = "documentation/framework-quick-start-mobile.png" }
-        console "mobile-console" { path = "documentation/framework-quick-start-mobile-console.json" clear = false }
-        page_errors "mobile-errors" { path = "documentation/framework-quick-start-mobile-errors.json" clear = false }
+        screenshot "mobile-react" { path = "documentation/framework-preview-integration-mobile.png" }
+        console "mobile-console" { path = "documentation/framework-preview-integration-mobile-console.json" clear = false }
+        page_errors "mobile-errors" { path = "documentation/framework-preview-integration-mobile-errors.json" clear = false }
     }
 }

@@ -34,6 +34,7 @@ import {
   type PreviewLayout,
   type PreviewViewport,
 } from "./DocsPreviewRuntime";
+import { ComponentPreviewIntegration } from "./ComponentPreviewIntegration";
 
 export { ChartDemo } from "./DocsChartDemo";
 
@@ -258,7 +259,12 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
 type PreviewProps = HTMLAttributes<HTMLDivElement> & {
   class?: string;
   children: ReactNode;
+  frameworkHtml?: string;
+  frameworkReact?: string;
+  frameworkVue?: string;
+  hasController?: boolean;
   layout?: PreviewLayout;
+  semanticFrameworks?: boolean;
   source?: string;
   title?: string;
 };
@@ -500,7 +506,12 @@ export function Preview({
   children,
   className,
   class: htmlClass,
+  frameworkHtml,
+  frameworkReact,
+  frameworkVue,
+  hasController = false,
   layout,
+  semanticFrameworks = false,
   source,
   title,
 }: PreviewProps) {
@@ -513,6 +524,9 @@ export function Preview({
   const titleId = useId();
   const sourceId = useId();
   const [sourceText, setSourceText] = useState(source ?? "");
+  const [integrationSourceText, setIntegrationSourceText] = useState(
+    frameworkHtml ?? "",
+  );
   const [responsiveSourceText, setResponsiveSourceText] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
     "idle",
@@ -521,6 +535,25 @@ export function Preview({
   const [alternateTheme, setAlternateTheme] = useState(false);
   const [rtl, setRtl] = useState(false);
   const [sourceOpen, setSourceOpen] = useState(false);
+  const frameworkSnippets = useMemo(
+    () =>
+      typeof frameworkHtml === "string" &&
+      frameworkHtml.trim() &&
+      typeof frameworkReact === "string" &&
+      frameworkReact.trim() &&
+      typeof frameworkVue === "string" &&
+      frameworkVue.trim()
+        ? {
+            html: frameworkHtml,
+            react: frameworkReact,
+            vue: frameworkVue,
+          }
+        : undefined,
+    [frameworkHtml, frameworkReact, frameworkVue],
+  );
+  const copyTarget = frameworkSnippets
+    ? integrationSourceText || frameworkSnippets.html
+    : sourceText;
   const componentName =
     location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
     (/\/components\/?$/.test(location.pathname) ? "index" : undefined);
@@ -547,6 +580,15 @@ export function Preview({
     },
     [],
   );
+
+  useEffect(() => {
+    if (!frameworkSnippets) return;
+    setCopyState("idle");
+    if (copyResetRef.current !== null) {
+      window.clearTimeout(copyResetRef.current);
+      copyResetRef.current = null;
+    }
+  }, [frameworkSnippets, integrationSourceText]);
 
   useEffect(() => {
     const preview = previewRef.current;
@@ -625,13 +667,13 @@ export function Preview({
   }, [children, source, viewport]);
 
   const copySource = async () => {
-    if (!sourceText) return;
+    if (!copyTarget) return;
     if (copyResetRef.current !== null) {
       window.clearTimeout(copyResetRef.current);
     }
 
     try {
-      await writeClipboardText(sourceText);
+      await writeClipboardText(copyTarget);
       setCopyState("copied");
     } catch {
       setCopyState("error");
@@ -646,15 +688,23 @@ export function Preview({
   const copyLabel =
     copyState === "copied"
       ? isChinese
-        ? "源码已复制"
-        : "Source copied"
+        ? frameworkSnippets
+          ? "示例已复制"
+          : "源码已复制"
+        : frameworkSnippets
+          ? "Example copied"
+          : "Source copied"
       : copyState === "error"
         ? isChinese
           ? "复制失败"
           : "Copy failed"
         : isChinese
-          ? "复制源码"
-          : "Copy source";
+          ? frameworkSnippets
+            ? "复制当前示例"
+            : "复制源码"
+          : frameworkSnippets
+            ? "Copy current example"
+            : "Copy source";
   const copyVisibleLabel =
     copyState === "copied"
       ? isChinese
@@ -743,11 +793,32 @@ export function Preview({
       : "Preview right-to-left layout";
   const sourceLabel = sourceOpen
     ? isChinese
-      ? "收起源码"
-      : "Hide source"
+      ? frameworkSnippets
+        ? "收起接入代码"
+        : "收起源码"
+      : frameworkSnippets
+        ? "Hide integration code"
+        : "Hide source"
     : isChinese
-      ? "展开源码"
-      : "Show source";
+      ? frameworkSnippets
+        ? "展开接入代码"
+        : "展开源码"
+      : frameworkSnippets
+        ? "Show integration code"
+        : "Show source";
+  const toggleSource = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    const opening = !sourceOpen;
+    setSourceOpen(opening);
+
+    if (!opening || !frameworkSnippets || event.detail !== 0) return;
+    window.requestAnimationFrame(() => {
+      previewRef.current
+        ?.querySelector<HTMLButtonElement>(
+          '.a3s-preview-integration [role="tab"][aria-selected="true"]',
+        )
+        ?.focus();
+    });
+  };
 
   return (
     <section
@@ -758,8 +829,16 @@ export function Preview({
       data-preview-direction={rtl ? "rtl" : "ltr"}
       data-preview-layout={resolvedLayout}
       data-preview-scheme={previewScheme}
-      data-preview-source={sourceText ? "ready" : "pending"}
+      data-preview-source={copyTarget ? "ready" : "pending"}
       data-preview-viewport={viewport}
+      data-preview-integration={frameworkSnippets ? "complete" : undefined}
+      data-framework-contract={
+        frameworkSnippets
+          ? semanticFrameworks
+            ? "semantic"
+            : "adapter"
+          : undefined
+      }
     >
       <header className="a3s-preview__header">
         <strong id={titleId}>{resolvedTitle}</strong>
@@ -809,7 +888,7 @@ export function Preview({
           </button>
           <button
             type="button"
-            onClick={() => setSourceOpen((current) => !current)}
+            onClick={toggleSource}
             aria-label={sourceLabel}
             aria-controls={sourceId}
             aria-expanded={sourceOpen}
@@ -821,7 +900,7 @@ export function Preview({
           <button
             type="button"
             onClick={copySource}
-            disabled={!sourceText}
+            disabled={!copyTarget}
             aria-label={copyLabel}
             title={copyLabel}
             data-state={copyState}
@@ -871,18 +950,37 @@ export function Preview({
         data-preview-source-panel
         hidden={!sourceOpen}
         role="region"
-        aria-label={isChinese ? "语义化 HTML 源码" : "Semantic HTML source"}
+        aria-label={
+          frameworkSnippets
+            ? isChinese
+              ? "HTML、React 与 Vue 接入代码"
+              : "HTML, React, and Vue integration code"
+            : isChinese
+              ? "语义化 HTML 源码"
+              : "Semantic HTML source"
+        }
       >
-        <div className="a3s-preview__source-content">
-          <CodeBlockRuntime
-            lang="html"
-            code={
-              sourceText ||
-              (isChinese ? "正在生成预览源码…" : "Preparing preview source…")
-            }
-            containerElementClassName="a3s-preview__codeblock"
+        {frameworkSnippets ? (
+          <ComponentPreviewIntegration
+            hasController={hasController}
+            html={frameworkSnippets.html}
+            react={frameworkSnippets.react}
+            semanticFrameworks={semanticFrameworks}
+            vue={frameworkSnippets.vue}
+            onExampleChange={setIntegrationSourceText}
           />
-        </div>
+        ) : (
+          <div className="a3s-preview__source-content">
+            <CodeBlockRuntime
+              lang="html"
+              code={
+                sourceText ||
+                (isChinese ? "正在生成预览源码…" : "Preparing preview source…")
+              }
+              containerElementClassName="a3s-preview__codeblock"
+            />
+          </div>
+        )}
       </div>
     </section>
   );
