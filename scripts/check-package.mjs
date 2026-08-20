@@ -24,6 +24,12 @@ if (manifest.name !== "@a3s-lab/ui") {
 const officeVisualIndex = a3sStyleEntrypoint.indexOf(
   '@import "./a3s-office.css";',
 );
+const resilienceIndex = a3sStyleEntrypoint.indexOf(
+  '@import "./a3s-resilience.css";',
+);
+if (resilienceIndex < 0) {
+  throw new Error("A3S style entrypoint is missing the resilience layer.");
+}
 for (const canonicalFamily of [
   "a3s-controls.css",
   "a3s-choices.css",
@@ -35,11 +41,22 @@ for (const canonicalFamily of [
   const familyIndex = a3sStyleEntrypoint.indexOf(
     `@import "./${canonicalFamily}";`,
   );
-  if (officeVisualIndex < 0 || familyIndex < officeVisualIndex) {
+  if (
+    officeVisualIndex < 0 ||
+    familyIndex < officeVisualIndex ||
+    familyIndex > resilienceIndex
+  ) {
     throw new Error(
-      `Canonical component family must follow a3s-office.css: ${canonicalFamily}`,
+      `Canonical component family must sit between a3s-office.css and a3s-resilience.css: ${canonicalFamily}`,
     );
   }
+}
+
+const styleImports = [
+  ...a3sStyleEntrypoint.matchAll(/@import\s+"\.\/([^\"]+)";/g),
+].map(([, fileName]) => fileName);
+if (styleImports.at(-1) !== "a3s-resilience.css") {
+  throw new Error("a3s-resilience.css must be the final A3S style import.");
 }
 
 const npmCliPath = process.env.npm_execpath;

@@ -1,0 +1,79 @@
+/* Final input-method guarantees shared by every A3S visual family. */
+@layer components {
+  @media (pointer: coarse) {
+    :is(
+      .btn,
+      .badge:is(a, button),
+      [data-tooltip]:is(a, button),
+      .breadcrumb a,
+      .tabs > [role="tablist"] > [role="tab"],
+      .sidebar nav li > :is(a, button),
+      .sidebar nav li > details > summary,
+      .field[data-orientation="horizontal"] > label,
+      .dropdown-menu
+        :is(
+          [role="menuitem"],
+          [role="menuitemcheckbox"],
+          [role="menuitemradio"]
+        ),
+      .select:not(select) [role="option"],
+      .combobox [role="option"],
+      .command [role="menuitem"]
+    ) {
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+
+    .btn[data-size^="icon"] {
+      min-width: var(--a3s-touch-target, 2.75rem);
+    }
+
+    .tabs > [role="tablist"],
+    .command > header {
+      height: auto;
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+
+    :is(
+      .field > textarea,
+      .textarea,
+      .field
+        > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .field > select,
+      select.select,
+      .select:not(select) > button,
+      .combobox > input[role="combobox"],
+      .input-group,
+      .input-group > :is(input, textarea, select, [data-control]),
+      .combobox-chips > input[role="combobox"],
+      .command > header input
+    ) {
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+
+    :is(
+      .field > input[type="checkbox"]:not([role="switch"]),
+      .input[type="checkbox"]:not([role="switch"])
+    ):is(:checked, :not(:checked)),
+    :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):is(:checked, :not(:checked)),
+    :is(.field > input[type="radio"], .input[type="radio"]):is(
+      :checked,
+      :not(:checked)
+    ) {
+      width: var(--a3s-touch-target, 2.75rem);
+      height: var(--a3s-touch-target, 2.75rem);
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .field > input[type="range"],
+    .input[type="range"] {
+      height: var(--a3s-touch-target, 2.75rem);
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+  }
+}

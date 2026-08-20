@@ -10,10 +10,10 @@
     max-block-size: min(40rem, calc(100dvh - 2rem));
     grid-template-rows: auto minmax(0, 1fr);
     overflow: hidden;
-    border-radius: 0.75rem;
+    border-radius: var(--a3s-overlay-radius, 0.75rem);
     background: var(--popover);
     color: var(--popover-foreground);
-    box-shadow: 0 8px 16px -4px rgb(0 0 0 / 20%);
+    box-shadow: var(--a3s-shadow-soft, 0 8px 16px -4px rgb(0 0 0 / 20%));
   }
 
   .floating-panel > header {
@@ -54,7 +54,7 @@
   }
 
   .floating-panel [data-floating-panel-resize]:focus-visible {
-    outline: 2px solid var(--ring);
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
     outline-offset: -2px;
   }
 
@@ -80,7 +80,8 @@
       inline-size: 100%;
       max-block-size: min(80dvh, 42rem);
       padding-block-end: env(safe-area-inset-bottom);
-      border-radius: 0.75rem 0.75rem 0 0;
+      border-radius: var(--a3s-overlay-radius, 0.75rem)
+        var(--a3s-overlay-radius, 0.75rem) 0 0;
     }
 
     .floating-panel [data-floating-panel-resize] {

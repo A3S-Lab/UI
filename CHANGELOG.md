@@ -47,6 +47,8 @@
 
 ### Fixed
 
+- Replaced the decorative Color Swatches selection halo with a bounded selected surface and consolidated floating utility shadows onto the shared overlay depth token.
+- Kept all canonical buttons, fields, choice controls, menus, tabs, and navigation rows at 44-pixel targets for coarse pointers by applying input-method guarantees after every visual family.
 - Replaced the nested solid outline in the Playground composer with a restrained focus boundary on the compound control while preserving a visible keyboard focus state.
 - Extended the shared visual quality floor to all 116 documented components, corrected compact File Manager and Knowledge Library composition, and restored production-sized targets for labels, ranges, Data Grid selection, Setting Row switches, and Agent Composer status controls.
 - Kept project configuration and artifact inspectors visible by default on desktop while presenting them as focus-contained, Escape-dismissible drawers on compact screens, preserving trigger focus and usable conversation width at 1280px and 390px.

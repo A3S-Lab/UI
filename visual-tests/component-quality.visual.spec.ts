@@ -1018,6 +1018,42 @@ test.describe("coarse-pointer quality", () => {
         .first(),
     );
 
+    await openDocumentationPage(touchPage, "select");
+    const selectTrigger = touchPage.locator("#select-demo-trigger");
+    await expectMinimumTarget(selectTrigger);
+    await selectTrigger.click();
+    await expectMinimumTarget(
+      touchPage.locator('#select-demo-popover [role="option"]').first(),
+    );
+
+    await openDocumentationPage(touchPage, "combobox");
+    const comboboxInput = touchPage.locator(
+      '#framework-combobox > input[role="combobox"]',
+    );
+    await expectMinimumTarget(comboboxInput);
+    await comboboxInput.click();
+    await expectMinimumTarget(
+      touchPage.locator('#framework-combobox-popover [role="option"]').first(),
+    );
+
+    await openDocumentationPage(touchPage, "command");
+    await expectMinimumTarget(
+      touchPage.locator("#demo-command-standalone-input"),
+    );
+    await expectMinimumTarget(
+      touchPage.locator('#demo-command-standalone [role="menuitem"]').first(),
+    );
+
+    await openDocumentationPage(touchPage, "tabs");
+    await expectMinimumTarget(
+      touchPage.locator("#demo-tabs-with-panels-tab-1"),
+    );
+
+    await openDocumentationPage(touchPage, "sidebar");
+    await expectMinimumTarget(
+      touchPage.locator("#demo-sidebar nav li > a").first(),
+    );
+
     await openDocumentationPage(touchPage, "ribbon");
     await expectMinimumTarget(touchPage.locator("#ribbon-home-tab"));
 

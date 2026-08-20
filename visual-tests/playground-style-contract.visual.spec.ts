@@ -10,16 +10,26 @@ async function openComponent(page: Page, component: string) {
 async function surfaceMetrics(locator: Locator) {
   return locator.evaluate((element) => {
     const style = getComputedStyle(element);
-    const shadowColors = style.boxShadow.match(/rgba?\([^)]*\)/gu) ?? [];
-    const hasVisibleShadow =
-      style.boxShadow !== "none" &&
-      shadowColors.some((color) => !/rgba\([^)]*,\s*0\)$/u.test(color));
+    const shadowLayers =
+      style.boxShadow.match(
+        /rgba?\([^)]*\)(?:\s+-?\d+(?:\.\d+)?px){2,4}(?:\s+inset)?/gu,
+      ) ?? [];
+    const visibleBoxShadows = shadowLayers.filter((shadow) => {
+      const color = shadow.match(/rgba?\(([^)]*)\)/u)?.[1];
+      if (!color || !shadow.startsWith("rgba(")) {
+        return true;
+      }
+
+      const channels = color.split(/[\s,/]+/u).filter(Boolean);
+      return Number.parseFloat(channels.at(-1) ?? "1") > 0;
+    });
     return {
       backgroundColor: style.backgroundColor,
       borderRadius: style.borderRadius,
       boxShadow: style.boxShadow,
-      hasVisibleShadow,
+      hasVisibleShadow: visibleBoxShadows.length > 0,
       height: style.height,
+      visibleBoxShadows,
     };
   });
 }
@@ -47,16 +57,20 @@ test("canonical controls use Playground geometry and neutral actions", async ({
   expect((await surfaceMetrics(outline)).hasVisibleShadow).toBe(false);
 
   await primary.focus();
-  const focusShadow = await primary.evaluate(
-    (element) => getComputedStyle(element).boxShadow,
-  );
-  const focusSpread = Math.max(
-    ...[...focusShadow.matchAll(/(-?\d+(?:\.\d+)?)px/gu)].map((match) =>
-      Math.abs(Number.parseFloat(match[1]!)),
-    ),
-  );
-  expect(focusSpread).toBeGreaterThan(0);
-  expect(focusSpread).toBeLessThanOrEqual(2.1);
+  const focusState = await primary.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      outlineOffset: style.outlineOffset,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  expect(focusState).toEqual({
+    outlineOffset: "2px",
+    outlineStyle: "solid",
+    outlineWidth: "2px",
+  });
+  expect((await surfaceMetrics(primary)).hasVisibleShadow).toBe(false);
 
   await openComponent(page, "input");
   const input = page
@@ -105,6 +119,44 @@ test("canonical panels stay flat while floating surfaces use shared depth", asyn
   const popoverMetrics = await surfaceMetrics(popover);
   expect(popoverMetrics.borderRadius).toBe("14px");
   expect(popoverMetrics.hasVisibleShadow).toBe(true);
+
+  await openComponent(page, "emoji-picker");
+  const emojiPicker = page
+    .locator('.a3s-preview[data-preview-component="emoji-picker"]')
+    .first()
+    .locator(".emoji-picker");
+  const emojiPickerMetrics = await surfaceMetrics(emojiPicker);
+  expect(emojiPickerMetrics.hasVisibleShadow).toBe(true);
+  expect(emojiPickerMetrics.visibleBoxShadows).toEqual(
+    popoverMetrics.visibleBoxShadows,
+  );
+});
+
+test("selected swatches use a bounded choice state without a halo", async ({
+  page,
+}) => {
+  await openComponent(page, "color-swatches");
+  const selectedLabel = page
+    .locator('.a3s-preview[data-preview-component="color-swatches"]')
+    .first()
+    .locator("label:has(input:checked)");
+
+  const state = await selectedLabel.evaluate((label) => {
+    const labelStyle = getComputedStyle(label);
+    const swatchStyle = getComputedStyle(
+      label.querySelector<HTMLElement>("[data-swatch]")!,
+    );
+    return {
+      borderColor: labelStyle.borderColor,
+      boxShadow: labelStyle.boxShadow,
+      swatchShadow: swatchStyle.boxShadow,
+    };
+  });
+
+  expect(state.borderColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect(state.boxShadow).toBe("none");
+  expect(state.swatchShadow).toContain("inset");
+  expect(state.swatchShadow.match(/\binset\b/gu)?.length).toBe(1);
 });
 
 test("dark appearance preserves the canonical Playground token contract", async ({
@@ -119,9 +171,7 @@ test("dark appearance preserves the canonical Playground token contract", async 
       canvas: style.getPropertyValue("--a3s-canvas").trim(),
       ink: style.getPropertyValue("--a3s-ink").trim(),
       paper: style.getPropertyValue("--a3s-paper").trim(),
-      radius: Number.parseFloat(
-        style.getPropertyValue("--a3s-radius").trim(),
-      ),
+      radius: Number.parseFloat(style.getPropertyValue("--a3s-radius").trim()),
       radiusLarge: Number.parseFloat(
         style.getPropertyValue("--a3s-radius-lg").trim(),
       ),

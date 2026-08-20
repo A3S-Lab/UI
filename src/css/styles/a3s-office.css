@@ -788,7 +788,7 @@
     height: var(--switch-thumb-size);
     border-radius: 999px;
     background: white;
-    box-shadow: 0 1px 3px rgb(20 24 40 / 18%);
+    box-shadow: var(--a3s-shadow-control);
     transform: translateY(-50%);
     transition:
       box-shadow var(--a3s-motion-normal) var(--a3s-ease-out),
@@ -1576,12 +1576,6 @@
     font-weight: 500;
   }
 
-  @media (pointer: coarse) {
-    .tree [role="treeitem"] > [data-tree-row] {
-      min-height: 2.75rem;
-    }
-  }
-
   .table {
     color: var(--a3s-ink);
     font-size: 0.75rem;
@@ -1673,69 +1667,6 @@
 
     .drawer > * > footer {
       padding: 0.75rem 1rem;
-    }
-  }
-
-  @media (pointer: coarse) {
-    .btn,
-    .badge:is(a, button),
-    [data-tooltip]:is(a, button),
-    .breadcrumb a,
-    .tabs > [role="tablist"] > [role="tab"],
-    .sidebar nav li > :is(a, button),
-    .sidebar nav li > details > summary,
-    .field[data-orientation="horizontal"] > label,
-    .dropdown-menu
-      :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]),
-    .select:not(select) [role="option"],
-    .combobox [role="option"],
-    .command [role="menuitem"] {
-      min-height: 2.75rem;
-    }
-
-    .btn[data-size^="icon"] {
-      min-width: 2.75rem;
-    }
-
-    :is(
-      .field > textarea,
-      .textarea,
-      .field
-        > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-      .field > select,
-      select.select,
-      .select:not(select) > button,
-      .input-group,
-      .input-group > :is(input, textarea, select, [data-control]),
-      .combobox-chips > input[role="combobox"],
-      .command > header input
-    ) {
-      min-height: 2.75rem;
-    }
-
-    .field > input[type="checkbox"]:not([role="switch"]),
-    .input[type="checkbox"]:not([role="switch"]),
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"],
-    .field > input[type="radio"],
-    .input[type="radio"] {
-      width: 2.75rem;
-      height: 2.75rem;
-    }
-
-    :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):is(:not([data-size="sm"]), [data-size="sm"]) {
-      width: 2.75rem;
-      height: 2.75rem;
-    }
-
-    .field > input[type="range"],
-    .input[type="range"] {
-      min-height: 2.75rem;
-      height: 2.75rem;
     }
   }
 

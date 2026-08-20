@@ -239,27 +239,6 @@
     @apply text-destructive text-sm;
   }
 
-  @media (pointer: coarse) {
-    :is(
-      .field > input[type="checkbox"]:not([role="switch"]),
-      .input[type="checkbox"]:not([role="switch"])
-    ):is(:checked, :not(:checked)),
-    :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):is(:checked, :not(:checked)),
-    :is(.field > input[type="radio"], .input[type="radio"]):is(
-      :checked,
-      :not(:checked)
-    ) {
-      width: 2.75rem;
-      height: 2.75rem;
-      border-color: transparent;
-      background: transparent;
-      box-shadow: none;
-    }
-  }
-
   /* Input Group */
   .input-group {
     @apply h-9 has-[>textarea]:h-auto rounded-md border border-input bg-background shadow-none transition-[color,border-color] hover:border-[var(--a3s-line-emphasis)] focus-within:border-ring has-[[aria-invalid=true]]:border-destructive;
