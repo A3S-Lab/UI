@@ -191,3 +191,57 @@ Agent Workbench 提供编写、配置、运行和检查 Agent 所需的响应式
 ## 可访问性
 
 为工作台以及每个导航或实时区域提供名称。在主 Canvas 内部或外部保留一个页面级标题，使用与内容匹配的 Landmark，并保持合理 DOM 顺序：上下文、主要工作、Inspector、活动。响应式重排不得改变键盘顺序。导航后的焦点、流式播报、验证与破坏性操作确认由宿主应用负责。
+
+## React
+
+```tsx
+export function AgentWorkbenchExample() {
+  return (
+    <section className="agent-workbench" aria-label="Agent 工作台">
+      <aside data-agent-context="">
+        <nav aria-label="项目上下文">
+          <a href="#files">文件</a>
+        </nav>
+      </aside>
+      <article data-agent-canvas="">
+        <h1>发布验证</h1>
+        <p>检查当前运行和证据。</p>
+      </article>
+      <aside data-agent-inspector="">
+        <h2>检查器</h2>
+        <p>3 个文件已更改</p>
+      </aside>
+      <section data-agent-activity="">
+        <output aria-live="polite">已就绪</output>
+      </section>
+    </section>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <section class="agent-workbench" aria-label="Agent 工作台">
+    <aside data-agent-context="">
+      <nav aria-label="项目上下文"><a href="#files">文件</a></nav>
+    </aside>
+    <article data-agent-canvas="">
+      <h1>发布验证</h1>
+      <p>检查当前运行和证据。</p>
+    </article>
+    <aside data-agent-inspector="">
+      <h2>检查器</h2>
+      <p>3 个文件已更改</p>
+    </aside>
+    <section data-agent-activity="">
+      <output aria-live="polite">已就绪</output>
+    </section>
+  </section>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

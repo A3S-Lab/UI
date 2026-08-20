@@ -106,3 +106,60 @@ Log Viewer 是用于构建输出、Workload 日志和 Agent 执行流的有界�
 ## 可访问性
 
 为根元素和可聚焦的日志视口提供可访问名称。只有追加记录的区域才使用 `role="log"` 与 `aria-live="polite"`；不要在每条消息到达时重渲染整个日志。过滤器放入带标签的 `<fieldset>`，用 `aria-pressed` 暴露当前筛选项，保持 DOM 时间顺序，新记录到达时不要移动键盘焦点。
+
+## React
+
+```tsx
+export function LogViewerExample() {
+  return (
+    <section className="log-viewer" aria-label="执行日志">
+      <header>
+        <div>
+          <h2>执行日志</h2>
+          <p>有序语义输出</p>
+        </div>
+      </header>
+      <div data-log-meta="">
+        <span>已连接</span>
+        <span>最近 500 条记录</span>
+      </div>
+      <div role="log" aria-live="polite" aria-label="有序执行输出" tabIndex="0">
+        <div data-log-record="" data-stream="stdout">
+          <span data-log-sequence="">#42</span>
+          <time dateTime="2026-08-12T09:41:02Z">09:41:02</time>
+          <span data-log-stream="">stdout</span>
+          <pre>Provider 已启动。</pre>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <section class="log-viewer" aria-label="执行日志">
+    <header>
+      <div>
+        <h2>执行日志</h2>
+        <p>有序语义输出</p>
+      </div>
+    </header>
+    <div data-log-meta=""><span>已连接</span><span>最近 500 条记录</span></div>
+    <div role="log" aria-live="polite" aria-label="有序执行输出" tabindex="0">
+      <div data-log-record="" data-stream="stdout">
+        <span data-log-sequence="">#42</span
+        ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+        ><span data-log-stream="">stdout</span>
+        <pre>Provider 已启动。</pre>
+      </div>
+    </div>
+  </section>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

@@ -3,7 +3,7 @@
   /* Checkbox */
   .field > input[type="checkbox"]:not([role="switch"]),
   .input[type="checkbox"]:not([role="switch"]) {
-    @apply border-input bg-background checked:bg-[var(--a3s-accent)] checked:text-[var(--a3s-accent-ink)] checked:border-[var(--a3s-accent)] aria-invalid:checked:border-[var(--a3s-accent)] aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 flex size-4 items-center justify-center rounded-[4px] border shadow-none transition-[border-color,background-color,box-shadow] in-data-[disabled=true]:opacity-50 focus-visible:ring-2 aria-invalid:ring-2;
+    @apply border-input bg-background checked:bg-[var(--a3s-accent)] checked:text-[var(--a3s-accent-ink)] checked:border-[var(--a3s-accent)] aria-invalid:checked:border-[var(--a3s-accent)] aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 focus-visible:border-ring flex size-4 items-center justify-center rounded-[4px] border shadow-none transition-[border-color,background-color] in-data-[disabled=true]:opacity-50;
   }
 
   :is(
@@ -20,7 +20,7 @@
 
   .field > input[type="radio"],
   .input[type="radio"] {
-    @apply border-input bg-background checked:bg-[var(--a3s-accent)] checked:text-[var(--a3s-accent-ink)] checked:border-[var(--a3s-accent)] aria-invalid:checked:border-[var(--a3s-accent)] aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-2 aria-invalid:ring-2;
+    @apply border-input bg-background checked:bg-[var(--a3s-accent)] checked:text-[var(--a3s-accent-ink)] checked:border-[var(--a3s-accent)] aria-invalid:checked:border-[var(--a3s-accent)] aria-invalid:border-destructive focus-visible:border-ring dark:aria-invalid:border-destructive/50 flex size-4 rounded-full;
   }
 
   :is(.field > input[type="radio"], .input[type="radio"]):checked:before {
@@ -30,7 +30,26 @@
   /* Switch */
   .field > input[type="checkbox"][role="switch"],
   .input[type="checkbox"][role="switch"] {
-    @apply checked:bg-[var(--a3s-accent)] not-checked:bg-input focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-full border border-transparent shadow-none focus-visible:ring-2 aria-invalid:ring-2;
+    @apply checked:bg-[var(--a3s-accent)] not-checked:bg-input focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-full border border-transparent shadow-none;
+  }
+
+  :is(
+    .field > input[type="checkbox"],
+    .input[type="checkbox"],
+    .field > input[type="radio"],
+    .input[type="radio"]
+  ):focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  :is(
+    .field > input[type="checkbox"],
+    .input[type="checkbox"],
+    .field > input[type="radio"],
+    .input[type="radio"]
+  )[aria-invalid="true"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   :is(
@@ -165,8 +184,8 @@
   }
 
   :is(.field > label, .field > section > label, label:has(> .field)):has(
-      :checked
-    ) {
+    :checked
+  ) {
     border-color: color-mix(in srgb, var(--a3s-accent) 32%, var(--a3s-line));
     background: color-mix(in srgb, var(--a3s-accent) 6%, var(--a3s-paper));
   }
@@ -220,9 +239,39 @@
     @apply text-destructive text-sm;
   }
 
+  @media (pointer: coarse) {
+    :is(
+      .field > input[type="checkbox"]:not([role="switch"]),
+      .input[type="checkbox"]:not([role="switch"])
+    ):is(:checked, :not(:checked)),
+    :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    ):is(:checked, :not(:checked)),
+    :is(.field > input[type="radio"], .input[type="radio"]):is(
+      :checked,
+      :not(:checked)
+    ) {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+
   /* Input Group */
   .input-group {
-    @apply h-9 has-[>textarea]:h-auto rounded-md border border-input bg-background shadow-none transition-[color,border-color,box-shadow] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-2 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/30;
+    @apply h-9 has-[>textarea]:h-auto rounded-md border border-input bg-background shadow-none transition-[color,border-color] hover:border-[var(--a3s-line-emphasis)] focus-within:border-ring has-[[aria-invalid=true]]:border-destructive;
+  }
+
+  .input-group:focus-within {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  .input-group:has([aria-invalid="true"]):focus-within {
+    outline-color: var(--a3s-red);
   }
 
   .input-group:has(> :is(input, textarea, select, [data-control]):disabled) {

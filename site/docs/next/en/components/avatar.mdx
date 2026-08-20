@@ -230,7 +230,10 @@ import { Avatar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Avatar>Component content</Avatar>
+    <Avatar>
+      <img src="/assets/images/avatar-1.png" alt="@shadcn" />
+      <span>CN</span>
+    </Avatar>
   );
 }
 ```
@@ -240,13 +243,15 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Avatar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Avatar>Component content</Avatar>
+  <Avatar>
+    <img src="/assets/images/avatar-1.png" alt="@shadcn" />
+    <span>CN</span>
+  </Avatar>
 </template>
 ```
 

@@ -91,7 +91,15 @@ import { StatusBar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <StatusBar>组件内容</StatusBar>
+    <StatusBar as="footer" aria-label="文档状态">
+      <div data-status-info="">
+        <span data-status-priority="low">第 1 页，共 12 页</span>
+        <span>已保存</span>
+      </div>
+      <div data-status-actions="">
+        <button type="button">打开同步详情</button>
+      </div>
+    </StatusBar>
   );
 }
 ```
@@ -101,13 +109,20 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { StatusBar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <StatusBar>组件内容</StatusBar>
+  <StatusBar as="footer" aria-label="文档状态">
+    <div data-status-info="">
+      <span data-status-priority="low">第 1 页，共 12 页</span
+      ><span>已保存</span>
+    </div>
+    <div data-status-actions="">
+      <button type="button">打开同步详情</button>
+    </div>
+  </StatusBar>
 </template>
 ```
 

@@ -276,13 +276,13 @@
 }
 
 .product-knowledge-library button[data-primary] {
-  border-color: var(--ui-blue);
-  background: var(--ui-blue);
-  color: #fff;
+  border-color: var(--ui-action, var(--ui-ink));
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-knowledge-library button[data-primary]:hover {
-  background: color-mix(in srgb, var(--ui-blue) 88%, #000);
+  background: var(--ui-action-hover, var(--ui-muted));
 }
 
 .product-knowledge-library [data-knowledge-library-header] svg {
@@ -505,7 +505,9 @@
 }
 
 .product-knowledge-library [data-knowledge-library-item][aria-current="true"] {
-  box-shadow: inset 2px 0 0 var(--ui-blue);
+  border-inline-start: 1px solid var(--ui-blue);
+  background: var(--ui-selection, var(--ui-panel));
+  box-shadow: none;
 }
 
 .product-knowledge-library [data-knowledge-item-mark] {

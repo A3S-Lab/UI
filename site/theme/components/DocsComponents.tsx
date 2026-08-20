@@ -847,6 +847,9 @@ export function Preview({
           ]
             .filter(Boolean)
             .join(" ")}
+          data-a3s-theme={
+            previewScheme === "inherit" ? undefined : previewScheme
+          }
           data-preview-scheme={previewScheme}
           dir={rtl ? "rtl" : undefined}
           hidden={viewport !== "fluid"}

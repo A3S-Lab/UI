@@ -375,7 +375,13 @@ import { InputGroup } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <InputGroup>Component content</InputGroup>
+    <InputGroup>
+      <input type="text" aria-label="Search" placeholder="Search..." />
+      <span data-align="start" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="16" height="16"><circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" /><path d="m10 10 3 3" stroke="currentColor" /></svg>
+      </span>
+      <span data-align="end">12 results</span>
+    </InputGroup>
   );
 }
 ```
@@ -385,13 +391,16 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { InputGroup } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <InputGroup>Component content</InputGroup>
+  <InputGroup>
+    <input type="text" aria-label="Search" placeholder="Search..." />
+    <span data-align="start" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" /><path d="m10 10 3 3" stroke="currentColor" /></svg></span>
+    <span data-align="end">12 results</span>
+  </InputGroup>
 </template>
 ```
 

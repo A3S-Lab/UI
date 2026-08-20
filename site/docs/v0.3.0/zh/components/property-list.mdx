@@ -89,3 +89,43 @@ Property List 使用原生描述列表语义展示紧凑的操作元数据，适
 ## 可访问性
 
 保留原生 `<dl>`、`<dt>` 与 `<dd>` 关系，不要用纯视觉网格替代。值可以换行；除非其他位置提供完整值，否则不要截断权威标识符。
+
+## React
+
+```tsx
+export function PropertyListExample() {
+  return (
+    <dl className="property-list">
+      <div>
+        <dt>Provider</dt>
+        <dd>A3S Code</dd>
+      </div>
+      <div>
+        <dt>Release</dt>
+        <dd>v0.8.4</dd>
+      </div>
+    </dl>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <dl class="property-list">
+    <div>
+      <dt>Provider</dt>
+      <dd>A3S Code</dd>
+    </div>
+    <div>
+      <dt>Release</dt>
+      <dd>v0.8.4</dd>
+    </div>
+  </dl>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

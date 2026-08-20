@@ -42,7 +42,18 @@ import { Checkpoint } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Checkpoint>组件内容</Checkpoint>
+    <Checkpoint data-state="saved">
+      <header>
+        <h3>响应式 CSS 变更之前</h3>
+        <span data-checkpoint-meta="">4 分钟前保存</span>
+      </header>
+      <section>
+        <p>响应式布局更新前共更改 3 个文件。</p>
+      </section>
+      <footer>
+        <button type="button">恢复</button>
+      </footer>
+    </Checkpoint>
   );
 }
 ```
@@ -52,13 +63,19 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Checkpoint } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Checkpoint>组件内容</Checkpoint>
+  <Checkpoint data-state="saved">
+    <header>
+      <h3>响应式 CSS 变更之前</h3>
+      <span data-checkpoint-meta="">4 分钟前保存</span>
+    </header>
+    <section><p>响应式布局更新前共更改 3 个文件。</p></section>
+    <footer><button type="button">恢复</button></footer>
+  </Checkpoint>
 </template>
 ```
 

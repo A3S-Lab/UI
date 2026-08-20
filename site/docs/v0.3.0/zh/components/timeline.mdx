@@ -75,3 +75,51 @@ Timeline 按顺序组织持久操作、部署与 Agent 语义事件，不限定�
 ## 可访问性
 
 顺序有意义时使用 `<ol>`，时间戳使用 `<time datetime="…">`。当前状态通过 `aria-current="step"` 明确表达。Timeline 仅提供 CSS；焦点、选择与实时播报仍由宿主应用负责。
+
+## React
+
+```tsx
+export function TimelineExample() {
+  return (
+    <ol className="timeline" aria-label="执行历史">
+      <li data-state="success">
+        <article className="item" data-variant="outline">
+          <h3>软件包构建完成</h3>
+          <p>完成于 10:24</p>
+        </article>
+      </li>
+      <li data-state="active" aria-current="step">
+        <article className="item" data-variant="outline">
+          <h3>视觉检查</h3>
+          <p>正在运行桌面端和移动端套件</p>
+        </article>
+      </li>
+    </ol>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <ol class="timeline" aria-label="执行历史">
+    <li data-state="success">
+      <article class="item" data-variant="outline">
+        <h3>软件包构建完成</h3>
+        <p>完成于 10:24</p>
+      </article>
+    </li>
+    <li data-state="active" aria-current="step">
+      <article class="item" data-variant="outline">
+        <h3>视觉检查</h3>
+        <p>正在运行桌面端和移动端套件</p>
+      </article>
+    </li>
+  </ol>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

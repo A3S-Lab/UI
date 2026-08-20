@@ -83,3 +83,40 @@ Keep status copy terse and stable. The default 28-pixel bar uses a fixed flex ba
 ## Accessibility
 
 Name the Status Bar when the page contains several landmark footers. Associate every range input and icon button with an accessible name, and announce asynchronous save failures through a separate live region.
+
+## React
+
+```tsx
+export function StatusBarExample() {
+  return (
+    <footer className="status-bar" aria-label="Document status">
+      <div data-status-info="">
+        <span data-status-priority="low">Page 1 of 12</span>
+        <span>Saved</span>
+      </div>
+      <div data-status-actions="">
+        <button type="button">Open sync details</button>
+      </div>
+    </footer>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <footer class="status-bar" aria-label="Document status">
+    <div data-status-info="">
+      <span data-status-priority="low">Page 1 of 12</span><span>Saved</span>
+    </div>
+    <div data-status-actions="">
+      <button type="button">Open sync details</button>
+    </div>
+  </footer>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

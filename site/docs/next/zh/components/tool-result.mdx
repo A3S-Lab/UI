@@ -48,7 +48,7 @@ Tests        18 passed (18)`}</pre>
     <button type="button" role="tab" id="output-tab" aria-controls="output-panel" aria-selected="false" tabindex="-1">输出</button>
   </div>
   <section role="tabpanel" id="summary-panel" aria-labelledby="summary-tab" tabindex="-1">18 个测试通过</section>
-  <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabindex="-1" hidden><pre>…</pre></section>
+  <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabindex="-1" hidden><pre>PASS tests/runtime.spec.ts\n18 个测试通过</pre></section>
 </section>
 <script type="module">
   import "@a3s-lab/ui";
@@ -67,8 +67,12 @@ export function TestResult({ result }) {
   return (
     <ToolResult ref={control.ref} data-state="ready">
       <header><strong>测试结果</strong><span data-tool-result-status>通过</span></header>
-      <div role="tablist" aria-label="结果视图">{/* 带稳定 ID 的标签按钮 */}</div>
-      {/* 由 aria-controls 关联的结果面板 */}
+      <div role="tablist" aria-label="结果视图">
+        <button type="button" role="tab" id="summary-tab" aria-controls="summary-panel" aria-selected="true" tabIndex={0}>摘要</button>
+        <button type="button" role="tab" id="output-tab" aria-controls="output-panel" aria-selected="false" tabIndex={-1}>输出</button>
+      </div>
+      <section role="tabpanel" id="summary-panel" aria-labelledby="summary-tab" tabIndex={-1}>18 个测试通过</section>
+      <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabIndex={-1} hidden><pre>PASS tests/runtime.spec.ts{"\n"}18 个测试通过</pre></section>
     </ToolResult>
   );
 }
@@ -88,8 +92,12 @@ const control = useToolResult({
 <template>
   <ToolResult :ref="control.componentRef" data-state="ready">
     <header><strong>测试结果</strong><span data-tool-result-status>通过</span></header>
-    <div role="tablist" aria-label="结果视图"><!-- 带稳定 ID 的标签按钮 --></div>
-    <!-- 由 aria-controls 关联的结果面板 -->
+    <div role="tablist" aria-label="结果视图">
+      <button type="button" role="tab" id="summary-tab" aria-controls="summary-panel" aria-selected="true" tabindex="0">摘要</button>
+      <button type="button" role="tab" id="output-tab" aria-controls="output-panel" aria-selected="false" tabindex="-1">输出</button>
+    </div>
+    <section role="tabpanel" id="summary-panel" aria-labelledby="summary-tab" tabindex="-1">18 个测试通过</section>
+    <section role="tabpanel" id="output-panel" aria-labelledby="output-tab" tabindex="-1" hidden><pre>PASS tests/runtime.spec.ts\n18 个测试通过</pre></section>
   </ToolResult>
 </template>`}
 />

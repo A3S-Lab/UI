@@ -99,7 +99,26 @@ import { Stepper } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Stepper aria-label="Stepper"><li>Component content</li></Stepper>
+    <Stepper aria-label="Release progress" tabIndex="0">
+      <li data-state="success">
+        <span data-step-marker="" aria-hidden="true">
+          1
+        </span>
+        <section>
+          <h3>Build</h3>
+          <p>Complete</p>
+        </section>
+      </li>
+      <li data-state="active" aria-current="step">
+        <span data-step-marker="" aria-hidden="true">
+          2
+        </span>
+        <section>
+          <h3>Publish</h3>
+          <p>In progress</p>
+        </section>
+      </li>
+    </Stepper>
   );
 }
 ```
@@ -109,13 +128,27 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Stepper } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Stepper aria-label="Stepper"><li>Component content</li></Stepper>
+  <Stepper aria-label="Release progress" tabindex="0">
+    <li data-state="success">
+      <span data-step-marker="" aria-hidden="true">1</span>
+      <section>
+        <h3>Build</h3>
+        <p>Complete</p>
+      </section>
+    </li>
+    <li data-state="active" aria-current="step">
+      <span data-step-marker="" aria-hidden="true">2</span>
+      <section>
+        <h3>Publish</h3>
+        <p>In progress</p>
+      </section>
+    </li>
+  </Stepper>
 </template>
 ```
 

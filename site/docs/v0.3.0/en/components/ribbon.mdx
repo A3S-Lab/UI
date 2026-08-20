@@ -259,3 +259,48 @@ Ribbon behavior comes from the [Tabs](/components/tabs) controller. `window.a3sU
 ## Accessibility
 
 Use the complete Tabs keyboard contract. Group commands with `<fieldset>` and a visible or screen-reader-only `<legend>`. If a ribbon becomes too dense, allow horizontal scrolling rather than shrinking labels below a readable size.
+
+## React
+
+```tsx
+export function RibbonExample() {
+  return (
+    <div className="ribbon tabs" data-accent="blue">
+      <div role="tablist" aria-label="Editor commands">
+        <button type="button" role="tab" aria-selected="true">
+          Home
+        </button>
+      </div>
+      <div role="tabpanel">
+        <fieldset data-ribbon-group="">
+          <legend>Clipboard</legend>
+          <button type="button">Paste</button>
+          <button type="button">Copy</button>
+        </fieldset>
+      </div>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="ribbon tabs" data-accent="blue">
+    <div role="tablist" aria-label="Editor commands">
+      <button type="button" role="tab" aria-selected="true">Home</button>
+    </div>
+    <div role="tabpanel">
+      <fieldset data-ribbon-group="">
+        <legend>Clipboard</legend>
+        <button type="button">Paste</button><button type="button">Copy</button>
+      </fieldset>
+    </div>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

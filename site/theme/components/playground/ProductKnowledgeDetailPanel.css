@@ -173,7 +173,7 @@
 
 .product-knowledge-library [data-knowledge-tab-panel]:focus-visible {
   border-radius: 0.5rem;
-  outline: 2px solid color-mix(in srgb, var(--ui-blue) 62%, transparent);
+  outline: 2px solid var(--ui-blue);
   outline-offset: 0.25rem;
 }
 
@@ -260,13 +260,13 @@
   min-height: 2.125rem;
   margin-top: 0.875rem;
   padding: 0 0.75rem;
-  border: 1px solid var(--ui-blue);
+  border: 1px solid var(--ui-action, var(--ui-ink));
   border-radius: 0.5rem;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  background: var(--ui-blue);
-  color: #fff;
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 620;
@@ -544,9 +544,9 @@
   [data-knowledge-source-form]
   > footer
   button[data-primary] {
-  border-color: var(--ui-blue);
-  background: var(--ui-blue);
-  color: #fff;
+  border-color: var(--ui-action, var(--ui-ink));
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-knowledge-library [data-knowledge-recent-sources] article,

@@ -4,8 +4,30 @@ Setting Row aligns a setting label, direct description, control, and optional va
 
 <Preview class="w-full">
   <div class="setting-list w-full">
-    <div class="setting-row"><div data-setting-identity><strong>Language</strong><p>Choose the interface language.</p></div><div data-setting-control><select class="select" aria-label="Language"><option>English</option><option>简体中文</option></select></div></div>
-    <div class="setting-row"><div data-setting-identity><strong>Follow system theme</strong><p>Use the operating system appearance setting.</p></div><div data-setting-control><input class="input" type="checkbox" role="switch" defaultChecked aria-label="Follow system theme" /></div></div>
+    <div class="setting-row">
+      <div data-setting-identity>
+        <strong>Language</strong>
+        <p>Choose the interface language.</p>
+      </div>
+      <div data-setting-control>
+        <select class="select" aria-label="Language">
+          <option>English</option>
+          <option>简体中文</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div data-setting-identity>
+        <strong>Follow system theme</strong>
+        <p>Use the operating system appearance setting.</p>
+      </div>
+      <div data-setting-control>
+        <label>
+          <input class="input" type="checkbox" role="switch" defaultChecked />
+          <span class="sr-only">Follow system theme</span>
+        </label>
+      </div>
+    </div>
   </div>
 </Preview>
 
@@ -14,8 +36,15 @@ Setting Row aligns a setting label, direct description, control, and optional va
 ```html
 <div class="setting-list">
   <div class="setting-row">
-    <div data-setting-identity><strong>Language</strong><p>Choose the interface language.</p></div>
-    <div data-setting-control><select class="select">...</select></div>
+    <div data-setting-identity>
+      <strong>Language</strong>
+      <p>Choose the interface language.</p>
+    </div>
+    <div data-setting-control>
+      <select class="select">
+        ...
+      </select>
+    </div>
     <p data-setting-message>...</p>
   </div>
 </div>
@@ -23,14 +52,14 @@ Setting Row aligns a setting label, direct description, control, and optional va
 
 ### Parameters
 
-| API | Purpose |
-| --- | --- |
-| `class="setting-list"` | Groups adjacent rows and shared boundaries |
-| `class="setting-row"` | Stable label-control grid |
-| `data-setting-identity` | Name and direct description |
-| `data-setting-control` | Native or composite control |
-| `data-setting-message` | Optional validation or recovery message |
-| `data-state="invalid"` | Invalid row styling |
+| API                     | Purpose                                    |
+| ----------------------- | ------------------------------------------ |
+| `class="setting-list"`  | Groups adjacent rows and shared boundaries |
+| `class="setting-row"`   | Stable label-control grid                  |
+| `data-setting-identity` | Name and direct description                |
+| `data-setting-control`  | Native or composite control                |
+| `data-setting-message`  | Optional validation or recovery message    |
+| `data-state="invalid"`  | Invalid row styling                        |
 
 ## States and variants
 
@@ -48,7 +77,19 @@ import { SettingRow, useSettingRow } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useSettingRow();
   return (
-    <SettingRow ref={control.ref}>Component content</SettingRow>
+    <SettingRow ref={control.ref}>
+      <div data-setting-identity="">
+        <strong>Language</strong>
+        <p>Choose the interface language.</p>
+      </div>
+      <div data-setting-control="">
+        <select className="select">
+          <option value="en">English</option>
+          <option value="zh-CN">简体中文</option>
+        </select>
+      </div>
+      <p data-setting-message="">Saved automatically.</p>
+    </SettingRow>
   );
 }
 ```
@@ -58,7 +99,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { SettingRow, useSettingRow } from "@a3s-lab/ui/vue";
 
 const control = useSettingRow();
@@ -66,7 +107,19 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <SettingRow ref="componentRef">Component content</SettingRow>
+  <SettingRow ref="componentRef">
+    <div data-setting-identity="">
+      <strong>Language</strong>
+      <p>Choose the interface language.</p>
+    </div>
+    <div data-setting-control="">
+      <select class="select">
+        <option value="en">English</option>
+        <option value="zh-CN">简体中文</option>
+      </select>
+    </div>
+    <p data-setting-message="">Saved automatically.</p>
+  </SettingRow>
 </template>
 ```
 

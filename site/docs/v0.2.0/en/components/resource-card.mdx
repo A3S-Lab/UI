@@ -40,3 +40,38 @@ Buttons are used for in-place actions; anchors are used for navigation. Both pro
 ## Accessibility
 
 Preview artwork is decorative unless it conveys unique content; hide decorative SVGs with `aria-hidden="true"`. Keep the title and type in text. Avoid nesting interactive controls inside a card link or button.
+
+## React
+
+```tsx
+export function ResourceCardExample() {
+  return (
+    <button type="button" className="resource-card" data-kind="agent">
+      <figure>
+        <span aria-hidden="true">⌘</span>
+      </figure>
+      <section>
+        <strong>Coding agent</strong>
+        <small>CLI + 6 skills</small>
+      </section>
+    </button>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <button type="button" class="resource-card" data-kind="agent">
+    <figure><span aria-hidden="true">⌘</span></figure>
+    <section>
+      <strong>Coding agent</strong><small>CLI + 6 skills</small>
+    </section>
+  </button>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

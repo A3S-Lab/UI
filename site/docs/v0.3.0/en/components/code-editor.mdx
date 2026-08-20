@@ -266,3 +266,88 @@ The Monaco example gives the editor, workspace navigation, panels, and command d
 The native fallback editing surface is a `textarea`, so selection, copy, undo, redo, screen-reader text editing, and browser form submission remain available without a JavaScript editor engine. Give it an explicit label or connect a visible `<label>` with `for`. Give the root `role="group"` when it has an accessible name. Keep only the save state inside an `aria-live="polite"` region so cursor movement and counts are not announced on every keystroke; validation messages manage their own status or alert role. The line-number gutter is decorative and is marked `aria-hidden`.
 
 The controller respects `readonly`, `disabled`, reduced motion, browser zoom, and RTL direction. Ctrl/Cmd+S is intercepted only while the editable textarea has focus; Tab and Shift+Tab indent the current line or selection, while other modifier combinations retain browser and assistive-technology shortcuts.
+
+## React
+
+```tsx
+export function CodeEditorExample() {
+  return (
+    <div
+      className="code-editor"
+      role="group"
+      data-language="typescript"
+      aria-label="Workflow code editor"
+    >
+      <header>
+        <div data-code-editor-file="">
+          <strong>workflow.ts</strong>
+        </div>
+        <div data-code-editor-actions="">
+          <span data-code-editor-language="">TypeScript</span>
+        </div>
+      </header>
+      <section>
+        <textarea
+          aria-label="Workflow TypeScript"
+          spellCheck="false"
+        ></textarea>
+      </section>
+      <footer>
+        <div data-code-editor-info="">
+          <span data-code-editor-state="" aria-live="polite">
+            Saved
+          </span>
+          <span data-code-editor-lines=""></span>
+          <span data-code-editor-characters=""></span>
+        </div>
+        <div data-code-editor-meta="">
+          <output
+            data-code-editor-position=""
+            aria-label="Cursor position"
+          ></output>
+        </div>
+      </footer>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div
+    class="code-editor"
+    role="group"
+    data-language="typescript"
+    aria-label="Workflow code editor"
+  >
+    <header>
+      <div data-code-editor-file=""><strong>workflow.ts</strong></div>
+      <div data-code-editor-actions="">
+        <span data-code-editor-language="">TypeScript</span>
+      </div>
+    </header>
+    <section>
+      <textarea aria-label="Workflow TypeScript" spellcheck="false"></textarea>
+    </section>
+    <footer>
+      <div data-code-editor-info="">
+        <span data-code-editor-state="" aria-live="polite">Saved</span
+        ><span data-code-editor-lines=""></span
+        ><span data-code-editor-characters=""></span>
+      </div>
+      <div data-code-editor-meta="">
+        <output
+          data-code-editor-position=""
+          aria-label="Cursor position"
+        ></output>
+      </div>
+    </footer>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

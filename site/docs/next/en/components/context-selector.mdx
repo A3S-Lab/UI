@@ -45,7 +45,15 @@ import { ContextSelector, useContextSelector } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useContextSelector();
   return (
-    <ContextSelector ref={control.ref}>Component content</ContextSelector>
+    <ContextSelector ref={control.ref} data-kind="workspace">
+      <span data-context-label="">Workspace</span>
+      <select aria-label="Workspace">
+        <option>A3S UI</option>
+      </select>
+      <span data-context-description="">
+        Files and task history stay scoped here.
+      </span>
+    </ContextSelector>
   );
 }
 ```
@@ -55,7 +63,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ContextSelector, useContextSelector } from "@a3s-lab/ui/vue";
 
 const control = useContextSelector();
@@ -63,7 +71,15 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ContextSelector ref="componentRef">Component content</ContextSelector>
+  <ContextSelector ref="componentRef" data-kind="workspace">
+    <span data-context-label="">Workspace</span>
+    <select aria-label="Workspace">
+      <option>A3S UI</option>
+    </select>
+    <span data-context-description=""
+      >Files and task history stay scoped here.</span
+    >
+  </ContextSelector>
 </template>
 ```
 

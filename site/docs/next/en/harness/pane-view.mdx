@@ -7,7 +7,12 @@ Pane View is a tool-pane stack with headers, expansion state, and resizable cont
 ## Framework usage
 
 <FrameworkTabs
-  html={`import {
+  htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"
+  reactInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-react@8.1.0 react react-dom"
+  vueInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-vue@8.1.0 vue"
+  html={`<div id="pane-view" style="height: 32rem"></div>
+<script type="module">
+import {
   Orientation,
   PaneviewPanel,
   createPaneview,
@@ -16,35 +21,37 @@ Pane View is a tool-pane stack with headers, expansion state, and resizable cont
 import "@a3s-lab/ui/dockview/css";
 
 class Pane extends PaneviewPanel {
-  body = { element: document.createElement("section"), dispose() {} };
-  header = { element: document.createElement("strong"), dispose() {} };
-  constructor(id, component) {
-    super({
-      id,
-      component,
-      headerComponent: "header",
-      orientation: Orientation.VERTICAL,
-      isExpanded: true,
-      isHeaderVisible: true,
-      headerSize: 32,
-      minimumBodySize: 48,
-      maximumBodySize: Number.MAX_SAFE_INTEGER,
-    });
-    this.header.element.textContent = id;
-    this.body.element.textContent = "Pane content";
-  }
-  getBodyComponent() { return this.body; }
-  getHeaderComponent() { return this.header; }
+body = { element: document.createElement("section"), dispose() {} };
+header = { element: document.createElement("strong"), dispose() {} };
+constructor(id, component) {
+super({
+id,
+component,
+headerComponent: "header",
+orientation: Orientation.VERTICAL,
+isExpanded: true,
+isHeaderVisible: true,
+headerSize: 32,
+minimumBodySize: 48,
+maximumBodySize: Number.MAX_SAFE_INTEGER,
+});
+this.header.element.textContent = id;
+this.body.element.textContent = "Pane content";
+}
+getBodyComponent() { return this.body; }
+getHeaderComponent() { return this.header; }
 }
 
 const root = document.querySelector("#pane-view");
 const api = createPaneview(root, {
-  className: themeA3S.className,
-  createComponent: options => new Pane(options.id, options.name),
+className: themeA3S.className,
+createComponent: options => new Pane(options.id, options.name),
 });
 api.layout(root.clientWidth, root.clientHeight);
 api.addPanel({ id: "files", component: "pane", title: "Files", size: 160 });
-api.addPanel({ id: "symbols", component: "pane", title: "Symbols", size: 120 });`}
+api.addPanel({ id: "symbols", component: "pane", title: "Symbols", size: 120 });
+
+</script>`}
   react={`import {
   PaneviewReact,
   themeA3S,
@@ -54,7 +61,8 @@ api.addPanel({ id: "symbols", component: "pane", title: "Symbols", size: 120 });
 import "@a3s-lab/ui/dockview/css";
 
 const Pane = ({ params }: IPaneviewPanelProps<{ description: string }>) => (
-  <section>{params.description}</section>
+
+<section>{params.description}</section>
 );
 
 export function InspectorPanes() {
@@ -95,28 +103,29 @@ import {
 import "@a3s-lab/ui/dockview/css";
 
 const Pane = defineComponent({
-  props: ["params"],
-  template: "<section>{{ params.description }}</section>",
+props: ["params"],
+template: "<section>{{ params.description }}</section>",
 });
 const panes = usePaneview({
-  onReady({ api }) {
-    api.addPanel({
-      id: "files",
-      component: "pane",
-      title: "Files",
-      params: { description: "Current project files" },
-      size: 160,
-    });
-    api.addPanel({
-      id: "history",
-      component: "pane",
-      title: "History",
-      params: { description: "Recent operations" },
-      isExpanded: false,
-      size: 120,
-    });
-  },
+onReady({ api }) {
+api.addPanel({
+id: "files",
+component: "pane",
+title: "Files",
+params: { description: "Current project files" },
+size: 160,
 });
+api.addPanel({
+id: "history",
+component: "pane",
+title: "History",
+params: { description: "Recent operations" },
+isExpanded: false,
+size: 120,
+});
+},
+});
+
 </script>
 
 <template>

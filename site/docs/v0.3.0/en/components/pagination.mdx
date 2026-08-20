@@ -110,3 +110,148 @@ Pagination uses document direction and logical spacing. Set `dir="rtl"` on the p
   </ul>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+export function PaginationExample() {
+  return (
+    <nav className="pagination" aria-label="Pagination">
+      <ul>
+        <li>
+          <a
+            href="?page=1"
+            className="btn"
+            data-variant="ghost"
+            aria-label="Previous page"
+          >
+            <svg data-rtl-flip=""></svg>
+            <span data-pagination-label="">Previous</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=1"
+            className="btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Page 1"
+          >
+            1
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=2"
+            className="btn"
+            data-variant="outline"
+            data-size="icon"
+            aria-label="Page 2"
+            aria-current="page"
+          >
+            2
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=3"
+            className="btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="Page 3"
+          >
+            3
+          </a>
+        </li>
+        <li>
+          <span data-pagination-ellipsis="" aria-hidden="true">
+            <svg></svg>
+          </span>
+        </li>
+        <li>
+          <a
+            href="?page=3"
+            className="btn"
+            data-variant="ghost"
+            aria-label="Next page"
+          >
+            <span data-pagination-label="">Next</span>
+            <svg data-rtl-flip=""></svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <nav class="pagination" aria-label="Pagination">
+    <ul>
+      <li>
+        <a
+          href="?page=1"
+          class="btn"
+          data-variant="ghost"
+          aria-label="Previous page"
+        >
+          <svg data-rtl-flip=""></svg>
+          <span data-pagination-label="">Previous</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="?page=1"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="Page 1"
+          >1</a
+        >
+      </li>
+      <li>
+        <a
+          href="?page=2"
+          class="btn"
+          data-variant="outline"
+          data-size="icon"
+          aria-label="Page 2"
+          aria-current="page"
+          >2</a
+        >
+      </li>
+      <li>
+        <a
+          href="?page=3"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="Page 3"
+          >3</a
+        >
+      </li>
+      <li>
+        <span data-pagination-ellipsis="" aria-hidden="true"><svg></svg></span>
+      </li>
+      <li>
+        <a
+          href="?page=3"
+          class="btn"
+          data-variant="ghost"
+          aria-label="Next page"
+        >
+          <span data-pagination-label="">Next</span>
+          <svg data-rtl-flip=""></svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

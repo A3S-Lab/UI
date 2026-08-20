@@ -40,3 +40,38 @@ Resource Card 表示文件、模板、智能体、配置与其他工作台资源
 ## 可访问性
 
 预览图稿件是装饰性的，除非它传达了独特的内容；使用 `aria-hidden="true"` 隐藏装饰性 SVG。保留标题文本并输入。避免在交互链接或按钮内交互式控件。
+
+## React
+
+```tsx
+export function ResourceCardExample() {
+  return (
+    <button type="button" className="resource-card" data-kind="agent">
+      <figure>
+        <span aria-hidden="true">⌘</span>
+      </figure>
+      <section>
+        <strong>Coding agent</strong>
+        <small>CLI + 6 skills</small>
+      </section>
+    </button>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <button type="button" class="resource-card" data-kind="agent">
+    <figure><span aria-hidden="true">⌘</span></figure>
+    <section>
+      <strong>Coding agent</strong><small>CLI + 6 skills</small>
+    </section>
+  </button>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

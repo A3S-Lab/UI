@@ -620,7 +620,7 @@ const nextExtractedComponentExpectations = [
       'lang="zh"',
       'class="file-manager"',
       "data-file-manager-viewport",
-      "useFileManager",
+      "a3s:file-manager-before-action",
     ],
   },
   {
@@ -638,7 +638,7 @@ const nextExtractedComponentExpectations = [
       'lang="zh"',
       'class="knowledge-library"',
       "data-knowledge-library-viewport",
-      "useKnowledgeLibrary",
+      "a3s:knowledge-before-action",
     ],
   },
   {
@@ -1334,8 +1334,7 @@ const styleExpectations = [
     matches:
       compiledStyles.includes(
         ".btn:not([data-variant]),.btn[data-variant=primary]{background-color:var(--color-primary);color:var(--color-primary-foreground)}",
-      ) &&
-      compiledStyles.includes("background-color:var(--a3s-accent)"),
+      ) && compiledStyles.includes("background-color:var(--a3s-accent)"),
   },
   {
     label: "Playground control and panel radii are present",
@@ -1377,6 +1376,8 @@ const mdxFiles = await collectMdxFiles(docsRoot);
 const standalonePageFiles = await collectMdxFiles(standalonePagesRoot);
 const referencePattern = /(?:href|src)="([^"]+)"/g;
 const previewSourceViolations = [];
+const componentQuickStartViolations = [];
+let componentQuickStartCount = 0;
 let mdxPreviewCount = 0;
 
 const documentationPlaygroundPages = mdxFiles.filter(
@@ -1416,6 +1417,17 @@ for (const mdxFile of mdxFiles) {
   const source = await readFile(mdxFile, "utf8");
   const sourcePreviewCount = (source.match(/<Preview\b/g) ?? []).length;
   const builtFile = builtPathForMdx(mdxFile);
+  const sourceParts = path.relative(docsRoot, mdxFile).split(path.sep);
+  const isVersionedComponentGuide =
+    ["next", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
+    ["en", "zh"].includes(sourceParts[1]) &&
+    sourceParts[2] === "components" &&
+    sourceParts[3] !== "index.mdx";
+  const isUnavailableComponentGuide =
+    /not part of this\s+published\s+package contract/u.test(source) ||
+    /not part of this stable documentation snapshot/u.test(source) ||
+    /不属于该历史版本的公开契约/u.test(source) ||
+    /不属于此稳定版文档快照/u.test(source);
   let html;
 
   try {
@@ -1433,6 +1445,135 @@ for (const mdxFile of mdxFiles) {
     previewSourceViolations.push(
       `${path.relative(docsRoot, mdxFile)}: ${sourcePreviewCount} MDX previews, ${builtPreviewCount} built previews`,
     );
+  }
+
+  if (isVersionedComponentGuide && !isUnavailableComponentGuide) {
+    componentQuickStartCount += 1;
+    const relativeSource = path.relative(docsRoot, mdxFile);
+    const introStart = html.indexOf('<section class="component-intro"');
+    const firstPreview = html.indexOf('<section class="a3s-preview"');
+    const intro =
+      introStart >= 0 && firstPreview > introStart
+        ? html.slice(introStart, firstPreview)
+        : "";
+    const localizedLabels =
+      sourceParts[1] === "zh"
+        ? ["安装", "项目入口", "最小示例"]
+        : ["Install", "Project entry", "Minimal example"];
+    const componentSlug = path.basename(mdxFile, path.extname(mdxFile));
+    const version = sourceParts[0];
+    const installMarker =
+      version === "next"
+        ? "npm install @a3s-lab/ui"
+        : version === "v0.1.0"
+          ? "npm install github:A3S-Lab/UI#d2799d3914d2d291fbf0c2c3e638e2380ce266c0"
+          : `npm install @a3s-lab/ui@${version.slice(1)}`;
+    const integrationDependencyMarkers =
+      componentSlug === "agent-composer"
+        ? ["@tiptap/core", "@tiptap/markdown", "@tiptap/starter-kit"]
+        : componentSlug === "chart"
+          ? ["chart.js"]
+          : [];
+    const requiredMarkers = [
+      'data-mode="complete"',
+      ">HTML</button>",
+      ">React</button>",
+      ">Vue</button>",
+      installMarker,
+      "@a3s-lab/ui/a3s.css",
+      `data-framework-contract="${version === "next" ? "adapter" : "semantic"}"`,
+      'class="component-intro__note"',
+      'class="shiki css-variables"',
+      ...integrationDependencyMarkers,
+      ...localizedLabels,
+    ];
+    const missingMarkers = requiredMarkers.filter(
+      (marker) => !intro.includes(marker),
+    );
+    const stepCount = (intro.match(/class="component-intro__step /g) ?? [])
+      .length;
+    const copyCount = (
+      intro.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
+    ).length;
+    const wrapCount = (
+      intro.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
+    ).length;
+    const exampleStart = intro.indexOf("component-intro__example");
+    const exampleEnd = intro.indexOf("component-intro__note", exampleStart);
+    const htmlExample =
+      exampleStart >= 0 && exampleEnd > exampleStart
+        ? intro.slice(exampleStart, exampleEnd)
+        : "";
+    const encodedExampleTags = [
+      ...htmlExample.matchAll(/&lt;([a-z][\w-]*)\b/gu),
+    ].map((match) => match[1]);
+    const hasInvalidExample =
+      !encodedExampleTags.some((tagName) => tagName !== "script") ||
+      /(?:Component content|Component summary|组件内容|组件摘要)/u.test(
+        htmlExample,
+      );
+    const hasLegacyFrameworkSections =
+      /<h2\b[^>]*\bid="(?:react|vue)"/u.test(html) ||
+      html.includes("a3s-framework-tabs");
+
+    if (
+      missingMarkers.length > 0 ||
+      stepCount !== 3 ||
+      copyCount !== 3 ||
+      wrapCount !== 0 ||
+      hasInvalidExample ||
+      hasLegacyFrameworkSections
+    ) {
+      componentQuickStartViolations.push(
+        `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; steps=${stepCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}`,
+      );
+    }
+  }
+}
+
+for (const locale of ["zh", "en"]) {
+  for (const slug of [
+    "dock-workspace",
+    "grid-view",
+    "split-view",
+    "pane-view",
+  ]) {
+    const relativeFile = `${locale === "zh" ? "" : "en/"}harness/${slug}.html`;
+    const html = await readFile(path.join(outputRoot, relativeFile), "utf8");
+    const tabsStart = html.indexOf('<section class="a3s-framework-tabs"');
+    const tabsEnd = html.indexOf("<h2", tabsStart);
+    const quickStart =
+      tabsStart >= 0 && tabsEnd > tabsStart
+        ? html.slice(tabsStart, tabsEnd)
+        : "";
+    const localizedLabels =
+      locale === "zh"
+        ? ["快速开始", "安装", "示例"]
+        : ["Quick start", "Install", "Example"];
+    const requiredMarkers = [
+      'data-framework="html"',
+      ">HTML</button>",
+      ">React</button>",
+      ">Vue</button>",
+      "dockview@8.1.0",
+      'class="shiki css-variables"',
+      ...localizedLabels,
+    ];
+    const missingMarkers = requiredMarkers.filter(
+      (marker) => !quickStart.includes(marker),
+    );
+    const copyCount = (
+      quickStart.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
+    ).length;
+    const wrapCount = (
+      quickStart.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
+    ).length;
+
+    if (missingMarkers.length > 0 || copyCount !== 2 || wrapCount !== 0) {
+      componentQuickStartViolations.push(
+        `${relativeFile}: missing=${missingMarkers.join(",") || "none"}; copy=${copyCount}; wrap=${wrapCount}`,
+      );
+    }
   }
 }
 
@@ -1570,6 +1711,14 @@ if (previewSourceViolations.length > 0) {
   );
 }
 
+if (componentQuickStartViolations.length > 0) {
+  throw new Error(
+    `Component framework quick-start coverage failed:\n${componentQuickStartViolations
+      .map((violation) => `  - ${violation}`)
+      .join("\n")}`,
+  );
+}
+
 if (invalidHtmlNesting.length > 0) {
   throw new Error(
     `Built-site HTML nesting check failed:\n${invalidHtmlNesting
@@ -1595,5 +1744,5 @@ if (chineseTerminologyLeaks.length > 0) {
 }
 
 console.log(
-  `Verified ${requiredFiles.length} required files, ${mdxPreviewCount} MDX preview contracts, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
+  `Verified ${requiredFiles.length} required files, ${componentQuickStartCount} component framework quick starts, ${mdxPreviewCount} MDX preview contracts, ${styleExpectations.length} CSS invariants, Chinese terminology, public branding, and references across ${htmlFiles.length} HTML pages.`,
 );

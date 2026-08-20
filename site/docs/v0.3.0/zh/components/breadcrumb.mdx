@@ -154,3 +154,45 @@
   </ol>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+export function BreadcrumbExample() {
+  return (
+    <nav className="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li>
+          <a href="#">Home</a>
+        </li>
+        <li aria-hidden="true">
+          <svg data-rtl-flip="" className="lucide lucide-chevron-right"></svg>
+        </li>
+        <li>
+          <span aria-current="page">Breadcrumb</span>
+        </li>
+      </ol>
+    </nav>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="#">Home</a></li>
+      <li aria-hidden="true">
+        <svg data-rtl-flip="" class="lucide lucide-chevron-right"></svg>
+      </li>
+      <li><span aria-current="page">Breadcrumb</span></li>
+    </ol>
+  </nav>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

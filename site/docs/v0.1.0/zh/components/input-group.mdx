@@ -365,3 +365,36 @@
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function InputGroupExample() {
+  return (
+    <div className="input-group">
+      <input type="text" aria-label="搜索" placeholder="搜索…" />
+      <span data-align="start" aria-hidden="true">
+        {" "}
+        {/* icon */}
+      </span>
+      <span data-align="end">12 条结果</span>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="input-group">
+    <input type="text" aria-label="搜索" placeholder="搜索…" />
+    <span data-align="start" aria-hidden="true"> <!-- icon --></span>
+    <span data-align="end">12 条结果</span>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

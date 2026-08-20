@@ -7,7 +7,12 @@ Grid View 是没有标签栏和面板拖放的二维可调整网格。它适合�
 ## 框架用法
 
 <FrameworkTabs
-  html={`import {
+  htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"
+  reactInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-react@8.1.0 react react-dom"
+  vueInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-vue@8.1.0 vue"
+  html={`<div id="grid-view" style="height: 32rem"></div>
+<script type="module">
+import {
   GridviewPanel,
   Orientation,
   createGridview,
@@ -16,38 +21,40 @@ Grid View 是没有标签栏和面板拖放的二维可调整网格。它适合�
 import "@a3s-lab/ui/dockview/css";
 
 class Panel extends GridviewPanel {
-  part = {
-    update: parameters => {
-      this.element.textContent = parameters.params.title;
-    },
-    dispose() {},
-  };
-  constructor(id, component) {
-    super(id, component);
-    this.api.initialize(this);
-  }
-  getComponent() { return this.part; }
+part = {
+update: parameters => {
+this.element.textContent = parameters.params.title;
+},
+dispose() {},
+};
+constructor(id, component) {
+super(id, component);
+this.api.initialize(this);
+}
+getComponent() { return this.part; }
 }
 
 const root = document.querySelector("#grid-view");
 const api = createGridview(root, {
-  className: themeA3S.className,
-  orientation: Orientation.VERTICAL,
-  createComponent: options => new Panel(options.id, options.name),
+className: themeA3S.className,
+orientation: Orientation.VERTICAL,
+createComponent: options => new Panel(options.id, options.name),
 });
 api.layout(root.clientWidth, root.clientHeight);
 
 const canvas = api.addPanel({
-  id: "canvas",
-  component: "panel",
-  params: { title: "画布" },
+id: "canvas",
+component: "panel",
+params: { title: "画布" },
 });
 api.addPanel({
-  id: "preview",
-  component: "panel",
-  params: { title: "预览" },
-  position: { direction: "right", referencePanel: canvas.id },
-});`}
+id: "preview",
+component: "panel",
+params: { title: "预览" },
+position: { direction: "right", referencePanel: canvas.id },
+});
+
+</script>`}
   react={`import {
   GridviewReact,
   Orientation,
@@ -58,7 +65,8 @@ api.addPanel({
 import "@a3s-lab/ui/dockview/css";
 
 const Panel = ({ params }: IGridviewPanelProps<{ title: string }>) => (
-  <section>{params.title}</section>
+
+<section>{params.title}</section>
 );
 
 export function AnalysisGrid() {
@@ -98,24 +106,25 @@ import {
 import "@a3s-lab/ui/dockview/css";
 
 const Panel = defineComponent({
-  props: ["params"],
-  template: "<section>{{ params.title }}</section>",
+props: ["params"],
+template: "<section>{{ params.title }}</section>",
 });
 const grid = useGridview({
-  onReady({ api }) {
-    const canvas = api.addPanel({
-      id: "canvas",
-      component: "panel",
-      params: { title: "画布" },
-    });
-    api.addPanel({
-      id: "preview",
-      component: "panel",
-      params: { title: "预览" },
-      position: { direction: "right", referencePanel: canvas.id },
-    });
-  },
+onReady({ api }) {
+const canvas = api.addPanel({
+id: "canvas",
+component: "panel",
+params: { title: "画布" },
 });
+api.addPanel({
+id: "preview",
+component: "panel",
+params: { title: "预览" },
+position: { direction: "right", referencePanel: canvas.id },
+});
+},
+});
+
 </script>
 
 <template>
@@ -133,11 +142,11 @@ React `useGridview` 返回 `api`、`ready` 和稳定的 `onReady`；Vue composab
 
 ## 选择原则
 
-| 需求 | 选择 |
-| --- | --- |
-| 一条轴上的连续分栏 | [Split View](/harness/split-view) |
-| 固定二维网格，不需要标签和拖放 | Grid View |
-| 可折叠工具区 | [Pane View](/harness/pane-view) |
+| 需求                                 | 选择                                   |
+| ------------------------------------ | -------------------------------------- |
+| 一条轴上的连续分栏                   | [Split View](/harness/split-view)      |
+| 固定二维网格，不需要标签和拖放       | Grid View                              |
+| 可折叠工具区                         | [Pane View](/harness/pane-view)        |
 | 用户可自由增加、关闭、拖放与弹出面板 | [Dock 工作区](/harness/dock-workspace) |
 
 ## API 与状态

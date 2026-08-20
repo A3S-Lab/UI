@@ -90,3 +90,41 @@ A3S UI tooltips are CSS-only and text-only. This intentionally differs from shad
   <button class="btn" data-variant="outline" data-tooltip="تلميح" data-side="inline-end">Inline End</button>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function TooltipExample() {
+  return (
+    <button
+      className="btn"
+      data-variant="outline"
+      data-tooltip="Tooltip text"
+      data-side="bottom"
+      data-align="center"
+    >
+      Bottom
+    </button>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <button
+    class="btn"
+    data-variant="outline"
+    data-tooltip="Tooltip text"
+    data-side="bottom"
+    data-align="center"
+  >
+    Bottom
+  </button>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

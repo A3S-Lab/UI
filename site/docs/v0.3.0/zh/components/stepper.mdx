@@ -86,3 +86,59 @@
 ## 可访问性
 
 为有序列表提供名称，并用文字表达每个阶段的名称和状态。只给一个当前阶段设置 `aria-current="step"`。横向序列可能溢出时添加 `tabindex="0"`，让键盘用户可以滚动；A3S 样式会提供清晰的焦点环。列表本身已经表达顺序，因此装饰性的数字或图标标记可以对辅助技术隐藏。不要只依赖连接线或标记颜色传达状态。
+
+## React
+
+```tsx
+export function StepperExample() {
+  return (
+    <ol className="stepper" aria-label="发布进度" tabIndex="0">
+      <li data-state="success">
+        <span data-step-marker="" aria-hidden="true">
+          1
+        </span>
+        <section>
+          <h3>构建</h3>
+          <p>已完成</p>
+        </section>
+      </li>
+      <li data-state="active" aria-current="step">
+        <span data-step-marker="" aria-hidden="true">
+          2
+        </span>
+        <section>
+          <h3>发布</h3>
+          <p>进行中</p>
+        </section>
+      </li>
+    </ol>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <ol class="stepper" aria-label="发布进度" tabindex="0">
+    <li data-state="success">
+      <span data-step-marker="" aria-hidden="true">1</span>
+      <section>
+        <h3>构建</h3>
+        <p>已完成</p>
+      </section>
+    </li>
+    <li data-state="active" aria-current="step">
+      <span data-step-marker="" aria-hidden="true">2</span>
+      <section>
+        <h3>发布</h3>
+        <p>进行中</p>
+      </section>
+    </li>
+  </ol>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

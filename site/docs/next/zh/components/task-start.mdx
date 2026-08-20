@@ -44,7 +44,19 @@ import { TaskStart, useTaskStart } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useTaskStart();
   return (
-    <TaskStart ref={control.ref} aria-label="Task Start">组件内容</TaskStart>
+    <TaskStart ref={control.ref}>
+      <header>
+        <h1>这次要完成什么？</h1>
+      </header>
+      <nav data-task-suggestions="" aria-label="任务建议">
+        <button type="button">检查发布</button>
+        <button type="button">修复失败测试</button>
+      </nav>
+      <form className="agent-composer" aria-label="新建任务">
+        <textarea aria-label="任务" placeholder="描述预期结果"></textarea>
+        <button type="submit">开始</button>
+      </form>
+    </TaskStart>
   );
 }
 ```
@@ -54,7 +66,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskStart, useTaskStart } from "@a3s-lab/ui/vue";
 
 const control = useTaskStart();
@@ -62,7 +74,17 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <TaskStart ref="componentRef" aria-label="Task Start">组件内容</TaskStart>
+  <TaskStart ref="componentRef">
+    <header><h1>这次要完成什么？</h1></header>
+    <nav data-task-suggestions="" aria-label="任务建议">
+      <button type="button">检查发布</button
+      ><button type="button">修复失败测试</button>
+    </nav>
+    <form class="agent-composer" aria-label="新建任务">
+      <textarea aria-label="任务" placeholder="描述预期结果"></textarea
+      ><button type="submit">开始</button>
+    </form>
+  </TaskStart>
 </template>
 ```
 

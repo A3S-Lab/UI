@@ -7,7 +7,12 @@ Split View arranges continuous resizable regions on one axis. It suits stable co
 ## Framework usage
 
 <FrameworkTabs
-  html={`import {
+  htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"
+  reactInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-react@8.1.0 react react-dom"
+  vueInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-vue@8.1.0 vue"
+  html={`<div id="split-view" style="height: 32rem"></div>
+<script type="module">
+import {
   SplitviewPanel,
   createSplitview,
   themeA3S,
@@ -15,39 +20,41 @@ Split View arranges continuous resizable regions on one axis. It suits stable co
 import "@a3s-lab/ui/dockview/css";
 
 class Panel extends SplitviewPanel {
-  part = {
-    update: parameters => {
-      this.element.textContent = parameters.params.title;
-    },
-    dispose() {},
-  };
-  constructor(id, component) {
-    super(id, component);
-    this.api.initialize(this);
-  }
-  getComponent() { return this.part; }
+part = {
+update: parameters => {
+this.element.textContent = parameters.params.title;
+},
+dispose() {},
+};
+constructor(id, component) {
+super(id, component);
+this.api.initialize(this);
+}
+getComponent() { return this.part; }
 }
 
 const root = document.querySelector("#split-view");
 const api = createSplitview(root, {
-  className: themeA3S.className,
-  createComponent: options => new Panel(options.id, options.name),
+className: themeA3S.className,
+createComponent: options => new Panel(options.id, options.name),
 });
 api.layout(root.clientWidth, root.clientHeight);
 api.addPanel({
-  id: "explorer",
-  component: "panel",
-  minimumSize: 180,
-  params: { title: "Explorer" },
-  size: 240,
+id: "explorer",
+component: "panel",
+minimumSize: 180,
+params: { title: "Explorer" },
+size: 240,
 });
 api.addPanel({
-  id: "editor",
-  component: "panel",
-  minimumSize: 320,
-  params: { title: "Editor" },
-  size: 720,
-});`}
+id: "editor",
+component: "panel",
+minimumSize: 320,
+params: { title: "Editor" },
+size: 720,
+});
+
+</script>`}
   react={`import {
   Orientation,
   SplitviewReact,
@@ -58,7 +65,8 @@ api.addPanel({
 import "@a3s-lab/ui/dockview/css";
 
 const Panel = ({ params }: ISplitviewPanelProps<{ title: string }>) => (
-  <section>{params.title}</section>
+
+<section>{params.title}</section>
 );
 
 export function EditorSplit() {
@@ -101,27 +109,28 @@ import {
 import "@a3s-lab/ui/dockview/css";
 
 const Panel = defineComponent({
-  props: ["params"],
-  template: "<section>{{ params.title }}</section>",
+props: ["params"],
+template: "<section>{{ params.title }}</section>",
 });
 const split = useSplitview({
-  onReady({ api }) {
-    api.addPanel({
-      id: "explorer",
-      component: "panel",
-      minimumSize: 180,
-      params: { title: "Explorer" },
-      size: 240,
-    });
-    api.addPanel({
-      id: "editor",
-      component: "panel",
-      minimumSize: 320,
-      params: { title: "Editor" },
-      size: 720,
-    });
-  },
+onReady({ api }) {
+api.addPanel({
+id: "explorer",
+component: "panel",
+minimumSize: 180,
+params: { title: "Explorer" },
+size: 240,
 });
+api.addPanel({
+id: "editor",
+component: "panel",
+minimumSize: 320,
+params: { title: "Editor" },
+size: 720,
+});
+},
+});
+
 </script>
 
 <template>

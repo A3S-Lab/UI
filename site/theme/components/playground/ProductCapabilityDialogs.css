@@ -133,14 +133,15 @@
 
 .product-capability-setup__fields :is(input, select, textarea):focus-visible {
   border-color: color-mix(in srgb, var(--ui-blue) 72%, var(--ui-line-strong));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-blue) 14%, transparent);
+  box-shadow: none;
 }
 
 .product-capability-setup__fields :is(input, textarea)[aria-invalid="true"] {
   border-color: color-mix(in srgb, var(--ui-red) 72%, var(--ui-line-strong));
 }
 
-.product-capability-setup__fields :is(input:disabled, input:read-only, textarea:read-only) {
+.product-capability-setup__fields
+  :is(input:disabled, input:read-only, textarea:read-only) {
   background: var(--ui-panel);
   color: var(--ui-muted);
 }

@@ -4,26 +4,17 @@ Dock Workspace is for professional applications that continuously rearrange cont
 
 <DockviewDemo mode="dock" />
 
-## Installation
-
-Install the adapter used by the host. Vanilla JavaScript needs only `dockview`; React and Vue use the official framework packages.
-
-```bash
-npm install @a3s-lab/ui dockview@8.1.0
-npm install dockview-react@8.1.0 react react-dom # React
-npm install dockview-vue@8.1.0 vue             # Vue
-```
-
-```css
-@import "@a3s-lab/ui/dockview/css";
-```
-
 The container needs a computed width and height. Do not use panel layout as a replacement for business routing; persist only user-recoverable view state.
 
 ## Framework usage
 
 <FrameworkTabs
-  html={`import {
+  htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"
+  reactInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-react@8.1.0 react react-dom"
+  vueInstall="npm install @a3s-lab/ui dockview@8.1.0 dockview-vue@8.1.0 vue"
+  html={`<div id="workspace" style="height: 32rem"></div>
+<script type="module">
+import {
   createDockview,
   themeA3S,
 } from "@a3s-lab/ui/dockview";
@@ -53,7 +44,9 @@ position: { direction: "right", referencePanel: "task" },
 
 const dispose = api.onDidLayoutChange(() => {
 localStorage.setItem("workspace-layout", JSON.stringify(api.toJSON()));
-});`}
+});
+
+</script>`}
   react={`import { useCallback } from "react";
 import {
 DockviewReact,
@@ -84,6 +77,7 @@ export function Workspace() {
   });
 
 return (
+
 <section className="workspace-layout">
 <DockviewReact components={components} onReady={layout.onReady} theme={themeA3S} />
 <button type="button" onClick={layout.reset}>Reset layout</button>

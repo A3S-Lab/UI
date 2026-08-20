@@ -52,7 +52,25 @@ import { TaskPlan } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskPlan aria-label="Task Plan">组件内容</TaskPlan>
+    <TaskPlan data-state="active" aria-labelledby="plan-title">
+      <header>
+        <h2 id="plan-title">发布计划</h2>
+        <p>已完成 3 步中的 2 步</p>
+      </header>
+      <ol>
+        <li className="plan-step" data-state="complete">
+          <strong>构建软件包</strong>
+          <span>已完成</span>
+        </li>
+        <li className="plan-step" data-state="active" aria-current="step">
+          <strong>验证响应式行为</strong>
+          <span>进行中</span>
+        </li>
+      </ol>
+      <footer>
+        <button type="button">暂停计划</button>
+      </footer>
+    </TaskPlan>
   );
 }
 ```
@@ -62,13 +80,26 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskPlan } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskPlan aria-label="Task Plan">组件内容</TaskPlan>
+  <TaskPlan data-state="active" aria-labelledby="plan-title">
+    <header>
+      <h2 id="plan-title">发布计划</h2>
+      <p>已完成 3 步中的 2 步</p>
+    </header>
+    <ol>
+      <li class="plan-step" data-state="complete">
+        <strong>构建软件包</strong><span>已完成</span>
+      </li>
+      <li class="plan-step" data-state="active" aria-current="step">
+        <strong>验证响应式行为</strong><span>进行中</span>
+      </li>
+    </ol>
+    <footer><button type="button">暂停计划</button></footer>
+  </TaskPlan>
 </template>
 ```
 

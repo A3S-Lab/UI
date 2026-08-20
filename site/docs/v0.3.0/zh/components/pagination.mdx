@@ -110,3 +110,138 @@ Pagination 组件将专用布局契约与 Button 控件组合使用。
   </ul>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+export function PaginationExample() {
+  return (
+    <nav className="pagination" aria-label="分页">
+      <ul>
+        <li>
+          <a
+            href="?page=1"
+            className="btn"
+            data-variant="ghost"
+            aria-label="上一页"
+          >
+            <svg data-rtl-flip=""></svg>
+            <span data-pagination-label="">上一页</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=1"
+            className="btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="第 1 页"
+          >
+            1
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=2"
+            className="btn"
+            data-variant="outline"
+            data-size="icon"
+            aria-label="第 2 页"
+            aria-current="page"
+          >
+            2
+          </a>
+        </li>
+        <li>
+          <a
+            href="?page=3"
+            className="btn"
+            data-variant="ghost"
+            data-size="icon"
+            aria-label="第 3 页"
+          >
+            3
+          </a>
+        </li>
+        <li>
+          <span data-pagination-ellipsis="" aria-hidden="true">
+            <svg></svg>
+          </span>
+        </li>
+        <li>
+          <a
+            href="?page=3"
+            className="btn"
+            data-variant="ghost"
+            aria-label="下一页"
+          >
+            <span data-pagination-label="">下一页</span>
+            <svg data-rtl-flip=""></svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <nav class="pagination" aria-label="分页">
+    <ul>
+      <li>
+        <a href="?page=1" class="btn" data-variant="ghost" aria-label="上一页">
+          <svg data-rtl-flip=""></svg>
+          <span data-pagination-label="">上一页</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="?page=1"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="第 1 页"
+          >1</a
+        >
+      </li>
+      <li>
+        <a
+          href="?page=2"
+          class="btn"
+          data-variant="outline"
+          data-size="icon"
+          aria-label="第 2 页"
+          aria-current="page"
+          >2</a
+        >
+      </li>
+      <li>
+        <a
+          href="?page=3"
+          class="btn"
+          data-variant="ghost"
+          data-size="icon"
+          aria-label="第 3 页"
+          >3</a
+        >
+      </li>
+      <li>
+        <span data-pagination-ellipsis="" aria-hidden="true"><svg></svg></span>
+      </li>
+      <li>
+        <a href="?page=3" class="btn" data-variant="ghost" aria-label="下一页">
+          <span data-pagination-label="">下一页</span>
+          <svg data-rtl-flip=""></svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

@@ -188,7 +188,20 @@ import { Card } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Card>Component content</Card>
+    <Card>
+      <header>
+        <h2>Card Title</h2>
+        <p>Card Description</p>
+        <div className="card-action">Card Action</div>
+      </header>
+      <section>
+        {" "}
+        <p>Card Content</p>
+      </section>
+      <footer>
+        <p>Card Footer</p>
+      </footer>
+    </Card>
   );
 }
 ```
@@ -198,13 +211,22 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Card } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Card>Component content</Card>
+  <Card>
+    <header>
+      <h2>Card Title</h2>
+      <p>Card Description</p>
+      <div class="card-action">Card Action</div>
+    </header>
+    <section><p>Card Content</p></section>
+    <footer>
+      <p>Card Footer</p>
+    </footer>
+  </Card>
 </template>
 ```
 

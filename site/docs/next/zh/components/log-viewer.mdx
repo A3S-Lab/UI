@@ -114,7 +114,26 @@ import { LogViewer } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <LogViewer aria-label="Log Viewer">组件内容</LogViewer>
+    <LogViewer aria-label="执行日志">
+      <header>
+        <div>
+          <h2>执行日志</h2>
+          <p>有序语义输出</p>
+        </div>
+      </header>
+      <div data-log-meta="">
+        <span>已连接</span>
+        <span>最近 500 条记录</span>
+      </div>
+      <div role="log" aria-live="polite" aria-label="有序执行输出" tabIndex="0">
+        <div data-log-record="" data-stream="stdout">
+          <span data-log-sequence="">#42</span>
+          <time dateTime="2026-08-12T09:41:02Z">09:41:02</time>
+          <span data-log-stream="">stdout</span>
+          <pre>Provider 已启动。</pre>
+        </div>
+      </div>
+    </LogViewer>
   );
 }
 ```
@@ -124,13 +143,28 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { LogViewer } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <LogViewer aria-label="Log Viewer">组件内容</LogViewer>
+  <LogViewer aria-label="执行日志">
+    <header>
+      <div>
+        <h2>执行日志</h2>
+        <p>有序语义输出</p>
+      </div>
+    </header>
+    <div data-log-meta=""><span>已连接</span><span>最近 500 条记录</span></div>
+    <div role="log" aria-live="polite" aria-label="有序执行输出" tabindex="0">
+      <div data-log-record="" data-stream="stdout">
+        <span data-log-sequence="">#42</span
+        ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+        ><span data-log-stream="">stdout</span>
+        <pre>Provider 已启动。</pre>
+      </div>
+    </div>
+  </LogViewer>
 </template>
 ```
 

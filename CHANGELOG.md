@@ -27,6 +27,7 @@
 
 ### Changed
 
+- Unified all 116 bilingual component guides and four Harness layout guides around one persistent HTML, React, and Vue quick-start surface with framework-correct peer dependencies, required imports, highlighted copyable examples, and equivalent controller hook or composable guidance; removed the rendered duplicate framework chapters.
 - Retired the standalone Patterns documentation chapter across current and historical version trees; reusable contracts remain under Components and Harness, while app-scale compositions remain in Playground.
 - Rebuilt Playground Automations around predictable next-run timestamps, anchored and time-zoned schedules, persisted model/effort/permission boundaries, truthful per-run steps and durations, recoverable filtered retries, manual execution while schedules are paused, and focus-safe compact navigation.
 - Rebuilt Playground Memory as a traceable, human-reviewed workflow with real scope and type filtering, relationship zoom, durable candidate acceptance, source evidence, reversible removal requests, mobile detail drawers, settings ownership, and task-context reuse.
@@ -46,6 +47,8 @@
 
 ### Fixed
 
+- Replaced the nested solid outline in the Playground composer with a restrained focus boundary on the compound control while preserving a visible keyboard focus state.
+- Extended the shared visual quality floor to all 116 documented components, corrected compact File Manager and Knowledge Library composition, and restored production-sized targets for labels, ranges, Data Grid selection, Setting Row switches, and Agent Composer status controls.
 - Kept project configuration and artifact inspectors visible by default on desktop while presenting them as focus-contained, Escape-dismissible drawers on compact screens, preserving trigger focus and usable conversation width at 1280px and 390px.
 - Added a sidebar-anchored capability chooser with shared URL and page-tab state, complete arrow-key navigation, Escape focus return, outside dismissal, and responsive bilingual behavior.
 - Connected project cards to dedicated bilingual project-workspace and child-session routes, kept project context current in the sidebar, and added production checks for conversation search, TipTap input, artifact inspection, desktop, mobile, and dark appearance.

@@ -47,3 +47,53 @@
 ## 可访问性
 
 折叠时将标签保留在 DOM 中。每个仅包含图标的链接或按钮仍然需要一个可访问的名称。当前页面使用 `aria-current`，而不是单独使用颜色。
+
+## React
+
+```tsx
+export function ActivityBarExample() {
+  return (
+    <aside className="activity-bar" aria-label="Product navigation">
+      <header>
+        <a href="/" aria-label="首页">
+          A3S
+        </a>
+      </header>
+      <nav aria-label="Primary">
+        <ul>
+          <li>
+            <a href="/projects" aria-current="page">
+              项目
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <footer>
+        <button type="button" aria-label="设置">
+          设置
+        </button>
+      </footer>
+    </aside>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <aside class="activity-bar" aria-label="Product navigation">
+    <header><a href="/" aria-label="首页">A3S</a></header>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="/projects" aria-current="page">项目</a></li>
+      </ul>
+    </nav>
+    <footer><button type="button" aria-label="设置">设置</button></footer>
+  </aside>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

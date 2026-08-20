@@ -126,3 +126,37 @@ Set `dir="rtl"` on the select or a parent element.
   <option value="blueberry">توت</option>
 </select>
 </Preview>
+
+## React
+
+```tsx
+export function NativeSelectExample() {
+  return (
+    <select className="select" aria-label="Fruit">
+      <option value="">Select a fruit</option>
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+      <option value="blueberry">Blueberry</option>
+      <option value="pineapple">Pineapple</option>
+    </select>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <select class="select" aria-label="Fruit">
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+    <option value="blueberry">Blueberry</option>
+    <option value="pineapple">Pineapple</option>
+  </select>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

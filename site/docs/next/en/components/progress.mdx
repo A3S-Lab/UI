@@ -90,7 +90,9 @@ import { Progress } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Progress>Component content</Progress>
+    <Progress aria-label="Loading" aria-valuenow="66">
+      <span style={{ width: "66%" }}></span>
+    </Progress>
   );
 }
 ```
@@ -100,13 +102,14 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Progress } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Progress>Component content</Progress>
+  <Progress aria-label="Loading" aria-valuenow="66">
+    <span style="width: 66%"></span>
+  </Progress>
 </template>
 ```
 

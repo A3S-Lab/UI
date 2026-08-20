@@ -52,7 +52,25 @@ import { TaskPlan } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskPlan aria-label="Task Plan">Component content</TaskPlan>
+    <TaskPlan data-state="active" aria-labelledby="plan-title">
+      <header>
+        <h2 id="plan-title">Release plan</h2>
+        <p>2 of 3 steps complete</p>
+      </header>
+      <ol>
+        <li className="plan-step" data-state="complete">
+          <strong>Build package</strong>
+          <span>Complete</span>
+        </li>
+        <li className="plan-step" data-state="active" aria-current="step">
+          <strong>Verify responsive behavior</strong>
+          <span>In progress</span>
+        </li>
+      </ol>
+      <footer>
+        <button type="button">Pause plan</button>
+      </footer>
+    </TaskPlan>
   );
 }
 ```
@@ -62,13 +80,26 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskPlan } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskPlan aria-label="Task Plan">Component content</TaskPlan>
+  <TaskPlan data-state="active" aria-labelledby="plan-title">
+    <header>
+      <h2 id="plan-title">Release plan</h2>
+      <p>2 of 3 steps complete</p>
+    </header>
+    <ol>
+      <li class="plan-step" data-state="complete">
+        <strong>Build package</strong><span>Complete</span>
+      </li>
+      <li class="plan-step" data-state="active" aria-current="step">
+        <strong>Verify responsive behavior</strong><span>In progress</span>
+      </li>
+    </ol>
+    <footer><button type="button">Pause plan</button></footer>
+  </TaskPlan>
 </template>
 ```
 

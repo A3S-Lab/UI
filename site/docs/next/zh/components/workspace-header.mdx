@@ -45,7 +45,20 @@ import { WorkspaceHeader } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <WorkspaceHeader>组件内容</WorkspaceHeader>
+    <WorkspaceHeader>
+      <div data-workspace-leading="">
+        <a href="/projects" aria-label="返回项目">
+          项目
+        </a>
+      </div>
+      <div data-workspace-identity="">
+        <h1>Resource name</h1>
+        <span>Metadata</span>
+      </div>
+      <div data-workspace-actions="">
+        <button type="button">共享</button>
+      </div>
+    </WorkspaceHeader>
   );
 }
 ```
@@ -55,13 +68,21 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { WorkspaceHeader } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <WorkspaceHeader>组件内容</WorkspaceHeader>
+  <WorkspaceHeader>
+    <div data-workspace-leading="">
+      <a href="/projects" aria-label="返回项目">项目</a>
+    </div>
+    <div data-workspace-identity="">
+      <h1>Resource name</h1>
+      <span>Metadata</span>
+    </div>
+    <div data-workspace-actions=""><button type="button">共享</button></div>
+  </WorkspaceHeader>
 </template>
 ```
 

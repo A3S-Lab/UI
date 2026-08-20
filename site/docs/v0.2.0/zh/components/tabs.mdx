@@ -307,3 +307,215 @@
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function TabsExample() {
+  return (
+    <div className="tabs w-full" id="demo-tabs-with-panels">
+      <nav role="tablist" aria-orientation="horizontal" className="w-full">
+        <button
+          type="button"
+          role="tab"
+          id="demo-tabs-with-panels-tab-1"
+          aria-controls="demo-tabs-with-panels-panel-1"
+          aria-selected="true"
+          tabIndex="0"
+        >
+          Account
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="demo-tabs-with-panels-tab-2"
+          aria-controls="demo-tabs-with-panels-panel-2"
+          aria-selected="false"
+          tabIndex="-1"
+        >
+          Password
+        </button>
+      </nav>
+      <div
+        role="tabpanel"
+        id="demo-tabs-with-panels-panel-1"
+        aria-labelledby="demo-tabs-with-panels-tab-1"
+        tabIndex="-1"
+        aria-selected="true"
+      >
+        <div className="card">
+          <header>
+            <h2>Account</h2>
+            <p>
+              Make changes to your account here. Click save when you're done.
+            </p>
+          </header>
+          <section>
+            <form className="grid gap-4">
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-account-name">Name</label>
+                <input
+                  type="text"
+                  id="demo-tabs-account-name"
+                  defaultValue="Pedro Duarte"
+                />
+              </div>
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-account-username">Username</label>
+                <input
+                  type="text"
+                  id="demo-tabs-account-username"
+                  defaultValue="@peduarte"
+                />
+              </div>
+            </form>
+          </section>
+          <footer>
+            <button type="button" className="btn">
+              Save changes
+            </button>
+          </footer>
+        </div>
+      </div>
+      <div
+        role="tabpanel"
+        id="demo-tabs-with-panels-panel-2"
+        aria-labelledby="demo-tabs-with-panels-tab-2"
+        tabIndex="-1"
+        aria-selected="false"
+        hidden
+      >
+        <div className="card">
+          <header>
+            <h2>Password</h2>
+            <p>
+              Change your password here. After saving, you'll be logged out.
+            </p>
+          </header>
+          <section>
+            <form className="grid gap-4">
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-password-current">
+                  Current password
+                </label>
+                <input type="password" id="demo-tabs-password-current" />
+              </div>
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-password-new">New password</label>
+                <input type="password" id="demo-tabs-password-new" />
+              </div>
+            </form>
+          </section>
+          <footer>
+            <button type="button" className="btn">
+              Save password
+            </button>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="tabs w-full" id="demo-tabs-with-panels">
+    <nav role="tablist" aria-orientation="horizontal" class="w-full">
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-1"
+        aria-controls="demo-tabs-with-panels-panel-1"
+        aria-selected="true"
+        tabindex="0"
+      >
+        Account
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-2"
+        aria-controls="demo-tabs-with-panels-panel-2"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        Password
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-1"
+      aria-labelledby="demo-tabs-with-panels-tab-1"
+      tabindex="-1"
+      aria-selected="true"
+    >
+      <div class="card">
+        <header>
+          <h2>Account</h2>
+          <p>Make changes to your account here. Click save when you're done.</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-account-name">Name</label>
+              <input
+                type="text"
+                id="demo-tabs-account-name"
+                value="Pedro Duarte"
+              />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-account-username">Username</label>
+              <input
+                type="text"
+                id="demo-tabs-account-username"
+                value="@peduarte"
+              />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">Save changes</button>
+        </footer>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-2"
+      aria-labelledby="demo-tabs-with-panels-tab-2"
+      tabindex="-1"
+      aria-selected="false"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>Password</h2>
+          <p>Change your password here. After saving, you'll be logged out.</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-password-current">Current password</label>
+              <input type="password" id="demo-tabs-password-current" />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-password-new">New password</label>
+              <input type="password" id="demo-tabs-password-new" />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">Save password</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

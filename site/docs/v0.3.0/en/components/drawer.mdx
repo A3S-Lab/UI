@@ -310,3 +310,121 @@ Drawer sides are physical viewport sides. Content spacing and text alignment fol
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function DrawerExample() {
+  return (
+    <dialog
+      id="demo-drawer"
+      className="drawer"
+      aria-labelledby="demo-drawer-title"
+      aria-describedby="demo-drawer-description"
+    >
+      <article>
+        <header className="mx-auto w-full max-w-sm">
+          <h2 id="demo-drawer-title">Move Goal</h2>
+          <p id="demo-drawer-description">Set your daily activity goal.</p>
+        </header>
+        <section className="px-4">
+          <div className="mx-auto w-full max-w-sm">
+            <div className="flex items-center justify-center gap-6">
+              <button
+                type="button"
+                className="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Decrease"
+              >
+                <span>Ready</span>
+              </button>
+              <div className="text-center">
+                <div className="text-7xl font-bold">350</div>
+                <div className="text-muted-foreground text-xs uppercase">
+                  Calories/day
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Increase"
+              >
+                <span>Ready</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <footer className="mx-auto w-full max-w-sm">
+          <button type="button" className="btn">
+            Submit
+          </button>
+          <button type="button" className="btn" data-variant="outline">
+            Cancel
+          </button>
+        </footer>
+      </article>
+    </dialog>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <dialog
+    id="demo-drawer"
+    class="drawer"
+    aria-labelledby="demo-drawer-title"
+    aria-describedby="demo-drawer-description"
+  >
+    <article>
+      <header class="mx-auto w-full max-w-sm">
+        <h2 id="demo-drawer-title">Move Goal</h2>
+        <p id="demo-drawer-description">Set your daily activity goal.</p>
+      </header>
+      <section class="px-4">
+        <div class="mx-auto w-full max-w-sm">
+          <div class="flex items-center justify-center gap-6">
+            <button
+              type="button"
+              class="btn rounded-full"
+              data-variant="outline"
+              data-size="icon-sm"
+              aria-label="Decrease"
+            >
+              <span>Ready</span>
+            </button>
+            <div class="text-center">
+              <div class="text-7xl font-bold">350</div>
+              <div class="text-muted-foreground text-xs uppercase">
+                Calories/day
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn rounded-full"
+              data-variant="outline"
+              data-size="icon-sm"
+              aria-label="Increase"
+            >
+              <span>Ready</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <footer class="mx-auto w-full max-w-sm">
+        <button type="button" class="btn">Submit</button>
+        <button type="button" class="btn" data-variant="outline">Cancel</button>
+      </footer>
+    </article>
+  </dialog>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

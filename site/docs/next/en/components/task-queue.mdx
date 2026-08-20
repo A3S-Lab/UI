@@ -45,7 +45,18 @@ import { TaskQueue } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskQueue aria-label="Task Queue">Component content</TaskQueue>
+    <TaskQueue data-state="running" aria-labelledby="queue-title">
+      <header>
+        <h2 id="queue-title">Task queue</h2>
+        <span data-queue-status="">Running</span>
+      </header>
+      <ol>
+        <li data-state="queued">
+          <strong>Run visual checks</strong>
+          <span>Queued</span>
+        </li>
+      </ol>
+    </TaskQueue>
   );
 }
 ```
@@ -55,13 +66,22 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskQueue } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskQueue aria-label="Task Queue">Component content</TaskQueue>
+  <TaskQueue data-state="running" aria-labelledby="queue-title">
+    <header>
+      <h2 id="queue-title">Task queue</h2>
+      <span data-queue-status="">Running</span>
+    </header>
+    <ol>
+      <li data-state="queued">
+        <strong>Run visual checks</strong><span>Queued</span>
+      </li>
+    </ol>
+  </TaskQueue>
 </template>
 ```
 

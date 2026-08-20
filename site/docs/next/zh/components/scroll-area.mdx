@@ -175,7 +175,12 @@ import { ScrollArea, useScrollArea } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useScrollArea();
   return (
-    <ScrollArea ref={control.ref}>组件内容</ScrollArea>
+    <ScrollArea
+      ref={control.ref}
+      className="h-72 overflow-y-auto rounded-md border p-4"
+    >
+      Your scrollable content here.
+    </ScrollArea>
   );
 }
 ```
@@ -185,7 +190,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ScrollArea, useScrollArea } from "@a3s-lab/ui/vue";
 
 const control = useScrollArea();
@@ -193,7 +198,12 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ScrollArea ref="componentRef">组件内容</ScrollArea>
+  <ScrollArea
+    ref="componentRef"
+    class="h-72 overflow-y-auto rounded-md border p-4"
+  >
+    Your scrollable content here.
+  </ScrollArea>
 </template>
 ```
 

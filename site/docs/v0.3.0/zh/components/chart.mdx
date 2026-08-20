@@ -238,3 +238,23 @@ window.a3sUI.chart("#custom-chart", {
 | `color` | 系列描边、填充、图例标记和工具提示标记的基色。 |
 | `surface` | 从 `color` 派生填充。使用 `true` 进行半透明填充，使用 `"gradient"` 进行上游式垂直淡入淡出，或使用 `{ from, to }` 进行自定义不透明度停止。 |
 | `dataset` | 原始 Chart.js 数据集选项。 |
+
+## React
+
+```tsx
+export function ChartExample() {
+  return <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>;
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

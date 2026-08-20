@@ -52,3 +52,59 @@ App Shell 支持展开、折叠、隐藏与移动端打开状态。低于 768px 
 ## 可访问性
 
 使用地标元素（`aside`、`nav`、`main`、`header`）并命名每个导航区域。导航开关需要 `aria-expanded` 与随状态变化的可访问名称。移动导航为模态时，应组合 [Drawer](/components/drawer) 来管理焦点。
+
+## React
+
+```tsx
+export function AppShellExample() {
+  return (
+    <div className="app-shell" data-navigation="expanded">
+      <aside data-app-navigation="">
+        <nav aria-label="工作区">
+          <a href="/tasks" aria-current="page">
+            任务
+          </a>
+        </nav>
+      </aside>
+      <main data-app-main="">
+        <header className="workspace-header">
+          <section aria-labelledby="workspace-title">
+            <h1 id="workspace-title">设计系统工作区</h1>
+            <p>检查当前任务和文件。</p>
+          </section>
+        </header>
+        <div data-app-content="">
+          <span>已就绪</span>
+        </div>
+      </main>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="app-shell" data-navigation="expanded">
+    <aside data-app-navigation="">
+      <nav aria-label="工作区">
+        <a href="/tasks" aria-current="page">任务</a>
+      </nav>
+    </aside>
+    <main data-app-main="">
+      <header class="workspace-header">
+        <section aria-labelledby="workspace-title">
+          <h1 id="workspace-title">设计系统工作区</h1>
+          <p>检查当前任务和文件。</p>
+        </section>
+      </header>
+      <div data-app-content=""><span>已就绪</span></div>
+    </main>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

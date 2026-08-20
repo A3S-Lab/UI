@@ -45,7 +45,20 @@ import { WorkspaceHeader } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <WorkspaceHeader>Component content</WorkspaceHeader>
+    <WorkspaceHeader>
+      <div data-workspace-leading="">
+        <a href="/projects" aria-label="Back to projects">
+          Projects
+        </a>
+      </div>
+      <div data-workspace-identity="">
+        <h1>Resource name</h1>
+        <span>Metadata</span>
+      </div>
+      <div data-workspace-actions="">
+        <button type="button">Share</button>
+      </div>
+    </WorkspaceHeader>
   );
 }
 ```
@@ -55,13 +68,21 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { WorkspaceHeader } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <WorkspaceHeader>Component content</WorkspaceHeader>
+  <WorkspaceHeader>
+    <div data-workspace-leading="">
+      <a href="/projects" aria-label="Back to projects">Projects</a>
+    </div>
+    <div data-workspace-identity="">
+      <h1>Resource name</h1>
+      <span>Metadata</span>
+    </div>
+    <div data-workspace-actions=""><button type="button">Share</button></div>
+  </WorkspaceHeader>
 </template>
 ```
 

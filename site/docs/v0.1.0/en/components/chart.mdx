@@ -238,3 +238,23 @@ window.a3sUI.chart("#custom-chart", {
 | `color` | Base color for the series stroke, fill, legend marker, and tooltip marker. |
 | `surface` | Derives a fill from `color`. Use `true` for a translucent fill, `"gradient"` for an upstream-style vertical fade, or `{ from, to }` for custom opacity stops. |
 | `dataset` | Raw Chart.js dataset options. |
+
+## React
+
+```tsx
+export function ChartExample() {
+  return <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>;
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <canvas id="visitors-chart" aria-label="Monthly visitors"></canvas>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -36,3 +36,51 @@ Settings Layout 提供可导航的配置分区与真实表单控件，适用于�
 ## 可访问性
 
 使用真实表单控件与字段标签，不要用未结构化的源码编辑器代替配置界面。原始配置源码可作为高级入口保留。每个分区都需要唯一标题与 ID，供导航直接定位。
+
+## React
+
+```tsx
+export function SettingsLayoutExample() {
+  return (
+    <div className="settings-layout">
+      <aside>
+        <nav aria-label="Settings sections">
+          <a href="#general" aria-current="page">
+            常规
+          </a>
+        </nav>
+      </aside>
+      <main>
+        <section id="general">
+          <h2>常规</h2>
+          <p>配置工作区默认值。</p>
+        </section>
+      </main>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="settings-layout">
+    <aside>
+      <nav aria-label="Settings sections">
+        <a href="#general" aria-current="page">常规</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="general">
+        <h2>常规</h2>
+        <p>配置工作区默认值。</p>
+      </section>
+    </main>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

@@ -114,7 +114,31 @@ import { LogViewer } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <LogViewer aria-label="Log Viewer">Component content</LogViewer>
+    <LogViewer aria-label="Execution log">
+      <header>
+        <div>
+          <h2>Execution log</h2>
+          <p>Ordered semantic output</p>
+        </div>
+      </header>
+      <div data-log-meta="">
+        <span>Connected</span>
+        <span>Latest 500 records</span>
+      </div>
+      <div
+        role="log"
+        aria-live="polite"
+        aria-label="Ordered execution output"
+        tabIndex="0"
+      >
+        <div data-log-record="" data-stream="stdout">
+          <span data-log-sequence="">#42</span>
+          <time dateTime="2026-08-12T09:41:02Z">09:41:02</time>
+          <span data-log-stream="">stdout</span>
+          <pre>Provider started.</pre>
+        </div>
+      </div>
+    </LogViewer>
   );
 }
 ```
@@ -124,13 +148,35 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { LogViewer } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <LogViewer aria-label="Log Viewer">Component content</LogViewer>
+  <LogViewer aria-label="Execution log">
+    <header>
+      <div>
+        <h2>Execution log</h2>
+        <p>Ordered semantic output</p>
+      </div>
+    </header>
+    <div data-log-meta="">
+      <span>Connected</span><span>Latest 500 records</span>
+    </div>
+    <div
+      role="log"
+      aria-live="polite"
+      aria-label="Ordered execution output"
+      tabindex="0"
+    >
+      <div data-log-record="" data-stream="stdout">
+        <span data-log-sequence="">#42</span
+        ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+        ><span data-log-stream="">stdout</span>
+        <pre>Provider started.</pre>
+      </div>
+    </div>
+  </LogViewer>
 </template>
 ```
 

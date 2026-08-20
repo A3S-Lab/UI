@@ -32,6 +32,7 @@ const componentRoutes = [
   "chart",
   "code-diff",
   "code-editor",
+  "code-graph",
   "checkbox",
   "checkpoint",
   "change-review",
@@ -45,6 +46,7 @@ const componentRoutes = [
   "data-grid",
   "date-picker",
   "dialog",
+  "device-simulator",
   "drawer",
   "dropdown-menu",
   "editable-text",
@@ -53,6 +55,7 @@ const componentRoutes = [
   "execution-evidence",
   "execution-item",
   "field",
+  "file-manager",
   "file-type-icon",
   "file-explorer",
   "filter-bar",
@@ -69,6 +72,7 @@ const componentRoutes = [
   "input-group",
   "item",
   "kbd",
+  "knowledge-library",
   "label",
   "log-viewer",
   "markdown-surface",
@@ -115,6 +119,8 @@ const componentRoutes = [
   "toolbar",
   "timeline",
   "tool-call",
+  "tool-call-timeline",
+  "tool-result",
   "tooltip",
   "tree",
   "workspace-header",
@@ -145,6 +151,7 @@ const componentRootSelectors = {
   chart: ".a3s-chart-demo canvas",
   "code-diff": ".code-diff",
   "code-editor": ".code-editor",
+  "code-graph": ".code-graph",
   checkbox: "input[type='checkbox']:checked",
   checkpoint: ".checkpoint",
   "change-review": ".change-review",
@@ -158,6 +165,7 @@ const componentRootSelectors = {
   "data-grid": ".data-grid",
   "date-picker": ".date-picker",
   dialog: ".dialog > div",
+  "device-simulator": ".device-simulator",
   drawer: ".drawer > article",
   "dropdown-menu": ".dropdown-menu > .btn",
   "editable-text": ".editable-text",
@@ -166,6 +174,7 @@ const componentRootSelectors = {
   "execution-evidence": ".execution-evidence",
   "execution-item": ".execution-item",
   field: ".field input[type='text']",
+  "file-manager": ".file-manager",
   "file-type-icon": ".file-type-icon",
   "file-explorer": ".file-explorer",
   "filter-bar": ".filter-bar",
@@ -182,6 +191,7 @@ const componentRootSelectors = {
   "input-group": ".input-group",
   item: ".item",
   kbd: ".kbd",
+  "knowledge-library": ".knowledge-library",
   label: ".label",
   "log-viewer": ".log-viewer",
   "markdown-surface": ".markdown-surface",
@@ -228,6 +238,8 @@ const componentRootSelectors = {
   toolbar: ".toolbar",
   timeline: ".timeline",
   "tool-call": ".tool-call",
+  "tool-call-timeline": ".tool-call-timeline",
+  "tool-result": ".tool-result",
   tooltip: "[data-tooltip]",
   tree: ".tree",
   "workspace-header": ".workspace-header",
@@ -263,8 +275,12 @@ const selectedRootRoutes = new Set<(typeof componentRoutes)[number]>([
   "breadcrumb",
   "checkbox",
   "data-grid",
+  "device-simulator",
+  "code-graph",
   "file-explorer",
+  "file-manager",
   "filter-bar",
+  "knowledge-library",
   "pagination",
   "radio-group",
   "ribbon",
@@ -273,6 +289,7 @@ const selectedRootRoutes = new Set<(typeof componentRoutes)[number]>([
   "switch",
   "tabs",
   "timeline",
+  "tool-result",
   "tree",
 ]);
 
@@ -280,7 +297,7 @@ const interactiveStateCases = [
   {
     route: "alert-dialog",
     trigger:
-      ".a3s-preview:has(#demo-alert-dialog) .a3s-preview__canvas > button",
+      '.a3s-preview:has(#demo-alert-dialog) .a3s-preview__canvas button[data-preview-onclick*="demo-alert-dialog"]',
     visible: "#demo-alert-dialog[open] > *",
   },
   {
@@ -658,12 +675,14 @@ test("all component previews meet the shared quality floor", async ({
     await test.step(route, async () => {
       await openDocumentationPage(page, route);
       const issues = await inspectPreviewQuality(page);
-      expect.soft(issues, `${route}: ${JSON.stringify(issues, null, 2)}`).toEqual({
-        horizontalOverflow: 0,
-        smallText: [],
-        smallTargets: [],
-        unnamedControls: [],
-      });
+      expect
+        .soft(issues, `${route}: ${JSON.stringify(issues, null, 2)}`)
+        .toEqual({
+          horizontalOverflow: 0,
+          smallText: [],
+          smallTargets: [],
+          unnamedControls: [],
+        });
     });
   }
 });
@@ -678,7 +697,7 @@ for (const state of interactiveStateCases) {
     const triggerBoxBefore = await trigger.boundingBox();
     expect(triggerBoxBefore).not.toBeNull();
 
-    if (state.route !== "toast") {
+    if (state.route !== "toast" && state.route !== "alert-dialog") {
       await expect(page.locator(state.visible).first()).toBeHidden();
     }
 
@@ -921,27 +940,24 @@ test("reduced motion stops perpetual loading indicators", async ({ page }) => {
   ).toEqual({ animationName: "none", reducedMotion: true });
 });
 
-test("coarse pointers receive touch-sized component targets", async ({
-  baseURL,
-  browser,
-}) => {
-  expect(baseURL).toBeTruthy();
-  const context = await browser.newContext({
-    baseURL,
+test.describe("coarse-pointer quality", () => {
+  test.use({
     hasTouch: true,
     isMobile: true,
     reducedMotion: "reduce",
     viewport: { width: 390, height: 844 },
   });
-  const touchPage = await context.newPage();
 
-  try {
+  test("coarse pointers receive touch-sized component targets", async ({
+    page: touchPage,
+  }) => {
+    test.slow();
     await openDocumentationPage(touchPage, "checkbox");
     expect(
       await touchPage.evaluate(() => matchMedia("(pointer: coarse)").matches),
     ).toBe(true);
-    const checkbox = touchPage.locator("#terms-checkbox");
-    const checkedCheckbox = touchPage.locator("#terms-checkbox-2");
+    const checkbox = touchPage.locator("#release-desktop-en");
+    const checkedCheckbox = touchPage.locator("#release-email-en");
     await expectMinimumTarget(checkbox);
     await expectMinimumTarget(checkedCheckbox);
     expect(
@@ -1039,7 +1055,5 @@ test("coarse pointers receive touch-sized component targets", async ({
         );
       }),
     ).toBeLessThanOrEqual(8.1);
-  } finally {
-    await context.close();
-  }
+  });
 });

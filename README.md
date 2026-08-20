@@ -135,7 +135,7 @@ The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) is a b
 
 ## Documentation languages and versions
 
-The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation.
+The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation. Every current component and Harness integration guide presents HTML, React, and Vue through one persistent tab set with framework-correct installation, required imports, highlighted copyable examples, and matching hooks or composables where the public contract has behavior.
 
 | Version  | 简体中文                                               | English                                                   |
 | -------- | ------------------------------------------------------ | --------------------------------------------------------- |

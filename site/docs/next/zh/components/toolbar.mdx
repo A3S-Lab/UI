@@ -49,7 +49,20 @@ import { Toolbar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Toolbar>组件内容</Toolbar>
+    <Toolbar aria-label="Formatting">
+      <div role="group" aria-label="Text style">
+        <button type="button" aria-pressed="true">
+          粗体
+        </button>
+        <button type="button" aria-pressed="false">
+          斜体
+        </button>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-label="Insert">
+        <button type="button">链接</button>
+      </div>
+    </Toolbar>
   );
 }
 ```
@@ -59,13 +72,21 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Toolbar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Toolbar>组件内容</Toolbar>
+  <Toolbar aria-label="Formatting">
+    <div role="group" aria-label="Text style">
+      <button type="button" aria-pressed="true">粗体</button
+      ><button type="button" aria-pressed="false">斜体</button>
+    </div>
+    <hr role="separator" />
+    <div role="group" aria-label="Insert">
+      <button type="button">链接</button>
+    </div>
+  </Toolbar>
 </template>
 ```
 

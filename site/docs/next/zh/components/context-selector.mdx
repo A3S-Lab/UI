@@ -45,7 +45,13 @@ import { ContextSelector, useContextSelector } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useContextSelector();
   return (
-    <ContextSelector ref={control.ref}>组件内容</ContextSelector>
+    <ContextSelector ref={control.ref} data-kind="workspace">
+      <span data-context-label="">工作区</span>
+      <select aria-label="工作区">
+        <option>A3S UI</option>
+      </select>
+      <span data-context-description="">文件和任务历史限定在此范围。</span>
+    </ContextSelector>
   );
 }
 ```
@@ -55,7 +61,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ContextSelector, useContextSelector } from "@a3s-lab/ui/vue";
 
 const control = useContextSelector();
@@ -63,7 +69,13 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ContextSelector ref="componentRef">组件内容</ContextSelector>
+  <ContextSelector ref="componentRef" data-kind="workspace">
+    <span data-context-label="">工作区</span>
+    <select aria-label="工作区">
+      <option>A3S UI</option>
+    </select>
+    <span data-context-description="">文件和任务历史限定在此范围。</span>
+  </ContextSelector>
 </template>
 ```
 

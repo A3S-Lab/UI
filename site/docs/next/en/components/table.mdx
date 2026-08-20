@@ -241,7 +241,9 @@ import { Table, useTable } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useTable();
   return (
-    <Table ref={control.ref}><table><caption>Component summary</caption><tbody><tr><th scope="row">Name</th><td>Component content</td></tr></tbody></table></Table>
+    <Table ref={control.ref}>
+      <table className="table"><caption>Release environments</caption><thead><tr><th scope="col">Name</th><th scope="col">State</th></tr></thead><tbody><tr><th scope="row">Production</th><td>Healthy</td></tr></tbody></table>
+    </Table>
   );
 }
 ```
@@ -251,7 +253,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Table, useTable } from "@a3s-lab/ui/vue";
 
 const control = useTable();
@@ -259,7 +261,9 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Table ref="componentRef"><table><caption>Component summary</caption><tbody><tr><th scope="row">Name</th><td>Component content</td></tr></tbody></table></Table>
+  <Table ref="componentRef">
+    <table class="table"><caption>Release environments</caption><thead><tr><th scope="col">Name</th><th scope="col">State</th></tr></thead><tbody><tr><th scope="row">Production</th><td>Healthy</td></tr></tbody></table>
+  </Table>
 </template>
 ```
 

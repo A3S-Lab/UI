@@ -153,7 +153,8 @@
   }
 
   .tree [role="treeitem"]:focus-visible > [data-tree-row] {
-    @apply ring-ring ring-2;
+    outline: var(--a3s-focus-outline);
+    outline-offset: -2px;
   }
 
   .tree [data-tree-row] > svg:not([class*="size-"]) {
@@ -208,7 +209,12 @@
   }
 
   .sidebar nav h3 {
-    @apply text-sidebar-foreground/70 ring-sidebar-ring h-8 rounded-md px-2 text-xs font-medium focus-visible:ring-2 [&>svg]:size-4 transition-[margin,opacity] duration-200 ease-linear;
+    @apply text-sidebar-foreground/70 h-8 rounded-sm px-2 text-xs font-medium [&>svg]:size-4 transition-[margin,opacity] duration-200 ease-linear;
+  }
+
+  .sidebar nav h3:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .sidebar nav > section > [role="group"] > ul {
@@ -221,7 +227,13 @@
 
   .sidebar nav li > :is(a, button),
   .sidebar nav li > details > summary {
-    @apply ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground gap-2 rounded-md p-2 text-sm focus-visible:ring-2 text-left focus-visible:outline-hidden data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>svg]:shrink-0 [&>svg]:size-4;
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground gap-2 rounded-sm px-2 py-1.5 text-sm text-left data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>svg]:shrink-0 [&>svg]:size-4;
+  }
+
+  .sidebar nav li > :is(a, button):focus-visible,
+  .sidebar nav li > details > summary:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .sidebar
@@ -233,21 +245,7 @@
     li
     > details
     > summary:is([aria-current="page"], [data-active="true"]) {
-    @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium;
-  }
-
-  .sidebar
-    nav
-    li
-    > :is(a, button):is([aria-current="page"], [data-active="true"])
-    > svg,
-  .sidebar
-    nav
-    li
-    > details
-    > summary:is([aria-current="page"], [data-active="true"])
-    > svg {
-    color: var(--a3s-accent);
+    @apply bg-sidebar-accent text-sidebar-accent-foreground font-semibold;
   }
 
   .sidebar nav li > :is(a, button):not([data-variant]),
@@ -259,14 +257,14 @@
 
   .sidebar nav li > :is(a, button)[data-variant="outline"],
   .sidebar nav li > details > summary[data-variant="outline"] {
-    @apply bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:shadow-[0_0_0_1px_var(--sidebar-accent)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+    @apply border-sidebar-border bg-background border shadow-none hover:border-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
   }
 
   .sidebar nav li > :is(a, button):not([data-size]),
   .sidebar nav li > details > summary:not([data-size]),
   .sidebar nav li > :is(a, button)[data-size="default"],
   .sidebar nav li > details > summary[data-size="default"] {
-    @apply h-8 text-sm;
+    @apply h-9 text-sm;
   }
 
   .sidebar nav li > :is(a, button)[data-size="sm"],
@@ -293,7 +291,7 @@
 
   .sidebar nav ul ul > li > :is(a, button),
   .sidebar nav ul ul > li > details > summary {
-    @apply text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground h-7 gap-2 rounded-md px-2 text-sm focus-visible:ring-2 [&>svg]:size-4;
+    @apply text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground h-8 gap-2 rounded-sm px-2 text-sm [&>svg]:size-4;
   }
   /* Progress */
   .progress {
@@ -392,14 +390,38 @@
     .field > input[type="range"],
     .input[type="range"]
   )::-webkit-slider-thumb {
-    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)] focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] size-4 rounded-full border bg-white shadow-none transition-[border-color,background-color] -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)];
   }
 
   :is(.field > input[type="range"], .input[type="range"])::-moz-range-thumb {
-    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] size-4 rounded-full border bg-white shadow-none transition-[border-color,background-color];
   }
 
   :is(.field > input[type="range"], .input[type="range"])::-ms-thumb {
-    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] size-4 rounded-full border bg-white shadow-none transition-[border-color,background-color];
+  }
+
+  :is(
+      .field > input[type="range"],
+      .input[type="range"]
+    ):focus-visible::-webkit-slider-thumb {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  :is(
+      .field > input[type="range"],
+      .input[type="range"]
+    ):focus-visible::-moz-range-thumb {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  :is(
+      .field > input[type="range"],
+      .input[type="range"]
+    ):focus-visible::-ms-thumb {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 }

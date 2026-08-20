@@ -283,7 +283,68 @@ import { Popover, usePopover } from "@a3s-lab/ui/react";
 export function Example() {
   const control = usePopover();
   return (
-    <Popover ref={control.ref}>组件内容</Popover>
+    <Popover ref={control.ref} id="demo-popover">
+      <button
+        id="demo-popover-trigger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="demo-popover-popover"
+        className="btn"
+        data-variant="outline"
+      >
+        Open popover
+      </button>
+      <div
+        id="demo-popover-popover"
+        data-popover=""
+        aria-hidden="true"
+        className="w-72"
+      >
+        <header>
+          <h4>Dimensions</h4>
+          <p>Set the dimensions for the layer.</p>
+        </header>
+        <form className="grid gap-2">
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-width">Width</label>
+            <input
+              type="text"
+              id="demo-popover-width"
+              defaultValue="100%"
+              className="input col-span-2 h-8"
+              autoFocus
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-max-width">Max. width</label>
+            <input
+              type="text"
+              id="demo-popover-max-width"
+              defaultValue="300px"
+              className="input col-span-2 h-8"
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-height">Height</label>
+            <input
+              type="text"
+              id="demo-popover-height"
+              defaultValue="25px"
+              className="input col-span-2 h-8"
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-max-height">Max. height</label>
+            <input
+              type="text"
+              id="demo-popover-max-height"
+              defaultValue="none"
+              className="input col-span-2 h-8"
+            />
+          </div>
+        </form>
+      </div>
+    </Popover>
   );
 }
 ```
@@ -293,7 +354,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Popover, usePopover } from "@a3s-lab/ui/vue";
 
 const control = usePopover();
@@ -301,7 +362,68 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Popover ref="componentRef">组件内容</Popover>
+  <Popover ref="componentRef" id="demo-popover">
+    <button
+      id="demo-popover-trigger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="demo-popover-popover"
+      class="btn"
+      data-variant="outline"
+    >
+      Open popover
+    </button>
+    <div
+      id="demo-popover-popover"
+      data-popover=""
+      aria-hidden="true"
+      class="w-72"
+    >
+      <header>
+        <h4>Dimensions</h4>
+        <p>Set the dimensions for the layer.</p>
+      </header>
+      <form class="grid gap-2">
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-width">Width</label>
+          <input
+            type="text"
+            id="demo-popover-width"
+            value="100%"
+            class="input col-span-2 h-8"
+            autofocus
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-max-width">Max. width</label>
+          <input
+            type="text"
+            id="demo-popover-max-width"
+            value="300px"
+            class="input col-span-2 h-8"
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-height">Height</label>
+          <input
+            type="text"
+            id="demo-popover-height"
+            value="25px"
+            class="input col-span-2 h-8"
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-max-height">Max. height</label>
+          <input
+            type="text"
+            id="demo-popover-max-height"
+            value="none"
+            class="input col-span-2 h-8"
+          />
+        </div>
+      </form>
+    </div>
+  </Popover>
 </template>
 ```
 

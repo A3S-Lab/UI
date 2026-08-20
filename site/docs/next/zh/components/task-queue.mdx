@@ -45,7 +45,18 @@ import { TaskQueue } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskQueue aria-label="Task Queue">组件内容</TaskQueue>
+    <TaskQueue data-state="running" aria-labelledby="queue-title">
+      <header>
+        <h2 id="queue-title">任务队列</h2>
+        <span data-queue-status="">运行中</span>
+      </header>
+      <ol>
+        <li data-state="queued">
+          <strong>运行视觉检查</strong>
+          <span>等待中</span>
+        </li>
+      </ol>
+    </TaskQueue>
   );
 }
 ```
@@ -55,13 +66,22 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskQueue } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskQueue aria-label="Task Queue">组件内容</TaskQueue>
+  <TaskQueue data-state="running" aria-labelledby="queue-title">
+    <header>
+      <h2 id="queue-title">任务队列</h2>
+      <span data-queue-status="">运行中</span>
+    </header>
+    <ol>
+      <li data-state="queued">
+        <strong>运行视觉检查</strong><span>等待中</span>
+      </li>
+    </ol>
+  </TaskQueue>
 </template>
 ```
 

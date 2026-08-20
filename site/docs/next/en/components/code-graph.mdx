@@ -52,7 +52,13 @@ export function DependencyGraph({ graph }) {
     },
     onReady(element) { element.setData(graph); },
   });
-  return <CodeGraph ref={control.ref} aria-label="Code dependency graph">{/* Canvas, list, inspector */}</CodeGraph>;
+  return (
+    <CodeGraph ref={control.ref} aria-label="Code dependency graph">
+      <div data-code-graph-viewport tabIndex={0}><canvas data-code-graph-canvas /></div>
+      <ul data-code-graph-list hidden />
+      <aside data-code-graph-inspector hidden aria-label="Node details" />
+    </CodeGraph>
+  );
 }`}
   vue={`<script setup lang="ts">
 import { onMounted } from "vue";
@@ -63,7 +69,13 @@ const control = useCodeGraph({ events: {
 } });
 onMounted(() => control.call("setData", props.graph));
 </script>
-<template><CodeGraph :ref="control.componentRef" aria-label="Code dependency graph"><!-- Canvas, list, inspector --></CodeGraph></template>`}
+<template>
+  <CodeGraph :ref="control.componentRef" aria-label="Code dependency graph">
+    <div data-code-graph-viewport tabindex="0"><canvas data-code-graph-canvas></canvas></div>
+    <ul data-code-graph-list hidden></ul>
+    <aside data-code-graph-inspector hidden aria-label="Node details"></aside>
+  </CodeGraph>
+</template>`}
 />
 
 ## Interaction and fallback

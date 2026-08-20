@@ -275,7 +275,41 @@ import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useCodeEditor();
   return (
-    <CodeEditor ref={control.ref}>Component content</CodeEditor>
+    <CodeEditor
+      ref={control.ref}
+      data-language="typescript"
+      aria-label="Workflow code editor"
+    >
+      <header>
+        <div data-code-editor-file="">
+          <strong>workflow.ts</strong>
+        </div>
+        <div data-code-editor-actions="">
+          <span data-code-editor-language="">TypeScript</span>
+        </div>
+      </header>
+      <section>
+        <textarea
+          aria-label="Workflow TypeScript"
+          spellCheck="false"
+        ></textarea>
+      </section>
+      <footer>
+        <div data-code-editor-info="">
+          <span data-code-editor-state="" aria-live="polite">
+            Saved
+          </span>
+          <span data-code-editor-lines=""></span>
+          <span data-code-editor-characters=""></span>
+        </div>
+        <div data-code-editor-meta="">
+          <output
+            data-code-editor-position=""
+            aria-label="Cursor position"
+          ></output>
+        </div>
+      </footer>
+    </CodeEditor>
   );
 }
 ```
@@ -285,7 +319,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { CodeEditor, useCodeEditor } from "@a3s-lab/ui/vue";
 
 const control = useCodeEditor();
@@ -293,7 +327,34 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <CodeEditor ref="componentRef">Component content</CodeEditor>
+  <CodeEditor
+    ref="componentRef"
+    data-language="typescript"
+    aria-label="Workflow code editor"
+  >
+    <header>
+      <div data-code-editor-file=""><strong>workflow.ts</strong></div>
+      <div data-code-editor-actions="">
+        <span data-code-editor-language="">TypeScript</span>
+      </div>
+    </header>
+    <section>
+      <textarea aria-label="Workflow TypeScript" spellcheck="false"></textarea>
+    </section>
+    <footer>
+      <div data-code-editor-info="">
+        <span data-code-editor-state="" aria-live="polite">Saved</span
+        ><span data-code-editor-lines=""></span
+        ><span data-code-editor-characters=""></span>
+      </div>
+      <div data-code-editor-meta="">
+        <output
+          data-code-editor-position=""
+          aria-label="Cursor position"
+        ></output>
+      </div>
+    </footer>
+  </CodeEditor>
 </template>
 ```
 

@@ -91,7 +91,15 @@ import { StatusBar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <StatusBar>Component content</StatusBar>
+    <StatusBar as="footer" aria-label="Document status">
+      <div data-status-info="">
+        <span data-status-priority="low">Page 1 of 12</span>
+        <span>Saved</span>
+      </div>
+      <div data-status-actions="">
+        <button type="button">Open sync details</button>
+      </div>
+    </StatusBar>
   );
 }
 ```
@@ -101,13 +109,19 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { StatusBar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <StatusBar>Component content</StatusBar>
+  <StatusBar as="footer" aria-label="Document status">
+    <div data-status-info="">
+      <span data-status-priority="low">Page 1 of 12</span><span>Saved</span>
+    </div>
+    <div data-status-actions="">
+      <button type="button">Open sync details</button>
+    </div>
+  </StatusBar>
 </template>
 ```
 

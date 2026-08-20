@@ -94,7 +94,26 @@ import { Stepper } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Stepper aria-label="Stepper"><li>组件内容</li></Stepper>
+    <Stepper aria-label="发布进度" tabIndex="0">
+      <li data-state="success">
+        <span data-step-marker="" aria-hidden="true">
+          1
+        </span>
+        <section>
+          <h3>构建</h3>
+          <p>已完成</p>
+        </section>
+      </li>
+      <li data-state="active" aria-current="step">
+        <span data-step-marker="" aria-hidden="true">
+          2
+        </span>
+        <section>
+          <h3>发布</h3>
+          <p>进行中</p>
+        </section>
+      </li>
+    </Stepper>
   );
 }
 ```
@@ -104,13 +123,27 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Stepper } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Stepper aria-label="Stepper"><li>组件内容</li></Stepper>
+  <Stepper aria-label="发布进度" tabindex="0">
+    <li data-state="success">
+      <span data-step-marker="" aria-hidden="true">1</span>
+      <section>
+        <h3>构建</h3>
+        <p>已完成</p>
+      </section>
+    </li>
+    <li data-state="active" aria-current="step">
+      <span data-step-marker="" aria-hidden="true">2</span>
+      <section>
+        <h3>发布</h3>
+        <p>进行中</p>
+      </section>
+    </li>
+  </Stepper>
 </template>
 ```
 

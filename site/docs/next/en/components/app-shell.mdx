@@ -69,7 +69,28 @@ import { AppShell, useAppShell } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useAppShell();
   return (
-    <AppShell ref={control.ref}>Component content</AppShell>
+    <AppShell ref={control.ref} data-navigation="expanded">
+      <aside data-app-navigation="">
+        <nav aria-label="Workspace">
+          <a href="/tasks" aria-current="page">
+            Tasks
+          </a>
+        </nav>
+      </aside>
+      <main data-app-main="">
+        <header className="workspace-header">
+          <button type="button" data-app-navigation-trigger="">
+            Toggle navigation
+          </button>
+        </header>
+        <div data-app-content="">
+          <section aria-labelledby="workspace-title">
+            <h1 id="workspace-title">Design system workspace</h1>
+            <p>Review the active task and files.</p>
+          </section>
+        </div>
+      </main>
+    </AppShell>
   );
 }
 ```
@@ -79,7 +100,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AppShell, useAppShell } from "@a3s-lab/ui/vue";
 
 const control = useAppShell();
@@ -87,7 +108,26 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <AppShell ref="componentRef">Component content</AppShell>
+  <AppShell ref="componentRef" data-navigation="expanded">
+    <aside data-app-navigation="">
+      <nav aria-label="Workspace">
+        <a href="/tasks" aria-current="page">Tasks</a>
+      </nav>
+    </aside>
+    <main data-app-main="">
+      <header class="workspace-header">
+        <button type="button" data-app-navigation-trigger="">
+          Toggle navigation
+        </button>
+      </header>
+      <div data-app-content="">
+        <section aria-labelledby="workspace-title">
+          <h1 id="workspace-title">Design system workspace</h1>
+          <p>Review the active task and files.</p>
+        </section>
+      </div>
+    </main>
+  </AppShell>
 </template>
 ```
 

@@ -52,7 +52,25 @@ import { AppPage } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <AppPage aria-label="App Page">Component content</AppPage>
+    <AppPage data-width="wide">
+      <header>
+        <div data-page-identity="">
+          <h1>Projects</h1>
+          <p>Durable work context.</p>
+        </div>
+        <div data-page-actions="">
+          <button type="button" className="btn">
+            New project
+          </button>
+        </div>
+      </header>
+      <div data-page-content="">
+        <section aria-labelledby="recent-projects">
+          <h2 id="recent-projects">Recent projects</h2>
+          <p>2 projects updated today.</p>
+        </section>
+      </div>
+    </AppPage>
   );
 }
 ```
@@ -62,13 +80,28 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AppPage } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <AppPage aria-label="App Page">Component content</AppPage>
+  <AppPage data-width="wide">
+    <header>
+      <div data-page-identity="">
+        <h1>Projects</h1>
+        <p>Durable work context.</p>
+      </div>
+      <div data-page-actions="">
+        <button type="button" class="btn">New project</button>
+      </div>
+    </header>
+    <div data-page-content="">
+      <section aria-labelledby="recent-projects">
+        <h2 id="recent-projects">Recent projects</h2>
+        <p>2 projects updated today.</p>
+      </section>
+    </div>
+  </AppPage>
 </template>
 ```
 

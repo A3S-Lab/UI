@@ -10,20 +10,20 @@
 
 .a3s-product-application [data-primary] {
   border-color: transparent;
-  background: var(--ui-ink);
-  color: var(--ui-paper);
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
   box-shadow: none;
 }
 
 .a3s-product-application [data-primary]:not(:disabled):hover {
-  background: color-mix(in srgb, var(--ui-ink) 88%, var(--ui-paper));
-  color: var(--ui-paper);
+  background: var(--ui-action-hover, var(--ui-muted));
+  color: var(--ui-action-ink, var(--ui-paper));
   transform: none;
 }
 
 .a3s-product-application [data-primary]:disabled {
-  background: color-mix(in srgb, var(--ui-ink) 22%, var(--ui-paper));
-  color: var(--ui-paper);
+  background: var(--ui-action-disabled, var(--ui-line-strong));
+  color: var(--ui-action-ink, var(--ui-paper));
   opacity: 1;
 }
 
@@ -119,10 +119,8 @@
 }
 
 .product-start__composer > .product-composer {
-  border-radius: 1rem;
-  box-shadow:
-    0 1.25rem 3rem -2rem rgb(15 23 42 / 24%),
-    0 1px 2px rgb(15 23 42 / 5%);
+  border-radius: var(--product-panel-radius);
+  box-shadow: none;
 }
 
 .product-start__assurance {
@@ -141,9 +139,7 @@
 
 .product-assistant__composer > .product-composer {
   border-color: var(--ui-line);
-  box-shadow:
-    0 1.25rem 3rem -2rem rgb(15 23 42 / 20%),
-    0 1px 2px rgb(15 23 42 / 5%);
+  box-shadow: none;
 }
 
 .product-projects,
@@ -158,8 +154,8 @@
 
 .product-projects [data-primary],
 .product-automation [data-primary] {
-  background: var(--ui-ink);
-  color: var(--ui-paper);
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-projects__owned > a,

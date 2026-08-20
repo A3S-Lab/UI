@@ -141,9 +141,7 @@ Skeleton blocks are direction-neutral. Use logical layout utilities around them 
 import { Skeleton } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Skeleton>Component content</Skeleton>
-  );
+  return <Skeleton className="h-4 w-[150px]" />;
 }
 ```
 
@@ -152,14 +150,11 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Skeleton } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Skeleton>Component content</Skeleton>
-</template>
+<template><Skeleton class="h-4 w-[150px]" /></template>
 ```
 
 The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

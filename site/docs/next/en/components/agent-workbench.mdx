@@ -203,7 +203,24 @@ import { AgentWorkbench } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <AgentWorkbench aria-label="Agent Workbench">Component content</AgentWorkbench>
+    <AgentWorkbench aria-label="Agent workbench">
+      <aside data-agent-context="">
+        <nav aria-label="Project context">
+          <a href="#files">Files</a>
+        </nav>
+      </aside>
+      <article data-agent-canvas="">
+        <h1>Release verification</h1>
+        <p>Review the current run and evidence.</p>
+      </article>
+      <aside data-agent-inspector="">
+        <h2>Inspector</h2>
+        <p>3 changed files</p>
+      </aside>
+      <section data-agent-activity="">
+        <output aria-live="polite">Ready</output>
+      </section>
+    </AgentWorkbench>
   );
 }
 ```
@@ -213,13 +230,27 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AgentWorkbench } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <AgentWorkbench aria-label="Agent Workbench">Component content</AgentWorkbench>
+  <AgentWorkbench aria-label="Agent workbench">
+    <aside data-agent-context="">
+      <nav aria-label="Project context"><a href="#files">Files</a></nav>
+    </aside>
+    <article data-agent-canvas="">
+      <h1>Release verification</h1>
+      <p>Review the current run and evidence.</p>
+    </article>
+    <aside data-agent-inspector="">
+      <h2>Inspector</h2>
+      <p>3 changed files</p>
+    </aside>
+    <section data-agent-activity="">
+      <output aria-live="polite">Ready</output>
+    </section>
+  </AgentWorkbench>
 </template>
 ```
 

@@ -37,3 +37,47 @@ Represent save, validation, and health status with adjacent [Badge](/components/
 ## Accessibility
 
 Keep one page-level `<h1>` inside the identity region. Icon buttons need accessible names. Editable names should use a labeled input in production; `contenteditable` is used only to demonstrate live text in the preview.
+
+## React
+
+```tsx
+export function WorkspaceHeaderExample() {
+  return (
+    <header className="workspace-header">
+      <div data-workspace-leading="">
+        <a href="/projects" aria-label="Back to projects">
+          Projects
+        </a>
+      </div>
+      <div data-workspace-identity="">
+        <h1>Resource name</h1>
+        <span>Metadata</span>
+      </div>
+      <div data-workspace-actions="">
+        <button type="button">Share</button>
+      </div>
+    </header>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <header class="workspace-header">
+    <div data-workspace-leading="">
+      <a href="/projects" aria-label="Back to projects">Projects</a>
+    </div>
+    <div data-workspace-identity="">
+      <h1>Resource name</h1>
+      <span>Metadata</span>
+    </div>
+    <div data-workspace-actions=""><button type="button">Share</button></div>
+  </header>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

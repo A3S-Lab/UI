@@ -64,7 +64,9 @@ import { StatusBadge } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <StatusBadge>组件内容</StatusBadge>
+    <StatusBadge data-state="active" data-indicator="">
+      运行中
+    </StatusBadge>
   );
 }
 ```
@@ -74,13 +76,12 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { StatusBadge } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <StatusBadge>组件内容</StatusBadge>
+  <StatusBadge data-state="active" data-indicator="">运行中</StatusBadge>
 </template>
 ```
 

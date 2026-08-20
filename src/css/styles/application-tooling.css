@@ -84,7 +84,7 @@
   }
 
   .context-menu [role="menu"]:focus-visible {
-    outline: 2px solid var(--ring);
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
     outline-offset: -2px;
   }
 
@@ -175,7 +175,7 @@
     width: 0.4375rem;
     height: 0.4375rem;
     border-radius: 999px;
-    background: var(--a3s-blue, var(--primary));
+    background: var(--a3s-accent, var(--ring));
   }
 
   .file-explorer [data-file-editor] {
@@ -193,12 +193,12 @@
   }
 
   .file-explorer [data-file-editor]:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--ring) 38%, transparent);
-    outline-offset: 1px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .file-explorer [data-file-editor][aria-invalid="true"]:focus-visible {
-    outline-color: color-mix(in srgb, var(--destructive) 42%, transparent);
+    outline-color: var(--destructive);
   }
 
   .file-explorer [data-file-rename-error] {
@@ -262,17 +262,25 @@
 
   /* Code Graph */
   .code-graph {
-    --code-graph-background: #f3f7fd;
-    --code-graph-edge: rgb(76 104 145 / 30%);
-    --code-graph-edge-active: #1456f0;
-    --code-graph-label: #142033;
-    --code-graph-label-muted: #526078;
-    --code-graph-node: #748095;
-    --code-graph-node-accent: #1456f0;
-    --code-graph-node-config: #a86412;
-    --code-graph-node-entry: #16845b;
-    --code-graph-node-test: #6f55c8;
-    --code-graph-selected: #0f46c7;
+    --code-graph-background: color-mix(
+      in srgb,
+      var(--a3s-selection, var(--accent)) 45%,
+      var(--a3s-canvas, var(--background))
+    );
+    --code-graph-edge: color-mix(
+      in srgb,
+      var(--a3s-muted, var(--muted-foreground)) 32%,
+      transparent
+    );
+    --code-graph-edge-active: var(--a3s-accent, var(--ring));
+    --code-graph-label: var(--a3s-ink, var(--foreground));
+    --code-graph-label-muted: var(--a3s-muted, var(--muted-foreground));
+    --code-graph-node: var(--a3s-subtle, var(--muted-foreground));
+    --code-graph-node-accent: var(--a3s-accent, var(--ring));
+    --code-graph-node-config: var(--a3s-warning, var(--warning, #a86412));
+    --code-graph-node-entry: var(--a3s-green, var(--success, #16845b));
+    --code-graph-node-test: var(--a3s-purple, #5b57d9);
+    --code-graph-selected: var(--a3s-accent-hover, var(--ring));
     min-height: 32rem;
     overflow: hidden;
     border: 1px solid var(--border);
@@ -281,19 +289,27 @@
     color: var(--card-foreground);
   }
 
-  :is(.dark, [data-theme="dark"]) .code-graph,
+  :is(.dark, [data-theme="dark"], [data-a3s-theme="dark"]) .code-graph,
   .code-graph.dark {
-    --code-graph-background: #0d1118;
-    --code-graph-edge: rgb(122 142 170 / 34%);
-    --code-graph-edge-active: #6ca3ff;
-    --code-graph-label: #eef4ff;
-    --code-graph-label-muted: #a8b3c6;
-    --code-graph-node: #7c899f;
-    --code-graph-node-accent: #6ca3ff;
-    --code-graph-node-config: #efb861;
-    --code-graph-node-entry: #69d3a5;
-    --code-graph-node-test: #9b92ff;
-    --code-graph-selected: #ffffff;
+    --code-graph-background: color-mix(
+      in srgb,
+      var(--a3s-terminal-raised, #172033) 58%,
+      var(--a3s-terminal, #101828)
+    );
+    --code-graph-edge: color-mix(
+      in srgb,
+      var(--a3s-terminal-muted, #91a1bb) 34%,
+      transparent
+    );
+    --code-graph-edge-active: var(--a3s-terminal-accent, #80aaff);
+    --code-graph-label: var(--a3s-terminal-ink, #dbe7fb);
+    --code-graph-label-muted: var(--a3s-terminal-muted, #91a1bb);
+    --code-graph-node: var(--a3s-terminal-muted, #91a1bb);
+    --code-graph-node-accent: var(--a3s-terminal-accent, #80aaff);
+    --code-graph-node-config: var(--a3s-terminal-warning, #ffd28a);
+    --code-graph-node-entry: var(--a3s-green, #57c795);
+    --code-graph-node-test: var(--a3s-purple, #8378f0);
+    --code-graph-selected: var(--a3s-terminal-ink, #dbe7fb);
   }
 
   .code-graph > header {
@@ -384,8 +400,8 @@
   }
 
   .code-graph [data-code-graph-viewport]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: -3px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: -2px;
   }
 
   .code-graph [data-code-graph-empty] {
@@ -422,8 +438,12 @@
   }
 
   .code-graph [data-code-node][aria-selected="true"] > button {
-    border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
-    background: color-mix(in srgb, var(--primary) 8%, var(--card));
+    border-color: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 38%,
+      var(--border)
+    );
+    background: var(--a3s-selection, var(--accent));
   }
 
   .code-graph [data-node-copy] > strong {

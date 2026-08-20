@@ -256,3 +256,166 @@ A3S UI uses the native `<dialog>` element and `showModal()`. This differs from s
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function DialogExample() {
+  return (
+    <dialog
+      id="demo-dialog-edit-profile"
+      className="dialog"
+      aria-labelledby="demo-dialog-edit-profile-title"
+      aria-describedby="demo-dialog-edit-profile-description"
+    >
+      <div className="sm:max-w-sm">
+        <header>
+          <h2 id="demo-dialog-edit-profile-title">Edit profile</h2>
+          <p id="demo-dialog-edit-profile-description">
+            Make changes to your profile here. Click save when you're done.
+          </p>
+        </header>
+        <section>
+          <form className="grid gap-4">
+            <div className="grid gap-3">
+              <label className="label" htmlFor="demo-dialog-edit-profile-name">
+                Name
+              </label>
+              <input
+                className="input"
+                type="text"
+                defaultValue="Pedro Duarte"
+                id="demo-dialog-edit-profile-name"
+                autoFocus
+              />
+            </div>
+            <div className="grid gap-3">
+              <label
+                className="label"
+                htmlFor="demo-dialog-edit-profile-username"
+              >
+                Username
+              </label>
+              <input
+                className="input"
+                type="text"
+                defaultValue="@peduarte"
+                id="demo-dialog-edit-profile-username"
+              />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button className="btn" data-variant="outline">
+            Cancel
+          </button>
+          <button className="btn">Save changes</button>
+        </footer>
+        <button
+          type="button"
+          className="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          aria-label="Close dialog"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-x-icon lucide-x"
+          >
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </dialog>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <dialog
+    id="demo-dialog-edit-profile"
+    class="dialog"
+    aria-labelledby="demo-dialog-edit-profile-title"
+    aria-describedby="demo-dialog-edit-profile-description"
+  >
+    <div class="sm:max-w-sm">
+      <header>
+        <h2 id="demo-dialog-edit-profile-title">Edit profile</h2>
+        <p id="demo-dialog-edit-profile-description">
+          Make changes to your profile here. Click save when you're done.
+        </p>
+      </header>
+      <section>
+        <form class="grid gap-4">
+          <div class="grid gap-3">
+            <label class="label" for="demo-dialog-edit-profile-name"
+              >Name</label
+            >
+            <input
+              class="input"
+              type="text"
+              value="Pedro Duarte"
+              id="demo-dialog-edit-profile-name"
+              autofocus
+            />
+          </div>
+          <div class="grid gap-3">
+            <label class="label" for="demo-dialog-edit-profile-username"
+              >Username</label
+            >
+            <input
+              class="input"
+              type="text"
+              value="@peduarte"
+              id="demo-dialog-edit-profile-username"
+            />
+          </div>
+        </form>
+      </section>
+      <footer>
+        <button class="btn" data-variant="outline">Cancel</button>
+        <button class="btn">Save changes</button>
+      </footer>
+      <button
+        type="button"
+        class="btn"
+        data-variant="ghost"
+        data-size="icon-sm"
+        aria-label="Close dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-x-icon lucide-x"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </dialog>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

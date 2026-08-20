@@ -83,3 +83,41 @@
 ## Accessibility
 
 页面包含多个页脚地标时，应为状态栏提供名称。每个滑块和图标按钮都需要无障碍名称；异步保存失败应通过独立实时区域播报。
+
+## React
+
+```tsx
+export function StatusBarExample() {
+  return (
+    <footer className="status-bar" aria-label="文档状态">
+      <div data-status-info="">
+        <span data-status-priority="low">第 1 页，共 12 页</span>
+        <span>已保存</span>
+      </div>
+      <div data-status-actions="">
+        <button type="button">打开同步详情</button>
+      </div>
+    </footer>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <footer class="status-bar" aria-label="文档状态">
+    <div data-status-info="">
+      <span data-status-priority="low">第 1 页，共 12 页</span
+      ><span>已保存</span>
+    </div>
+    <div data-status-actions="">
+      <button type="button">打开同步详情</button>
+    </div>
+  </footer>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

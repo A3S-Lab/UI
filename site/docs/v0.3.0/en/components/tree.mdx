@@ -480,3 +480,77 @@ Logical indentation, guide lines, and chevrons follow document direction. In RTL
 | `ArrowRight` / `ArrowLeft` | Expands, enters, collapses, or returns to a parent; directions reverse in RTL. |
 | `Enter` / `Space`          | Selects the focused node.                                                      |
 | Printable characters       | Moves to the next visible node whose label starts with the typed text.         |
+
+## React
+
+```tsx
+export function TreeExample() {
+  return (
+    <div className="tree" role="tree" aria-label="Project files">
+      <div
+        role="treeitem"
+        aria-label="src"
+        aria-expanded="true"
+        aria-selected="false"
+        data-value="src"
+      >
+        <div data-tree-row="">
+          <svg aria-hidden="true">{/* folder icon */}</svg>
+          <span data-tree-label="">src</span>
+        </div>
+        <div role="group">
+          <div
+            role="treeitem"
+            aria-label="tree.js"
+            aria-selected="true"
+            data-value="src/tree.js"
+          >
+            <div data-tree-row="">
+              <svg aria-hidden="true">{/* file icon */}</svg>
+              <span data-tree-label="">tree.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="tree" role="tree" aria-label="Project files">
+    <div
+      role="treeitem"
+      aria-label="src"
+      aria-expanded="true"
+      aria-selected="false"
+      data-value="src"
+    >
+      <div data-tree-row="">
+        <svg aria-hidden="true"><!-- folder icon --></svg>
+        <span data-tree-label="">src</span>
+      </div>
+      <div role="group">
+        <div
+          role="treeitem"
+          aria-label="tree.js"
+          aria-selected="true"
+          data-value="src/tree.js"
+        >
+          <div data-tree-row="">
+            <svg aria-hidden="true"><!-- file icon --></svg>
+            <span data-tree-label="">tree.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -43,7 +43,16 @@ import { PlanStep } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <PlanStep>组件内容</PlanStep>
+    <PlanStep data-state="active" aria-current="step">
+      <span data-plan-marker="" aria-hidden="true">
+        2
+      </span>
+      <div data-step-identity="">
+        <h3>验证响应式行为</h3>
+        <p data-step-description="">在 390 px 和 1280 px 宽度下验证布局。</p>
+      </div>
+      <span data-plan-step-status="">进行中</span>
+    </PlanStep>
   );
 }
 ```
@@ -53,13 +62,19 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { PlanStep } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <PlanStep>组件内容</PlanStep>
+  <PlanStep data-state="active" aria-current="step">
+    <span data-plan-marker="" aria-hidden="true">2</span>
+    <div data-step-identity="">
+      <h3>验证响应式行为</h3>
+      <p data-step-description="">在 390 px 和 1280 px 宽度下验证布局。</p>
+    </div>
+    <span data-plan-step-status="">进行中</span>
+  </PlanStep>
 </template>
 ```
 

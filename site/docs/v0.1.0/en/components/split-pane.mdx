@@ -52,3 +52,45 @@ Set `aria-disabled="true"` on the separator to disable resizing. Vertical layout
 ## Accessibility
 
 The controller adds separator orientation, value bounds, current value, percentage text, and keyboard focus. Arrow keys resize by `data-step`; Home and End move to bounds; double click restores the default.
+
+## React
+
+```tsx
+export function SplitPaneExample() {
+  return (
+    <div className="split-pane" data-value="40">
+      <section>Primary pane</section>
+      <hr
+        role="separator"
+        aria-label="Resize inspector"
+        data-min="20"
+        data-max="80"
+        data-step="5"
+      />
+      <section>Secondary pane</section>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="split-pane" data-value="40">
+    <section>Primary pane</section>
+    <hr
+      role="separator"
+      aria-label="Resize inspector"
+      data-min="20"
+      data-max="80"
+      data-step="5"
+    />
+    <section>Secondary pane</section>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

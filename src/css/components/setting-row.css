@@ -27,12 +27,24 @@
     gap: 0.5rem;
   }
 
-  .setting-row > [data-setting-control] > :is(input, select, textarea, .select, .input-group) {
+  .setting-row
+    > [data-setting-control]
+    > :is(input, select, textarea, .select, .input-group) {
     max-width: 100%;
   }
 
   .setting-row > [data-setting-control] > .button-group {
     max-width: 100%;
+  }
+
+  .setting-row
+    > [data-setting-control]
+    > label:has(> input[type="checkbox"][role="switch"]) {
+    display: inline-grid;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    place-items: center;
+    cursor: pointer;
   }
 
   .setting-row > [data-setting-message] {

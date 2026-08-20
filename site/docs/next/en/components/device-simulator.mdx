@@ -405,8 +405,102 @@ import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDeviceSimulator();
   return (
-    <DeviceSimulator ref={control.ref} aria-label="Device Simulator">
-      Component content
+    <DeviceSimulator
+      ref={control.ref}
+      data-device="phone"
+      data-orientation="portrait"
+    >
+      <header>
+        <select data-device-simulator-select="" aria-label="Device preset">
+          <option
+            value="phone"
+            data-kind="phone"
+            data-orientation="portrait"
+            data-width="393"
+            data-height="852"
+          >
+            Phone · 393 × 852
+          </option>
+          <option
+            value="desktop"
+            data-kind="desktop"
+            data-orientation="landscape"
+            data-width="1440"
+            data-height="900"
+          >
+            Desktop · 1440 × 900
+          </option>
+          <option value="custom">Custom</option>
+        </select>
+        <input
+          type="number"
+          min="240"
+          max="4000"
+          defaultValue="393"
+          data-device-simulator-width=""
+        />
+        <input
+          type="number"
+          min="180"
+          max="3000"
+          defaultValue="852"
+          data-device-simulator-height=""
+        />
+        <div
+          role="group"
+          aria-label="Orientation"
+          data-device-simulator-orientation=""
+        >
+          <button
+            type="button"
+            aria-pressed="true"
+            data-device-simulator-orientation-value="portrait"
+          >
+            Portrait
+          </button>
+          <button
+            type="button"
+            aria-pressed="false"
+            data-device-simulator-orientation-value="landscape"
+          >
+            Landscape
+          </button>
+        </div>
+        <form data-device-simulator-navigation="">
+          <input
+            type="text"
+            inputmode="url"
+            defaultValue="https://example.com"
+            data-device-simulator-url=""
+          />
+          <button type="submit">Open</button>
+          <button type="button" data-device-simulator-refresh="">
+            Refresh
+          </button>
+        </form>
+      </header>
+      <div data-device-simulator-workspace="">
+        <div data-device-simulator-canvas="">
+          <div data-device-simulator-frame="">
+            <iframe
+              title="Application preview"
+              src="https://example.com"
+              data-device-simulator-preview=""
+            ></iframe>
+            <span hidden data-device-simulator-screen-status=""></span>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <output aria-live="polite" data-device-simulator-status=""></output>
+        <code data-device-simulator-command=""></code>
+        <button type="button" data-device-simulator-copy-command="">
+          Copy native command
+        </button>
+        <button type="button" data-device-simulator-native="">
+          Open native preview
+        </button>
+      </footer>
     </DeviceSimulator>
   );
 }
@@ -417,7 +511,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { DeviceSimulator, useDeviceSimulator } from "@a3s-lab/ui/vue";
 
 const control = useDeviceSimulator();
@@ -425,9 +519,101 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <DeviceSimulator ref="componentRef" aria-label="Device Simulator"
-    >Component content</DeviceSimulator
+  <DeviceSimulator
+    ref="componentRef"
+    data-device="phone"
+    data-orientation="portrait"
   >
+    <header>
+      <select data-device-simulator-select="" aria-label="Device preset">
+        <option
+          value="phone"
+          data-kind="phone"
+          data-orientation="portrait"
+          data-width="393"
+          data-height="852"
+        >
+          Phone · 393 × 852
+        </option>
+        <option
+          value="desktop"
+          data-kind="desktop"
+          data-orientation="landscape"
+          data-width="1440"
+          data-height="900"
+        >
+          Desktop · 1440 × 900
+        </option>
+        <option value="custom">Custom</option>
+      </select>
+      <input
+        type="number"
+        min="240"
+        max="4000"
+        value="393"
+        data-device-simulator-width=""
+      />
+      <input
+        type="number"
+        min="180"
+        max="3000"
+        value="852"
+        data-device-simulator-height=""
+      />
+      <div
+        role="group"
+        aria-label="Orientation"
+        data-device-simulator-orientation=""
+      >
+        <button
+          type="button"
+          aria-pressed="true"
+          data-device-simulator-orientation-value="portrait"
+        >
+          Portrait
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          data-device-simulator-orientation-value="landscape"
+        >
+          Landscape
+        </button>
+      </div>
+      <form data-device-simulator-navigation="">
+        <input
+          type="text"
+          inputmode="url"
+          value="https://example.com"
+          data-device-simulator-url=""
+        />
+        <button type="submit">Open</button>
+        <button type="button" data-device-simulator-refresh="">Refresh</button>
+      </form>
+    </header>
+    <div data-device-simulator-workspace="">
+      <div data-device-simulator-canvas="">
+        <div data-device-simulator-frame="">
+          <iframe
+            title="Application preview"
+            src="https://example.com"
+            data-device-simulator-preview=""
+          ></iframe>
+          <span hidden data-device-simulator-screen-status=""></span>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <output aria-live="polite" data-device-simulator-status=""></output>
+      <code data-device-simulator-command=""></code>
+      <button type="button" data-device-simulator-copy-command="">
+        Copy native command
+      </button>
+      <button type="button" data-device-simulator-native="">
+        Open native preview
+      </button>
+    </footer>
+  </DeviceSimulator>
 </template>
 ```
 

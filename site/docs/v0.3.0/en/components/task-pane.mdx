@@ -90,3 +90,57 @@ The host application owns whether the pane is mounted or placed in a Split Pane.
 ## Accessibility
 
 Use `<aside>` when the pane is complementary to the editor and give its heading a stable accessible name. Return focus to the control that opened the pane when it closes.
+
+## React
+
+```tsx
+export function TaskPaneExample() {
+  return (
+    <aside className="task-pane" data-responsive="overlay">
+      <header>
+        <h2>Properties</h2>
+        <button type="button" aria-label="Close properties">
+          Close
+        </button>
+      </header>
+      <section>
+        <dl>
+          <div>
+            <dt>Owner</dt>
+            <dd>Release team</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button">Save properties</button>
+      </footer>
+    </aside>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <aside class="task-pane" data-responsive="overlay">
+    <header>
+      <h2>Properties</h2>
+      <button type="button" aria-label="Close properties">Close</button>
+    </header>
+    <section>
+      <dl>
+        <div>
+          <dt>Owner</dt>
+          <dd>Release team</dd>
+        </div>
+      </dl>
+    </section>
+    <footer><button type="button">Save properties</button></footer>
+  </aside>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

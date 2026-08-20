@@ -93,3 +93,39 @@ A3S UI intentionally uses the native range input. Unlike shadcn/ui's Base UI sli
 <Preview class="w-full max-w-sm">
   <SliderDemo direction="rtl" />
 </Preview>
+
+## React
+
+```tsx
+export function SliderExample() {
+  return (
+    <input
+      type="range"
+      className="input w-full"
+      aria-label="Volume"
+      min="0"
+      max="100"
+      defaultValue="50"
+    />
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <input
+    type="range"
+    class="input w-full"
+    aria-label="Volume"
+    min="0"
+    max="100"
+    value="50"
+  />
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

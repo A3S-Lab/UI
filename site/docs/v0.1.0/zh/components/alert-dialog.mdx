@@ -206,3 +206,65 @@ Use a `<figure>` in the header to add a media element such as an icon or image t
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function AlertDialogExample() {
+  return (
+    <dialog
+      id="demo-alert-dialog"
+      className="alert-dialog"
+      aria-labelledby="demo-alert-dialog-title"
+      aria-describedby="demo-alert-dialog-description"
+    >
+      <div>
+        <header>
+          <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+          <p id="demo-alert-dialog-description">
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </p>
+        </header>
+        <footer>
+          <button className="btn" data-variant="outline">
+            Cancel
+          </button>
+          <button className="btn">Continue</button>
+        </footer>
+      </div>
+    </dialog>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <dialog
+    id="demo-alert-dialog"
+    class="alert-dialog"
+    aria-labelledby="demo-alert-dialog-title"
+    aria-describedby="demo-alert-dialog-description"
+  >
+    <div>
+      <header>
+        <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+        <p id="demo-alert-dialog-description">
+          This action cannot be undone. This will permanently delete your
+          account and remove your data from our servers.
+        </p>
+      </header>
+      <footer>
+        <button class="btn" data-variant="outline">Cancel</button>
+        <button class="btn">Continue</button>
+      </footer>
+    </div>
+  </dialog>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

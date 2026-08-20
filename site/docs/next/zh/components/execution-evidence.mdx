@@ -73,7 +73,16 @@ import { ExecutionEvidence } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <ExecutionEvidence>组件内容</ExecutionEvidence>
+    <ExecutionEvidence data-state="verified">
+      <header>
+        <h3>组件语义覆盖</h3>
+        <span data-evidence-result="">已验证</span>
+      </header>
+      <section>可观察结果与来源。</section>
+      <footer>
+        <a href="/reports/component-semantics">打开测试报告</a>
+      </footer>
+    </ExecutionEvidence>
   );
 }
 ```
@@ -83,13 +92,19 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ExecutionEvidence } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <ExecutionEvidence>组件内容</ExecutionEvidence>
+  <ExecutionEvidence data-state="verified">
+    <header>
+      <h3>组件语义覆盖</h3>
+      <span data-evidence-result="">已验证</span>
+    </header>
+    <section>可观察结果与来源。</section>
+    <footer><a href="/reports/component-semantics">打开测试报告</a></footer>
+  </ExecutionEvidence>
 </template>
 ```
 

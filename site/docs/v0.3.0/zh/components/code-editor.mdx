@@ -282,3 +282,85 @@ Monaco 示例为编辑器、工作区导航、面板和命令对话框提供独�
 原生回退的编辑表面是 `textarea`，因此无需 JavaScript 编辑器引擎即可使用选择、复制、撤销、重做、屏幕阅读器文本编辑与浏览器表单提交。为它提供明确的 `aria-label`，或通过 `for` 关联可见 `<label>`；根节点有可访问名称时应设置 `role="group"`。只把保存状态放入 `aria-live="polite"` 区域，避免每次按键都播报光标位置和统计信息；校验消息会自行管理 status 或 alert 角色。行号槽是装饰内容，控制器会将其标记为 `aria-hidden`。
 
 控制器遵循 `readonly`、`disabled`、减少动态效果、浏览器缩放与 RTL 方向。只有当可编辑 textarea 获得焦点时才会拦截 Ctrl/Cmd+S；Tab 与 Shift+Tab 缩进当前行或选区，其他修饰键组合仍交给浏览器和辅助技术处理。
+
+## React
+
+```tsx
+export function CodeEditorExample() {
+  return (
+    <div
+      className="code-editor"
+      role="group"
+      data-language="typescript"
+      aria-label="工作流代码编辑器"
+    >
+      <header>
+        <div data-code-editor-file="">
+          <strong>workflow.ts</strong>
+        </div>
+        <div data-code-editor-actions="">
+          <span data-code-editor-language="">TypeScript</span>
+        </div>
+      </header>
+      <section>
+        <textarea
+          aria-label="工作流 TypeScript 代码"
+          spellCheck="false"
+        ></textarea>
+      </section>
+      <footer>
+        <div data-code-editor-info="">
+          <span data-code-editor-state="" aria-live="polite">
+            已保存
+          </span>
+          <span data-code-editor-lines=""></span>
+          <span data-code-editor-characters=""></span>
+        </div>
+        <div data-code-editor-meta="">
+          <output data-code-editor-position="" aria-label="光标位置"></output>
+        </div>
+      </footer>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div
+    class="code-editor"
+    role="group"
+    data-language="typescript"
+    aria-label="工作流代码编辑器"
+  >
+    <header>
+      <div data-code-editor-file=""><strong>workflow.ts</strong></div>
+      <div data-code-editor-actions="">
+        <span data-code-editor-language="">TypeScript</span>
+      </div>
+    </header>
+    <section>
+      <textarea
+        aria-label="工作流 TypeScript 代码"
+        spellcheck="false"
+      ></textarea>
+    </section>
+    <footer>
+      <div data-code-editor-info="">
+        <span data-code-editor-state="" aria-live="polite">已保存</span
+        ><span data-code-editor-lines=""></span
+        ><span data-code-editor-characters=""></span>
+      </div>
+      <div data-code-editor-meta="">
+        <output data-code-editor-position="" aria-label="光标位置"></output>
+      </div>
+    </footer>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

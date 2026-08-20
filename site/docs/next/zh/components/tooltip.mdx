@@ -100,7 +100,15 @@ import { Tooltip } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Tooltip aria-label="Help">组件内容</Tooltip>
+    <Tooltip
+      className="btn"
+      data-variant="outline"
+      data-tooltip="Tooltip text"
+      data-side="bottom"
+      data-align="center"
+    >
+      Bottom
+    </Tooltip>
   );
 }
 ```
@@ -110,13 +118,19 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Tooltip } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Tooltip aria-label="Help">组件内容</Tooltip>
+  <Tooltip
+    class="btn"
+    data-variant="outline"
+    data-tooltip="Tooltip text"
+    data-side="bottom"
+    data-align="center"
+    >Bottom</Tooltip
+  >
 </template>
 ```
 

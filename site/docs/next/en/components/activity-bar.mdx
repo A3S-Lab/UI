@@ -55,7 +55,27 @@ import { ActivityBar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <ActivityBar aria-label="Activity Bar">Component content</ActivityBar>
+    <ActivityBar aria-label="Product navigation">
+      <header>
+        <a href="/" aria-label="Home">
+          A3S
+        </a>
+      </header>
+      <nav aria-label="Primary">
+        <ul>
+          <li>
+            <a href="/projects" aria-current="page">
+              Projects
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <footer>
+        <button type="button" aria-label="Settings">
+          Settings
+        </button>
+      </footer>
+    </ActivityBar>
   );
 }
 ```
@@ -65,13 +85,22 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ActivityBar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <ActivityBar aria-label="Activity Bar">Component content</ActivityBar>
+  <ActivityBar aria-label="Product navigation">
+    <header><a href="/" aria-label="Home">A3S</a></header>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="/projects" aria-current="page">Projects</a></li>
+      </ul>
+    </nav>
+    <footer>
+      <button type="button" aria-label="Settings">Settings</button>
+    </footer>
+  </ActivityBar>
 </template>
 ```
 

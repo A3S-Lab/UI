@@ -39,3 +39,47 @@
 ## 可访问性
 
 命名工具栏和每个不明确的组。原生按钮保留在文档选项卡序列中。在应用程序层提供键盘快捷键，并使用 [Kbd](/components/kbd) 或工具提示文本公开它们。
+
+## React
+
+```tsx
+export function ToolbarExample() {
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Formatting">
+      <div role="group" aria-label="Text style">
+        <button type="button" aria-pressed="true">
+          粗体
+        </button>
+        <button type="button" aria-pressed="false">
+          斜体
+        </button>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-label="Insert">
+        <button type="button">链接</button>
+      </div>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="toolbar" role="toolbar" aria-label="Formatting">
+    <div role="group" aria-label="Text style">
+      <button type="button" aria-pressed="true">粗体</button
+      ><button type="button" aria-pressed="false">斜体</button>
+    </div>
+    <hr role="separator" />
+    <div role="group" aria-label="Insert">
+      <button type="button">链接</button>
+    </div>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

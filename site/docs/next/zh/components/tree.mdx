@@ -490,7 +490,33 @@ import { Tree, useTree } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useTree();
   return (
-    <Tree ref={control.ref}>组件内容</Tree>
+    <Tree ref={control.ref} aria-label="项目文件">
+      <div
+        role="treeitem"
+        aria-label="src"
+        aria-expanded="true"
+        aria-selected="false"
+        data-value="src"
+      >
+        <div data-tree-row="">
+          <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M2 4h5l1 2h6v7H2z" fill="none" stroke="currentColor" /></svg>
+          <span data-tree-label="">src</span>
+        </div>
+        <div role="group">
+          <div
+            role="treeitem"
+            aria-label="tree.js"
+            aria-selected="true"
+            data-value="src/tree.js"
+          >
+            <div data-tree-row="">
+              <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M4 2h5l3 3v9H4z" fill="none" stroke="currentColor" /></svg>
+              <span data-tree-label="">tree.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Tree>
   );
 }
 ```
@@ -500,7 +526,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Tree, useTree } from "@a3s-lab/ui/vue";
 
 const control = useTree();
@@ -508,7 +534,33 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Tree ref="componentRef">组件内容</Tree>
+  <Tree ref="componentRef" aria-label="项目文件">
+    <div
+      role="treeitem"
+      aria-label="src"
+      aria-expanded="true"
+      aria-selected="false"
+      data-value="src"
+    >
+      <div data-tree-row="">
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M2 4h5l1 2h6v7H2z" fill="none" stroke="currentColor" /></svg>
+        <span data-tree-label="">src</span>
+      </div>
+      <div role="group">
+        <div
+          role="treeitem"
+          aria-label="tree.js"
+          aria-selected="true"
+          data-value="src/tree.js"
+        >
+          <div data-tree-row="">
+            <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path d="M4 2h5l3 3v9H4z" fill="none" stroke="currentColor" /></svg>
+            <span data-tree-label="">tree.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Tree>
 </template>
 ```
 

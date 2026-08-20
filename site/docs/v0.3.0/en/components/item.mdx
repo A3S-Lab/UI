@@ -387,3 +387,43 @@ Use `field` for form controls and validation. Use `item` for display content, ac
   </a>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function ItemExample() {
+  return (
+    <article className="item" data-variant="outline">
+      <section>
+        <h3>Basic Item</h3>
+        <p>A simple item with title and description.</p>
+      </section>
+      <aside>
+        <button className="btn" data-variant="outline" data-size="sm">
+          Action
+        </button>
+      </aside>
+    </article>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <article class="item" data-variant="outline">
+    <section>
+      <h3>Basic Item</h3>
+      <p>A simple item with title and description.</p>
+    </section>
+    <aside>
+      <button class="btn" data-variant="outline" data-size="sm">Action</button>
+    </aside>
+  </article>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

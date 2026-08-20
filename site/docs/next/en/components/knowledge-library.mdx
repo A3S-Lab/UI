@@ -92,7 +92,7 @@ export function WorkspaceKnowledge({ libraries }) {
 
   return (
     <KnowledgeLibrary ref={knowledge.ref} data-state="ready" aria-label="Knowledge library">
-      <aside data-knowledge-library-navigation>{/* Status filters */}</aside>
+      <aside data-knowledge-library-navigation><nav aria-label="Knowledge filters"><button type="button" data-knowledge-filter="all" aria-pressed="true">All</button><button type="button" data-knowledge-filter="running" aria-pressed="false">Updating</button></nav></aside>
       <main>
         <div data-knowledge-library-viewport>
           <ul data-knowledge-library-list>{libraries.map(base => <li key={base.id}><button type="button" data-knowledge-item data-knowledge-value={base.id} data-knowledge-phase={base.phase} aria-selected="false">{base.name}</button></li>)}</ul>
@@ -120,7 +120,7 @@ const knowledge = useKnowledgeLibrary({
 
 <template>
   <KnowledgeLibrary :ref="knowledge.componentRef" data-state="ready" aria-label="Knowledge library">
-    <aside data-knowledge-library-navigation><!-- Status filters --></aside>
+    <aside data-knowledge-library-navigation><nav aria-label="Knowledge filters"><button type="button" data-knowledge-filter="all" aria-pressed="true">All</button><button type="button" data-knowledge-filter="running" aria-pressed="false">Updating</button></nav></aside>
     <main><div data-knowledge-library-viewport><ul data-knowledge-library-list><li v-for="base in props.libraries" :key="base.id"><button type="button" data-knowledge-item :data-knowledge-value="base.id" :data-knowledge-phase="base.phase" aria-selected="false">{{ base.name }}</button></li></ul></div></main>
   </KnowledgeLibrary>
 </template>`}

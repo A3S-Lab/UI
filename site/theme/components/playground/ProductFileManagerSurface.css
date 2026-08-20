@@ -340,9 +340,9 @@
 }
 
 .product-file-manager [data-file-manager-toolbar] button[data-primary] {
-  border-color: var(--ui-blue);
-  background: var(--ui-blue);
-  color: #fff;
+  border-color: var(--ui-action, var(--ui-ink));
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-file-manager [data-file-manager-toolbar] button:disabled {
@@ -429,9 +429,7 @@
   color: var(--ui-ink);
 }
 
-.product-file-manager
-  [data-file-manager-selection-toolbar]
-  button:disabled {
+.product-file-manager [data-file-manager-selection-toolbar] button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
@@ -439,15 +437,15 @@
 .product-file-manager
   [data-file-manager-selection-toolbar]
   button[data-primary] {
-  background: var(--ui-blue);
-  color: #fff;
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-file-manager
   [data-file-manager-selection-toolbar]
   button[data-primary]:hover {
-  background: color-mix(in srgb, var(--ui-blue) 88%, #000);
-  color: #fff;
+  background: var(--ui-action-hover, var(--ui-muted));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-file-manager
@@ -600,13 +598,11 @@
   background: color-mix(in srgb, var(--ui-red) 5%, var(--ui-paper));
 }
 
-.product-file-manager
-  [data-file-kind][data-file-transfer-state="copying"] {
+.product-file-manager [data-file-kind][data-file-transfer-state="copying"] {
   color: var(--ui-blue);
 }
 
-.product-file-manager
-  [data-file-kind][data-file-transfer-state="error"] {
+.product-file-manager [data-file-kind][data-file-transfer-state="error"] {
   color: var(--ui-red);
   font-weight: 650;
 }
@@ -764,7 +760,7 @@
 
 .product-file-manager [data-file-inline-editor] input:focus {
   border-color: var(--ui-blue);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-blue) 13%, transparent);
+  box-shadow: none;
 }
 
 .product-file-manager [data-file-inline-editor] button {

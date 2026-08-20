@@ -42,7 +42,18 @@ import { Checkpoint } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Checkpoint>Component content</Checkpoint>
+    <Checkpoint data-state="saved">
+      <header>
+        <h3>Before responsive CSS changes</h3>
+        <span data-checkpoint-meta="">Saved 4 minutes ago</span>
+      </header>
+      <section>
+        <p>3 files changed before the responsive layout update.</p>
+      </section>
+      <footer>
+        <button type="button">Restore</button>
+      </footer>
+    </Checkpoint>
   );
 }
 ```
@@ -52,13 +63,21 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Checkpoint } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Checkpoint>Component content</Checkpoint>
+  <Checkpoint data-state="saved">
+    <header>
+      <h3>Before responsive CSS changes</h3>
+      <span data-checkpoint-meta="">Saved 4 minutes ago</span>
+    </header>
+    <section>
+      <p>3 files changed before the responsive layout update.</p>
+    </section>
+    <footer><button type="button">Restore</button></footer>
+  </Checkpoint>
 </template>
 ```
 

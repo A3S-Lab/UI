@@ -146,7 +146,21 @@ import { Spinner } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Spinner>Component content</Spinner>
+    <Spinner
+      as="svg"
+      className="lucide lucide-loader-circle"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+    </Spinner>
   );
 }
 ```
@@ -156,13 +170,25 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Spinner } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Spinner>Component content</Spinner>
+  <Spinner
+    as="svg"
+    class="lucide lucide-loader-circle"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    ><path d="M21 12a9 9 0 1 1-6.219-8.56"></path
+  ></Spinner>
 </template>
 ```
 

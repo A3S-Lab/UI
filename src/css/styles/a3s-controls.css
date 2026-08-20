@@ -5,7 +5,12 @@
   }
 
   .accordion > details > summary {
-    @apply focus-visible:ring-ring/20 focus-visible:border-ring rounded-md py-4 text-left text-sm font-medium hover:text-foreground focus-visible:ring-2;
+    @apply focus-visible:border-ring rounded-md py-4 text-left text-sm font-medium hover:text-foreground;
+  }
+
+  .accordion > details > summary:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .accordion > details > summary > svg:last-child {
@@ -18,7 +23,17 @@
 
   /* Button */
   .btn {
-    @apply rounded-md border border-transparent bg-clip-padding text-sm font-medium shadow-none focus-visible:border-ring focus-visible:ring-ring/20 focus-visible:ring-[2px] aria-invalid:border-destructive aria-invalid:ring-[2px] aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/30 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4;
+    @apply rounded-md border border-transparent bg-clip-padding text-sm font-medium shadow-none focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .btn:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  .btn[aria-invalid="true"]:focus-visible,
+  .btn[data-variant="destructive"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   .btn:not([data-size]),
@@ -76,7 +91,7 @@
   }
 
   .btn[data-variant="destructive"] {
-    @apply bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40;
+    @apply bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 focus-visible:border-destructive/40;
   }
 
   /* Button Group */
@@ -112,7 +127,7 @@
   }
 
   .tabs > [role="tablist"] {
-    @apply rounded-lg p-[3px] h-9;
+    @apply h-9 rounded-full p-0.5;
   }
 
   .tabs > [role="tablist"]:not([data-variant="line"]) {
@@ -124,16 +139,21 @@
   }
 
   .tabs > [role="tablist"][aria-orientation="vertical"] {
-    @apply h-fit;
+    @apply h-fit rounded-lg;
   }
 
   .tabs > [role="tablist"] > [role="tab"] {
-    @apply text-foreground/60 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/20 dark:text-muted-foreground dark:hover:text-foreground gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 focus-visible:ring-2 focus-visible:outline-hidden;
-    @apply after:absolute after:bg-foreground after:opacity-0 after:transition-opacity;
+    @apply text-foreground/60 hover:text-foreground focus-visible:border-ring dark:text-muted-foreground dark:hover:text-foreground gap-1.5 rounded-full border border-transparent px-3 py-1 text-sm font-medium [&_svg:not([class*='size-'])]:size-4;
+    @apply after:absolute after:bg-[var(--a3s-accent)] after:opacity-0 after:transition-opacity;
+  }
+
+  .tabs > [role="tablist"] > [role="tab"]:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .tabs > [role="tablist"][aria-orientation="vertical"] > [role="tab"] {
-    @apply w-full justify-start;
+    @apply w-full justify-start rounded-md px-2;
   }
 
   .tabs
@@ -151,7 +171,16 @@
   .tabs
     > [role="tablist"]:not([data-variant="line"])
     > [role="tab"][aria-selected="true"] {
-    @apply bg-background text-foreground dark:border-input dark:bg-background dark:text-foreground shadow-none;
+    border-color: color-mix(in srgb, var(--a3s-accent) 22%, var(--a3s-line));
+    background: var(--a3s-selection);
+    color: var(--a3s-accent-hover);
+    box-shadow: none;
+  }
+
+  .tabs
+    > [role="tablist"]:not([data-variant="line"])[aria-orientation="vertical"]
+    > [role="tab"][aria-selected="true"] {
+    @apply bg-background text-foreground shadow-none dark:bg-background dark:text-foreground;
   }
 
   .tabs
@@ -175,7 +204,7 @@
   /* Textarea */
   .field > textarea,
   .textarea {
-    @apply border-input bg-background focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-md border px-3 py-2 text-base shadow-none transition-[color,border-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2 md:text-sm;
+    @apply border-input bg-background focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-md border px-3 py-2 text-base shadow-none transition-[color,border-color] md:text-sm;
   }
   /* Input */
   .field
@@ -212,14 +241,37 @@
   .input[type="week"],
   .input[type="time"],
   .input:not([type]) {
-    @apply border-input bg-background focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border px-3 py-1 text-base shadow-none transition-[color,border-color,box-shadow] file:h-7 file:text-sm file:font-medium focus-visible:ring-2 aria-invalid:ring-2 md:text-sm;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border px-3 py-1 text-base shadow-none transition-[color,border-color] file:h-7 file:text-sm file:font-medium md:text-sm;
   }
 
   /* Native Select */
   .field > select,
   select.select {
-    @apply border-input bg-background placeholder:text-muted-foreground selection:bg-[var(--a3s-accent)] selection:text-[var(--a3s-accent-ink)] hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-md border py-1 ps-3 pe-8 text-sm shadow-none transition-[color,border-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2 data-[size=sm]:h-8;
+    @apply border-input bg-background placeholder:text-muted-foreground selection:bg-[var(--a3s-accent)] selection:text-[var(--a3s-accent-ink)] hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-md border py-1 ps-3 pe-8 text-sm shadow-none transition-[color,border-color] data-[size=sm]:h-8;
     @apply bg-[image:var(--chevron-down-icon-50)] bg-no-repeat bg-position-[center_right_0.625rem] bg-size-[1rem];
+  }
+
+  :is(
+    .field > textarea,
+    .textarea,
+    .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    .field > select,
+    select.select
+  ):focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  :is(
+    .field > textarea,
+    .textarea,
+    .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    .field > select,
+    select.select
+  )[aria-invalid="true"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   :is(.field > select, select.select):dir(rtl) {
@@ -303,12 +355,18 @@
 
   /* Badge */
   .badge {
-    @apply h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all [&>svg]:size-3!;
+    @apply h-5 gap-1 rounded-[var(--a3s-radius-xs)] border border-transparent px-1.5 py-0.5 text-xs font-medium transition-all [&>svg]:size-3!;
   }
 
   .badge:not([data-variant]),
   .badge[data-variant="primary"] {
-    @apply bg-primary text-primary-foreground [a]:hover:bg-primary/80;
+    border-color: color-mix(in srgb, var(--a3s-accent) 12%, transparent);
+    background: color-mix(in srgb, var(--a3s-accent) 10%, var(--a3s-paper));
+    color: var(--a3s-accent-hover);
+  }
+
+  :is(a.badge:not([data-variant]), a.badge[data-variant="primary"]):hover {
+    background: color-mix(in srgb, var(--a3s-accent) 16%, var(--a3s-paper));
   }
 
   .badge[data-variant="secondary"] {
@@ -320,7 +378,7 @@
   }
 
   .badge[data-variant="destructive"] {
-    @apply bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20;
+    @apply bg-destructive/10 [a]:hover:bg-destructive/20 text-destructive dark:bg-destructive/20;
   }
 
   .badge[data-variant="ghost"] {
@@ -362,11 +420,16 @@
   }
 
   .command-dialog > .command {
-    @apply bg-popover text-popover-foreground border border-border rounded-lg! shadow-[var(--a3s-shadow-soft)] duration-100;
+    @apply bg-popover text-popover-foreground border border-border rounded-lg! shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
   }
 
   .command > header {
-    @apply m-1 mb-0 h-8 gap-0 rounded-lg border border-input/30 bg-input/30 px-2;
+    @apply m-1 mb-0 h-10 gap-0 rounded-md border border-transparent bg-muted px-2.5 focus-within:border-ring;
+  }
+
+  .command > header:focus-within {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .command > header svg {
@@ -401,7 +464,7 @@
   }
 
   .command [role="menuitem"] {
-    @apply gap-2 rounded-sm px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4 in-[.command-dialog]:rounded-lg;
+    @apply min-h-9 gap-2 rounded-sm px-2 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-4;
   }
 
   .command [role="menuitem"].active {

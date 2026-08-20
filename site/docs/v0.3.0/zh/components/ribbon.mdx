@@ -259,3 +259,48 @@ Ribbon 把标签页导航与分组应用命令组合在一起。该模式源自 
 ## 可访问性
 
 使用完整的标签键盘合约。使用 `<fieldset>` 和可见或仅屏幕阅读器的 `<legend>` 对命令进行分组。如果色带变得太密，请允许水平滚动，而不是将标签缩小到可见尺寸以下。
+
+## React
+
+```tsx
+export function RibbonExample() {
+  return (
+    <div className="ribbon tabs" data-accent="blue">
+      <div role="tablist" aria-label="Editor commands">
+        <button type="button" role="tab" aria-selected="true">
+          开始
+        </button>
+      </div>
+      <div role="tabpanel">
+        <fieldset data-ribbon-group="">
+          <legend>Clipboard</legend>
+          <button type="button">粘贴</button>
+          <button type="button">复制</button>
+        </fieldset>
+      </div>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="ribbon tabs" data-accent="blue">
+    <div role="tablist" aria-label="Editor commands">
+      <button type="button" role="tab" aria-selected="true">开始</button>
+    </div>
+    <div role="tabpanel">
+      <fieldset data-ribbon-group="">
+        <legend>Clipboard</legend>
+        <button type="button">粘贴</button><button type="button">复制</button>
+      </fieldset>
+    </div>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

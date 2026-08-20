@@ -76,12 +76,14 @@
         <thead>
           <tr>
             <th>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select-all
-                aria-label="选择全部环境"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select-all
+                  aria-label="选择全部环境"
+                />
+              </label>
             </th>
             <th aria-sort="none">
               <button type="button" data-grid-sort="name">
@@ -133,14 +135,16 @@
         <tbody>
           <tr data-value="production">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="production"
-                aria-label="选择生产环境"
-                checked
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="production"
+                  aria-label="选择生产环境"
+                  checked
+                />
+              </label>
             </td>
             <td data-label="名称">
               <strong>生产环境</strong>
@@ -152,7 +156,7 @@
             </td>
             <td data-label="区域">上海</td>
             <td data-label="最近发布">
-              <time datetime="2026-08-14T09:42:00+08:00">今天 09:42</time>
+              <time dateTime="2026-08-14T09:42:00+08:00">今天 09:42</time>
             </td>
             <td data-label="操作">
               <button
@@ -167,13 +171,15 @@
           </tr>
           <tr data-value="staging">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="staging"
-                aria-label="选择预发布环境"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="staging"
+                  aria-label="选择预发布环境"
+                />
+              </label>
             </td>
             <td data-label="名称">
               <strong>预发布环境</strong>
@@ -185,7 +191,7 @@
             </td>
             <td data-label="区域">东京</td>
             <td data-label="最近发布">
-              <time datetime="2026-08-13T18:12:00+08:00">昨天 18:12</time>
+              <time dateTime="2026-08-13T18:12:00+08:00">昨天 18:12</time>
             </td>
             <td data-label="操作">
               <button
@@ -200,13 +206,15 @@
           </tr>
           <tr data-value="preview">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="preview"
-                aria-label="选择预览环境"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="preview"
+                  aria-label="选择预览环境"
+                />
+              </label>
             </td>
             <td data-label="名称">
               <strong>功能预览</strong>
@@ -218,7 +226,7 @@
             </td>
             <td data-label="区域">新加坡</td>
             <td data-label="最近发布">
-              <time datetime="2026-08-11T14:20:00+08:00">8 月 11 日</time>
+              <time dateTime="2026-08-11T14:20:00+08:00">8 月 11 日</time>
             </td>
             <td data-label="操作">
               <button
@@ -372,7 +380,50 @@ import { DataGrid, useDataGrid } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDataGrid();
   return (
-    <DataGrid ref={control.ref} aria-label="Data Grid">组件内容</DataGrid>
+    <DataGrid
+      ref={control.ref}
+      data-responsive="stack"
+      aria-labelledby="grid-title"
+    >
+      <header>
+        <div data-grid-identity="">
+          <h2 id="grid-title">运行环境</h2>
+        </div>
+      </header>
+      <div data-grid-viewport="" tabIndex="0">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  data-grid-select-all=""
+                  aria-label="选择全部"
+                />
+              </th>
+              <th aria-sort="none">
+                <button type="button" data-grid-sort="name">
+                  名称
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-value="production">
+              <td data-grid-select-cell="">
+                <input
+                  type="checkbox"
+                  data-grid-select=""
+                  defaultValue="production"
+                  aria-label="选择生产环境"
+                />
+              </td>
+              <td data-label="名称">生产环境</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </DataGrid>
   );
 }
 ```
@@ -382,7 +433,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { DataGrid, useDataGrid } from "@a3s-lab/ui/vue";
 
 const control = useDataGrid();
@@ -390,7 +441,46 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <DataGrid ref="componentRef" aria-label="Data Grid">组件内容</DataGrid>
+  <DataGrid
+    ref="componentRef"
+    data-responsive="stack"
+    aria-labelledby="grid-title"
+  >
+    <header>
+      <div data-grid-identity=""><h2 id="grid-title">运行环境</h2></div>
+    </header>
+    <div data-grid-viewport="" tabindex="0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                data-grid-select-all=""
+                aria-label="选择全部"
+              />
+            </th>
+            <th aria-sort="none">
+              <button type="button" data-grid-sort="name">名称</button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-value="production">
+            <td data-grid-select-cell="">
+              <input
+                type="checkbox"
+                data-grid-select=""
+                value="production"
+                aria-label="选择生产环境"
+              />
+            </td>
+            <td data-label="名称">生产环境</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </DataGrid>
 </template>
 ```
 

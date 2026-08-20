@@ -2,7 +2,16 @@
 @layer components {
   /* Combobox */
   .combobox > input[role="combobox"] {
-    @apply border-input bg-background focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border py-2 ps-3 pe-8 text-sm shadow-none transition-[color,border-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border py-2 ps-3 pe-8 text-sm shadow-none transition-[color,border-color];
+  }
+
+  .combobox > input[role="combobox"]:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  .combobox > input[role="combobox"][aria-invalid="true"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   .combobox > svg,
@@ -11,7 +20,7 @@
   }
 
   .combobox [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border max-h-72 gap-0 rounded-lg p-0 shadow-[var(--a3s-shadow-soft)] duration-100;
+    @apply bg-popover text-popover-foreground border border-border max-h-72 gap-0 rounded-lg p-0 shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
   }
 
   .combobox [role="listbox"] {
@@ -32,7 +41,7 @@
   }
 
   .combobox [role="option"] {
-    @apply gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
+    @apply min-h-9 gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
   }
 
   .combobox [role="option"].active,
@@ -49,7 +58,16 @@
   }
 
   .combobox-chips {
-    @apply border-input bg-background focus-within:border-ring focus-within:ring-ring/20 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/30 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-md border bg-clip-padding px-1.5 py-1.5 text-sm shadow-none transition-[color,border-color,box-shadow] focus-within:ring-2 has-[[aria-invalid=true]]:ring-2;
+    @apply border-input bg-background focus-within:border-ring has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-md border bg-clip-padding px-1.5 py-1.5 text-sm shadow-none transition-[color,border-color];
+  }
+
+  .combobox-chips:focus-within {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  .combobox-chips:has([aria-invalid="true"]):focus-within {
+    outline-color: var(--a3s-red);
   }
 
   .combobox-chip {
@@ -69,7 +87,16 @@
   }
   /* Select */
   .select:not(select) > button {
-    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] hover:bg-muted focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border py-2 ps-3 pe-2 text-sm shadow-none transition-[color,border-color,background-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2 [&_svg:not([class*='size-'])]:size-4;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border py-2 ps-3 pe-2 text-sm shadow-none transition-[color,border-color,background-color] [&_svg:not([class*='size-'])]:size-4;
+  }
+
+  .select:not(select) > button:focus-visible {
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
+  }
+
+  .select:not(select) > button[aria-invalid="true"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   .select:not(select) > button > span {
@@ -81,7 +108,7 @@
   }
 
   .select:not(select) [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-100;
+    @apply bg-popover text-popover-foreground border border-border rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
   }
 
   .select:not(select) [role="listbox"] {
@@ -98,7 +125,7 @@
   }
 
   .select:not(select) [role="option"] {
-    @apply gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
+    @apply min-h-9 gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm [&_svg:not([class*='size-'])]:size-4;
   }
 
   .select:not(select) [role="option"].active,

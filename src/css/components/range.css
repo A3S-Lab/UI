@@ -1,10 +1,12 @@
 /* Range */
 @layer components {
-  .field > input[type='range'],
-  .input[type='range'] {
+  .field > input[type="range"],
+  .input[type="range"] {
     @apply flex appearance-none items-center p-0 outline-none disabled:pointer-events-none disabled:opacity-50;
+    min-height: 1.5rem;
     --slider-value: 20%;
     --slider-fill-offset: 0px;
+    --slider-fill-color: var(--a3s-accent, var(--primary));
     --slider-fill-position: calc(
       var(--slider-value) + var(--slider-fill-offset)
     );
@@ -17,7 +19,7 @@
       @apply w-full appearance-none;
       background: linear-gradient(
         to right,
-        var(--primary) var(--slider-fill-position),
+        var(--slider-fill-color) var(--slider-fill-position),
         var(--muted) var(--slider-fill-position)
       );
     }
@@ -25,7 +27,7 @@
     &:dir(rtl)::-webkit-slider-runnable-track {
       background: linear-gradient(
         to left,
-        var(--primary) var(--slider-fill-position),
+        var(--slider-fill-color) var(--slider-fill-position),
         var(--muted) var(--slider-fill-position)
       );
     }
@@ -38,7 +40,7 @@
       @apply w-full appearance-none;
       background: linear-gradient(
         to right,
-        var(--primary) var(--slider-fill-position),
+        var(--slider-fill-color) var(--slider-fill-position),
         var(--muted) var(--slider-fill-position)
       );
     }
@@ -46,7 +48,7 @@
     &:dir(rtl)::-moz-range-track {
       background: linear-gradient(
         to left,
-        var(--primary) var(--slider-fill-position),
+        var(--slider-fill-color) var(--slider-fill-position),
         var(--muted) var(--slider-fill-position)
       );
     }
@@ -60,7 +62,7 @@
     }
 
     &::-ms-fill-lower {
-      @apply bg-primary;
+      background: var(--slider-fill-color);
     }
 
     &::-ms-fill-upper {

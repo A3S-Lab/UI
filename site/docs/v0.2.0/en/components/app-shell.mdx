@@ -52,3 +52,59 @@ The shell has expanded, collapsed, hidden, and mobile-open states. Below 768px t
 ## Accessibility
 
 Use landmark elements (`aside`, `nav`, `main`, `header`) and name each navigation region. The navigation toggle needs `aria-expanded` and a label that changes with state. When mobile navigation is modal, pair this layout with the [Drawer](/components/drawer) behavior for focus containment.
+
+## React
+
+```tsx
+export function AppShellExample() {
+  return (
+    <div className="app-shell" data-navigation="expanded">
+      <aside data-app-navigation="">
+        <nav aria-label="Workspace">
+          <a href="/tasks" aria-current="page">
+            Tasks
+          </a>
+        </nav>
+      </aside>
+      <main data-app-main="">
+        <header className="workspace-header">
+          <section aria-labelledby="workspace-title">
+            <h1 id="workspace-title">Design system workspace</h1>
+            <p>Review the active task and files.</p>
+          </section>
+        </header>
+        <div data-app-content="">
+          <span>Ready</span>
+        </div>
+      </main>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="app-shell" data-navigation="expanded">
+    <aside data-app-navigation="">
+      <nav aria-label="Workspace">
+        <a href="/tasks" aria-current="page">Tasks</a>
+      </nav>
+    </aside>
+    <main data-app-main="">
+      <header class="workspace-header">
+        <section aria-labelledby="workspace-title">
+          <h1 id="workspace-title">Design system workspace</h1>
+          <p>Review the active task and files.</p>
+        </section>
+      </header>
+      <div data-app-content=""><span>Ready</span></div>
+    </main>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

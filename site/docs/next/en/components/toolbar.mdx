@@ -49,7 +49,20 @@ import { Toolbar } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Toolbar>Component content</Toolbar>
+    <Toolbar aria-label="Formatting">
+      <div role="group" aria-label="Text style">
+        <button type="button" aria-pressed="true">
+          Bold
+        </button>
+        <button type="button" aria-pressed="false">
+          Italic
+        </button>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-label="Insert">
+        <button type="button">Link</button>
+      </div>
+    </Toolbar>
   );
 }
 ```
@@ -59,13 +72,21 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Toolbar } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Toolbar>Component content</Toolbar>
+  <Toolbar aria-label="Formatting">
+    <div role="group" aria-label="Text style">
+      <button type="button" aria-pressed="true">Bold</button
+      ><button type="button" aria-pressed="false">Italic</button>
+    </div>
+    <hr role="separator" />
+    <div role="group" aria-label="Insert">
+      <button type="button">Link</button>
+    </div>
+  </Toolbar>
 </template>
 ```
 

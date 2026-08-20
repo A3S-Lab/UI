@@ -233,7 +233,24 @@ import { ContextMenu, useContextMenu } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useContextMenu();
   return (
-    <ContextMenu ref={control.ref}>Component content</ContextMenu>
+    <ContextMenu ref={control.ref}>
+      <div data-context-trigger="" tabIndex="0">
+        deployment.acl
+      </div>
+      <div
+        data-context-content=""
+        role="menu"
+        aria-label="File actions"
+        aria-hidden="true"
+      >
+        <button type="button" role="menuitem" data-value="open">
+          Open
+        </button>
+        <button type="button" role="menuitem" data-value="rename">
+          Rename
+        </button>
+      </div>
+    </ContextMenu>
   );
 }
 ```
@@ -243,7 +260,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ContextMenu, useContextMenu } from "@a3s-lab/ui/vue";
 
 const control = useContextMenu();
@@ -251,7 +268,18 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ContextMenu ref="componentRef">Component content</ContextMenu>
+  <ContextMenu ref="componentRef">
+    <div data-context-trigger="" tabindex="0">deployment.acl</div>
+    <div
+      data-context-content=""
+      role="menu"
+      aria-label="File actions"
+      aria-hidden="true"
+    >
+      <button type="button" role="menuitem" data-value="open">Open</button>
+      <button type="button" role="menuitem" data-value="rename">Rename</button>
+    </div>
+  </ContextMenu>
 </template>
 ```
 

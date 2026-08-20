@@ -83,7 +83,20 @@ import { Timeline } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Timeline aria-label="Timeline"><li>Component content</li></Timeline>
+    <Timeline aria-label="Execution history">
+      <li data-state="success">
+        <article className="item" data-variant="outline">
+          <h3>Package built</h3>
+          <p>Completed at 10:24</p>
+        </article>
+      </li>
+      <li data-state="active" aria-current="step">
+        <article className="item" data-variant="outline">
+          <h3>Visual checks</h3>
+          <p>Running desktop and mobile suites</p>
+        </article>
+      </li>
+    </Timeline>
   );
 }
 ```
@@ -93,13 +106,25 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Timeline } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Timeline aria-label="Timeline"><li>Component content</li></Timeline>
+  <Timeline aria-label="Execution history">
+    <li data-state="success">
+      <article class="item" data-variant="outline">
+        <h3>Package built</h3>
+        <p>Completed at 10:24</p>
+      </article>
+    </li>
+    <li data-state="active" aria-current="step">
+      <article class="item" data-variant="outline">
+        <h3>Visual checks</h3>
+        <p>Running desktop and mobile suites</p>
+      </article>
+    </li>
+  </Timeline>
 </template>
 ```
 

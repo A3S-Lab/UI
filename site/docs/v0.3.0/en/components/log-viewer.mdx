@@ -106,3 +106,72 @@ Render unavailable, connecting, empty, live, retrying, and failed states with ex
 ## Accessibility
 
 Give the root and focusable log viewport accessible names. Use `role="log"` and `aria-live="polite"` only for appended records; do not re-render the entire log on every message. Keep filters in a labeled `<fieldset>`, expose the selected filter with `aria-pressed`, preserve chronological DOM order, and avoid moving keyboard focus when new records arrive.
+
+## React
+
+```tsx
+export function LogViewerExample() {
+  return (
+    <section className="log-viewer" aria-label="Execution log">
+      <header>
+        <div>
+          <h2>Execution log</h2>
+          <p>Ordered semantic output</p>
+        </div>
+      </header>
+      <div data-log-meta="">
+        <span>Connected</span>
+        <span>Latest 500 records</span>
+      </div>
+      <div
+        role="log"
+        aria-live="polite"
+        aria-label="Ordered execution output"
+        tabIndex="0"
+      >
+        <div data-log-record="" data-stream="stdout">
+          <span data-log-sequence="">#42</span>
+          <time dateTime="2026-08-12T09:41:02Z">09:41:02</time>
+          <span data-log-stream="">stdout</span>
+          <pre>Provider started.</pre>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <section class="log-viewer" aria-label="Execution log">
+    <header>
+      <div>
+        <h2>Execution log</h2>
+        <p>Ordered semantic output</p>
+      </div>
+    </header>
+    <div data-log-meta="">
+      <span>Connected</span><span>Latest 500 records</span>
+    </div>
+    <div
+      role="log"
+      aria-live="polite"
+      aria-label="Ordered execution output"
+      tabindex="0"
+    >
+      <div data-log-record="" data-stream="stdout">
+        <span data-log-sequence="">#42</span
+        ><time datetime="2026-08-12T09:41:02Z">09:41:02</time
+        ><span data-log-stream="">stdout</span>
+        <pre>Provider started.</pre>
+      </div>
+    </div>
+  </section>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

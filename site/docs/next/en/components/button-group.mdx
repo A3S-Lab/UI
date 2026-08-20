@@ -315,7 +315,14 @@ import { ButtonGroup } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <ButtonGroup>Component content</ButtonGroup>
+    <ButtonGroup role="group" aria-label="Message actions">
+      <button type="button" className="btn" data-variant="outline">
+        Archive
+      </button>
+      <button type="button" className="btn" data-variant="outline">
+        Report
+      </button>
+    </ButtonGroup>
   );
 }
 ```
@@ -325,13 +332,15 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ButtonGroup } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <ButtonGroup>Component content</ButtonGroup>
+  <ButtonGroup role="group" aria-label="Message actions">
+    <button type="button" class="btn" data-variant="outline">Archive</button>
+    <button type="button" class="btn" data-variant="outline">Report</button>
+  </ButtonGroup>
 </template>
 ```
 

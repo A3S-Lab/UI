@@ -98,7 +98,25 @@ import { TaskPane } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskPane aria-label="Task Pane">Component content</TaskPane>
+    <TaskPane data-responsive="overlay">
+      <header>
+        <h2>Properties</h2>
+        <button type="button" aria-label="Close properties">
+          Close
+        </button>
+      </header>
+      <section>
+        <dl>
+          <div>
+            <dt>Owner</dt>
+            <dd>Release team</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button">Save properties</button>
+      </footer>
+    </TaskPane>
   );
 }
 ```
@@ -108,13 +126,26 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskPane } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskPane aria-label="Task Pane">Component content</TaskPane>
+  <TaskPane data-responsive="overlay">
+    <header>
+      <h2>Properties</h2>
+      <button type="button" aria-label="Close properties">Close</button>
+    </header>
+    <section>
+      <dl>
+        <div>
+          <dt>Owner</dt>
+          <dd>Release team</dd>
+        </div>
+      </dl>
+    </section>
+    <footer><button type="button">Save properties</button></footer>
+  </TaskPane>
 </template>
 ```
 

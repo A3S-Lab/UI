@@ -305,3 +305,35 @@ Add `dir="rtl"` to the group or an ancestor. Flip directional icons explicitly.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function ButtonGroupExample() {
+  return (
+    <div role="group" aria-label="Message actions" className="button-group">
+      <button type="button" className="btn" data-variant="outline">
+        Archive
+      </button>
+      <button type="button" className="btn" data-variant="outline">
+        Report
+      </button>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div role="group" aria-label="Message actions" class="button-group">
+    <button type="button" class="btn" data-variant="outline">Archive</button>
+    <button type="button" class="btn" data-variant="outline">Report</button>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -46,7 +46,7 @@
 
 .product-search-dialog > header label:focus-within {
   border-color: color-mix(in srgb, var(--ui-blue) 62%, var(--ui-line));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-blue) 14%, transparent);
+  box-shadow: none;
 }
 
 .product-search-dialog > header label svg {
@@ -145,10 +145,9 @@
   text-align: start;
 }
 
-.product-search-dialog__results section button:is(
-    :hover,
-    [aria-selected="true"]
-  ) {
+.product-search-dialog__results
+  section
+  button:is(:hover, [aria-selected="true"]) {
   background: var(--ui-panel-active);
 }
 
@@ -163,7 +162,8 @@
   place-items: center;
 }
 
-.product-search-dialog__results button[aria-selected="true"]
+.product-search-dialog__results
+  button[aria-selected="true"]
   [data-search-icon] {
   border-color: color-mix(in srgb, var(--ui-blue) 24%, var(--ui-line));
   background: color-mix(in srgb, var(--ui-blue) 8%, var(--ui-paper));

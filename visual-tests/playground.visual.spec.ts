@@ -67,9 +67,41 @@ test("Product application opens in the approved task shell with complete navigat
   await expect(
     playground.getByRole("navigation", { name: "主要页面" }),
   ).toBeVisible();
-  await expect(
-    playground.locator(".product-composer .ProseMirror"),
-  ).toBeVisible();
+  const composerEditor = playground.locator(".product-composer .ProseMirror");
+  await expect(composerEditor).toBeVisible();
+  const composer = playground.locator(".product-composer").first();
+  const idleComposerStyle = await composer.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { borderColor: style.borderColor, boxShadow: style.boxShadow };
+  });
+  await composerEditor.focus();
+  await composer.evaluate(async (element) => {
+    await Promise.all(
+      element
+        .getAnimations()
+        .map((animation) => animation.finished.catch(() => undefined)),
+    );
+  });
+  const focusedComposerStyle = await composer.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const editorStyle = getComputedStyle(
+      element.querySelector<HTMLElement>(".agent-composer-editor__content")!,
+    );
+    return {
+      borderColor: style.borderColor,
+      borderWidth: style.borderWidth,
+      boxShadow: style.boxShadow,
+      editorOutlineStyle: editorStyle.outlineStyle,
+      editorOutlineWidth: editorStyle.outlineWidth,
+    };
+  });
+  expect(focusedComposerStyle.borderColor).not.toBe(
+    idleComposerStyle.borderColor,
+  );
+  expect(focusedComposerStyle.boxShadow).not.toBe(idleComposerStyle.boxShadow);
+  expect(focusedComposerStyle.borderWidth).toBe("1px");
+  expect(focusedComposerStyle.editorOutlineStyle).toBe("none");
+  expect(focusedComposerStyle.editorOutlineWidth).toBe("0px");
   await expect(
     playground.locator(".product-start__prompts > button"),
   ).toHaveCount(8);
@@ -81,18 +113,23 @@ test("Product application opens in the approved task shell with complete navigat
   await expect(
     playground.locator(".product-composer .ProseMirror"),
   ).toContainText("文档处理");
-  const workspaceSelector = playground.locator(
-    ".product-composer__context summary",
-  );
+  const workspaceSelector = playground.getByRole("button", {
+    name: "选择工作区",
+  });
   await workspaceSelector.click();
-  await playground.getByRole("menuitem", { name: "A3S UI 体验优化" }).click();
-  await expect(workspaceSelector).toContainText("A3S UI 体验优化");
   await playground
-    .getByRole("combobox", { name: "权限设置" })
-    .selectOption("edit");
-  await expect(playground.locator(".product-composer > output")).toContainText(
-    "允许修改",
-  );
+    .getByRole("dialog", { name: "工作区" })
+    .getByRole("option", { name: /a3s-ui/ })
+    .click();
+  await expect(workspaceSelector).toContainText("a3s-ui");
+  await playground.getByRole("button", { name: "权限：默认权限" }).click();
+  await playground
+    .getByRole("dialog", { name: "选择权限边界" })
+    .getByRole("option", { name: /完全访问/ })
+    .click();
+  await expect(
+    playground.getByRole("button", { name: "权限：完全访问" }),
+  ).toBeVisible();
 
   await revealProductNavigation(playground);
   await playground.getByRole("link", { name: "助理", exact: true }).click();
@@ -111,21 +148,18 @@ test("Product application opens in the approved task shell with complete navigat
 
   await revealProductNavigation(playground);
   await playground
-    .getByRole("button", { name: "专家·技能·连接器", exact: true })
+    .getByRole("link", { name: "专家·技能·连接器", exact: true })
     .click();
-  const capabilityMenu = playground.getByRole("menu", {
-    name: "选择能力类型",
-  });
-  await expect(capabilityMenu).toBeVisible();
-  await capabilityMenu.getByRole("menuitem", { name: "技能" }).click();
   await expect(playground).toHaveAttribute("data-view", "catalog");
+  await playground.getByRole("tab", { name: "技能", exact: true }).click();
   await expect(
     playground.getByRole("tab", { name: "技能", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
-  await playground.getByRole("button", { name: "我的能力" }).click();
-  await expect(
-    playground.getByRole("button", { name: "我的能力" }),
-  ).toHaveAttribute("aria-pressed", "true");
+  const managedCapabilities = playground.getByRole("button", {
+    name: /^已管理/u,
+  });
+  await managedCapabilities.click();
+  await expect(managedCapabilities).toHaveAttribute("aria-pressed", "true");
 
   await revealProductNavigation(playground);
   await playground.getByRole("link", { name: "自动化", exact: true }).click();
@@ -151,9 +185,11 @@ test("Product application opens in the approved task shell with complete navigat
 
   await revealProductNavigation(playground);
   await playground.getByRole("button", { name: "搜索", exact: true }).click();
-  const search = page.getByRole("dialog", { name: "搜索任务" });
+  const search = page.getByRole("dialog", { name: "全局搜索" });
   await expect(search).toBeVisible();
-  await search.getByRole("searchbox", { name: "搜索任务" }).fill("恢复");
+  await search
+    .getByRole("searchbox", { name: "搜索任务、文件和操作" })
+    .fill("恢复");
   await search.getByRole("button", { name: /修复会话恢复/ }).click();
   await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
   await expect(playground).toHaveAttribute("data-view", "session");
@@ -176,63 +212,39 @@ test("Product application opens in the approved task shell with complete navigat
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Capability chooser behaves as an anchored keyboard menu", async ({
+test("Capability navigation preserves the selected catalog tab", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
   const playground = await openProductApplication(page);
   await revealProductNavigation(playground);
 
-  const trigger = playground.getByRole("button", {
+  const capabilities = playground.getByRole("link", {
     name: "专家·技能·连接器",
     exact: true,
   });
-  await trigger.click();
-
-  const menu = playground.getByRole("menu", { name: "选择能力类型" });
-  const assistants = menu.getByRole("menuitem", { name: "专家" });
-  const skills = menu.getByRole("menuitem", { name: "技能" });
-  const connectors = menu.getByRole("menuitem", { name: "连接器" });
-  await expect(menu).toBeVisible();
-  await expect(trigger).toHaveAttribute("aria-expanded", "true");
-  await expect(assistants).toBeFocused();
-
-  await page.keyboard.press("ArrowDown");
-  await expect(skills).toBeFocused();
-  await page.keyboard.press("ArrowUp");
-  await expect(assistants).toBeFocused();
-  await page.keyboard.press("End");
-  await expect(connectors).toBeFocused();
-  await page.keyboard.press("Home");
-  await expect(assistants).toBeFocused();
-  await page.keyboard.press("End");
-  await expect(connectors).toBeFocused();
-  await page.keyboard.press("Enter");
-
-  await expect(menu).not.toBeVisible();
+  await expect(capabilities).toHaveAttribute(
+    "href",
+    /capabilities\.html\?capability=assistants$/u,
+  );
+  await capabilities.click();
   await expect(playground).toHaveAttribute("data-view", "catalog");
+  await expect(page).toHaveURL(/capabilities\.html\?capability=assistants$/u);
+  await expect(
+    playground.getByRole("tab", { name: "专家", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+
+  await playground.getByRole("tab", { name: "技能", exact: true }).click();
+  await expect(page).toHaveURL(/capabilities\.html\?capability=skills$/u);
+  await expect(
+    playground.getByRole("tab", { name: "技能", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+
+  await playground.getByRole("tab", { name: "连接器", exact: true }).click();
+  await expect(page).toHaveURL(/capabilities\.html\?capability=connectors$/u);
   await expect(
     playground.getByRole("tab", { name: "连接器", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
-
-  await revealProductNavigation(playground);
-  await trigger.click();
-  await expect(menu).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(menu).not.toBeVisible();
-  await expect(trigger).toBeFocused();
-
-  await trigger.click();
-  await expect(menu).toBeVisible();
-  const backdrop = playground.locator(".product-application__backdrop");
-  if (await backdrop.isVisible()) {
-    await backdrop.click();
-  } else {
-    await playground.locator(".product-application__main").click({
-      position: { x: 12, y: 12 },
-    });
-  }
-  await expect(menu).not.toBeVisible();
 
   await page.goto("en/app/capabilities.html?capability=skills", {
     waitUntil: "networkidle",

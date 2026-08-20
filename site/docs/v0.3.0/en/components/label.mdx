@@ -54,3 +54,25 @@ Add `dir="rtl"` to the label or an ancestor.
   <input class="input" id="email-rtl" type="email" placeholder="name@example.com" />
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function LabelExample() {
+  return (
+    <label className="label" htmlFor="email">
+      Your email address
+    </label>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template><label class="label" for="email">Your email address</label></template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -458,7 +458,11 @@ import { Field } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Field>Component content</Field>
+    <Field role="group">
+      <label htmlFor="name">Full name</label>
+      <input id="name" autoComplete="off" placeholder="Evil Rabbit" />
+      <p>This appears on invoices and emails.</p>
+    </Field>
   );
 }
 ```
@@ -468,13 +472,16 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Field } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Field>Component content</Field>
+  <Field role="group">
+    <label for="name">Full name</label>
+    <input id="name" autocomplete="off" placeholder="Evil Rabbit" />
+    <p>This appears on invoices and emails.</p>
+  </Field>
 </template>
 ```
 

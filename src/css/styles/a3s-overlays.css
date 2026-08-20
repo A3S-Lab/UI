@@ -4,11 +4,11 @@
   .dialog::backdrop,
   .alert-dialog::backdrop,
   .command-dialog::backdrop {
-    @apply bg-black/25 duration-100;
+    @apply bg-black/35 duration-[var(--a3s-motion-normal)];
   }
 
   .alert-dialog > * {
-    @apply bg-popover text-popover-foreground border border-border max-w-xs gap-6 rounded-lg p-6 shadow-[var(--a3s-shadow)] duration-100 sm:max-w-lg;
+    @apply bg-popover text-popover-foreground border border-border max-w-xs gap-6 rounded-lg p-6 shadow-[var(--a3s-shadow)] duration-[var(--a3s-motion-normal)] sm:max-w-lg;
   }
 
   .alert-dialog:is([data-size="sm"]) > *,
@@ -17,7 +17,7 @@
   }
 
   .dialog > * {
-    @apply bg-popover text-popover-foreground border border-border max-w-[calc(100%-2rem)] gap-6 rounded-lg p-6 text-sm shadow-[var(--a3s-shadow)] duration-100 sm:max-w-md;
+    @apply bg-popover text-popover-foreground border border-border max-w-[calc(100%-2rem)] gap-6 rounded-lg p-6 text-sm shadow-[var(--a3s-shadow)] duration-[var(--a3s-motion-normal)] sm:max-w-md;
   }
 
   .dialog > * > :is(button, form[method="dialog"]) {
@@ -63,7 +63,7 @@
 
   /* Drawer */
   .drawer::backdrop {
-    @apply bg-black/25;
+    @apply bg-black/35;
   }
 
   .drawer > * {
@@ -113,12 +113,12 @@
 
   /* Dropdown Menu */
   .dropdown-menu > [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-100;
+    @apply bg-popover text-popover-foreground border border-border gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
   }
 
   .dropdown-menu
     :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
-    @apply gap-2 rounded-sm px-2 py-1.5 text-sm focus-visible:bg-muted focus-visible:text-foreground [&_svg:not([class*='size-'])]:size-4;
+    @apply min-h-9 gap-2 rounded-sm px-2 py-1.5 text-sm focus-visible:bg-muted focus-visible:text-foreground [&_svg:not([class*='size-'])]:size-4;
   }
 
   .dropdown-menu
@@ -184,7 +184,7 @@
 
   /* Popover */
   [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border flex flex-col gap-4 rounded-lg p-4 text-sm shadow-[var(--a3s-shadow-soft)] duration-100;
+    @apply bg-popover text-popover-foreground border border-border flex flex-col gap-4 rounded-lg p-4 text-sm shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
   }
   .popover > [data-popover] > header,
   .popover > [data-popover] > [data-header] {

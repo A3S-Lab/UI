@@ -37,7 +37,20 @@
 TipTap 依赖位于独立入口，不会增加只使用 CSS 或普通组件的应用体积。三个框架共享同一 DOM、事件和 Markdown 数据格式。
 
 <FrameworkTabs
-  html={`import { Editor } from "@tiptap/core";
+  html={`<form class="agent-composer" aria-label="任务输入器" data-state="ready">
+  <section class="agent-composer-editor" data-composer-editor>
+    <div data-composer-input role="textbox" aria-label="任务指令" aria-multiline="true"></div>
+  </section>
+  <ul data-composer-resources aria-label="已添加资源">
+    <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+  </ul>
+  <footer>
+    <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
+    <div data-composer-actions><button type="submit">发送</button></div>
+  </footer>
+</form>
+<script type="module">
+import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
@@ -73,7 +86,8 @@ const editor = new Editor({
 form.addEventListener("submit", event => {
   event.preventDefault();
   submitTask({ markdown: editor.getMarkdown() });
-});`}
+});
+</script>`}
   react={`import { useState } from "react";
 import { EditorContent } from "@tiptap/react";
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
@@ -100,8 +114,11 @@ export function TaskInput() {
       <section className="agent-composer-editor" data-composer-editor>
         {editor.editor && <EditorContent editor={editor.editor} />}
       </section>
+      <ul data-composer-resources aria-label="已添加资源">
+        <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+      </ul>
       <footer>
-        <div data-composer-tools>{/* 资源与运行设置 */}</div>
+        <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
         <div data-composer-actions><button type="submit">发送</button></div>
       </footer>
     </AgentComposer>
@@ -134,8 +151,11 @@ const tiptap = editor.editor;
     <section class="agent-composer-editor" data-composer-editor>
       <EditorContent v-if="tiptap" :editor="tiptap" />
     </section>
+    <ul data-composer-resources aria-label="已添加资源">
+      <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+    </ul>
     <footer>
-      <div data-composer-tools><!-- 资源与运行设置 --></div>
+      <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
       <div data-composer-actions><button type="submit">发送</button></div>
     </footer>
   </AgentComposer>

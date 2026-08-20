@@ -4,8 +4,30 @@
 
 <Preview class="w-full">
   <div class="setting-list w-full">
-    <div class="setting-row"><div data-setting-identity><strong>语言</strong><p>选择界面显示语言。</p></div><div data-setting-control><select class="select" aria-label="语言"><option>简体中文</option><option>English</option></select></div></div>
-    <div class="setting-row"><div data-setting-identity><strong>跟随系统主题</strong><p>使用操作系统的外观设置。</p></div><div data-setting-control><input class="input" type="checkbox" role="switch" defaultChecked aria-label="跟随系统主题" /></div></div>
+    <div class="setting-row">
+      <div data-setting-identity>
+        <strong>语言</strong>
+        <p>选择界面显示语言。</p>
+      </div>
+      <div data-setting-control>
+        <select class="select" aria-label="语言">
+          <option>简体中文</option>
+          <option>English</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div data-setting-identity>
+        <strong>跟随系统主题</strong>
+        <p>使用操作系统的外观设置。</p>
+      </div>
+      <div data-setting-control>
+        <label>
+          <input class="input" type="checkbox" role="switch" defaultChecked />
+          <span class="sr-only">跟随系统主题</span>
+        </label>
+      </div>
+    </div>
   </div>
 </Preview>
 
@@ -14,8 +36,15 @@
 ```html
 <div class="setting-list">
   <div class="setting-row">
-    <div data-setting-identity><strong>语言</strong><p>选择界面显示语言。</p></div>
-    <div data-setting-control><select class="select">...</select></div>
+    <div data-setting-identity>
+      <strong>语言</strong>
+      <p>选择界面显示语言。</p>
+    </div>
+    <div data-setting-control>
+      <select class="select">
+        ...
+      </select>
+    </div>
     <p data-setting-message>...</p>
   </div>
 </div>
@@ -23,14 +52,14 @@
 
 ### 参数
 
-| API | 用途 |
-| --- | --- |
-| `class="setting-list"` | 组合相邻设置行和共享边界 |
-| `class="setting-row"` | 稳定的名称与控件网格 |
-| `data-setting-identity` | 设置名称和直接说明 |
-| `data-setting-control` | 原生或复合控件 |
-| `data-setting-message` | 可选验证或恢复信息 |
-| `data-state="invalid"` | 无效设置行样式 |
+| API                     | 用途                     |
+| ----------------------- | ------------------------ |
+| `class="setting-list"`  | 组合相邻设置行和共享边界 |
+| `class="setting-row"`   | 稳定的名称与控件网格     |
+| `data-setting-identity` | 设置名称和直接说明       |
+| `data-setting-control`  | 原生或复合控件           |
+| `data-setting-message`  | 可选验证或恢复信息       |
+| `data-state="invalid"`  | 无效设置行样式           |
 
 ## 状态和变体
 
@@ -48,7 +77,19 @@ import { SettingRow, useSettingRow } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useSettingRow();
   return (
-    <SettingRow ref={control.ref}>组件内容</SettingRow>
+    <SettingRow ref={control.ref}>
+      <div data-setting-identity="">
+        <strong>语言</strong>
+        <p>选择界面显示语言。</p>
+      </div>
+      <div data-setting-control="">
+        <select className="select">
+          <option value="zh-CN">简体中文</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <p data-setting-message="">更改会自动保存。</p>
+    </SettingRow>
   );
 }
 ```
@@ -58,7 +99,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { SettingRow, useSettingRow } from "@a3s-lab/ui/vue";
 
 const control = useSettingRow();
@@ -66,7 +107,19 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <SettingRow ref="componentRef">组件内容</SettingRow>
+  <SettingRow ref="componentRef">
+    <div data-setting-identity="">
+      <strong>语言</strong>
+      <p>选择界面显示语言。</p>
+    </div>
+    <div data-setting-control="">
+      <select class="select">
+        <option value="zh-CN">简体中文</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <p data-setting-message="">更改会自动保存。</p>
+  </SettingRow>
 </template>
 ```
 

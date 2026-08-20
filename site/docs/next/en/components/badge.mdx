@@ -147,9 +147,7 @@ Use an inline loading icon with `data-icon="inline-start"` or `data-icon="inline
 import { Badge } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Badge>Component content</Badge>
-  );
+  return <Badge>Default</Badge>;
 }
 ```
 
@@ -158,14 +156,11 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Badge } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Badge>Component content</Badge>
-</template>
+<template><Badge>Default</Badge></template>
 ```
 
 The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

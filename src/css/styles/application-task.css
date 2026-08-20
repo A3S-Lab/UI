@@ -80,14 +80,18 @@
   }
 
   .task-start > [data-task-suggestions] :is(a, button):hover {
-    border-color: color-mix(in srgb, var(--a3s-blue, var(--primary)) 24%, var(--border));
+    border-color: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 24%,
+      var(--border)
+    );
     background: var(--muted);
     color: var(--foreground);
   }
 
   .task-start > [data-task-suggestions] :is(a, button):focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .task-workspace {
@@ -101,7 +105,7 @@
   }
 
   @media (max-width: 56.25rem) {
-    .task-workspace[data-inspector='open'] [data-task-inspector] {
+    .task-workspace[data-inspector="open"] [data-task-inspector] {
       border-inline-start: 0;
       box-shadow: var(--a3s-shadow-soft, 0 12px 32px rgb(27 39 67 / 11%));
     }
@@ -146,7 +150,7 @@
     padding: 1.25rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    background: color-mix(in srgb, var(--a3s-blue, var(--primary)) 4%, var(--card));
+    background: color-mix(in srgb, var(--muted) 34%, var(--card));
   }
 
   .catalog > [data-catalog-featured] > :is(ul, ol) > li:nth-child(3n + 2) {
@@ -200,7 +204,7 @@
     line-height: 1.35rem;
   }
 
-  .setting-row[data-state='invalid'] > [data-setting-message] {
+  .setting-row[data-state="invalid"] > [data-setting-message] {
     color: var(--destructive);
   }
 

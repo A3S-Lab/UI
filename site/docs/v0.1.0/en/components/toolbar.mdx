@@ -39,3 +39,47 @@ Use `aria-pressed` for toggle buttons and `disabled` for unavailable commands. A
 ## Accessibility
 
 Name the toolbar and each ambiguous group. Native buttons remain in the document tab sequence. Provide keyboard shortcuts at the application layer and expose them with [Kbd](/components/kbd) or tooltip text.
+
+## React
+
+```tsx
+export function ToolbarExample() {
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Formatting">
+      <div role="group" aria-label="Text style">
+        <button type="button" aria-pressed="true">
+          Bold
+        </button>
+        <button type="button" aria-pressed="false">
+          Italic
+        </button>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-label="Insert">
+        <button type="button">Link</button>
+      </div>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="toolbar" role="toolbar" aria-label="Formatting">
+    <div role="group" aria-label="Text style">
+      <button type="button" aria-pressed="true">Bold</button
+      ><button type="button" aria-pressed="false">Italic</button>
+    </div>
+    <hr role="separator" />
+    <div role="group" aria-label="Insert">
+      <button type="button">Link</button>
+    </div>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

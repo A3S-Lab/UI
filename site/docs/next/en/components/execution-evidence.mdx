@@ -76,7 +76,16 @@ import { ExecutionEvidence } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <ExecutionEvidence>Component content</ExecutionEvidence>
+    <ExecutionEvidence data-state="verified">
+      <header>
+        <h3>Component semantic coverage</h3>
+        <span data-evidence-result="">Verified</span>
+      </header>
+      <section>Observable result and provenance.</section>
+      <footer>
+        <a href="/reports/component-semantics">Open test report</a>
+      </footer>
+    </ExecutionEvidence>
   );
 }
 ```
@@ -86,13 +95,19 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ExecutionEvidence } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <ExecutionEvidence>Component content</ExecutionEvidence>
+  <ExecutionEvidence data-state="verified">
+    <header>
+      <h3>Component semantic coverage</h3>
+      <span data-evidence-result="">Verified</span>
+    </header>
+    <section>Observable result and provenance.</section>
+    <footer><a href="/reports/component-semantics">Open test report</a></footer>
+  </ExecutionEvidence>
 </template>
 ```
 

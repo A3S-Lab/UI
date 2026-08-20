@@ -79,15 +79,7 @@
   }
 
   .data-grid .table tbody tr[data-state="selected"] {
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 8%,
-      var(--card)
-    );
-  }
-
-  .data-grid .table tbody tr:focus-within {
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ring) 58%, transparent);
+    background: var(--a3s-selection, var(--accent, var(--card)));
   }
 
   .data-grid th [data-grid-sort] {
@@ -110,14 +102,14 @@
   }
 
   .data-grid th [data-grid-sort]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .data-grid [data-sort-indicator] {
     width: 0.875rem;
     height: 0.875rem;
-    color: var(--a3s-blue, var(--primary));
+    color: var(--a3s-accent, var(--ring));
     transition:
       transform var(--a3s-motion-fast, 120ms) ease-out,
       opacity var(--a3s-motion-fast, 120ms) ease-out;
@@ -156,8 +148,8 @@
   }
 
   .data-grid [data-grid-row-action]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   /* Filter Bar */
@@ -193,16 +185,16 @@
   }
 
   .filter-bar [data-filter-toggle][aria-pressed="true"] {
-    background: var(--card);
-    color: var(--a3s-blue, var(--primary));
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--foreground) 9%, transparent);
+    background: var(--a3s-selection, var(--accent, var(--card)));
+    color: var(--a3s-accent, var(--ring));
+    box-shadow: none;
   }
 
   .filter-bar [data-filter-toggle]:focus-visible,
   .filter-bar [data-filter-remove]:focus-visible,
   .filter-bar [data-filter-clear]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .filter-bar [data-filter-active] {
@@ -214,13 +206,9 @@
     gap: 0.25rem;
     padding: 0.1875rem 0.25rem 0.1875rem 0.5rem;
     border: 1px solid
-      color-mix(in srgb, var(--a3s-blue, var(--primary)) 22%, var(--border));
+      color-mix(in srgb, var(--a3s-accent, var(--ring)) 22%, var(--border));
     border-radius: var(--radius-md);
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 7%,
-      var(--card)
-    );
+    background: var(--a3s-selection, var(--accent, var(--card)));
     color: var(--foreground);
     font-size: var(--a3s-font-size-compact, 0.75rem);
     line-height: 1rem;
@@ -245,7 +233,7 @@
   .filter-bar [data-filter-remove]:hover {
     background: color-mix(
       in srgb,
-      var(--a3s-blue, var(--primary)) 10%,
+      var(--a3s-accent, var(--ring)) 10%,
       transparent
     );
     color: var(--foreground);
@@ -275,13 +263,9 @@
     min-height: 3.25rem;
     padding: 0.5rem 0.625rem 0.5rem 0.75rem;
     border: 1px solid
-      color-mix(in srgb, var(--a3s-blue, var(--primary)) 26%, var(--border));
+      color-mix(in srgb, var(--a3s-accent, var(--ring)) 26%, var(--border));
     border-radius: var(--radius-lg);
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 7%,
-      var(--card)
-    );
+    background: var(--a3s-selection, var(--accent, var(--card)));
     color: var(--foreground);
   }
 
@@ -292,7 +276,7 @@
   }
 
   .bulk-action-bar [data-bulk-selection] {
-    color: var(--a3s-blue, var(--primary));
+    color: var(--a3s-accent, var(--ring));
     font-size: 0.8125rem;
     font-weight: 650;
     line-height: 1.125rem;
@@ -308,7 +292,7 @@
   .bulk-action-bar[data-state="loading"] {
     border-color: color-mix(
       in srgb,
-      var(--a3s-blue, var(--primary)) 42%,
+      var(--a3s-accent, var(--ring)) 42%,
       var(--border)
     );
   }
@@ -430,8 +414,8 @@
   :is(.file-manager, .knowledge-library) button:focus-visible,
   :is(.file-manager, .knowledge-library) input:focus-visible,
   :is(.file-manager, .knowledge-library) [tabindex]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   :is(.file-manager, .knowledge-library) > [data-file-manager-navigation],
@@ -485,12 +469,8 @@
     > :is([data-file-manager-navigation], [data-knowledge-library-navigation])
     nav
     button:is([aria-current="page"], [aria-pressed="true"]) {
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 9%,
-      var(--card)
-    );
-    color: var(--a3s-blue, var(--primary));
+    background: var(--a3s-selection, var(--accent, var(--card)));
+    color: var(--a3s-accent, var(--ring));
     font-weight: 620;
   }
 
@@ -516,7 +496,11 @@
   }
 
   .file-manager
-    :is([data-file-manager-header], [data-file-manager-toolbar], [data-file-manager-selection])
+    :is(
+      [data-file-manager-header],
+      [data-file-manager-toolbar],
+      [data-file-manager-selection]
+    )
     button,
   .knowledge-library
     :is([data-knowledge-library-header], [data-knowledge-library-toolbar])
@@ -533,7 +517,11 @@
   }
 
   .file-manager
-    :is([data-file-manager-header], [data-file-manager-toolbar], [data-file-manager-selection])
+    :is(
+      [data-file-manager-header],
+      [data-file-manager-toolbar],
+      [data-file-manager-selection]
+    )
     button:hover,
   .knowledge-library
     :is([data-knowledge-library-header], [data-knowledge-library-toolbar])
@@ -543,8 +531,8 @@
   }
 
   :is(.file-manager, .knowledge-library) button[data-variant="primary"] {
-    border-color: var(--a3s-blue, var(--primary));
-    background: var(--a3s-blue, var(--primary));
+    border-color: var(--primary);
+    background: var(--primary);
     color: var(--primary-foreground);
   }
 
@@ -579,11 +567,7 @@
     min-height: 2.75rem;
     padding: 0.375rem 0.875rem;
     border-block-end: 1px solid var(--border);
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 6%,
-      var(--card)
-    );
+    background: var(--a3s-selection, var(--accent, var(--card)));
   }
 
   .file-manager [data-file-manager-viewport] {
@@ -612,24 +596,24 @@
   .file-manager [data-file-item][aria-selected="true"] {
     border-color: color-mix(
       in srgb,
-      var(--a3s-blue, var(--primary)) 32%,
+      var(--a3s-accent, var(--ring)) 32%,
       var(--border)
     );
-    background: color-mix(
-      in srgb,
-      var(--a3s-blue, var(--primary)) 8%,
-      var(--card)
-    );
+    background: var(--a3s-selection, var(--accent, var(--card)));
   }
 
-  .file-manager [data-file-manager-viewport][data-view="grid"] [data-file-item] {
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item] {
     min-height: 6.5rem;
     align-content: center;
     justify-items: center;
     text-align: center;
   }
 
-  .file-manager [data-file-manager-viewport][data-view="list"] [data-file-item] {
+  .file-manager
+    [data-file-manager-viewport][data-view="list"]
+    [data-file-item] {
     min-height: 2.75rem;
     padding: 0.5rem 0.625rem;
     border-block-end-color: var(--border);
@@ -650,7 +634,7 @@
   .knowledge-library > [data-knowledge-library-detail] {
     border-inline-start: 1px solid var(--border);
     background: var(--card);
-    box-shadow: -12px 0 20px -24px rgb(0 0 0 / 34%);
+    box-shadow: none;
   }
 
   .file-manager > [data-file-manager-preview] > header,
@@ -675,7 +659,9 @@
     scrollbar-color: var(--border) transparent;
   }
 
-  .knowledge-library [data-knowledge-library-group] + [data-knowledge-library-group] {
+  .knowledge-library
+    [data-knowledge-library-group]
+    + [data-knowledge-library-group] {
     margin-block-start: 1rem;
   }
 
@@ -705,15 +691,15 @@
     text-align: start;
   }
 
-  .knowledge-library [data-knowledge-item]:hover,
-  .knowledge-library [data-knowledge-item][aria-current="true"],
-  .knowledge-library [data-knowledge-item][aria-selected="true"] {
+  .knowledge-library [data-knowledge-item]:hover {
     background: var(--muted);
   }
 
   .knowledge-library [data-knowledge-item][aria-current="true"],
   .knowledge-library [data-knowledge-item][aria-selected="true"] {
-    box-shadow: inset 2px 0 0 var(--a3s-blue, var(--primary));
+    padding-inline-start: calc(0.625rem - 1px);
+    border-inline-start: 1px solid var(--a3s-accent, var(--ring));
+    background: var(--a3s-selection, var(--accent, var(--card)));
   }
 
   .knowledge-library [data-knowledge-item-identity] {
@@ -733,7 +719,7 @@
 
   .knowledge-library [data-knowledge-phase="running"],
   .knowledge-library [data-knowledge-phase="queued"] {
-    color: var(--a3s-blue, var(--primary));
+    color: var(--a3s-accent, var(--ring));
   }
 
   .knowledge-library [data-knowledge-phase="failed"],
@@ -893,8 +879,8 @@
     > section
     button {
     margin-block-start: 0.875rem;
-    border-color: var(--a3s-blue, var(--primary));
-    background: var(--a3s-blue, var(--primary));
+    border-color: var(--primary);
+    background: var(--primary);
     color: var(--primary-foreground);
   }
 
@@ -942,23 +928,61 @@
 
   @media (max-width: 48rem) {
     :is(.file-manager, .knowledge-library)
-      > :is([data-file-manager-navigation], [data-knowledge-library-navigation]) {
+      > :is(
+        [data-file-manager-navigation],
+        [data-knowledge-library-navigation]
+      ) {
       border-inline-end: 0;
       border-block-end: 1px solid var(--border);
     }
 
-    .knowledge-library
-      > [data-knowledge-library-navigation]
-      nav {
+    .knowledge-library > [data-knowledge-library-navigation] nav {
       display: flex;
       margin: 0;
       overflow-x: auto;
     }
 
-    .knowledge-library
-      > [data-knowledge-library-navigation]
-      nav
-      button {
+    .knowledge-library > [data-knowledge-library-navigation] nav button {
+      flex: none;
+    }
+
+    .knowledge-library:not(.product-knowledge-library)
+      [data-knowledge-library-header] {
+      align-items: start;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .knowledge-library:not(.product-knowledge-library)
+      [data-knowledge-library-header]
+      > div {
+      margin-block-start: 0.625rem;
+    }
+  }
+
+  @container knowledge-library (max-width: 48rem) {
+    .knowledge-library > [data-knowledge-library-navigation] {
+      padding: 0.5rem;
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .knowledge-library > [data-knowledge-library-navigation] > header {
+      min-height: 2.25rem;
+      padding-inline: 0.5rem;
+      flex: none;
+      white-space: nowrap;
+    }
+
+    .knowledge-library > [data-knowledge-library-navigation] nav {
+      display: flex;
+      min-width: 0;
+      margin: 0;
+      flex: 1 1 auto;
+      overflow-x: auto;
+    }
+
+    .knowledge-library > [data-knowledge-library-navigation] nav button {
       flex: none;
     }
 

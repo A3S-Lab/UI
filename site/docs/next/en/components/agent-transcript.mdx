@@ -13,7 +13,7 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
         <article>
           <header>
             <strong>You</strong>
-            <time datetime="2026-08-13T08:40:00Z">08:40</time>
+            <time dateTime="2026-08-13T08:40:00Z">08:40</time>
           </header>
           <div data-message-content>
             <p>Add cancellation coverage for the streaming execution path.</p>
@@ -24,14 +24,34 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
         <article>
           <header>
             <strong>A3S Code</strong>
-            <span class="status-badge" data-state="active" data-indicator>Running</span>
+            <span class="status-badge" data-state="active" data-indicator>
+              Running
+            </span>
           </header>
           <div data-message-content>
-            <p>I found the stream lifecycle in <code>src/runtime.ts</code>. I’ll inspect the existing tests before changing it.</p>
+            <p>
+              I found the stream lifecycle in <code>src/runtime.ts</code>. I’ll
+              inspect the existing tests before changing it.
+            </p>
           </div>
           <details class="execution-item" data-state="success">
             <summary>
-              <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+              <span data-execution-icon aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m4 17 6-5-6-5" />
+                  <path d="M12 19h8" />
+                </svg>
+              </span>
               <span data-execution-identity>
                 <strong>Search tests</strong>
                 <small>rg "cancel|abort" tests src</small>
@@ -40,8 +60,24 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
                 class="status-badge"
                 data-state="success"
                 data-execution-status
-              >Completed</span>
-              <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+              >
+                Completed
+              </span>
+              <span data-execution-disclosure aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </span>
             </summary>
             <section>
               <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
@@ -52,14 +88,21 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
       <li data-role="system">
         <article>
           <div data-message-content>
-            <p>Waiting for approval before running a command outside the current project.</p>
+            <p>
+              Waiting for approval before running a command outside the current
+              project.
+            </p>
           </div>
         </article>
       </li>
     </ol>
     <footer>
-      <span data-transcript-status aria-live="polite">Agent is working</span>
-      <button type="button" class="btn" data-size="sm" data-variant="ghost">Jump to latest</button>
+      <span data-transcript-status aria-live="polite">
+        Agent is working
+      </span>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost">
+        Jump to latest
+      </button>
     </footer>
   </section>
 </Preview>
@@ -78,17 +121,17 @@ Agent Transcript presents user, agent, and system Turns in chronological DOM ord
 
 ### Parameters
 
-| API                                         | Values                      | Purpose                                                   |
-| ------------------------------------------- | --------------------------- | --------------------------------------------------------- |
-| `class="agent-transcript"`                  | Required                    | Named conversation region                                 |
-| Direct `<ol>` or `data-transcript-viewport` | Recommended                 | Ordered, bounded Turn viewport                            |
-| Child `data-role`                           | `user`, `agent`, `system`   | Stable presentation role, independent of provider names   |
-| Child `<article>`                           | Recommended                 | One message or Turn surface                               |
-| `data-message-content`                      | Recommended                 | Rich text, code, execution items, approvals, and evidence |
-| `data-transcript-status`                    | Optional                    | Coarse asynchronous status                                |
-| `--agent-transcript-content-width`          | CSS length, default `47.5rem` | Maximum reading-column width                            |
-| `--agent-transcript-gap`                    | CSS length, default `1rem`    | Gap between Turns                                       |
-| `--agent-message-max-width`                 | CSS length, default `48rem`   | Readable message width                                  |
+| API                                         | Values                        | Purpose                                                   |
+| ------------------------------------------- | ----------------------------- | --------------------------------------------------------- |
+| `class="agent-transcript"`                  | Required                      | Named conversation region                                 |
+| Direct `<ol>` or `data-transcript-viewport` | Recommended                   | Ordered, bounded Turn viewport                            |
+| Child `data-role`                           | `user`, `agent`, `system`     | Stable presentation role, independent of provider names   |
+| Child `<article>`                           | Recommended                   | One message or Turn surface                               |
+| `data-message-content`                      | Recommended                   | Rich text, code, execution items, approvals, and evidence |
+| `data-transcript-status`                    | Optional                      | Coarse asynchronous status                                |
+| `--agent-transcript-content-width`          | CSS length, default `47.5rem` | Maximum reading-column width                              |
+| `--agent-transcript-gap`                    | CSS length, default `1rem`    | Gap between Turns                                         |
+| `--agent-message-max-width`                 | CSS length, default `48rem`   | Readable message width                                    |
 
 ## States and variants
 
@@ -105,7 +148,25 @@ import { AgentTranscript } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <AgentTranscript aria-label="Agent Transcript">Component content</AgentTranscript>
+    <AgentTranscript aria-label="Conversation">
+      <ol data-transcript-viewport="" tabIndex="0">
+        <li data-role="user">
+          <article>
+            <p>Review the release checks.</p>
+          </article>
+        </li>
+        <li data-role="agent">
+          <article>
+            <p>All checks passed. The build is ready.</p>
+          </article>
+        </li>
+        <li data-role="system">
+          <article>
+            <p>Workspace permissions verified.</p>
+          </article>
+        </li>
+      </ol>
+    </AgentTranscript>
   );
 }
 ```
@@ -115,13 +176,24 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AgentTranscript } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <AgentTranscript aria-label="Agent Transcript">Component content</AgentTranscript>
+  <AgentTranscript aria-label="Conversation">
+    <ol data-transcript-viewport="" tabindex="0">
+      <li data-role="user">
+        <article><p>Review the release checks.</p></article>
+      </li>
+      <li data-role="agent">
+        <article><p>All checks passed. The build is ready.</p></article>
+      </li>
+      <li data-role="system">
+        <article><p>Workspace permissions verified.</p></article>
+      </li>
+    </ol>
+  </AgentTranscript>
 </template>
 ```
 

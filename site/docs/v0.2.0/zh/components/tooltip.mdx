@@ -90,3 +90,41 @@ A3S UI 工具提示仅包含 CSS 和文本。这有意与 shadcn/ui 的组合工
   <button class="btn" data-variant="outline" data-tooltip="تلميح" data-side="inline-end">Inline End</button>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function TooltipExample() {
+  return (
+    <button
+      className="btn"
+      data-variant="outline"
+      data-tooltip="Tooltip text"
+      data-side="bottom"
+      data-align="center"
+    >
+      Bottom
+    </button>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <button
+    class="btn"
+    data-variant="outline"
+    data-tooltip="Tooltip text"
+    data-side="bottom"
+    data-align="center"
+  >
+    Bottom
+  </button>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

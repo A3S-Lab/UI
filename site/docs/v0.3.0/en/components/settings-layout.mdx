@@ -36,3 +36,51 @@ The layout becomes a horizontally scrollable section list below 768px. Form stat
 ## Accessibility
 
 Use real form controls and field labels; do not replace configuration with an unstructured source editor. Keep advanced raw configuration as an optional escape hatch. Each section needs a unique heading and ID so navigation can deep-link to it.
+
+## React
+
+```tsx
+export function SettingsLayoutExample() {
+  return (
+    <div className="settings-layout">
+      <aside>
+        <nav aria-label="Settings sections">
+          <a href="#general" aria-current="page">
+            General
+          </a>
+        </nav>
+      </aside>
+      <main>
+        <section id="general">
+          <h2>General</h2>
+          <p>Configure workspace defaults.</p>
+        </section>
+      </main>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="settings-layout">
+    <aside>
+      <nav aria-label="Settings sections">
+        <a href="#general" aria-current="page">General</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="general">
+        <h2>General</h2>
+        <p>Configure workspace defaults.</p>
+      </section>
+    </main>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

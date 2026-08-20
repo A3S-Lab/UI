@@ -141,9 +141,7 @@
 import { Skeleton } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Skeleton>组件内容</Skeleton>
-  );
+  return <Skeleton className="h-4 w-[150px]" />;
 }
 ```
 
@@ -152,14 +150,11 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Skeleton } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Skeleton>组件内容</Skeleton>
-</template>
+<template><Skeleton class="h-4 w-[150px]" /></template>
 ```
 
 适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

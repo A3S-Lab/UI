@@ -80,3 +80,43 @@ Progress supports `dir="rtl"` on the root or a parent.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function ProgressExample() {
+  return (
+    <div
+      className="progress"
+      role="progressbar"
+      aria-label="Loading"
+      aria-valuenow="66"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <span style={{ width: "66%" }}></span>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div
+    class="progress"
+    role="progressbar"
+    aria-label="Loading"
+    aria-valuenow="66"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <span style="width: 66%"></span>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

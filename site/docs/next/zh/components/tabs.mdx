@@ -689,7 +689,99 @@ import { Tabs, useTabs } from "@a3s-lab/ui/react";
 
 export function Example() {
   const control = useTabs();
-  return <Tabs ref={control.ref}>组件内容</Tabs>;
+  return (
+    <Tabs ref={control.ref} className="w-full" id="demo-tabs-with-panels">
+      <nav role="tablist" aria-orientation="horizontal" className="w-full">
+        <button
+          type="button"
+          role="tab"
+          id="demo-tabs-with-panels-tab-1"
+          aria-controls="demo-tabs-with-panels-panel-1"
+          aria-selected="true"
+          tabIndex="0"
+        >
+          账户
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="demo-tabs-with-panels-tab-2"
+          aria-controls="demo-tabs-with-panels-panel-2"
+          aria-selected="false"
+          tabIndex="-1"
+        >
+          密码
+        </button>
+      </nav>
+      <div
+        role="tabpanel"
+        id="demo-tabs-with-panels-panel-1"
+        aria-labelledby="demo-tabs-with-panels-tab-1"
+        tabIndex="-1"
+        aria-selected="true"
+      >
+        <div className="card">
+          <header>
+            <h2>账户</h2>
+            <p>修改账户信息，完成后保存更改。</p>
+          </header>
+          <section>
+            <form className="grid gap-4">
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-account-name">姓名</label>
+                <input type="text" id="demo-tabs-account-name" defaultValue="林安" />
+              </div>
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-account-username">用户名</label>
+                <input
+                  type="text"
+                  id="demo-tabs-account-username"
+                  defaultValue="@linan"
+                />
+              </div>
+            </form>
+          </section>
+          <footer>
+            <button type="button" className="btn">
+              保存更改
+            </button>
+          </footer>
+        </div>
+      </div>
+      <div
+        role="tabpanel"
+        id="demo-tabs-with-panels-panel-2"
+        aria-labelledby="demo-tabs-with-panels-tab-2"
+        tabIndex="-1"
+        aria-selected="false"
+        hidden
+      >
+        <div className="card">
+          <header>
+            <h2>密码</h2>
+            <p>修改密码后，当前会话将退出登录。</p>
+          </header>
+          <section>
+            <form className="grid gap-4">
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-password-current">当前密码</label>
+                <input type="password" id="demo-tabs-password-current" />
+              </div>
+              <div role="group" className="field">
+                <label htmlFor="demo-tabs-password-new">新密码</label>
+                <input type="password" id="demo-tabs-password-new" />
+              </div>
+            </form>
+          </section>
+          <footer>
+            <button type="button" className="btn">
+              保存密码
+            </button>
+          </footer>
+        </div>
+      </div>
+    </Tabs>
+  );
 }
 ```
 
@@ -698,7 +790,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Tabs, useTabs } from "@a3s-lab/ui/vue";
 
 const control = useTabs();
@@ -706,7 +798,93 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Tabs ref="componentRef">组件内容</Tabs>
+  <Tabs ref="componentRef" class="w-full" id="demo-tabs-with-panels">
+    <nav role="tablist" aria-orientation="horizontal" class="w-full">
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-1"
+        aria-controls="demo-tabs-with-panels-panel-1"
+        aria-selected="true"
+        tabindex="0"
+      >
+        账户
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="demo-tabs-with-panels-tab-2"
+        aria-controls="demo-tabs-with-panels-panel-2"
+        aria-selected="false"
+        tabindex="-1"
+      >
+        密码
+      </button>
+    </nav>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-1"
+      aria-labelledby="demo-tabs-with-panels-tab-1"
+      tabindex="-1"
+      aria-selected="true"
+    >
+      <div class="card">
+        <header>
+          <h2>账户</h2>
+          <p>修改账户信息，完成后保存更改。</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-account-name">姓名</label>
+              <input type="text" id="demo-tabs-account-name" value="林安" />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-account-username">用户名</label>
+              <input
+                type="text"
+                id="demo-tabs-account-username"
+                value="@linan"
+              />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">保存更改</button>
+        </footer>
+      </div>
+    </div>
+    <div
+      role="tabpanel"
+      id="demo-tabs-with-panels-panel-2"
+      aria-labelledby="demo-tabs-with-panels-tab-2"
+      tabindex="-1"
+      aria-selected="false"
+      hidden
+    >
+      <div class="card">
+        <header>
+          <h2>密码</h2>
+          <p>修改密码后，当前会话将退出登录。</p>
+        </header>
+        <section>
+          <form class="grid gap-4">
+            <div role="group" class="field">
+              <label for="demo-tabs-password-current">当前密码</label>
+              <input type="password" id="demo-tabs-password-current" />
+            </div>
+            <div role="group" class="field">
+              <label for="demo-tabs-password-new">新密码</label>
+              <input type="password" id="demo-tabs-password-new" />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button type="button" class="btn">保存密码</button>
+        </footer>
+      </div>
+    </div>
+  </Tabs>
 </template>
 ```
 

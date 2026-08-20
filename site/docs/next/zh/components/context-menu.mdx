@@ -233,7 +233,24 @@ import { ContextMenu, useContextMenu } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useContextMenu();
   return (
-    <ContextMenu ref={control.ref}>组件内容</ContextMenu>
+    <ContextMenu ref={control.ref}>
+      <div data-context-trigger="" tabIndex="0">
+        deployment.acl
+      </div>
+      <div
+        data-context-content=""
+        role="menu"
+        aria-label="文件操作"
+        aria-hidden="true"
+      >
+        <button type="button" role="menuitem" data-value="open">
+          打开
+        </button>
+        <button type="button" role="menuitem" data-value="rename">
+          重命名
+        </button>
+      </div>
+    </ContextMenu>
   );
 }
 ```
@@ -243,7 +260,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ContextMenu, useContextMenu } from "@a3s-lab/ui/vue";
 
 const control = useContextMenu();
@@ -251,7 +268,18 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ContextMenu ref="componentRef">组件内容</ContextMenu>
+  <ContextMenu ref="componentRef">
+    <div data-context-trigger="" tabindex="0">deployment.acl</div>
+    <div
+      data-context-content=""
+      role="menu"
+      aria-label="文件操作"
+      aria-hidden="true"
+    >
+      <button type="button" role="menuitem" data-value="open">打开</button>
+      <button type="button" role="menuitem" data-value="rename">重命名</button>
+    </div>
+  </ContextMenu>
 </template>
 ```
 

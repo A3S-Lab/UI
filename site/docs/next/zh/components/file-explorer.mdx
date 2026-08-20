@@ -422,7 +422,36 @@ import { FileExplorer, useFileExplorer } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useFileExplorer();
   return (
-    <FileExplorer ref={control.ref} aria-label="File Explorer">组件内容</FileExplorer>
+    <FileExplorer ref={control.ref} aria-labelledby="files-title">
+      <header>
+        <div data-file-explorer-identity="">
+          <h2 id="files-title">项目文件</h2>
+        </div>
+      </header>
+      <div data-file-explorer-toolbar="">
+        <input
+          className="input"
+          type="search"
+          data-file-explorer-search=""
+          aria-label="筛选文件"
+        />
+      </div>
+      <div data-file-explorer-viewport="">
+        <div className="tree" role="tree" aria-label="项目文件树">
+          <div role="treeitem" aria-expanded="true">
+            <span>src</span>
+            <div role="group">
+              <button type="button" role="treeitem">
+                index.ts
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <span data-file-explorer-summary="">5 个文件</span>
+      </footer>
+    </FileExplorer>
   );
 }
 ```
@@ -432,7 +461,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { FileExplorer, useFileExplorer } from "@a3s-lab/ui/vue";
 
 const control = useFileExplorer();
@@ -440,7 +469,32 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <FileExplorer ref="componentRef" aria-label="File Explorer">组件内容</FileExplorer>
+  <FileExplorer ref="componentRef" aria-labelledby="files-title">
+    <header>
+      <div data-file-explorer-identity="">
+        <h2 id="files-title">项目文件</h2>
+      </div>
+    </header>
+    <div data-file-explorer-toolbar="">
+      <input
+        class="input"
+        type="search"
+        data-file-explorer-search=""
+        aria-label="筛选文件"
+      />
+    </div>
+    <div data-file-explorer-viewport="">
+      <div class="tree" role="tree" aria-label="项目文件树">
+        <div role="treeitem" aria-expanded="true">
+          <span>src</span>
+          <div role="group">
+            <button type="button" role="treeitem">index.ts</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer><span data-file-explorer-summary="">5 个文件</span></footer>
+  </FileExplorer>
 </template>
 ```
 

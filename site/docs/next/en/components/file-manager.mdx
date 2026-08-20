@@ -53,10 +53,10 @@ File Manager is not a code tree. Use [File Explorer](/components/file-explorer) 
 
 <FrameworkTabs
   html={`<section class="file-manager" data-state="ready" data-view="list" aria-label="Workspace files">
-  <aside data-file-manager-navigation><nav aria-label="File locations">…</nav></aside>
+  <aside data-file-manager-navigation><nav aria-label="File locations"><a href="#workspace" aria-current="page">Workspace</a><a href="#recent">Recent</a></nav></aside>
   <main>
     <header data-file-manager-header>
-      <nav aria-label="Current location">…</nav>
+      <nav aria-label="Current location"><ol><li><a href="#workspace">Workspace</a></li><li aria-current="page">Project</li></ol></nav>
       <label data-file-manager-search><span class="sr-only">Search files</span><input type="search" /></label>
     </header>
     <div data-file-manager-toolbar>
@@ -92,9 +92,9 @@ export function WorkspaceFiles({ files }) {
 
   return (
     <FileManager ref={manager.ref} data-state="ready" data-view="list" aria-label="Workspace files">
-      <aside data-file-manager-navigation>{/* Locations */}</aside>
+      <aside data-file-manager-navigation><nav aria-label="File locations"><a href="#workspace" aria-current="page">Workspace</a><a href="#recent">Recent</a></nav></aside>
       <main>
-        <header data-file-manager-header>{/* Breadcrumb and search */}</header>
+        <header data-file-manager-header><nav aria-label="Current location"><ol><li><a href="#workspace">Workspace</a></li><li aria-current="page">Project</li></ol></nav><label data-file-manager-search><span className="sr-only">Search files</span><input type="search" /></label></header>
         <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
           {files.map(file => <button key={file.id} type="button" role="option" data-file-item data-file-value={file.id} aria-selected="false">{file.name}</button>)}
         </div>
@@ -121,9 +121,9 @@ const manager = useFileManager({
 
 <template>
   <FileManager :ref="manager.componentRef" data-state="ready" data-view="list" aria-label="Workspace files">
-    <aside data-file-manager-navigation><!-- Locations --></aside>
+    <aside data-file-manager-navigation><nav aria-label="File locations"><a href="#workspace" aria-current="page">Workspace</a><a href="#recent">Recent</a></nav></aside>
     <main>
-      <header data-file-manager-header><!-- Breadcrumb and search --></header>
+      <header data-file-manager-header><nav aria-label="Current location"><ol><li><a href="#workspace">Workspace</a></li><li aria-current="page">Project</li></ol></nav><label data-file-manager-search><span class="sr-only">Search files</span><input type="search" /></label></header>
       <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
         <button v-for="file in props.files" :key="file.id" type="button" role="option" data-file-item :data-file-value="file.id" aria-selected="false">{{ file.name }}</button>
       </div>

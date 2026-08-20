@@ -117,9 +117,7 @@ Keyboard labels are direction-neutral. Surrounding spacing should use logical ut
 import { Kbd } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Kbd>Component content</Kbd>
-  );
+  return <Kbd>⌘K</Kbd>;
 }
 ```
 
@@ -128,14 +126,11 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Kbd } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Kbd>Component content</Kbd>
-</template>
+<template><Kbd>⌘K</Kbd></template>
 ```
 
 The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

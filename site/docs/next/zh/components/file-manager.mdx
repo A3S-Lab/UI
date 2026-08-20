@@ -49,10 +49,10 @@
 
 <FrameworkTabs
   html={`<section class="file-manager" data-state="ready" data-view="list" aria-label="工作空间文件">
-  <aside data-file-manager-navigation><nav aria-label="文件位置">…</nav></aside>
+  <aside data-file-manager-navigation><nav aria-label="文件位置"><a href="#workspace" aria-current="page">工作区</a><a href="#recent">最近</a></nav></aside>
   <main>
     <header data-file-manager-header>
-      <nav aria-label="当前位置">…</nav>
+      <nav aria-label="当前位置"><ol><li><a href="#workspace">工作区</a></li><li aria-current="page">项目</li></ol></nav>
       <label data-file-manager-search><span class="sr-only">搜索文件</span><input type="search" /></label>
     </header>
     <div data-file-manager-toolbar>
@@ -88,9 +88,9 @@ export function WorkspaceFiles({ files }) {
 
   return (
     <FileManager ref={manager.ref} data-state="ready" data-view="list" aria-label="工作空间文件">
-      <aside data-file-manager-navigation>{/* 位置 */}</aside>
+      <aside data-file-manager-navigation><nav aria-label="文件位置"><a href="#workspace" aria-current="page">工作区</a><a href="#recent">最近</a></nav></aside>
       <main>
-        <header data-file-manager-header>{/* 面包屑与搜索 */}</header>
+        <header data-file-manager-header><nav aria-label="当前位置"><ol><li><a href="#workspace">工作区</a></li><li aria-current="page">项目</li></ol></nav><label data-file-manager-search><span className="sr-only">搜索文件</span><input type="search" /></label></header>
         <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
           {files.map(file => <button key={file.id} type="button" role="option" data-file-item data-file-value={file.id} aria-selected="false">{file.name}</button>)}
         </div>
@@ -117,9 +117,9 @@ const manager = useFileManager({
 
 <template>
   <FileManager :ref="manager.componentRef" data-state="ready" data-view="list" aria-label="工作空间文件">
-    <aside data-file-manager-navigation><!-- 位置 --></aside>
+    <aside data-file-manager-navigation><nav aria-label="文件位置"><a href="#workspace" aria-current="page">工作区</a><a href="#recent">最近</a></nav></aside>
     <main>
-      <header data-file-manager-header><!-- 面包屑与搜索 --></header>
+      <header data-file-manager-header><nav aria-label="当前位置"><ol><li><a href="#workspace">工作区</a></li><li aria-current="page">项目</li></ol></nav><label data-file-manager-search><span class="sr-only">搜索文件</span><input type="search" /></label></header>
       <div data-file-manager-viewport data-view="list" role="listbox" aria-multiselectable="true">
         <button v-for="file in props.files" :key="file.id" type="button" role="option" data-file-item :data-file-value="file.id" aria-selected="false">{{ file.name }}</button>
       </div>

@@ -43,7 +43,16 @@ import { PlanStep } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <PlanStep>Component content</PlanStep>
+    <PlanStep data-state="active" aria-current="step">
+      <span data-plan-marker="" aria-hidden="true">
+        2
+      </span>
+      <div data-step-identity="">
+        <h3>Verify responsive behavior</h3>
+        <p data-step-description="">Verify the layout at 390 px and 1280 px.</p>
+      </div>
+      <span data-plan-step-status="">Active</span>
+    </PlanStep>
   );
 }
 ```
@@ -53,13 +62,19 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { PlanStep } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <PlanStep>Component content</PlanStep>
+  <PlanStep data-state="active" aria-current="step">
+    <span data-plan-marker="" aria-hidden="true">2</span>
+    <div data-step-identity="">
+      <h3>Verify responsive behavior</h3>
+      <p data-step-description="">Verify the layout at 390 px and 1280 px.</p>
+    </div>
+    <span data-plan-step-status="">Active</span>
+  </PlanStep>
 </template>
 ```
 

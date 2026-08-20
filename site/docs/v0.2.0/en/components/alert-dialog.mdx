@@ -206,3 +206,69 @@ Alert Dialog supports document direction. Set `dir="rtl"` on the dialog or a par
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function AlertDialogExample() {
+  return (
+    <dialog
+      id="demo-alert-dialog"
+      className="alert-dialog"
+      role="alertdialog"
+      aria-labelledby="demo-alert-dialog-title"
+      aria-describedby="demo-alert-dialog-description"
+    >
+      <div>
+        <header>
+          <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+          <p id="demo-alert-dialog-description">
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </p>
+        </header>
+        <footer>
+          <button className="btn" data-variant="outline">
+            Cancel
+          </button>
+          <button className="btn" data-variant="destructive">
+            Continue
+          </button>
+        </footer>
+      </div>
+    </dialog>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <dialog
+    id="demo-alert-dialog"
+    class="alert-dialog"
+    role="alertdialog"
+    aria-labelledby="demo-alert-dialog-title"
+    aria-describedby="demo-alert-dialog-description"
+  >
+    <div>
+      <header>
+        <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+        <p id="demo-alert-dialog-description">
+          This action cannot be undone. This will permanently delete your
+          account and remove your data from our servers.
+        </p>
+      </header>
+      <footer>
+        <button class="btn" data-variant="outline">Cancel</button>
+        <button class="btn" data-variant="destructive">Continue</button>
+      </footer>
+    </div>
+  </dialog>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

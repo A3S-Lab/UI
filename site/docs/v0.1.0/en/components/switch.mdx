@@ -147,3 +147,21 @@ Switch field layout uses document direction. Set `dir="rtl"` on the field or an 
   <input type="checkbox" id="switch-rtl" role="switch" class="input" aria-describedby="switch-rtl-description" defaultChecked />
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function SwitchExample() {
+  return <input type="checkbox" role="switch" className="input" />;
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template><input type="checkbox" role="switch" class="input" /></template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

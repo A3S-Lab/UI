@@ -52,3 +52,45 @@ Split Pane 为编辑器、检查器、调用链详情与智能体对话创建可
 ## 可访问性
 
 控制器会设置分隔符方向、取值边界、当前值、百分比文本与键盘焦点。方向键按 `data-step` 调整；Home 与 End 移动到边界；双击恢复默认值。
+
+## React
+
+```tsx
+export function SplitPaneExample() {
+  return (
+    <div className="split-pane" data-value="40">
+      <section>Primary pane</section>
+      <hr
+        role="separator"
+        aria-label="Resize inspector"
+        data-min="20"
+        data-max="80"
+        data-step="5"
+      />
+      <section>Secondary pane</section>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="split-pane" data-value="40">
+    <section>Primary pane</section>
+    <hr
+      role="separator"
+      aria-label="Resize inspector"
+      data-min="20"
+      data-max="80"
+      data-step="5"
+    />
+    <section>Secondary pane</section>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

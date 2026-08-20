@@ -58,13 +58,14 @@
   }
 
   .image-select [data-image-option]:has(input:checked) label {
-    border-color: var(--ring);
-    box-shadow: 0 0 0 1px var(--ring);
+    border-color: color-mix(in srgb, var(--a3s-accent) 42%, var(--border));
+    background: var(--a3s-selection, var(--accent));
+    box-shadow: none;
   }
 
   .image-select [data-image-option]:has(input:focus-visible) label {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .image-select [data-image-option]:has(input:disabled) label {

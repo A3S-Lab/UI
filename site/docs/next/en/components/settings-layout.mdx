@@ -44,7 +44,21 @@ import { SettingsLayout } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <SettingsLayout>Component content</SettingsLayout>
+    <SettingsLayout>
+      <aside>
+        <nav aria-label="Settings sections">
+          <a href="#general" aria-current="page">
+            General
+          </a>
+        </nav>
+      </aside>
+      <main>
+        <section id="general">
+          <h2>General</h2>
+          <p>Configure workspace defaults.</p>
+        </section>
+      </main>
+    </SettingsLayout>
   );
 }
 ```
@@ -54,13 +68,24 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { SettingsLayout } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <SettingsLayout>Component content</SettingsLayout>
+  <SettingsLayout>
+    <aside>
+      <nav aria-label="Settings sections">
+        <a href="#general" aria-current="page">General</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="general">
+        <h2>General</h2>
+        <p>Configure workspace defaults.</p>
+      </section>
+    </main>
+  </SettingsLayout>
 </template>
 ```
 

@@ -66,13 +66,18 @@ async function listTextFiles(relativePath) {
 }
 
 function documentsFramework(source, framework) {
-  const heading = new RegExp(`^## ${framework}$`, "mu");
   const tabProp = framework.toLowerCase();
   const frameworkTabs = new RegExp(
     `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
     "u",
   );
-  return heading.test(source) || frameworkTabs.test(source);
+  if (framework === "HTML") {
+    return /^```html$/mu.test(source) || frameworkTabs.test(source);
+  }
+  return (
+    new RegExp(`^## ${framework}$`, "mu").test(source) ||
+    frameworkTabs.test(source)
+  );
 }
 
 function collectMetadataLinks(value, links = new Set()) {
@@ -231,6 +236,26 @@ assert.deepEqual(harnessLayoutLinks, [
   "harness/split-view",
   "harness/pane-view",
 ]);
+
+for (const locale of locales) {
+  for (const link of harnessLayoutLinks) {
+    const relativePath = `site/docs/next/${locale}/${link}.mdx`;
+    const source = await read(relativePath);
+    for (const marker of [
+      "<FrameworkTabs",
+      'htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"',
+      "dockview-react@8.1.0",
+      "dockview-vue@8.1.0",
+      '<script type="module">',
+    ]) {
+      assert.ok(
+        source.includes(marker),
+        `${relativePath} must keep installation and runnable examples inside the HTML/React/Vue tabs: ${marker}`,
+      );
+    }
+  }
+}
+
 assert.equal(semanticCatalogLinks.length, 116);
 assertUniqueLinks(semanticCatalogLinks, "Semantic component navigation");
 assertUniqueLinks(
@@ -276,6 +301,10 @@ for (const component of components) {
   for (const locale of locales) {
     const relativePath = `site/docs/next/${locale}/components/${component.slug}.mdx`;
     const source = await read(relativePath);
+    assert.ok(
+      documentsFramework(source, "HTML"),
+      `${relativePath} must document HTML.`,
+    );
     assert.ok(
       documentsFramework(source, "React"),
       `${relativePath} must document React.`,
@@ -395,7 +424,15 @@ for (const locale of locales) {
   for (const version of ["next", "v0.3.0", "v0.2.0", "v0.1.0"]) {
     await assert.rejects(
       readFile(
-        path.join(projectRoot, "site", "docs", version, locale, "patterns", "_meta.json"),
+        path.join(
+          projectRoot,
+          "site",
+          "docs",
+          version,
+          locale,
+          "patterns",
+          "_meta.json",
+        ),
       ),
       `${version}/${locale} must not retain the retired Patterns chapter.`,
     );

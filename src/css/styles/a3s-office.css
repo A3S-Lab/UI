@@ -222,7 +222,8 @@
       > .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
     ):focus-within {
     border-radius: var(--a3s-radius);
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .button-group:has(
@@ -230,7 +231,7 @@
           [type="range"]
         )[aria-invalid="true"]
     ):focus-within {
-    box-shadow: var(--a3s-shadow-error);
+    outline-color: var(--a3s-red);
   }
 
   .button-group:has(
@@ -243,6 +244,7 @@
     > :is(.dropdown-menu, .popover, .select)
     > button:focus-visible {
     box-shadow: none;
+    outline: 0;
   }
 
   .button-group:not([data-orientation="vertical"]):not(:has(> .button-group))
@@ -281,7 +283,8 @@
 
   .btn:focus-visible {
     border-color: var(--a3s-blue);
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .badge {
@@ -434,7 +437,8 @@
   select.select:focus-visible,
   .select:not(select) > button:focus-visible {
     border-color: var(--a3s-blue);
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   :is(
@@ -462,7 +466,7 @@
   select.select[aria-invalid="true"]:focus-visible,
   .select:not(select) > button[aria-invalid="true"]:focus-visible {
     border-color: var(--a3s-red);
-    box-shadow: var(--a3s-shadow-error);
+    outline-color: var(--a3s-red);
   }
 
   .input-group {
@@ -487,7 +491,8 @@
 
   .input-group:focus-within {
     border-color: var(--a3s-blue);
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .input-group:has([aria-invalid="true"]) {
@@ -495,7 +500,7 @@
   }
 
   .input-group:has([aria-invalid="true"]):focus-within {
-    box-shadow: var(--a3s-shadow-error);
+    outline-color: var(--a3s-red);
   }
 
   .input-group > :is(input, textarea, select, [data-control]) {
@@ -626,7 +631,8 @@
     .input[type="radio"]
   ):focus-visible {
     border-color: var(--a3s-blue);
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   :is(
@@ -636,7 +642,7 @@
       .input[type="radio"]
     )[aria-invalid="true"]:focus-visible {
     border-color: var(--a3s-red);
-    box-shadow: var(--a3s-shadow-error);
+    outline-color: var(--a3s-red);
   }
 
   .field > input[type="radio"],
@@ -816,7 +822,8 @@
     .field > input[type="checkbox"][role="switch"],
     .input[type="checkbox"][role="switch"]
   ):focus-visible {
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   :is(
@@ -832,6 +839,13 @@
       .input[type="checkbox"][role="switch"]
     )[aria-invalid="true"]::after {
     border-color: var(--a3s-red);
+  }
+
+  :is(
+      .field > input[type="checkbox"][role="switch"],
+      .input[type="checkbox"][role="switch"]
+    )[aria-invalid="true"]:focus-visible {
+    outline-color: var(--a3s-red);
   }
 
   :is(
@@ -1035,8 +1049,8 @@
     .sidebar nav li > button,
     .sidebar nav li > details > summary
   ):focus-visible {
-    outline: 0;
-    box-shadow: var(--a3s-shadow-focus);
+    outline: var(--a3s-focus-outline);
+    outline-offset: var(--a3s-outline-offset);
   }
 
   .breadcrumb > ol {
@@ -1546,7 +1560,7 @@
   }
 
   .tree [role="treeitem"]:focus-visible > [data-tree-row] {
-    outline: 2px solid color-mix(in srgb, var(--a3s-blue) 72%, transparent);
+    outline: var(--a3s-focus-outline);
     outline-offset: -2px;
     box-shadow: none;
   }

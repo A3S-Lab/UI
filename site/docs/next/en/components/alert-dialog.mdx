@@ -221,7 +221,30 @@ import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useAlertDialog();
   return (
-    <AlertDialog ref={control.ref} aria-label="Alert Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></AlertDialog>
+    <AlertDialog
+      ref={control.ref}
+      id="demo-alert-dialog"
+      aria-labelledby="demo-alert-dialog-title"
+      aria-describedby="demo-alert-dialog-description"
+    >
+      <div>
+        <header>
+          <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+          <p id="demo-alert-dialog-description">
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </p>
+        </header>
+        <footer>
+          <button className="btn" data-variant="outline">
+            Cancel
+          </button>
+          <button className="btn" data-variant="destructive">
+            Continue
+          </button>
+        </footer>
+      </div>
+    </AlertDialog>
   );
 }
 ```
@@ -231,7 +254,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AlertDialog, useAlertDialog } from "@a3s-lab/ui/vue";
 
 const control = useAlertDialog();
@@ -239,7 +262,26 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <AlertDialog ref="componentRef" aria-label="Alert Dialog"><div><header><h2>Component summary</h2></header><section>Component content</section><footer><button type="button">Continue</button></footer></div></AlertDialog>
+  <AlertDialog
+    ref="componentRef"
+    id="demo-alert-dialog"
+    aria-labelledby="demo-alert-dialog-title"
+    aria-describedby="demo-alert-dialog-description"
+  >
+    <div>
+      <header>
+        <h2 id="demo-alert-dialog-title">Are you absolutely sure?</h2>
+        <p id="demo-alert-dialog-description">
+          This action cannot be undone. This will permanently delete your
+          account and remove your data from our servers.
+        </p>
+      </header>
+      <footer>
+        <button class="btn" data-variant="outline">Cancel</button>
+        <button class="btn" data-variant="destructive">Continue</button>
+      </footer>
+    </div>
+  </AlertDialog>
 </template>
 ```
 

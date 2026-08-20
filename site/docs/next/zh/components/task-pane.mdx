@@ -98,7 +98,25 @@ import { TaskPane } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <TaskPane aria-label="Task Pane">组件内容</TaskPane>
+    <TaskPane data-responsive="overlay">
+      <header>
+        <h2>属性</h2>
+        <button type="button" aria-label="关闭属性面板">
+          关闭
+        </button>
+      </header>
+      <section>
+        <dl>
+          <div>
+            <dt>负责人</dt>
+            <dd>发布团队</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button">保存属性</button>
+      </footer>
+    </TaskPane>
   );
 }
 ```
@@ -108,13 +126,26 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskPane } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <TaskPane aria-label="Task Pane">组件内容</TaskPane>
+  <TaskPane data-responsive="overlay">
+    <header>
+      <h2>属性</h2>
+      <button type="button" aria-label="关闭属性面板">关闭</button>
+    </header>
+    <section>
+      <dl>
+        <div>
+          <dt>负责人</dt>
+          <dd>发布团队</dd>
+        </div>
+      </dl>
+    </section>
+    <footer><button type="button">保存属性</button></footer>
+  </TaskPane>
 </template>
 ```
 

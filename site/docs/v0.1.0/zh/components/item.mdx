@@ -372,3 +372,43 @@ Add `class="item"` to a semantic element such as `<article>` or `<a>`. Use `clas
   </a>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function ItemExample() {
+  return (
+    <article className="item" data-variant="outline">
+      <section>
+        <h3>Basic Item</h3>
+        <p>A simple item with title and description.</p>
+      </section>
+      <aside>
+        <button className="btn" data-variant="outline" data-size="sm">
+          Action
+        </button>
+      </aside>
+    </article>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <article class="item" data-variant="outline">
+    <section>
+      <h3>Basic Item</h3>
+      <p>A simple item with title and description.</p>
+    </section>
+    <aside>
+      <button class="btn" data-variant="outline" data-size="sm">Action</button>
+    </aside>
+  </article>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

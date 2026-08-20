@@ -44,7 +44,21 @@ import { SettingsLayout } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <SettingsLayout>组件内容</SettingsLayout>
+    <SettingsLayout>
+      <aside>
+        <nav aria-label="Settings sections">
+          <a href="#general" aria-current="page">
+            常规
+          </a>
+        </nav>
+      </aside>
+      <main>
+        <section id="general">
+          <h2>常规</h2>
+          <p>配置工作区默认值。</p>
+        </section>
+      </main>
+    </SettingsLayout>
   );
 }
 ```
@@ -54,13 +68,24 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { SettingsLayout } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <SettingsLayout>组件内容</SettingsLayout>
+  <SettingsLayout>
+    <aside>
+      <nav aria-label="Settings sections">
+        <a href="#general" aria-current="page">常规</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="general">
+        <h2>常规</h2>
+        <p>配置工作区默认值。</p>
+      </section>
+    </main>
+  </SettingsLayout>
 </template>
 ```
 

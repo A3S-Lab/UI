@@ -397,7 +397,17 @@ import { Item } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Item>组件内容</Item>
+    <Item data-variant="outline">
+      <section>
+        <h3>Basic Item</h3>
+        <p>A simple item with title and description.</p>
+      </section>
+      <aside>
+        <button className="btn" data-variant="outline" data-size="sm">
+          Action
+        </button>
+      </aside>
+    </Item>
   );
 }
 ```
@@ -407,13 +417,20 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Item } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Item>组件内容</Item>
+  <Item data-variant="outline">
+    <section>
+      <h3>Basic Item</h3>
+      <p>A simple item with title and description.</p>
+    </section>
+    <aside>
+      <button class="btn" data-variant="outline" data-size="sm">Action</button>
+    </aside>
+  </Item>
 </template>
 ```
 

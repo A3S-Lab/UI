@@ -507,8 +507,8 @@
   border-radius: 0.5rem;
   align-items: center;
   gap: 0.375rem;
-  background: var(--ui-blue);
-  color: #fff;
+  background: var(--ui-action, var(--ui-ink));
+  color: var(--ui-action-ink, var(--ui-paper));
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 550;
@@ -517,7 +517,7 @@
 .product-projects__hero button[data-primary]:hover,
 .product-automation button[data-primary]:hover,
 .product-resources button[data-primary]:hover {
-  background: var(--ui-blue-deep);
+  background: var(--ui-action-hover, var(--ui-muted));
 }
 
 .product-projects__hero button svg {
@@ -727,5 +727,5 @@ html[data-theme="dark"]
     .product-automation button[data-primary],
     .product-resources button[data-primary]
   ) {
-  color: var(--ui-paper);
+  color: var(--ui-action-ink, var(--ui-paper));
 }

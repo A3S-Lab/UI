@@ -13,7 +13,7 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
         <article>
           <header>
             <strong>你</strong>
-            <time datetime="2026-08-13T08:40:00Z">08:40</time>
+            <time dateTime="2026-08-13T08:40:00Z">08:40</time>
           </header>
           <div data-message-content>
             <p>为流式执行路径补充取消测试。</p>
@@ -24,14 +24,34 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
         <article>
           <header>
             <strong>A3S Code</strong>
-            <span class="status-badge" data-state="active" data-indicator>运行中</span>
+            <span class="status-badge" data-state="active" data-indicator>
+              运行中
+            </span>
           </header>
           <div data-message-content>
-            <p>我在 <code>src/runtime.ts</code> 找到了流生命周期。修改前会先检查现有测试。</p>
+            <p>
+              我在 <code>src/runtime.ts</code>{" "}
+              找到了流生命周期。修改前会先检查现有测试。
+            </p>
           </div>
           <details class="execution-item" data-state="success">
             <summary>
-              <span data-execution-icon aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg></span>
+              <span data-execution-icon aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m4 17 6-5-6-5" />
+                  <path d="M12 19h8" />
+                </svg>
+              </span>
               <span data-execution-identity>
                 <strong>搜索测试</strong>
                 <small>rg "cancel|abort" tests src</small>
@@ -40,8 +60,24 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
                 class="status-badge"
                 data-state="success"
                 data-execution-status
-              >已完成</span>
-              <span data-execution-disclosure aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg></span>
+              >
+                已完成
+              </span>
+              <span data-execution-disclosure aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </span>
             </summary>
             <section>
               <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
@@ -58,8 +94,12 @@ Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接
       </li>
     </ol>
     <footer>
-      <span data-transcript-status aria-live="polite">Agent 正在处理</span>
-      <button type="button" class="btn" data-size="sm" data-variant="ghost">跳到最新</button>
+      <span data-transcript-status aria-live="polite">
+        Agent 正在处理
+      </span>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost">
+        跳到最新
+      </button>
     </footer>
   </section>
 </Preview>
@@ -102,22 +142,39 @@ import { AgentTranscript } from "@a3s-lab/ui/react";
 export function Example() {
   return (
     <AgentTranscript aria-label="取消测试对话">
-      <header><strong>取消测试</strong><span>本地环境</span></header>
+      <header>
+        <strong>取消测试</strong>
+        <span>本地环境</span>
+      </header>
       <ol data-transcript-viewport>
         <li data-role="user">
           <article>
-            <header><strong>你</strong><time dateTime="2026-08-13T08:40:00Z">08:40</time></header>
-            <div data-message-content><p>为流式执行路径补充取消测试。</p></div>
+            <header>
+              <strong>你</strong>
+              <time dateTime="2026-08-13T08:40:00Z">08:40</time>
+            </header>
+            <div data-message-content>
+              <p>为流式执行路径补充取消测试。</p>
+            </div>
           </article>
         </li>
         <li data-role="agent">
           <article>
-            <header><strong>A3S Code</strong><span>运行中</span></header>
-            <div data-message-content><p>我会先检查现有测试，再修改流生命周期。</p></div>
+            <header>
+              <strong>A3S Code</strong>
+              <span>运行中</span>
+            </header>
+            <div data-message-content>
+              <p>我会先检查现有测试，再修改流生命周期。</p>
+            </div>
           </article>
         </li>
       </ol>
-      <footer><span data-transcript-status aria-live="polite">正在处理</span></footer>
+      <footer>
+        <span data-transcript-status aria-live="polite">
+          正在处理
+        </span>
+      </footer>
     </AgentTranscript>
   );
 }
@@ -138,18 +195,25 @@ import { AgentTranscript } from "@a3s-lab/ui/vue";
     <ol data-transcript-viewport>
       <li data-role="user">
         <article>
-          <header><strong>你</strong><time datetime="2026-08-13T08:40:00Z">08:40</time></header>
+          <header>
+            <strong>你</strong
+            ><time datetime="2026-08-13T08:40:00Z">08:40</time>
+          </header>
           <div data-message-content><p>为流式执行路径补充取消测试。</p></div>
         </article>
       </li>
       <li data-role="agent">
         <article>
           <header><strong>A3S Code</strong><span>运行中</span></header>
-          <div data-message-content><p>我会先检查现有测试，再修改流生命周期。</p></div>
+          <div data-message-content>
+            <p>我会先检查现有测试，再修改流生命周期。</p>
+          </div>
         </article>
       </li>
     </ol>
-    <footer><span data-transcript-status aria-live="polite">正在处理</span></footer>
+    <footer>
+      <span data-transcript-status aria-live="polite">正在处理</span>
+    </footer>
   </AgentTranscript>
 </template>
 ```

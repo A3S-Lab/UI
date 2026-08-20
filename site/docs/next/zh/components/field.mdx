@@ -458,7 +458,11 @@ import { Field } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Field>组件内容</Field>
+    <Field role="group">
+      <label htmlFor="name">姓名</label>
+      <input id="name" autoComplete="off" placeholder="王小明" />
+      <p>这些信息会显示在账单和邮件中。</p>
+    </Field>
   );
 }
 ```
@@ -468,13 +472,16 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Field } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Field>组件内容</Field>
+  <Field role="group">
+    <label for="name">姓名</label>
+    <input id="name" autocomplete="off" placeholder="王小明" />
+    <p>这些信息会显示在账单和邮件中。</p>
+  </Field>
 </template>
 ```
 

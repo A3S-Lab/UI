@@ -37,7 +37,20 @@ Root states are `ready`, `submitting`, `streaming`, `queued`, `stopping`, `offli
 TipTap lives behind a separate package entry, so applications that only use CSS or ordinary components do not pay for the editor. HTML, React, and Vue share the same DOM, events, and Markdown value.
 
 <FrameworkTabs
-  html={`import { Editor } from "@tiptap/core";
+  html={`<form class="agent-composer" aria-label="Task composer" data-state="ready">
+  <section class="agent-composer-editor" data-composer-editor>
+    <div data-composer-input role="textbox" aria-label="Task instruction" aria-multiline="true"></div>
+  </section>
+  <ul data-composer-resources aria-label="Attached resources">
+    <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+  </ul>
+  <footer>
+    <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
+    <div data-composer-actions><button type="submit">Send</button></div>
+  </footer>
+</form>
+<script type="module">
+import { Editor } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Markdown } from "@tiptap/markdown";
 import StarterKit from "@tiptap/starter-kit";
@@ -73,7 +86,8 @@ const editor = new Editor({
 form.addEventListener("submit", event => {
   event.preventDefault();
   submitTask({ markdown: editor.getMarkdown() });
-});`}
+});
+</script>`}
   react={`import { useState } from "react";
 import { EditorContent } from "@tiptap/react";
 import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
@@ -100,8 +114,11 @@ export function TaskInput() {
       <section className="agent-composer-editor" data-composer-editor>
         {editor.editor && <EditorContent editor={editor.editor} />}
       </section>
+      <ul data-composer-resources aria-label="Attached resources">
+        <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+      </ul>
       <footer>
-        <div data-composer-tools>{/* Resources and run settings */}</div>
+        <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
         <div data-composer-actions><button type="submit">Send</button></div>
       </footer>
     </AgentComposer>
@@ -134,8 +151,11 @@ const tiptap = editor.editor;
     <section class="agent-composer-editor" data-composer-editor>
       <EditorContent v-if="tiptap" :editor="tiptap" />
     </section>
+    <ul data-composer-resources aria-label="Attached resources">
+      <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+    </ul>
     <footer>
-      <div data-composer-tools><!-- Resources and run settings --></div>
+      <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
       <div data-composer-actions><button type="submit">Send</button></div>
     </footer>
   </AgentComposer>

@@ -47,3 +47,55 @@ Use `data-labels="hidden"` for a standalone icon rail. Inside an [App Shell](/co
 ## Accessibility
 
 Keep labels in the DOM when collapsed. Every icon-only link or button still needs an accessible name. Use `aria-current`, not color alone, for the current page.
+
+## React
+
+```tsx
+export function ActivityBarExample() {
+  return (
+    <aside className="activity-bar" aria-label="Product navigation">
+      <header>
+        <a href="/" aria-label="Home">
+          A3S
+        </a>
+      </header>
+      <nav aria-label="Primary">
+        <ul>
+          <li>
+            <a href="/projects" aria-current="page">
+              Projects
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <footer>
+        <button type="button" aria-label="Settings">
+          Settings
+        </button>
+      </footer>
+    </aside>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <aside class="activity-bar" aria-label="Product navigation">
+    <header><a href="/" aria-label="Home">A3S</a></header>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="/projects" aria-current="page">Projects</a></li>
+      </ul>
+    </nav>
+    <footer>
+      <button type="button" aria-label="Settings">Settings</button>
+    </footer>
+  </aside>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

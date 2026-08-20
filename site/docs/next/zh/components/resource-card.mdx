@@ -48,7 +48,15 @@ import { ResourceCard } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <ResourceCard>组件内容</ResourceCard>
+    <ResourceCard as="button" type="button" data-kind="agent">
+      <figure>
+        <span aria-hidden="true">⌘</span>
+      </figure>
+      <section>
+        <strong>Coding agent</strong>
+        <small>CLI + 6 skills</small>
+      </section>
+    </ResourceCard>
   );
 }
 ```
@@ -58,13 +66,17 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ResourceCard } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <ResourceCard>组件内容</ResourceCard>
+  <ResourceCard as="button" type="button" data-kind="agent">
+    <figure><span aria-hidden="true">⌘</span></figure>
+    <section>
+      <strong>Coding agent</strong><small>CLI + 6 skills</small>
+    </section>
+  </ResourceCard>
 </template>
 ```
 

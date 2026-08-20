@@ -56,3 +56,29 @@ Status Badge is distinct from Badge: use Badge for categories, counts, and immut
 ## Accessibility
 
 Always include visible state text so color and the optional indicator are redundant. Do not add `role="status"` to every badge; add a live-region role only when the host application must announce a state transition. When a status controls another region, keep that relationship and its loading or error semantics on the owning control or region.
+
+## React
+
+```tsx
+export function StatusBadgeExample() {
+  return (
+    <span className="status-badge" data-state="active" data-indicator="">
+      Running
+    </span>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <span class="status-badge" data-state="active" data-indicator=""
+    >Running</span
+  >
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -6,23 +6,18 @@
     border-radius: var(--radius-xl);
     background: var(--card);
     color: var(--card-foreground);
-    box-shadow: var(
-      --agent-composer-shadow,
-      var(--a3s-shadow-composer, 0 8px 24px -12px rgb(27 39 67 / 24%))
-    );
-    transition:
-      border-color var(--a3s-motion-normal, 160ms) ease,
-      box-shadow var(--a3s-motion-normal, 160ms) ease;
+    box-shadow: none;
+    transition: border-color var(--a3s-motion-normal, 160ms) ease;
   }
 
-  .agent-composer:focus-within {
-    border-color: var(--ring);
-    box-shadow:
-      var(
-        --agent-composer-shadow,
-        var(--a3s-shadow-composer, 0 8px 24px -12px rgb(27 39 67 / 24%))
-      ),
-      0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
+  .agent-composer:has(
+    :is(.agent-composer-editor__content, [data-composer-input]):focus
+  ) {
+    border-color: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 52%,
+      var(--agent-composer-border-color, var(--border))
+    );
   }
 
   .agent-composer > :is([data-composer-resources], [data-composer-context]) {
@@ -88,16 +83,20 @@
 
   .agent-composer-token {
     border-radius: 0.1875rem;
-    color: var(--primary);
+    color: var(--a3s-accent, var(--ring));
     font-weight: 650;
   }
 
   .agent-composer-token--skill {
-    color: var(--a3s-purple, var(--primary));
+    color: var(--a3s-purple, var(--ring));
   }
 
   .agent-composer-token--command {
-    background: color-mix(in srgb, var(--primary) 9%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 9%,
+      transparent
+    );
   }
 
   .agent-composer > footer {
@@ -105,7 +104,9 @@
     padding: 0.25rem;
   }
 
-  .agent-composer > footer > :is([data-composer-tools], [data-composer-actions]) {
+  .agent-composer
+    > footer
+    > :is([data-composer-tools], [data-composer-actions]) {
     gap: 0.25rem;
   }
 
@@ -125,15 +126,15 @@
   }
 
   .agent-composer [data-composer-setting]:hover,
-  .agent-composer [data-composer-setting][aria-expanded='true'] {
+  .agent-composer [data-composer-setting][aria-expanded="true"] {
     border-color: var(--border);
     background: var(--muted);
     color: var(--foreground);
   }
 
   .agent-composer [data-composer-setting]:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: var(--a3s-outline-offset, 2px);
   }
 
   .agent-composer [data-composer-status] {
@@ -189,7 +190,7 @@
     background: var(--muted);
     color: var(--foreground);
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
   }
 
   .agent-composer [data-composer-suggestions] {
@@ -215,8 +216,8 @@
     border-block-start: 1px solid var(--border);
   }
 
-  .agent-composer [data-composer-suggestions] [role='option'],
-  .agent-composer [data-composer-suggestions] [role='treeitem'] {
+  .agent-composer [data-composer-suggestions] [role="option"],
+  .agent-composer [data-composer-suggestions] [role="treeitem"] {
     min-height: 2.625rem;
     gap: 0.5rem;
     padding: 0.375rem 0.5rem;
@@ -227,15 +228,19 @@
     text-align: start;
   }
 
-  .agent-composer [data-composer-suggestions] [role='option']:is(
-      :hover,
-      [aria-selected='true']
-    ),
-  .agent-composer [data-composer-suggestions] [role='treeitem']:is(
-      :hover,
-      [aria-selected='true']
-    ) {
+  .agent-composer [data-composer-suggestions] [role="option"]:hover,
+  .agent-composer [data-composer-suggestions] [role="treeitem"]:hover {
     background: var(--muted);
+  }
+
+  .agent-composer
+    [data-composer-suggestions]
+    [role="option"][aria-selected="true"],
+  .agent-composer
+    [data-composer-suggestions]
+    [role="treeitem"][aria-selected="true"] {
+    background: var(--a3s-selection, var(--accent, var(--muted)));
+    color: var(--foreground);
   }
 
   .agent-composer [data-composer-suggestion-icon] {
@@ -259,31 +264,36 @@
   }
 
   .agent-composer [data-composer-dropzone] {
-    border: 1px dashed color-mix(in srgb, var(--primary) 58%, var(--border));
+    border: 1px dashed
+      color-mix(in srgb, var(--a3s-accent, var(--ring)) 58%, var(--border));
     border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--primary) 7%, var(--card));
-    color: var(--primary);
+    background: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 7%,
+      var(--card)
+    );
+    color: var(--a3s-accent, var(--ring));
     font-size: 0.8125rem;
     font-weight: 620;
   }
 
-  .agent-composer:is([aria-disabled='true'], [data-state='disabled']) {
+  .agent-composer:is([aria-disabled="true"], [data-state="disabled"]) {
     opacity: 0.65;
   }
 
-  .agent-composer[data-state='error'] {
+  .agent-composer[data-state="error"] {
     border-color: color-mix(in srgb, var(--destructive) 52%, var(--border));
   }
 
-  .agent-composer[data-state='streaming'] {
+  .agent-composer[data-state="streaming"] {
     --agent-composer-border-color: color-mix(
       in srgb,
-      var(--primary) 38%,
+      var(--a3s-accent, var(--ring)) 38%,
       var(--border)
     );
   }
 
-  .agent-composer-editor__content[aria-disabled='true'] {
+  .agent-composer-editor__content[aria-disabled="true"] {
     cursor: not-allowed;
     opacity: 0.62;
   }
@@ -309,7 +319,13 @@
   }
 
   .agent-transcript > :is(ol, [data-transcript-viewport]) {
-    width: min(100%, var(--agent-transcript-content-width, var(--a3s-task-reading-size, 47.5rem)));
+    width: min(
+      100%,
+      var(
+        --agent-transcript-content-width,
+        var(--a3s-task-reading-size, 47.5rem)
+      )
+    );
     margin-inline: auto;
     padding: clamp(1rem, 3vw, 2rem);
     gap: 1.5rem;
@@ -325,22 +341,23 @@
 
   .agent-transcript
     > :is(ol, [data-transcript-viewport])
-    > li[data-role='user']
+    > li[data-role="user"]
     > article {
     max-width: min(86%, 38rem);
     padding: 0.75rem 0.875rem;
-    border: 1px solid color-mix(in srgb, var(--a3s-blue, var(--primary)) 12%, var(--border));
+    border: 1px solid
+      color-mix(in srgb, var(--a3s-accent, var(--ring)) 12%, var(--border));
     border-radius: var(--radius-xl);
     background: color-mix(
       in srgb,
-      var(--a3s-blue, var(--primary)) 6%,
+      var(--a3s-accent, var(--ring)) 6%,
       var(--card)
     );
   }
 
   .agent-transcript
     > :is(ol, [data-transcript-viewport])
-    > li[data-role='system']
+    > li[data-role="system"]
     > article {
     padding: 0.75rem 0.875rem;
     border: 1px dashed var(--border);
@@ -391,10 +408,11 @@
   }
 
   :is(
-    .agent-transcript > :is(ol, [data-transcript-viewport]) > li > article,
-    .task-workspace,
-    .agent-workbench
-  ) .execution-item {
+      .agent-transcript > :is(ol, [data-transcript-viewport]) > li > article,
+      .task-workspace,
+      .agent-workbench
+    )
+    .execution-item {
     margin-inline: calc(-1 * clamp(0rem, 1.4vw, 0.625rem));
   }
 
@@ -410,7 +428,8 @@
 
   .execution-item > summary:focus-visible {
     border-radius: var(--radius-md);
-    box-shadow: inset 0 0 0 2px var(--ring);
+    outline: var(--a3s-focus-outline, 2px solid var(--ring));
+    outline-offset: -2px;
   }
 
   .execution-item > summary > [data-execution-icon] {
@@ -466,22 +485,22 @@
     border-block-start: 1px solid var(--border);
   }
 
-  .execution-item[data-state='running'] > summary > [data-execution-icon],
-  .execution-item[data-state='waiting'] > summary > [data-execution-icon] {
+  .execution-item[data-state="running"] > summary > [data-execution-icon],
+  .execution-item[data-state="waiting"] > summary > [data-execution-icon] {
     background: color-mix(
       in srgb,
-      var(--a3s-blue, var(--primary)) 12%,
+      var(--a3s-accent, var(--ring)) 12%,
       var(--card)
     );
-    color: var(--a3s-blue, var(--primary));
+    color: var(--a3s-accent, var(--ring));
   }
 
-  .execution-item[data-state='success'] > summary > [data-execution-icon] {
+  .execution-item[data-state="success"] > summary > [data-execution-icon] {
     background: color-mix(in srgb, var(--a3s-green, #16845b) 12%, var(--card));
     color: var(--a3s-green, #16845b);
   }
 
-  .execution-item[data-state='error'] > summary > [data-execution-icon] {
+  .execution-item[data-state="error"] > summary > [data-execution-icon] {
     background: color-mix(in srgb, var(--destructive) 12%, var(--card));
     color: var(--destructive);
   }
@@ -543,8 +562,12 @@
   }
 
   .approval-request fieldset > label:has(input:checked) {
-    border-color: var(--ring);
-    background: color-mix(in srgb, var(--ring) 7%, var(--background));
+    border-color: color-mix(
+      in srgb,
+      var(--a3s-accent, var(--ring)) 42%,
+      var(--border)
+    );
+    background: var(--a3s-selection, var(--accent, var(--background)));
   }
 
   .approval-request fieldset > label > strong {
@@ -560,18 +583,18 @@
   }
 
   .approval-request:is(
-    [data-state='approved'],
-    [data-state='denied'],
-    [data-state='expired']
+    [data-state="approved"],
+    [data-state="denied"],
+    [data-state="expired"]
   ) {
     border-color: var(--border);
   }
 
-  .approval-request[data-state='approved'] > header {
+  .approval-request[data-state="approved"] > header {
     background: color-mix(in srgb, var(--a3s-green, #16845b) 8%, var(--card));
   }
 
-  .approval-request[data-state='denied'] > header {
+  .approval-request[data-state="denied"] > header {
     background: color-mix(in srgb, var(--destructive) 8%, var(--card));
   }
 }

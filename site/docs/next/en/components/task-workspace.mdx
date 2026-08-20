@@ -56,7 +56,33 @@ import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useTaskWorkspace();
   return (
-    <TaskWorkspace ref={control.ref} aria-label="Task Workspace">Component content</TaskWorkspace>
+    <TaskWorkspace ref={control.ref}>
+      <header className="workspace-header">
+        <button type="button" data-task-inspector-trigger="">
+          Open files
+        </button>
+      </header>
+      <div data-task-body="">
+        <main data-task-main="">
+          <section className="agent-transcript">
+            <article>
+              <p>Review the component documentation.</p>
+            </article>
+          </section>
+          <form className="agent-composer">
+            <textarea
+              aria-label="Message"
+              placeholder="Describe the next task"
+            ></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </main>
+        <aside id="task-files" className="task-pane" data-task-inspector="">
+          <h2>Files</h2>
+          <a href="/src/index.ts">src/index.ts</a>
+        </aside>
+      </div>
+    </TaskWorkspace>
   );
 }
 ```
@@ -66,7 +92,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { TaskWorkspace, useTaskWorkspace } from "@a3s-lab/ui/vue";
 
 const control = useTaskWorkspace();
@@ -74,7 +100,29 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <TaskWorkspace ref="componentRef" aria-label="Task Workspace">Component content</TaskWorkspace>
+  <TaskWorkspace ref="componentRef">
+    <header class="workspace-header">
+      <button type="button" data-task-inspector-trigger="">Open files</button>
+    </header>
+    <div data-task-body="">
+      <main data-task-main="">
+        <section class="agent-transcript">
+          <article><p>Review the component documentation.</p></article>
+        </section>
+        <form class="agent-composer">
+          <textarea
+            aria-label="Message"
+            placeholder="Describe the next task"
+          ></textarea
+          ><button type="submit">Send</button>
+        </form>
+      </main>
+      <aside id="task-files" class="task-pane" data-task-inspector="">
+        <h2>Files</h2>
+        <a href="/src/index.ts">src/index.ts</a>
+      </aside>
+    </div>
+  </TaskWorkspace>
 </template>
 ```
 

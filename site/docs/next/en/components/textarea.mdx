@@ -117,7 +117,11 @@ import { Textarea, useTextarea } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useTextarea();
   return (
-    <Textarea ref={control.ref} aria-label="Name" defaultValue="Component content" />
+    <Textarea
+      ref={control.ref}
+      aria-label="Message"
+      placeholder="Type your message here"
+    />
   );
 }
 ```
@@ -127,7 +131,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Textarea, useTextarea } from "@a3s-lab/ui/vue";
 
 const control = useTextarea();
@@ -135,7 +139,11 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Textarea ref="componentRef" aria-label="Name" value="Component content" />
+  <Textarea
+    ref="componentRef"
+    aria-label="Message"
+    placeholder="Type your message here"
+  />
 </template>
 ```
 

@@ -178,3 +178,48 @@ Add `dir="rtl"` to the card or an ancestor.
   </footer>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function CardExample() {
+  return (
+    <div className="card">
+      <header>
+        <h2>Card Title</h2>
+        <p>Card Description</p>
+        <div className="card-action">Card Action</div>
+      </header>
+      <section>
+        {" "}
+        <p>Card Content</p>
+      </section>
+      <footer>
+        <p>Card Footer</p>
+      </footer>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="card">
+    <header>
+      <h2>Card Title</h2>
+      <p>Card Description</p>
+      <div class="card-action">Card Action</div>
+    </header>
+    <section><p>Card Content</p></section>
+    <footer>
+      <p>Card Footer</p>
+    </footer>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

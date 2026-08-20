@@ -9,8 +9,6 @@
 
 .product-settings__storage > label[data-editing="true"] input {
   border-color: color-mix(in srgb, var(--ui-blue) 58%, var(--ui-line));
-  outline: 2px solid color-mix(in srgb, var(--ui-blue) 20%, transparent);
-  outline-offset: -1px;
 }
 
 .product-settings__profile input {
@@ -36,9 +34,9 @@
 }
 
 .product-settings__accent button[aria-pressed="true"] {
-  box-shadow:
-    0 0 0 2px var(--ui-paper),
-    0 0 0 4px var(--ui-ink);
+  outline: 1px solid var(--ui-ink);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .product-settings__shortcut-list article button[aria-pressed="true"] {

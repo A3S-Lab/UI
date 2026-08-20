@@ -6,23 +6,23 @@
   }
 
   .card {
-    @apply gap-6 py-6;
-  }
-
-  .card[data-size="sm"] {
     @apply gap-4 py-4;
   }
 
+  .card[data-size="sm"] {
+    @apply gap-3 py-3;
+  }
+
   .card > header {
-    @apply gap-1 rounded-t-lg px-6 [.border-b]:pb-6;
+    @apply gap-1 rounded-t-lg px-4 [.border-b]:pb-4;
   }
 
   .card[data-size="sm"] > header {
-    @apply px-4 [.border-b]:pb-4;
+    @apply px-3 [.border-b]:pb-3;
   }
 
   .card > header > :is(h2, h3, [data-title], .card-title) {
-    @apply text-base leading-normal font-medium;
+    @apply text-[0.9375rem] leading-normal font-semibold;
   }
 
   .card[data-size="sm"] > header > :is(h2, h3, [data-title], .card-title) {
@@ -34,19 +34,19 @@
   }
 
   .card > section {
-    @apply px-6;
-  }
-
-  .card[data-size="sm"] > section {
     @apply px-4;
   }
 
+  .card[data-size="sm"] > section {
+    @apply px-3;
+  }
+
   .card > footer {
-    @apply rounded-b-lg px-6 [.border-t]:pt-6;
+    @apply rounded-b-lg px-4 [.border-t]:pt-4;
   }
 
   .card[data-size="sm"] > footer {
-    @apply px-4 [.border-t]:pt-4;
+    @apply px-3 [.border-t]:pt-3;
   }
 
   /* Chart */

@@ -117,9 +117,7 @@ Use `<kbd class="kbd">` for a key label. Use an inline wrapper with utilities wh
 import { Kbd } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Kbd>组件内容</Kbd>
-  );
+  return <Kbd>⌘K</Kbd>;
 }
 ```
 
@@ -128,14 +126,11 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Kbd } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Kbd>组件内容</Kbd>
-</template>
+<template><Kbd>⌘K</Kbd></template>
 ```
 
 适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

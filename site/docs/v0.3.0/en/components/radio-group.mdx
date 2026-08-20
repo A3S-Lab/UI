@@ -223,3 +223,29 @@ Set `dir="rtl"` on the radio group or an ancestor.
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function RadioGroupExample() {
+  return (
+    <div role="radiogroup" aria-label="Run mode">
+      <input type="radio" name="plan" className="input" />
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div role="radiogroup" aria-label="Run mode">
+    <input type="radio" name="plan" class="input" />
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

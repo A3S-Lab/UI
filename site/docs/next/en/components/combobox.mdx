@@ -362,7 +362,60 @@ import { Combobox, useCombobox } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useCombobox();
   return (
-    <Combobox ref={control.ref}>Component content</Combobox>
+    <Combobox ref={control.ref} id="framework-combobox" className="w-[240px]">
+      <input
+        type="text"
+        role="combobox"
+        placeholder="Select a framework"
+        aria-label="Framework"
+        autoComplete="off"
+        autocorrect="off"
+        spellCheck="false"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls="framework-combobox-listbox"
+      />
+      <svg
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="combobox-trigger-icon"
+      >
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+      <div id="framework-combobox-popover" data-popover="" aria-hidden="true">
+        <div
+          role="listbox"
+          id="framework-combobox-listbox"
+          aria-orientation="vertical"
+          data-empty="No items found."
+        >
+          <div role="option" data-value="Next.js">
+            Next.js
+          </div>
+          <div role="option" data-value="SvelteKit">
+            SvelteKit
+          </div>
+          <div role="option" data-value="Nuxt.js">
+            Nuxt.js
+          </div>
+          <div role="option" data-value="Remix">
+            Remix
+          </div>
+          <div role="option" data-value="Astro">
+            Astro
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="framework" defaultValue="" />
+    </Combobox>
   );
 }
 ```
@@ -372,7 +425,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Combobox, useCombobox } from "@a3s-lab/ui/vue";
 
 const control = useCombobox();
@@ -380,7 +433,49 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Combobox ref="componentRef">Component content</Combobox>
+  <Combobox ref="componentRef" id="framework-combobox" class="w-[240px]">
+    <input
+      type="text"
+      role="combobox"
+      placeholder="Select a framework"
+      aria-label="Framework"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
+      aria-autocomplete="list"
+      aria-expanded="false"
+      aria-controls="framework-combobox-listbox"
+    /><svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="combobox-trigger-icon"
+    >
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+    <div id="framework-combobox-popover" data-popover="" aria-hidden="true">
+      <div
+        role="listbox"
+        id="framework-combobox-listbox"
+        aria-orientation="vertical"
+        data-empty="No items found."
+      >
+        <div role="option" data-value="Next.js">Next.js</div>
+        <div role="option" data-value="SvelteKit">SvelteKit</div>
+        <div role="option" data-value="Nuxt.js">Nuxt.js</div>
+        <div role="option" data-value="Remix">Remix</div>
+        <div role="option" data-value="Astro">Astro</div>
+      </div>
+    </div>
+    <input type="hidden" name="framework" value="" />
+  </Combobox>
 </template>
 ```
 

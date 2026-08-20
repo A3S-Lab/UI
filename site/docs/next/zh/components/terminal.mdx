@@ -69,7 +69,17 @@ import { Terminal } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Terminal aria-label="Terminal">组件内容</Terminal>
+    <Terminal data-state="success" aria-labelledby="terminal-title">
+      <header>
+        <strong id="terminal-title">发布检查</strong>
+        <span data-terminal-status="">退出码 0</span>
+      </header>
+      <code data-terminal-command="">$ npm run check:package</code>
+      <pre data-terminal-output="">软件包契约有效 15 项检查通过</pre>
+      <footer>
+        <button type="button">复制输出</button>
+      </footer>
+    </Terminal>
   );
 }
 ```
@@ -79,13 +89,22 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Terminal } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Terminal aria-label="Terminal">组件内容</Terminal>
+  <Terminal data-state="success" aria-labelledby="terminal-title">
+    <header>
+      <strong id="terminal-title">发布检查</strong
+      ><span data-terminal-status="">退出码 0</span>
+    </header>
+    <code data-terminal-command="">$ npm run check:package</code>
+    <pre data-terminal-output="">
+软件包契约有效
+15 项检查通过</pre>
+    <footer><button type="button">复制输出</button></footer>
+  </Terminal>
 </template>
 ```
 

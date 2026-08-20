@@ -191,3 +191,57 @@ Use Card, Tree, Code Editor, Field, Property List, Status Badge, Timeline, and L
 ## Accessibility
 
 Name the workbench and every navigation or live region. Keep one page-level heading outside or inside the primary canvas, use landmarks that match the content, and preserve a logical DOM order: context, primary work, inspector, then activity. Responsive reflow must not change keyboard order. The host application owns focus after navigation, streaming announcements, validation, and destructive-action confirmation.
+
+## React
+
+```tsx
+export function AgentWorkbenchExample() {
+  return (
+    <section className="agent-workbench" aria-label="Agent workbench">
+      <aside data-agent-context="">
+        <nav aria-label="Project context">
+          <a href="#files">Files</a>
+        </nav>
+      </aside>
+      <article data-agent-canvas="">
+        <h1>Release verification</h1>
+        <p>Review the current run and evidence.</p>
+      </article>
+      <aside data-agent-inspector="">
+        <h2>Inspector</h2>
+        <p>3 changed files</p>
+      </aside>
+      <section data-agent-activity="">
+        <output aria-live="polite">Ready</output>
+      </section>
+    </section>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <section class="agent-workbench" aria-label="Agent workbench">
+    <aside data-agent-context="">
+      <nav aria-label="Project context"><a href="#files">Files</a></nav>
+    </aside>
+    <article data-agent-canvas="">
+      <h1>Release verification</h1>
+      <p>Review the current run and evidence.</p>
+    </article>
+    <aside data-agent-inspector="">
+      <h2>Inspector</h2>
+      <p>3 changed files</p>
+    </aside>
+    <section data-agent-activity="">
+      <output aria-live="polite">Ready</output>
+    </section>
+  </section>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

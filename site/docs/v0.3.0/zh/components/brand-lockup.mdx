@@ -68,3 +68,39 @@
 ## 可访问性
 
 产品名称必须保留为可见文本。装饰性的字母标记和 Logo 使用 `aria-hidden="true"`；当整个标识组是链接时，为链接提供能说明目标位置的可访问名称。不要让标记和名称在可访问性树中重复朗读同一产品名。
+
+## React
+
+```tsx
+export function BrandLockupExample() {
+  return (
+    <a className="brand-lockup" href="/" aria-label="A3S OS 首页">
+      <span data-brand-mark="" aria-hidden="true">
+        A3
+      </span>
+      <span data-brand-identity="">
+        <strong data-brand-name="">A3S OS</strong>
+        <small data-brand-description="">Agent Factory</small>
+      </span>
+    </a>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <a class="brand-lockup" href="/" aria-label="A3S OS 首页">
+    <span data-brand-mark="" aria-hidden="true">A3</span>
+    <span data-brand-identity="">
+      <strong data-brand-name="">A3S OS</strong>
+      <small data-brand-description="">Agent Factory</small>
+    </span>
+  </a>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

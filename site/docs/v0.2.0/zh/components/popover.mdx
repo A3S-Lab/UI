@@ -261,3 +261,147 @@ A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 sha
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function PopoverExample() {
+  return (
+    <div id="demo-popover" className="popover">
+      <button
+        id="demo-popover-trigger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="demo-popover-popover"
+        className="btn"
+        data-variant="outline"
+      >
+        Open popover
+      </button>
+      <div
+        id="demo-popover-popover"
+        data-popover=""
+        aria-hidden="true"
+        className="w-72"
+      >
+        <header>
+          <h4>Dimensions</h4>
+          <p>Set the dimensions for the layer.</p>
+        </header>
+        <form className="grid gap-2">
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-width">Width</label>
+            <input
+              type="text"
+              id="demo-popover-width"
+              defaultValue="100%"
+              className="input col-span-2 h-8"
+              autoFocus
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-max-width">Max. width</label>
+            <input
+              type="text"
+              id="demo-popover-max-width"
+              defaultValue="300px"
+              className="input col-span-2 h-8"
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-height">Height</label>
+            <input
+              type="text"
+              id="demo-popover-height"
+              defaultValue="25px"
+              className="input col-span-2 h-8"
+            />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <label htmlFor="demo-popover-max-height">Max. height</label>
+            <input
+              type="text"
+              id="demo-popover-max-height"
+              defaultValue="none"
+              className="input col-span-2 h-8"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div id="demo-popover" class="popover">
+    <button
+      id="demo-popover-trigger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="demo-popover-popover"
+      class="btn"
+      data-variant="outline"
+    >
+      Open popover
+    </button>
+    <div
+      id="demo-popover-popover"
+      data-popover=""
+      aria-hidden="true"
+      class="w-72"
+    >
+      <header>
+        <h4>Dimensions</h4>
+        <p>Set the dimensions for the layer.</p>
+      </header>
+      <form class="grid gap-2">
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-width">Width</label>
+          <input
+            type="text"
+            id="demo-popover-width"
+            value="100%"
+            class="input col-span-2 h-8"
+            autofocus
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-max-width">Max. width</label>
+          <input
+            type="text"
+            id="demo-popover-max-width"
+            value="300px"
+            class="input col-span-2 h-8"
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-height">Height</label>
+          <input
+            type="text"
+            id="demo-popover-height"
+            value="25px"
+            class="input col-span-2 h-8"
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4">
+          <label for="demo-popover-max-height">Max. height</label>
+          <input
+            type="text"
+            id="demo-popover-max-height"
+            value="none"
+            class="input col-span-2 h-8"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

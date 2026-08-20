@@ -61,7 +61,17 @@ import { SplitPane, useSplitPane } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useSplitPane();
   return (
-    <SplitPane ref={control.ref}>组件内容</SplitPane>
+    <SplitPane ref={control.ref} data-value="40">
+      <section>Primary pane</section>
+      <hr
+        role="separator"
+        aria-label="Resize inspector"
+        data-min="20"
+        data-max="80"
+        data-step="5"
+      />
+      <section>Secondary pane</section>
+    </SplitPane>
   );
 }
 ```
@@ -71,7 +81,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { SplitPane, useSplitPane } from "@a3s-lab/ui/vue";
 
 const control = useSplitPane();
@@ -79,7 +89,17 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <SplitPane ref="componentRef">组件内容</SplitPane>
+  <SplitPane ref="componentRef" data-value="40">
+    <section>Primary pane</section>
+    <hr
+      role="separator"
+      aria-label="Resize inspector"
+      data-min="20"
+      data-max="80"
+      data-step="5"
+    />
+    <section>Secondary pane</section>
+  </SplitPane>
 </template>
 ```
 

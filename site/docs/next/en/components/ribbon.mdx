@@ -268,7 +268,20 @@ import { Ribbon, useRibbon } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useRibbon();
   return (
-    <Ribbon ref={control.ref}>Component content</Ribbon>
+    <Ribbon ref={control.ref} className="tabs" data-accent="blue">
+      <div role="tablist" aria-label="Editor commands">
+        <button type="button" role="tab" aria-selected="true">
+          Home
+        </button>
+      </div>
+      <div role="tabpanel">
+        <fieldset data-ribbon-group="">
+          <legend>Clipboard</legend>
+          <button type="button">Paste</button>
+          <button type="button">Copy</button>
+        </fieldset>
+      </div>
+    </Ribbon>
   );
 }
 ```
@@ -278,7 +291,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Ribbon, useRibbon } from "@a3s-lab/ui/vue";
 
 const control = useRibbon();
@@ -286,7 +299,17 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Ribbon ref="componentRef">Component content</Ribbon>
+  <Ribbon ref="componentRef" class="tabs" data-accent="blue">
+    <div role="tablist" aria-label="Editor commands">
+      <button type="button" role="tab" aria-selected="true">Home</button>
+    </div>
+    <div role="tabpanel">
+      <fieldset data-ribbon-group="">
+        <legend>Clipboard</legend>
+        <button type="button">Paste</button><button type="button">Copy</button>
+      </fieldset>
+    </div>
+  </Ribbon>
 </template>
 ```
 

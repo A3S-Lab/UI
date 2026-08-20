@@ -69,7 +69,17 @@ import { Terminal } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Terminal aria-label="Terminal">Component content</Terminal>
+    <Terminal data-state="success" aria-labelledby="terminal-title">
+      <header>
+        <strong id="terminal-title">Release checks</strong>
+        <span data-terminal-status="">Exited 0</span>
+      </header>
+      <code data-terminal-command="">$ npm run check:package</code>
+      <pre data-terminal-output="">package contract valid 15 checks passed</pre>
+      <footer>
+        <button type="button">Copy output</button>
+      </footer>
+    </Terminal>
   );
 }
 ```
@@ -79,13 +89,22 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Terminal } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Terminal aria-label="Terminal">Component content</Terminal>
+  <Terminal data-state="success" aria-labelledby="terminal-title">
+    <header>
+      <strong id="terminal-title">Release checks</strong
+      ><span data-terminal-status="">Exited 0</span>
+    </header>
+    <code data-terminal-command="">$ npm run check:package</code>
+    <pre data-terminal-output="">
+package contract valid
+15 checks passed</pre>
+    <footer><button type="button">Copy output</button></footer>
+  </Terminal>
 </template>
 ```
 

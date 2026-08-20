@@ -90,3 +90,57 @@
 ## Accessibility
 
 窗格作为编辑器补充内容时使用 `<aside>`，并通过标题提供稳定名称。关闭后应把焦点返回打开窗格的控件。
+
+## React
+
+```tsx
+export function TaskPaneExample() {
+  return (
+    <aside className="task-pane" data-responsive="overlay">
+      <header>
+        <h2>属性</h2>
+        <button type="button" aria-label="关闭属性面板">
+          关闭
+        </button>
+      </header>
+      <section>
+        <dl>
+          <div>
+            <dt>负责人</dt>
+            <dd>发布团队</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        <button type="button">保存属性</button>
+      </footer>
+    </aside>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <aside class="task-pane" data-responsive="overlay">
+    <header>
+      <h2>属性</h2>
+      <button type="button" aria-label="关闭属性面板">关闭</button>
+    </header>
+    <section>
+      <dl>
+        <div>
+          <dt>负责人</dt>
+          <dd>发布团队</dd>
+        </div>
+      </dl>
+    </section>
+    <footer><button type="button">保存属性</button></footer>
+  </aside>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

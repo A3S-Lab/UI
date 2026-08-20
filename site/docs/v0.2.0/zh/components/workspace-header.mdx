@@ -37,3 +37,47 @@
 ## 可访问性
 
 将一页级 `<h1>` 保留在标识区域内。图标按钮需要可访问的名称。可编辑的名称应在生产中使用带标签的输入； `contenteditable` 仅用于在预览中演示实时文本。
+
+## React
+
+```tsx
+export function WorkspaceHeaderExample() {
+  return (
+    <header className="workspace-header">
+      <div data-workspace-leading="">
+        <a href="/projects" aria-label="返回项目">
+          项目
+        </a>
+      </div>
+      <div data-workspace-identity="">
+        <h1>Resource name</h1>
+        <span>Metadata</span>
+      </div>
+      <div data-workspace-actions="">
+        <button type="button">共享</button>
+      </div>
+    </header>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <header class="workspace-header">
+    <div data-workspace-leading="">
+      <a href="/projects" aria-label="返回项目">项目</a>
+    </div>
+    <div data-workspace-identity="">
+      <h1>Resource name</h1>
+      <span>Metadata</span>
+    </div>
+    <div data-workspace-actions=""><button type="button">共享</button></div>
+  </header>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

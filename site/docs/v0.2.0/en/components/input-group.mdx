@@ -365,3 +365,36 @@ Use `data-align="start|end"` on addon wrappers to position them inline. Use `dat
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function InputGroupExample() {
+  return (
+    <div className="input-group">
+      <input type="text" aria-label="Search" placeholder="Search..." />
+      <span data-align="start" aria-hidden="true">
+        {" "}
+        {/* icon */}
+      </span>
+      <span data-align="end">12 results</span>
+    </div>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <div class="input-group">
+    <input type="text" aria-label="Search" placeholder="Search..." />
+    <span data-align="start" aria-hidden="true"> <!-- icon --></span>
+    <span data-align="end">12 results</span>
+  </div>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

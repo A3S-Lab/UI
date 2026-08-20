@@ -154,3 +154,45 @@ Breadcrumb items stay on one command row. When the available width is smaller th
   </ol>
 </nav>
 </Preview>
+
+## React
+
+```tsx
+export function BreadcrumbExample() {
+  return (
+    <nav className="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li>
+          <a href="#">Home</a>
+        </li>
+        <li aria-hidden="true">
+          <svg data-rtl-flip="" className="lucide lucide-chevron-right"></svg>
+        </li>
+        <li>
+          <span aria-current="page">Breadcrumb</span>
+        </li>
+      </ol>
+    </nav>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="#">Home</a></li>
+      <li aria-hidden="true">
+        <svg data-rtl-flip="" class="lucide lucide-chevron-right"></svg>
+      </li>
+      <li><span aria-current="page">Breadcrumb</span></li>
+    </ol>
+  </nav>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

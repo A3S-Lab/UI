@@ -354,17 +354,18 @@ The documentation site shares the visual grammar of A3S Test while retaining A3S
 Every component document follows this order:
 
 1. Name and one-sentence job.
-2. Install or import path.
+2. One persistent HTML, React, and Vue tab set. Each panel includes its installation command, required import or initialization, a minimal runnable example, and the matching controller hook or composable when behavior exists.
 3. Live default example.
 4. Variants that correspond to real decisions.
 5. Loading, empty, error, disabled, selected, narrow, dark, and RTL states where applicable.
 6. Native HTML contract.
 7. JavaScript controller and events when present.
-8. React usage and hook.
-9. Vue usage and hook.
-10. Accessibility and ownership boundaries.
+8. Framework-specific notes only when they add information beyond the shared tabbed quick start.
+9. Accessibility and ownership boundaries.
 
-Do not publish an inert control, fabricated API, or visual-only state. Code examples must be highlighted and copyable.
+Do not render separate React and Vue code chapters after the shared quick start. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example block must be syntax highlighted and copyable.
+
+Harness integration guides use the same tab contract. Each framework panel installs its actual peer dependencies and provides a runnable mount example; shared installation commands must not sit in a separate chapter outside the tabs.
 
 ## 7. Accessibility and resilience
 

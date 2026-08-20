@@ -1,5 +1,6 @@
 /* Canonical A3S product language, shared by the package, docs, and Playground. */
-:root {
+:root,
+[data-a3s-theme="light"] {
   color-scheme: light;
 
   /* Product surfaces */
@@ -8,6 +9,8 @@
   --a3s-surface: #f3f3f3;
   --a3s-surface-raised: #eeeeee;
   --a3s-surface-active: #e8e8e8;
+  --a3s-hover: var(--a3s-surface);
+  --a3s-code-surface: #f7f7f8;
   --a3s-selection: #eef4ff;
   --a3s-ink: #171717;
   --a3s-muted: #595959;
@@ -30,8 +33,22 @@
   --a3s-purple: #5b57d9;
   --a3s-green: #16845b;
   --a3s-orange: #a86412;
+  --a3s-amber: var(--a3s-orange);
   --a3s-warning: #a86412;
+  --a3s-warning-ink: #3b2508;
   --a3s-red: #c93d45;
+  --a3s-danger-ink: #ffffff;
+  --a3s-overlay-scrim: rgb(9 12 22 / 42%);
+
+  /* Dense technical surfaces keep one shared, deliberately dark palette. */
+  --a3s-terminal: #101828;
+  --a3s-terminal-raised: #172033;
+  --a3s-terminal-line: #34445f;
+  --a3s-terminal-ink: #dbe7fb;
+  --a3s-terminal-muted: #91a1bb;
+  --a3s-terminal-accent: #80aaff;
+  --a3s-terminal-danger: #ffb6c1;
+  --a3s-terminal-warning: #ffd28a;
 
   /* Public semantic aliases */
   --background: var(--a3s-paper);
@@ -49,6 +66,11 @@
   --accent: var(--a3s-selection);
   --accent-foreground: var(--a3s-brand-blue);
   --destructive: var(--a3s-red);
+  --destructive-foreground: var(--a3s-danger-ink);
+  --success: var(--a3s-green);
+  --success-foreground: var(--a3s-accent-ink);
+  --warning: var(--a3s-warning);
+  --warning-foreground: var(--a3s-warning-ink);
   --border: var(--a3s-line);
   --input: var(--a3s-line-strong);
   --ring: var(--a3s-accent);
@@ -59,8 +81,8 @@
   --chart-5: var(--a3s-warning);
   --sidebar: var(--a3s-canvas);
   --sidebar-foreground: var(--a3s-ink);
-  --sidebar-primary: var(--a3s-action);
-  --sidebar-primary-foreground: var(--a3s-action-ink);
+  --sidebar-primary: var(--a3s-accent);
+  --sidebar-primary-foreground: var(--a3s-accent-ink);
   --sidebar-accent: var(--a3s-surface-active);
   --sidebar-accent-foreground: var(--a3s-ink);
   --sidebar-border: var(--a3s-line);
@@ -94,10 +116,14 @@
   --a3s-shadow-composer:
     0 20px 48px -32px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 5%);
   --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 5%);
-  --a3s-focus-ring: color-mix(in srgb, var(--a3s-accent) 18%, transparent);
-  --a3s-error-ring: color-mix(in srgb, var(--a3s-red) 18%, transparent);
-  --a3s-shadow-focus: 0 0 0 2px var(--a3s-focus-ring);
-  --a3s-shadow-error: 0 0 0 2px var(--a3s-error-ring);
+  --a3s-focus-ring: var(--a3s-accent);
+  --a3s-error-ring: var(--a3s-red);
+  --a3s-focus-outline: 2px solid var(--a3s-focus-ring);
+  --a3s-error-outline: 2px solid var(--a3s-error-ring);
+  --a3s-outline-offset: 2px;
+  /* Retained as compatibility aliases; focus depth is expressed by outline. */
+  --a3s-shadow-focus: none;
+  --a3s-shadow-error: none;
 
   /* Density */
   --a3s-control-height: 2.25rem;
@@ -117,6 +143,7 @@
   --a3s-ribbon-panel-height: 4.625rem;
   --a3s-status-height: 1.75rem;
   --a3s-font-size-ui: 0.875rem;
+  --a3s-font-size-annotation: 0.8125rem;
   --a3s-font-size-compact: 0.8125rem;
   --a3s-font-size-micro: 0.75rem;
 
@@ -145,15 +172,55 @@
     "Liberation Mono", monospace;
   --font-sans: var(--a3s-ui-font);
   --font-mono: var(--a3s-mono-font);
+
+  /*
+   * Product-facing aliases are part of the same language as the package
+   * tokens. Playground, documentation, and consumers must not maintain a
+   * second color or depth system under the --ui-* namespace.
+   */
+  --ui-canvas: var(--a3s-canvas);
+  --ui-paper: var(--a3s-paper);
+  --ui-panel: var(--a3s-surface);
+  --ui-panel-raised: var(--a3s-surface-raised);
+  --ui-panel-active: var(--a3s-surface-active);
+  --ui-hover: var(--a3s-hover);
+  --ui-code: var(--a3s-code-surface);
+  --ui-ink: var(--a3s-ink);
+  --ui-muted: var(--a3s-muted);
+  --ui-faint: var(--a3s-faint);
+  --ui-line: var(--a3s-line);
+  --ui-line-strong: var(--a3s-line-strong);
+  --ui-border-strong: var(--a3s-line-emphasis);
+  --ui-action: var(--a3s-action);
+  --ui-action-hover: var(--a3s-action-hover);
+  --ui-action-ink: var(--a3s-action-ink);
+  --ui-action-disabled: var(--a3s-action-disabled);
+  --ui-blue: var(--a3s-accent);
+  --ui-blue-deep: var(--a3s-accent-hover);
+  --ui-brand-blue: var(--a3s-brand-blue);
+  --ui-selection: var(--a3s-selection);
+  --ui-green: var(--a3s-green);
+  --ui-success: var(--a3s-green);
+  --ui-purple: var(--a3s-purple);
+  --ui-amber: var(--a3s-warning);
+  --ui-warning: var(--a3s-warning);
+  --ui-red: var(--a3s-red);
+  --ui-danger: var(--a3s-red);
+  --ui-shadow: var(--a3s-shadow);
+  --ui-shadow-floating: var(--a3s-shadow-soft);
+  --ui-mono: var(--a3s-mono-font);
 }
 
-.dark {
+.dark,
+[data-a3s-theme="dark"] {
   color-scheme: dark;
   --a3s-canvas: #111112;
   --a3s-paper: #171718;
   --a3s-surface: #202021;
   --a3s-surface-raised: #262627;
   --a3s-surface-active: #2b2b2d;
+  --a3s-hover: var(--a3s-surface);
+  --a3s-code-surface: #131315;
   --a3s-selection: #17223b;
   --a3s-ink: #f2f2f3;
   --a3s-muted: #b7b7ba;
@@ -173,8 +240,17 @@
   --a3s-purple: #8378f0;
   --a3s-green: #57c795;
   --a3s-orange: #e7ad55;
+  --a3s-amber: var(--a3s-orange);
   --a3s-warning: #e7ad55;
+  --a3s-warning-ink: #171718;
   --a3s-red: #ef7a82;
+  --a3s-danger-ink: #171718;
+  --a3s-overlay-scrim: rgb(0 0 0 / 58%);
+  --destructive-foreground: var(--a3s-danger-ink);
+  --success: var(--a3s-green);
+  --success-foreground: #111112;
+  --warning: var(--a3s-warning);
+  --warning-foreground: var(--a3s-warning-ink);
   --accent-foreground: #c8d7ff;
   --a3s-shadow: 0 24px 52px -18px rgb(0 0 0 / 66%);
   --a3s-shadow-soft:

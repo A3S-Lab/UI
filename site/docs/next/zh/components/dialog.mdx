@@ -271,7 +271,80 @@ import { Dialog, useDialog } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDialog();
   return (
-    <Dialog ref={control.ref} aria-label="Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Dialog>
+    <Dialog
+      ref={control.ref}
+      id="demo-dialog-edit-profile"
+      aria-labelledby="demo-dialog-edit-profile-title"
+      aria-describedby="demo-dialog-edit-profile-description"
+    >
+      <div className="sm:max-w-sm">
+        <header>
+          <h2 id="demo-dialog-edit-profile-title">编辑个人资料</h2>
+          <p id="demo-dialog-edit-profile-description">
+            修改个人资料，完成后保存更改。
+          </p>
+        </header>
+        <section>
+          <form className="grid gap-4">
+            <div className="grid gap-3">
+              <label className="label" htmlFor="demo-dialog-edit-profile-name">
+                姓名
+              </label>
+              <input
+                className="input"
+                type="text"
+                defaultValue="Pedro Duarte"
+                id="demo-dialog-edit-profile-name"
+                autoFocus
+              />
+            </div>
+            <div className="grid gap-3">
+              <label
+                className="label"
+                htmlFor="demo-dialog-edit-profile-username"
+              >
+                用户名
+              </label>
+              <input
+                className="input"
+                type="text"
+                defaultValue="@peduarte"
+                id="demo-dialog-edit-profile-username"
+              />
+            </div>
+          </form>
+        </section>
+        <footer>
+          <button className="btn" data-variant="outline">
+            取消
+          </button>
+          <button className="btn">保存更改</button>
+        </footer>
+        <button
+          type="button"
+          className="btn"
+          data-variant="ghost"
+          data-size="icon-sm"
+          aria-label="Close dialog"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-x-icon lucide-x"
+          >
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </Dialog>
   );
 }
 ```
@@ -281,7 +354,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Dialog, useDialog } from "@a3s-lab/ui/vue";
 
 const control = useDialog();
@@ -289,7 +362,75 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Dialog ref="componentRef" aria-label="Dialog"><div><header><h2>组件摘要</h2></header><section>组件内容</section><footer><button type="button">继续</button></footer></div></Dialog>
+  <Dialog
+    ref="componentRef"
+    id="demo-dialog-edit-profile"
+    aria-labelledby="demo-dialog-edit-profile-title"
+    aria-describedby="demo-dialog-edit-profile-description"
+  >
+    <div class="sm:max-w-sm">
+      <header>
+        <h2 id="demo-dialog-edit-profile-title">编辑个人资料</h2>
+        <p id="demo-dialog-edit-profile-description">
+          修改个人资料，完成后保存更改。
+        </p>
+      </header>
+      <section>
+        <form class="grid gap-4">
+          <div class="grid gap-3">
+            <label class="label" for="demo-dialog-edit-profile-name"
+              >姓名</label
+            >
+            <input
+              class="input"
+              type="text"
+              value="Pedro Duarte"
+              id="demo-dialog-edit-profile-name"
+              autofocus
+            />
+          </div>
+          <div class="grid gap-3">
+            <label class="label" for="demo-dialog-edit-profile-username"
+              >用户名</label
+            >
+            <input
+              class="input"
+              type="text"
+              value="@peduarte"
+              id="demo-dialog-edit-profile-username"
+            />
+          </div>
+        </form>
+      </section>
+      <footer>
+        <button class="btn" data-variant="outline">取消</button>
+        <button class="btn">保存更改</button>
+      </footer>
+      <button
+        type="button"
+        class="btn"
+        data-variant="ghost"
+        data-size="icon-sm"
+        aria-label="Close dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-x-icon lucide-x"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </Dialog>
 </template>
 ```
 

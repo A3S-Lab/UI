@@ -76,12 +76,14 @@ Data Grid handles resource collections that need sorting, selection, bulk action
         <thead>
           <tr>
             <th>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select-all
-                aria-label="Select all environments"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select-all
+                  aria-label="Select all environments"
+                />
+              </label>
             </th>
             <th aria-sort="none">
               <button type="button" data-grid-sort="name">
@@ -133,14 +135,16 @@ Data Grid handles resource collections that need sorting, selection, bulk action
         <tbody>
           <tr data-value="production">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="production"
-                aria-label="Select Production"
-                checked
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="production"
+                  aria-label="Select Production"
+                  checked
+                />
+              </label>
             </td>
             <td data-label="Name">
               <strong>Production</strong>
@@ -152,7 +156,7 @@ Data Grid handles resource collections that need sorting, selection, bulk action
             </td>
             <td data-label="Region">Shanghai</td>
             <td data-label="Last deploy">
-              <time datetime="2026-08-14T09:42:00+08:00">Today 09:42</time>
+              <time dateTime="2026-08-14T09:42:00+08:00">Today 09:42</time>
             </td>
             <td data-label="Actions">
               <button
@@ -167,13 +171,15 @@ Data Grid handles resource collections that need sorting, selection, bulk action
           </tr>
           <tr data-value="staging">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="staging"
-                aria-label="Select Staging"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="staging"
+                  aria-label="Select Staging"
+                />
+              </label>
             </td>
             <td data-label="Name">
               <strong>Staging</strong>
@@ -185,7 +191,7 @@ Data Grid handles resource collections that need sorting, selection, bulk action
             </td>
             <td data-label="Region">Tokyo</td>
             <td data-label="Last deploy">
-              <time datetime="2026-08-13T18:12:00+08:00">Yesterday 18:12</time>
+              <time dateTime="2026-08-13T18:12:00+08:00">Yesterday 18:12</time>
             </td>
             <td data-label="Actions">
               <button
@@ -200,13 +206,15 @@ Data Grid handles resource collections that need sorting, selection, bulk action
           </tr>
           <tr data-value="preview">
             <td data-grid-select-cell>
-              <input
-                class="input"
-                type="checkbox"
-                data-grid-select
-                value="preview"
-                aria-label="Select Feature preview"
-              />
+              <label data-grid-select-target>
+                <input
+                  class="input"
+                  type="checkbox"
+                  data-grid-select
+                  value="preview"
+                  aria-label="Select Feature preview"
+                />
+              </label>
             </td>
             <td data-label="Name">
               <strong>Feature preview</strong>
@@ -218,7 +226,7 @@ Data Grid handles resource collections that need sorting, selection, bulk action
             </td>
             <td data-label="Region">Singapore</td>
             <td data-label="Last deploy">
-              <time datetime="2026-08-11T14:20:00+08:00">Aug 11</time>
+              <time dateTime="2026-08-11T14:20:00+08:00">Aug 11</time>
             </td>
             <td data-label="Actions">
               <button
@@ -376,7 +384,50 @@ import { DataGrid, useDataGrid } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useDataGrid();
   return (
-    <DataGrid ref={control.ref} aria-label="Data Grid">Component content</DataGrid>
+    <DataGrid
+      ref={control.ref}
+      data-responsive="stack"
+      aria-labelledby="grid-title"
+    >
+      <header>
+        <div data-grid-identity="">
+          <h2 id="grid-title">Environments</h2>
+        </div>
+      </header>
+      <div data-grid-viewport="" tabIndex="0">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  data-grid-select-all=""
+                  aria-label="Select all"
+                />
+              </th>
+              <th aria-sort="none">
+                <button type="button" data-grid-sort="name">
+                  Name
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-value="production">
+              <td data-grid-select-cell="">
+                <input
+                  type="checkbox"
+                  data-grid-select=""
+                  defaultValue="production"
+                  aria-label="Select Production"
+                />
+              </td>
+              <td data-label="Name">Production</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </DataGrid>
   );
 }
 ```
@@ -386,7 +437,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { DataGrid, useDataGrid } from "@a3s-lab/ui/vue";
 
 const control = useDataGrid();
@@ -394,7 +445,46 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <DataGrid ref="componentRef" aria-label="Data Grid">Component content</DataGrid>
+  <DataGrid
+    ref="componentRef"
+    data-responsive="stack"
+    aria-labelledby="grid-title"
+  >
+    <header>
+      <div data-grid-identity=""><h2 id="grid-title">Environments</h2></div>
+    </header>
+    <div data-grid-viewport="" tabindex="0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                data-grid-select-all=""
+                aria-label="Select all"
+              />
+            </th>
+            <th aria-sort="none">
+              <button type="button" data-grid-sort="name">Name</button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-value="production">
+            <td data-grid-select-cell="">
+              <input
+                type="checkbox"
+                data-grid-select=""
+                value="production"
+                aria-label="Select Production"
+              />
+            </td>
+            <td data-label="Name">Production</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </DataGrid>
 </template>
 ```
 

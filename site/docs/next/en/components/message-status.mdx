@@ -4,9 +4,22 @@ Message Status reports a bounded delivery or generation state beside one message
 
 <Preview class="w-full max-w-xl">
   <div class="flex flex-wrap items-center gap-4">
-    <output class="message-status" data-state="streaming" aria-live="polite"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>Generating response</span><time datetime="2026-08-14T01:32:00Z">1:32</time></output>
-    <output class="message-status" data-state="sent"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>Sent</span></output>
-    <output class="message-status" data-state="error"><span data-message-status-indicator aria-hidden="true"></span><span data-message-status-label>Could not send</span><button type="button" class="btn" data-size="xs" data-variant="ghost">Retry</button></output>
+    <output class="message-status" data-state="streaming" aria-live="polite">
+      <span data-message-status-indicator aria-hidden="true"></span>
+      <span data-message-status-label>Generating response</span>
+      <time dateTime="2026-08-14T01:32:00Z">1:32</time>
+    </output>
+    <output class="message-status" data-state="sent">
+      <span data-message-status-indicator aria-hidden="true"></span>
+      <span data-message-status-label>Sent</span>
+    </output>
+    <output class="message-status" data-state="error">
+      <span data-message-status-indicator aria-hidden="true"></span>
+      <span data-message-status-label>Could not send</span>
+      <button type="button" class="btn" data-size="xs" data-variant="ghost">
+        Retry
+      </button>
+    </output>
   </div>
 </Preview>
 
@@ -21,11 +34,11 @@ Message Status reports a bounded delivery or generation state beside one message
 
 ### Parameters
 
-| API | Values | Purpose |
-| --- | --- | --- |
-| `data-state` | `sending`, `streaming`, `sent`, `queued`, `stopped`, `error` | Bounded message state |
-| `data-message-status-label` | Required | Textual status |
-| `data-message-status-meta` or `<time>` | Optional | Time or compact metadata |
+| API                                    | Values                                                       | Purpose                  |
+| -------------------------------------- | ------------------------------------------------------------ | ------------------------ |
+| `data-state`                           | `sending`, `streaming`, `sent`, `queued`, `stopped`, `error` | Bounded message state    |
+| `data-message-status-label`            | Required                                                     | Textual status           |
+| `data-message-status-meta` or `<time>` | Optional                                                     | Time or compact metadata |
 
 ## States and variants
 
@@ -42,7 +55,10 @@ import { MessageStatus } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <MessageStatus>Component content</MessageStatus>
+    <MessageStatus data-state="streaming" aria-live="polite">
+      <span data-message-status-indicator="" aria-hidden="true"></span>
+      <span data-message-status-label="">Generating response</span>
+    </MessageStatus>
   );
 }
 ```
@@ -52,13 +68,15 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { MessageStatus } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <MessageStatus>Component content</MessageStatus>
+  <MessageStatus data-state="streaming" aria-live="polite">
+    <span data-message-status-indicator="" aria-hidden="true"></span>
+    <span data-message-status-label="">Generating response</span>
+  </MessageStatus>
 </template>
 ```
 

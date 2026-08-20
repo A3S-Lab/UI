@@ -1,239 +1,329 @@
 .component-intro {
-  display: grid;
-  margin: 24px 0 36px;
-  padding: 18px 0;
-  border-block: 1px solid var(--ui-line-strong);
-  grid-template-columns: minmax(220px, 0.72fr) minmax(360px, 1.28fr);
+  overflow: hidden;
+  margin: 28px 0 44px;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 14px;
+  background: var(--ui-paper);
+}
+
+.component-intro__header {
+  display: flex;
+  min-height: 58px;
+  padding-inline: 16px 10px;
+  border-block-end: 1px solid var(--ui-line);
   align-items: center;
-  gap: 32px;
+  justify-content: space-between;
+  gap: 24px;
+  background: color-mix(in srgb, var(--ui-panel) 46%, var(--ui-paper));
 }
 
 .component-intro__context {
   display: grid;
   min-width: 0;
   align-content: center;
-  gap: 12px;
+  gap: 3px;
+  line-height: 1.4;
 }
 
-.component-intro__context > div {
+.component-intro__context > strong {
+  color: var(--ui-ink);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.component-intro__context > span {
   display: flex;
   min-width: 0;
-  margin: 0;
-  padding: 0;
   align-items: center;
-}
-
-.component-intro__context > div {
-  gap: 7px;
+  gap: 6px;
   color: var(--ui-faint);
-  font-size: 12px;
-  font-weight: 560;
+  font-size: 11px;
+  font-weight: 540;
 }
 
-.component-intro__context > div a {
-  color: var(--ui-blue-deep);
-  font-weight: 620;
+.component-intro__context a {
+  overflow: hidden;
+  color: var(--ui-muted);
+  font-weight: 580;
   text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.component-intro__context > div a:hover {
+.component-intro__context a:hover {
+  color: var(--ui-blue-deep);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.component-intro__context > div a:focus-visible {
+.component-intro__context a:focus-visible {
   border-radius: 3px;
   outline: 2px solid var(--ui-blue);
   outline-offset: 2px;
 }
 
-.component-intro__frameworks.tabs {
-  width: fit-content;
-}
-
-.component-intro__frameworks > [role="tablist"] {
-  display: inline-flex;
-  width: fit-content;
-  max-width: 100%;
+.component-intro__frameworks {
   min-width: 0;
-  padding: 3px;
-  border: 1px solid var(--ui-line);
-  border-radius: 8px;
-  align-items: center;
-  gap: 2px;
-  overflow-x: auto;
-  background: var(--ui-panel);
-  scrollbar-width: none;
+  align-self: stretch;
 }
 
-.component-intro__frameworks > [role="tablist"]::-webkit-scrollbar {
-  display: none;
+.component-intro__frameworks [role="tablist"] {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  align-items: stretch;
+  gap: 2px;
 }
 
 .component-intro__frameworks [role="tab"] {
-  min-width: 58px;
-  min-height: 32px;
-  padding: 0 11px;
+  position: relative;
+  min-width: 66px;
+  min-height: 46px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 6px;
   background: transparent;
   color: var(--ui-muted);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 610;
+  font-size: 13px;
+  font-weight: 620;
   line-height: 1;
 }
 
+.component-intro__frameworks [role="tab"]::after {
+  position: absolute;
+  inset-inline: 12px;
+  inset-block-end: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  content: "";
+}
+
 .component-intro__frameworks [role="tab"]:hover {
-  background: color-mix(in srgb, var(--ui-blue) 6%, transparent);
   color: var(--ui-ink);
 }
 
 .component-intro__frameworks [role="tab"][aria-selected="true"] {
-  background: var(--ui-paper);
-  color: var(--ui-blue-deep);
-  box-shadow:
-    0 1px 2px rgb(20 24 40 / 7%),
-    inset 0 0 0 1px color-mix(in srgb, var(--ui-blue) 18%, var(--ui-line));
+  color: var(--ui-ink);
+}
+
+.component-intro__frameworks [role="tab"][aria-selected="true"]::after {
+  background: var(--ui-blue);
 }
 
 .component-intro__frameworks [role="tab"]:focus-visible {
-  z-index: 1;
+  border-radius: 6px;
   outline: 2px solid var(--ui-blue);
-  outline-offset: 1px;
+  outline-offset: -4px;
 }
 
-.component-intro__snippet {
-  display: grid;
+.component-intro__panel {
   min-width: 0;
-  min-height: 58px;
-  overflow: hidden;
-  border: 1px solid var(--ui-line-strong);
-  border-radius: 8px;
-  background: var(--ui-paper);
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: stretch;
 }
 
-.rp-doc .component-intro__snippet pre {
-  display: grid;
-  margin: 0;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 0;
-  overflow: auto hidden;
-  align-content: center;
-  background: var(--ui-code-bg, var(--ui-canvas));
-}
-
-.rp-doc .component-intro__snippet code {
+.component-intro__step {
   display: block;
   min-width: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  background: var(--ui-paper);
+}
+
+.component-intro__step + .component-intro__step,
+.component-intro__note {
+  border-block-start: 1px solid var(--ui-line);
+}
+
+.component-intro__step-label {
+  display: flex;
+  position: relative;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 52px 9px 14px;
+  border-block-end: 1px solid var(--ui-line);
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: color-mix(in srgb, var(--ui-panel) 34%, var(--ui-paper));
+}
+
+.component-intro__step-label strong,
+.component-intro__note > strong {
   color: var(--ui-ink);
-  font: 540 11px/1.65 var(--ui-mono);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.component-intro__step-label span {
+  overflow: hidden;
+  color: var(--ui-faint);
+  font: 500 11px/1.45 var(--ui-mono);
+  text-align: end;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.component-intro__snippet > button {
-  position: relative;
-  display: inline-flex;
-  min-width: 82px;
-  min-height: 56px;
-  padding: 0 11px;
+.rp-doc .component-intro .component-intro__code {
+  min-width: 0;
+  margin: 0;
   border: 0;
-  border-inline-start: 1px solid var(--ui-line-strong);
-  background: var(--ui-paper);
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  color: var(--ui-muted);
-  cursor: pointer;
+  border-radius: 0;
+  background: var(--ui-code-bg, var(--ui-canvas));
+  contain: none;
+  overflow: visible;
+}
+
+.rp-doc .component-intro .component-intro__code .rp-codeblock__content,
+.rp-doc
+  .component-intro
+  .component-intro__code
+  .rp-codeblock__content__scroll-container,
+.rp-doc .component-intro .component-intro__code pre {
+  min-width: 0;
+  background: transparent;
+}
+
+.rp-doc
+  .component-intro
+  .component-intro__code
+  .rp-codeblock__content__scroll-container {
+  scrollbar-gutter: stable;
+}
+
+.rp-doc .component-intro .component-intro__code pre code {
+  padding: 14px 16px;
   font-size: 12px;
+  line-height: 1.65;
+}
+
+.rp-doc .component-intro .component-intro__code .rp-code-button-group {
+  top: -37px;
+  right: 9px;
+}
+
+.rp-doc .component-intro .component-intro__code .rp-code-button-group__button {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+}
+
+.rp-doc
+  .component-intro
+  .component-intro__code
+  .rp-code-button-group__button:hover {
+  background: var(--ui-hover);
+}
+
+.component-intro__install .rp-codeblock__content__scroll-container,
+.component-intro__setup .rp-codeblock__content__scroll-container {
+  max-height: 148px;
+}
+
+.component-intro__example .rp-codeblock__content__scroll-container {
+  max-height: 420px;
+}
+
+.component-intro__note {
+  display: grid;
+  min-width: 0;
+  padding: 14px 16px;
+  grid-template-columns: minmax(122px, 0.22fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 16px;
+  background: color-mix(in srgb, var(--ui-panel) 36%, var(--ui-paper));
+}
+
+.rp-doc .component-intro__note p {
+  min-width: 0;
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.rp-doc .component-intro__note code {
+  margin-inline-end: 5px;
+  color: var(--ui-blue-deep);
+  font-size: 11px;
   font-weight: 620;
 }
 
-.component-intro__snippet > button:hover {
-  background: var(--ui-panel);
-  color: var(--ui-ink);
+.component-intro__legacy {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(230px, 0.42fr) minmax(0, 1fr);
+  align-items: stretch;
 }
 
-.component-intro__snippet > button:focus-visible,
-.component-intro__snippet:focus-visible {
-  z-index: 1;
-  outline: 2px solid var(--ui-blue);
-  outline-offset: -2px;
-}
-
-.component-intro__snippet > button[data-state="copied"] {
-  color: var(--ui-green);
-}
-
-.component-intro__snippet > button[data-state="error"] {
-  color: var(--ui-red);
-}
-
-.component-intro__snippet > button svg {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.5;
-}
-
-.component-intro__feedback {
-  position: absolute;
-  overflow: hidden;
-  width: 1px;
-  height: 1px;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
+.rp-doc .component-intro__legacy > p {
+  margin: 0;
+  padding: 18px;
+  border-inline-end: 1px solid var(--ui-line);
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 @media (max-width: 720px) {
   .component-intro {
-    margin: 22px 0 32px;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
+    margin: 24px 0 36px;
+  }
+
+  .component-intro__header {
+    min-height: 0;
+    padding: 12px 12px 0;
+    flex-wrap: wrap;
+    gap: 8px 16px;
   }
 
   .component-intro__context {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+    min-height: 28px;
   }
 
   .component-intro__frameworks {
-    justify-self: end;
+    width: 100%;
+    height: 42px;
+  }
+
+  .component-intro__frameworks [role="tablist"] {
+    width: 100%;
+  }
+
+  .component-intro__frameworks [role="tab"] {
+    min-width: 0;
+    min-height: 42px;
+    flex: 1;
+  }
+
+  .component-intro__step-label {
+    padding: 9px 48px 9px 12px;
+    gap: 12px;
+  }
+
+  .component-intro__note {
+    padding: 13px 14px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .component-intro__legacy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rp-doc .component-intro__legacy > p {
+    padding: 14px;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ui-line);
   }
 }
 
-@media (max-width: 420px) {
-  .component-intro__context {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .component-intro__frameworks {
-    justify-self: start;
-  }
-
-  .component-intro__snippet > button {
-    min-width: 44px;
-    padding-inline: 10px;
-  }
-
-  .component-intro__snippet > button > span:not(.component-intro__feedback) {
-    display: none;
+@media (pointer: coarse) {
+  .component-intro__frameworks [role="tab"] {
+    min-height: 44px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .component-intro__frameworks [role="tab"],
-  .component-intro__snippet > button {
+  .component-intro__frameworks [role="tab"] {
     transition: none;
   }
 }

@@ -310,3 +310,121 @@ A3S UI未实现Vaul的拖动关闭呼吸、捕捉点或拖动手柄。滑块通�
   </dialog>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function DrawerExample() {
+  return (
+    <dialog
+      id="demo-drawer"
+      className="drawer"
+      aria-labelledby="demo-drawer-title"
+      aria-describedby="demo-drawer-description"
+    >
+      <article>
+        <header className="mx-auto w-full max-w-sm">
+          <h2 id="demo-drawer-title">Move Goal</h2>
+          <p id="demo-drawer-description">Set your daily activity goal.</p>
+        </header>
+        <section className="px-4">
+          <div className="mx-auto w-full max-w-sm">
+            <div className="flex items-center justify-center gap-6">
+              <button
+                type="button"
+                className="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Decrease"
+              >
+                <span>已就绪</span>
+              </button>
+              <div className="text-center">
+                <div className="text-7xl font-bold">350</div>
+                <div className="text-muted-foreground text-xs uppercase">
+                  Calories/day
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn rounded-full"
+                data-variant="outline"
+                data-size="icon-sm"
+                aria-label="Increase"
+              >
+                <span>已就绪</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <footer className="mx-auto w-full max-w-sm">
+          <button type="button" className="btn">
+            Submit
+          </button>
+          <button type="button" className="btn" data-variant="outline">
+            Cancel
+          </button>
+        </footer>
+      </article>
+    </dialog>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <dialog
+    id="demo-drawer"
+    class="drawer"
+    aria-labelledby="demo-drawer-title"
+    aria-describedby="demo-drawer-description"
+  >
+    <article>
+      <header class="mx-auto w-full max-w-sm">
+        <h2 id="demo-drawer-title">Move Goal</h2>
+        <p id="demo-drawer-description">Set your daily activity goal.</p>
+      </header>
+      <section class="px-4">
+        <div class="mx-auto w-full max-w-sm">
+          <div class="flex items-center justify-center gap-6">
+            <button
+              type="button"
+              class="btn rounded-full"
+              data-variant="outline"
+              data-size="icon-sm"
+              aria-label="Decrease"
+            >
+              <span>已就绪</span>
+            </button>
+            <div class="text-center">
+              <div class="text-7xl font-bold">350</div>
+              <div class="text-muted-foreground text-xs uppercase">
+                Calories/day
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn rounded-full"
+              data-variant="outline"
+              data-size="icon-sm"
+              aria-label="Increase"
+            >
+              <span>已就绪</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <footer class="mx-auto w-full max-w-sm">
+        <button type="button" class="btn">Submit</button>
+        <button type="button" class="btn" data-variant="outline">Cancel</button>
+      </footer>
+    </article>
+  </dialog>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

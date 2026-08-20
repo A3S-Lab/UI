@@ -63,26 +63,28 @@ App Shell 支持展开、折叠、隐藏、全视口与移动端打开状态。�
 import { AppShell, useAppShell } from "@a3s-lab/ui/react";
 
 export function Example() {
-  const control = useAppShell({
-    events: {
-      "a3s:app-navigation-change"(event) {
-        const { navigation } = (event as CustomEvent).detail;
-        console.log("navigation", navigation);
-      },
-    },
-  });
-
+  const control = useAppShell();
   return (
     <AppShell ref={control.ref} data-navigation="expanded">
-      <aside data-app-navigation>
-        <nav aria-label="工作区"><a href="/tasks" aria-current="page">任务</a></nav>
+      <aside data-app-navigation="">
+        <nav aria-label="工作区">
+          <a href="/tasks" aria-current="page">
+            任务
+          </a>
+        </nav>
       </aside>
-      <main data-app-main>
-        <header>
-          <button type="button" onClick={() => control.call("toggleNavigation")}>切换导航</button>
-          <h1>设计系统工作区</h1>
+      <main data-app-main="">
+        <header className="workspace-header">
+          <button type="button" data-app-navigation-trigger="">
+            切换导航
+          </button>
         </header>
-        <div data-app-content>…</div>
+        <div data-app-content="">
+          <section aria-labelledby="workspace-title">
+            <h1 id="workspace-title">设计系统工作区</h1>
+            <p>检查当前任务和文件。</p>
+          </section>
+        </div>
       </main>
     </AppShell>
   );
@@ -94,7 +96,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { AppShell, useAppShell } from "@a3s-lab/ui/vue";
 
 const control = useAppShell();
@@ -103,15 +105,21 @@ const componentRef = control.componentRef;
 
 <template>
   <AppShell ref="componentRef" data-navigation="expanded">
-    <aside data-app-navigation>
-      <nav aria-label="工作区"><a href="/tasks" aria-current="page">任务</a></nav>
+    <aside data-app-navigation="">
+      <nav aria-label="工作区">
+        <a href="/tasks" aria-current="page">任务</a>
+      </nav>
     </aside>
-    <main data-app-main>
-      <header>
-        <button type="button" @click='control.call("toggleNavigation")'>切换导航</button>
-        <h1>设计系统工作区</h1>
+    <main data-app-main="">
+      <header class="workspace-header">
+        <button type="button" data-app-navigation-trigger="">切换导航</button>
       </header>
-      <div data-app-content>…</div>
+      <div data-app-content="">
+        <section aria-labelledby="workspace-title">
+          <h1 id="workspace-title">设计系统工作区</h1>
+          <p>检查当前任务和文件。</p>
+        </section>
+      </div>
     </main>
   </AppShell>
 </template>

@@ -1,25 +1,50 @@
-import { CodeBlockRuntime } from "@rspress/core/theme";
+import {
+  CodeBlockRuntime,
+  type CodeBlockRuntimeProps,
+} from "@rspress/core/theme";
 import { useLang } from "@rspress/core/runtime";
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { writeClipboardText } from "../components/clipboard";
+import { useEffect, useId, useState, type KeyboardEvent } from "react";
 import "./FrameworkTabs.css";
 
 type Framework = "html" | "react" | "vue";
 
-const frameworks: Framework[] = ["html", "react", "vue"];
+type FrameworkTabsProps = Record<Framework, string> & {
+  htmlInstall?: string;
+  reactInstall?: string;
+  vueInstall?: string;
+};
+
+const frameworks: readonly Framework[] = ["html", "react", "vue"];
 const storageKey = "a3s-ui-docs-framework";
+// Rspress supplies the copy target internally, but its public option type still
+// exposes that private field.
+const copyOnlyCodeActions = {
+  showWrapCodeButton: false,
+} as NonNullable<CodeBlockRuntimeProps["codeButtonGroupProps"]>;
+
+const defaultInstall: Record<Framework, string> = {
+  html: "npm install @a3s-lab/ui",
+  react: "npm install @a3s-lab/ui react react-dom",
+  vue: "npm install @a3s-lab/ui vue",
+};
+
+function frameworkLabel(framework: Framework) {
+  if (framework === "html") return "HTML";
+  return framework === "react" ? "React" : "Vue";
+}
 
 export default function FrameworkTabs({
   html,
+  htmlInstall = defaultInstall.html,
   react,
+  reactInstall = defaultInstall.react,
   vue,
-}: Record<Framework, string>) {
+  vueInstall = defaultInstall.vue,
+}: FrameworkTabsProps) {
   const language = useLang();
   const zh = language === "zh";
   const id = useId();
-  const timer = useRef<number | null>(null);
   const [framework, setFramework] = useState<Framework>("html");
-  const [copyState, setCopyState] = useState<"copied" | "error" | "idle">("idle");
 
   useEffect(() => {
     try {
@@ -28,14 +53,10 @@ export default function FrameworkTabs({
     } catch {
       // Persistence is optional.
     }
-    return () => {
-      if (timer.current !== null) window.clearTimeout(timer.current);
-    };
   }, []);
 
   const select = (next: Framework) => {
     setFramework(next);
-    setCopyState("idle");
     try {
       localStorage.setItem(storageKey, next);
     } catch {
@@ -44,41 +65,62 @@ export default function FrameworkTabs({
   };
 
   const keydown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      return;
+    }
     event.preventDefault();
     const current = frameworks.indexOf(framework);
-    const index = event.key === "Home"
-      ? 0
-      : event.key === "End"
-        ? frameworks.length - 1
-        : (current + (event.key === "ArrowRight" ? 1 : -1) + frameworks.length) % frameworks.length;
+    const direction = getComputedStyle(event.currentTarget).direction;
+    const arrowDelta =
+      event.key === "ArrowRight"
+        ? direction === "rtl"
+          ? -1
+          : 1
+        : direction === "rtl"
+          ? 1
+          : -1;
+    const index =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? frameworks.length - 1
+          : (current + arrowDelta + frameworks.length) % frameworks.length;
     const next = frameworks[index];
     select(next);
     document.getElementById(`${id}-${next}-tab`)?.focus();
   };
 
-  const copy = async () => {
-    try {
-      await writeClipboardText({ html, react, vue }[framework]);
-      setCopyState("copied");
-    } catch {
-      setCopyState("error");
-    }
-    if (timer.current !== null) window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setCopyState("idle"), 1800);
+  const examples = { html, react, vue };
+  const installs = {
+    html: htmlInstall,
+    react: reactInstall,
+    vue: vueInstall,
   };
-
-  const code = { html, react, vue }[framework].trim();
-  const copyLabel = copyState === "copied"
-    ? zh ? "已复制" : "Copied"
-    : copyState === "error"
-      ? zh ? "重试" : "Retry"
-      : zh ? "复制代码" : "Copy code";
+  const exampleFile = {
+    html: "index.html",
+    react: "Example.tsx",
+    vue: "Example.vue",
+  } satisfies Record<Framework, string>;
+  const exampleLanguage = {
+    html: "html",
+    react: "tsx",
+    vue: "vue",
+  } satisfies Record<Framework, string>;
 
   return (
-    <section className="a3s-framework-tabs tabs" aria-label={zh ? "框架用法" : "Framework usage"}>
+    <section
+      className="a3s-framework-tabs"
+      aria-label={zh ? "框架快速开始" : "Framework quick start"}
+      data-framework={framework}
+    >
       <header>
-        <div role="tablist" aria-label={zh ? "选择框架" : "Choose framework"} onKeyDown={keydown}>
+        <strong>{zh ? "快速开始" : "Quick start"}</strong>
+        <div
+          role="tablist"
+          aria-label={zh ? "选择框架" : "Choose framework"}
+          aria-orientation="horizontal"
+          onKeyDown={keydown}
+        >
           {frameworks.map((candidate) => (
             <button
               key={candidate}
@@ -90,31 +132,41 @@ export default function FrameworkTabs({
               tabIndex={candidate === framework ? 0 : -1}
               onClick={() => select(candidate)}
             >
-              {candidate === "html" ? "HTML" : candidate === "react" ? "React" : "Vue"}
+              {frameworkLabel(candidate)}
             </button>
           ))}
         </div>
-        <button type="button" className="a3s-framework-tabs__copy" data-state={copyState} onClick={copy}>
-          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
-            {copyState === "copied" ? (
-              <path d="m4.5 10.25 3.25 3.25 7.75-7.75" />
-            ) : (
-              <><rect x="6.25" y="6.25" width="9" height="9" rx="1.75" /><path d="M13.25 6.25v-1.5A1.75 1.75 0 0 0 11.5 3H4.75A1.75 1.75 0 0 0 3 4.75v6.75c0 .97.78 1.75 1.75 1.75h1.5" /></>
-            )}
-          </svg>
-          <span>{copyLabel}</span>
-        </button>
       </header>
-      <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${framework}-tab`} tabIndex={0}>
-        <CodeBlockRuntime
-          lang={framework === "html" ? "html" : framework === "react" ? "tsx" : "vue"}
-          code={code}
-          containerElementClassName="a3s-framework-tabs__code"
-        />
+      <div
+        id={`${id}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${id}-${framework}-tab`}
+      >
+        <section className="a3s-framework-tabs__step a3s-framework-tabs__install">
+          <div className="a3s-framework-tabs__step-label">
+            <strong>{zh ? "安装" : "Install"}</strong>
+            <span>Terminal</span>
+          </div>
+          <CodeBlockRuntime
+            lang="bash"
+            code={installs[framework].trim()}
+            containerElementClassName="a3s-framework-tabs__code"
+            codeButtonGroupProps={copyOnlyCodeActions}
+          />
+        </section>
+        <section className="a3s-framework-tabs__step a3s-framework-tabs__example">
+          <div className="a3s-framework-tabs__step-label">
+            <strong>{zh ? "示例" : "Example"}</strong>
+            <span>{exampleFile[framework]}</span>
+          </div>
+          <CodeBlockRuntime
+            lang={exampleLanguage[framework]}
+            code={examples[framework].trim()}
+            containerElementClassName="a3s-framework-tabs__code"
+            codeButtonGroupProps={copyOnlyCodeActions}
+          />
+        </section>
       </div>
-      <span className="a3s-framework-tabs__feedback" aria-live="polite">
-        {copyState === "idle" ? "" : copyLabel}
-      </span>
     </section>
   );
 }

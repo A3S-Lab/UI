@@ -80,3 +80,43 @@ Add `class="progress"` and `role="progressbar"` to the root. Use one child `<spa
   </div>
 </div>
 </Preview>
+
+## React
+
+```tsx
+export function ProgressExample() {
+  return (
+    <div
+      className="progress"
+      role="progressbar"
+      aria-label="Loading"
+      aria-valuenow="66"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <span style={{ width: "66%" }}></span>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div
+    class="progress"
+    role="progressbar"
+    aria-label="Loading"
+    aria-valuenow="66"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <span style="width: 66%"></span>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

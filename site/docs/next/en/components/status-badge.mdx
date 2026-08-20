@@ -64,7 +64,9 @@ import { StatusBadge } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <StatusBadge>Component content</StatusBadge>
+    <StatusBadge data-state="active" data-indicator="">
+      Running
+    </StatusBadge>
   );
 }
 ```
@@ -74,13 +76,12 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { StatusBadge } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <StatusBadge>Component content</StatusBadge>
+  <StatusBadge data-state="active" data-indicator="">Running</StatusBadge>
 </template>
 ```
 

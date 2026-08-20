@@ -97,7 +97,16 @@ import { PropertyList } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <PropertyList><div><dt>Name</dt><dd>Component content</dd></div></PropertyList>
+    <PropertyList>
+      <div>
+        <dt>Provider</dt>
+        <dd>A3S Code</dd>
+      </div>
+      <div>
+        <dt>Release</dt>
+        <dd>v0.8.4</dd>
+      </div>
+    </PropertyList>
   );
 }
 ```
@@ -107,13 +116,21 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { PropertyList } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <PropertyList><div><dt>Name</dt><dd>Component content</dd></div></PropertyList>
+  <PropertyList>
+    <div>
+      <dt>Provider</dt>
+      <dd>A3S Code</dd>
+    </div>
+    <div>
+      <dt>Release</dt>
+      <dd>v0.8.4</dd>
+    </div>
+  </PropertyList>
 </template>
 ```
 

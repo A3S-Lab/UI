@@ -63,9 +63,7 @@
 import { Label } from "@a3s-lab/ui/react";
 
 export function Example() {
-  return (
-    <Label>组件内容</Label>
-  );
+  return <Label htmlFor="email">电子邮箱</Label>;
 }
 ```
 
@@ -74,14 +72,11 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Label } from "@a3s-lab/ui/vue";
-
 </script>
 
-<template>
-  <Label>组件内容</Label>
-</template>
+<template><Label for="email">电子邮箱</Label></template>
 ```
 
 适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

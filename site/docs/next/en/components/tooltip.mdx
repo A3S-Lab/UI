@@ -100,7 +100,15 @@ import { Tooltip } from "@a3s-lab/ui/react";
 
 export function Example() {
   return (
-    <Tooltip aria-label="Help">Component content</Tooltip>
+    <Tooltip
+      className="btn"
+      data-variant="outline"
+      data-tooltip="Tooltip text"
+      data-side="bottom"
+      data-align="center"
+    >
+      Bottom
+    </Tooltip>
   );
 }
 ```
@@ -110,13 +118,19 @@ The adapter replaces only the documented semantic root and adds no wrapper; its 
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { Tooltip } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
-  <Tooltip aria-label="Help">Component content</Tooltip>
+  <Tooltip
+    class="btn"
+    data-variant="outline"
+    data-tooltip="Tooltip text"
+    data-side="bottom"
+    data-align="center"
+    >Bottom</Tooltip
+  >
 </template>
 ```
 

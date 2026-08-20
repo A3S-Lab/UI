@@ -89,7 +89,31 @@ import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useExecutionItem();
   return (
-    <ExecutionItem ref={control.ref}><summary>查看详情</summary><div>组件内容</div></ExecutionItem>
+    <ExecutionItem ref={control.ref} data-state="running">
+      <summary>
+        <span data-execution-icon="" aria-hidden="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 8h10"></path>
+          </svg>
+        </span>
+        <span data-execution-identity="">
+          <strong>运行测试</strong>
+          <small>npm test</small>
+        </span>
+        <span data-execution-status="">运行中</span>
+        <span data-execution-disclosure="" aria-hidden="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="m5 6 3 3 3-3"></path>
+          </svg>
+        </span>
+      </summary>
+      <section>
+        <pre>15 项测试通过，用时 4.2 秒</pre>
+      </section>
+      <footer>
+        <button type="button">复制日志</button>
+      </footer>
+    </ExecutionItem>
   );
 }
 ```
@@ -99,7 +123,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/vue";
 
 const control = useExecutionItem();
@@ -107,7 +131,24 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ExecutionItem ref="componentRef"><summary>查看详情</summary><div>组件内容</div></ExecutionItem>
+  <ExecutionItem ref="componentRef" data-state="running">
+    <summary>
+      <span data-execution-icon="" aria-hidden="true"
+        ><svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M3 8h10"></path></svg
+      ></span>
+      <span data-execution-identity=""
+        ><strong>运行测试</strong><small>npm test</small></span
+      >
+      <span data-execution-status="">运行中</span>
+      <span data-execution-disclosure="" aria-hidden="true"
+        ><svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="m5 6 3 3 3-3"></path></svg
+      ></span>
+    </summary>
+    <section><pre>15 项测试通过，用时 4.2 秒</pre></section>
+    <footer><button type="button">复制日志</button></footer>
+  </ExecutionItem>
 </template>
 ```
 

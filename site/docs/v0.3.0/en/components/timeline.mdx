@@ -75,3 +75,51 @@ Map domain statuses to the four semantic states in the host application. Do not 
 ## Accessibility
 
 Use `<ol>` when order matters and `<time datetime="…">` for timestamps. Keep the current state explicit with `aria-current="step"`. Timeline is CSS-only; focus, selection, and live announcements remain the host application's responsibility.
+
+## React
+
+```tsx
+export function TimelineExample() {
+  return (
+    <ol className="timeline" aria-label="Execution history">
+      <li data-state="success">
+        <article className="item" data-variant="outline">
+          <h3>Package built</h3>
+          <p>Completed at 10:24</p>
+        </article>
+      </li>
+      <li data-state="active" aria-current="step">
+        <article className="item" data-variant="outline">
+          <h3>Visual checks</h3>
+          <p>Running desktop and mobile suites</p>
+        </article>
+      </li>
+    </ol>
+  );
+}
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.
+
+## Vue
+
+```vue
+<template>
+  <ol class="timeline" aria-label="Execution history">
+    <li data-state="success">
+      <article class="item" data-variant="outline">
+        <h3>Package built</h3>
+        <p>Completed at 10:24</p>
+      </article>
+    </li>
+    <li data-state="active" aria-current="step">
+      <article class="item" data-variant="outline">
+        <h3>Visual checks</h3>
+        <p>Running desktop and mobile suites</p>
+      </article>
+    </li>
+  </ol>
+</template>
+```
+
+This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.

@@ -108,7 +108,40 @@ import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useApprovalRequest();
   return (
-    <ApprovalRequest ref={control.ref} aria-label="Approval Request">Component content</ApprovalRequest>
+    <ApprovalRequest
+      ref={control.ref}
+      data-state="pending"
+      aria-labelledby="approval-title"
+    >
+      <header>
+        <div>
+          <h2 id="approval-title">Allow this command?</h2>
+          <p>Reason and impact.</p>
+        </div>
+      </header>
+      <section>Exact resource, command, site, or capability.</section>
+      <form>
+        <fieldset>
+          <legend>Permission scope</legend>
+          <label>
+            <input type="radio" name="scope" value="once" defaultChecked />
+            Allow once
+          </label>
+          <label>
+            <input type="radio" name="scope" value="task" />
+            Allow for this task
+          </label>
+        </fieldset>
+        <footer>
+          <button type="button" data-approval="deny">
+            Deny
+          </button>
+          <button type="submit" data-approval="approve">
+            Allow command
+          </button>
+        </footer>
+      </form>
+    </ApprovalRequest>
   );
 }
 ```
@@ -118,7 +151,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/vue";
 
 const control = useApprovalRequest();
@@ -126,7 +159,35 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ApprovalRequest ref="componentRef" aria-label="Approval Request">Component content</ApprovalRequest>
+  <ApprovalRequest
+    ref="componentRef"
+    data-state="pending"
+    aria-labelledby="approval-title"
+  >
+    <header>
+      <div>
+        <h2 id="approval-title">Allow this command?</h2>
+        <p>Reason and impact.</p>
+      </div>
+    </header>
+    <section>Exact resource, command, site, or capability.</section>
+    <form>
+      <fieldset>
+        <legend>Permission scope</legend>
+        <label
+          ><input type="radio" name="scope" value="once" checked />Allow
+          once</label
+        ><label
+          ><input type="radio" name="scope" value="task" />Allow for this
+          task</label
+        >
+      </fieldset>
+      <footer>
+        <button type="button" data-approval="deny">Deny</button
+        ><button type="submit" data-approval="approve">Allow command</button>
+      </footer>
+    </form>
+  </ApprovalRequest>
 </template>
 ```
 

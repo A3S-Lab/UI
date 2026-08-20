@@ -448,3 +448,33 @@
   </div>
 </fieldset>
 </Preview>
+
+## React
+
+```tsx
+export function FieldExample() {
+  return (
+    <div role="group" className="field">
+      <label htmlFor="name">姓名</label>
+      <input id="name" autoComplete="off" placeholder="王小明" />
+      <p>这些信息会显示在账单和邮件中。</p>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div role="group" class="field">
+    <label for="name">姓名</label>
+    <input id="name" autocomplete="off" placeholder="王小明" />
+    <p>这些信息会显示在账单和邮件中。</p>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。

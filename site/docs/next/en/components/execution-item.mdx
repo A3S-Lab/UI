@@ -89,7 +89,31 @@ import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useExecutionItem();
   return (
-    <ExecutionItem ref={control.ref}><summary>View details</summary><div>Component content</div></ExecutionItem>
+    <ExecutionItem ref={control.ref} data-state="running">
+      <summary>
+        <span data-execution-icon="" aria-hidden="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 8h10"></path>
+          </svg>
+        </span>
+        <span data-execution-identity="">
+          <strong>Run tests</strong>
+          <small>npm test</small>
+        </span>
+        <span data-execution-status="">Running</span>
+        <span data-execution-disclosure="" aria-hidden="true">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="m5 6 3 3 3-3"></path>
+          </svg>
+        </span>
+      </summary>
+      <section>
+        <pre>15 tests passed in 4.2s</pre>
+      </section>
+      <footer>
+        <button type="button">Copy log</button>
+      </footer>
+    </ExecutionItem>
   );
 }
 ```
@@ -99,7 +123,7 @@ export function Example() {
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { ExecutionItem, useExecutionItem } from "@a3s-lab/ui/vue";
 
 const control = useExecutionItem();
@@ -107,7 +131,24 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <ExecutionItem ref="componentRef"><summary>View details</summary><div>Component content</div></ExecutionItem>
+  <ExecutionItem ref="componentRef" data-state="running">
+    <summary>
+      <span data-execution-icon="" aria-hidden="true"
+        ><svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M3 8h10"></path></svg
+      ></span>
+      <span data-execution-identity=""
+        ><strong>Run tests</strong><small>npm test</small></span
+      >
+      <span data-execution-status="">Running</span>
+      <span data-execution-disclosure="" aria-hidden="true"
+        ><svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="m5 6 3 3 3-3"></path></svg
+      ></span>
+    </summary>
+    <section><pre>15 tests passed in 4.2s</pre></section>
+    <footer><button type="button">Copy log</button></footer>
+  </ExecutionItem>
 </template>
 ```
 

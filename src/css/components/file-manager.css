@@ -1,11 +1,16 @@
 /* File Manager */
 @layer components {
   .file-manager {
+    container-name: file-manager;
+    container-type: inline-size;
     display: grid;
     width: 100%;
     min-width: 0;
     min-height: 0;
-    grid-template-columns: var(--file-manager-navigation-width, 13rem) minmax(0, 1fr);
+    grid-template-columns: var(--file-manager-navigation-width, 13rem) minmax(
+        0,
+        1fr
+      );
     overflow: hidden;
   }
 
@@ -88,7 +93,9 @@
     min-width: 0;
   }
 
-  .file-manager [data-file-manager-viewport][data-view="list"] [data-file-item] {
+  .file-manager
+    [data-file-manager-viewport][data-view="list"]
+    [data-file-item] {
     display: grid;
     grid-template-columns: minmax(10rem, 1fr) repeat(3, minmax(5rem, auto));
   }
@@ -109,7 +116,9 @@
     display: none;
   }
 
-  .file-manager[data-state]:not([data-state="ready"]):not([data-state="partial"])
+  .file-manager[data-state]:not([data-state="ready"]):not(
+      [data-state="partial"]
+    )
     [data-file-manager-viewport] {
     visibility: hidden;
   }
@@ -136,6 +145,23 @@
     }
   }
 
+  @container file-manager (max-width: 56rem) {
+    .file-manager > [data-file-manager-navigation] {
+      display: none;
+    }
+
+    .file-manager > main {
+      grid-column: 1 / -1;
+    }
+
+    .file-manager > [data-file-manager-preview]:not([hidden]) {
+      position: absolute;
+      z-index: 20;
+      inset: 0 0 0 auto;
+      width: min(var(--file-manager-preview-width, 20rem), 100%);
+    }
+  }
+
   @media (max-width: 40rem) {
     .file-manager [data-file-manager-header],
     .file-manager [data-file-manager-toolbar] {
@@ -143,8 +169,31 @@
       flex-direction: column;
     }
 
-    .file-manager [data-file-manager-viewport][data-view="list"] [data-file-item] {
+    .file-manager
+      [data-file-manager-viewport][data-view="list"]
+      [data-file-item] {
       grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+
+  @container file-manager (max-width: 40rem) {
+    .file-manager [data-file-manager-header],
+    .file-manager [data-file-manager-toolbar] {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .file-manager
+      [data-file-manager-viewport][data-view="list"]
+      [data-file-item] {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .file-manager
+      [data-file-manager-viewport][data-view="list"]
+      [data-file-item]
+      > :nth-child(n + 3) {
+      display: none;
     }
   }
 }

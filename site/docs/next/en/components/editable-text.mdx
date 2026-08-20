@@ -35,7 +35,7 @@ export function Example() {
   const control = useEditableText();
   return (
     <EditableText ref={control.ref}>
-      <div data-editable-display><span data-editable-value>Release notes</span><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input className="input" value="Release notes" aria-label="Title" /><button type="submit" className="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
+      <div data-editable-display><span data-editable-value>Release notes</span><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="edit">Edit</button></div><form data-editable-form><input className="input" defaultValue="Release notes" aria-label="Title" /><button type="submit" className="btn" data-size="sm" data-editable-action="save">Save</button><button type="button" className="btn" data-size="sm" data-variant="ghost" data-editable-action="cancel">Cancel</button></form>
     </EditableText>
   );
 }

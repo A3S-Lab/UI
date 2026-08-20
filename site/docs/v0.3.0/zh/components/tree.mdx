@@ -479,3 +479,77 @@ tree.refresh();
 | `ArrowRight` / `ArrowLeft` | 展开、进入、折叠或返回父节点；RTL 中方向相反。 |
 | `Enter` / `Space`          | 选择当前焦点节点。                             |
 | 可打印字符                 | 移到下一个以输入文字开头的可见节点。           |
+
+## React
+
+```tsx
+export function TreeExample() {
+  return (
+    <div className="tree" role="tree" aria-label="项目文件">
+      <div
+        role="treeitem"
+        aria-label="src"
+        aria-expanded="true"
+        aria-selected="false"
+        data-value="src"
+      >
+        <div data-tree-row="">
+          <svg aria-hidden="true">{/* 文件夹图标 */}</svg>
+          <span data-tree-label="">src</span>
+        </div>
+        <div role="group">
+          <div
+            role="treeitem"
+            aria-label="tree.js"
+            aria-selected="true"
+            data-value="src/tree.js"
+          >
+            <div data-tree-row="">
+              <svg aria-hidden="true">{/* 文件图标 */}</svg>
+              <span data-tree-label="">tree.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
+
+## Vue
+
+```vue
+<template>
+  <div class="tree" role="tree" aria-label="项目文件">
+    <div
+      role="treeitem"
+      aria-label="src"
+      aria-expanded="true"
+      aria-selected="false"
+      data-value="src"
+    >
+      <div data-tree-row="">
+        <svg aria-hidden="true"><!-- 文件夹图标 --></svg>
+        <span data-tree-label="">src</span>
+      </div>
+      <div role="group">
+        <div
+          role="treeitem"
+          aria-label="tree.js"
+          aria-selected="true"
+          data-value="src/tree.js"
+        >
+          <div data-tree-row="">
+            <svg aria-hidden="true"><!-- 文件图标 --></svg>
+            <span data-tree-label="">tree.js</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。
