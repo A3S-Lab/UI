@@ -277,20 +277,57 @@ test.describe("component framework quick starts", () => {
       chartQuickStart.locator(".a3s-preview-integration__install code"),
     ).toContainText("chart.js");
 
-    await openComponentGuide(page, "harness/grid-view.html");
-    const harnessQuickStart = page.locator(".a3s-framework-tabs");
-    await expect(harnessQuickStart).toBeVisible();
-    await expect(harnessQuickStart.getByRole("tab")).toHaveCount(3);
-    await expect(harnessQuickStart.locator(".rp-code-wrap-button")).toHaveCount(
-      0,
-    );
-    await harnessQuickStart.getByRole("tab", { name: "Vue" }).click();
-    await expect(
-      harnessQuickStart.locator(".a3s-framework-tabs__install code"),
-    ).toContainText("dockview-vue@8.1.0");
-    await expect(
-      harnessQuickStart.locator(".a3s-framework-tabs__example code"),
-    ).toContainText("useGridview");
+    for (const guide of [
+      {
+        dependency: "dockview-react@8.1.0",
+        framework: "React",
+        hook: "useDockviewLayout",
+        slug: "dock-workspace",
+      },
+      {
+        dependency: "dockview-react@8.1.0",
+        framework: "React",
+        hook: "usePaneview",
+        slug: "pane-view",
+      },
+      {
+        dependency: "dockview-react@8.1.0",
+        framework: "React",
+        hook: "useSplitview",
+        slug: "split-view",
+      },
+      {
+        dependency: "dockview-vue@8.1.0",
+        framework: "Vue",
+        hook: "useGridview",
+        slug: "grid-view",
+      },
+    ] as const) {
+      await openComponentGuide(page, `harness/${guide.slug}.html`);
+      const harnessPreview = integratedPreview(page, guide.slug);
+      await expect(harnessPreview).toBeVisible();
+      await expect(page.locator(".a3s-framework-tabs")).toHaveCount(0);
+      const harnessQuickStart = await revealIntegration(harnessPreview);
+      await expect(harnessQuickStart.getByRole("tab")).toHaveCount(3);
+      await expect(
+        harnessQuickStart.locator(".rp-code-wrap-button"),
+      ).toHaveCount(0);
+      await expect(
+        harnessQuickStart.locator(".a3s-preview-integration__setup code"),
+      ).toHaveText('import "@a3s-lab/ui/a3s.css";');
+      await harnessQuickStart
+        .getByRole("tab", { name: guide.framework })
+        .click();
+      await expect(
+        harnessQuickStart.locator(".a3s-preview-integration__install code"),
+      ).toContainText(guide.dependency);
+      await expect(
+        harnessQuickStart.locator(".a3s-preview-integration__example code"),
+      ).toContainText(guide.hook);
+      await expect(
+        harnessQuickStart.locator(".a3s-preview-integration__note code"),
+      ).toHaveText(guide.hook);
+    }
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: "networkidle" });

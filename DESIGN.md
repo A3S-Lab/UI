@@ -370,7 +370,7 @@ Every component document follows this order:
 
 Do not render a separate quick-start card or separate React and Vue code chapters around the default Preview. Live output and integration code are one reading task and therefore share one frame. Do not publish an inert control, fabricated API, or visual-only state. Every installation, setup, and example block must be syntax highlighted and copyable.
 
-Harness integration guides use the same tab contract. Each framework panel installs its actual peer dependencies and provides a runnable mount example; shared installation commands must not sit in a separate chapter outside the tabs.
+Harness integration guides use the same Preview source-disclosure contract as ordinary components. Their HTML, React, and Vue tabs live inside the owning live demo frame, install the actual peer dependencies, and provide a runnable mount example; they must not render a detached quick-start surface or a shared installation chapter outside the Preview.
 
 ## 7. Accessibility and resilience
 

@@ -260,9 +260,13 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
   class?: string;
   children: ReactNode;
   frameworkHtml?: string;
+  frameworkHtmlInstall?: string;
   frameworkReact?: string;
+  frameworkReactInstall?: string;
   frameworkVue?: string;
+  frameworkVueInstall?: string;
   hasController?: boolean;
+  integrationHook?: string;
   layout?: PreviewLayout;
   semanticFrameworks?: boolean;
   source?: string;
@@ -507,9 +511,13 @@ export function Preview({
   className,
   class: htmlClass,
   frameworkHtml,
+  frameworkHtmlInstall,
   frameworkReact,
+  frameworkReactInstall,
   frameworkVue,
+  frameworkVueInstall,
   hasController = false,
+  integrationHook,
   layout,
   semanticFrameworks = false,
   source,
@@ -555,8 +563,10 @@ export function Preview({
     ? integrationSourceText || frameworkSnippets.html
     : sourceText;
   const componentName =
-    location.pathname.match(/\/components\/([^/.]+)/)?.[1] ??
-    (/\/components\/?$/.test(location.pathname) ? "index" : undefined);
+    location.pathname.match(/\/(?:components|harness)\/([^/.]+)/)?.[1] ??
+    (/\/(?:components|harness)\/?$/.test(location.pathname)
+      ? "index"
+      : undefined);
   const resolvedLayout = resolvePreviewLayout(componentName, layout);
   const isChinese = language === "zh";
   const fallbackTitle = isChinese ? "实时预览" : "Live preview";
@@ -964,9 +974,13 @@ export function Preview({
           <ComponentPreviewIntegration
             hasController={hasController}
             html={frameworkSnippets.html}
+            htmlInstall={frameworkHtmlInstall}
+            integrationHook={integrationHook}
             react={frameworkSnippets.react}
+            reactInstall={frameworkReactInstall}
             semanticFrameworks={semanticFrameworks}
             vue={frameworkSnippets.vue}
+            vueInstall={frameworkVueInstall}
             onExampleChange={setIntegrationSourceText}
           />
         ) : (

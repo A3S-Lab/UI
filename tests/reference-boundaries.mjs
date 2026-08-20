@@ -242,6 +242,7 @@ for (const locale of locales) {
     const relativePath = `site/docs/next/${locale}/${link}.mdx`;
     const source = await read(relativePath);
     for (const marker of [
+      '<Preview layout="workspace">',
       "<FrameworkTabs",
       'htmlInstall="npm install @a3s-lab/ui dockview@8.1.0"',
       "dockview-react@8.1.0",

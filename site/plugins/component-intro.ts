@@ -29,6 +29,8 @@ type FrameworkSnippets = {
   vue?: string;
 };
 
+type FrameworkInstalls = FrameworkSnippets;
+
 type NodeRange = {
   end: number;
   start: number;
@@ -58,13 +60,16 @@ function normalizedPath(filePath: string) {
   return filePath.replaceAll("\\", "/");
 }
 
-function componentSlug(filePath: string) {
-  const match = normalizedPath(filePath).match(/\/components\/([^/]+)\.mdx$/);
-  return match?.[1] === "index" ? undefined : match?.[1];
+function guideContext(filePath: string) {
+  const match = normalizedPath(filePath).match(
+    /\/(components|harness)\/([^/]+)\.mdx$/,
+  );
+  if (!match || match[2] === "index") return undefined;
+  return { group: match[1], slug: match[2] };
 }
 
 function usesFrameworkAdapters(filePath: string) {
-  return /\/next\/(?:en|zh)\/components\/[^/]+\.mdx$/u.test(
+  return /\/next\/(?:en|zh)\/(?:components|harness)\/[^/]+\.mdx$/u.test(
     normalizedPath(filePath),
   );
 }
@@ -229,18 +234,33 @@ function frameworkTabs(children: MdxNode[]) {
       return [framework, expressionString(attribute?.value)];
     }),
   ) as FrameworkSnippets;
+  const installs = Object.fromEntries(
+    frameworkNames.map((framework) => {
+      const attribute = node.attributes?.find(
+        (candidate) => candidate.name === `${framework}Install`,
+      );
+      return [framework, expressionString(attribute?.value)];
+    }),
+  ) as FrameworkInstalls;
 
   let headingIndex = index - 1;
   while (headingIndex >= 0 && !isSectionHeading(children[headingIndex])) {
     headingIndex -= 1;
   }
   if (headingIndex < 0) {
-    return { range: { end: index + 1, start: index }, snippets };
+    return {
+      index,
+      installs,
+      range: { end: index + 1, start: index },
+      snippets,
+    };
   }
 
   let end = index + 1;
   while (end < children.length && !isSectionHeading(children[end])) end += 1;
   return {
+    index,
+    installs,
     range: { end, start: headingIndex },
     snippets,
   };
@@ -265,7 +285,9 @@ function booleanAttribute(name: string): MdxAttribute {
 function attachFrameworkIntegration(
   preview: MdxNode,
   snippets: Required<FrameworkSnippets>,
+  installs: FrameworkInstalls,
   hasController = false,
+  integrationHook?: string,
   semanticFrameworks = false,
 ): void {
   const attributes = preview.attributes ?? [];
@@ -276,10 +298,33 @@ function attachFrameworkIntegration(
       }`;
       return stringAttribute(attributeName, snippets[framework]);
     }),
+    ...frameworkNames.flatMap((framework) => {
+      const install = installs[framework];
+      if (!install) return [];
+      const attributeName = `framework${
+        framework.charAt(0).toUpperCase() + framework.slice(1)
+      }Install`;
+      return [stringAttribute(attributeName, install)];
+    }),
     ...(hasController ? [booleanAttribute("hasController")] : []),
+    ...(integrationHook
+      ? [stringAttribute("integrationHook", integrationHook)]
+      : []),
     ...(semanticFrameworks ? [booleanAttribute("semanticFrameworks")] : []),
   );
   preview.attributes = attributes;
+}
+
+function sharedFrameworkHook(snippets: Required<FrameworkSnippets>) {
+  const hookPattern = /\b(use[A-Z][A-Za-z0-9]*)\b/gu;
+  const reactHooks = Array.from(
+    snippets.react.matchAll(hookPattern),
+    (match) => match[1],
+  );
+  const vueHooks = new Set(
+    Array.from(snippets.vue.matchAll(hookPattern), (match) => match[1]),
+  );
+  return reactHooks.find((hook) => vueHooks.has(hook));
 }
 
 function removeRanges(children: MdxNode[], ranges: NodeRange[]) {
@@ -289,19 +334,21 @@ function removeRanges(children: MdxNode[], ranges: NodeRange[]) {
 }
 
 /**
- * Gives the first preview in every versioned component guide a shared
- * framework-integration source panel. The authored examples remain the source
- * of truth while duplicate framework chapters are normalized into the
- * preview's HTML/React/Vue tab set at build time.
+ * Gives the first preview in every versioned component guide and current
+ * Harness layout guide a shared framework-integration source panel. The
+ * authored examples remain the source of truth while duplicate framework
+ * chapters are normalized into the preview's HTML/React/Vue tab set at build
+ * time.
  * Historical versions use semantic framework examples because their packages
  * predate the generated React and Vue adapters.
  */
 export function componentPreviewIntegrationPlugin() {
   return (tree: MdxNode, file: VFileLike) => {
-    if (!file.path || !componentSlug(file.path) || !tree.children) return;
+    const context = file.path ? guideContext(file.path) : undefined;
+    if (!file.path || !context || !tree.children) return;
     if (isUnavailableGuide(tree)) return;
 
-    const slug = componentSlug(file.path)!;
+    const { group, slug } = context;
     const componentName = slug
       .split("-")
       .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
@@ -325,12 +372,24 @@ export function componentPreviewIntegrationPlugin() {
     }
 
     const completeSnippets = snippets as Required<FrameworkSnippets>;
-    const hasController =
-      useAdapters &&
-      completeSnippets.react.includes(hookName) &&
-      completeSnippets.vue.includes(hookName);
+    const integrationHook = useAdapters
+      ? completeSnippets.react.includes(hookName) &&
+        completeSnippets.vue.includes(hookName)
+        ? hookName
+        : group === "harness"
+          ? sharedFrameworkHook(completeSnippets)
+          : undefined
+      : undefined;
+    const hasController = Boolean(integrationHook);
     const ranges = authoredTabs
-      ? [authoredTabs.range]
+      ? [
+          group === "harness"
+            ? {
+                end: authoredTabs.index + 1,
+                start: authoredTabs.index,
+              }
+            : authoredTabs.range,
+        ]
       : [reactRange, vueRange].filter(
           (range): range is NodeRange => range !== undefined,
         );
@@ -355,7 +414,9 @@ export function componentPreviewIntegrationPlugin() {
     attachFrameworkIntegration(
       firstPreview,
       completeSnippets,
+      authoredTabs?.installs ?? {},
       hasController,
+      integrationHook,
       !useAdapters,
     );
   };

@@ -1456,6 +1456,16 @@ for (const mdxFile of mdxFiles) {
     ["en", "zh"].includes(sourceParts[1]) &&
     sourceParts[2] === "components" &&
     sourceParts[3] !== "index.mdx";
+  const isHarnessLayoutGuide =
+    sourceParts[0] === "next" &&
+    ["en", "zh"].includes(sourceParts[1]) &&
+    sourceParts[2] === "harness" &&
+    [
+      "dock-workspace.mdx",
+      "grid-view.mdx",
+      "split-view.mdx",
+      "pane-view.mdx",
+    ].includes(sourceParts[3]);
   const isUnavailableComponentGuide =
     /not part of this\s+published\s+package contract/u.test(source) ||
     /not part of this stable documentation snapshot/u.test(source) ||
@@ -1480,7 +1490,10 @@ for (const mdxFile of mdxFiles) {
     );
   }
 
-  if (isVersionedComponentGuide && !isUnavailableComponentGuide) {
+  if (
+    (isVersionedComponentGuide || isHarnessLayoutGuide) &&
+    !isUnavailableComponentGuide
+  ) {
     componentFrameworkIntegrationCount += 1;
     const relativeSource = path.relative(docsRoot, mdxFile);
     const firstPreviewStart = html.indexOf('<section class="a3s-preview"');
@@ -1513,8 +1526,9 @@ for (const mdxFile of mdxFiles) {
         : version === "v0.1.0"
           ? "npm install github:A3S-Lab/UI#d2799d3914d2d291fbf0c2c3e638e2380ce266c0"
           : `npm install @a3s-lab/ui@${version.slice(1)}`;
-    const integrationDependencyMarkers =
-      componentSlug === "agent-composer"
+    const integrationDependencyMarkers = isHarnessLayoutGuide
+      ? ["dockview@8.1.0"]
+      : componentSlug === "agent-composer"
         ? ["@tiptap/core", "@tiptap/markdown", "@tiptap/starter-kit"]
         : componentSlug === "chart"
           ? ["chart.js"]
@@ -1582,52 +1596,6 @@ for (const mdxFile of mdxFiles) {
     ) {
       componentFrameworkIntegrationViolations.push(
         `${relativeSource}: missing=${missingMarkers.join(",") || "none"}; steps=${stepCount}; copy=${copyCount}; wrap=${wrapCount}; invalid-example=${hasInvalidExample}; legacy=${hasLegacyFrameworkSections}; nested=${integrationIsNestedInSource}`,
-      );
-    }
-  }
-}
-
-for (const locale of ["zh", "en"]) {
-  for (const slug of [
-    "dock-workspace",
-    "grid-view",
-    "split-view",
-    "pane-view",
-  ]) {
-    const relativeFile = `${locale === "zh" ? "" : "en/"}harness/${slug}.html`;
-    const html = await readFile(path.join(outputRoot, relativeFile), "utf8");
-    const tabsStart = html.indexOf('<section class="a3s-framework-tabs"');
-    const tabsEnd = html.indexOf("<h2", tabsStart);
-    const quickStart =
-      tabsStart >= 0 && tabsEnd > tabsStart
-        ? html.slice(tabsStart, tabsEnd)
-        : "";
-    const localizedLabels =
-      locale === "zh"
-        ? ["快速开始", "安装", "示例"]
-        : ["Quick start", "Install", "Example"];
-    const requiredMarkers = [
-      'data-framework="html"',
-      ">HTML</button>",
-      ">React</button>",
-      ">Vue</button>",
-      "dockview@8.1.0",
-      'class="shiki css-variables"',
-      ...localizedLabels,
-    ];
-    const missingMarkers = requiredMarkers.filter(
-      (marker) => !quickStart.includes(marker),
-    );
-    const copyCount = (
-      quickStart.match(/class="[^"]*\brp-code-copy-button\b[^"]*"/g) ?? []
-    ).length;
-    const wrapCount = (
-      quickStart.match(/class="[^"]*\brp-code-wrap-button\b[^"]*"/g) ?? []
-    ).length;
-
-    if (missingMarkers.length > 0 || copyCount !== 2 || wrapCount !== 0) {
-      componentFrameworkIntegrationViolations.push(
-        `${relativeFile}: missing=${missingMarkers.join(",") || "none"}; copy=${copyCount}; wrap=${wrapCount}`,
       );
     }
   }

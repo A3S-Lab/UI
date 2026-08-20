@@ -70,4 +70,23 @@ suite "a3s-ui-component-framework-docs" {
         console "mobile-console" { path = "documentation/framework-preview-integration-mobile-console.json" clear = false }
         page_errors "mobile-errors" { path = "documentation/framework-preview-integration-mobile-errors.json" clear = false }
     }
+
+    scenario "framework-preview-integration-harness" {
+        name = "Harness framework examples share their live preview source disclosure"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/harness/grid-view.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "complete-preview" { visible = css(".a3s-preview[data-preview-component=grid-view][data-preview-integration=complete]") }
+        click "show-integration" { target = role("button", "展开接入代码") }
+        click "vue" { target = role("tab", "Vue") }
+        expect "vue-install" { text = "dockview-vue@8.1.0" }
+        expect "vue-composable" { text = "useGridview" }
+        screenshot "harness-vue" { path = "documentation/framework-preview-integration-harness.png" }
+        console "harness-console" { path = "documentation/framework-preview-integration-harness-console.json" clear = false }
+        page_errors "harness-errors" { path = "documentation/framework-preview-integration-harness-errors.json" clear = false }
+    }
 }

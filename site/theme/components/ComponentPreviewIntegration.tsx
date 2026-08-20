@@ -11,10 +11,14 @@ type Framework = "html" | "react" | "vue";
 export type ComponentPreviewIntegrationProps = {
   hasController?: boolean;
   html: string;
+  htmlInstall?: string;
+  integrationHook?: string;
   onExampleChange?: (source: string) => void;
   react: string;
+  reactInstall?: string;
   semanticFrameworks?: boolean;
   vue: string;
+  vueInstall?: string;
 };
 
 type IntegrationContent = {
@@ -100,6 +104,8 @@ function integrationContent(
   semanticFrameworks: boolean,
   version: string,
   examples: Record<Framework, string>,
+  installs: Partial<Record<Framework, string>>,
+  externalIntegration: boolean,
 ): IntegrationContent {
   const setupImports = semanticFrameworks
     ? [
@@ -114,10 +120,11 @@ function integrationContent(
       example: examples.html.trim(),
       exampleFile: "index.html",
       exampleLanguage: "html",
-      install: installCommand(framework, slug, version),
+      install:
+        installs[framework]?.trim() ?? installCommand(framework, slug, version),
       setup:
         setupImports ??
-        (hasController
+        (hasController && !externalIntegration
           ? 'import "@a3s-lab/ui/a3s.css";\nimport "@a3s-lab/ui/all";'
           : 'import "@a3s-lab/ui/a3s.css";'),
       setupFile: "main.js",
@@ -130,7 +137,8 @@ function integrationContent(
     exampleFile:
       framework === "react" ? `${componentName}Example.tsx` : "Example.vue",
     exampleLanguage: framework === "react" ? "tsx" : "vue",
-    install: installCommand(framework, slug, version),
+    install:
+      installs[framework]?.trim() ?? installCommand(framework, slug, version),
     setup: setupImports ?? 'import "@a3s-lab/ui/a3s.css";',
     setupFile: "main.ts",
     setupLanguage: "ts",
@@ -140,22 +148,33 @@ function integrationContent(
 export function ComponentPreviewIntegration({
   hasController = false,
   html,
+  htmlInstall,
+  integrationHook,
   onExampleChange,
   react,
+  reactInstall,
   semanticFrameworks = false,
   vue,
+  vueInstall,
 }: ComponentPreviewIntegrationProps) {
   const language = useLang();
   const location = useLocation();
   const version = useVersion();
   const isChinese = language === "zh";
+  const isHarnessGuide = /\/harness\//u.test(location.pathname);
   const slug =
-    location.pathname.match(/\/components\/([^/.]+)/)?.[1] ?? "component";
+    location.pathname.match(/\/(?:components|harness)\/([^/.]+)/)?.[1] ??
+    "component";
   const componentName = adapterName(slug);
-  const hookName = `use${componentName}`;
+  const hookName = integrationHook ?? `use${componentName}`;
   const frameworkId = useId();
   const [framework, setFramework] = useState<Framework>("html");
   const examples = { html, react, vue };
+  const installs = {
+    html: htmlInstall,
+    react: reactInstall,
+    vue: vueInstall,
+  };
   const content = integrationContent(
     framework,
     slug,
@@ -164,6 +183,8 @@ export function ComponentPreviewIntegration({
     semanticFrameworks,
     version,
     examples,
+    installs,
+    isHarnessGuide,
   );
 
   useEffect(() => {
@@ -222,25 +243,33 @@ export function ComponentPreviewIntegration({
     ? isChinese
       ? "该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。"
       : "This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions."
-    : hasController
+    : isHarnessGuide
       ? framework === "html"
         ? isChinese
-          ? "浏览器运行时初始化公开 DOM 控制器；事件、状态与方法仍以组件文档中的 HTML 契约为唯一来源。"
-          : "The browser runtime initializes the public DOM controller; documented HTML events, state, and methods remain the source of truth."
-        : framework === "react"
-          ? isChinese
-            ? "绑定 ref、订阅公开 DOM 事件并调用文档列出的方法，不复制一份 React 私有状态。"
-            : "Binds the ref, subscribes to public DOM events, and calls documented methods without duplicating state in React."
-          : isChinese
-            ? "提供 componentRef、ready、事件订阅与 call()，不复制一份 Vue 私有状态。"
-            : "Provides componentRef, ready, event subscriptions, and call() without duplicating state in Vue."
-      : framework === "html"
-        ? isChinese
-          ? "此组件由语义化 HTML 与 CSS 完成，不需要额外的 JavaScript 控制器。"
-          : "Semantic HTML and CSS provide this component; no additional JavaScript controller is required."
+          ? "原生入口直接创建对应布局实例；主题层不接管面板数据、权限或产品状态。"
+          : "The native entry creates the layout instance directly; the theme layer does not own panel data, permissions, or product state."
         : isChinese
-          ? `此组件没有框架私有 Hook；${frameworkLabel(framework)} 适配器只映射相同的语义根元素，状态由原生事件和宿主应用管理。`
-          : `This component needs no framework-specific hook. The ${frameworkLabel(framework)} adapter maps the same semantic root while native events and the host own state.`;
+          ? "该框架入口管理实例就绪和文档列出的布局生命周期；面板数据、权限与产品状态仍由宿主负责。"
+          : "The framework entry manages instance readiness and the documented layout lifecycle; panel data, permissions, and product state remain host-owned."
+      : hasController
+        ? framework === "html"
+          ? isChinese
+            ? "浏览器运行时初始化公开 DOM 控制器；事件、状态与方法仍以组件文档中的 HTML 契约为唯一来源。"
+            : "The browser runtime initializes the public DOM controller; documented HTML events, state, and methods remain the source of truth."
+          : framework === "react"
+            ? isChinese
+              ? "绑定 ref、订阅公开 DOM 事件并调用文档列出的方法，不复制一份 React 私有状态。"
+              : "Binds the ref, subscribes to public DOM events, and calls documented methods without duplicating state in React."
+            : isChinese
+              ? "提供 componentRef、ready、事件订阅与 call()，不复制一份 Vue 私有状态。"
+              : "Provides componentRef, ready, event subscriptions, and call() without duplicating state in Vue."
+        : framework === "html"
+          ? isChinese
+            ? "此组件由语义化 HTML 与 CSS 完成，不需要额外的 JavaScript 控制器。"
+            : "Semantic HTML and CSS provide this component; no additional JavaScript controller is required."
+          : isChinese
+            ? `此组件没有框架私有 Hook；${frameworkLabel(framework)} 适配器只映射相同的语义根元素，状态由原生事件和宿主应用管理。`
+            : `This component needs no framework-specific hook. The ${frameworkLabel(framework)} adapter maps the same semantic root while native events and the host own state.`;
   const versionLabel =
     version === "next" ? (isChinese ? "开发版" : "Development") : version;
 
@@ -340,9 +369,13 @@ export function ComponentPreviewIntegration({
                     : "Composable"
                   : framework === "react"
                     ? "Hook"
-                    : isChinese
-                      ? "控制器"
-                      : "Controller"
+                    : isHarnessGuide
+                      ? isChinese
+                        ? "原生入口"
+                        : "Native entry"
+                      : isChinese
+                        ? "控制器"
+                        : "Controller"
                 : isChinese
                   ? "状态归属"
                   : "State ownership"}
