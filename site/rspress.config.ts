@@ -70,7 +70,6 @@ const config: UserConfig = {
       path.join(__dirname, "theme/mdx/DockviewDemo.tsx"),
       path.join(__dirname, "theme/mdx/FrameworkTabs.tsx"),
       path.join(__dirname, "theme/mdx/MonacoWorkbenchDemo.tsx"),
-      path.join(__dirname, "theme/mdx/PatternCatalog.tsx"),
       path.join(__dirname, "theme/mdx/CodeGroup.tsx"),
       path.join(__dirname, "theme/mdx/Preview.tsx"),
       path.join(__dirname, "theme/mdx/SliderDemo.tsx"),
@@ -82,7 +81,7 @@ const config: UserConfig = {
     `<script>${themeBridgeScript}</script>`,
     ["link", { rel: "icon", type: "image/png", href: `${base}logo.png` }],
     ["link", { rel: "apple-touch-icon", href: `${base}logo.png` }],
-    ["meta", { name: "theme-color", content: "#f5f7fb" }],
+    ["meta", { name: "theme-color", content: "#f6f6f6" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:site_name", content: "A3S UI" }],
     [

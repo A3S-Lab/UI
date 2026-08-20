@@ -32,7 +32,10 @@
   height: 1.05rem;
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > header > span:nth-child(2) {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > header
+  > span:nth-child(2) {
   display: grid;
   min-width: 0;
   gap: 0.15rem;
@@ -69,12 +72,19 @@
   cursor: pointer;
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > header button:hover {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > header
+  button:hover {
   background: var(--ui-hover);
   color: var(--ui-ink);
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > header button svg {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > header
+  button
+  svg {
   width: 1rem;
   height: 1rem;
 }
@@ -110,7 +120,9 @@
   color: var(--ui-blue);
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > [role="tablist"] {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > [role="tablist"] {
   display: flex;
   min-height: 2.75rem;
   padding-inline: 1rem;
@@ -118,7 +130,10 @@
   align-items: end;
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > [role="tablist"] button {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > [role="tablist"]
+  button {
   position: relative;
   min-height: 2.7rem;
   padding: 0 0.75rem;
@@ -130,11 +145,17 @@
   font-weight: 590;
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > [role="tablist"] button[aria-selected="true"] {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > [role="tablist"]
+  button[aria-selected="true"] {
   color: var(--ui-ink);
 }
 
-.product-knowledge-library > [data-knowledge-library-detail] > [role="tablist"] button[aria-selected="true"]::after {
+.product-knowledge-library
+  > [data-knowledge-library-detail]
+  > [role="tablist"]
+  button[aria-selected="true"]::after {
   position: absolute;
   inset: auto 0 -1px;
   height: 2px;
@@ -144,6 +165,16 @@
 
 .product-knowledge-library [data-knowledge-detail-content] {
   padding: 1rem;
+}
+
+.product-knowledge-library [data-knowledge-tab-panel] {
+  min-width: 0;
+}
+
+.product-knowledge-library [data-knowledge-tab-panel]:focus-visible {
+  border-radius: 0.5rem;
+  outline: 2px solid color-mix(in srgb, var(--ui-blue) 62%, transparent);
+  outline-offset: 0.25rem;
 }
 
 .product-knowledge-library [data-knowledge-compilation] {
@@ -175,8 +206,16 @@
   color: var(--ui-blue);
 }
 
-.product-knowledge-library [data-knowledge-compilation][data-phase="failed"] > header > span > svg,
-.product-knowledge-library [data-knowledge-compilation][data-phase="paused"] > header > span > svg {
+.product-knowledge-library
+  [data-knowledge-compilation][data-phase="failed"]
+  > header
+  > span
+  > svg,
+.product-knowledge-library
+  [data-knowledge-compilation][data-phase="paused"]
+  > header
+  > span
+  > svg {
   color: var(--ui-warning, #a86412);
 }
 
@@ -234,13 +273,32 @@
 }
 
 .product-knowledge-library [data-knowledge-compilation] > button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   opacity: 0.62;
+}
+
+.product-knowledge-library
+  [data-knowledge-compilation][aria-busy="true"]
+  > button:disabled {
+  cursor: wait;
 }
 
 .product-knowledge-library [data-knowledge-compilation] > button svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+.product-knowledge-library
+  [data-knowledge-compilation][aria-busy="true"]
+  > button
+  svg {
+  animation: product-knowledge-spin 900ms linear infinite;
+}
+
+@keyframes product-knowledge-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .product-knowledge-library [data-knowledge-stats] {
@@ -282,6 +340,15 @@
 .product-knowledge-library [data-knowledge-sources],
 .product-knowledge-library [data-knowledge-settings] {
   margin-top: 1.25rem;
+}
+
+.product-knowledge-library
+  [data-knowledge-tab-panel="sources"]
+  > [data-knowledge-sources],
+.product-knowledge-library
+  [data-knowledge-tab-panel="settings"]
+  > [data-knowledge-settings] {
+  margin-top: 0;
 }
 
 .product-knowledge-library [data-knowledge-description] h2,
@@ -350,11 +417,136 @@
   gap: 0.35rem;
   background: var(--ui-paper);
   color: var(--ui-ink);
+  white-space: nowrap;
+}
+
+.product-knowledge-library [data-knowledge-sources] > header button:disabled,
+.product-knowledge-library [data-knowledge-sources] article > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .product-knowledge-library [data-knowledge-sources] > header button svg {
   width: 0.8rem;
   height: 0.8rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] {
+  display: grid;
+  margin-top: 0.875rem;
+  padding: 0.875rem;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.625rem;
+  gap: 0.75rem;
+  background: color-mix(in srgb, var(--ui-blue) 3%, var(--ui-panel));
+  transition: border-color 150ms ease;
+}
+
+.product-knowledge-library [data-knowledge-source-form]:focus-within {
+  border-color: color-mix(in srgb, var(--ui-ink) 18%, var(--ui-line-strong));
+}
+
+.product-knowledge-library [data-knowledge-source-form] > header > span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > header strong {
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > header small,
+.product-knowledge-library [data-knowledge-source-form] label > small {
+  color: var(--ui-muted);
+  font-size: 0.65rem;
+  font-weight: 450;
+  line-height: 0.95rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > label,
+.product-knowledge-library [data-knowledge-source-form] > div > label {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
+  font-weight: 610;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > div {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 0.625rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] input,
+.product-knowledge-library [data-knowledge-source-form] select {
+  width: 100%;
+  min-width: 0;
+  height: 2.125rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.45rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  font-size: 0.75rem;
+}
+
+.product-knowledge-library
+  [data-knowledge-source-form]
+  input[aria-invalid="true"] {
+  border-color: var(--ui-danger, #c93d45);
+}
+
+.product-knowledge-library [data-knowledge-source-form] > p {
+  margin: -0.15rem 0 0;
+  color: var(--ui-danger, #c93d45);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > footer button,
+.product-knowledge-library [data-knowledge-source-actions] button {
+  display: inline-flex;
+  min-height: 2rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  font-size: 0.6875rem;
+  font-weight: 610;
+}
+
+.product-knowledge-library [data-knowledge-source-form] > footer button:hover,
+.product-knowledge-library [data-knowledge-source-actions] button:hover {
+  background: var(--ui-hover);
+}
+
+.product-knowledge-library [data-knowledge-source-form] > footer button svg,
+.product-knowledge-library [data-knowledge-source-actions] button svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.product-knowledge-library
+  [data-knowledge-source-form]
+  > footer
+  button[data-primary] {
+  border-color: var(--ui-blue);
+  background: var(--ui-blue);
+  color: #fff;
 }
 
 .product-knowledge-library [data-knowledge-recent-sources] article,
@@ -393,7 +585,10 @@
 }
 
 .product-knowledge-library [data-knowledge-recent-sources] article > span,
-.product-knowledge-library [data-knowledge-sources] article > span:nth-child(2) {
+.product-knowledge-library
+  [data-knowledge-sources]
+  article
+  > span:nth-child(2) {
   display: grid;
   min-width: 0;
   gap: 0.1rem;
@@ -450,6 +645,123 @@
 .product-knowledge-library [data-knowledge-sources] article > button svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+.product-knowledge-library
+  [data-knowledge-sources]
+  [data-source-row]:has([data-knowledge-source-actions]) {
+  background: color-mix(in srgb, var(--ui-panel) 70%, transparent);
+}
+
+.product-knowledge-library [data-knowledge-source-actions] {
+  display: grid;
+  margin: 0.125rem 0 0.75rem 2.25rem;
+  padding: 0.75rem;
+  border: 1px solid var(--ui-line);
+  border-radius: 0.5rem;
+  grid-column: 1 / -1;
+  gap: 0.625rem;
+  background: var(--ui-paper);
+}
+
+.product-knowledge-library [data-knowledge-source-actions] > span {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.product-knowledge-library [data-knowledge-source-actions] > span strong {
+  font-size: 0.6875rem;
+  font-weight: 650;
+}
+
+.product-knowledge-library [data-knowledge-source-actions] > span small {
+  overflow: hidden;
+  color: var(--ui-faint);
+  font-family: var(--rp-font-family-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-knowledge-library
+  [data-knowledge-source-actions]
+  > div:not([data-source-remove-confirmation]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.product-knowledge-library [data-knowledge-source-actions] button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.product-knowledge-library [data-knowledge-source-actions] button[data-danger] {
+  border-color: color-mix(
+    in srgb,
+    var(--ui-danger, #c93d45) 36%,
+    var(--ui-line)
+  );
+  color: var(--ui-danger, #c93d45);
+}
+
+.product-knowledge-library [data-source-remove-confirmation] {
+  display: grid;
+  padding: 0.625rem;
+  border-radius: 0.45rem;
+  gap: 0.625rem;
+  background: color-mix(in srgb, var(--ui-danger, #c93d45) 6%, var(--ui-paper));
+}
+
+.product-knowledge-library [data-source-remove-confirmation] > p {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+}
+
+.product-knowledge-library [data-source-remove-confirmation] > span {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.product-knowledge-library
+  [data-source-remove-confirmation]
+  button[data-danger] {
+  border-color: var(--ui-danger, #c93d45);
+  background: var(--ui-danger, #c93d45);
+  color: #fff;
+}
+
+.product-knowledge-library [data-knowledge-sources-empty] {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  align-content: center;
+  gap: 0.4rem;
+  color: var(--ui-muted);
+  text-align: center;
+}
+
+.product-knowledge-library [data-knowledge-sources-empty] > svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-bottom: 0.25rem;
+  color: var(--ui-blue);
+}
+
+.product-knowledge-library [data-knowledge-sources-empty] > strong {
+  color: var(--ui-ink);
+  font-size: 0.75rem;
+}
+
+.product-knowledge-library [data-knowledge-sources-empty] > p {
+  max-width: 34ch;
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1rem;
 }
 
 .product-knowledge-library [data-knowledge-settings] > form {
@@ -538,7 +850,8 @@
   display: flex;
   margin-top: 1.25rem;
   padding: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--ui-danger, #c93d45) 28%, var(--ui-line));
+  border: 1px solid
+    color-mix(in srgb, var(--ui-danger, #c93d45) 28%, var(--ui-line));
   border-radius: 0.625rem;
   align-items: center;
   justify-content: space-between;
@@ -546,7 +859,11 @@
 }
 
 .product-knowledge-library [data-danger-zone] button {
-  border-color: color-mix(in srgb, var(--ui-danger, #c93d45) 36%, var(--ui-line));
+  border-color: color-mix(
+    in srgb,
+    var(--ui-danger, #c93d45) 36%,
+    var(--ui-line)
+  );
   color: var(--ui-danger, #c93d45);
 }
 
@@ -641,8 +958,19 @@
   }
 }
 
+@media (max-width: 30rem) {
+  .product-knowledge-library [data-knowledge-source-form] > div {
+    grid-template-columns: 1fr;
+  }
+
+  .product-knowledge-library [data-knowledge-source-actions] {
+    margin-inline-start: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .product-knowledge-library [data-knowledge-compilation] > header > i {
+  .product-knowledge-library [data-knowledge-compilation] > header > i,
+  .product-knowledge-library [data-knowledge-compilation] > button svg {
     animation: none;
   }
 }

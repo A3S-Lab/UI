@@ -117,10 +117,6 @@ export function MemorySettings({
   locale: ProductPlaygroundLocale;
 }) {
   const zh = locale === "zh";
-  const [items, setItems] = useState([
-    zh ? "偏好使用中文界面" : "Prefers the current interface language",
-    zh ? "发布前需要视觉验收证据" : "Requires visual evidence before release",
-  ]);
   return (
     <>
       <SettingsHeader
@@ -163,49 +159,18 @@ export function MemorySettings({
           </select>
         </SettingsRow>
       </section>
-      <section className="product-settings__memory-list">
-        <header>
+      <section className="product-settings__boundary">
+        <ProductPlaygroundIcon name="shield" />
+        <span>
           <strong>
-            {zh
-              ? `已保存记忆（${items.length}）`
-              : `Saved memories (${items.length})`}
+            {zh ? "记录与策略分离" : "Records and policy stay separate"}
           </strong>
-          <button
-            disabled={!items.length}
-            onClick={() => setItems([])}
-            type="button"
-          >
-            {zh ? "全部清除" : "Clear all"}
-          </button>
-        </header>
-        {items.length ? (
-          items.map((item) => (
-            <article key={item}>
-              <ProductPlaygroundIcon name="knowledge" />
-              <span>
-                <strong>{item}</strong>
-                <small>
-                  {zh
-                    ? "当前工作区 · 本地保存"
-                    : "Current workspace · Stored locally"}
-                </small>
-              </span>
-              <button
-                aria-label={zh ? `删除${item}` : `Delete ${item}`}
-                onClick={() =>
-                  setItems((current) =>
-                    current.filter((value) => value !== item),
-                  )
-                }
-                type="button"
-              >
-                <ProductPlaygroundIcon name="close" />
-              </button>
-            </article>
-          ))
-        ) : (
-          <p>{zh ? "当前没有已保存记忆。" : "No saved memories yet."}</p>
-        )}
+          <small>
+            {zh
+              ? "设置只决定新记忆如何产生；来源检查、任务复用和遗忘请求统一在记忆页面完成。"
+              : "Settings define how new memories are created. Source review, task reuse, and removal requests stay in the Memory workspace."}
+          </small>
+        </span>
       </section>
     </>
   );

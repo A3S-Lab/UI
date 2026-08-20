@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import type { ProductTaskDraft } from "./product-composer-data";
 import {
   ProductPlaygroundIcon,
@@ -188,7 +189,7 @@ export function ProductFileArtifactsSurface({
                   type="button"
                 >
                   <ProductPlaygroundIcon name="chevron" />
-                  <span>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</span>
+                  <span>{productProjectName[locale]}</span>
                   <small>
                     {zh
                       ? `${visibleArtifacts.length} 个成果`

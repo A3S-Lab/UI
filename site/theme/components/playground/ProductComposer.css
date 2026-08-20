@@ -100,6 +100,43 @@
   border-radius: 0.3125rem;
 }
 
+.product-composer
+  > [data-composer-resources]
+  > li[data-resource-state="copying"]
+  > svg {
+  animation: product-composer-transfer 900ms linear infinite;
+}
+
+.product-composer
+  > [data-composer-resources]
+  > li[data-resource-state="error"] {
+  border-color: color-mix(in srgb, var(--ui-red) 34%, var(--ui-line));
+  background: color-mix(in srgb, var(--ui-red) 6%, var(--ui-paper));
+}
+
+.product-composer
+  > [data-composer-resources]
+  > li[data-resource-state="error"]
+  > svg,
+.product-composer
+  > [data-composer-resources]
+  > li[data-resource-state="error"]
+  > small {
+  color: var(--ui-red);
+}
+
+.product-composer
+  > [data-composer-resources]
+  [data-composer-action="retry-resource"] {
+  color: var(--ui-blue);
+}
+
+@keyframes product-composer-transfer {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .product-composer .agent-composer-editor {
   min-width: 0;
   min-height: var(--agent-composer-min-height);

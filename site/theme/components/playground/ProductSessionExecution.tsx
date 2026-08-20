@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type {
@@ -15,7 +15,10 @@ export function ProductSessionExecution({
   contextDetails?: ProductSessionContextDetails | null;
   created: boolean;
   locale: ProductPlaygroundLocale;
-  onOpenInspector: (tab: ProductSessionInspectorTab) => void;
+  onOpenInspector: (
+    tab: ProductSessionInspectorTab,
+    returnFocus?: HTMLElement,
+  ) => void;
 }) {
   const zh = locale === "zh";
   const [permission, setPermission] = useState<
@@ -91,6 +94,7 @@ export function ProductSessionExecution({
   return (
     <div className="product-session-execution">
       <ExecutionPlan created={false} locale={locale} steps={steps} />
+      <DeliverySummary locale={locale} onOpenInspector={onOpenInspector} />
 
       <details className="product-session-reasoning">
         <summary>
@@ -182,7 +186,9 @@ export function ProductSessionExecution({
                 <header>
                   <strong>src/auth/session.ts</strong>
                   <button
-                    onClick={() => onOpenInspector("files")}
+                    onClick={(event) =>
+                      onOpenInspector("files", event.currentTarget)
+                    }
                     type="button"
                   >
                     {zh ? "查看完整差异" : "Open full diff"}
@@ -192,15 +198,11 @@ export function ProductSessionExecution({
                 <pre aria-label={zh ? "代码差异预览" : "Code diff preview"}>
                   <code>
                     <span data-removed>− const target = session.returnTo;</span>
-                    {"\n"}
                     <span data-added>
                       + const target = normalizeReturnPath(returnTo);
                     </span>
-                    {"\n"}
                     <span> await refreshSessionToken();</span>
-                    {"\n"}
                     <span data-added>+ navigate(target);</span>
-                    {"\n"}
                     <span data-added>+ restoreTriggerFocus();</span>
                   </code>
                 </pre>
@@ -339,80 +341,107 @@ export function ProductSessionExecution({
           </li>
         </ul>
       </section>
-
-      <section
-        className="product-delivery-summary"
-        aria-label={zh ? "任务交付摘要" : "Delivery summary"}
-      >
-        <header>
-          <span>
-            <ProductPlaygroundIcon name="check" />
-          </span>
-          <div>
-            <small>{zh ? "交付状态" : "Delivery status"}</small>
-            <strong>{zh ? "任务已可审阅" : "Task is ready for review"}</strong>
-          </div>
-          <em>{zh ? "已验证" : "Verified"}</em>
-        </header>
-        <div
-          className="product-delivery-summary__progress"
-          role="progressbar"
-          aria-label={zh ? "交付检查完成度" : "Delivery checks completed"}
-          aria-valuemax={100}
-          aria-valuemin={0}
-          aria-valuenow={100}
-        >
-          <span />
-        </div>
-        <dl>
-          <div>
-            <dt>12</dt>
-            <dd>{zh ? "已通过" : "Passed"}</dd>
-          </div>
-          <div>
-            <dt>0</dt>
-            <dd>{zh ? "待检查" : "Pending"}</dd>
-          </div>
-          <div>
-            <dt>0</dt>
-            <dd>{zh ? "失败" : "Failed"}</dd>
-          </div>
-          <div>
-            <dt>0</dt>
-            <dd>{zh ? "风险" : "Risks"}</dd>
-          </div>
-        </dl>
-        <footer>
-          <p>
-            {zh
-              ? "路由、焦点与状态公告均有可追溯证据。"
-              : "Routing, focus, and status announcements all have traceable evidence."}
-          </p>
-          <div>
-            <button onClick={() => onOpenInspector("artifacts")} type="button">
-              <ProductPlaygroundIcon name="document" />
-              {zh ? "产物" : "Artifacts"}
-            </button>
-            <button onClick={() => onOpenInspector("files")} type="button">
-              <ProductPlaygroundIcon name="files" />
-              {zh ? "文件差异" : "File diff"}
-            </button>
-            <button
-              data-primary
-              onClick={() => onOpenInspector("preview")}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="eye" />
-              {zh ? "设备预览" : "Device preview"}
-            </button>
-            <button onClick={() => onOpenInspector("graph")} type="button">
-              <ProductPlaygroundIcon name="project" />
-              {zh ? "代码图谱" : "Code graph"}
-            </button>
-          </div>
-        </footer>
-      </section>
     </div>
+  );
+}
+
+function DeliverySummary({
+  locale,
+  onOpenInspector,
+}: {
+  locale: ProductPlaygroundLocale;
+  onOpenInspector: (
+    tab: ProductSessionInspectorTab,
+    returnFocus?: HTMLElement,
+  ) => void;
+}) {
+  const zh = locale === "zh";
+  return (
+    <section
+      className="product-delivery-summary"
+      aria-label={zh ? "任务交付摘要" : "Delivery summary"}
+    >
+      <header>
+        <span>
+          <ProductPlaygroundIcon name="check" />
+        </span>
+        <div>
+          <small>{zh ? "交付状态" : "Delivery status"}</small>
+          <strong>{zh ? "任务已可审阅" : "Task is ready for review"}</strong>
+        </div>
+        <em>{zh ? "已验证" : "Verified"}</em>
+      </header>
+      <div
+        className="product-delivery-summary__progress"
+        role="progressbar"
+        aria-label={zh ? "交付检查完成度" : "Delivery checks completed"}
+        aria-valuemax={100}
+        aria-valuemin={0}
+        aria-valuenow={100}
+      >
+        <span />
+      </div>
+      <dl>
+        <div>
+          <dt>12</dt>
+          <dd>{zh ? "已通过" : "Passed"}</dd>
+        </div>
+        <div>
+          <dt>0</dt>
+          <dd>{zh ? "待检查" : "Pending"}</dd>
+        </div>
+        <div>
+          <dt>0</dt>
+          <dd>{zh ? "失败" : "Failed"}</dd>
+        </div>
+        <div>
+          <dt>0</dt>
+          <dd>{zh ? "风险" : "Risks"}</dd>
+        </div>
+      </dl>
+      <footer>
+        <p>
+          {zh
+            ? "路由、焦点与状态公告均有可追溯证据。"
+            : "Routing, focus, and status announcements all have traceable evidence."}
+        </p>
+        <div>
+          <button
+            onClick={(event) =>
+              onOpenInspector("artifacts", event.currentTarget)
+            }
+            type="button"
+          >
+            <ProductPlaygroundIcon name="document" />
+            {zh ? "产物" : "Artifacts"}
+          </button>
+          <button
+            onClick={(event) => onOpenInspector("files", event.currentTarget)}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="files" />
+            {zh ? "文件差异" : "File diff"}
+          </button>
+          <button
+            data-primary
+            onClick={(event) =>
+              onOpenInspector("preview", event.currentTarget)
+            }
+            type="button"
+          >
+            <ProductPlaygroundIcon name="eye" />
+            {zh ? "设备预览" : "Device preview"}
+          </button>
+          <button
+            onClick={(event) => onOpenInspector("graph", event.currentTarget)}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="project" />
+            {zh ? "代码图谱" : "Code graph"}
+          </button>
+        </div>
+      </footer>
+    </section>
   );
 }
 
@@ -477,23 +506,37 @@ function ExecutionPlan({
   steps: readonly { label: string; state: string }[];
 }) {
   const zh = locale === "zh";
+  const [expanded, setExpanded] = useState(created);
+
+  useEffect(() => {
+    setExpanded(created);
+  }, [created]);
+
   return (
-    <section className="product-execution-plan">
-      <header>
+    <details
+      className="product-execution-plan"
+      data-state={created ? "active" : "complete"}
+      onToggle={(event) => setExpanded(event.currentTarget.open)}
+      open={expanded}
+    >
+      <summary>
         <div>
           <ProductPlaygroundIcon name="checklist" />
           <strong>{zh ? "计划" : "Plan"}</strong>
         </div>
-        <small>
-          {created
-            ? zh
-              ? "1 / 3 进行中"
-              : "1 / 3 in progress"
-            : zh
-              ? "3 / 3 已完成"
-              : "3 / 3 complete"}
-        </small>
-      </header>
+        <span>
+          <small>
+            {created
+              ? zh
+                ? "1 / 3 进行中"
+                : "1 / 3 in progress"
+              : zh
+                ? "3 / 3 已完成"
+                : "3 / 3 complete"}
+          </small>
+          <ProductPlaygroundIcon data-plan-disclosure name="chevron" />
+        </span>
+      </summary>
       <ol>
         {steps.map((step) => (
           <li data-state={step.state} key={step.label}>
@@ -508,7 +551,7 @@ function ExecutionPlan({
           </li>
         ))}
       </ol>
-    </section>
+    </details>
   );
 }
 

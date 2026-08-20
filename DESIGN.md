@@ -10,19 +10,21 @@ reference:
   documentationRevision: "b74c008826aea8c1251ca9366f7ada67ee18fa7c"
 colors:
   light:
-    canvas: "#ffffff"
+    canvas: "#f6f6f6"
     surface: "#ffffff"
-    surfaceMuted: "#f7f7f8"
-    surfaceHover: "#f4f4f5"
-    surfaceActive: "#eeeeef"
+    surfaceMuted: "#f3f3f3"
+    surfaceHover: "#eeeeee"
+    surfaceActive: "#e8e8e8"
     selectionSurface: "#eef4ff"
-    code: "#fafafa"
-    text: "#111113"
-    textSecondary: "#52525b"
-    textSubtle: "#71717a"
-    borderSubtle: "#e9e9eb"
-    border: "#dedee1"
-    borderStrong: "#c9c9ce"
+    code: "#f6f6f6"
+    text: "#171717"
+    textSecondary: "#595959"
+    textSubtle: "#858585"
+    borderSubtle: "#e8e8e8"
+    border: "#d8d8d8"
+    borderStrong: "#c8c8c8"
+    action: "#171717"
+    actionForeground: "#ffffff"
     accent: "#1456f0"
     accentHover: "#0f46c7"
     accentContrast: "#ffffff"
@@ -31,19 +33,21 @@ colors:
     warning: "#a86412"
     danger: "#c93d45"
   dark:
-    canvas: "#0d0d0f"
-    surface: "#151518"
-    surfaceMuted: "#19191d"
-    surfaceHover: "#202024"
-    surfaceActive: "#26262b"
+    canvas: "#111112"
+    surface: "#171718"
+    surfaceMuted: "#202021"
+    surfaceHover: "#262627"
+    surfaceActive: "#2b2b2d"
     selectionSurface: "#17223b"
-    code: "#121214"
-    text: "#f4f4f5"
-    textSecondary: "#b4b4bc"
-    textSubtle: "#888891"
-    borderSubtle: "#26262b"
-    border: "#333338"
-    borderStrong: "#45454b"
+    code: "#111112"
+    text: "#f2f2f3"
+    textSecondary: "#b7b7ba"
+    textSubtle: "#8b8b90"
+    borderSubtle: "#2a2a2c"
+    border: "#3a3a3d"
+    borderStrong: "#4a4a4e"
+    action: "#f2f2f3"
+    actionForeground: "#171718"
     accent: "#4380f9"
     accentHover: "#6ca3ff"
     accentContrast: "#0d0d0f"
@@ -62,10 +66,10 @@ typography:
   annotation: "0.8125rem / 1.45 / 450"
   micro: "0.75rem / 1.4 / 560"
 radii:
-  xs: "4px"
-  sm: "6px"
-  md: "8px"
-  lg: "12px"
+  xs: "6px"
+  sm: "8px"
+  md: "10px"
+  lg: "14px"
 spacing:
   unit: "4px"
   controlHeight: "36px"
@@ -96,10 +100,10 @@ The system must feel recognizably related to the reference through mechanics tha
 
 - A 64px, low-contrast top bar, a 320px persistent documentation rail, and a 268px page outline on wide screens.
 - Geist typography, strong compact headings, generous reading space, and short secondary copy.
-- White and near-black canvases with four tonal surface steps instead of gray card grids.
-- Small 4/6/8/12px radii, thin boundaries, 36px controls, and precise icon sizing.
+- Neutral canvases with four measured surface steps instead of gray card grids.
+- Consistent 6/8/10/14px radii, thin boundaries, 36px controls, and precise icon sizing.
 - Framed component demos with a quiet title bar, live preview, highlighted source, and copy action.
-- A restrained A3S OS blue accent, subtle ambient color near landmark surfaces, and blue primary controls.
+- Neutral black/white primary controls with A3S OS blue reserved for focus, links, current navigation, checked choices, and selection.
 - Dense capability without visual noise: controls appear where the task needs them and recede at rest.
 
 ### Product invariants
@@ -131,9 +135,9 @@ Borders also have three roles:
 - Default borders define controls, preview frames, tables, and overlays.
 - Strong borders indicate a selected edge or a boundary that must survive dense content.
 
-The default accent is the A3S OS workspace blue: `#1456f0` in light mode and `#4380f9` in dark mode. It owns focus rings, current navigation, links, selection, and the primary action in a bounded region. The deeper `#243a9a` identity blue belongs to the mark and brand lockups. Violet remains an optional accent and a supporting color in the official blue-to-violet identity, never the default interaction color. No accent may flood ordinary cards or whole application panes.
+The default accent is the A3S OS workspace blue: `#1456f0` in light mode and `#4380f9` in dark mode. It owns focus rings, current navigation, links, checked choices, selection, and progress. Primary commands use the neutral ink action (`#171717` on light surfaces and `#f2f2f3` on dark surfaces), matching the Playground hierarchy without erasing the blue identity. The deeper `#243a9a` identity blue belongs to the mark and brand lockups. Violet remains an optional accent and a supporting color in the official blue-to-violet identity, never the default interaction color. No accent may flood ordinary cards or whole application panes.
 
-An accent choice remaps the complete interaction contract together: primary action, hover, focus ring, current navigation, links, selection surface, and accessible foreground. It must not recolor success, warning, or danger semantics.
+An accent choice remaps focus, current navigation, links, checked choices, progress, and selection surfaces together. It does not recolor the neutral primary-command hierarchy, success, warning, or danger semantics.
 
 Success, warning, and danger colors communicate outcomes only. Every semantic state also needs text, an icon, or structure. Never use color as the only status channel.
 
@@ -172,7 +176,7 @@ At 900px, secondary inspectors become overlays or drawers. At 768px, persistent 
 
 ### 2.5 Shape, boundaries, and depth
 
-Use 4px for tiny internal controls, 6px for buttons and fields, 8px for ordinary surfaces, and 12px for overlays and major preview frames. Pills are reserved for status, compact filters, switch tracks, and circular actions.
+Use 6px for tiny internal controls, 8px for compact controls, 10px for buttons and fields, and 14px for overlays, major panels, and preview frames. Pills are reserved for status, compact filters, switch tracks, and circular actions.
 
 Static layout surfaces are flat. A component earns a shadow only when it floats above content or remains anchored while content passes underneath it.
 
@@ -252,11 +256,11 @@ Coverage is incomplete when any reference document is missing, mapped to `TBD`, 
 
 #### Actions
 
-Buttons use A3S OS blue for the default primary treatment. A bounded region keeps one unmistakable primary action; surrounding actions use tonal, outlined, ghost, or link treatments. Filled, tonal, outlined, ghost, danger, link, icon-only, split, copy, and download actions share the same height, focus, loading, and disabled rules. Icon-only actions always have an accessible name.
+Buttons use the neutral ink action for the default primary treatment. A bounded region keeps one unmistakable primary action; surrounding actions use tonal, outlined, ghost, or link treatments. A3S OS blue remains visible in links, focus, current navigation, selection, and checked choices. Filled, tonal, outlined, ghost, danger, link, icon-only, split, copy, and download actions share the same height, focus, loading, and disabled rules. Icon-only actions always have an accessible name.
 
 #### Fields and choice controls
 
-Inputs use a white or raised surface, a default border, 6px radius, and concise labels. Focus increases border contrast and adds the accent ring. Compound fields align prefix, value, suffix, validation, and loading without nested borders. Date, shortcut, color, image, and emoji selection extend the same field grammar rather than inventing standalone visual worlds.
+Inputs use the paper surface, a strong neutral border, a 10px radius, and concise labels. Focus increases border contrast and adds a restrained 2px accent ring; it never produces a thick luminous halo. Compound fields align prefix, value, suffix, validation, and loading without nested borders. Date, shortcut, color, image, and emoji selection extend the same field grammar rather than inventing standalone visual worlds.
 
 #### Navigation
 
@@ -286,7 +290,7 @@ Harness components support authoring, conversation, execution, review, evidence,
 
 ### Component preview
 
-A preview is evidence, not decoration. It has one 12px frame, a compact title bar, a live stage, and a source region. The toolbar includes only meaningful controls: viewport, appearance, direction, source, copy, and optional external open. Source uses real syntax highlighting and a working copy action. Preview height adapts to content and names loading or runtime failure. Each preview declares or derives one layout intent: centered control, flowing content, bounded overlay, or edge-to-edge workspace. Phone and tablet modes render inside isolated CSS viewports so component media queries respond to the selected width instead of the documentation window.
+A preview is evidence, not decoration. It has one 14px frame, a compact title bar, a live stage, and a source region. The toolbar includes only meaningful controls: viewport, appearance, direction, source, copy, and optional external open. Source uses real syntax highlighting and a working copy action. Preview height adapts to content and names loading or runtime failure. Each preview declares or derives one layout intent: centered control, flowing content, bounded overlay, or edge-to-edge workspace. Phone and tablet modes render inside isolated CSS viewports so component media queries respond to the selected width instead of the documentation window.
 
 ### Button and Action Icon
 
@@ -306,13 +310,17 @@ The transcript is a chronological list, not a stack of generic cards. User conte
 
 ### Composer
 
-Composer combines a growing text area, context, attachments, tools, status, queue, and one send/stop action in a single 12px surface. It preserves drafts through loading, offline, rejection, and responsive transitions. Mobile uses safe-area padding and keeps the primary action reachable above the virtual keyboard.
+Composer combines a growing text area, context, attachments, tools, status, queue, and one send/stop action in a single 14px surface. It preserves drafts through loading, offline, rejection, and responsive transitions. Mobile uses safe-area padding and keeps the primary action reachable above the virtual keyboard.
 
 ### Code, Markdown, and preview content
 
 Highlighter and Snippet use the code surface, Geist Mono, theme-aware syntax tokens, copy feedback, and horizontal scrolling. Markdown establishes safe typography and delegates diagrams, math, raw HTML, media, and remote links to explicit host renderers. HTML Preview is sandboxed and belongs in Device Simulator when viewport controls or remote navigation are required.
 
 Device Simulator keeps the iframe at the exact selected CSS viewport and places hardware geometry outside that measurement. Phones expose an edge rail, sensor treatment, and gesture region; tablets expose a bezel and camera; laptops expose a display frame, hinge, and base; desktop monitors expose a bezel, chin, and stand. The complete shell scales as one unit to fit its workspace and remains a visual boundary only: it does not claim to emulate user agents, pixel density, touch, safe areas, network conditions, or operating-system browser behavior.
+
+### Automation workflows
+
+Automation separates the schedule from manual execution: pausing prevents future scheduled starts but never removes an authorized manual run. Every definition exposes cadence and an actual next occurrence, with interval anchors, weekly day selection, and explicit time zones. Model, effort, workspace, connector, permission, skill, reviewer, and notification choices persist together. Every run snapshots those inputs and renders its own truthful steps, states, and durations; retry changes only the failed step, preserves completed evidence, and keeps the active detail visible while filters reconcile.
 
 ### Data Grid and Sortable List
 
@@ -328,16 +336,17 @@ Documentation and product experience are separate information architectures.
 
 The documentation site shares the visual grammar of A3S Test while retaining A3S UI identity:
 
-- Use a 64px Rspress navigation bar, blue-gray `#f5f7fb` light canvas, near-black `#0d1118` dark canvas, and the A3S OS blue interaction accent.
+- Use a 64px Rspress navigation bar, neutral `#f6f6f6` light canvas, `#111112` dark canvas, and the A3S OS blue interaction accent.
 - Keep sidebar, article, and outline regions on one continuous editorial grid. Separation comes from spacing and 1px boundaries, not a stack of floating cards.
-- Use 16px for major document surfaces, 12px for component preview frames, and 8px for controls. Do not inflate ordinary controls into pills.
+- Use 14px for major document surfaces and component preview frames, and 10px for controls. Do not inflate ordinary controls into pills.
 - Cap the article region at 920px while keeping paragraph measure between 65 and 75 characters. Use 80px desktop padding, 36px intermediate padding, and 24px phone margins.
 - Disable generic content entrance animation. Motion is reserved for control feedback, disclosure continuity, and state transitions.
 - Closed mobile navigation and outline regions are invisible and inert. Their tree lines, arrows, and focusable descendants must not leak into article space.
 - Every code example uses syntax highlighting and a persistent localized copy action. Component previews use the same code block system instead of a parallel highlighter.
 - Home, documentation, and Playground use the same tokens, typography, borders, and responsive breakpoints even though they remain separate routes and information architectures.
 
-- `site/docs/` contains guides, foundations, component contracts, Harness documentation, and composition patterns only.
+- Top navigation follows the product-learning dependency chain: Guide, Foundations, Components, Harness, then Playground. Resources and preferences follow as utilities. Historical versions omit unavailable destinations without reordering the remaining chain.
+- `site/docs/` contains guides, foundations, component contracts, and Harness documentation only.
 - Playground is a standalone custom route under `site/pages/`, linked from top navigation and absent from documentation sidebars, section indexes, search grouping, and previous/next ordering.
 - Simplified Chinese is the default locale; English mirrors every public contract.
 - Version switching retains the same route when that version contains it and falls back transparently when it does not.

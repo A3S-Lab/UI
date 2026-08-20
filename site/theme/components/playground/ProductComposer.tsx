@@ -34,6 +34,16 @@ import {
 } from "./product-composer-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import {
+  productWorkspaceFileBatchLimit,
+  productWorkspaceFileSizeLimit,
+  queueProductWorkspaceFiles,
+  removeProductWorkspaceFiles,
+  retryProductWorkspaceFile,
+  useProductWorkspaceFiles,
+  type ProductWorkspaceFile,
+  type ProductWorkspaceFileRejection,
+} from "./product-workspace-files";
 import { useProductComposerSpeech } from "./useProductComposerSpeech";
 
 export type ProductComposerContext = {
@@ -99,6 +109,7 @@ export function ProductComposer({
   const [effort, setEffort] = useState<ProductComposerEffort>("medium");
   const [manualSuggestionKind, setManualSuggestionKind] =
     useState<ProductComposerSuggestionKind | null>(null);
+  const [localTransferIds, setLocalTransferIds] = useState<string[]>([]);
   const [mode, setMode] = useState<ProductComposerContext["mode"]>("agent");
   const [model, setModel] = useState<ProductComposerContext["model"]>("auto");
   const [permissions, setPermissions] =
@@ -112,6 +123,11 @@ export function ProductComposer({
   const [trigger, setTrigger] = useState<AgentComposerTrigger | null>(null);
   const [workspace, setWorkspace] =
     useState<ProductComposerContext["workspace"]>(initialWorkspace);
+  const workspaceFiles = useProductWorkspaceFiles();
+  const localTransfers = localTransferIds.flatMap((id) => {
+    const record = workspaceFiles.find((item) => item.id === id);
+    return record ? [record] : [];
+  });
   const menuKind = trigger?.kind ?? manualSuggestionKind;
   const { listening, speechSupported, toggleSpeechInput } =
     useProductComposerSpeech({
@@ -168,24 +184,45 @@ export function ProductComposer({
 
   const addLocalFiles = (files: readonly File[]) => {
     if (files.length === 0) return;
-    setResources((current) => {
-      const existing = new Set(current.map((item) => item.label));
-      const additions = files
-        .filter((file) => !existing.has(file.name))
-        .map((file, index) => ({
-          id: `local:${file.name}:${file.size}:${index}`,
-          kind: "file" as const,
-          label: file.name,
-          meta: formatFileSize(file.size, locale),
-        }));
-      return [...current, ...additions];
+    const batch = queueProductWorkspaceFiles(files, { workspace });
+    setLocalTransferIds((current) => [
+      ...new Set([...current, ...batch.records.map((record) => record.id)]),
+    ]);
+    if (batch.records.length > 0) {
+      setStatus(
+        zh
+          ? `正在将 ${batch.records.length} 个文件复制到工作区…`
+          : `Copying ${batch.records.length} file${batch.records.length === 1 ? "" : "s"} into the workspace…`,
+      );
+    }
+    if (batch.rejected.length > 0) {
+      setStatus(formatWorkspaceFileRejections(batch.rejected, locale));
+    }
+    void batch.completion.catch(() => {
+      // Removing a pending transfer intentionally cancels its completion.
     });
+  };
+
+  useEffect(() => {
+    const completed = localTransfers.filter((record) => record.state === "ready");
+    if (completed.length === 0) return;
+    setResources((current) => {
+      const ids = new Set(current.map((resource) => resource.id));
+      const additions = completed
+        .map((record) => workspaceFileResource(record, locale))
+        .filter((resource) => !ids.has(resource.id));
+      return additions.length > 0 ? [...current, ...additions] : current;
+    });
+    const completedIds = new Set(completed.map((record) => record.id));
+    setLocalTransferIds((current) =>
+      current.filter((id) => !completedIds.has(id)),
+    );
     setStatus(
       zh
-        ? `已将 ${files.length} 个本地文件加入任务上下文。`
-        : `${files.length} local file${files.length === 1 ? "" : "s"} added to task context.`,
+        ? `${completed.length} 个文件已复制到工作区并加入任务上下文。`
+        : `${completed.length} file${completed.length === 1 ? "" : "s"} copied to the workspace and attached to this task.`,
     );
-  };
+  }, [localTransfers, locale, zh]);
 
   const selectFile = (resource: ProductComposerResource) => {
     if (trigger?.kind === "file") editorRef.current?.replaceTrigger(trigger);
@@ -255,6 +292,19 @@ export function ProductComposer({
 
   const submit = (event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
+    if (localTransfers.length > 0) {
+      const failed = localTransfers.some((record) => record.state === "error");
+      setStatus(
+        failed
+          ? zh
+            ? "有文件未能进入工作区，请重试或移除后再发送。"
+            : "A file could not enter the workspace. Retry or remove it before sending."
+          : zh
+            ? "文件仍在复制到工作区，请完成后再发送。"
+            : "Files are still being copied into the workspace. Send after they finish.",
+      );
+      return;
+    }
     const normalizedDraft = draft.trim();
     if (!normalizedDraft) {
       setStatus(
@@ -342,7 +392,7 @@ export function ProductComposer({
       onSubmit={submit}
       ref={composerRef}
     >
-      {resources.length > 0 ? (
+      {resources.length > 0 || localTransfers.length > 0 ? (
         <ul
           aria-label={zh ? "已添加的任务资源" : "Attached task resources"}
           data-composer-resources
@@ -379,6 +429,64 @@ export function ProductComposer({
                     current.filter((item) => item.id !== resource.id),
                   )
                 }
+                type="button"
+              >
+                <ProductPlaygroundIcon name="close" />
+              </button>
+            </li>
+          ))}
+          {localTransfers.map((record) => (
+            <li
+              data-resource-id={`workspace:${record.id}`}
+              data-resource-kind="file"
+              data-resource-state={record.state}
+              key={record.id}
+              title={
+                record.state === "error"
+                  ? zh
+                    ? "无法读取此文件"
+                    : "This file could not be read"
+                  : zh
+                    ? "正在复制到工作区"
+                    : "Copying into the workspace"
+              }
+            >
+              <ProductPlaygroundIcon
+                name={record.state === "error" ? "warning" : "refresh"}
+              />
+              <span data-resource-label>{record.name}</span>
+              <small>
+                {record.state === "error"
+                  ? zh
+                    ? "导入失败"
+                    : "Import failed"
+                  : zh
+                    ? "正在复制…"
+                    : "Copying…"}
+              </small>
+              {record.state === "error" ? (
+                <button
+                  aria-label={zh ? `重试 ${record.name}` : `Retry ${record.name}`}
+                  data-composer-action="retry-resource"
+                  onClick={() => {
+                    setStatus(zh ? "正在重试文件导入…" : "Retrying file import…");
+                    void retryProductWorkspaceFile(record.id);
+                  }}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="refresh" />
+                </button>
+              ) : null}
+              <button
+                aria-label={zh ? `取消 ${record.name}` : `Cancel ${record.name}`}
+                data-composer-action="remove-resource"
+                onClick={() => {
+                  removeProductWorkspaceFiles([record.id]);
+                  setLocalTransferIds((current) =>
+                    current.filter((id) => id !== record.id),
+                  );
+                  setStatus(zh ? "已取消文件导入。" : "File import cancelled.");
+                }}
                 type="button"
               >
                 <ProductPlaygroundIcon name="close" />
@@ -878,4 +986,39 @@ function formatFileSize(size: number, locale: ProductPlaygroundLocale) {
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
   const value = `${(size / (1024 * 1024)).toFixed(1)} MB`;
   return locale === "zh" ? value : value;
+}
+
+function workspaceFileResource(
+  record: ProductWorkspaceFile,
+  locale: ProductPlaygroundLocale,
+): ProductComposerResource {
+  const workspaceLabels = {
+    local: locale === "zh" ? "本地工作区" : "Local workspace",
+    root: "a3s",
+    ui: "a3s-ui",
+  } as const;
+  return {
+    id: `workspace:${record.id}`,
+    kind: "file",
+    label: record.name,
+    meta: `${workspaceLabels[record.workspace]} · ${formatFileSize(record.file.size, locale)}`,
+    workspaceFileId: record.id,
+  };
+}
+
+function formatWorkspaceFileRejections(
+  rejected: readonly ProductWorkspaceFileRejection[],
+  locale: ProductPlaygroundLocale,
+) {
+  const first = rejected[0];
+  if (!first) return "";
+  if (first.code === "file-too-large") {
+    const limit = formatFileSize(productWorkspaceFileSizeLimit, locale);
+    return locale === "zh"
+      ? `“${first.file.name}”超过 ${limit}，未复制到工作区。`
+      : `“${first.file.name}” exceeds ${limit} and was not copied into the workspace.`;
+  }
+  return locale === "zh"
+    ? `每次最多导入 ${productWorkspaceFileBatchLimit} 个文件，其余文件未处理。`
+    : `Import up to ${productWorkspaceFileBatchLimit} files at a time. The remaining files were not processed.`;
 }

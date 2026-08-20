@@ -12,6 +12,7 @@ import {
   type ProductPlaygroundView,
   type ProductResourceView,
 } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import { ProductAccountMenu } from "./ProductOverlayMenus";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { SettingsSection } from "./ProductSettingsSections";
@@ -455,7 +456,7 @@ export function ProductNavigationSidebar({
                   onClick={closeNavigationLayers}
                 >
                   <ProductPlaygroundIcon name="project" />
-                  <span>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</span>
+                  <span>{productProjectName[locale]}</span>
                 </Link>
                 <button
                   aria-expanded={projectExpanded}
@@ -562,7 +563,9 @@ export function ProductNavigationSidebar({
                 {zh ? "视觉验收已完成" : "Visual review completed"}
               </strong>
               <small>
-                {zh ? "今天 · A3S UI 体验优化" : "Today · A3S UI experience"}
+                {zh
+                  ? `今天 · ${productProjectName.zh}`
+                  : `Today · ${productProjectName.en}`}
               </small>
             </div>
           </article>

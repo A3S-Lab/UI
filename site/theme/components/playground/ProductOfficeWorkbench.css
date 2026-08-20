@@ -1,0 +1,134 @@
+.product-office-host {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ui-canvas);
+}
+
+.product-office-host > .product-office-surface {
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.product-office-host [data-office-state] {
+  display: grid;
+  width: min(28rem, calc(100% - 2rem));
+  margin: auto;
+  padding: 2rem;
+  justify-items: center;
+  gap: 0.625rem;
+  color: var(--ui-muted);
+  text-align: center;
+}
+
+.product-office-host [data-office-state] > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-paper));
+  color: var(--ui-blue);
+  place-items: center;
+}
+
+.product-office-host [data-office-state] > span svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.product-office-host [data-office-spinner] svg {
+  animation: product-office-spinner 900ms linear infinite;
+}
+
+.product-office-host [data-office-state] strong {
+  color: var(--ui-ink);
+  font-size: 0.9375rem;
+}
+
+.product-office-host [data-office-state] p,
+.product-office-host [data-office-state] small {
+  max-width: 52ch;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+.product-office-host [data-office-state] small {
+  color: var(--ui-faint);
+  overflow-wrap: anywhere;
+}
+
+.product-office-host [data-office-state] button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  margin-top: 0.375rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.5rem;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.product-office-host [data-office-state] button:hover {
+  border-color: color-mix(in srgb, var(--ui-blue) 30%, var(--ui-line));
+  color: var(--ui-blue);
+}
+
+.product-office-host [data-office-state] button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.product-office-host [data-office-progress] {
+  width: min(18rem, 100%);
+  height: 0.25rem;
+  margin-top: 0.25rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--ui-panel-raised);
+}
+
+.product-office-host [data-office-progress] i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ui-blue);
+  transform-origin: left center;
+  transition: transform 160ms ease-out;
+}
+
+.product-office-host[data-office-load-state="error"]
+  [data-office-state]
+  > span {
+  background: color-mix(in srgb, var(--ui-red) 8%, var(--ui-paper));
+  color: var(--ui-red);
+}
+
+@keyframes product-office-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 38rem) {
+  .product-office-host [data-office-state] {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-office-host [data-office-spinner] svg {
+    animation-duration: 1800ms;
+  }
+}

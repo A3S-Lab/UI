@@ -1,123 +1,246 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from "react";
+import {
+  initialProductMemories,
+  productMemoryCandidates,
+  productMemoryFromCandidate,
+  productMemoryKindCopy,
+  type ProductMemoryCandidateState,
+  type ProductMemoryKind,
+  type ProductMemoryRecord,
+  type ProductMemoryScope,
+  type ProductMemoryView,
+} from "./product-memory-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import type { ProductTaskDraft } from "./product-composer-data";
+import { ProductMemoryInspector } from "./ProductMemoryInspector";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
-
-type MemoryView = "evolution" | "graph" | "timeline";
-type MemoryScope = "all" | "personal" | "workspace";
-
-type MemoryRecord = {
-  body: { en: string; zh: string };
-  id: string;
-  kind: "decision" | "fact" | "preference" | "procedure";
-  scope: Exclude<MemoryScope, "all">;
-  source: { en: string; zh: string };
-  time: { en: string; zh: string };
-  title: { en: string; zh: string };
-};
-
-const memories: readonly MemoryRecord[] = [
-  {
-    id: "visual-evidence",
-    kind: "procedure",
-    scope: "workspace",
-    title: {
-      en: "Visual evidence is required before release",
-      zh: "发布前必须保留视觉验收证据",
-    },
-    body: {
-      en: "Desktop and mobile interaction paths must be reviewed before a release candidate is accepted.",
-      zh: "发布候选版本验收前，需要检查桌面端与移动端的关键交互路径。",
-    },
-    source: { en: "A3S UI workspace", zh: "A3S UI 工作空间" },
-    time: { en: "12 minutes ago", zh: "12 分钟前" },
-  },
-  {
-    id: "language",
-    kind: "preference",
-    scope: "personal",
-    title: { en: "Use Simplified Chinese by default", zh: "默认使用简体中文" },
-    body: {
-      en: "Keep technical names in English when translation would reduce precision.",
-      zh: "技术名词在翻译会降低准确性时保留英文。",
-    },
-    source: { en: "Explicit preference", zh: "明确偏好" },
-    time: { en: "Today", zh: "今天" },
-  },
-  {
-    id: "design-contract",
-    kind: "decision",
-    scope: "workspace",
-    title: {
-      en: "The design contract is the source of truth",
-      zh: "设计契约是视觉实现的唯一依据",
-    },
-    body: {
-      en: "Component changes must preserve the A3S blue theme, semantic markup, and bilingual behavior.",
-      zh: "组件变更必须保留 A3S 蓝色主题、语义化标记与双语行为。",
-    },
-    source: { en: "Project decision", zh: "项目决策" },
-    time: { en: "Yesterday", zh: "昨天" },
-  },
-  {
-    id: "workspace-boundary",
-    kind: "fact",
-    scope: "workspace",
-    title: {
-      en: "The documentation site uses Rspress",
-      zh: "文档站使用 Rspress",
-    },
-    body: {
-      en: "Playground routes stay outside the documentation tree while sharing the same build and locale system.",
-      zh: "Playground 路由独立于文档目录，同时复用相同的构建与语言系统。",
-    },
-    source: { en: "Repository context", zh: "仓库上下文" },
-    time: { en: "2 days ago", zh: "2 天前" },
-  },
-];
-
-const kindCopy = {
-  decision: { en: "Decision", zh: "决策" },
-  fact: { en: "Fact", zh: "事实" },
-  preference: { en: "Preference", zh: "偏好" },
-  procedure: { en: "Procedure", zh: "流程" },
-} as const;
 
 export function ProductMemorySurface({
   locale,
+  onOpenMemorySettings,
+  onStartTask,
 }: {
   locale: ProductPlaygroundLocale;
+  onOpenMemorySettings: () => void;
+  onStartTask: (draft: Omit<ProductTaskDraft, "revision">) => void;
 }) {
   const zh = locale === "zh";
-  const [view, setView] = useState<MemoryView>("timeline");
-  const [scope, setScope] = useState<MemoryScope>("all");
-  const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(memories[0].id);
-  const [refreshing, setRefreshing] = useState(false);
+  const tabId = useId().replaceAll(":", "");
+  const refreshTimer = useRef<number | undefined>(undefined);
+  const recordTriggerRefs = useRef<Record<string, HTMLButtonElement | null>>(
+    {},
+  );
+  const tabRefs = useRef<Record<ProductMemoryView, HTMLButtonElement | null>>({
+    evolution: null,
+    graph: null,
+    timeline: null,
+  });
   const [candidateStates, setCandidateStates] = useState<
-    Record<string, "accepted" | "pending" | "rejected">
-  >({ terminology: "pending", testing: "pending" });
+    Record<string, ProductMemoryCandidateState>
+  >(() =>
+    Object.fromEntries(
+      productMemoryCandidates.map((candidate) => [candidate.id, "pending"]),
+    ),
+  );
+  const [compactInspector, setCompactInspector] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [kind, setKind] = useState<ProductMemoryKind | "all">("all");
+  const [query, setQuery] = useState("");
+  const [records, setRecords] = useState<ProductMemoryRecord[]>(() =>
+    initialProductMemories.map((memory) => ({ ...memory })),
+  );
+  const [refreshing, setRefreshing] = useState(false);
+  const [removalRequests, setRemovalRequests] = useState<
+    Record<string, boolean>
+  >({});
+  const [scope, setScope] = useState<ProductMemoryScope>("all");
+  const [selectedId, setSelectedId] = useState(initialProductMemories[0].id);
+  const [status, setStatus] = useState("");
+  const [view, setView] = useState<ProductMemoryView>("timeline");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 86rem)");
+    const update = () => setCompactInspector(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (refreshTimer.current !== undefined) {
+        window.clearTimeout(refreshTimer.current);
+      }
+    },
+    [],
+  );
+
   const visibleMemories = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
-    return memories.filter(
+    return records.filter(
       (memory) =>
         (scope === "all" || memory.scope === scope) &&
+        (kind === "all" || memory.kind === kind) &&
         (!normalized ||
-          `${memory.title.en} ${memory.title.zh} ${memory.body.en} ${memory.body.zh}`
+          `${memory.title.en} ${memory.title.zh} ${memory.body.en} ${memory.body.zh} ${memory.source.en} ${memory.source.zh}`
             .toLocaleLowerCase(locale)
             .includes(normalized)),
     );
-  }, [locale, query, scope]);
-  const selected =
-    memories.find((memory) => memory.id === selectedId) ?? memories[0];
+  }, [kind, locale, query, records, scope]);
+  const selected = visibleMemories.find((memory) => memory.id === selectedId);
+  const pendingCandidateCount = productMemoryCandidates.filter(
+    (candidate) => candidateStates[candidate.id] === "pending",
+  ).length;
+  const modalInspectorOpen = compactInspector && inspectorOpen && !!selected;
+
+  useEffect(() => {
+    if (visibleMemories.length === 0) {
+      setInspectorOpen(false);
+      return;
+    }
+    if (!visibleMemories.some((memory) => memory.id === selectedId)) {
+      setSelectedId(visibleMemories[0].id);
+      setInspectorOpen(false);
+    }
+  }, [selectedId, visibleMemories]);
 
   const refresh = () => {
+    if (refreshing) return;
     setRefreshing(true);
-    window.setTimeout(() => setRefreshing(false), 480);
+    setStatus(
+      zh ? "正在检查记忆来源变化。" : "Checking memory source changes.",
+    );
+    if (refreshTimer.current !== undefined) {
+      window.clearTimeout(refreshTimer.current);
+    }
+    refreshTimer.current = window.setTimeout(() => {
+      refreshTimer.current = undefined;
+      setRefreshing(false);
+      setStatus(
+        zh
+          ? `已同步 ${records.length} 条记忆，没有未审核的外部变更。`
+          : `${records.length} memories synchronized with no unreviewed external changes.`,
+      );
+    }, 480);
+  };
+
+  const selectView = (nextView: ProductMemoryView, focus = false) => {
+    setView(nextView);
+    if (nextView === "evolution") setInspectorOpen(false);
+    if (focus) tabRefs.current[nextView]?.focus();
+  };
+
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentView: ProductMemoryView,
+  ) => {
+    const views: readonly ProductMemoryView[] = [
+      "timeline",
+      "graph",
+      "evolution",
+    ];
+    const currentIndex = views.indexOf(currentView);
+    let nextIndex: number | undefined;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % views.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + views.length) % views.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = views.length - 1;
+    }
+    if (nextIndex === undefined) return;
+    event.preventDefault();
+    selectView(views[nextIndex], true);
+  };
+
+  const selectMemory = (id: string) => {
+    setSelectedId(id);
+    setInspectorOpen(true);
+  };
+
+  const closeInspector = () => {
+    setInspectorOpen(false);
+    window.requestAnimationFrame(() =>
+      recordTriggerRefs.current[selectedId]?.focus(),
+    );
+  };
+
+  const updateCandidateState = (
+    id: string,
+    nextState: ProductMemoryCandidateState,
+  ) => {
+    const candidate = productMemoryCandidates.find((item) => item.id === id);
+    if (!candidate) return;
+    setCandidateStates((current) => ({ ...current, [id]: nextState }));
+    setRecords((current) => {
+      const withoutCandidate = current.filter(
+        (memory) => memory.id !== `evolution-${id}`,
+      );
+      return nextState === "accepted"
+        ? [productMemoryFromCandidate(candidate), ...withoutCandidate]
+        : withoutCandidate;
+    });
+    setStatus(
+      nextState === "accepted"
+        ? zh
+          ? `已将“${candidate.title.zh}”保存为长期记忆。`
+          : `${candidate.title.en} saved as durable memory.`
+        : nextState === "rejected"
+          ? zh
+            ? `已忽略“${candidate.title.zh}”，不会写入记忆。`
+            : `${candidate.title.en} dismissed without changing memory.`
+          : zh
+            ? `已重新打开“${candidate.title.zh}”评审。`
+            : `${candidate.title.en} reopened for review.`,
+    );
+  };
+
+  const useMemoryInTask = (memory: ProductMemoryRecord) => {
+    if (removalRequests[memory.id]) return;
+    onStartTask({
+      prompt: zh
+        ? `在新任务中应用已确认的记忆“${memory.title.zh}”，并在结论中保留来源边界。`
+        : `Apply the confirmed memory “${memory.title.en}” in a new task and preserve its source boundary in the result.`,
+      resources: [
+        {
+          id: `memory:${memory.id}`,
+          kind: "selection",
+          label: memory.title[locale],
+          meta:
+            memory.scope === "workspace"
+              ? zh
+                ? "记忆 · 当前工作空间"
+                : "Memory · Workspace"
+              : zh
+                ? "记忆 · 个人"
+                : "Memory · Personal",
+        },
+      ],
+      workspace: "ui",
+    });
   };
 
   return (
-    <section className="product-memory" data-product-surface="memory">
-      <header className="product-memory__header">
+    <section
+      className="product-memory"
+      data-memory-record-count={records.length}
+      data-product-surface="memory"
+      data-view={view}
+    >
+      <header
+        className="product-memory__header"
+        inert={modalInspectorOpen ? true : undefined}
+      >
         <div>
           <span>
             <ProductPlaygroundIcon name="brain" />
@@ -142,14 +265,24 @@ export function ProductMemorySurface({
               value={query}
             />
           </label>
-          <button disabled={refreshing} onClick={refresh} type="button">
+          <button
+            aria-busy={refreshing}
+            disabled={refreshing}
+            onClick={refresh}
+            type="button"
+          >
             <ProductPlaygroundIcon name={refreshing ? "update" : "refresh"} />
             {refreshing ? (zh ? "同步中" : "Syncing") : zh ? "刷新" : "Refresh"}
           </button>
         </div>
       </header>
 
-      <nav aria-label={zh ? "记忆视图" : "Memory views"} role="tablist">
+      <nav
+        aria-label={zh ? "记忆视图" : "Memory views"}
+        aria-orientation="horizontal"
+        inert={modalInspectorOpen ? true : undefined}
+        role="tablist"
+      >
         {(
           [
             ["timeline", zh ? "时间线" : "Timeline", "list"],
@@ -158,21 +291,38 @@ export function ProductMemorySurface({
           ] as const
         ).map(([id, label, icon]) => (
           <button
+            aria-controls={`${tabId}-${id}-panel`}
             aria-selected={view === id}
+            id={`${tabId}-${id}-tab`}
             key={id}
-            onClick={() => setView(id)}
+            onClick={() => selectView(id)}
+            onKeyDown={(event) => handleTabKeyDown(event, id)}
+            ref={(element) => {
+              tabRefs.current[id] = element;
+            }}
             role="tab"
+            tabIndex={view === id ? 0 : -1}
             type="button"
           >
             <ProductPlaygroundIcon name={icon} />
             {label}
-            {id === "evolution" ? <small>2</small> : null}
+            {id === "evolution" && pendingCandidateCount > 0 ? (
+              <small data-memory-pending-count={pendingCandidateCount}>
+                {pendingCandidateCount}
+              </small>
+            ) : null}
           </button>
         ))}
       </nav>
 
-      <div className="product-memory__workspace">
-        <aside className="product-memory__filters">
+      <div
+        className="product-memory__workspace"
+        data-inspector-open={modalInspectorOpen ? "true" : undefined}
+      >
+        <aside
+          className="product-memory__filters"
+          inert={modalInspectorOpen ? true : undefined}
+        >
           <header>
             <strong>{zh ? "范围" : "Scope"}</strong>
             <small>{visibleMemories.length}</small>
@@ -195,8 +345,8 @@ export function ProductMemorySurface({
                 <span>{label}</span>
                 <small>
                   {id === "all"
-                    ? memories.length
-                    : memories.filter((item) => item.scope === id).length}
+                    ? records.length
+                    : records.filter((item) => item.scope === id).length}
                 </small>
               </button>
             ))}
@@ -208,110 +358,144 @@ export function ProductMemorySurface({
                 ? "只保留可追溯、长期有效且能改善后续工作的上下文。"
                 : "Keep only traceable, durable context that improves future work."}
             </p>
-            <button type="button">
+            <button onClick={onOpenMemorySettings} type="button">
               <ProductPlaygroundIcon name="settings" />
               {zh ? "管理记忆设置" : "Manage memory settings"}
             </button>
           </section>
         </aside>
 
-        <main>
+        <main inert={modalInspectorOpen ? true : undefined}>
           {view === "timeline" ? (
-            <MemoryTimeline
-              locale={locale}
-              memories={visibleMemories}
-              onSelect={setSelectedId}
-              selectedId={selectedId}
-            />
+            <div
+              aria-labelledby={`${tabId}-timeline-tab`}
+              id={`${tabId}-timeline-panel`}
+              role="tabpanel"
+              tabIndex={0}
+            >
+              <MemoryTimeline
+                kind={kind}
+                locale={locale}
+                memories={visibleMemories}
+                onKindChange={setKind}
+                onRegisterTrigger={(id, element) => {
+                  recordTriggerRefs.current[id] = element;
+                }}
+                onSelect={selectMemory}
+                removalRequests={removalRequests}
+                selectedId={selectedId}
+              />
+            </div>
           ) : null}
           {view === "graph" ? (
-            <MemoryGraph
-              locale={locale}
-              onSelect={setSelectedId}
-              selectedId={selectedId}
-            />
+            <div
+              aria-labelledby={`${tabId}-graph-tab`}
+              id={`${tabId}-graph-panel`}
+              role="tabpanel"
+              tabIndex={0}
+            >
+              <MemoryGraph
+                locale={locale}
+                memories={visibleMemories}
+                onRegisterTrigger={(id, element) => {
+                  recordTriggerRefs.current[id] = element;
+                }}
+                onSelect={selectMemory}
+                removalRequests={removalRequests}
+                selectedId={selectedId}
+              />
+            </div>
           ) : null}
           {view === "evolution" ? (
-            <MemoryEvolution
-              locale={locale}
-              onStateChange={(id, state) =>
-                setCandidateStates((current) => ({ ...current, [id]: state }))
-              }
-              states={candidateStates}
-            />
+            <div
+              aria-labelledby={`${tabId}-evolution-tab`}
+              id={`${tabId}-evolution-panel`}
+              role="tabpanel"
+              tabIndex={0}
+            >
+              <MemoryEvolution
+                locale={locale}
+                onStateChange={updateCandidateState}
+                query={query}
+                scope={scope}
+                states={candidateStates}
+              />
+            </div>
           ) : null}
         </main>
 
-        <aside className="product-memory__inspector">
-          <header>
-            <span data-kind={selected.kind}>
-              <ProductPlaygroundIcon name="knowledge" />
-            </span>
-            <div>
-              <small>{kindCopy[selected.kind][locale]}</small>
-              <strong>{selected.title[locale]}</strong>
-            </div>
-          </header>
-          <p>{selected.body[locale]}</p>
-          <dl>
-            <div>
-              <dt>{zh ? "范围" : "Scope"}</dt>
-              <dd>
-                {selected.scope === "workspace"
-                  ? zh
-                    ? "当前工作区"
-                    : "Workspace"
-                  : zh
-                    ? "个人"
-                    : "Personal"}
-              </dd>
-            </div>
-            <div>
-              <dt>{zh ? "来源" : "Source"}</dt>
-              <dd>{selected.source[locale]}</dd>
-            </div>
-            <div>
-              <dt>{zh ? "更新" : "Updated"}</dt>
-              <dd>{selected.time[locale]}</dd>
-            </div>
-          </dl>
-          <section>
-            <ProductPlaygroundIcon name="shield" />
-            <div>
-              <strong>{zh ? "可追溯来源" : "Traceable source"}</strong>
-              <small>
-                {zh
-                  ? "原始任务与确认记录仍然可用。"
-                  : "The originating task and confirmation remain available."}
-              </small>
-            </div>
-          </section>
-          <footer>
-            <button type="button">{zh ? "查看来源" : "Open source"}</button>
-            <button data-danger type="button">
-              {zh ? "请求遗忘" : "Request removal"}
-            </button>
-          </footer>
-        </aside>
+        {modalInspectorOpen ? (
+          <button
+            aria-label={zh ? "关闭记忆详情" : "Close memory details"}
+            data-memory-inspector-backdrop
+            onClick={closeInspector}
+            type="button"
+          />
+        ) : null}
+        {view !== "evolution" && selected ? (
+          <ProductMemoryInspector
+            compact={compactInspector}
+            locale={locale}
+            onClose={closeInspector}
+            onRequestRemoval={() => {
+              setRemovalRequests((current) => ({
+                ...current,
+                [selected.id]: true,
+              }));
+              setStatus(
+                zh
+                  ? `已请求遗忘“${selected.title.zh}”；它已停止用于新任务。`
+                  : `Removal requested for ${selected.title.en}; it is excluded from new tasks.`,
+              );
+            }}
+            onUndoRemoval={() => {
+              setRemovalRequests((current) => {
+                const next = { ...current };
+                delete next[selected.id];
+                return next;
+              });
+              setStatus(
+                zh
+                  ? `已撤销“${selected.title.zh}”的遗忘请求。`
+                  : `Removal request for ${selected.title.en} undone.`,
+              );
+            }}
+            onUseInTask={() => useMemoryInTask(selected)}
+            open={inspectorOpen}
+            record={selected}
+            removalPending={Boolean(removalRequests[selected.id])}
+          />
+        ) : null}
       </div>
+      <output aria-live="polite" className="product-memory__status">
+        {status}
+      </output>
     </section>
   );
 }
 
 function MemoryTimeline({
+  kind,
   locale,
   memories: visible,
+  onKindChange,
+  onRegisterTrigger,
   onSelect,
+  removalRequests,
   selectedId,
 }: {
+  kind: ProductMemoryKind | "all";
   locale: ProductPlaygroundLocale;
-  memories: readonly MemoryRecord[];
+  memories: readonly ProductMemoryRecord[];
+  onKindChange: (kind: ProductMemoryKind | "all") => void;
+  onRegisterTrigger: (id: string, element: HTMLButtonElement | null) => void;
   onSelect: (id: string) => void;
+  removalRequests: Record<string, boolean>;
   selectedId: string;
 }) {
   const zh = locale === "zh";
   return (
-    <section className="product-memory__timeline" role="tabpanel">
+    <section className="product-memory__timeline">
       <header>
         <div>
           <h2>{zh ? "记忆时间线" : "Memory timeline"}</h2>
@@ -321,24 +505,46 @@ function MemoryTimeline({
               : "Ordered by confirmation time. Select an item to inspect source and scope."}
           </p>
         </div>
-        <button type="button">
+        <label data-memory-kind-filter>
           <ProductPlaygroundIcon name="filter" />
-          {zh ? "全部类型" : "All types"}
-        </button>
+          <select
+            aria-label={zh ? "按类型筛选记忆" : "Filter memory by type"}
+            onChange={(event) =>
+              onKindChange(
+                event.currentTarget.value as ProductMemoryKind | "all",
+              )
+            }
+            value={kind}
+          >
+            <option value="all">{zh ? "全部类型" : "All types"}</option>
+            {(["decision", "fact", "preference", "procedure"] as const).map(
+              (memoryKind) => (
+                <option key={memoryKind} value={memoryKind}>
+                  {productMemoryKindCopy[memoryKind][locale]}
+                </option>
+              ),
+            )}
+          </select>
+        </label>
       </header>
       {visible.length ? (
         <ol>
           {visible.map((memory, index) => (
-            <li key={memory.id}>
+            <li
+              data-memory-id={memory.id}
+              data-removal={removalRequests[memory.id] ? "pending" : undefined}
+              key={memory.id}
+            >
               <time>{memory.time[locale]}</time>
               <i aria-hidden="true" />
               <button
                 aria-pressed={selectedId === memory.id}
                 onClick={() => onSelect(memory.id)}
+                ref={(element) => onRegisterTrigger(memory.id, element)}
                 type="button"
               >
                 <span>
-                  <em>{kindCopy[memory.kind][locale]}</em>
+                  <em>{productMemoryKindCopy[memory.kind][locale]}</em>
                   <small>{memory.source[locale]}</small>
                 </span>
                 <strong>{memory.title[locale]}</strong>
@@ -356,8 +562,13 @@ function MemoryTimeline({
                     : zh
                       ? "个人"
                       : "Personal"}
-                  {index === 0 ? (
+                  {index === 0 && !removalRequests[memory.id] ? (
                     <b>{zh ? "最近使用" : "Recently used"}</b>
+                  ) : null}
+                  {removalRequests[memory.id] ? (
+                    <b data-removal-pending>
+                      {zh ? "遗忘处理中" : "Removal pending"}
+                    </b>
                   ) : null}
                 </span>
               </button>
@@ -381,23 +592,54 @@ function MemoryTimeline({
 
 function MemoryGraph({
   locale,
+  memories: visible,
+  onRegisterTrigger,
   onSelect,
+  removalRequests,
   selectedId,
 }: {
   locale: ProductPlaygroundLocale;
+  memories: readonly ProductMemoryRecord[];
+  onRegisterTrigger: (id: string, element: HTMLButtonElement | null) => void;
   onSelect: (id: string) => void;
+  removalRequests: Record<string, boolean>;
   selectedId: string;
 }) {
   const zh = locale === "zh";
-  const nodes = [
-    ["visual-evidence", 52, 48, zh ? "视觉验收" : "Visual review"],
-    ["design-contract", 25, 25, zh ? "设计契约" : "Design contract"],
-    ["workspace-boundary", 78, 28, "Rspress"],
-    ["language", 22, 72, zh ? "语言偏好" : "Language"],
-    ["testing", 78, 72, zh ? "回归测试" : "Regression"],
+  const [zoom, setZoom] = useState(100);
+  const nodeDefinitions = {
+    "design-contract": [25, 25, zh ? "设计契约" : "Design contract"],
+    language: [22, 72, zh ? "语言偏好" : "Language"],
+    testing: [78, 72, zh ? "回归测试" : "Regression"],
+    "visual-evidence": [52, 48, zh ? "视觉验收" : "Visual review"],
+    "workspace-boundary": [78, 28, "Rspress"],
+  } as const;
+  const nodes = visible.flatMap((memory) => {
+    const definition =
+      nodeDefinitions[memory.id as keyof typeof nodeDefinitions];
+    return definition
+      ? [
+          {
+            id: memory.id,
+            label: definition[2],
+            scope: memory.scope,
+            x: definition[0],
+            y: definition[1],
+          },
+        ]
+      : [];
+  });
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const edges = [
+    ["design-contract", "visual-evidence"],
+    ["visual-evidence", "workspace-boundary"],
+    ["visual-evidence", "language"],
+    ["visual-evidence", "testing"],
+    ["design-contract", "language"],
+    ["workspace-boundary", "testing"],
   ] as const;
   return (
-    <section className="product-memory__graph" role="tabpanel">
+    <section className="product-memory__graph">
       <header>
         <div>
           <h2>{zh ? "关系图谱" : "Relationship graph"}</h2>
@@ -408,55 +650,107 @@ function MemoryGraph({
           </p>
         </div>
         <div>
-          <button aria-label={zh ? "缩小" : "Zoom out"} type="button">
-            −
+          <button
+            aria-label={zh ? "缩小" : "Zoom out"}
+            disabled={zoom <= 80}
+            onClick={() => setZoom((value) => Math.max(80, value - 20))}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="minus" />
           </button>
-          <output>100%</output>
-          <button aria-label={zh ? "放大" : "Zoom in"} type="button">
-            +
+          <output aria-live="polite" data-memory-graph-zoom>
+            {zoom}%
+          </output>
+          <button
+            aria-label={zh ? "放大" : "Zoom in"}
+            disabled={zoom >= 140}
+            onClick={() => setZoom((value) => Math.min(140, value + 20))}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="plus" />
           </button>
         </div>
       </header>
       <div data-memory-graph-canvas>
-        <svg
-          aria-hidden="true"
-          preserveAspectRatio="none"
-          viewBox="0 0 100 100"
-        >
-          <path d="M25 25 52 48 78 28M52 48 22 72M52 48 78 72M25 25 22 72M78 28 78 72" />
-        </svg>
-        {nodes.map(([id, x, y, label], index) => (
-          <button
-            aria-pressed={selectedId === id}
-            key={id}
-            onClick={() => {
-              if (memories.some((memory) => memory.id === id)) onSelect(id);
-            }}
+        {nodes.length > 0 ? (
+          <div
+            data-memory-graph-viewport
             style={
               {
-                "--memory-node-x": `${x}%`,
-                "--memory-node-y": `${y}%`,
+                "--memory-graph-scale": zoom / 100,
               } as CSSProperties
             }
-            type="button"
           >
-            <span data-tone={(index % 4) + 1}>
-              <ProductPlaygroundIcon
-                name={index === 0 ? "brain" : "knowledge"}
-              />
+            <svg
+              aria-hidden="true"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 100"
+            >
+              {edges.map(([fromId, toId]) => {
+                const from = nodeById.get(fromId);
+                const to = nodeById.get(toId);
+                return from && to ? (
+                  <line
+                    key={`${fromId}-${toId}`}
+                    x1={from.x}
+                    x2={to.x}
+                    y1={from.y}
+                    y2={to.y}
+                  />
+                ) : null;
+              })}
+            </svg>
+            {nodes.map((node) => (
+              <button
+                aria-pressed={selectedId === node.id}
+                data-memory-id={node.id}
+                data-removal={removalRequests[node.id] ? "pending" : undefined}
+                key={node.id}
+                onClick={() => onSelect(node.id)}
+                ref={(element) => onRegisterTrigger(node.id, element)}
+                style={
+                  {
+                    "--memory-node-x": `${node.x}%`,
+                    "--memory-node-y": `${node.y}%`,
+                  } as CSSProperties
+                }
+                type="button"
+              >
+                <span data-tone={node.scope}>
+                  <ProductPlaygroundIcon
+                    name={node.id === "visual-evidence" ? "brain" : "knowledge"}
+                  />
+                </span>
+                <strong>{node.label}</strong>
+                <small>
+                  {removalRequests[node.id]
+                    ? zh
+                      ? "遗忘处理中"
+                      : "Removal pending"
+                    : node.id === "visual-evidence"
+                      ? zh
+                        ? "核心上下文"
+                        : "Core context"
+                      : zh
+                        ? "相关记忆"
+                        : "Related memory"}
+                </small>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="product-memory__empty" role="status">
+            <ProductPlaygroundIcon name="search" />
+            <strong>
+              {zh ? "没有匹配的图谱节点" : "No matching graph nodes"}
+            </strong>
+            <span>
+              {zh
+                ? "调整搜索、范围或类型筛选后重试。"
+                : "Change the search, scope, or type filter and try again."}
             </span>
-            <strong>{label}</strong>
-            <small>
-              {index === 0
-                ? zh
-                  ? "核心上下文"
-                  : "Core context"
-                : zh
-                  ? "相关记忆"
-                  : "Related memory"}
-            </small>
-          </button>
-        ))}
+          </div>
+        )}
         <footer>
           <span>
             <i data-tone="workspace" />
@@ -479,33 +773,28 @@ function MemoryGraph({
 function MemoryEvolution({
   locale,
   onStateChange,
+  query,
+  scope,
   states,
 }: {
   locale: ProductPlaygroundLocale;
-  onStateChange: (id: string, state: "accepted" | "rejected") => void;
-  states: Record<string, "accepted" | "pending" | "rejected">;
+  onStateChange: (id: string, state: ProductMemoryCandidateState) => void;
+  query: string;
+  scope: ProductMemoryScope;
+  states: Record<string, ProductMemoryCandidateState>;
 }) {
   const zh = locale === "zh";
-  const candidates = [
-    {
-      id: "terminology",
-      reason: zh
-        ? "最近 4 个任务都要求组件命名保持一致。"
-        : "Four recent tasks requested consistent component terminology.",
-      title: zh ? "统一使用“工作空间”术语" : "Use “workspace” consistently",
-    },
-    {
-      id: "testing",
-      reason: zh
-        ? "发布任务反复要求同时检查桌面端和移动端。"
-        : "Release tasks repeatedly require both desktop and mobile review.",
-      title: zh
-        ? "发布验收包含双端截图"
-        : "Release review includes both viewport classes",
-    },
-  ];
+  const normalizedQuery = query.trim().toLocaleLowerCase(locale);
+  const candidates = productMemoryCandidates.filter(
+    (candidate) =>
+      (scope === "all" || candidate.scope === scope) &&
+      (!normalizedQuery ||
+        `${candidate.title.en} ${candidate.title.zh} ${candidate.reason.en} ${candidate.reason.zh}`
+          .toLocaleLowerCase(locale)
+          .includes(normalizedQuery)),
+  );
   return (
-    <section className="product-memory__evolution" role="tabpanel">
+    <section className="product-memory__evolution">
       <header>
         <div>
           <h2>{zh ? "演化候选" : "Evolution candidates"}</h2>
@@ -520,62 +809,102 @@ function MemoryEvolution({
           {zh ? "需人工确认" : "Review required"}
         </span>
       </header>
-      <div>
-        {candidates.map((candidate) => (
-          <article data-state={states[candidate.id]} key={candidate.id}>
-            <header>
-              <span>
-                <ProductPlaygroundIcon name="update" />
-              </span>
-              <div>
-                <small>{zh ? "建议的新规则" : "Proposed rule"}</small>
-                <strong>{candidate.title}</strong>
-              </div>
-              <em>
-                {states[candidate.id] === "accepted"
-                  ? zh
-                    ? "已接受"
-                    : "Accepted"
-                  : states[candidate.id] === "rejected"
+      {candidates.length > 0 ? (
+        <div>
+          {candidates.map((candidate) => (
+            <article
+              data-memory-candidate-id={candidate.id}
+              data-state={states[candidate.id]}
+              key={candidate.id}
+            >
+              <header>
+                <span>
+                  <ProductPlaygroundIcon name="update" />
+                </span>
+                <div>
+                  <small>{zh ? "建议的新记忆" : "Proposed memory"}</small>
+                  <strong>{candidate.title[locale]}</strong>
+                </div>
+                <em>
+                  {states[candidate.id] === "accepted"
                     ? zh
-                      ? "已忽略"
-                      : "Dismissed"
-                    : zh
-                      ? "待确认"
-                      : "Pending"}
-              </em>
-            </header>
-            <p>{candidate.reason}</p>
-            <dl>
-              <div>
-                <dt>{zh ? "证据" : "Evidence"}</dt>
-                <dd>{zh ? "4 个任务 · 2 个项目" : "4 tasks · 2 projects"}</dd>
-              </div>
-              <div>
-                <dt>{zh ? "范围" : "Scope"}</dt>
-                <dd>{zh ? "当前工作区" : "Workspace"}</dd>
-              </div>
-            </dl>
-            {states[candidate.id] === "pending" ? (
-              <footer>
-                <button
-                  onClick={() => onStateChange(candidate.id, "rejected")}
-                  type="button"
-                >
-                  {zh ? "忽略" : "Dismiss"}
-                </button>
-                <button
-                  data-primary
-                  onClick={() => onStateChange(candidate.id, "accepted")}
-                  type="button"
-                >
-                  {zh ? "接受为记忆" : "Accept as memory"}
-                </button>
-              </footer>
-            ) : null}
-          </article>
-        ))}
-      </div>
+                      ? "已接受"
+                      : "Accepted"
+                    : states[candidate.id] === "rejected"
+                      ? zh
+                        ? "已忽略"
+                        : "Dismissed"
+                      : zh
+                        ? "待确认"
+                        : "Pending"}
+                </em>
+              </header>
+              <p data-memory-candidate-proposal>{candidate.body[locale]}</p>
+              <dl>
+                <div>
+                  <dt>{zh ? "建议原因" : "Why suggested"}</dt>
+                  <dd>{candidate.reason[locale]}</dd>
+                </div>
+                <div>
+                  <dt>{zh ? "证据" : "Evidence"}</dt>
+                  <dd>{candidate.evidence[locale]}</dd>
+                </div>
+                <div>
+                  <dt>{zh ? "写入范围" : "Write scope"}</dt>
+                  <dd>
+                    {candidate.scope === "workspace"
+                      ? zh
+                        ? "当前工作空间"
+                        : "Workspace"
+                      : zh
+                        ? "个人"
+                        : "Personal"}
+                  </dd>
+                </div>
+              </dl>
+              {states[candidate.id] === "pending" ? (
+                <footer>
+                  <button
+                    onClick={() => onStateChange(candidate.id, "rejected")}
+                    type="button"
+                  >
+                    {zh ? "忽略" : "Dismiss"}
+                  </button>
+                  <button
+                    data-primary
+                    onClick={() => onStateChange(candidate.id, "accepted")}
+                    type="button"
+                  >
+                    {zh ? "接受为记忆" : "Accept as memory"}
+                  </button>
+                </footer>
+              ) : (
+                <footer>
+                  <button
+                    onClick={() => onStateChange(candidate.id, "pending")}
+                    type="button"
+                  >
+                    <ProductPlaygroundIcon name="refresh" />
+                    {zh ? "重新评审" : "Reopen review"}
+                  </button>
+                </footer>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="product-memory__empty" role="status">
+          <ProductPlaygroundIcon name="search" />
+          <strong>
+            {zh ? "没有匹配的演化候选" : "No matching evolution candidates"}
+          </strong>
+          <span>
+            {zh
+              ? "调整搜索或范围筛选后重试。"
+              : "Change the search or scope filter and try again."}
+          </span>
+        </div>
+      )}
     </section>
   );
 }

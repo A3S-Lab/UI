@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import type {
   ProductFileEntry,
   ProductFileWorkbenchKind,
@@ -32,19 +32,52 @@ export function ProductFileWorkbench({
     "idle" | "accepted" | "dismissed"
   >("idle");
   const [saveState, setSaveState] = useState<"saved" | "unsaved">("saved");
+  const [saveRevision, setSaveRevision] = useState(0);
   const [status, setStatus] = useState(
     zh ? "已从本地工作空间打开" : "Opened from the local workspace",
   );
   const [versionsOpen, setVersionsOpen] = useState(false);
+  const assistantInputRef = useRef<HTMLTextAreaElement>(null);
+  const assistantTriggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (kind === "code") return;
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("resize"));
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      if (secondFrame) window.cancelAnimationFrame(secondFrame);
+    };
+  }, [assistantOpen, entry.id, kind]);
+
+  useEffect(() => {
+    if (!assistantOpen) return;
+    const frame = window.requestAnimationFrame(() => {
+      assistantInputRef.current?.focus();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [assistantOpen]);
+
+  const closeAssistant = (restoreFocus = false) => {
+    setAssistantOpen(false);
+    if (!restoreFocus) return;
+    window.requestAnimationFrame(() => assistantTriggerRef.current?.focus());
+  };
 
   const markChanged = (message?: string) => {
     setSaveState("unsaved");
     if (message) setStatus(message);
   };
 
-  const save = () => {
+  const save = (message?: string) => {
+    setSaveRevision((revision) => revision + 1);
     setSaveState("saved");
-    setStatus(zh ? "所有更改已保存" : "All changes saved");
+    setStatus(message ?? (zh ? "所有更改已保存" : "All changes saved"));
   };
 
   const askAssistant = (event: FormEvent<HTMLFormElement>) => {
@@ -104,7 +137,10 @@ export function ProductFileWorkbench({
           <button
             aria-expanded={versionsOpen}
             aria-label={zh ? "版本记录" : "Version history"}
-            onClick={() => setVersionsOpen((value) => !value)}
+            onClick={() => {
+              setAssistantOpen(false);
+              setVersionsOpen((value) => !value);
+            }}
             type="button"
           >
             <ProductPlaygroundIcon name="version" />
@@ -124,7 +160,8 @@ export function ProductFileWorkbench({
             <button
               aria-label={zh ? "保存文件" : "Save file"}
               data-primary
-              onClick={save}
+              disabled={saveState === "saved"}
+              onClick={() => save()}
               type="button"
             >
               <ProductPlaygroundIcon name="check" />
@@ -157,6 +194,8 @@ export function ProductFileWorkbench({
             </div>
           ) : null}
           <button
+            aria-controls="product-file-assistant"
+            aria-expanded={assistantOpen}
             aria-label={
               assistantOpen
                 ? zh
@@ -166,8 +205,11 @@ export function ProductFileWorkbench({
                   ? "打开文件助手"
                   : "Open file assistant"
             }
-            aria-pressed={assistantOpen}
-            onClick={() => setAssistantOpen((value) => !value)}
+            onClick={() => {
+              setVersionsOpen(false);
+              setAssistantOpen((value) => !value);
+            }}
+            ref={assistantTriggerRef}
             type="button"
           >
             <ProductPlaygroundIcon name="assistant" />
@@ -252,16 +294,25 @@ export function ProductFileWorkbench({
 
       <div className="product-file-workbench__body">
         <ProductFileWorkbenchSurface
+          dirty={saveState === "unsaved"}
           entry={entry}
           locale={locale}
           mode={mode}
           onChange={markChanged}
+          onSaved={save}
           onStatus={setStatus}
+          saveRevision={saveRevision}
         />
         {assistantOpen ? (
           <aside
             aria-label={zh ? "文件助手" : "File assistant"}
             data-file-assistant
+            id="product-file-assistant"
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              event.preventDefault();
+              closeAssistant(true);
+            }}
           >
             <header>
               <span>
@@ -273,7 +324,7 @@ export function ProductFileWorkbench({
               </div>
               <button
                 aria-label={zh ? "关闭文件助手" : "Close file assistant"}
-                onClick={() => setAssistantOpen(false)}
+                onClick={() => closeAssistant(true)}
                 type="button"
               >
                 <ProductPlaygroundIcon name="close" />
@@ -382,6 +433,7 @@ export function ProductFileWorkbench({
                     setAssistantPrompt(event.currentTarget.value)
                   }
                   placeholder={zh ? "询问当前文件…" : "Ask about this file…"}
+                  ref={assistantInputRef}
                   rows={2}
                   value={assistantPrompt}
                 />

@@ -1,10 +1,14 @@
 @import "./application.css";
 @import "./a3s-foundation.css";
+/* Keep the application-scale Office refinements below the shared tokens but
+ * above the canonical component families. This makes the split component
+ * styles the final visual authority instead of letting a second primitive
+ * layer silently restore older control geometry. */
+@import "./a3s-office.css";
 @import "./a3s-controls.css";
 @import "./a3s-choices.css";
 @import "./a3s-overlays.css";
 @import "./a3s-display.css";
 @import "./a3s-forms.css";
 @import "./a3s-data.css";
-@import "./a3s-office.css";
 @import "./a3s-office-application.css";

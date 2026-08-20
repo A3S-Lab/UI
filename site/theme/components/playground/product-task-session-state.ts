@@ -4,6 +4,7 @@ import type {
   ProductLocalizedText,
   ProductPlaygroundLocale,
 } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 
 const taskSessionStorageKey = "a3s-ui:product-task-session:v1";
 const pendingTaskDraftStorageKey = "a3s-ui:pending-task-draft:v1";
@@ -20,7 +21,7 @@ const workspaceLabels: Record<
   "": { en: "No workspace selected", zh: "未选择工作空间" },
   local: { en: "Local workspace", zh: "本地工作空间" },
   root: { en: "A3S monorepo", zh: "A3S 主仓库" },
-  ui: { en: "A3S UI experience", zh: "A3S UI 体验优化" },
+  ui: productProjectName,
 };
 
 const modeLabels: Record<ProductComposerContext["mode"], ProductLocalizedText> =

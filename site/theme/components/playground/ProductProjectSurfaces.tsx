@@ -45,7 +45,7 @@ const projectArtifacts = [
         url = "http://127.0.0.1:4178/UI/app/projects.html"
     }
     click "project-card" {
-        target = role("link", "A3S UI 体验优化")
+        target = role("link", "AnyBuddy")
     }
     expect "workspace-route" {
         visible = css("[data-product-surface=project]")

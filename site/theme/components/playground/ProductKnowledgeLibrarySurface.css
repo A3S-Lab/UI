@@ -14,14 +14,23 @@
 }
 
 .product-knowledge-library button,
-.product-knowledge-library input {
+.product-knowledge-library input,
+.product-knowledge-library select {
   font: inherit;
 }
 
-.product-knowledge-library button:focus-visible,
-.product-knowledge-library input:focus-visible {
+.product-knowledge-library button:focus-visible {
   outline: 2px solid var(--ui-blue);
   outline-offset: 2px;
+}
+
+:is(.a3s-product-application, .a3s-workspace-playground)
+  .product-knowledge-library
+  :is(input, select):focus-visible {
+  border-color: color-mix(in srgb, var(--ui-ink) 20%, var(--ui-line-strong));
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
 }
 
 .product-knowledge-library > [data-knowledge-library-navigation] {
@@ -42,7 +51,10 @@
   gap: 0.625rem;
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > header > span {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > header
+  > span {
   display: grid;
   width: 1.875rem;
   height: 1.875rem;
@@ -57,7 +69,10 @@
   height: 1.05rem;
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > header strong {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > header
+  strong {
   font-size: 0.9375rem;
   font-weight: 660;
 }
@@ -85,12 +100,18 @@
   text-align: start;
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] nav button:hover {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  nav
+  button:hover {
   background: var(--ui-hover);
   color: var(--ui-ink);
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] nav button[aria-pressed="true"] {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  nav
+  button[aria-pressed="true"] {
   background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-paper));
   color: var(--ui-blue);
   font-weight: 620;
@@ -117,23 +138,41 @@
   border-top: 1px solid var(--ui-line);
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > span,
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > strong {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > span,
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > strong {
   display: block;
   font-size: 0.75rem;
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > span,
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > small {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > span,
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > small {
   color: var(--ui-faint);
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > strong {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > strong {
   margin-top: 0.2rem;
   font-weight: 620;
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > div {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > div {
   height: 0.25rem;
   margin: 0.625rem 0;
   overflow: hidden;
@@ -141,7 +180,11 @@
   background: var(--ui-line);
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > div i {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > div
+  i {
   display: block;
   width: 28%;
   height: 100%;
@@ -149,7 +192,10 @@
   background: var(--ui-blue);
 }
 
-.product-knowledge-library > [data-knowledge-library-navigation] > footer > small {
+.product-knowledge-library
+  > [data-knowledge-library-navigation]
+  > footer
+  > small {
   display: block;
   font-size: 0.6875rem;
   line-height: 1rem;
@@ -344,7 +390,10 @@
   cursor: pointer;
 }
 
-.product-knowledge-library [data-knowledge-library-form] > header > button:hover {
+.product-knowledge-library
+  [data-knowledge-library-form]
+  > header
+  > button:hover {
   background: var(--ui-hover);
   color: var(--ui-ink);
 }
@@ -399,7 +448,9 @@
   padding-block: 1.25rem 2rem;
 }
 
-.product-knowledge-library [data-knowledge-library-group] + [data-knowledge-library-group] {
+.product-knowledge-library
+  [data-knowledge-library-group]
+  + [data-knowledge-library-group] {
   margin-top: 1.5rem;
 }
 
@@ -470,7 +521,11 @@
 
 .product-knowledge-library [data-phase="failed"] [data-knowledge-item-mark],
 .product-knowledge-library [data-phase="paused"] [data-knowledge-item-mark] {
-  background: color-mix(in srgb, var(--ui-warning, #a86412) 10%, var(--ui-paper));
+  background: color-mix(
+    in srgb,
+    var(--ui-warning, #a86412) 10%,
+    var(--ui-paper)
+  );
   color: var(--ui-warning, #a86412);
 }
 
@@ -547,7 +602,10 @@
 }
 
 .product-knowledge-library [data-phase="queued"] [data-knowledge-item-phase] i,
-.product-knowledge-library [data-phase="running"] [data-knowledge-item-phase] i {
+.product-knowledge-library
+  [data-phase="running"]
+  [data-knowledge-item-phase]
+  i {
   background: var(--ui-blue);
   animation: product-knowledge-pulse 1.2s ease-in-out infinite;
 }
@@ -610,7 +668,9 @@
 }
 
 @keyframes product-knowledge-pulse {
-  50% { opacity: 0.35; }
+  50% {
+    opacity: 0.35;
+  }
 }
 
 @media (max-width: 74rem) {
@@ -677,7 +737,9 @@
     width: 100%;
   }
 
-  .product-knowledge-library [data-knowledge-library-header] button[data-primary] {
+  .product-knowledge-library
+    [data-knowledge-library-header]
+    button[data-primary] {
     margin-inline-start: auto;
   }
 

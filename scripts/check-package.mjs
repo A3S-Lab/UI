@@ -12,9 +12,34 @@ const projectRoot = path.resolve(
 const manifest = JSON.parse(
   await readFile(path.join(projectRoot, "package.json"), "utf8"),
 );
+const a3sStyleEntrypoint = await readFile(
+  path.join(projectRoot, "src", "css", "styles", "a3s.css"),
+  "utf8",
+);
 
 if (manifest.name !== "@a3s-lab/ui") {
   throw new Error(`Unexpected package name: ${manifest.name}`);
+}
+
+const officeVisualIndex = a3sStyleEntrypoint.indexOf(
+  '@import "./a3s-office.css";',
+);
+for (const canonicalFamily of [
+  "a3s-controls.css",
+  "a3s-choices.css",
+  "a3s-overlays.css",
+  "a3s-display.css",
+  "a3s-forms.css",
+  "a3s-data.css",
+]) {
+  const familyIndex = a3sStyleEntrypoint.indexOf(
+    `@import "./${canonicalFamily}";`,
+  );
+  if (officeVisualIndex < 0 || familyIndex < officeVisualIndex) {
+    throw new Error(
+      `Canonical component family must follow a3s-office.css: ${canonicalFamily}`,
+    );
+  }
 }
 
 const npmCliPath = process.env.npm_execpath;

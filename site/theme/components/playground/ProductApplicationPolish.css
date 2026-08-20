@@ -1,6 +1,6 @@
 .a3s-product-application {
-  --product-control-radius: 0.625rem;
-  --product-panel-radius: 0.875rem;
+  --product-control-radius: var(--a3s-radius, 0.625rem);
+  --product-panel-radius: var(--a3s-radius-lg, 0.875rem);
   letter-spacing: -0.006em;
 }
 
@@ -166,25 +166,12 @@
 .product-projects__templates button,
 .product-automation__templates button,
 .product-catalog__entry,
-.product-catalog__featured article,
 .product-inspiration__gallery article {
   box-shadow: none;
 }
 
-.product-catalog__entry:hover,
-.product-catalog__featured article:hover {
+.product-catalog__entry:hover {
   transform: none;
-}
-
-.product-catalog__featured--scenarios .product-catalog__scenario {
-  border-color: var(--ui-line);
-}
-
-.product-catalog__directory
-  > div[data-directory-layout="connectors"]
-  > article {
-  border-color: var(--ui-line);
-  background: var(--ui-paper);
 }
 
 .product-inspiration__open figure {
@@ -224,13 +211,6 @@
     padding-block-start: 5rem;
   }
 
-  .product-catalog > header > div:last-child {
-    flex-wrap: wrap;
-  }
-
-  .product-catalog > header > div:last-child label {
-    min-width: 16rem;
-  }
 }
 
 @media (max-width: 48rem) {
@@ -246,14 +226,6 @@
     margin-top: 2.5rem;
   }
 
-  .product-catalog > header > div:last-child {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .product-catalog > header > div:last-child > button[data-catalog-create] {
-    grid-column: 1 / -1;
-    justify-content: center;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
+  productKnowledgeItemCount,
   productKnowledgeBases,
   type ProductKnowledgeBase,
-  type ProductKnowledgePhase,
+  type ProductKnowledgeSource,
 } from "./product-knowledge-library-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import type { ProductTaskDraft } from "./product-composer-data";
@@ -121,7 +122,6 @@ export function ProductKnowledgeLibrarySurface({
   const requestCompilation = (id: string) => {
     updateLibrary(id, (base) => ({
       ...base,
-      error: undefined,
       phase: "queued",
     }));
     setStatus(zh ? "知识库已加入更新队列。" : "Knowledge update queued.");
@@ -130,13 +130,33 @@ export function ProductKnowledgeLibrarySurface({
       setStatus(zh ? "正在整理来源。" : "Organizing knowledge sources.");
     }, 450);
     const completeTimer = window.setTimeout(() => {
-      updateLibrary(id, (base) => ({
-        ...base,
-        conceptCount: Math.max(base.conceptCount, base.sourceCount * 8),
-        pendingChanges: false,
-        phase: "succeeded",
-        updated: new Date().toISOString(),
-      }));
+      updateLibrary(id, (base) => {
+        const updated = new Date().toISOString();
+        const sources = base.sources.map((source) => ({
+          ...source,
+          itemCount:
+            source.itemCount > 0
+              ? source.itemCount
+              : source.kind === "folder" || source.kind === "vault"
+                ? 8
+                : 1,
+          status: "indexed" as const,
+          updated,
+        }));
+        const itemCount = sources.reduce(
+          (total, source) => total + source.itemCount,
+          0,
+        );
+        return {
+          ...base,
+          conceptCount: Math.max(base.conceptCount, itemCount * 8),
+          error: undefined,
+          pendingChanges: false,
+          phase: "succeeded",
+          sources,
+          updated,
+        };
+      });
       setStatus(zh ? "知识库更新完成。" : "Knowledge update completed.");
     }, 1450);
     timers.current.push(runningTimer, completeTimer);
@@ -195,13 +215,14 @@ export function ProductKnowledgeLibrarySurface({
       phase: formMode === "import" ? "queued" : "ready",
       pinned: false,
       policy: "manual",
-      sourceCount: source ? 1 : 0,
       sources: source
         ? [
             {
               id: `${id}-source`,
-              kind: "Folder",
+              itemCount: 0,
+              kind: "folder",
               name: source.split("/").filter(Boolean).at(-1) ?? source,
+              path: source,
               status: "pending",
               updated: now,
             },
@@ -238,6 +259,48 @@ export function ProductKnowledgeLibrarySurface({
         ? `已移除“${deleteTarget.name.zh}”。`
         : `${deleteTarget.name.en} removed.`,
     );
+  };
+
+  const addSource = (
+    id: string,
+    source: Pick<ProductKnowledgeSource, "kind" | "name" | "path">,
+  ) => {
+    const now = new Date().toISOString();
+    updateLibrary(id, (base) => ({
+      ...base,
+      pendingChanges: true,
+      sources: [
+        ...base.sources,
+        {
+          ...source,
+          id: `${base.id}-source-${Date.now()}`,
+          itemCount: 0,
+          status: "pending",
+          updated: now,
+        },
+      ],
+    }));
+  };
+
+  const markSourceForReindex = (id: string, sourceId: string) => {
+    const now = new Date().toISOString();
+    updateLibrary(id, (base) => ({
+      ...base,
+      pendingChanges: true,
+      sources: base.sources.map((source) =>
+        source.id === sourceId
+          ? { ...source, status: "pending", updated: now }
+          : source,
+      ),
+    }));
+  };
+
+  const removeSource = (id: string, sourceId: string) => {
+    updateLibrary(id, (base) => ({
+      ...base,
+      pendingChanges: true,
+      sources: base.sources.filter((source) => source.id !== sourceId),
+    }));
   };
 
   const filterOptions: readonly [KnowledgeFilter, string][] = [
@@ -528,6 +591,7 @@ export function ProductKnowledgeLibrarySurface({
           locale={locale}
           modal={detailModalOpen}
           onClose={() => setSelectedId("")}
+          onAddSource={(source) => addSource(selected.id, source)}
           onDelete={() => setDeleteId(selected.id)}
           onPinChange={(pinnedValue) =>
             updateLibrary(selected.id, (base) => ({
@@ -543,6 +607,10 @@ export function ProductKnowledgeLibrarySurface({
               ...base,
               name: { en: name, zh: name },
             }))
+          }
+          onRemoveSource={(sourceId) => removeSource(selected.id, sourceId)}
+          onReindexSource={(sourceId) =>
+            markSourceForReindex(selected.id, sourceId)
           }
           onRequestCompilation={() => requestCompilation(selected.id)}
           onUseInTask={() =>
@@ -628,13 +696,13 @@ function KnowledgeLibraryGroup({
                 <span data-knowledge-item-stats>
                   <small>
                     {zh
-                      ? `${base.sourceCount} 个来源`
-                      : `${base.sourceCount} sources`}
+                      ? `${base.sources.length} 个来源入口`
+                      : `${base.sources.length} source roots`}
                   </small>
                   <small>
                     {zh
-                      ? `${base.conceptCount.toLocaleString("zh-CN")} 个概念`
-                      : `${base.conceptCount.toLocaleString("en-US")} concepts`}
+                      ? `${productKnowledgeItemCount(base).toLocaleString("zh-CN")} 个已编索项`
+                      : `${productKnowledgeItemCount(base).toLocaleString("en-US")} indexed items`}
                   </small>
                 </span>
                 <span data-knowledge-item-phase>
@@ -686,8 +754,8 @@ function KnowledgeDeleteDialog({
       </h2>
       <p>
         {zh
-          ? "知识库会从当前工作空间移除。宿主应保留恢复或重新导入路径。"
-          : "The knowledge base leaves this workspace. The host should retain a recovery or re-import path."}
+          ? "将移除当前知识库配置与可搜索索引。已关联的工作空间文件不会被删除，后续可重新导入。"
+          : "This removes the knowledge configuration and searchable index. Connected workspace files are not deleted and can be imported again."}
       </p>
       <footer>
         <button onClick={onCancel} type="button">

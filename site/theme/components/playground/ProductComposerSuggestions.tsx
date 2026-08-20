@@ -8,13 +8,18 @@ import {
 import type { AgentComposerTrigger } from "../../../../src/integrations/tiptap/react.js";
 import {
   productComposerCommands,
-  productComposerSkills,
   productComposerWorkspace,
   type ProductComposerResource,
+  type ProductComposerWorkspace,
   type ProductComposerWorkspaceNode,
 } from "./product-composer-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import {
+  getProductCapabilityDefinitions,
+  useProductCapabilityRegistry,
+} from "./product-capability-state";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import { useProductWorkspaceFiles } from "./product-workspace-files";
 
 export type ProductComposerSuggestionKind = AgentComposerTrigger["kind"];
 
@@ -70,22 +75,52 @@ export const ProductComposerSuggestions = forwardRef<
   const zh = locale === "zh";
   const [activeIndex, setActiveIndex] = useState(0);
   const [expanded, setExpanded] = useState<Set<string>>(
-    () => new Set(["src", "site"]),
+    () => new Set(["browser-session-files", "src", "site"]),
   );
+  const { registry } = useProductCapabilityRegistry();
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);
+  const workspaceFiles = useProductWorkspaceFiles();
+  const workspaceNodes = useMemo<readonly ProductComposerWorkspaceNode[]>(() => {
+    const imported = workspaceFiles.filter((record) => record.state === "ready");
+    if (imported.length === 0) return productComposerWorkspace;
+    return [
+      {
+        children: imported.map((record) => ({
+          id: `workspace:${record.id}`,
+          kind: "file" as const,
+          meta: {
+            en: `${workspaceLabel(record.workspace, "en")} · ${formatBytes(record.file.size)}`,
+            zh: `${workspaceLabel(record.workspace, "zh")} · ${formatBytes(record.file.size)}`,
+          },
+          name: record.name,
+        })),
+        id: "browser-session-files",
+        kind: "directory",
+        meta: {
+          en: `${imported.length} imported file${imported.length === 1 ? "" : "s"}`,
+          zh: `${imported.length} 个已导入文件`,
+        },
+        name: zh ? "本次会话导入" : "Imported this session",
+      },
+      ...productComposerWorkspace,
+    ];
+  }, [workspaceFiles, zh]);
   const fileRows = useMemo(
-    () => flattenWorkspace(productComposerWorkspace, expanded, normalizedQuery),
-    [expanded, normalizedQuery],
+    () => flattenWorkspace(workspaceNodes, expanded, normalizedQuery),
+    [expanded, normalizedQuery, workspaceNodes],
   );
   const listRows = useMemo<ListRow[]>(() => {
+    const configuredSkills = getProductCapabilityDefinitions("skills", registry)
+      .filter((item) => registry.records[item.id]?.lifecycle === "ready")
+      .map((item) => ({
+        description: item.description[locale],
+        id: item.id,
+        label: `$${item.label[locale]}`,
+        meta: item.tag[locale],
+      }));
     const source =
       kind === "skill"
-        ? productComposerSkills.map((item) => ({
-            description: item.description[locale],
-            id: item.id,
-            label: `$${item.label}`,
-            meta: item.scope[locale],
-          }))
+        ? configuredSkills
         : kind === "command"
           ? productComposerCommands.map((item) => ({
               description: item.description[locale],
@@ -100,7 +135,7 @@ export const ProductComposerSuggestions = forwardRef<
         .toLocaleLowerCase(locale)
         .includes(normalizedQuery),
     );
-  }, [kind, locale, normalizedQuery, zh]);
+  }, [kind, locale, normalizedQuery, registry, zh]);
   const rowCount = kind === "file" ? fileRows.length : listRows.length;
   const currentIndex = Math.min(activeIndex, Math.max(0, rowCount - 1));
   const activeId = rowCount > 0 ? `${id}-${currentIndex}` : undefined;
@@ -136,6 +171,9 @@ export const ProductComposerSuggestions = forwardRef<
         kind: "file",
         label: row.node.name,
         meta: row.node.meta[locale],
+        ...(row.node.id.startsWith("workspace:")
+          ? { workspaceFileId: row.node.id.slice("workspace:".length) }
+          : {}),
       });
       return true;
     }
@@ -404,4 +442,20 @@ function findParentIndex(rows: readonly FileRow[], activeIndex: number) {
     if (rows[index]?.depth === row.depth - 1) return index;
   }
   return -1;
+}
+
+function formatBytes(value: number) {
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function workspaceLabel(
+  workspace: Exclude<ProductComposerWorkspace, "">,
+  locale: ProductPlaygroundLocale,
+) {
+  if (workspace === "local")
+    return locale === "zh" ? "本地工作区" : "Local workspace";
+  if (workspace === "root") return "a3s";
+  return "a3s-ui";
 }

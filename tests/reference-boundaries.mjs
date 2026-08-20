@@ -119,9 +119,6 @@ for (const locale of locales) {
     harness: JSON.parse(
       await read(`site/docs/next/${locale}/harness/_meta.json`),
     ),
-    patterns: JSON.parse(
-      await read(`site/docs/next/${locale}/patterns/_meta.json`),
-    ),
     root: JSON.parse(await read(`site/docs/next/${locale}/_meta.json`)),
   };
 }
@@ -138,13 +135,6 @@ const harnessGroupsByLocale = Object.fromEntries(
     collectMetadataGroups(sidebarMetadata[locale].harness),
   ]),
 );
-const patternGroupsByLocale = Object.fromEntries(
-  locales.map((locale) => [
-    locale,
-    collectMetadataGroups(sidebarMetadata[locale].patterns),
-  ]),
-);
-
 assert.deepEqual(
   componentGroupsByLocale.zh.map((group) => group.label),
   [
@@ -196,15 +186,6 @@ assert.deepEqual(
   ],
 );
 assert.deepEqual(
-  patternGroupsByLocale.zh.map((group) => group.label),
-  ["核心工作流", "能力编排", "适配指南"],
-);
-assert.deepEqual(
-  patternGroupsByLocale.en.map((group) => group.label),
-  ["Core workflows", "Capability orchestration", "Adaptation guides"],
-);
-
-assert.deepEqual(
   groupLinkOrder(componentGroupsByLocale.zh),
   groupLinkOrder(componentGroupsByLocale.en),
   "Chinese and English general-component group order must match.",
@@ -214,17 +195,10 @@ assert.deepEqual(
   groupLinkOrder(harnessGroupsByLocale.en),
   "Chinese and English Harness group order must match.",
 );
-assert.deepEqual(
-  groupLinkOrder(patternGroupsByLocale.zh),
-  groupLinkOrder(patternGroupsByLocale.en),
-  "Chinese and English pattern group order must match.",
-);
-
 for (const locale of locales) {
   const allGroups = [
     ...componentGroupsByLocale[locale],
     ...harnessGroupsByLocale[locale],
-    ...patternGroupsByLocale[locale],
   ];
   assert.ok(
     allGroups.every((group) => group.collapsed === true),
@@ -269,12 +243,6 @@ assert.deepEqual(
   "The two component menus must cover the complete manifest exactly once.",
 );
 
-const patternLinks = patternGroupsByLocale.en.flatMap((group) =>
-  group.items.map((item) => item.link),
-);
-assert.equal(patternLinks.length, 9);
-assertUniqueLinks(patternLinks, "Pattern navigation");
-
 for (const [locale, expectedLabel] of [
   ["zh", "通用组件"],
   ["en", "General components"],
@@ -287,6 +255,17 @@ for (const [locale, expectedLabel] of [
       entry.name === "components",
   );
   assert.equal(componentDirectory?.label, expectedLabel);
+  assert.equal(
+    sidebarMetadata[locale].root.some(
+      (entry) =>
+        entry &&
+        typeof entry === "object" &&
+        entry.type === "dir" &&
+        entry.name === "patterns",
+    ),
+    false,
+    `${locale} root metadata must not expose the retired Patterns chapter.`,
+  );
 }
 
 for (const component of components) {
@@ -357,21 +336,6 @@ const boundaryPages = {
     "data-theme",
     "dir",
   ],
-  "patterns/composition-recipes.mdx": [
-    "aria-busy",
-    "data-editor-command",
-    "safe-area-inset-bottom",
-  ],
-  "patterns/host-integrations.mdx": [
-    "data-icon-slot",
-    "data-markdown-renderer",
-    "data-host-integration",
-  ],
-  "patterns/landmarks-and-mobile.mdx": [
-    "/logo.png",
-    "safe-area-inset-bottom",
-    "useTaskWorkspace",
-  ],
 };
 for (const [page, markers] of Object.entries(boundaryPages)) {
   for (const locale of locales) {
@@ -385,23 +349,6 @@ for (const [page, markers] of Object.entries(boundaryPages)) {
     }
   }
 }
-
-const hostIntegrationEnglish = await read(
-  "site/docs/next/en/patterns/host-integrations.mdx",
-);
-const hostIntegrationChinese = await read(
-  "site/docs/next/zh/patterns/host-integrations.mdx",
-);
-assert.ok(
-  hostIntegrationEnglish.includes("A3S UI owns") &&
-    hostIntegrationEnglish.includes("Host owns"),
-  "The English host-integration guide must state both ownership sides.",
-);
-assert.ok(
-  hostIntegrationChinese.includes("A3S UI 拥有") &&
-    hostIntegrationChinese.includes("宿主拥有"),
-  "The Chinese host-integration guide must state both ownership sides.",
-);
 
 const rspressConfig = await read("site/rspress.config.ts");
 assert.match(rspressConfig, /icon:\s*"\/logo\.png"/u);
@@ -444,11 +391,15 @@ for (const locale of locales) {
   const componentMeta = await read(
     `site/docs/next/${locale}/components/_meta.json`,
   );
-  const patternMeta = await read(
-    `site/docs/next/${locale}/patterns/_meta.json`,
-  );
   assert.doesNotMatch(componentMeta, /playground/iu);
-  assert.doesNotMatch(patternMeta, /playground/iu);
+  for (const version of ["next", "v0.3.0", "v0.2.0", "v0.1.0"]) {
+    await assert.rejects(
+      readFile(
+        path.join(projectRoot, "site", "docs", version, locale, "patterns", "_meta.json"),
+      ),
+      `${version}/${locale} must not retain the retired Patterns chapter.`,
+    );
+  }
 }
 
 const publicFiles = [];
@@ -473,5 +424,5 @@ for (const relativePath of publicFiles) {
 }
 
 console.log(
-  `Validated ${components.length} bilingual framework guides, four product-boundary guides, official identity, and standalone Playground ownership.`,
+  `Validated ${components.length} bilingual framework guides, documentation boundaries, official identity, and standalone Playground ownership.`,
 );

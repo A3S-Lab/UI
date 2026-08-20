@@ -1,74 +1,105 @@
-/* A3S foundations for task-centered product surfaces. */
+/* Canonical A3S product language, shared by the package, docs, and Playground. */
 :root {
   color-scheme: light;
-  --background: #ffffff;
-  --foreground: #111113;
-  --card: #ffffff;
-  --card-foreground: #111113;
-  --popover: #ffffff;
-  --popover-foreground: #111113;
-  --primary: #1456f0;
-  --primary-foreground: #ffffff;
-  --secondary: #f7f7f8;
-  --secondary-foreground: #111113;
-  --muted: #f7f7f8;
-  --muted-foreground: #52525b;
-  --accent: #eef4ff;
-  --accent-foreground: #243a9a;
-  --destructive: #c93d45;
-  --border: #dedee1;
-  --input: #c9c9ce;
-  --ring: #1456f0;
-  --chart-1: #1456f0;
-  --chart-2: #5b57d9;
-  --chart-3: #71717a;
-  --chart-4: #16845b;
-  --chart-5: #a86412;
-  --sidebar: #f7f7f8;
-  --sidebar-foreground: #111113;
-  --sidebar-primary: #1456f0;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eef4ff;
-  --sidebar-accent-foreground: #243a9a;
-  --sidebar-border: #e9e9eb;
-  --sidebar-ring: #1456f0;
-  --radius: 0.5rem;
-  --a3s-bg: var(--background);
-  --a3s-panel: var(--card);
-  --a3s-panel-soft: var(--muted);
-  --a3s-panel-strong: #eeeeef;
-  --a3s-ink: var(--foreground);
-  --a3s-muted: var(--muted-foreground);
-  --a3s-subtle: #71717a;
-  --a3s-faint: #71717a;
-  --a3s-line: #e9e9eb;
-  --a3s-line-strong: var(--border);
-  --a3s-action: var(--primary);
-  --a3s-action-hover: #0f46c7;
-  --a3s-action-ink: var(--primary-foreground);
+
+  /* Product surfaces */
+  --a3s-canvas: #f6f6f6;
+  --a3s-paper: #ffffff;
+  --a3s-surface: #f3f3f3;
+  --a3s-surface-raised: #eeeeee;
+  --a3s-surface-active: #e8e8e8;
+  --a3s-selection: #eef4ff;
+  --a3s-ink: #171717;
+  --a3s-muted: #595959;
+  --a3s-subtle: #858585;
+  --a3s-faint: #858585;
+  --a3s-line: #e8e8e8;
+  --a3s-line-strong: #d8d8d8;
+  --a3s-line-emphasis: #c8c8c8;
+
+  /* Neutral commands and blue interaction identity are deliberately separate. */
+  --a3s-action: #171717;
+  --a3s-action-hover: #303030;
+  --a3s-action-ink: #ffffff;
+  --a3s-action-disabled: #b8b8b8;
   --a3s-accent: #1456f0;
   --a3s-accent-hover: #0f46c7;
+  --a3s-accent-ink: #ffffff;
   --a3s-brand-blue: #243a9a;
   --a3s-blue: var(--a3s-accent);
   --a3s-purple: #5b57d9;
   --a3s-green: #16845b;
   --a3s-orange: #a86412;
-  --a3s-red: var(--destructive);
   --a3s-warning: #a86412;
-  --a3s-radius-xs: 0.25rem;
-  --a3s-radius-sm: 0.375rem;
-  --a3s-radius: 0.5rem;
-  --a3s-radius-md: 0.5rem;
-  --a3s-radius-lg: 0.75rem;
+  --a3s-red: #c93d45;
+
+  /* Public semantic aliases */
+  --background: var(--a3s-paper);
+  --foreground: var(--a3s-ink);
+  --card: var(--a3s-paper);
+  --card-foreground: var(--a3s-ink);
+  --popover: var(--a3s-paper);
+  --popover-foreground: var(--a3s-ink);
+  --primary: var(--a3s-action);
+  --primary-foreground: var(--a3s-action-ink);
+  --secondary: var(--a3s-surface);
+  --secondary-foreground: var(--a3s-ink);
+  --muted: var(--a3s-surface);
+  --muted-foreground: var(--a3s-muted);
+  --accent: var(--a3s-selection);
+  --accent-foreground: var(--a3s-brand-blue);
+  --destructive: var(--a3s-red);
+  --border: var(--a3s-line);
+  --input: var(--a3s-line-strong);
+  --ring: var(--a3s-accent);
+  --chart-1: var(--a3s-accent);
+  --chart-2: var(--a3s-purple);
+  --chart-3: var(--a3s-muted);
+  --chart-4: var(--a3s-green);
+  --chart-5: var(--a3s-warning);
+  --sidebar: var(--a3s-canvas);
+  --sidebar-foreground: var(--a3s-ink);
+  --sidebar-primary: var(--a3s-action);
+  --sidebar-primary-foreground: var(--a3s-action-ink);
+  --sidebar-accent: var(--a3s-surface-active);
+  --sidebar-accent-foreground: var(--a3s-ink);
+  --sidebar-border: var(--a3s-line);
+  --sidebar-ring: var(--a3s-accent);
+
+  /* Backward-compatible A3S aliases */
+  --a3s-bg: var(--a3s-paper);
+  --a3s-panel: var(--a3s-paper);
+  --a3s-panel-soft: var(--a3s-surface);
+  --a3s-panel-strong: var(--a3s-surface-raised);
+
+  /* Shape */
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1rem;
+  --a3s-radius-xs: 0.375rem;
+  --a3s-radius-sm: 0.5rem;
+  --a3s-radius: 0.625rem;
+  --a3s-radius-md: 0.625rem;
+  --a3s-radius-lg: 0.875rem;
   --a3s-overlay-radius: var(--a3s-radius-lg);
-  --a3s-overlay-border: var(--a3s-line-strong);
-  --a3s-overlay-surface: var(--a3s-panel);
-  --a3s-shadow: 0 20px 20px -8px rgb(0 0 0 / 24%);
-  --a3s-shadow-soft: 0 8px 16px -4px rgb(0 0 0 / 20%);
-  --a3s-shadow-composer: 0 8px 16px -4px rgb(0 0 0 / 14%);
-  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 3%);
-  --a3s-shadow-focus: 0 0 0 2px var(--a3s-panel), 0 0 0 4px var(--a3s-blue);
-  --a3s-shadow-error: 0 0 0 2px var(--a3s-panel), 0 0 0 4px var(--a3s-red);
+  --a3s-overlay-border: var(--a3s-line);
+  --a3s-overlay-surface: var(--a3s-paper);
+
+  /* Depth and focus */
+  --a3s-shadow: 0 20px 48px -20px rgb(0 0 0 / 28%);
+  --a3s-shadow-soft:
+    0 14px 36px -14px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 5%);
+  --a3s-shadow-composer:
+    0 20px 48px -32px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 5%);
+  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 5%);
+  --a3s-focus-ring: color-mix(in srgb, var(--a3s-accent) 18%, transparent);
+  --a3s-error-ring: color-mix(in srgb, var(--a3s-red) 18%, transparent);
+  --a3s-shadow-focus: 0 0 0 2px var(--a3s-focus-ring);
+  --a3s-shadow-error: 0 0 0 2px var(--a3s-error-ring);
+
+  /* Density */
   --a3s-control-height: 2.25rem;
   --a3s-control-height-sm: 1.75rem;
   --a3s-control-height-xs: 1.5rem;
@@ -88,6 +119,8 @@
   --a3s-font-size-ui: 0.875rem;
   --a3s-font-size-compact: 0.8125rem;
   --a3s-font-size-micro: 0.75rem;
+
+  /* Motion and typography */
   --a3s-motion-fast: 120ms;
   --a3s-motion-normal: 160ms;
   --a3s-motion-overlay: 220ms;
@@ -116,55 +149,39 @@
 
 .dark {
   color-scheme: dark;
-  --background: #0d0d0f;
-  --foreground: #f4f4f5;
-  --card: #151518;
-  --card-foreground: #f4f4f5;
-  --popover: #151518;
-  --popover-foreground: #f4f4f5;
-  --primary: #4380f9;
-  --primary-foreground: #0d0d0f;
-  --secondary: #19191d;
-  --secondary-foreground: #f4f4f5;
-  --muted: #19191d;
-  --muted-foreground: #b4b4bc;
-  --accent: #17223b;
-  --accent-foreground: #c8d7ff;
-  --destructive: #ef7a82;
-  --border: #333338;
-  --input: #45454b;
-  --ring: #4380f9;
-  --chart-1: #4380f9;
-  --chart-2: #8378f0;
-  --chart-3: #888891;
-  --chart-4: #57c795;
-  --chart-5: #e7ad55;
-  --sidebar: #151518;
-  --sidebar-foreground: #f4f4f5;
-  --sidebar-primary: #4380f9;
-  --sidebar-primary-foreground: #0d0d0f;
-  --sidebar-accent: #17223b;
-  --sidebar-accent-foreground: #c8d7ff;
-  --sidebar-border: #26262b;
-  --sidebar-ring: #4380f9;
-  --a3s-panel-strong: #26262b;
-  --a3s-subtle: #888891;
-  --a3s-faint: #888891;
-  --a3s-line: #26262b;
-  --a3s-line-strong: #333338;
-  --a3s-action-hover: #6ca3ff;
+  --a3s-canvas: #111112;
+  --a3s-paper: #171718;
+  --a3s-surface: #202021;
+  --a3s-surface-raised: #262627;
+  --a3s-surface-active: #2b2b2d;
+  --a3s-selection: #17223b;
+  --a3s-ink: #f2f2f3;
+  --a3s-muted: #b7b7ba;
+  --a3s-subtle: #8b8b90;
+  --a3s-faint: #8b8b90;
+  --a3s-line: #2a2a2c;
+  --a3s-line-strong: #3a3a3d;
+  --a3s-line-emphasis: #4a4a4e;
+  --a3s-action: #f2f2f3;
+  --a3s-action-hover: #d9d9dc;
+  --a3s-action-ink: #171718;
+  --a3s-action-disabled: #5d5d61;
   --a3s-accent: #4380f9;
   --a3s-accent-hover: #6ca3ff;
+  --a3s-accent-ink: #111112;
   --a3s-brand-blue: #7aa2f7;
-  --a3s-blue: var(--a3s-accent);
   --a3s-purple: #8378f0;
   --a3s-green: #57c795;
   --a3s-orange: #e7ad55;
   --a3s-warning: #e7ad55;
-  --a3s-shadow: 0 20px 20px -8px rgb(0 0 0 / 48%);
-  --a3s-shadow-soft: 0 8px 16px -4px rgb(0 0 0 / 42%);
-  --a3s-shadow-composer: 0 8px 16px -4px rgb(0 0 0 / 34%);
-  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 28%), 0 1px 6px rgb(0 0 0 / 18%);
+  --a3s-red: #ef7a82;
+  --accent-foreground: #c8d7ff;
+  --a3s-shadow: 0 24px 52px -18px rgb(0 0 0 / 66%);
+  --a3s-shadow-soft:
+    0 16px 40px -12px rgb(0 0 0 / 66%), 0 2px 8px rgb(0 0 0 / 24%);
+  --a3s-shadow-composer:
+    0 22px 52px -26px rgb(0 0 0 / 70%), 0 1px 2px rgb(0 0 0 / 30%);
+  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 28%);
 }
 
 @media (prefers-reduced-motion: reduce) {

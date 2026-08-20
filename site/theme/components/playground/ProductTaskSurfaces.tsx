@@ -5,6 +5,7 @@ import {
   projectTemplates,
   type ProductPlaygroundLocale,
 } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import {
   ProductComposer,
   type ProductComposerContext,
@@ -285,7 +286,7 @@ export function ProductProjectsSurface({
   const [notice, setNotice] = useState("");
   const [query, setQuery] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("");
-  const projectVisible = (zh ? "A3S UI 体验优化" : "A3S UI experience")
+  const projectVisible = productProjectName[locale]
     .toLocaleLowerCase(locale)
     .includes(query.trim().toLocaleLowerCase(locale));
   return (
@@ -338,7 +339,7 @@ export function ProductProjectsSurface({
             <span>
               <ProductPlaygroundIcon name="project" />
             </span>
-            <strong>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</strong>
+            <strong>{productProjectName[locale]}</strong>
             <small>{zh ? "最近更新 · 今天" : "Updated today"}</small>
             <ProductPlaygroundIcon name="more" />
           </Link>

@@ -7,6 +7,7 @@ import type {
   ProductPlaygroundView,
   ProductResourceView,
 } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import {
   ProductPlaygroundIcon,
   type ProductPlaygroundIconName,
@@ -47,7 +48,7 @@ const searchItems: readonly SearchItem[] = [
     icon: "project",
     id: "a3s-ui-project",
     keywords: "workspace project 空间 项目",
-    label: { en: "A3S UI experience", zh: "A3S UI 体验优化" },
+    label: productProjectName,
   },
   {
     category: "navigation",

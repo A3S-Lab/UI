@@ -249,7 +249,7 @@ if (strict) {
 
     for (const target of evidenceTargets) {
       if (
-        !/^(?:components|foundations|patterns)\/[a-z0-9-]+\.mdx$/u.test(target)
+        !/^(?:components|foundations)\/[a-z0-9-]+\.mdx$/u.test(target)
       ) {
         evidenceErrors.push(
           `${row.sourcePath}: ${kind} evidence has an invalid bilingual guide path \`${target}\``,

@@ -27,20 +27,19 @@ suite "a3s-ui-application-and-utilities" {
         screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
     }
 
-    scenario "task-workspace-overlays" {
-        name = "Task Workspace keeps compact navigation and inspector outside the keyboard path while closed"
+    scenario "task-workspace" {
+        name = "Task Workspace keeps its compact inspector outside the keyboard path while closed"
         surface = "web"
         timeout_ms = 45000
         viewport "phone" { width = 390 height = 844 }
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/task-workspace.html" }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-workspace.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "navigation-inert" { visible = css(".a3s-preview .app-shell [data-app-navigation][inert][aria-hidden=true]") }
-        expect "inspector-inert" { visible = css(".a3s-preview .task-workspace [data-task-inspector][inert][aria-hidden=true]") }
-        click "open-inspector" { target = css(".a3s-preview [data-task-inspector-trigger]") }
-        expect "inspector-open" { visible = css(".a3s-preview .task-workspace[data-inspector=open] [data-task-inspector]:not([inert])") }
+        expect "inspector-inert" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace [data-task-inspector][inert][aria-hidden=true]") }
+        click "open-inspector" { target = css(".a3s-preview[data-preview-component=task-workspace] [data-task-inspector-trigger]") }
+        expect "inspector-open" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace[data-inspector=open] [data-task-inspector]:not([inert])") }
         press "close-inspector" { key = "Escape" }
-        expect "inspector-focus-restored" { visible = css(".a3s-preview .task-workspace:not([data-inspector=open]) [data-task-inspector-trigger]:focus") }
+        expect "inspector-focus-restored" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace:not([data-inspector=open]) [data-task-inspector-trigger]:focus") }
     }
 
     scenario "agent-workbench" {
@@ -117,44 +116,6 @@ suite "a3s-ui-application-and-utilities" {
         expect "running-item-closed" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running]:not([open])") }
         focus "focus-waiting-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary") }
         expect "waiting-item-focused" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary:focus") }
-    }
-
-    scenario "task-workspace" {
-        name = "Task Workspace keeps transcript, execution, approval, and changes in one responsive surface"
-        surface = "web"
-        timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/task-workspace.html" }
-        wait "loaded" { load = "networkidle" }
-        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "shell-visible" { visible = css(".a3s-preview .app-shell") }
-        expect "transcript-visible" { visible = css(".a3s-preview .agent-transcript[aria-label='Task transcript']") }
-        expect "plan-visible" { visible = css(".a3s-preview .task-plan[data-state=active]") }
-        expect "attachment-visible" { visible = css(".a3s-preview .message-attachment[data-state=complete]") }
-        expect "tool-call-visible" { visible = css(".a3s-preview details.tool-call[data-state=success]") }
-        expect "execution-visible" { visible = css(".a3s-preview details.execution-item") }
-        expect "approval-visible" { visible = css(".a3s-preview .approval-request[data-state=pending]") }
-        expect "evidence-visible" { visible = css(".a3s-preview .execution-evidence[data-state=verified]") }
-        expect "artifact-visible" { visible = css(".a3s-preview .artifact-card[data-state=complete]") }
-        expect "composer-visible" { visible = css(".a3s-preview form.agent-composer") }
-        viewport "phone" { width = 390 height = 844 }
-        expect "phone-main-visible" { visible = css(".a3s-preview .app-shell > [data-app-main]") }
-        expect "phone-send-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
-        screenshot "task-workspace-phone" { path = "patterns/task-workspace-phone.png" }
-    }
-
-    scenario "new-task" {
-        name = "New Task keeps suggestions and the first instruction in one submit boundary"
-        surface = "web"
-        timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/patterns/new-task.html" }
-        wait "loaded" { load = "networkidle" }
-        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "task-form-visible" { visible = css(".a3s-preview form.agent-composer[aria-label='Start a new task']") }
-        expect "suggestions-visible" { visible = css(".a3s-preview [data-task-suggestions] button") }
-        expect "instruction-visible" { visible = css(".a3s-preview form.agent-composer textarea[aria-label=Instruction]") }
-        viewport "phone" { width = 390 height = 844 }
-        expect "phone-submit-visible" { visible = css(".a3s-preview form.agent-composer button[type=submit]") }
-        screenshot "new-task-phone" { path = "patterns/new-task-phone.png" }
     }
 
     scenario "brand-lockup" {

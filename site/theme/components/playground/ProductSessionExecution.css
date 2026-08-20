@@ -14,17 +14,38 @@
   border-block: 1px solid var(--ui-line);
 }
 
-.product-execution-plan > header,
+.product-execution-plan > summary,
 .product-runtime-agents > header,
 .product-tool-timeline > header {
   display: flex;
-  min-height: 1.5rem;
+  min-height: 2rem;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.product-execution-plan > header > div,
+.product-execution-plan > summary {
+  margin: -0.25rem -0.375rem;
+  padding: 0.25rem 0.375rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.product-execution-plan > summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-execution-plan > summary:hover {
+  background: color-mix(in srgb, var(--ui-panel) 72%, transparent);
+}
+
+.product-execution-plan > summary:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.product-execution-plan > summary > div,
 .product-runtime-agents > header > div,
 .product-tool-timeline > header > div {
   display: inline-flex;
@@ -32,7 +53,7 @@
   gap: 0.5rem;
 }
 
-.product-execution-plan > header svg,
+.product-execution-plan > summary > div svg,
 .product-runtime-agents > header svg,
 .product-tool-timeline > header svg {
   width: 0.9375rem;
@@ -40,18 +61,38 @@
   color: var(--ui-muted);
 }
 
-.product-execution-plan > header strong,
+.product-execution-plan > summary strong,
 .product-runtime-agents > header strong,
 .product-tool-timeline > header strong {
   font-size: 0.8125rem;
   font-weight: 650;
 }
 
-.product-execution-plan > header small,
+.product-execution-plan > summary small,
 .product-runtime-agents > header small,
 .product-tool-timeline > header small {
   color: var(--ui-faint);
   font-size: 0.6875rem;
+}
+
+.product-execution-plan > summary > span {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.product-execution-plan [data-plan-disclosure] {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: none;
+  color: var(--ui-faint);
+  transform: rotate(-90deg);
+  transition: transform 140ms ease-out;
+}
+
+.product-execution-plan[open] [data-plan-disclosure] {
+  transform: rotate(0deg);
 }
 
 .product-execution-plan ol {
@@ -482,6 +523,10 @@
   font-size: 0.6875rem;
 }
 
+.product-tool-diff-preview > header button {
+  scroll-margin-block: 3rem 10rem;
+}
+
 .product-tool-diff-preview > header button:hover,
 .product-command-preview > header button:hover {
   background: var(--ui-panel);
@@ -494,7 +539,27 @@
   height: 0.75rem;
 }
 
-.product-tool-diff-preview pre,
+.product-tool-diff-preview pre {
+  margin: 0;
+  padding: 0.5rem;
+  overflow-x: auto;
+  background: var(--ui-code, var(--ui-paper));
+  color: var(--ui-muted);
+  font-family: var(--rp-font-family-mono);
+  font-size: 0.6875rem;
+  line-height: 1.25rem;
+}
+
+.product-tool-diff-preview code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+
 .product-command-preview pre {
   margin: 0;
   padding: 0.75rem;
@@ -508,9 +573,12 @@
 
 .product-tool-diff-preview code > span {
   display: block;
+  min-height: 1.25rem;
   min-width: max-content;
-  margin-inline: -0.75rem;
-  padding-inline: 0.75rem;
+  margin-inline: -0.5rem;
+  padding-inline: 0.5rem;
+  line-height: 1.25rem;
+  white-space: pre;
 }
 
 .product-tool-diff-preview [data-added] {
@@ -937,6 +1005,7 @@
 
   .product-session-context > summary > svg,
   .product-session-reasoning > summary > svg,
+  .product-execution-plan [data-plan-disclosure],
   .product-tool-timeline summary > svg {
     transition: none;
   }

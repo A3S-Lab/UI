@@ -1,5 +1,6 @@
 import { Link } from "@rspress/core/theme";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 export function ProductProjectBreadcrumb({
@@ -27,13 +28,13 @@ export function ProductProjectBreadcrumb({
       {current ? (
         <>
           <Link href={projectHref}>
-            {zh ? "A3S UI 体验优化" : "A3S UI experience"}
+            {productProjectName[locale]}
           </Link>
           <span aria-hidden="true">/</span>
           <h1>{current}</h1>
         </>
       ) : (
-        <h1>{zh ? "A3S UI 体验优化" : "A3S UI experience"}</h1>
+        <h1>{productProjectName[locale]}</h1>
       )}
     </nav>
   );

@@ -11,18 +11,20 @@
 .a3s-product-application {
   --product-sidebar-width: 16.5rem;
   --product-sidebar-mobile-width: 17rem;
-  --ui-canvas: #f6f6f6;
-  --ui-paper: #ffffff;
-  --ui-panel: #f3f3f3;
-  --ui-panel-raised: #eeeeee;
-  --ui-panel-active: #e8e8e8;
-  --ui-ink: #171717;
-  --ui-muted: #595959;
-  --ui-faint: #858585;
-  --ui-line: #e8e8e8;
-  --ui-line-strong: #d8d8d8;
-  --ui-shadow-floating:
-    0 14px 36px -14px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 5%);
+  --ui-canvas: var(--a3s-canvas, #f6f6f6);
+  --ui-paper: var(--a3s-paper, #ffffff);
+  --ui-panel: var(--a3s-surface, #f3f3f3);
+  --ui-panel-raised: var(--a3s-surface-raised, #eeeeee);
+  --ui-panel-active: var(--a3s-surface-active, #e8e8e8);
+  --ui-ink: var(--a3s-ink, #171717);
+  --ui-muted: var(--a3s-muted, #595959);
+  --ui-faint: var(--a3s-faint, #858585);
+  --ui-line: var(--a3s-line, #e8e8e8);
+  --ui-line-strong: var(--a3s-line-strong, #d8d8d8);
+  --ui-shadow-floating: var(
+    --a3s-shadow-soft,
+    0 14px 36px -14px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 5%)
+  );
   position: relative;
   display: grid;
   width: 100%;
@@ -37,18 +39,20 @@
 }
 
 :is(html.dark, html[data-theme="dark"]) .a3s-product-application {
-  --ui-canvas: #111112;
-  --ui-paper: #171718;
-  --ui-panel: #202021;
-  --ui-panel-raised: #262627;
-  --ui-panel-active: #2b2b2d;
-  --ui-ink: #f2f2f3;
-  --ui-muted: #b7b7ba;
-  --ui-faint: #8b8b90;
-  --ui-line: #2a2a2c;
-  --ui-line-strong: #3a3a3d;
-  --ui-shadow-floating:
-    0 16px 40px -12px rgb(0 0 0 / 66%), 0 2px 8px rgb(0 0 0 / 24%);
+  --ui-canvas: var(--a3s-canvas, #111112);
+  --ui-paper: var(--a3s-paper, #171718);
+  --ui-panel: var(--a3s-surface, #202021);
+  --ui-panel-raised: var(--a3s-surface-raised, #262627);
+  --ui-panel-active: var(--a3s-surface-active, #2b2b2d);
+  --ui-ink: var(--a3s-ink, #f2f2f3);
+  --ui-muted: var(--a3s-muted, #b7b7ba);
+  --ui-faint: var(--a3s-faint, #8b8b90);
+  --ui-line: var(--a3s-line, #2a2a2c);
+  --ui-line-strong: var(--a3s-line-strong, #3a3a3d);
+  --ui-shadow-floating: var(
+    --a3s-shadow-soft,
+    0 16px 40px -12px rgb(0 0 0 / 66%), 0 2px 8px rgb(0 0 0 / 24%)
+  );
 }
 
 .a3s-product-application *,

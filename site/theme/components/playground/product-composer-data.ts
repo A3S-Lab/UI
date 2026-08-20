@@ -5,6 +5,7 @@ export type ProductComposerResource = {
   kind: "assistant" | "connector" | "file" | "folder" | "selection" | "skill";
   label: string;
   meta?: string;
+  workspaceFileId?: string;
 };
 
 export type ProductComposerWorkspace = "" | "local" | "root" | "ui";
@@ -128,72 +129,6 @@ export const productComposerEfforts: readonly {
     },
   },
 ];
-
-export const productComposerSkills = [
-  {
-    id: "a3s-office",
-    label: "a3s-office",
-    description: {
-      en: "Edit supported documents, spreadsheets, and presentations.",
-      zh: "编辑受支持的文档、电子表格与演示文稿。",
-    },
-    scope: { en: "Built in", zh: "内置" },
-  },
-  {
-    id: "a3s-use-science",
-    label: "a3s-use-science",
-    description: {
-      en: "Use the verified science package for research workflows.",
-      zh: "在研究工作流中使用已验证的科学能力包。",
-    },
-    scope: { en: "Verified package", zh: "已验证能力包" },
-  },
-  {
-    id: "workspace-inspection",
-    label: "workspace-inspection",
-    description: {
-      en: "Inspect workspace structure, status, and focused file changes.",
-      zh: "检查工作区结构、状态与聚焦文件变更。",
-    },
-    scope: { en: "Read only", zh: "只读" },
-  },
-  {
-    id: "visual-acceptance",
-    label: "visual-acceptance",
-    description: {
-      en: "Capture representative viewports and compare visible states.",
-      zh: "采集代表性视口并对比可见状态。",
-    },
-    scope: { en: "Verified", zh: "已验证" },
-  },
-  {
-    id: "knowledge-compile",
-    label: "knowledge-compile",
-    description: {
-      en: "Compile approved sources into a durable local knowledge base.",
-      zh: "将已批准资料编译为长期本地知识库。",
-    },
-    scope: { en: "Workspace", zh: "工作区" },
-  },
-  {
-    id: "release-review",
-    label: "release-review",
-    description: {
-      en: "Review checks, regressions, migration notes, and rollback evidence.",
-      zh: "评审检查、回归、迁移说明与回滚证据。",
-    },
-    scope: { en: "Verified", zh: "已验证" },
-  },
-  {
-    id: "document-synthesis",
-    label: "document-synthesis",
-    description: {
-      en: "Combine cited sources into a reviewed document without losing provenance.",
-      zh: "在保留来源的前提下，将引用资料综合为可审阅文档。",
-    },
-    scope: { en: "Built in", zh: "内置" },
-  },
-] as const;
 
 export const productComposerCommands = [
   {

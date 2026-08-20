@@ -23,21 +23,25 @@
 - Added Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with selection, sorting, keyboard menus, responsive records, file state, bilingual guides, and split controller imports.
 - Added a standalone bilingual `/playground` route for exercising eight complete workspace compositions across desktop, tablet, phone, recovery, inspector, dark-theme, and RTL states without placing it in the documentation hierarchy.
 - Added `useA3SLocale`, `useA3STheme`, and `useA3SMotion` to both framework packages, with shared root-DOM state, media-query observation, typed setters, lifecycle cleanup, and bilingual runtime-configuration guidance.
-- Added bilingual composition, host-integration, landmark, mobile, and identity boundaries for capabilities that should remain recipes, foundations, host slots, or responsive presentations instead of duplicate public components.
 - Added strict evidence validation for all 160 pinned reference mappings, including bilingual component guides, framework usage, applicable hooks, ownership boundaries, official identity, and the standalone Playground route.
 
 ### Changed
 
+- Retired the standalone Patterns documentation chapter across current and historical version trees; reusable contracts remain under Components and Harness, while app-scale compositions remain in Playground.
+- Rebuilt Playground Automations around predictable next-run timestamps, anchored and time-zoned schedules, persisted model/effort/permission boundaries, truthful per-run steps and durations, recoverable filtered retries, manual execution while schedules are paused, and focus-safe compact navigation.
+- Rebuilt Playground Memory as a traceable, human-reviewed workflow with real scope and type filtering, relationship zoom, durable candidate acceptance, source evidence, reversible removal requests, mobile detail drawers, settings ownership, and task-context reuse.
+- Rebuilt Playground knowledge management around source roots and indexed-item counts, with validated source creation, recoverable disconnects that retain workspace files, per-source reindexing, keyboard-complete detail tabs, and retry completion that reconciles every source state.
+- Reordered bilingual documentation navigation by learning dependency—Guide, Foundations, Components, Harness, then Playground—and kept Resources last while limiting each stable version to sections it actually publishes.
 - Replaced the legacy workspace-composition Playground with a bilingual task-first product application that unifies durable sessions, project work, the production composer, execution review, local files and editors, Knowledge, Memory, extensions, automations, and settings under canonical `/playground` routes.
 - Rebuilt model settings as a production configuration workspace with host-managed and custom providers, connection fields, credential visibility, model capabilities and limits, default selection, staged save/reset behavior, and compact-screen operation without inventing vendor-specific models.
 - Rebuilt the project workspace as a complete task surface with Activity, Plan, Tasks, and Assets views, scoped filtering and search, project configuration, collaboration state, and a context-aware TipTap composer; widened the application shell and conversation geometry for production-scale work.
 - Rebuilt documentation previews around centered-control, flowing-content, bounded-overlay, and edge-to-edge-workspace layouts; phone and tablet controls now use isolated CSS viewports so responsive media queries evaluate against the selected width.
 - Reworked Device Simulator previews with scaled phone, tablet, and desktop hardware shells while preserving exact iframe viewport dimensions, orientation, and native preview arguments.
 - Rebuilt the documentation theme around Rspress routing with Chinese as the default language, page-preserving language and version switching, an official A3S logo, and first-load navigation that works before hydration.
-- Reorganized the bilingual navigation into eight responsibility-based general-component groups, seven workflow-stage Harness groups, and three task-oriented pattern groups without changing public routes.
+- Reorganized the bilingual documentation into eight responsibility-based general-component groups and seven workflow-stage Harness groups.
 - Added a first-principles product admission gate to `DESIGN.md`, separating durable components from extracted patterns, compositions, and rejected application-specific implementations.
 - Deepened Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with cancelable precondition hooks, controlled snapshots, source-aware completion events, asynchronous recovery, read-only behavior, filtering, and reversible inline rename.
-- Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, and overlays with the Focused Intelligence palette, 4/6/8/12-pixel radii, A3S OS blue action hierarchy, and 120/160/220-millisecond motion system.
+- Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, overlays, application chrome, and documentation previews with the Playground neutral surface system, 6/8/10/14-pixel radii, neutral primary commands, A3S OS blue interaction states, and 120/160/220-millisecond motion system; canonical component-family styles now remain authoritative over the earlier Office refinement layer.
 - Exposed Tabs, Alert Dialog, Dialog, Drawer, Dropdown Menu, and Popover controller methods through the manifest and generated React hooks and Vue composables.
 
 ### Fixed

@@ -78,6 +78,17 @@ suite "a3s-ui-product-resource-surfaces" {
         expect "failed-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=failed] [role=alert]") }
         expect "recovery-action-visible" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=failed] button") }
 
+        screenshot "failed-desktop-evidence" { path = "product/knowledge-library-failed-desktop.png" }
+        click "retry-update" { target = role("button", "再次更新") }
+        expect "retry-queued" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=queued]") }
+        expect "previous-error-retained-during-retry" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=queued] [role=status]") }
+        wait "recovery-complete" { visible = css(".product-knowledge-library [data-knowledge-compilation][data-phase=succeeded]") }
+        click "open-recovered-sources" { target = role("tab", "来源") }
+        expect "source-tab-complete" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']") }
+        expect "skipped-source-recovered" { visible = css(".product-knowledge-library [data-source-id=missing] [data-source-status=indexed]") }
+        expect "all-source-states-consistent" { visible = css(".product-knowledge-library [data-knowledge-sources]:not(:has([data-source-status=pending])):not(:has([data-source-status=skipped]))") }
+        screenshot "recovered-desktop-evidence" { path = "product/knowledge-library-recovered-desktop.png" }
+
         viewport "mobile" { width = 390 height = 844 }
         expect "mobile-detail-visible" { visible = css(".product-knowledge-library [data-knowledge-library-detail] button[aria-label='关闭知识库详情']") }
         screenshot "mobile-evidence" { path = "product/knowledge-library-recovery-mobile.png" }
@@ -85,6 +96,61 @@ suite "a3s-ui-product-resource-surfaces" {
         expect "library-list-restored" { visible = css(".product-knowledge-library [data-knowledge-library-group]") }
         console "console" { path = "product/knowledge-library-console.json" clear = false }
         page_errors "page-errors" { path = "product/knowledge-library-page-errors.json" clear = false }
+    }
+
+    scenario "knowledge-source-management" {
+        name = "Knowledge sources can be added, reindexed, and disconnected without deleting workspace files"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/knowledge.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "library-ready" { visible = css(".product-knowledge-library [data-knowledge-library-detail]") }
+        click "open-sources" { target = role("tab", "来源") }
+        expect "sources-selected" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']") }
+        press "move-to-settings" { key = "ArrowRight" }
+        expect "settings-selected-and-focused" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-settings-panel']:focus") }
+        press "return-to-sources" { key = "ArrowLeft" }
+        expect "sources-selected-and-focused" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']:focus") }
+
+        click "open-source-form" { target = role("button", "添加来源") }
+        expect "source-path-focused" { visible = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']:focus") }
+        fill "invalid-source-path" { target = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']") value = "../private" }
+        click "submit-invalid-source" { target = css(".product-knowledge-library [data-knowledge-source-form] button[type=submit]") }
+        expect "source-validation" { visible = css(".product-knowledge-library [data-knowledge-source-form] [role=alert]") }
+        fill "valid-source-path" { target = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']") value = "/workspace/docs/product-notes" }
+        fill "source-name" { target = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源显示名称']") value = "Product notes" }
+        click "add-source" { target = css(".product-knowledge-library [data-knowledge-source-form] button[type=submit]") }
+        expect "source-added-pending" { visible = css(".product-knowledge-library [data-source-path='/workspace/docs/product-notes'] [data-source-status=pending]") }
+        expect "add-trigger-focus-restored" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+
+        click "manage-indexed-source" { target = role("button", "管理 DESIGN.md") }
+        expect "source-action-focused" { visible = css(".product-knowledge-library [data-source-id=design] [data-knowledge-source-actions] button:first-of-type:focus") }
+        screenshot "source-actions-evidence" { path = "product/knowledge-source-actions-desktop.png" }
+        click "mark-for-reindex" { target = role("button", "下次更新时重新索引") }
+        expect "source-marked-pending" { visible = css(".product-knowledge-library [data-source-id=design] [data-source-status=pending]") }
+        expect "manage-trigger-focus-restored" { visible = css(".product-knowledge-library button[aria-label='管理 DESIGN.md']:focus") }
+
+        click "manage-added-source" { target = role("button", "管理 Product notes") }
+        click "request-remove-connection" { target = role("button", "移除关联") }
+        expect "safe-removal-copy" { text = "工作空间中的原文件会保留" }
+        expect "cancel-removal-focused" { visible = css(".product-knowledge-library [data-source-remove-confirmation] button:first-of-type:focus") }
+        screenshot "remove-confirmation-evidence" { path = "product/knowledge-source-removal-desktop.png" }
+        click "confirm-remove-connection" { target = role("button", "确认移除") }
+        expect "source-disconnected" { visible = css(".product-knowledge-library [data-knowledge-sources]:not(:has([data-source-path='/workspace/docs/product-notes']))") }
+        expect "stable-focus-after-removal" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+
+        viewport "mobile" { width = 390 height = 844 }
+        click "reopen-source-form" { target = role("button", "添加来源") }
+        expect "mobile-form-focused" { visible = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']:focus") }
+        screenshot "mobile-source-form" { path = "product/knowledge-source-form-mobile.png" }
+        press "close-form-with-escape" { key = "Escape" }
+        expect "mobile-add-trigger-restored" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+
+        screenshot "mobile-evidence" { path = "product/knowledge-source-management-mobile.png" }
+        console "console" { path = "product/knowledge-source-management-console.json" clear = false }
+        page_errors "page-errors" { path = "product/knowledge-source-management-page-errors.json" clear = false }
     }
 
     scenario "knowledge-context-to-task" {

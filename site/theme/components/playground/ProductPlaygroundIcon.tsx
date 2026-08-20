@@ -40,11 +40,13 @@ export type ProductPlaygroundIconName =
   | "mail"
   | "menu"
   | "microphone"
+  | "minus"
   | "moon"
   | "more"
   | "notification"
   | "palette"
   | "pause"
+  | "play"
   | "pin"
   | "plus"
   | "presentation"
@@ -239,6 +241,7 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
       <path d="M6.5 11a5.5 5.5 0 0 0 11 0M12 16.5V21M9 21h6" />
     </>
   ),
+  minus: <path d="M5 12h14" />,
   moon: <path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />,
   more: (
     <>
@@ -260,6 +263,7 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   pause: <path d="M8 5v14M16 5v14" />,
+  play: <path d="m8 5 11 7-11 7Z" />,
   pin: (
     <>
       <path d="m9 4 6 6M7 9l8 8M14 3l7 7-4 1-5 5-1 4-7-7 4-1 5-5Z" />

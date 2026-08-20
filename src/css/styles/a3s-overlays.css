@@ -4,11 +4,11 @@
   .dialog::backdrop,
   .alert-dialog::backdrop,
   .command-dialog::backdrop {
-    @apply bg-black/10 backdrop-blur-xs duration-100;
+    @apply bg-black/25 duration-100;
   }
 
   .alert-dialog > * {
-    @apply bg-popover text-popover-foreground ring-foreground/10 max-w-xs gap-6 rounded-xl p-6 ring-1 duration-100 sm:max-w-lg;
+    @apply bg-popover text-popover-foreground border border-border max-w-xs gap-6 rounded-lg p-6 shadow-[var(--a3s-shadow)] duration-100 sm:max-w-lg;
   }
 
   .alert-dialog:is([data-size="sm"]) > *,
@@ -17,7 +17,7 @@
   }
 
   .dialog > * {
-    @apply bg-popover text-popover-foreground ring-foreground/10 max-w-[calc(100%-2rem)] gap-6 rounded-xl p-6 text-sm ring-1 duration-100 sm:max-w-md;
+    @apply bg-popover text-popover-foreground border border-border max-w-[calc(100%-2rem)] gap-6 rounded-lg p-6 text-sm shadow-[var(--a3s-shadow)] duration-100 sm:max-w-md;
   }
 
   .dialog > * > :is(button, form[method="dialog"]) {
@@ -63,7 +63,7 @@
 
   /* Drawer */
   .drawer::backdrop {
-    @apply bg-black/10 backdrop-blur-xs;
+    @apply bg-black/25;
   }
 
   .drawer > * {
@@ -72,19 +72,19 @@
 
   .drawer:not([data-side]) > *,
   .drawer[data-side="bottom"] > * {
-    @apply rounded-t-xl border-t;
+    @apply rounded-t-lg border-t;
   }
 
   .drawer[data-side="top"] > * {
-    @apply rounded-b-xl border-b;
+    @apply rounded-b-lg border-b;
   }
 
   .drawer[data-side="left"] > * {
-    @apply rounded-r-xl border-r;
+    @apply rounded-r-lg border-r;
   }
 
   .drawer[data-side="right"] > * {
-    @apply rounded-l-xl border-l;
+    @apply rounded-l-lg border-l;
   }
 
   .drawer > * > header {
@@ -113,12 +113,12 @@
 
   /* Dropdown Menu */
   .dropdown-menu > [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 gap-0 overflow-x-hidden overflow-y-auto rounded-md p-1 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground border border-border gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-100;
   }
 
   .dropdown-menu
     :is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]) {
-    @apply gap-2 rounded-sm px-2 py-1.5 text-sm focus-visible:bg-accent focus-visible:text-accent-foreground [&_svg:not([class*='size-'])]:size-4;
+    @apply gap-2 rounded-sm px-2 py-1.5 text-sm focus-visible:bg-muted focus-visible:text-foreground [&_svg:not([class*='size-'])]:size-4;
   }
 
   .dropdown-menu
@@ -157,7 +157,7 @@
   }
 
   .dropdown-menu [data-indicator] {
-    @apply absolute end-2 flex items-center justify-center;
+    @apply absolute end-2 flex items-center justify-center text-[var(--a3s-accent)];
   }
 
   .dropdown-menu [role="heading"] {
@@ -184,7 +184,7 @@
 
   /* Popover */
   [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 flex flex-col gap-4 rounded-md p-4 text-sm shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground border border-border flex flex-col gap-4 rounded-lg p-4 text-sm shadow-[var(--a3s-shadow-soft)] duration-100;
   }
   .popover > [data-popover] > header,
   .popover > [data-popover] > [data-header] {

@@ -1,3 +1,4 @@
+import "@a3s-lab/office/styles.css";
 import "./index.css";
 
 export { HomeLayout } from "./components/HomeLayout";

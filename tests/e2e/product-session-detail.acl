@@ -17,6 +17,17 @@ suite "a3s-ui-product-session-detail" {
         expect "details-secondary" { visible = css(".product-session__actions button[aria-label='打开任务详情']") }
         expect "details-hidden-by-default" { visible = css("[data-product-surface=session]:not(:has(aside[aria-label='任务详情']))") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
+        expect "completed-plan-collapsed" { visible = css("details.product-execution-plan[data-state=complete]:not([open])") }
+
+        click "expand-completed-plan" { target = css(".product-execution-plan > summary") }
+        expect "completed-plan-steps-visible" { visible = css(".product-execution-plan[open] ol") }
+        click "collapse-completed-plan" { target = css(".product-execution-plan > summary") }
+        expect "completed-plan-collapsed-again" { visible = css(".product-execution-plan:not([open])") }
+
+        click "open-primary-review-action" { target = role("button", "设备预览") }
+        wait "primary-review-opens-preview" { visible = css(".product-session-inspector .product-device-shell") }
+        click "close-primary-review" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
+        expect "primary-review-focus-restored" { visible = css(".product-delivery-summary button[data-primary]:focus") }
 
         click "open-search" { target = css("button[aria-label='在会话中搜索']") }
         fill "search-focus" { target = css("input[aria-label='搜索当前会话']") value = "焦点" }
@@ -32,8 +43,12 @@ suite "a3s-ui-product-session-detail" {
         click "close-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
         expect "details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
 
-        click "open-device-preview" { target = role("button", "设备预览") }
-        expect "device-preview-visible" { visible = css(".product-session-inspector .product-device-shell") }
+        click "open-full-diff" { target = role("button", "查看完整差异") }
+        wait "diff-inspector-visible" { visible = css(".product-session-inspector .product-inspector-diff") }
+        expect "diff-lines-visible" { visible = css(".product-inspector-diff tbody tr[data-kind=added]") }
+        screenshot "diff-evidence" { path = "product/session-diff-desktop.png" }
+        click "switch-diff-to-device-preview" { target = role("tab", "预览") }
+        wait "device-preview-visible" { visible = css(".product-session-inspector .product-device-shell") }
         select "choose-desktop-preview" { target = css(".product-inspector-preview select[aria-label='预览设备尺寸']") values = ["desktop"] }
         expect "desktop-shell-visible" { visible = css(".product-device-stage[data-device=desktop][data-preset=desktop] .product-device-shell") }
         click "open-full-device-simulator" { target = role("button", "打开完整设备模拟器") }
@@ -52,8 +67,9 @@ suite "a3s-ui-product-session-detail" {
         expect "tool-call-node-selected" { visible = css(".product-session-code-graph [data-node-id='tool-calls'][aria-selected=true]") }
         click "close-result-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
 
-        click "open-response-menu" { target = css(".product-session__message-menu > summary") }
-        expect "response-menu-visible" { visible = css(".product-session__message-menu[open] [role=menu]") }
+        focus "focus-response-menu" { target = css(".product-session__message-menu > summary") }
+        press "open-response-menu" { key = "Enter" }
+        wait "response-menu-visible" { visible = css(".product-session__message-menu[open] [role=menu]") }
         click "save-response-memory" { target = role("menuitem", "保存到记忆") }
         expect "response-memory-status" { text = "回复已保存到记忆" }
 

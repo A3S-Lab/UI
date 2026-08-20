@@ -9,9 +9,19 @@ import {
 import {
   productFileEntries,
   type ProductFileEntry,
-  type ProductFileWorkbenchKind,
 } from "./product-file-manager-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import {
+  inferProductWorkspaceFileWorkbench,
+  moveProductWorkspaceFile,
+  productWorkspaceFileType,
+  queueProductWorkspaceFiles,
+  removeProductWorkspaceFiles,
+  renameProductWorkspaceFile,
+  retryProductWorkspaceFile,
+  useProductWorkspaceFiles,
+  type ProductWorkspaceFile,
+} from "./product-workspace-files";
 
 export type ProductFileView = "grid" | "list";
 export type ProductFileSortField = "modified" | "name" | "size";
@@ -21,6 +31,7 @@ export function useProductFileManager(
   initialWorkbenchId?: string,
 ) {
   const zh = locale === "zh";
+  const workspaceFiles = useProductWorkspaceFiles();
   const [clipboard, setClipboard] = useState<{
     ids: string[];
     mode: "copy" | "cut";
@@ -35,6 +46,7 @@ export function useProductFileManager(
   const [dropActive, setDropActive] = useState(false);
   const [entries, setEntries] = useState<ProductFileEntry[]>(() => [
     ...productFileEntries,
+    ...workspaceFiles.map((record) => workspaceFileEntry(record, locale)),
   ]);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [folderError, setFolderError] = useState("");
@@ -137,6 +149,24 @@ export function useProductFileManager(
     };
   }, [quickLookId, quickLookModalOpen]);
 
+  useEffect(() => {
+    setEntries((currentEntries) => {
+      const persistentEntries = currentEntries.filter(
+        (entry) => !entry.workspaceFileId,
+      );
+      const importedEntries = workspaceFiles.map((record) => {
+        const currentEntry = currentEntries.find(
+          (entry) => entry.workspaceFileId === record.id,
+        );
+        return {
+          ...workspaceFileEntry(record, locale),
+          ...(currentEntry?.favorite ? { favorite: true } : {}),
+        };
+      });
+      return [...persistentEntries, ...importedEntries];
+    });
+  }, [locale, workspaceFiles]);
+
   const handleQuickLookKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (!quickLookModalOpen) return;
     if (event.key === "Escape") {
@@ -216,6 +246,22 @@ export function useProductFileManager(
   };
 
   const openEntry = (entry: ProductFileEntry) => {
+    if (entry.transferState === "copying") {
+      setStatus(
+        zh
+          ? "文件仍在复制到工作区，请稍候。"
+          : "The file is still being copied into the workspace.",
+      );
+      return;
+    }
+    if (entry.transferState === "error") {
+      setStatus(
+        zh
+          ? "文件导入失败，请重试或移除。"
+          : "The file import failed. Retry or remove it.",
+      );
+      return;
+    }
     if (entry.kind === "folder") navigate(entry.id);
     else setQuickLookId(entry.id);
   };
@@ -243,6 +289,10 @@ export function useProductFileManager(
           : "An item with that name already exists here.",
       );
       return;
+    }
+    const target = entries.find((entry) => entry.id === renameId);
+    if (target?.workspaceFileId) {
+      renameProductWorkspaceFile(target.workspaceFileId, name);
     }
     setEntries((currentEntries) =>
       currentEntries.map((entry) =>
@@ -317,6 +367,14 @@ export function useProductFileManager(
     if (!clipboard) return;
     if (clipboard.mode === "copy") duplicateEntries(clipboard.ids);
     else {
+      entries
+        .filter(
+          (entry) =>
+            clipboard.ids.includes(entry.id) && entry.workspaceFileId,
+        )
+        .forEach((entry) =>
+          moveProductWorkspaceFile(entry.workspaceFileId!, currentId),
+        );
       setEntries((currentEntries) =>
         currentEntries.map((entry) =>
           clipboard.ids.includes(entry.id)
@@ -407,33 +465,59 @@ export function useProductFileManager(
   };
 
   const addDroppedFiles = (files: readonly File[]) => {
-    const additions = files.map((file, index) => ({
-      id: `upload-${file.name}-${Date.now()}-${index}`,
-      kind: "file" as const,
-      modified: new Date().toISOString(),
-      name: file.name,
-      owner: zh ? "你" : "You",
+    if (files.length === 0) return;
+    const batch = queueProductWorkspaceFiles(files, {
       parentId: currentId,
-      preview: {
-        en: "Imported from this device into the current workspace folder.",
-        zh: "已从此设备导入当前工作区文件夹。",
-      },
-      size: formatBytes(file.size),
-      sizeBytes: file.size,
-      type: file.name.split(".").pop()?.toLocaleUpperCase() || "File",
-      workbench: inferFileWorkbench(file.name),
-    }));
-    setEntries((currentEntries) => [...currentEntries, ...additions]);
-    setSelectedIds(new Set(additions.map((entry) => entry.id)));
+      workspace: "ui",
+    });
+    setSelectedIds(new Set(batch.records.map((record) => record.id)));
     setStatus(
-      zh
-        ? `已导入 ${additions.length} 个文件。`
-        : `${additions.length} file${additions.length === 1 ? "" : "s"} imported.`,
+      batch.rejected.length > 0
+        ? zh
+          ? `${batch.rejected.length} 个文件不符合导入限制，其余文件正在复制。`
+          : `${batch.rejected.length} file${batch.rejected.length === 1 ? "" : "s"} did not meet the import limits. The rest are copying.`
+        : zh
+          ? `正在导入 ${batch.records.length} 个文件…`
+          : `Importing ${batch.records.length} file${batch.records.length === 1 ? "" : "s"}…`,
     );
+    void batch.completion.then((records) => {
+      const failed = records.filter((record) => record.state === "error");
+      setStatus(
+        failed.length > 0
+          ? zh
+            ? `${failed.length} 个文件导入失败，可选择后重试。`
+            : `${failed.length} file${failed.length === 1 ? "" : "s"} failed to import. Select them to retry.`
+          : zh
+            ? `${records.length} 个文件已复制到当前工作区文件夹。`
+            : `${records.length} file${records.length === 1 ? "" : "s"} copied into this workspace folder.`,
+      );
+    });
+  };
+
+  const retryDroppedFile = (entry: ProductFileEntry) => {
+    if (!entry.workspaceFileId) return;
+    setStatus(zh ? `正在重试“${entry.name}”…` : `Retrying “${entry.name}”…`);
+    void retryProductWorkspaceFile(entry.workspaceFileId).then((record) => {
+      setStatus(
+        record.state === "ready"
+          ? zh
+            ? `“${record.name}”已复制到工作区。`
+            : `“${record.name}” was copied into the workspace.`
+          : zh
+            ? `仍无法读取“${record.name}”。`
+            : `“${record.name}” still could not be read.`,
+      );
+    });
   };
 
   const confirmDelete = () => {
     const targets = collectDescendants(entries, deletePending);
+    const workspaceFileIds = entries.flatMap((entry) =>
+      targets.has(entry.id) && entry.workspaceFileId
+        ? [entry.workspaceFileId]
+        : [],
+    );
+    removeProductWorkspaceFiles(workspaceFileIds);
     setEntries((currentEntries) =>
       currentEntries.filter((entry) => !targets.has(entry.id)),
     );
@@ -482,6 +566,7 @@ export function useProductFileManager(
     query,
     renameId,
     renameValue,
+    retryDroppedFile,
     searchScope,
     selectEntry,
     selectedEntries,
@@ -564,34 +649,40 @@ function formatBytes(value: number) {
   return `${(value / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function inferFileWorkbench(
-  name: string,
-): ProductFileWorkbenchKind | undefined {
-  const extension = name.split(".").pop()?.toLocaleLowerCase();
-  if (!extension) return undefined;
-  if (["doc", "docx", "odt"].includes(extension)) return "document";
-  if (["csv", "ods", "xls", "xlsx"].includes(extension)) return "spreadsheet";
-  if (["odp", "ppt", "pptx"].includes(extension)) return "presentation";
-  if (extension === "pdf") return "pdf";
-  if (
-    [
-      "css",
-      "html",
-      "js",
-      "json",
-      "jsx",
-      "md",
-      "mdx",
-      "py",
-      "rs",
-      "ts",
-      "tsx",
-      "txt",
-      "vue",
-    ].includes(extension)
-  )
-    return "code";
-  return undefined;
+function workspaceFileEntry(
+  record: ProductWorkspaceFile,
+  locale: ProductPlaygroundLocale,
+): ProductFileEntry {
+  const zh = locale === "zh";
+  return {
+    id: record.id,
+    kind: "file",
+    modified: record.importedAt,
+    name: record.name,
+    owner: zh ? "你" : "You",
+    parentId: record.parentId,
+    preview: {
+      en:
+        record.state === "ready"
+          ? "Imported from this device and available to workspace tasks."
+          : record.state === "copying"
+            ? "This file is being copied into the workspace."
+            : "The browser could not read this file. Retry the import or remove it.",
+      zh:
+        record.state === "ready"
+          ? "已从此设备导入，可供工作区任务使用。"
+          : record.state === "copying"
+            ? "正在将此文件复制到工作区。"
+            : "浏览器无法读取此文件，请重试导入或移除。",
+    },
+    size: formatBytes(record.file.size),
+    sizeBytes: record.file.size,
+    transferError: record.errorCode,
+    transferState: record.state,
+    type: productWorkspaceFileType(record.name),
+    workbench: inferProductWorkspaceFileWorkbench(record.name),
+    workspaceFileId: record.id,
+  };
 }
 
 export function formatFileDate(value: string, locale: ProductPlaygroundLocale) {

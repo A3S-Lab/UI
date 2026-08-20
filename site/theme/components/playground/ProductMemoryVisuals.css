@@ -38,6 +38,7 @@
 }
 
 .product-memory__graph > header button {
+  display: grid;
   width: 2rem;
   height: 2rem;
   padding: 0;
@@ -45,6 +46,22 @@
   background: var(--ui-paper);
   color: var(--ui-muted);
   cursor: pointer;
+  place-items: center;
+}
+
+.product-memory__graph > header button:hover:not(:disabled) {
+  background: var(--ui-panel-active);
+  color: var(--ui-ink);
+}
+
+.product-memory__graph > header button:disabled {
+  color: color-mix(in srgb, var(--ui-faint) 42%, transparent);
+  cursor: not-allowed;
+}
+
+.product-memory__graph > header button svg {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .product-memory__graph > header output {
@@ -82,7 +99,15 @@
     auto;
 }
 
-[data-memory-graph-canvas] > svg {
+[data-memory-graph-viewport] {
+  position: absolute;
+  inset: 0;
+  transform: scale(var(--memory-graph-scale, 1));
+  transform-origin: center;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-memory-graph-viewport] > svg {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -91,15 +116,14 @@
   pointer-events: none;
 }
 
-[data-memory-graph-canvas] > svg path {
-  fill: none;
+[data-memory-graph-viewport] > svg line {
   stroke: color-mix(in srgb, var(--ui-blue) 28%, var(--ui-line));
   stroke-dasharray: 2 2;
   stroke-width: 0.28;
   vector-effect: non-scaling-stroke;
 }
 
-[data-memory-graph-canvas] > button {
+[data-memory-graph-viewport] > button {
   position: absolute;
   inset-block-start: var(--memory-node-y);
   inset-inline-start: var(--memory-node-x);
@@ -116,18 +140,23 @@
   transform: translate(-50%, -50%);
 }
 
-[data-memory-graph-canvas] > button:hover,
-[data-memory-graph-canvas] > button[aria-pressed="true"] {
+[data-memory-graph-viewport] > button:hover,
+[data-memory-graph-viewport] > button[aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--ui-blue) 52%, var(--ui-line));
 }
 
-[data-memory-graph-canvas] > button[aria-pressed="true"] {
+[data-memory-graph-viewport] > button[aria-pressed="true"] {
   box-shadow:
     0 0 0 3px color-mix(in srgb, var(--ui-blue) 10%, transparent),
     0 0.625rem 1.75rem -1.25rem rgb(15 23 42 / 32%);
 }
 
-[data-memory-graph-canvas] > button > span {
+[data-memory-graph-viewport] > button[data-removal="pending"] {
+  border-color: color-mix(in srgb, var(--ui-amber) 42%, var(--ui-line));
+  background: color-mix(in srgb, var(--ui-amber) 6%, var(--ui-paper));
+}
+
+[data-memory-graph-viewport] > button > span {
   display: grid;
   width: 2rem;
   height: 2rem;
@@ -138,33 +167,28 @@
   place-items: center;
 }
 
-[data-memory-graph-canvas] > button > span[data-tone="2"] {
+[data-memory-graph-viewport] > button > span[data-tone="personal"] {
   background: color-mix(in srgb, var(--ui-purple) 10%, var(--ui-panel));
   color: var(--ui-purple);
 }
 
-[data-memory-graph-canvas] > button > span[data-tone="3"] {
-  background: color-mix(in srgb, var(--ui-green) 10%, var(--ui-panel));
-  color: var(--ui-green);
-}
-
-[data-memory-graph-canvas] > button > span[data-tone="4"] {
+[data-memory-graph-viewport] > button[data-removal="pending"] > span {
   background: color-mix(in srgb, var(--ui-amber) 10%, var(--ui-panel));
   color: var(--ui-amber);
 }
 
-[data-memory-graph-canvas] > button svg {
+[data-memory-graph-viewport] > button svg {
   width: 1rem;
   height: 1rem;
 }
 
-[data-memory-graph-canvas] > button strong {
+[data-memory-graph-viewport] > button strong {
   font-size: 0.6875rem;
   font-weight: 650;
   white-space: nowrap;
 }
 
-[data-memory-graph-canvas] > button small {
+[data-memory-graph-viewport] > button small {
   margin-top: 0.125rem;
   color: var(--ui-faint);
   font-size: 0.5625rem;
@@ -293,23 +317,28 @@
   font-weight: 620;
 }
 
-.product-memory__evolution article > p {
+.product-memory__evolution article > p[data-memory-candidate-proposal] {
   margin: 0.75rem 0 0;
-  color: var(--ui-muted);
+  color: var(--ui-ink);
   font-size: 0.75rem;
-  line-height: 1.5;
+  font-weight: 560;
+  line-height: 1.55;
 }
 
 .product-memory__evolution article > dl {
-  display: flex;
+  display: grid;
   margin: 0.75rem 0 0;
-  gap: 1.25rem;
+  padding-top: 0.75rem;
+  border-block-start: 1px solid var(--ui-line);
+  gap: 0.5rem;
 }
 
 .product-memory__evolution article > dl > div {
-  display: flex;
-  gap: 0.375rem;
+  display: grid;
+  grid-template-columns: 5.25rem minmax(0, 1fr);
+  gap: 0.5rem;
   font-size: 0.625rem;
+  line-height: 1.45;
 }
 
 .product-memory__evolution article dt {
@@ -329,6 +358,7 @@
 }
 
 .product-memory__evolution article > footer button {
+  display: inline-flex;
   min-height: 2.125rem;
   padding: 0 0.75rem;
   border: 1px solid var(--ui-line);
@@ -336,8 +366,15 @@
   background: var(--ui-paper);
   color: var(--ui-ink);
   cursor: pointer;
+  align-items: center;
+  gap: 0.375rem;
   font-size: 0.6875rem;
   font-weight: 620;
+}
+
+.product-memory__evolution article > footer button svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
 }
 
 .product-memory__evolution article > footer button[data-primary] {
@@ -355,7 +392,7 @@
     padding-inline: 1rem;
   }
 
-  [data-memory-graph-canvas] > button {
+  [data-memory-graph-viewport] > button {
     min-width: 6.5rem;
     padding-inline: 0.5rem;
   }
@@ -367,5 +404,29 @@
 
   .product-memory__evolution > header {
     flex-direction: column;
+  }
+
+  .product-memory__evolution article > header {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .product-memory__evolution article > header > em {
+    width: fit-content;
+    grid-column: 2;
+  }
+
+  .product-memory__evolution article > dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.125rem;
+  }
+
+  .product-memory__evolution article > footer button {
+    min-height: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-memory-graph-viewport] {
+    transition: none;
   }
 }

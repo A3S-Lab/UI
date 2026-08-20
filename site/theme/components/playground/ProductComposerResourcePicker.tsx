@@ -1,15 +1,15 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import {
-  capabilityDirectory,
-  type ProductPlaygroundLocale,
-} from "./product-playground-data";
+import type { ProductPlaygroundLocale } from "./product-playground-data";
 import type { ProductComposerResource } from "./product-composer-data";
+import {
+  getProductCapabilityDefinitions,
+  useProductCapabilityRegistry,
+} from "./product-capability-state";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 export type ProductComposerResourcePickerKind = "assistant" | "connector";
 
 type ResourcePickerItem = {
-  configured: boolean;
   description: string;
   id: string;
   kind: ProductComposerResourcePickerKind;
@@ -31,6 +31,7 @@ export function ProductComposerResourcePicker({
   selectedIds: ReadonlySet<string>;
 }) {
   const zh = locale === "zh";
+  const { registry } = useProductCapabilityRegistry();
   const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId().replaceAll(":", "");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -44,26 +45,29 @@ export function ProductComposerResourcePicker({
         ? "选择连接器"
         : "Choose a connector";
   const items = useMemo(() => {
-    const source =
-      capabilityDirectory[kind === "assistant" ? "assistants" : "connectors"];
+    const source = getProductCapabilityDefinitions(
+      kind === "assistant" ? "assistants" : "connectors",
+      registry,
+    );
     const normalized = query.trim().toLocaleLowerCase(locale);
     return source
+      .filter((item) => registry.records[item.id]?.lifecycle === "ready")
       .map<ResourcePickerItem>((item) => ({
-        configured: item.owned === true,
         description: item.description[locale],
-        id: `${kind}:${item.category}:${slug(item.label.en)}`,
+        id: item.id,
         kind,
         label: item.label[locale],
         meta: item.tag[locale],
       }))
       .filter(
         (item) =>
-          !normalized ||
-          `${item.label} ${item.description} ${item.meta}`
-            .toLocaleLowerCase(locale)
-            .includes(normalized),
+          !selectedIds.has(item.id) &&
+          (!normalized ||
+            `${item.label} ${item.description} ${item.meta}`
+              .toLocaleLowerCase(locale)
+              .includes(normalized)),
       );
-  }, [kind, locale, query]);
+  }, [kind, locale, query, registry, selectedIds]);
   const currentIndex = Math.min(activeIndex, Math.max(0, items.length - 1));
   const currentItem = items[currentIndex];
 
@@ -76,7 +80,7 @@ export function ProductComposerResourcePicker({
   }, [query]);
 
   const selectItem = (item: ResourcePickerItem | undefined) => {
-    if (!item || !item.configured || selectedIds.has(item.id)) return;
+    if (!item) return;
     onSelect({
       id: item.id,
       kind: item.kind,
@@ -159,13 +163,11 @@ export function ProductComposerResourcePicker({
       </label>
       <div aria-label={title} id={listboxId} role="listbox">
         {items.map((item, index) => {
-          const selected = selectedIds.has(item.id);
           return (
             <button
-              aria-disabled={!item.configured || selected}
               aria-selected={index === currentIndex}
               data-active={index === currentIndex ? "true" : undefined}
-              data-configured={item.configured ? "true" : undefined}
+              data-configured="true"
               id={`${listboxId}-${index}`}
               key={item.id}
               onClick={() => selectItem(item)}
@@ -183,25 +185,20 @@ export function ProductComposerResourcePicker({
                 <small>{item.description}</small>
               </span>
               <span data-resource-picker-state>
-                <small>
-                  {selected
-                    ? zh
-                      ? "已添加"
-                      : "Added"
-                    : item.configured
-                      ? item.meta
-                      : zh
-                        ? "未配置"
-                        : "Not configured"}
-                </small>
-                {selected ? <ProductPlaygroundIcon name="check" /> : null}
+                <small>{item.meta}</small>
               </span>
             </button>
           );
         })}
         {items.length === 0 ? (
           <p role="status">
-            {zh ? "没有匹配的已知能力" : "No known capabilities match"}
+            {query.trim()
+              ? zh
+                ? "没有匹配的可用能力"
+                : "No ready capabilities match"
+              : zh
+                ? "没有其他可添加的能力"
+                : "No other ready capabilities are available"}
           </p>
         ) : null}
       </div>
@@ -221,11 +218,4 @@ export function ProductComposerResourcePicker({
       </footer>
     </section>
   );
-}
-
-function slug(value: string) {
-  return value
-    .toLocaleLowerCase("en")
-    .replace(/[^a-z0-9]+/gu, "-")
-    .replace(/^-|-$/gu, "");
 }

@@ -1,4 +1,5 @@
 .product-memory {
+  position: relative;
   display: grid;
   width: 100%;
   height: 100%;
@@ -7,7 +8,7 @@
   overflow: hidden;
   background: var(--ui-paper);
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
 }
 
 .product-memory__header {
@@ -82,6 +83,14 @@
   align-items: center;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.375rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.product-memory__header label:focus-within {
+  border-color: color-mix(in srgb, var(--ui-ink) 18%, var(--ui-line-strong));
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
 }
 
 .product-memory__header label svg {
@@ -100,6 +109,10 @@
   background: transparent;
   color: var(--ui-ink);
   font-size: 0.75rem;
+}
+
+.a3s-product-application .product-memory__header input:focus-visible {
+  outline: 0;
 }
 
 .product-memory__header > div:last-child > button,
@@ -129,6 +142,16 @@
 .product-memory__header > div:last-child > button svg {
   width: 0.875rem;
   height: 0.875rem;
+}
+
+.product-memory__header > div:last-child > button[aria-busy="true"] svg {
+  animation: product-memory-spin 900ms linear infinite;
+}
+
+@keyframes product-memory-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .product-memory > nav {
@@ -164,7 +187,7 @@
   position: absolute;
   inset: auto 0 -1px;
   height: 2px;
-  background: var(--ui-ink);
+  background: var(--ui-blue);
   content: "";
 }
 
@@ -184,10 +207,15 @@
 }
 
 .product-memory__workspace {
+  position: relative;
   display: grid;
   min-width: 0;
   min-height: 0;
   grid-template-columns: 13.5rem minmax(24rem, 1fr) 18.5rem;
+}
+
+.product-memory[data-view="evolution"] .product-memory__workspace {
+  grid-template-columns: 13.5rem minmax(24rem, 1fr);
 }
 
 .product-memory__filters {
@@ -301,6 +329,17 @@
   background: var(--ui-paper);
 }
 
+.product-memory__workspace > main > [role="tabpanel"] {
+  height: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.product-memory__workspace > main > [role="tabpanel"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ui-blue) 56%, transparent);
+  outline-offset: -2px;
+}
+
 .product-memory__timeline,
 .product-memory__evolution {
   min-height: 100%;
@@ -330,23 +369,33 @@
   line-height: 1.5;
 }
 
-.product-memory__timeline > header button {
+.product-memory__timeline [data-memory-kind-filter] {
   display: inline-flex;
   min-height: 2.125rem;
-  padding: 0 0.625rem;
+  padding-inline-start: 0.625rem;
   border: 1px solid var(--ui-line);
   border-radius: 0.5rem;
   align-items: center;
   gap: 0.375rem;
   background: var(--ui-paper);
   color: var(--ui-muted);
-  cursor: pointer;
   font-size: 0.6875rem;
 }
 
-.product-memory__timeline > header svg {
+.product-memory__timeline [data-memory-kind-filter] svg {
   width: 0.8125rem;
   height: 0.8125rem;
+}
+
+.product-memory__timeline [data-memory-kind-filter] select {
+  height: 2rem;
+  padding: 0 1.75rem 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font: inherit;
 }
 
 .product-memory__timeline ol {
@@ -416,6 +465,11 @@
   background: color-mix(in srgb, var(--ui-paper) 72%, var(--ui-canvas));
 }
 
+.product-memory__timeline li[data-removal="pending"] > button {
+  border-color: color-mix(in srgb, var(--ui-amber) 25%, var(--ui-line));
+  background: color-mix(in srgb, var(--ui-amber) 4%, var(--ui-paper));
+}
+
 .product-memory__timeline li > button > span {
   display: flex;
   min-width: 0;
@@ -436,6 +490,11 @@
   font-size: 0.625rem;
   font-style: normal;
   font-weight: 600;
+}
+
+.product-memory__timeline li b[data-removal-pending] {
+  background: color-mix(in srgb, var(--ui-amber) 10%, var(--ui-panel));
+  color: var(--ui-amber);
 }
 
 .product-memory__timeline li small {
@@ -499,143 +558,25 @@
   font-size: 0.75rem;
 }
 
-.product-memory__inspector {
-  min-height: 0;
-  padding: 1.25rem 1rem;
-  border-inline-start: 1px solid var(--ui-line);
-  overflow: auto;
+.product-memory__status:empty {
+  display: none;
+}
+
+.product-memory__status:not(:empty) {
+  display: flex;
+  min-height: 2.25rem;
+  padding: 0.5rem 1.5rem;
+  border-block-start: 1px solid var(--ui-line);
+  align-items: center;
   background: color-mix(in srgb, var(--ui-paper) 72%, var(--ui-canvas));
-}
-
-.product-memory__inspector > header {
-  display: grid;
-  align-items: start;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.75rem;
-}
-
-.product-memory__inspector > header > span {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.5625rem;
-  background: color-mix(in srgb, var(--ui-blue) 10%, var(--ui-panel));
-  color: var(--ui-blue);
-  place-items: center;
-}
-
-.product-memory__inspector > header svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.product-memory__inspector > header div {
-  display: grid;
-  gap: 0.1875rem;
-}
-
-.product-memory__inspector > header small {
-  color: var(--ui-faint);
-  font-size: 0.625rem;
-}
-
-.product-memory__inspector > header strong {
-  font-size: 0.8125rem;
+  color: var(--ui-muted);
+  font-size: 0.6875rem;
   line-height: 1.35;
-}
-
-.product-memory__inspector > p {
-  margin: 1rem 0 0;
-  color: var(--ui-muted);
-  font-size: 0.75rem;
-  line-height: 1.6;
-}
-
-.product-memory__inspector > dl {
-  display: grid;
-  margin: 1rem 0 0;
-  padding: 0.75rem 0;
-  border-block: 1px solid var(--ui-line);
-  gap: 0.625rem;
-}
-
-.product-memory__inspector > dl > div {
-  display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr);
-  gap: 0.5rem;
-  font-size: 0.6875rem;
-}
-
-.product-memory__inspector dt {
-  color: var(--ui-faint);
-}
-
-.product-memory__inspector dd {
-  margin: 0;
-  color: var(--ui-ink);
-}
-
-.product-memory__inspector > section {
-  display: grid;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  border-radius: 0.625rem;
-  align-items: start;
-  grid-template-columns: 1rem minmax(0, 1fr);
-  gap: 0.5rem;
-  background: var(--ui-paper);
-}
-
-.product-memory__inspector > section > svg {
-  width: 0.9375rem;
-  height: 0.9375rem;
-  color: var(--ui-green);
-}
-
-.product-memory__inspector > section div {
-  display: grid;
-  gap: 0.1875rem;
-}
-
-.product-memory__inspector > section strong {
-  font-size: 0.6875rem;
-}
-
-.product-memory__inspector > section small {
-  color: var(--ui-muted);
-  font-size: 0.625rem;
-  line-height: 1.4;
-}
-
-.product-memory__inspector > footer {
-  display: grid;
-  margin-top: 1rem;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-.product-memory__inspector > footer button {
-  min-height: 2.125rem;
-  padding: 0 0.5rem;
-  border: 1px solid var(--ui-line);
-  border-radius: 0.5rem;
-  background: var(--ui-paper);
-  color: var(--ui-ink);
-  cursor: pointer;
-  font-size: 0.6875rem;
-}
-
-.product-memory__inspector > footer button[data-danger] {
-  color: var(--ui-red);
 }
 
 @container product-main (max-width: 70rem) {
   .product-memory__workspace {
     grid-template-columns: 12.5rem minmax(22rem, 1fr);
-  }
-
-  .product-memory__inspector {
-    display: none;
   }
 }
 
@@ -672,6 +613,15 @@
 
   .product-memory__header > div:last-child > button {
     flex: none;
+    min-height: 2.75rem;
+  }
+
+  .product-memory__header p {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .product-memory > nav {
@@ -706,6 +656,7 @@
 
   .product-memory__filters > div button {
     width: auto;
+    min-height: 2.75rem;
     flex: none;
     grid-template-columns: 1rem auto auto;
   }
@@ -715,6 +666,21 @@
     padding: 1.25rem 1rem 3rem;
   }
 
+  .product-memory__timeline > header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .product-memory__timeline [data-memory-kind-filter] {
+    width: fit-content;
+    min-height: 2.75rem;
+  }
+
+  .product-memory__timeline [data-memory-kind-filter] select {
+    height: 2.625rem;
+  }
+
   .product-memory__timeline li {
     grid-template-columns: 0.75rem minmax(0, 1fr);
     gap: 0.375rem;
@@ -722,5 +688,15 @@
 
   .product-memory__timeline li > time {
     display: none;
+  }
+
+  .product-memory__status:not(:empty) {
+    padding-inline: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-memory__header > div:last-child > button[aria-busy="true"] svg {
+    animation: none;
   }
 }

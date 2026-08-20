@@ -143,6 +143,13 @@
   color: white;
 }
 
+.product-file-workbench__header > nav > button[data-primary]:disabled {
+  border-color: var(--ui-line);
+  background: var(--ui-panel);
+  color: var(--ui-faint);
+  cursor: default;
+}
+
 .product-file-workbench__header > nav > div {
   display: inline-flex;
   padding: 0.125rem;
@@ -563,6 +570,18 @@
   font: inherit;
   font-size: 0.75rem;
   line-height: 1.45;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.product-file-workbench
+  [data-file-assistant]
+  > form
+  textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--ui-ink) 20%, var(--ui-line-strong));
+  outline: 0;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
 }
 
 .product-file-workbench [data-file-assistant] > form > button {

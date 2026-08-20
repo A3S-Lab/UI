@@ -1,111 +1,185 @@
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
+import { writeClipboardText } from "../clipboard";
+import {
+  formatProductAutomationDuration,
+  formatProductAutomationRunDuration,
+  formatProductAutomationRuntime,
+  type ProductAutomationRun,
+  type ProductAutomationRunState,
+} from "./product-automation-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
-type RunState = "failed" | "running" | "success";
-
-const runs = [
-  {
-    id: "release-digest-0818",
-    name: { en: "Daily release digest", zh: "每日发布摘要" },
-    started: { en: "Today, 09:30", zh: "今天 09:30" },
-    duration: "18.4s",
-    state: "success" as RunState,
-    trigger: { en: "Schedule · Weekdays", zh: "定时 · 工作日" },
-    summary: {
-      en: "Summarized 7 merged changes, 12 passing checks, and no release blocker.",
-      zh: "汇总 7 个已合并变更、12 项通过检查，没有发布阻塞项。",
-    },
-  },
-  {
-    id: "regression-watch-0818",
-    name: { en: "Regression watch", zh: "回归结果巡检" },
-    started: { en: "Today, 08:10", zh: "今天 08:10" },
-    duration: "42.1s",
-    state: "failed" as RunState,
-    trigger: { en: "Schedule · Every 2 hours", zh: "定时 · 每 2 小时" },
-    summary: {
-      en: "Desktop checks passed. The mobile preview could not reach the local target and is ready to retry.",
-      zh: "桌面检查通过；移动端预览无法连接本地目标，可以安全重试。",
-    },
-  },
-  {
-    id: "docs-drift-0817",
-    name: { en: "Documentation drift", zh: "文档漂移检查" },
-    started: { en: "Yesterday, 17:00", zh: "昨天 17:00" },
-    duration: "31.8s",
-    state: "success" as RunState,
-    trigger: { en: "Repository event", zh: "仓库事件" },
-    summary: {
-      en: "Compared public examples with the current manifest and found two resolved differences.",
-      zh: "比对公开示例与当前组件清单，发现的两处差异均已解决。",
-    },
-  },
-  {
-    id: "dependency-review-0817",
-    name: { en: "Weekly dependency review", zh: "每周依赖审查" },
-    started: { en: "Yesterday, 14:30", zh: "昨天 14:30" },
-    duration: "1m 08s",
-    state: "running" as RunState,
-    trigger: { en: "Manual", zh: "手动运行" },
-    summary: {
-      en: "Reviewing compatibility evidence for two candidate updates.",
-      zh: "正在检查两个候选更新的兼容性证据。",
-    },
-  },
-];
-
 export function ProductAutomationRunHistory({
   locale,
+  onRetry,
+  runs,
 }: {
   locale: ProductPlaygroundLocale;
+  onRetry: (runId: string) => void;
+  runs: readonly ProductAutomationRun[];
 }) {
   const zh = locale === "zh";
-  const [filter, setFilter] = useState<"all" | RunState>("all");
+  const refreshTimer = useRef<number | undefined>(undefined);
+  const runRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filter, setFilter] = useState<"all" | ProductAutomationRunState>(
+    "all",
+  );
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState(runs[0].id);
-  const [retrying, setRetrying] = useState(false);
+  const [selectedId, setSelectedId] = useState(runs[0]?.id ?? "");
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [copied, setCopied] = useState<"input" | "output">();
+  const [status, setStatus] = useState("");
+
+  useEffect(
+    () => () => {
+      if (refreshTimer.current !== undefined) {
+        window.clearTimeout(refreshTimer.current);
+      }
+    },
+    [],
+  );
+
   const visibleRuns = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
     return runs.filter(
       (run) =>
         (filter === "all" || run.state === filter) &&
         (!normalized ||
-          `${run.name.en} ${run.name.zh} ${run.summary.en} ${run.summary.zh}`
+          `${run.name.en} ${run.name.zh} ${run.summary.en} ${run.summary.zh} ${run.input} ${run.output.en} ${run.output.zh} ${run.trigger.en} ${run.trigger.zh}`
             .toLocaleLowerCase(locale)
             .includes(normalized)),
     );
-  }, [filter, locale, query]);
-  const selected = runs.find((run) => run.id === selectedId) ?? runs[0];
+  }, [filter, locale, query, runs]);
+  const selected =
+    visibleRuns.find((run) => run.id === selectedId) ?? visibleRuns[0];
   const stateCopy = {
     failed: zh ? "失败" : "Failed",
     running: zh ? "运行中" : "Running",
     success: zh ? "成功" : "Succeeded",
   } as const;
 
+  useEffect(() => {
+    if (!selected) {
+      setDetailOpen(false);
+      return;
+    }
+    if (selected.id !== selectedId) {
+      setSelectedId(selected.id);
+      setDetailOpen(false);
+    }
+  }, [selected, selectedId]);
+
+  const refresh = () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    setStatus(zh ? "正在同步运行记录。" : "Syncing run history.");
+    if (refreshTimer.current !== undefined) {
+      window.clearTimeout(refreshTimer.current);
+    }
+    refreshTimer.current = window.setTimeout(() => {
+      refreshTimer.current = undefined;
+      setRefreshing(false);
+      setStatus(
+        zh
+          ? `已同步 ${runs.length} 次运行，没有遗漏的本地记录。`
+          : `${runs.length} runs synchronized with no missing local records.`,
+      );
+    }, 480);
+  };
+
   const copy = async (kind: "input" | "output", value: string) => {
-    await navigator.clipboard.writeText(value);
-    setCopied(kind);
+    try {
+      await writeClipboardText(value);
+      setCopied(kind);
+      setStatus(
+        kind === "input"
+          ? zh
+            ? "输入已复制。"
+            : "Input copied."
+          : zh
+            ? "输出已复制。"
+            : "Output copied.",
+      );
+    } catch {
+      setCopied(undefined);
+      setStatus(
+        zh
+          ? "浏览器未允许复制，请直接选择代码内容。"
+          : "The browser blocked copying. Select the code content directly.",
+      );
+    }
+  };
+
+  const selectRun = (run: ProductAutomationRun) => {
+    setSelectedId(run.id);
+    setDetailOpen(true);
+    setCopied(undefined);
+  };
+
+  const retrySelectedRun = (run: ProductAutomationRun) => {
+    setFilter("all");
+    setQuery("");
+    setDetailOpen(true);
+    setStatus(
+      zh
+        ? "已开始重试并显示全部记录，恢复过程会保留在当前详情中。"
+        : "Retry started and all runs are shown so recovery stays visible here.",
+    );
+    onRetry(run.id);
+  };
+
+  const handleRunKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex: number | undefined;
+    if (event.key === "ArrowDown") {
+      nextIndex = (index + 1) % visibleRuns.length;
+    } else if (event.key === "ArrowUp") {
+      nextIndex = (index - 1 + visibleRuns.length) % visibleRuns.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = visibleRuns.length - 1;
+    }
+    if (nextIndex === undefined) return;
+    event.preventDefault();
+    const nextRun = visibleRuns[nextIndex];
+    setSelectedId(nextRun.id);
+    runRefs.current[nextRun.id]?.focus();
   };
 
   return (
     <section
-      className="product-run-history"
       aria-label={zh ? "运行记录" : "Run history"}
+      className="product-run-history"
+      data-detail-open={detailOpen ? "true" : undefined}
     >
       <header>
         <div>
           <h1>{zh ? "运行记录" : "Run history"}</h1>
           <p>
             {zh
-              ? "查看每次自动化的触发、步骤、输出与恢复路径。"
-              : "Inspect triggers, steps, outputs, and recovery for each automation run."}
+              ? "查看每次触发的输入、步骤、输出与可执行恢复路径。"
+              : "Inspect the inputs, steps, outputs, and actionable recovery path for every trigger."}
           </p>
         </div>
-        <button type="button">
-          <ProductPlaygroundIcon name="refresh" />
-          {zh ? "刷新" : "Refresh"}
+        <button
+          aria-busy={refreshing}
+          disabled={refreshing}
+          onClick={refresh}
+          type="button"
+        >
+          <ProductPlaygroundIcon name={refreshing ? "update" : "refresh"} />
+          {refreshing ? (zh ? "同步中" : "Syncing") : zh ? "刷新" : "Refresh"}
         </button>
       </header>
       <div className="product-run-history__toolbar">
@@ -113,7 +187,10 @@ export function ProductAutomationRunHistory({
           <ProductPlaygroundIcon name="search" />
           <input
             aria-label={zh ? "搜索运行记录" : "Search runs"}
-            onChange={(event) => setQuery(event.currentTarget.value)}
+            onChange={(event) => {
+              setQuery(event.currentTarget.value);
+              setDetailOpen(false);
+            }}
             placeholder={zh ? "搜索任务或输出" : "Search task or output"}
             type="search"
             value={query}
@@ -123,8 +200,12 @@ export function ProductAutomationRunHistory({
           {(["all", "success", "failed", "running"] as const).map((state) => (
             <button
               aria-pressed={filter === state}
+              data-run-filter={state}
               key={state}
-              onClick={() => setFilter(state)}
+              onClick={() => {
+                setFilter(state);
+                setDetailOpen(false);
+              }}
               type="button"
             >
               {state === "all" ? (zh ? "全部" : "All") : stateCopy[state]}
@@ -134,9 +215,9 @@ export function ProductAutomationRunHistory({
       </div>
       <div className="product-run-history__workspace">
         <div
+          aria-label={zh ? "运行记录" : "Runs"}
           className="product-run-history__list"
           role="listbox"
-          aria-label={zh ? "运行记录" : "Runs"}
         >
           <header>
             <span>
@@ -147,15 +228,19 @@ export function ProductAutomationRunHistory({
             <span>{zh ? "最近 7 天" : "Last 7 days"}</span>
           </header>
           {visibleRuns.length ? (
-            visibleRuns.map((run) => (
+            visibleRuns.map((run, index) => (
               <button
-                aria-selected={selected.id === run.id}
+                aria-selected={selected?.id === run.id}
+                data-automation-run-state={run.state}
+                data-run-id={run.id}
                 key={run.id}
-                onClick={() => {
-                  setSelectedId(run.id);
-                  setRetrying(false);
+                onClick={() => selectRun(run)}
+                onKeyDown={(event) => handleRunKeyDown(event, index)}
+                ref={(element) => {
+                  runRefs.current[run.id] = element;
                 }}
                 role="option"
+                tabIndex={selected?.id === run.id ? 0 : -1}
                 type="button"
               >
                 <span data-run-state={run.state}>
@@ -175,7 +260,11 @@ export function ProductAutomationRunHistory({
                 </span>
                 <span>
                   <em data-state={run.state}>{stateCopy[run.state]}</em>
-                  <small>{run.duration}</small>
+                  <small>
+                    {run.state === "running"
+                      ? "—"
+                      : formatProductAutomationRunDuration(run, locale)}
+                  </small>
                 </span>
                 <ProductPlaygroundIcon name="chevron" />
               </button>
@@ -186,191 +275,210 @@ export function ProductAutomationRunHistory({
               <strong>{zh ? "没有匹配记录" : "No matching runs"}</strong>
               <span>
                 {zh
-                  ? "调整搜索或状态筛选后重试。"
-                  : "Change the search or status filter and try again."}
+                  ? "清除搜索或切换状态筛选后重试。"
+                  : "Clear the search or change the state filter and try again."}
               </span>
             </div>
           )}
         </div>
 
-        <aside
-          className="product-run-history__detail"
-          aria-label={`${selected.name[locale]} ${zh ? "详情" : "details"}`}
-        >
-          <header>
-            <div>
-              <span data-run-state={selected.state}>
-                {selected.state === "success" ? (
-                  <ProductPlaygroundIcon name="check" />
-                ) : selected.state === "failed" ? (
-                  <ProductPlaygroundIcon name="warning" />
-                ) : (
-                  <i />
-                )}
-              </span>
-              <span>
-                <strong>{selected.name[locale]}</strong>
-                <small>
-                  {selected.started[locale]} · {selected.duration}
-                </small>
-              </span>
-            </div>
-            <em data-state={selected.state}>{stateCopy[selected.state]}</em>
-          </header>
-          <p>{selected.summary[locale]}</p>
-          <dl>
-            <div>
-              <dt>{zh ? "触发方式" : "Trigger"}</dt>
-              <dd>{selected.trigger[locale]}</dd>
-            </div>
-            <div>
-              <dt>{zh ? "运行环境" : "Runtime"}</dt>
-              <dd>{zh ? "本地工作区" : "Local workspace"}</dd>
-            </div>
-            <div>
-              <dt>{zh ? "恢复策略" : "Recovery"}</dt>
-              <dd>
-                {selected.state === "failed"
-                  ? zh
-                    ? "可从失败步骤重试"
-                    : "Retry from failed step"
-                  : zh
-                    ? "不需要"
-                    : "Not needed"}
-              </dd>
-            </div>
-          </dl>
-          <section className="product-run-history__steps">
-            <h2>{zh ? "执行步骤" : "Run steps"}</h2>
-            <ol>
-              <li data-state="success">
-                <span>
-                  <ProductPlaygroundIcon name="check" />
-                </span>
-                <div>
-                  <strong>{zh ? "读取任务上下文" : "Read task context"}</strong>
-                  <small>0.8s</small>
-                </div>
-              </li>
-              <li data-state="success">
-                <span>
-                  <ProductPlaygroundIcon name="check" />
-                </span>
-                <div>
-                  <strong>
-                    {zh ? "执行自动化规则" : "Execute automation rule"}
-                  </strong>
-                  <small>
-                    {selected.state === "running"
-                      ? zh
-                        ? "进行中"
-                        : "Running"
-                      : "12.6s"}
-                  </small>
-                </div>
-              </li>
-              <li data-state={selected.state}>
-                <span>
-                  {selected.state === "failed" ? (
-                    <ProductPlaygroundIcon name="warning" />
-                  ) : selected.state === "running" ? (
-                    <i />
-                  ) : (
+        {selected ? (
+          <aside
+            aria-label={`${selected.name[locale]} ${zh ? "详情" : "details"}`}
+            className="product-run-history__detail"
+          >
+            <button
+              className="product-run-history__back"
+              onClick={() => {
+                setDetailOpen(false);
+                window.requestAnimationFrame(() =>
+                  runRefs.current[selected.id]?.focus(),
+                );
+              }}
+              type="button"
+            >
+              <ProductPlaygroundIcon name="back" />
+              {zh ? "返回运行记录" : "Back to runs"}
+            </button>
+            <header>
+              <div>
+                <span data-run-state={selected.state}>
+                  {selected.state === "success" ? (
                     <ProductPlaygroundIcon name="check" />
+                  ) : selected.state === "failed" ? (
+                    <ProductPlaygroundIcon name="warning" />
+                  ) : (
+                    <i />
                   )}
                 </span>
-                <div>
-                  <strong>
-                    {zh ? "生成并归档结果" : "Generate and archive result"}
-                  </strong>
-                  <small>
-                    {selected.state === "failed"
-                      ? zh
-                        ? "连接失败"
-                        : "Connection failed"
-                      : selected.state === "running"
-                        ? zh
-                          ? "等待"
-                          : "Waiting"
-                        : "5.0s"}
-                  </small>
-                </div>
-              </li>
-            </ol>
-          </section>
-          <section className="product-run-history__output">
-            <header>
-              <strong>{zh ? "输入" : "Input"}</strong>
-              <button
-                aria-label={zh ? "复制输入" : "Copy input"}
-                onClick={() =>
-                  copy("input", "workspace=a3s-ui\nviewport=desktop,mobile")
-                }
-                type="button"
-              >
-                <ProductPlaygroundIcon
-                  name={copied === "input" ? "check" : "copy"}
-                />
-              </button>
-            </header>
-            <pre>
-              <code>workspace=a3s-ui{"\n"}viewport=desktop,mobile</code>
-            </pre>
-          </section>
-          <section className="product-run-history__output">
-            <header>
-              <strong>{zh ? "输出" : "Output"}</strong>
-              <button
-                aria-label={zh ? "复制输出" : "Copy output"}
-                onClick={() => copy("output", selected.summary[locale])}
-                type="button"
-              >
-                <ProductPlaygroundIcon
-                  name={copied === "output" ? "check" : "copy"}
-                />
-              </button>
-            </header>
-            <pre>
-              <code>
-                {selected.state === "failed"
-                  ? "ERROR preview.mobile: local target unavailable\nRECOVERY retry_step=preview.mobile"
-                  : selected.summary[locale]}
-              </code>
-            </pre>
-          </section>
-          {selected.state === "failed" ? (
-            <footer>
-              <div>
-                <ProductPlaygroundIcon name="warning" />
                 <span>
-                  <strong>
-                    {zh ? "运行可以恢复" : "This run is recoverable"}
-                  </strong>
+                  <strong>{selected.name[locale]}</strong>
                   <small>
-                    {zh
-                      ? "已完成步骤不会重复执行。"
-                      : "Completed steps will not run again."}
+                    {selected.started[locale]} ·{" "}
+                    {formatProductAutomationRunDuration(selected, locale)}
                   </small>
                 </span>
               </div>
-              <button
-                disabled={retrying}
-                onClick={() => setRetrying(true)}
-                type="button"
-              >
-                <ProductPlaygroundIcon name={retrying ? "update" : "refresh"} />
-                {retrying
-                  ? zh
-                    ? "正在重试"
-                    : "Retrying"
-                  : zh
-                    ? "从失败步骤重试"
-                    : "Retry failed step"}
-              </button>
-            </footer>
-          ) : null}
-        </aside>
+              <em data-state={selected.state}>{stateCopy[selected.state]}</em>
+            </header>
+            <p>{selected.summary[locale]}</p>
+            <dl>
+              <div>
+                <dt>{zh ? "触发方式" : "Trigger"}</dt>
+                <dd>{selected.trigger[locale]}</dd>
+              </div>
+              <div>
+                <dt>{zh ? "运行环境" : "Runtime"}</dt>
+                <dd>{formatProductAutomationRuntime(selected, locale)}</dd>
+              </div>
+              <div>
+                <dt>{zh ? "恢复策略" : "Recovery"}</dt>
+                <dd>
+                  {selected.state === "failed"
+                    ? zh
+                      ? `从 ${selected.failedStep ?? "失败步骤"} 重试`
+                      : `Retry from ${selected.failedStep ?? "failed step"}`
+                    : selected.state === "running"
+                      ? zh
+                        ? "保留已完成步骤"
+                        : "Preserve completed steps"
+                      : zh
+                        ? "无需恢复"
+                        : "Not needed"}
+                </dd>
+              </div>
+            </dl>
+            <section className="product-run-history__steps">
+              <h2>{zh ? "执行步骤" : "Run steps"}</h2>
+              <ol>
+                {selected.steps.map((step) => (
+                  <li data-state={step.state} key={step.id}>
+                    <span>
+                      {step.state === "failed" ? (
+                        <ProductPlaygroundIcon name="warning" />
+                      ) : step.state === "running" ? (
+                        <i />
+                      ) : step.state === "pending" ? (
+                        <b />
+                      ) : (
+                        <ProductPlaygroundIcon name="check" />
+                      )}
+                    </span>
+                    <div>
+                      <strong>{step.label[locale]}</strong>
+                      <small>
+                        {step.durationMs !== undefined
+                          ? formatProductAutomationDuration(step.durationMs)
+                          : step.state === "running"
+                            ? zh
+                              ? "进行中"
+                              : "Running"
+                            : zh
+                              ? "等待中"
+                              : "Waiting"}
+                        {step.detail ? ` · ${step.detail[locale]}` : ""}
+                      </small>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+            <section className="product-run-history__output">
+              <header>
+                <strong>{zh ? "输入" : "Input"}</strong>
+                <button
+                  aria-label={
+                    copied === "input"
+                      ? zh
+                        ? "输入已复制"
+                        : "Input copied"
+                      : zh
+                        ? "复制输入"
+                        : "Copy input"
+                  }
+                  onClick={() => copy("input", selected.input)}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon
+                    name={copied === "input" ? "check" : "copy"}
+                  />
+                </button>
+              </header>
+              <pre>
+                <code>{selected.input}</code>
+              </pre>
+            </section>
+            <section className="product-run-history__output">
+              <header>
+                <strong>{zh ? "输出" : "Output"}</strong>
+                <button
+                  aria-label={
+                    copied === "output"
+                      ? zh
+                        ? "输出已复制"
+                        : "Output copied"
+                      : zh
+                        ? "复制输出"
+                        : "Copy output"
+                  }
+                  onClick={() => copy("output", selected.output[locale])}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon
+                    name={copied === "output" ? "check" : "copy"}
+                  />
+                </button>
+              </header>
+              <pre>
+                <code>{selected.output[locale]}</code>
+              </pre>
+            </section>
+            {selected.state === "failed" ? (
+              <footer>
+                <div>
+                  <ProductPlaygroundIcon name="warning" />
+                  <span>
+                    <strong>
+                      {zh ? "运行可以恢复" : "This run is recoverable"}
+                    </strong>
+                    <small>
+                      {zh
+                        ? "只重试失败步骤，已完成步骤和输入快照保持不变。"
+                        : "Only the failed step reruns; completed steps and the input snapshot stay unchanged."}
+                    </small>
+                  </span>
+                </div>
+                <button
+                  onClick={() => retrySelectedRun(selected)}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="refresh" />
+                  {zh ? "从失败步骤重试" : "Retry failed step"}
+                </button>
+              </footer>
+            ) : selected.state === "running" ? (
+              <footer data-running role="status">
+                <div>
+                  <ProductPlaygroundIcon name="update" />
+                  <span>
+                    <strong>
+                      {zh ? "恢复正在运行" : "Recovery is running"}
+                    </strong>
+                    <small>
+                      {zh
+                        ? "可以离开此页面，运行记录会保留当前状态。"
+                        : "You can leave this page; the run record keeps its current state."}
+                    </small>
+                  </span>
+                </div>
+              </footer>
+            ) : null}
+          </aside>
+        ) : null}
       </div>
+      <output aria-live="polite" className="product-run-history__status">
+        {status}
+      </output>
     </section>
   );
 }

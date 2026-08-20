@@ -115,10 +115,10 @@ suite "a3s-ui-documentation-polish" {
         timeout_ms = 120000
         viewport "mobile" { width = 390 height = 844 }
 
-        navigate "projects" { url = "http://127.0.0.1:4178/UI/patterns/projects.html" }
-        wait "projects-loaded" { load = "networkidle" }
-        expect "projects-heading" { text = "你的项目" }
-        screenshot "projects-top" { path = "documentation/projects-mobile-fixed.png" }
+        navigate "app-page" { url = "http://127.0.0.1:4178/UI/components/app-page.html" }
+        wait "app-page-loaded" { load = "networkidle" }
+        expect "app-page-heading" { text = "项目" }
+        screenshot "app-page-top" { path = "documentation/app-page-mobile-fixed.png" }
 
         navigate "templates" { url = "http://127.0.0.1:4178/UI/templates.html" }
         wait "templates-loaded" { load = "networkidle" }
@@ -141,7 +141,7 @@ suite "a3s-ui-documentation-polish" {
     }
 
     scenario "batch-twelve-dark-mode" {
-        name = "Corrected component and pattern routes retain contrast in dark mode"
+        name = "Corrected component routes retain contrast in dark mode"
         surface = "web"
         timeout_ms = 150000
         viewport "desktop" { width = 1440 height = 1000 }
@@ -174,9 +174,9 @@ suite "a3s-ui-documentation-polish" {
         wait "emoji-picker-loaded" { load = "networkidle" }
         screenshot "emoji-picker-dark" { path = "documentation/emoji-picker-dark-fixed.png" }
 
-        navigate "projects" { url = "http://127.0.0.1:4178/UI/patterns/projects.html" }
-        wait "projects-loaded" { load = "networkidle" }
-        screenshot "projects-dark" { path = "documentation/projects-dark-fixed.png" }
+        navigate "app-page" { url = "http://127.0.0.1:4178/UI/components/app-page.html" }
+        wait "app-page-loaded" { load = "networkidle" }
+        screenshot "app-page-dark" { path = "documentation/app-page-dark-fixed.png" }
 
         navigate "templates" { url = "http://127.0.0.1:4178/UI/templates.html" }
         wait "templates-loaded" { load = "networkidle" }

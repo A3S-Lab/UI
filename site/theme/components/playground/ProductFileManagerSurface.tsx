@@ -159,6 +159,7 @@ function ProductWorkspaceFileManagerSurface({
     query,
     renameId,
     renameValue,
+    retryDroppedFile,
     searchScope,
     selectEntry,
     selectedEntries,
@@ -479,12 +480,31 @@ function ProductWorkspaceFileManagerSurface({
             </strong>
             <button
               data-primary
+              disabled={selectedEntries.some(
+                (entry) =>
+                  entry.transferState && entry.transferState !== "ready",
+              )}
               onClick={() => startTaskWithEntries(selectedEntries)}
               type="button"
             >
               <ProductPlaygroundIcon name="task-add" />
               {zh ? "用于任务" : "Use in task"}
             </button>
+            {selectedEntries.some(
+              (entry) => entry.transferState === "error",
+            ) ? (
+              <button
+                onClick={() =>
+                  selectedEntries
+                    .filter((entry) => entry.transferState === "error")
+                    .forEach(retryDroppedFile)
+                }
+                type="button"
+              >
+                <ProductPlaygroundIcon name="refresh" />
+                {zh ? "重试导入" : "Retry import"}
+              </button>
+            ) : null}
             <button
               onClick={() =>
                 setClipboard({ ids: [...selectedIds], mode: "copy" })
@@ -620,6 +640,7 @@ function ProductWorkspaceFileManagerSurface({
               aria-selected={selectedIds.has(entry.id)}
               data-file-manager-item
               data-kind={entry.kind}
+              data-transfer-state={entry.transferState}
               id={productFileOptionId(entry.id)}
               key={entry.id}
               onContextMenu={(event) => {
@@ -687,7 +708,24 @@ function ProductWorkspaceFileManagerSurface({
                     ) : null}
                   </span>
                   <strong title={entry.name}>{entry.name}</strong>
-                  <span data-file-kind>{entry.type}</span>
+                  <span
+                    data-file-kind
+                    data-file-transfer-state={
+                      entry.transferState && entry.transferState !== "ready"
+                        ? entry.transferState
+                        : undefined
+                    }
+                  >
+                    {entry.transferState === "copying"
+                      ? zh
+                        ? "正在导入"
+                        : "Importing"
+                      : entry.transferState === "error"
+                        ? zh
+                          ? "导入失败"
+                          : "Import failed"
+                        : entry.type}
+                  </span>
                   <span data-file-owner>{entry.owner}</span>
                   <span data-file-modified>
                     {formatFileDate(entry.modified, locale)}
@@ -817,11 +855,24 @@ function ProductWorkspaceFileManagerSurface({
             {quickLook.workbench ? (
               <button
                 data-primary
+                disabled={
+                  Boolean(quickLook.transferState) &&
+                  quickLook.transferState !== "ready"
+                }
                 onClick={() => setWorkbenchId(quickLook.id)}
                 type="button"
               >
                 <ProductPlaygroundIcon name="edit" />
                 {zh ? "打开" : "Open"}
+              </button>
+            ) : null}
+            {quickLook.transferState === "error" ? (
+              <button
+                onClick={() => retryDroppedFile(quickLook)}
+                type="button"
+              >
+                <ProductPlaygroundIcon name="refresh" />
+                {zh ? "重试导入" : "Retry import"}
               </button>
             ) : null}
             <button onClick={() => startRename(quickLook)} type="button">
@@ -870,7 +921,11 @@ function ProductWorkspaceFileManagerSurface({
             onClick={() => {
               const entry = entries.find((item) => item.id === contextMenu.id);
               if (!entry) return;
-              if (entry.kind === "file" && entry.workbench)
+              if (
+                entry.kind === "file" &&
+                entry.workbench &&
+                (!entry.transferState || entry.transferState === "ready")
+              )
                 setWorkbenchId(entry.id);
               else openEntry(entry);
               setContextMenu(null);

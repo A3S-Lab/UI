@@ -15,7 +15,10 @@ export type ProductFileEntry = {
   size: string;
   sizeBytes: number;
   type: string;
+  transferError?: string;
+  transferState?: "copying" | "error" | "ready";
   workbench?: ProductFileWorkbenchKind;
+  workspaceFileId?: string;
 };
 
 export const productFileEntries: readonly ProductFileEntry[] = [

@@ -2,7 +2,7 @@
 @layer components {
   /* Card */
   .card {
-    @apply ring-foreground/10 bg-card text-card-foreground overflow-hidden rounded-xl text-sm shadow-xs ring-1 has-[>img:first-child]:pt-0 [&>img:first-child]:rounded-t-xl [&>img:last-child]:rounded-b-xl;
+    @apply border border-border bg-card text-card-foreground overflow-hidden rounded-lg text-sm shadow-none has-[>img:first-child]:pt-0 [&>img:first-child]:rounded-t-lg [&>img:last-child]:rounded-b-lg;
   }
 
   .card {
@@ -14,7 +14,7 @@
   }
 
   .card > header {
-    @apply gap-1 rounded-t-xl px-6 [.border-b]:pb-6;
+    @apply gap-1 rounded-t-lg px-6 [.border-b]:pb-6;
   }
 
   .card[data-size="sm"] > header {
@@ -42,7 +42,7 @@
   }
 
   .card > footer {
-    @apply rounded-b-xl px-6 [.border-t]:pt-6;
+    @apply rounded-b-lg px-6 [.border-t]:pt-6;
   }
 
   .card[data-size="sm"] > footer {
@@ -78,8 +78,8 @@
     width: 1.125rem;
     height: 1.125rem;
     margin-block-end: 0.5rem;
-    border: 2px solid color-mix(in srgb, var(--primary) 24%, transparent);
-    border-block-start-color: var(--primary);
+    border: 2px solid color-mix(in srgb, var(--a3s-accent) 24%, transparent);
+    border-block-start-color: var(--a3s-accent);
     border-radius: 999px;
     animation: chart-state-spin 720ms linear infinite;
     content: "";
@@ -90,7 +90,7 @@
   }
 
   .chart-tooltip {
-    @apply border-border/50 bg-background text-foreground gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl;
+    @apply border-border bg-background text-foreground gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-[var(--a3s-shadow-soft)];
   }
 
   .chart-tooltip-title {
@@ -114,8 +114,8 @@
   @media (prefers-reduced-motion: reduce) {
     .chart[data-state="loading"] > [data-chart-state]::before {
       animation: none;
-      border-color: color-mix(in srgb, var(--primary) 34%, transparent);
-      border-block-start-color: var(--primary);
+      border-color: color-mix(in srgb, var(--a3s-accent) 34%, transparent);
+      border-block-start-color: var(--a3s-accent);
     }
   }
 }

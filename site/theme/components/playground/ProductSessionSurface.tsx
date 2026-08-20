@@ -98,12 +98,24 @@ export function ProductSessionSurface({
   const [messageMenuOpen, setMessageMenuOpen] = useState(false);
   const inspectorCloseRef = useRef<HTMLButtonElement>(null);
   const inspectorRef = useRef<HTMLElement>(null);
+  const inspectorReturnFocusRef = useRef<HTMLElement | null>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement>(null);
   const messageMenuRef = useRef<HTMLDetailsElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (created && taskSession?.id) setRunning(true);
   }, [created, taskSession?.id]);
+
+  useEffect(() => {
+    if (followUps.length === 0) return;
+    const frame = window.requestAnimationFrame(() => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      viewport.scrollTo({ top: viewport.scrollHeight });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [followUps.length]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 68rem)");
@@ -117,14 +129,21 @@ export function ProductSessionSurface({
   }, []);
 
   const closeInspector = useCallback(() => {
+    const returnFocus =
+      inspectorReturnFocusRef.current ?? inspectorTriggerRef.current;
     setInspectorOpen(false);
-    window.requestAnimationFrame(() => inspectorTriggerRef.current?.focus());
+    window.requestAnimationFrame(() => returnFocus?.focus());
   }, []);
 
-  const openInspector = useCallback((tab: ProductSessionInspectorTab) => {
-    setInspectorTab(tab);
-    setInspectorOpen(true);
-  }, []);
+  const openInspector = useCallback(
+    (tab: ProductSessionInspectorTab, returnFocus?: HTMLElement | null) => {
+      inspectorReturnFocusRef.current =
+        returnFocus ?? inspectorTriggerRef.current;
+      setInspectorTab(tab);
+      setInspectorOpen(true);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!inspectorOpen) return undefined;
@@ -376,8 +395,10 @@ export function ProductSessionSurface({
                   : "Open task details"
             }
             data-active={inspectorOpen ? "true" : undefined}
-            onClick={() =>
-              inspectorOpen ? closeInspector() : openInspector("overview")
+            onClick={(event) =>
+              inspectorOpen
+                ? closeInspector()
+                : openInspector("overview", event.currentTarget)
             }
             ref={inspectorTriggerRef}
             type="button"
@@ -425,7 +446,7 @@ export function ProductSessionSurface({
         </form>
       ) : null}
 
-      <div className="product-session__viewport">
+      <div className="product-session__viewport" ref={viewportRef}>
         <ol aria-label={zh ? "会话记录" : "Conversation history"}>
           <li data-role="user">
             <article>
@@ -488,7 +509,10 @@ export function ProductSessionSurface({
                   <div role="menu">
                     <button
                       onClick={() => {
-                        openInspector("artifacts");
+                        openInspector(
+                          "artifacts",
+                          messageMenuRef.current?.querySelector("summary"),
+                        );
                         setMessageMenuOpen(false);
                       }}
                       role="menuitem"

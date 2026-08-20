@@ -2,9 +2,9 @@ suite "a3s-ui-product-automation-and-preview" {
     version = 1
 
     scenario "automation-builder-workflow" {
-        name = "An automation template becomes an editable scheduled task"
+        name = "Automation runtime, interval anchor, and return focus persist"
         surface = "web"
-        timeout_ms = 60000
+        timeout_ms = 90000
         viewport "desktop" { width = 1478 height = 852 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
@@ -20,25 +20,182 @@ suite "a3s-ui-product-automation-and-preview" {
         expect "workspace-control" { visible = css(".product-automation-builder select option[value=a3s-ui]") }
 
         select "workspace" {
-            target = css(".product-automation-builder__field select")
+            target = css("select[aria-label='工作区']")
             values = ["a3s-ui"]
         }
+        select "connector" {
+            target = css("select[aria-label='连接器']")
+            values = ["webview"]
+        }
+        select "model" {
+            target = css("select[aria-label='模型']")
+            values = ["default"]
+        }
+        select "effort" {
+            target = css("select[aria-label='努力程度']")
+            values = ["xhigh"]
+        }
+        select "permission" {
+            target = css("select[aria-label='权限边界']")
+            values = ["workspace-write"]
+        }
         click "interval-schedule" { target = role("button", "按间隔") }
+        select "interval" {
+            target = css("select[aria-label='执行间隔']")
+            values = ["12"]
+        }
+        select "time-zone" {
+            target = css("select[aria-label='执行时区']")
+            values = ["UTC"]
+        }
         fill "rename" {
             target = css("[data-product-surface=automation-builder] input[aria-label='名称']")
             value = "发布就绪巡检"
         }
-        click "save" { target = role("button", "保存") }
+        click "save" { target = role("button", "保存自动化") }
 
-        wait "saved-list" { visible = css("[data-product-surface=automation] .product-automation__status article") }
+        wait "saved-list" {
+            visible = css(".product-automation__overview article[data-automation-id^='automation-']")
+        }
         expect "saved-name" { text = "发布就绪巡检" }
-        expect "saved-schedule" { text = "每 6 小时" }
-        click "edit" { target = role("button", "编辑") }
-        expect "editable-again" { visible = css("[data-product-surface=automation-builder] input[value='发布就绪巡检']") }
+        expect "saved-schedule" { text = "每 12 小时 · 从 09:30 · UTC · a3s-ui" }
+        expect "saved-runtime" { text = "当前默认模型 · 极高 · 工作区写入" }
+
+        click "edit" { target = role("button", "编辑 发布就绪巡检") }
+        expect "workspace-preserved" {
+            visible = css("select[aria-label='工作区'] option[value='a3s-ui']:checked")
+        }
+        expect "connector-preserved" {
+            visible = css("select[aria-label='连接器'] option[value='webview']:checked")
+        }
+        expect "model-preserved" {
+            visible = css("select[aria-label='模型'] option[value='default']:checked")
+        }
+        expect "effort-preserved" {
+            visible = css("select[aria-label='努力程度'] option[value='xhigh']:checked")
+        }
+        expect "permission-preserved" {
+            visible = css("select[aria-label='权限边界'] option[value='workspace-write']:checked")
+        }
+        expect "anchor-preserved" {
+            visible = css("input[aria-label='间隔锚点时间'][value='09:30']")
+        }
+
+        click "cancel" { target = role("button", "取消") }
+        expect "edit-focus-restored" {
+            visible = css("button[aria-label='编辑 发布就绪巡检']:focus")
+        }
 
         screenshot "builder" { path = "product/automation-builder.png" }
         console "console" { path = "product/automation-builder-console.json" clear = false }
         page_errors "page-errors" { path = "product/automation-builder-page-errors.json" clear = false }
+    }
+
+    scenario "paused-manual-run" {
+        name = "A paused schedule still allows a bounded manual run"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "automation-ready" { visible = css("[data-product-surface=automation]") }
+
+        click "pause-schedule" { target = role("button", "暂停 每日发布摘要") }
+        expect "manual-run-still-enabled" {
+            visible = css("article[data-automation-id='release-digest'] button[aria-label='立即运行 每日发布摘要']:not(:disabled)")
+        }
+        click "run-now" { target = role("button", "立即运行 每日发布摘要") }
+        wait "manual-run-finished" { text = "运行成功" }
+        expect "schedule-remains-paused" {
+            visible = css("article[data-automation-id='release-digest'] button[aria-label='启用 每日发布摘要']")
+        }
+
+        click "history" {
+            target = css("[role='tab'][aria-controls$='-history-panel']")
+        }
+        expect "manual-run-recorded" {
+            visible = css("button[data-run-id^='release-digest-manual-'][data-automation-run-state='success']")
+        }
+
+        screenshot "manual-run" { path = "product/automation-paused-manual-run.png" }
+        console "console" { path = "product/automation-paused-manual-run-console.json" clear = false }
+        page_errors "page-errors" { path = "product/automation-paused-manual-run-page-errors.json" clear = false }
+    }
+
+    scenario "failed-filter-recovery" {
+        name = "Retry remains selected after leaving the failed-only filter"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        click "history" {
+            target = css("[role='tab'][aria-controls$='-history-panel']")
+        }
+        click "failed-filter" { target = css("[data-run-filter='failed']") }
+        expect "failed-run-visible" {
+            visible = css("[data-run-id='regression-watch-0818'][data-automation-run-state='failed']")
+        }
+
+        click "retry" { target = role("button", "从失败步骤重试") }
+        expect "all-filter-selected" {
+            visible = css("[data-run-filter='all'][aria-pressed='true']")
+        }
+        expect "recovering-run-stays-visible" {
+            visible = css("[data-run-id='regression-watch-0818']")
+        }
+        wait "recovery-finished" { text = "恢复完成" }
+        expect "recovered-run" {
+            visible = css("[data-run-id='regression-watch-0818'][data-automation-run-state='success']")
+        }
+        expect "recovered-step-duration" { text = "11.3s" }
+
+        screenshot "recovery" { path = "product/automation-recovery.png" }
+        console "console" { path = "product/automation-recovery-console.json" clear = false }
+        page_errors "page-errors" { path = "product/automation-recovery-page-errors.json" clear = false }
+    }
+
+    scenario "automation-compact-master-detail" {
+        name = "Compact run detail returns focus and mobile exposes complete scheduling"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "compact" { width = 1024 height = 800 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        click "history" {
+            target = css("[role='tab'][aria-controls$='-history-panel']")
+        }
+        click "open-failed-run" { target = css("[data-run-id='regression-watch-0818']") }
+        expect "compact-detail-visible" {
+            visible = css(".product-run-history[data-detail-open='true'] .product-run-history__detail")
+        }
+        click "back" { target = role("button", "返回运行记录") }
+        expect "run-focus-restored" {
+            visible = css("[data-run-id='regression-watch-0818']:focus")
+        }
+
+        viewport "mobile" { width = 390 height = 844 }
+        click "scheduled" {
+            target = css("[role='tab'][aria-controls$='-scheduled-panel']")
+        }
+        click "edit" { target = role("button", "编辑 每日发布摘要") }
+        expect "runtime-controls" {
+            visible = css(".product-automation-builder__runtime select[aria-label='权限边界']")
+        }
+        click "interval" { target = role("button", "按间隔") }
+        expect "anchor-control" {
+            visible = css("input[aria-label='间隔锚点时间']")
+        }
+        expect "zone-control" {
+            visible = css("select[aria-label='执行时区']")
+        }
+
+        screenshot "mobile-builder" { path = "product/automation-mobile-builder.png" }
+        console "console" { path = "product/automation-mobile-builder-console.json" clear = false }
+        page_errors "page-errors" { path = "product/automation-mobile-builder-page-errors.json" clear = false }
     }
 
     scenario "device-presets-and-more-menu" {

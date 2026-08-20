@@ -236,6 +236,20 @@
     @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium;
   }
 
+  .sidebar
+    nav
+    li
+    > :is(a, button):is([aria-current="page"], [data-active="true"])
+    > svg,
+  .sidebar
+    nav
+    li
+    > details
+    > summary:is([aria-current="page"], [data-active="true"])
+    > svg {
+    color: var(--a3s-accent);
+  }
+
   .sidebar nav li > :is(a, button):not([data-variant]),
   .sidebar nav li > details > summary:not([data-variant]),
   .sidebar nav li > :is(a, button)[data-variant="default"],
@@ -287,7 +301,7 @@
   }
 
   .progress > span {
-    @apply bg-primary;
+    @apply bg-[var(--a3s-accent)];
   }
 
   /* Skeleton */
@@ -343,7 +357,7 @@
 
   /* Toast */
   .toast-content {
-    @apply bg-popover text-popover-foreground border shadow-lg rounded-2xl;
+    @apply bg-popover text-popover-foreground border border-border shadow-[var(--a3s-shadow-soft)] rounded-lg;
   }
 
   /* Slider */
@@ -378,14 +392,14 @@
     .field > input[type="range"],
     .input[type="range"]
   )::-webkit-slider-thumb {
-    @apply border-primary ring-ring/50 size-4 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)] focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 -mt-[calc((var(--slider-thumb-size)-var(--slider-track-height))/2)] focus-visible:outline-hidden;
   }
 
   :is(.field > input[type="range"], .input[type="range"])::-moz-range-thumb {
-    @apply border-primary ring-ring/50 size-4 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden;
   }
 
   :is(.field > input[type="range"], .input[type="range"])::-ms-thumb {
-    @apply border-primary ring-ring/50 size-4 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden;
+    @apply border-[var(--a3s-accent)] ring-ring/20 size-4 rounded-full border bg-white shadow-none transition-[color,box-shadow] hover:ring-2 focus-visible:ring-2 focus-visible:outline-hidden;
   }
 }

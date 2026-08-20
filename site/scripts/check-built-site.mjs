@@ -196,20 +196,6 @@ const requiredFiles = [
   "en/components/status-bar.html",
   "en/components/task-pane.html",
   "foundations/color.html",
-  "patterns/index.html",
-  "en/patterns/index.html",
-  "patterns/task-workspace.html",
-  "en/patterns/task-workspace.html",
-  "patterns/new-task.html",
-  "en/patterns/new-task.html",
-  "patterns/capability-catalog.html",
-  "en/patterns/capability-catalog.html",
-  "patterns/settings-center.html",
-  "en/patterns/settings-center.html",
-  "patterns/projects.html",
-  "en/patterns/projects.html",
-  "patterns/automations.html",
-  "en/patterns/automations.html",
   "llms.txt",
   "llms-full.txt",
   "en/llms.txt",
@@ -841,96 +827,6 @@ const nextExtractedComponentExpectations = [
   },
 ];
 
-const nextTaskPatternExpectations = [
-  {
-    file: "patterns/index.html",
-    markers: [
-      'lang="zh"',
-      "data-pattern-catalog",
-      'aria-label="组合模式菜单"',
-      'class="pattern-menu__primary"',
-      ">模式总览<",
-      "推荐起点",
-      "治理与配置",
-      'href="/UI/patterns/task-workspace.html"',
-    ],
-  },
-  {
-    file: "en/patterns/index.html",
-    markers: [
-      'lang="en"',
-      "data-pattern-catalog",
-      'aria-label="Pattern menu"',
-      'class="pattern-menu__primary"',
-      ">Patterns overview<",
-      "Recommended starting point",
-      "Governance",
-      'href="/UI/en/patterns/task-workspace.html"',
-    ],
-  },
-  {
-    file: "patterns/task-workspace.html",
-    markers: [
-      'lang="zh"',
-      'class="app-shell"',
-      'class="task-workspace"',
-      'class="approval-request"',
-      "data-app-navigation-trigger",
-    ],
-  },
-  {
-    file: "en/patterns/task-workspace.html",
-    markers: [
-      'lang="en"',
-      ">Task Workspace<",
-      'aria-label="Task transcript"',
-      "data-task-inspector",
-      "illustrative data",
-    ],
-  },
-  {
-    file: "patterns/new-task.html",
-    markers: [
-      'lang="zh"',
-      'class="task-start',
-      'class="agent-composer"',
-      "data-task-suggestions",
-    ],
-  },
-  {
-    file: "en/patterns/new-task.html",
-    markers: [
-      'lang="en"',
-      ">New Task<",
-      'aria-label="Instruction"',
-      'aria-label="Start a new task"',
-    ],
-  },
-  {
-    file: "en/patterns/capability-catalog.html",
-    markers: [">Capability Catalog<", 'role="tablist"', "data-catalog-results"],
-  },
-  {
-    file: "en/patterns/settings-center.html",
-    markers: [
-      ">Settings Center<",
-      'class="settings-layout',
-      'class="setting-row"',
-    ],
-  },
-  {
-    file: "en/patterns/projects.html",
-    markers: [">Projects<", 'class="app-page', 'class="resource-grid"'],
-  },
-  {
-    file: "en/patterns/automations.html",
-    markers: [
-      ">Automations<",
-      'class="table-container"',
-      "Recent automation runs",
-    ],
-  },
-];
 const playgroundExpectations = [
   {
     file: "playground.html",
@@ -980,7 +876,8 @@ const productApplicationExpectations = [
       'data-view="automation"',
       'data-product-surface="automation"',
       'aria-label="自动化视图"',
-      ">自动化任务模板<",
+      ">从模板开始<",
+      "data-automation-runtime",
     ],
   },
   {
@@ -989,7 +886,8 @@ const productApplicationExpectations = [
       'data-view="automation"',
       'data-product-surface="automation"',
       'aria-label="Automation view"',
-      ">Automation templates<",
+      ">Start from a template<",
+      "data-automation-runtime",
     ],
   },
   {
@@ -1000,7 +898,7 @@ const productApplicationExpectations = [
       'aria-label="项目路径"',
       'aria-label="项目工作区"',
       'aria-label="项目配置"',
-      ">A3S UI 体验优化<",
+      ">AnyBuddy<",
       'href="/UI/playground/projects/a3s-ui-experience/sessions/release-readiness.html"',
     ],
   },
@@ -1012,7 +910,7 @@ const productApplicationExpectations = [
       'aria-label="Project path"',
       'aria-label="Project workspace"',
       'aria-label="Project configuration"',
-      ">A3S UI experience<",
+      ">AnyBuddy<",
       'href="/UI/en/playground/projects/a3s-ui-experience/sessions/release-readiness.html"',
     ],
   },
@@ -1358,7 +1256,6 @@ for (const { file, markers } of [
   ...nextTreeExpectations,
   ...nextCodeEditorExpectations,
   ...nextExtractedComponentExpectations,
-  ...nextTaskPatternExpectations,
   ...playgroundExpectations,
   ...productApplicationExpectations,
   ...nextExtractedComponentHistoricalExpectations,
@@ -1409,26 +1306,42 @@ const styleExpectations = [
     matches: compiledStyles.startsWith("@layer rp-base;"),
   },
   {
-    label: "A3S OS light primary action token is present",
-    matches: compiledStyles.includes("--primary:#1456f0"),
+    label: "Playground light surface and neutral action tokens are present",
+    matches:
+      compiledStyles.includes("--a3s-canvas:#f6f6f6") &&
+      compiledStyles.includes("--a3s-paper:#fff") &&
+      compiledStyles.includes("--a3s-action:#171717") &&
+      compiledStyles.includes("--primary:var(--a3s-action)"),
   },
   {
-    label: "A3S OS dark primary action token is present",
-    matches: compiledStyles.includes("--primary:#4380f9"),
+    label: "Playground dark surface and neutral action tokens are present",
+    matches:
+      compiledStyles.includes("--a3s-canvas:#111112") &&
+      compiledStyles.includes("--a3s-paper:#171718") &&
+      compiledStyles.includes("--a3s-action:#f2f2f3"),
   },
   {
-    label: "A3S OS light and dark default accent tokens are present",
+    label: "A3S OS light and dark accent and selection tokens are present",
     matches:
       compiledStyles.includes("--a3s-accent:#1456f0") &&
       compiledStyles.includes("--a3s-accent:#4380f9") &&
-      compiledStyles.includes("--accent:#eef4ff") &&
-      compiledStyles.includes("--accent:#17223b"),
+      compiledStyles.includes("--a3s-selection:#eef4ff") &&
+      compiledStyles.includes("--a3s-selection:#17223b") &&
+      compiledStyles.includes("--accent:var(--a3s-selection)"),
   },
   {
-    label: "primary button contract is present",
-    matches: compiledStyles.includes(
-      ".btn:not([data-variant]),.btn[data-variant=primary]{background-color:var(--color-primary);color:var(--color-primary-foreground)}",
-    ),
+    label: "neutral primary actions and blue choice selection remain separate",
+    matches:
+      compiledStyles.includes(
+        ".btn:not([data-variant]),.btn[data-variant=primary]{background-color:var(--color-primary);color:var(--color-primary-foreground)}",
+      ) &&
+      compiledStyles.includes("background-color:var(--a3s-accent)"),
+  },
+  {
+    label: "Playground control and panel radii are present",
+    matches:
+      compiledStyles.includes("--a3s-radius:.625rem") &&
+      compiledStyles.includes("--a3s-radius-lg:.875rem"),
   },
   {
     label: "Device Simulator structure and Harness visuals are present",

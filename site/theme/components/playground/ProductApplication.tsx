@@ -20,11 +20,9 @@ import type {
   ProductPlaygroundView,
   ProductResourceView,
 } from "./product-playground-data";
-import {
-  ProductAutomationSurface,
-  ProductCatalogSurface,
-  ProductResourcesSurface,
-} from "./ProductCollectionSurfaces";
+import { ProductCatalogSurface } from "./ProductCapabilitySurface";
+import { ProductResourcesSurface } from "./ProductResourceSurfaces";
+import { ProductAutomationSurface } from "./ProductAutomationSurface";
 import { ProductNavigationSidebar } from "./ProductNavigationSidebar";
 import { ProductMarketplaceSurface } from "./ProductMarketplaceSurface";
 import { ProductMemorySurface } from "./ProductMemorySurface";
@@ -36,6 +34,7 @@ import {
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { ProductComposerContext } from "./ProductComposer";
 import type { ProductTaskDraft } from "./product-composer-data";
+import { productProjectName } from "./product-project-data";
 import { ProductProjectSessionSurface } from "./ProductProjectSurfaces";
 import { ProductProjectWorkspaceSurface } from "./ProductProjectWorkspaceSurface";
 import { ProductSessionSurface } from "./ProductSessionSurface";
@@ -156,7 +155,7 @@ export function ProductApplication() {
           : "Current task",
       marketplace: zh ? "扩展" : "Extensions",
       memory: zh ? "记忆" : "Memory",
-      project: zh ? "A3S UI 体验优化" : "A3S UI experience",
+      project: productProjectName[locale],
       "project-session": zh ? "发布就绪检查" : "Release readiness",
       projects: zh ? "项目" : "Projects",
       resources: zh ? "资源" : "Resources",
@@ -194,9 +193,7 @@ export function ProductApplication() {
     navigateToView("created-session");
   };
 
-  const startTaskWithContext = (
-    draft: Omit<ProductTaskDraft, "revision">,
-  ) => {
+  const startTaskWithContext = (draft: Omit<ProductTaskDraft, "revision">) => {
     setTaskDraft(writePendingProductTaskDraft(draft));
     navigateToView("start");
   };
@@ -374,6 +371,7 @@ export function ProductApplication() {
         {view === "catalog" ? (
           <ProductCatalogSurface
             locale={locale}
+            onStartTask={startTaskWithContext}
             onTabChange={navigateToCapabilityTab}
             tab={capabilityTab}
           />
@@ -381,7 +379,13 @@ export function ProductApplication() {
         {view === "automation" ? (
           <ProductAutomationSurface locale={locale} />
         ) : null}
-        {view === "memory" ? <ProductMemorySurface locale={locale} /> : null}
+        {view === "memory" ? (
+          <ProductMemorySurface
+            locale={locale}
+            onOpenMemorySettings={() => openSettings("memory")}
+            onStartTask={startTaskWithContext}
+          />
+        ) : null}
         {view === "marketplace" ? (
           <ProductMarketplaceSurface locale={locale} />
         ) : null}

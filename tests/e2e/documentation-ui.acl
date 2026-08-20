@@ -32,6 +32,30 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-responsive-navigation[open] .a3s-responsive-navigation__surface")
         }
 
+        expect "guide-is-first" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(1) > a[href='/UI/introduction.html']")
+        }
+
+        expect "foundations-are-second" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(2) > a[href='/UI/foundations/color.html']")
+        }
+
+        expect "components-are-third" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(3) > a[href='/UI/components/index.html']")
+        }
+
+        expect "harness-is-fourth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/harness/index.html']")
+        }
+
+        expect "playground-is-fifth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/playground.html']")
+        }
+
+        expect "resources-are-last" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(6) > details > summary")
+        }
+
         click "open-resource-navigation" {
             target = role("button", "资源")
         }
@@ -364,6 +388,26 @@ suite "a3s-ui-site-and-overlays" {
             target = role("button", "Open primary navigation")
         }
 
+        expect "english-guide-is-first" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(1) > a[href='/UI/en/introduction.html']")
+        }
+
+        expect "english-foundations-are-second" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(2) > a[href='/UI/en/foundations/color.html']")
+        }
+
+        expect "english-components-are-third" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(3) > a[href='/UI/en/components/index.html']")
+        }
+
+        expect "english-harness-is-fourth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/en/harness/index.html']")
+        }
+
+        expect "english-playground-is-fifth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/en/playground.html']")
+        }
+
         click "open-version-switcher" {
             target = css(".a3s-responsive-navigation [data-preference=version] > summary")
         }
@@ -378,6 +422,26 @@ suite "a3s-ui-site-and-overlays" {
 
         wait "version-route-loaded" {
             url = "http://127.0.0.1:4178/UI/v0.1.0/en/components/button.html"
+        }
+
+        click "open-versioned-navigation" {
+            target = role("button", "Open primary navigation")
+        }
+
+        expect "versioned-guide-is-first" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(1) > a[href='/UI/v0.1.0/en/introduction.html']")
+        }
+
+        expect "versioned-foundations-are-second" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(2) > a[href='/UI/v0.1.0/en/foundations/color.html']")
+        }
+
+        expect "versioned-components-are-third" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(3) > a[href='/UI/v0.1.0/en/components/index.html']")
+        }
+
+        expect "versioned-resources-are-last" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > details > summary")
         }
     }
 
@@ -401,6 +465,26 @@ suite "a3s-ui-site-and-overlays" {
         viewport "desktop-navigation" {
             width = 1440
             height = 900
+        }
+
+        expect "desktop-guide-is-first" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(1) > a[href='/UI/en/introduction.html']")
+        }
+
+        expect "desktop-foundations-are-second" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(2) > a[href='/UI/en/foundations/color.html']")
+        }
+
+        expect "desktop-components-are-third" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(3) > a[href='/UI/en/components/index.html']")
+        }
+
+        expect "desktop-harness-is-fourth" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(4) > a[href='/UI/en/harness/index.html']")
+        }
+
+        expect "desktop-playground-is-fifth" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(5) > a[href='/UI/en/playground.html']")
         }
 
         expect "visible-site-theme-control" {

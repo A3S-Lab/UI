@@ -2,7 +2,7 @@
 @layer components {
   /* Combobox */
   .combobox > input[role="combobox"] {
-    @apply border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border bg-transparent py-2 ps-2.5 pe-8 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3;
+    @apply border-input bg-background focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border py-2 ps-3 pe-8 text-sm shadow-none transition-[color,border-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2;
   }
 
   .combobox > svg,
@@ -11,7 +11,7 @@
   }
 
   .combobox [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 max-h-72 gap-0 rounded-md p-0 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground border border-border max-h-72 gap-0 rounded-lg p-0 shadow-[var(--a3s-shadow-soft)] duration-100;
   }
 
   .combobox [role="listbox"] {
@@ -49,7 +49,7 @@
   }
 
   .combobox-chips {
-    @apply dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/50 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-md border bg-transparent bg-clip-padding px-1.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:ring-3 has-[[aria-invalid=true]]:ring-3;
+    @apply border-input bg-background focus-within:border-ring focus-within:ring-ring/20 has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/30 has-[[aria-invalid=true]]:border-destructive dark:has-[[aria-invalid=true]]:border-destructive/50 min-h-9 gap-1.5 rounded-md border bg-clip-padding px-1.5 py-1.5 text-sm shadow-none transition-[color,border-color,box-shadow] focus-within:ring-2 has-[[aria-invalid=true]]:ring-2;
   }
 
   .combobox-chip {
@@ -69,7 +69,7 @@
   }
   /* Select */
   .select:not(select) > button {
-    @apply border-input dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border bg-transparent py-2 ps-2.5 pe-2 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-4;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] hover:bg-muted focus-visible:border-ring focus-visible:ring-ring/20 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/30 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border py-2 ps-3 pe-2 text-sm shadow-none transition-[color,border-color,background-color,box-shadow] focus-visible:ring-2 aria-invalid:ring-2 [&_svg:not([class*='size-'])]:size-4;
   }
 
   .select:not(select) > button > span {
@@ -81,7 +81,7 @@
   }
 
   .select:not(select) [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 rounded-md p-1 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground border border-border rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-100;
   }
 
   .select:not(select) [role="listbox"] {

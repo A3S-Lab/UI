@@ -431,6 +431,13 @@
 
 .product-file-manager
   [data-file-manager-selection-toolbar]
+  button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.product-file-manager
+  [data-file-manager-selection-toolbar]
   button[data-primary] {
   background: var(--ui-blue);
   color: #fff;
@@ -568,6 +575,46 @@
   width: 0.75rem;
   height: 0.75rem;
   color: var(--ui-blue);
+}
+
+.product-file-manager
+  [data-file-manager-item][data-transfer-state="copying"]
+  [data-file-icon]::after {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid color-mix(in srgb, var(--ui-blue) 22%, transparent);
+  border-block-start-color: var(--ui-blue);
+  border-radius: 50%;
+  animation: product-file-transfer 800ms linear infinite;
+  background: var(--ui-paper);
+  content: "";
+}
+
+.product-file-manager
+  [data-file-manager-item][data-transfer-state="error"]
+  > [data-file-entry-control] {
+  border-color: color-mix(in srgb, var(--ui-red) 32%, var(--ui-line));
+  background: color-mix(in srgb, var(--ui-red) 5%, var(--ui-paper));
+}
+
+.product-file-manager
+  [data-file-kind][data-file-transfer-state="copying"] {
+  color: var(--ui-blue);
+}
+
+.product-file-manager
+  [data-file-kind][data-file-transfer-state="error"] {
+  color: var(--ui-red);
+  font-weight: 650;
+}
+
+@keyframes product-file-transfer {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .product-file-manager
