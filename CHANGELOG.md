@@ -27,6 +27,7 @@
 
 ### Changed
 
+- Rebuilt the Playground capability catalog around scenario-led assistant discovery, rotating skill recommendations, dense connector browsing, stable visual identities, focus-contained detail dialogs, reviewed setup lifecycles, and direct handoff into a new task across desktop, mobile, dark mode, and both locales.
 - Unified every component Preview's HTML, React, and Vue guidance into one compact code workspace with a copyable install row and entry/example file tabs.
 - Integrated the persistent HTML, React, and Vue quick start into the first live Preview of all 116 bilingual component guides and all four Harness layout guides, so installation, setup, highlighted examples, framework hooks, source disclosure, and current-example copying share one 14px frame; variant previews remain scoped to their authored HTML, and no detached framework surface remains.
 - Retired the standalone Patterns documentation chapter across current and historical version trees; reusable contracts remain under Components and Harness, while app-scale compositions remain in Playground.

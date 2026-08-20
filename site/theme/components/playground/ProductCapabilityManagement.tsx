@@ -14,6 +14,10 @@ import type {
   ProductCapabilityDefinition,
   ProductCapabilityPreference,
 } from "./product-capability-state";
+import {
+  capabilityVisualTone,
+  ProductCapabilityMark,
+} from "./ProductCapabilityMark";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 function lifecycleLabel(
@@ -47,24 +51,9 @@ function removalActionLabel(
   return zh ? "移除专家" : "Remove assistant";
 }
 
-export function ProductCapabilityDetail({
-  compact,
-  definition,
-  locale,
-  onClose,
-  onDisable,
-  onEnable,
-  onRemove,
-  onRetry,
-  onSetup,
-  onUse,
-  preference,
-  retrying = false,
-}: {
-  compact: boolean;
+type ProductCapabilityDetailProps = {
   definition: ProductCapabilityDefinition;
   locale: ProductPlaygroundLocale;
-  onClose: () => void;
   onDisable: () => void;
   onEnable: () => void;
   onRemove: (origin: HTMLButtonElement) => void;
@@ -73,7 +62,20 @@ export function ProductCapabilityDetail({
   onUse: () => void;
   preference: ProductCapabilityPreference;
   retrying?: boolean;
-}) {
+};
+
+function ProductCapabilityDetail({
+  definition,
+  locale,
+  onDisable,
+  onEnable,
+  onRemove,
+  onRetry,
+  onSetup,
+  onUse,
+  preference,
+  retrying = false,
+}: ProductCapabilityDetailProps) {
   const zh = locale === "zh";
   const lifecycle = preference.lifecycle;
   const permissions = capabilityPermissionLabels(definition.tab, locale);
@@ -88,7 +90,8 @@ export function ProductCapabilityDetail({
   useEffect(() => {
     const previous = previousStateRef.current;
     previousStateRef.current = { id: definition.id, lifecycle };
-    if (previous.id !== definition.id || previous.lifecycle === lifecycle) return;
+    if (previous.id !== definition.id || previous.lifecycle === lifecycle)
+      return;
     window.requestAnimationFrame(() => primaryActionRef.current?.focus());
   }, [definition.id, lifecycle]);
 
@@ -97,30 +100,12 @@ export function ProductCapabilityDetail({
       aria-label={zh ? "能力详情" : "Capability details"}
       className="product-capability-detail"
       data-capability-detail
+      data-capability-tone={capabilityVisualTone(definition.id)}
       data-lifecycle={lifecycle}
     >
-      {compact ? (
-        <button
-          aria-label={zh ? "返回能力列表" : "Back to capability list"}
-          data-capability-detail-back
-          onClick={onClose}
-          type="button"
-        >
-          <ProductPlaygroundIcon name="arrow" />
-          {zh ? "返回" : "Back"}
-        </button>
-      ) : null}
       <header>
         <span data-capability-mark>
-          <ProductPlaygroundIcon
-            name={
-              definition.tab === "assistants"
-                ? "assistant"
-                : definition.tab === "skills"
-                  ? "checklist"
-                  : "link"
-            }
-          />
+          <ProductCapabilityMark definition={definition} />
         </span>
         <span>
           <small>{capabilityKindLabel(definition.tab, locale)}</small>
@@ -270,6 +255,54 @@ export function ProductCapabilityDetail({
         ) : null}
       </footer>
     </aside>
+  );
+}
+
+export function ProductCapabilityDetailDialog({
+  onClose,
+  ...detailProps
+}: ProductCapabilityDetailProps & { onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const zh = detailProps.locale === "zh";
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    dialog.showModal();
+    return () => {
+      if (dialog.open) dialog.close();
+    };
+  }, []);
+
+  return (
+    <dialog
+      aria-label={
+        zh
+          ? `${detailProps.definition.label.zh}详情`
+          : `${detailProps.definition.label.en} details`
+      }
+      className="product-capability-detail-dialog"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      ref={dialogRef}
+    >
+      <div>
+        <button
+          aria-label={zh ? "关闭能力详情" : "Close capability details"}
+          data-capability-detail-close
+          onClick={onClose}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
+        <ProductCapabilityDetail {...detailProps} />
+      </div>
+    </dialog>
   );
 }
 

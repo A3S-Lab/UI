@@ -16,6 +16,12 @@ suite "a3s-ui-product-capability-navigation" {
         expect "sidebar-current" { visible = css(".product-sidebar__capability-link[aria-current=page]") }
         expect "assistant-tab-selected" { visible = css("[data-product-surface=catalog] [role=tab][aria-selected=true]:nth-child(1)") }
         expect "featured-scenarios" { visible = css(".product-catalog__featured--scenarios .product-catalog__scenario") }
+        click "open-assistant-detail" { target = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
+        expect "assistant-detail" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail]") }
+        expect "assistant-primary-action" { visible = css("dialog.product-capability-detail-dialog[open] button[data-primary]") }
+        screenshot "capture-assistant-detail" { path = "product/capability-detail-desktop.png" }
+        click "close-assistant-detail" { target = role("button", "关闭能力详情") }
+        expect "detail-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
 
         click "open-skills" { target = role("tab", "技能") }
         wait "skills-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
