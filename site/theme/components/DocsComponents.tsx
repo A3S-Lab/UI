@@ -355,6 +355,7 @@ function PreviewCodeIcon() {
   return (
     <svg
       aria-hidden="true"
+      data-preview-icon="source-code"
       viewBox="0 0 20 20"
       width="16"
       height="16"
@@ -374,7 +375,12 @@ function PreviewCodeIcon() {
 function PreviewViewportIcon({ viewport }: { viewport: PreviewViewport }) {
   if (viewport === "phone") {
     return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <svg
+        aria-hidden="true"
+        data-preview-icon="viewport-phone"
+        viewBox="0 0 20 20"
+        fill="none"
+      >
         <rect
           x="6.25"
           y="2.75"
@@ -391,7 +397,12 @@ function PreviewViewportIcon({ viewport }: { viewport: PreviewViewport }) {
 
   if (viewport === "tablet") {
     return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+      <svg
+        aria-hidden="true"
+        data-preview-icon="viewport-tablet"
+        viewBox="0 0 20 20"
+        fill="none"
+      >
         <rect
           x="3.5"
           y="2.75"
@@ -407,29 +418,40 @@ function PreviewViewportIcon({ viewport }: { viewport: PreviewViewport }) {
   }
 
   return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+    <svg
+      aria-hidden="true"
+      data-preview-icon="viewport-fluid"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
       <rect
         x="2.75"
-        y="4"
+        y="4.25"
         width="14.5"
-        height="10.5"
+        height="11.5"
         rx="1.75"
         stroke="currentColor"
         strokeWidth="1.5"
       />
       <path
-        d="M6 17h8M10 14.5V17"
+        d="M7.25 10H4.5m0 0 1.75-1.75M4.5 10l1.75 1.75M12.75 10h2.75m0 0-1.75-1.75M15.5 10l-1.75 1.75"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-function PreviewThemeIcon({ dark }: { dark: boolean }) {
-  return dark ? (
-    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+function PreviewThemeIcon({ target }: { target: "dark" | "light" }) {
+  return target === "dark" ? (
+    <svg
+      aria-hidden="true"
+      data-preview-icon="theme-dark"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
       <path
         d="M15.6 12.8A6.2 6.2 0 0 1 7.2 4.4 6.4 6.4 0 1 0 15.6 12.8Z"
         stroke="currentColor"
@@ -439,7 +461,12 @@ function PreviewThemeIcon({ dark }: { dark: boolean }) {
       />
     </svg>
   ) : (
-    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+    <svg
+      aria-hidden="true"
+      data-preview-icon="theme-light"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
       <circle cx="10" cy="10" r="3.25" stroke="currentColor" />
       <path
         d="M10 2.25v1.5M10 16.25v1.5M2.25 10h1.5M16.25 10h1.5M4.52 4.52l1.06 1.06M14.42 14.42l1.06 1.06M15.48 4.52l-1.06 1.06M5.58 14.42l-1.06 1.06"
@@ -454,6 +481,7 @@ function PreviewCopyIcon({ copied }: { copied: boolean }) {
   return (
     <svg
       aria-hidden="true"
+      data-preview-icon={copied ? "copy-complete" : "copy"}
       viewBox="0 0 20 20"
       width="16"
       height="16"
@@ -794,6 +822,14 @@ export function Preview({
       : isChinese
         ? "切换为深色预览"
         : "Preview in dark mode";
+  const themeActionTarget: "dark" | "light" = alternateTheme
+    ? siteIsDark
+      ? "dark"
+      : "light"
+    : siteIsDark
+      ? "light"
+      : "dark";
+  const directionActionTarget = rtl ? "ltr" : "rtl";
   const directionLabel = rtl
     ? isChinese
       ? "恢复从左到右布局"
@@ -868,6 +904,8 @@ export function Preview({
                 type="button"
                 aria-label={option.label}
                 aria-pressed={viewport === option.value}
+                data-preview-control="viewport"
+                data-preview-viewport-option={option.value}
                 title={option.label}
                 onClick={() => setViewport(option.value)}
               >
@@ -881,19 +919,27 @@ export function Preview({
             onClick={() => setAlternateTheme((current) => !current)}
             aria-label={themeLabel}
             aria-pressed={alternateTheme}
+            data-preview-control="appearance"
+            data-preview-target={themeActionTarget}
             title={themeLabel}
           >
-            <PreviewThemeIcon dark={previewScheme === "dark"} />
+            <PreviewThemeIcon target={themeActionTarget} />
           </button>
           <button
             type="button"
             onClick={() => setRtl((current) => !current)}
             aria-label={directionLabel}
             aria-pressed={rtl}
+            data-preview-control="direction"
+            data-preview-target={directionActionTarget}
             title={directionLabel}
           >
-            <span className="a3s-preview__direction-mark" aria-hidden="true">
-              RTL
+            <span
+              className="a3s-preview__direction-mark"
+              aria-hidden="true"
+              data-preview-icon={`direction-${directionActionTarget}`}
+            >
+              {directionActionTarget.toUpperCase()}
             </span>
           </button>
           <button
@@ -902,6 +948,7 @@ export function Preview({
             aria-label={sourceLabel}
             aria-controls={sourceId}
             aria-expanded={sourceOpen}
+            data-preview-control="source"
             title={sourceLabel}
           >
             <PreviewCodeIcon />
@@ -915,6 +962,7 @@ export function Preview({
             onClick={copySource}
             disabled={!copyTarget}
             aria-label={copyLabel}
+            data-preview-control="copy"
             title={copyLabel}
             data-state={copyState}
           >

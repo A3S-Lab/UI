@@ -293,31 +293,27 @@ test("Session detail keeps artifacts in a focused secondary inspector", async ({
   ).toHaveText("3 个结果");
   await playground.getByRole("button", { name: "关闭会话搜索" }).click();
 
-  const artifactsTrigger = playground.getByRole("button", {
-    name: "打开产物面板",
-  });
-  await artifactsTrigger.click();
+  const detailsTrigger = playground.locator(
+    "button[aria-controls='product-session-details']",
+  );
+  await expect(detailsTrigger).toHaveAccessibleName("打开任务详情");
+  await detailsTrigger.click();
   await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
   await expect(playground).toHaveAttribute("data-view", "session");
-  const artifacts = playground.getByRole("complementary", {
-    name: "会话产物",
-  });
-  await expect(artifacts).toBeVisible();
-  await expect(
-    artifacts.getByRole("button", { name: "关闭产物面板" }),
-  ).toBeFocused();
+  const details = playground.locator("aside[aria-label='任务详情']");
+  await expect(details).toBeVisible();
+  await expect(details).not.toHaveAttribute("role", "dialog");
+  await expect(detailsTrigger).toBeFocused();
   await page.keyboard.press("Escape");
-  await expect(artifacts).not.toBeVisible();
-  await expect(artifactsTrigger).toBeFocused();
+  await expect(details).not.toBeVisible();
+  await expect(detailsTrigger).toBeFocused();
 
-  await artifactsTrigger.click();
+  await detailsTrigger.click();
   await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
-  await playground
-    .locator(".product-session__artifact-overview > div > button")
-    .first()
-    .click();
+  await details.getByRole("tab", { name: "产物" }).click();
+  await details.locator(".product-inspector-file-list button").first().click();
   await expect(
-    playground.locator(".product-session__artifact-preview pre"),
+    details.locator(".product-inspector-artifacts__preview pre"),
   ).toContainText("restoreSession");
   expect(runtimeErrors).toEqual([]);
 });
@@ -392,7 +388,10 @@ test("Settings entry points open the intended section and every section is reach
 
   await revealProductNavigation(playground);
   await playground.getByRole("link", { name: "助理", exact: true }).click();
-  await playground.getByRole("button", { name: "助理设置" }).click();
+  await playground
+    .locator('[data-product-surface="assistant"] > header')
+    .getByRole("button", { name: "助理设置", exact: true })
+    .click();
   await expect(settings).toBeVisible();
   await expect(
     settings.getByRole("button", { name: "助理设置", exact: true }),

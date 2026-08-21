@@ -53,6 +53,7 @@
 
 ### Fixed
 
+- Aligned documentation Preview and Playground action icons with their next operation: fluid width no longer masquerades as a desktop preset, appearance and direction controls expose their target state, secret visibility uses eye/eye-off, and graph expansion uses expand/contract semantics.
 - Replaced the decorative Color Swatches selection halo with a bounded selected surface and consolidated floating utility shadows onto the shared overlay depth token.
 - Kept all canonical buttons, fields, choice controls, menus, tabs, and navigation rows at 44-pixel targets for coarse pointers by applying input-method guarantees after every visual family.
 - Replaced the nested solid outline in the Playground composer with a restrained focus boundary on the compound control while preserving a visible keyboard focus state.

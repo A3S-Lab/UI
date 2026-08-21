@@ -191,6 +191,8 @@ Avoid a visible border plus a generic shadow on the same edge. Preview frames ma
 
 Use a coherent outline icon set with 1.75–2px strokes, round joins, and optical sizes of 14, 16, 18, or 20px. The official A3S OS logo is the only site and product mark. Do not substitute emoji, Unicode glyphs, or third-party product logos for interface icons. Provider logos remain host-owned assets rendered through the generic Icon or Avatar contract.
 
+Choice controls use icons to identify each option. Action controls use icons to identify the result of the next activation, not the state that the action will replace. A current-state icon belongs inside a selected, checked, pressed, or status semantic so users can distinguish state from intent without relying on a tooltip.
+
 ## 3. Interaction language
 
 ### 3.1 Motion

@@ -60,6 +60,12 @@ suite "a3s-ui-product-session-detail" {
         wait "compact-device-preview-restored" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
         click "open-code-graph" { target = role("tab", "图谱") }
         expect "code-graph-visible" { visible = css(".product-session-inspector .product-session-code-graph [data-code-graph-canvas]") }
+        expect "expand-graph-icon" { visible = css(".product-inspector-graph button[aria-label='展开代码依赖图谱'][aria-expanded=false] svg[data-icon=expand]") }
+        click "expand-code-graph" { target = role("button", "展开代码依赖图谱") }
+        expect "expanded-graph-icon" { visible = css(".product-session-inspector[data-graph-expanded=true] .product-inspector-graph button[aria-label='收起代码依赖图谱'][aria-expanded=true] svg[data-icon=contract]") }
+        screenshot "expanded-graph-evidence" { path = "product/session-code-graph-expanded-desktop.png" }
+        click "collapse-code-graph" { target = role("button", "收起代码依赖图谱") }
+        expect "graph-collapsed" { visible = css(".product-session-inspector:not([data-graph-expanded=true]) .product-inspector-graph button[aria-expanded=false] svg[data-icon=expand]") }
         fill "filter-code-graph" { target = css(".product-session-code-graph [data-code-graph-search]") value = "ToolCall" }
         click "show-code-list" { target = role("button", "列表") }
         expect "filtered-code-node" { visible = css(".product-session-code-graph[data-view=list] [data-code-node][data-node-id='tool-calls']:not([hidden])") }

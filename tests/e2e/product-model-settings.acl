@@ -17,6 +17,12 @@ suite "a3s-ui-product-model-settings" {
 
         click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
         expect "local-empty-state" { visible = css(".product-model-catalog__empty") }
+        expect "show-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
+        fill "api-key" { target = label("API Key") value = "test-key" }
+        click "show-api-key" { target = role("button", "显示 API Key") }
+        expect "hide-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
+        click "hide-api-key" { target = role("button", "隐藏 API Key") }
+        expect "secret-hidden-again" { visible = css(".product-model-manager [data-secret] input[type=password] + button svg[data-icon=eye]") }
         click "add-first-model" { target = role("button", "添加第一个模型") }
         fill "model-id" { target = label("模型 ID") value = "host-synced" }
         fill "model-name" { target = label("显示名称") value = "Host-synced model" }
@@ -52,6 +58,11 @@ suite "a3s-ui-product-model-settings" {
         expect "mobile-manager" { visible = css(".product-model-manager") }
         expect "provider-strip" { visible = css(".product-model-manager__workspace > aside") }
         click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
+        fill "api-key" { target = label("API Key") value = "mobile-test-key" }
+        click "show-api-key" { target = role("button", "显示 API Key") }
+        expect "mobile-hide-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
+        click "hide-api-key" { target = role("button", "隐藏 API Key") }
+        expect "mobile-show-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
         click "add-first-model" { target = role("button", "添加第一个模型") }
         expect "mobile-model-form" { visible = css(".product-model-catalog__draft") }
 

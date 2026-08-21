@@ -326,7 +326,7 @@ function ProviderConnectionEditor({
             onClick={() => onRevealChange(!revealed)}
             type="button"
           >
-            <ProductPlaygroundIcon name={revealed ? "close" : "eye"} />
+            <ProductPlaygroundIcon name={revealed ? "eye-off" : "eye"} />
           </button>
         </span>
       </label>
