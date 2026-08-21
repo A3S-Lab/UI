@@ -1,0 +1,30 @@
+# Native submitted-value evaluation
+
+A3S Form Core is the semantic authority for submitted values. Browser, Node, Worker, CLI, native Rust, and Cloud hosts use the same bounded evaluator rather than maintaining separate validators.
+
+One evaluation pass:
+
+1. runs computed rules in the compiler-produced dependency order;
+2. expands row-scoped wildcard paths to concrete array indices;
+3. removes stale outputs and propagates dependency failures;
+4. validates the derived value against Schema Profile 1 and business rules;
+5. filters errors owned only by hidden wizard pages; and
+6. returns canonical output, deterministic trace entries, and ordered errors.
+
+JavaScript hosts call `evaluateFormValue(plan, value, options)`. Native hosts use `evaluate_form_value` for parsed values or the versioned byte protocol at transport boundaries:
+
+```json
+{
+  "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+  "formPlan": {},
+  "value": {},
+  "options": {
+    "includeValues": false,
+    "locale": "en-US"
+  }
+}
+```
+
+Protected workflow commands must load and recompile the immutable Form release, verify its revision and digest, evaluate the candidate through native Form Core, enforce the canonical output limit, and persist only the evaluator-produced value. Browser validation provides feedback; it is not authorization.
+
+The native Rust library, direct WASM bytes, TypeScript conformance reference, and public Node adapter must produce byte-identical canonical responses for the shared golden corpus. See the [complete protocol](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/value-evaluation.md) for bounds, errors, adapter APIs, and durable-host acceptance requirements.

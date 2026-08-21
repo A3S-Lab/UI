@@ -1,0 +1,44 @@
+# 宿主管理的数据源
+
+`next` 运行时通过嵌入宿主加载动态选项。表单文档只保存允许使用的 registry key 和有上限的调度配置，不保存接口地址或凭证。
+
+```ts
+const hostAdapter = {
+  async resolveDataSource(request, signal) {
+    return modelCatalog.list({
+      provider: request.value.provider,
+      query: request.query,
+      cursor: request.cursor,
+      limit: request.limit,
+      signal,
+    });
+  },
+};
+```
+
+数据源可以声明依赖字段、`mount` 或 `focus` 触发方式、TTL 缓存、搜索防抖和游标分页。Renderer 会合并完全相同的进行中请求，取消已经被新请求取代的工作，并把缓存限制在当前宿主适配器边界内。修改无关字段不会重新加载选项。
+
+## Designer 中的选项来源
+
+文档声明 `dataSources` 后，`select`、`radio` 和 `multi-select` 的属性面板会显示“选项来源”。选择宿主数据源后，面板显示 registry key、加载时机和搜索能力，并隐藏静态选项编辑器；切回静态来源后，选项编辑器重新出现。
+
+动态来源只保存数据源 ID，不保存接口地址、凭证或加载结果。字段 Schema 仍负责值类型和业务约束；需要限制动态返回值时，可以保留 `enum` 作为允许列表。
+
+加载中、依赖未满足、空结果、失败与重试、加载更多都属于运行时的无障碍状态。旧式选项数组和分页 `{ options, nextCursor }` 响应都受支持，渲染前会检查结构。
+
+重复字段可以声明 `routes.*.provider` 这样的依赖。Renderer 会把实际行位置交给宿主：
+
+```ts
+request.scope = {
+  nodeId: 'route-model',
+  valuePath: 'routes.2.model',
+  rowIndices: [2],
+  dependencies: [
+    { template: 'routes.*.provider', path: 'routes.2.provider' },
+  ],
+};
+```
+
+宿主按给定的实际路径读取 `request.value`。每一行的请求键、取消、缓存和分页互不干扰；表单级字段仍可复用完全相同的数据源请求。
+
+编译限制、请求键、自定义组件和租户隔离要求见[完整数据源协议](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/data-sources.md)。

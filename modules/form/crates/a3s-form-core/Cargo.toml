@@ -1,0 +1,24 @@
+[package]
+name = "a3s-form-core"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+description = "Portable semantic core for A3S Form"
+repository = "https://github.com/A3S-Lab/UI"
+
+[dependencies]
+ryu-js = "1.0.3"
+regress = "0.10.4"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.149", features = ["float_roundtrip"] }
+sha2 = "0.10.9"
+thiserror = "2.0.18"
+url = "2.5.7"
+
+[[bin]]
+name = "a3s-form-core"
+path = "src/bin/a3s-form-core.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

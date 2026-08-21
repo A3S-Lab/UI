@@ -1,0 +1,24 @@
+[package]
+name = "a3s-form-core-wasm"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+description = "Raw WASM adapter for the portable A3S Form semantic core"
+repository = "https://github.com/A3S-Lab/UI"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+a3s-form-core = { path = "../../crates/a3s-form-core", version = "0.1.0" }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"

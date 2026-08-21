@@ -1,0 +1,115 @@
+import { readFile } from 'node:fs/promises';
+import { dirname, relative, resolve, sep } from 'node:path';
+import { gzipSync } from 'node:zlib';
+
+const moduleRoot = resolve(import.meta.dirname, '..');
+const projectRoot = resolve(moduleRoot, '../..');
+const distRoot = resolve(projectRoot, 'dist/form');
+const packageManifest = JSON.parse(await readFile(resolve(projectRoot, 'package.json'), 'utf8'));
+const generatedCatalogSentinel = '9e19c76e01ef19fd82c6795f8c51c7c6eb7876bf2e9dfa0c33bb72b577d921e4';
+const staticImportPattern = /\b(?:import|export)\s*(?:[\w*\s{},]+?\s+from\s*)?["']([^"']+)["']/g;
+
+const expectedA3SFlowExport = {
+  types: './dist/form/a3s-flow.d.ts',
+  import: './dist/form/a3s-flow.js',
+};
+
+if (
+  JSON.stringify(packageManifest.exports?.['./form/a3s-flow']) !==
+  JSON.stringify(expectedA3SFlowExport)
+) {
+  throw new Error('Package export ./form/a3s-flow must resolve to the lean A3S Flow entry point.');
+}
+
+function isInsideDist(path) {
+  return path === distRoot || path.startsWith(`${distRoot}${sep}`);
+}
+
+async function staticImportClosure(entryName) {
+  const entryPath = resolve(distRoot, entryName);
+  const pending = [entryPath];
+  const sources = new Map();
+
+  while (pending.length > 0) {
+    const filePath = pending.pop();
+    if (!filePath || sources.has(filePath)) continue;
+    if (!isInsideDist(filePath)) {
+      throw new Error(`Package entry ${entryName} imports outside dist: ${filePath}`);
+    }
+
+    const source = await readFile(filePath, 'utf8');
+    sources.set(filePath, source);
+    staticImportPattern.lastIndex = 0;
+    for (const match of source.matchAll(staticImportPattern)) {
+      const specifier = match[1];
+      if (!specifier.startsWith('.')) continue;
+      pending.push(resolve(dirname(filePath), specifier));
+    }
+  }
+
+  const text = [...sources.values()].join('\n');
+  return {
+    files: [...sources.keys()].map((filePath) => relative(distRoot, filePath)).sort(),
+    rawBytes: Buffer.byteLength(text),
+    gzipBytes: gzipSync(text).byteLength,
+    text,
+  };
+}
+
+const entrypoints = {
+  'a3s-flow.js': {
+    allowGeneratedCatalog: false,
+    rawBudget: 250_000,
+    gzipBudget: 50_000,
+  },
+  'react.js': {
+    allowGeneratedCatalog: false,
+    rawBudget: 2_300_000,
+    gzipBudget: 700_000,
+  },
+  'react-hooks.js': {
+    allowGeneratedCatalog: false,
+    rawBudget: 1_600_000,
+    gzipBudget: 600_000,
+  },
+  'vue-hooks.js': {
+    allowGeneratedCatalog: false,
+    rawBudget: 1_600_000,
+    gzipBudget: 600_000,
+  },
+  'workflow.js': {
+    allowGeneratedCatalog: true,
+  },
+};
+
+const results = new Map();
+for (const [entryName, policy] of Object.entries(entrypoints)) {
+  const closure = await staticImportClosure(entryName);
+  results.set(entryName, closure);
+  const containsGeneratedCatalog = closure.text.includes(generatedCatalogSentinel);
+  if (containsGeneratedCatalog !== policy.allowGeneratedCatalog) {
+    throw new Error(
+      policy.allowGeneratedCatalog
+        ? `${entryName} no longer exposes the backward-compatible Langflow catalog.`
+        : `${entryName} statically loads the generated Langflow catalog through: ${closure.files.join(', ')}`,
+    );
+  }
+  if (
+    (policy.rawBudget && closure.rawBytes > policy.rawBudget) ||
+    (policy.gzipBudget && closure.gzipBytes > policy.gzipBudget)
+  ) {
+    throw new Error(
+      `${entryName} exceeds its static import budget: ${closure.rawBytes} bytes raw / ${closure.gzipBytes} bytes gzip; limits are ${policy.rawBudget} / ${policy.gzipBudget}.`,
+    );
+  }
+}
+
+const leanSummary = ['a3s-flow.js', 'react.js', 'react-hooks.js', 'vue-hooks.js']
+  .map((entryName) => {
+    const result = results.get(entryName);
+    return `${entryName} ${result.rawBytes} bytes raw / ${result.gzipBytes} bytes gzip`;
+  })
+  .join('; ');
+console.log(
+  `Package entry points verified without the generated Langflow catalog: ${leanSummary}.`,
+);

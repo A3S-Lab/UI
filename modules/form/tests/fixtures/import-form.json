@@ -1,0 +1,57 @@
+{
+  "kind": "a3s.form",
+  "apiVersion": "a3s.dev/form/v1alpha1",
+  "metadata": {
+    "title": "导入验收表单",
+    "description": "用于验证本地 JSON 导入、编译与编辑流程。",
+    "locale": "zh-CN",
+    "tags": ["import-test"]
+  },
+  "revision": 3,
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "projectName": {
+        "type": "string",
+        "title": "项目名称",
+        "minLength": 1
+      }
+    },
+    "required": ["projectName"],
+    "additionalProperties": false
+  },
+  "ui": {
+    "root": "root",
+    "nodes": [
+      {
+        "id": "root",
+        "kind": "root",
+        "label": "导入验收表单",
+        "description": "填写项目名称后提交。",
+        "columns": 12,
+        "gap": 16,
+        "children": ["project-name"]
+      },
+      {
+        "id": "project-name",
+        "kind": "field",
+        "label": "项目名称",
+        "schemaPath": "/properties/projectName",
+        "widget": "text",
+        "placeholder": "例如：A3S Cloud",
+        "width": 12
+      }
+    ]
+  },
+  "rules": [],
+  "dataSources": [],
+  "actions": [
+    {
+      "id": "submit",
+      "registryKey": "host.submit.v1",
+      "label": "提交",
+      "tone": "primary"
+    }
+  ]
+}

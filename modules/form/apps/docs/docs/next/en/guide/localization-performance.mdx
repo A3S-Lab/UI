@@ -1,0 +1,56 @@
+# Localization and performance
+
+## Versioned runtime messages
+
+Runtime messages use `a3s.dev/form-locale-catalog/v1`. The package includes Chinese and English. An embedding host can replace individual messages without changing the form revision or digest.
+
+```tsx
+import {
+  FORM_LOCALE_CATALOG_API_VERSION,
+  type FormLocaleCatalogOverride,
+} from '@a3s-lab/ui/form/core';
+
+const localeCatalog: FormLocaleCatalogOverride = {
+  apiVersion: FORM_LOCALE_CATALOG_API_VERSION,
+  messages: {
+    selectPlaceholder: 'Choose a workflow model',
+    actionFailed: 'The node was not saved. Check the workflow service and retry.',
+  },
+};
+
+<FormRenderer
+  plan={plan}
+  value={value}
+  locale="en-US"
+  localeCatalog={localeCatalog}
+  onChange={setValue}
+/>;
+```
+
+React, Vue, Web Component, and Designer preview use the same catalog. Runtime controls, data-source states, progress, validation summaries, Schema errors, and asynchronous-validation fallback errors read from it. Field titles and explicit document copy remain the form author's responsibility.
+
+## Field subscriptions
+
+The compiler records rule dependencies and subscriptions for every node. A field subscribes only to its own value, rules targeting it, and its data-source dependencies. A dynamic template such as `routes.*.match` is resolved against the current row index before comparison, so adjacent rows do not share an unnecessarily broad value subscription. React can skip unrelated field renders while callbacks still read the host's current complete value.
+
+Custom node renderers receive the complete form value. Until the custom-node protocol supports dependency declarations, these nodes conservatively continue normal rendering.
+
+## CI performance budgets
+
+`npm run form:test:performance` measures compilation, validation and computation, incremental computation, and server rendering.
+
+| Nodes | Compile | Validate and compute | Incremental compute | Server render |
+| ---: | ---: | ---: | ---: | ---: |
+| 100 | 100 ms | 50 ms | 15 ms | 150 ms |
+| 500 | 300 ms | 300 ms | 50 ms | 800 ms |
+| 1,000 | 700 ms | 1,200 ms | 120 ms | 1,800 ms |
+
+The benchmark runs after package build and is part of `npm run form:check`. CI fails when the median exceeds a budget.
+
+Data grids also enforce a 1,000-row virtualization threshold:
+
+| Scenario | Server render | HTML | Mounted data rows |
+| --- | ---: | ---: | ---: |
+| 1,000-row dialog grid | 100 ms | 120,000 bytes | 32 rows |
+
+The benchmark uses a 480 px viewport and the default overscan. The runtime still constructs the complete controlled array and stable row indices, while server HTML and the browser DOM retain only the active window. CI fails when any threshold is exceeded.

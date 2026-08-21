@@ -1,0 +1,59 @@
+# 开发路线
+
+路线按发布风险排序。运行时正确性与可嵌入能力优先于协作和发布服务。
+
+## 当前 `next` 基线
+
+### A3S Flow 1.0 DAG 节点配置
+
+- 主契约固定到 A3S Flow `1.0.0` 和已测试 workflow DSL `0.7.0`。Flow 负责无损 DAG、限制、作用域、容器约束、确定性顺序和语义 digest。
+- 宿主负责每个 `node.data.type`、`A3SFlowDagNodeManifest`、属性语义、端口、编译、凭证、持久化和执行；配置编辑保留未知 DAG 与展示字段。
+- 内置 registry 包含 20 个 manifest，其中 18 个显示在 Playground 的七个分类中，`iteration-start` 与 `loop-start` 作为内部容器节点隐藏。14 个 manifest 直接绑定 Flow 1.0 运行时命令。
+- 表达式和映射字段统一使用与运行时无关的 `a3s.dev/flow-expression/v1` JSON AST；配置不保存 JavaScript 或模板片段。
+- 受控 `A3SFlowDagNodeConfigurationPanel` 与 `A3SFlowDagNodePreview` 提供运行时 binding、类型化端口、语义分组、有界编辑器、缺失 manifest 安全状态、响应式布局和 `@a3s-lab/ui@0.3.0`。
+- 固定版本的 Langflow `1.11.3` 目录保留为导入兼容适配器；旧八节点 `0.4.2` API 仅保留用于迁移。
+- 聚焦测试覆盖 DSL 兼容性、DAG 限制与作用域、容器约束、确定性排序与 digest、manifest 目录与 registry、无损配置合并、运行时 binding 与端口、结构化控件、语义校验、主面板和 Playground 18 节点列表。引擎重放以及所有活动非终态运行中的 Hook Token 唯一性由运行时和宿主负责。
+
+### 运行时完整性
+
+- A3S Form Schema Profile 1 与原生 Rust/WASM 值求值已经实现。
+- 计算规则、行作用域规则、可取消宿主校验、数据源依赖、缓存、搜索、分页和失败状态已经实现。
+- React、Vue 与 Web Component 适配器使用受控值和宿主能力。
+- 运行时语言目录以及 100、500、1,000 节点性能预算已经纳入门禁。
+
+### 复杂表单与 Studio
+
+- 嵌套对象重复组和稳定行标识已经实现。
+- 数据表格支持对话框编辑、排序、筛选、选择、有界 TSV 追加、向下填充和经过测量的虚拟化。
+- 分支向导支持逐页校验、复核、错误恢复和绑定 digest 的检查点。
+- 内置字段目录、矩阵字段、文件上传和签名扩展都提供实时 MDX 示例与属性表。
+- Designer 使用 A3S UI 任务面板、标签页、折叠区、字段、输入框、项目组、徽标、按钮和表格。
+
+## 下一个包版本发布前
+
+- 补齐 A3S Flow DAG 节点目录和配置面板的 Firefox 与 WebKit 浏览器证据。
+- 完成配置面板、数据表格、矩阵和向导的 WCAG 2.2 AA 审计。
+- 验证包兼容性并发布迁移说明。
+- 只有完整通过 lint、类型、覆盖率、构建、性能、嵌入、CLI、Playground 和文档检查后才发布包。
+
+## 后续里程碑
+
+### v0.4 — 生命周期与治理
+
+- 可变草稿与不可变发布版本；
+- 历史、结构化 diff、恢复、回滚和环境晋级；
+- 审批 Hook、审计事件、策略决策和 registry 版本固定；
+- 与宿主无关的在线状态、锁、补丁 rebase、冲突复核和离线同步契约。
+
+### v1.0 — 稳定生产契约
+
+- 稳定的文档、计划、补丁、交互和发布协议；
+- 每次协议修改对应的兼容性决策与迁移工具；
+- 受策略约束的检查、提议、diff、模拟、校验、测试、审批和发布操作；
+- 参考生命周期与持久化人工任务集成。
+
+## 边界
+
+表单文档不执行任意 JavaScript。Form Core 不负责身份、凭证、持久化、提交数据、文件、支付、分析或外部副作用。宿主通过类型化适配器与 registry 提供这些能力。
+
+完整验收条件和发布门禁维护在 [`ROADMAP.md`](https://github.com/A3S-Lab/UI/blob/main/modules/form/ROADMAP.md)。

@@ -1,0 +1,130 @@
+# React and Vue form hooks
+
+A3S UI exposes two optional framework-state surfaces. React applications use React Hook Form through `@a3s-lab/ui/form/react-hooks`; Vue 3 applications use native composables through `@a3s-lab/ui/form/vue-hooks`. Both delegate computed rules, Schema Profile 1, locale messages, Rust/WASM value semantics, and synchronous or host-owned asynchronous validation to the same A3S Form Core.
+
+The framework layer owns subscriptions and ergonomic state. It does not create a second form definition, validation engine, or submitted-value contract.
+
+## Installation
+
+```bash
+npm install @a3s-lab/ui
+```
+
+React applications also install the optional peers:
+
+```bash
+npm install react react-dom react-hook-form
+```
+
+Vue applications install `vue`. The Renderer adapter currently also uses the optional React and React DOM peers internally, while the Vue composables themselves do not depend on React Hook Form.
+
+## React Hook Form
+
+`useA3SForm` accepts the normal React Hook Form options plus a compiled `FormPlan`, host adapter, locale, and locale override. The return value is a normal `UseFormReturn` with `formPlan` and a controlled `rendererProps` binding.
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { FormRenderer } from '@a3s-lab/ui/form/react';
+import { useA3SForm, useFieldArray } from '@a3s-lab/ui/form/react-hooks';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+type FormValues = {
+  name: string;
+  recipients: Array<{ rowId: string; email: string }>;
+};
+
+const plan = assertCompiled(document);
+const form = useA3SForm<FormValues>({
+  plan,
+  defaultValues: {
+    name: '',
+    recipients: [],
+  },
+  mode: 'onChange',
+  criteriaMode: 'all',
+  hostAdapter,
+});
+const recipients = useFieldArray({
+  control: form.control,
+  name: 'recipients',
+});
+
+<FormRenderer
+  {...form.rendererProps}
+  onAction={(actionId) => {
+    if (actionId === 'submit') void form.handleSubmit(save)();
+  }}
+/>;
+```
+
+Renderer changes update the React Hook Form store and preserve dirty, touched, submitted, and field-array identity state. Validation uses field scope when React Hook Form requests one concrete path, uses form scope otherwise, and cancels superseded host validation.
+
+The entrypoint re-exports `Controller`, `FormProvider`, `useController`, `useFieldArray`, `useFormContext`, `useFormState`, `useWatch`, and their public types. Applications that already own a React Hook Form instance can use `createA3SFormResolver`. `toReactHookFormErrors` and `toA3SFormErrors` convert nested field and root errors without changing A3S error codes.
+
+## Vue composables
+
+`useA3SForm` returns readonly values and errors, computed form state, a Renderer binding, registration and setter methods, cancellable validation, reset, and submission handling. `provideA3SForm` makes the typed context available to `useA3SField` and `useA3SFieldArray` descendants.
+
+```vue
+<script setup lang="ts">
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { A3SFormRenderer } from '@a3s-lab/ui/form/vue';
+import {
+  provideA3SForm,
+  useA3SField,
+  useA3SFieldArray,
+  useA3SForm,
+} from '@a3s-lab/ui/form/vue-hooks';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+type FormValues = {
+  name: string;
+  recipients: Array<{ rowId: string; email: string }>;
+};
+
+const form = provideA3SForm(
+  useA3SForm<FormValues>({
+    plan: assertCompiled(document),
+    initialValues: { name: '', recipients: [] },
+    mode: 'onBlur',
+    hostAdapter,
+  }),
+);
+const { value: name, errorMessage, handleBlur } = useA3SField<FormValues, string>({
+  name: 'name',
+});
+const recipients = useA3SFieldArray<FormValues, FormValues['recipients'][number]>({
+  name: 'recipients',
+});
+const submit = form.handleSubmit(save);
+
+function handleAction(event: { actionId: string }) {
+  if (event.actionId === 'submit') void submit();
+}
+</script>
+
+<template>
+  <input v-model="name" @blur="handleBlur" />
+  <span v-if="errorMessage">{{ errorMessage }}</span>
+  <button type="button" @click="recipients.append({ rowId: crypto.randomUUID(), email: '' })">
+    Add recipient
+  </button>
+  <A3SFormRenderer
+    :plan="form.plan.value"
+    :model-value="form.values.value"
+    :errors="[...form.errors.value]"
+    @update:model-value="form.rendererProps.value.onChange"
+    @action="handleAction"
+  />
+</template>
+```
+
+`useA3SField` exposes writable value, scoped errors, first error message, dirty/touched/validating metadata, blur handling, and field validation. `useA3SFieldArray` keeps stable render keys while providing append, prepend, insert, remove, swap, move, update, and replace operations. These keys remain runtime metadata and are never serialized into submitted values.
+
+## Ownership and validation
+
+- The compiled `FormPlan` is the semantic source of truth in both frameworks.
+- Host validation receives a concrete field scope when possible and an abort signal for stale work.
+- React Hook Form and Vue state track dirty, touched, validating, submission, and array identity state only.
+- `rendererProps` maintains one controlled value store per framework rather than mirroring values into a second A3S store.
+- Persistence, authorization, secrets, network calls, actions, and durable submissions remain host responsibilities.

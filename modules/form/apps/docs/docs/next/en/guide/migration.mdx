@@ -1,0 +1,26 @@
+# Migration checklist
+
+`next` tightens contracts that were broader in v0.1. Check every existing form before publishing a new revision and digest.
+
+1. Compile each document with Schema Profile 1 and remove unsupported JSON Schema keywords.
+2. Review every `computed` rule. Derived results now enter the controlled value, validation, and host actions.
+3. Put remote options behind `resolveDataSource`, declare field dependencies, and keep credentials in the host.
+4. Put protected business checks behind `validateValue`, returning stable error codes and concrete field paths.
+5. Import scoped Form styles and remove dependencies on a host-wide CSS reset.
+6. Maintain host message overrides through `a3s.dev/form-locale-catalog/v1`.
+7. Replace JSON editors for object arrays with [repeatable field groups](/next/en/guide/repeatable-field-groups) without changing existing value shapes.
+8. Set `scope: "row"` on row-level rules. The host no longer substitutes wildcards itself; it reads concrete dependency paths from `DataSourceRequest.scope`.
+9. Replace tab-based step flows with a `wizard` container and direct `page` children. Keep navigation state outside form values and restore only checkpoints matching the current plan digest and revision.
+10. Add `layout: "data-grid"` to object repeaters suited to compact table editing. Schema and controlled arrays remain unchanged.
+11. Existing data grids remain inline by default without selection, sorting, or filtering. Set `dataGrid.editMode: "dialog"` for row drafts. `selection: "multiple"`, `sorting: "single"`, and `filtering: "search"` are independent and do not change the controlled value shape.
+12. Check built-in field value types, especially multi-select and tag arrays, UTC times, numeric currency values, and read-only computed results. See [Built-in fields](/next/en/guide/fields).
+
+Primitive repeaters remain compatible. Object repeaters do not add row metadata by default. Use `identifyRepeaterItem` when the host derives identity. Declare `itemKey` only when the business Schema already contains a required string identifier.
+
+After migration, publish a new form revision explicitly and update the configuration mode's `FormRef`. Existing workflow nodes and in-progress interactions remain pinned to their original revision and digest.
+
+Run the complete check before release:
+
+```bash
+npm run form:check
+```

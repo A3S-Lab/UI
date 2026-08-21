@@ -1,0 +1,564 @@
+.a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
+  padding: 17px 18px 15px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-identity p {
+  max-width: 62ch;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions :is(button, a) {
+  min-height: 40px;
+}
+
+.a3s-form-workflow-node-developer-details {
+  border-top: 1px solid var(--a3s-form-line);
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 35%, var(--a3s-form-panel));
+}
+
+.a3s-form-workflow-node-developer-details > summary {
+  min-height: 40px;
+  padding: 11px 18px;
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+  font-weight: 620;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.a3s-form-workflow-node-developer-details > summary:hover {
+  color: var(--a3s-form-ink);
+}
+
+.a3s-form-workflow-node-developer-details dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0 18px 14px;
+}
+
+.a3s-form-workflow-node-developer-details dl > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.a3s-form-workflow-node-developer-details :is(dt, dd) {
+  margin: 0;
+}
+
+.a3s-form-workflow-node-developer-details dt {
+  color: var(--a3s-form-subtle);
+  font-size: 10px;
+}
+
+.a3s-form-workflow-node-developer-details code {
+  color: var(--a3s-form-muted);
+  font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
+  font-size: 10px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form {
+  padding: 18px 18px 21px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-layout.a3s-form-flow > header {
+  margin-bottom: 15px;
+  padding-bottom: 9px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-collapse > header h2 {
+  font-size: 13px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-layout.a3s-form-flow > header h2 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-group.a3s-form-flow > header {
+  margin: 7px 0 12px;
+  padding-bottom: 8px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-group.a3s-form-flow > header h2 {
+  color: var(--a3s-form-ink);
+  font-size: 13px;
+  font-weight: 680;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-actions {
+  bottom: -21px;
+  margin: 8px -18px -21px;
+  padding: 12px 18px;
+}
+
+.a3s-form-flow-expression {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.a3s-form-flow-expression:focus,
+.a3s-form-flow-schema:focus,
+.a3s-form-flow-batch:focus {
+  outline: 2px solid var(--a3s-form-blue);
+  outline-offset: 4px;
+}
+
+.a3s-form-flow-expression-mode {
+  display: grid;
+  grid-template-columns: minmax(88px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.a3s-form-flow-expression-mode > label,
+.a3s-form-flow-batch-mapping > span,
+.a3s-form-flow-batch-primary-fields label > span,
+.a3s-form-flow-batch-retry label > span,
+.a3s-form-flow-schema-row label > span {
+  color: var(--a3s-form-subtle);
+  font-size: 11px;
+  font-weight: 640;
+}
+
+.a3s-form-flow-expression-source {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  border: 1px solid var(--a3s-form-line-strong);
+  border-radius: 8px;
+  background: var(--a3s-form-panel);
+}
+
+.a3s-form-flow-expression-source:focus-within {
+  border-color: var(--a3s-form-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-form-blue) 12%, transparent);
+}
+
+.a3s-form-flow-expression-source > span {
+  display: grid;
+  width: 38px;
+  place-items: center;
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-field .a3s-form-flow-expression-source > input {
+  height: 40px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.a3s-form-flow-expression-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(112px, 0.75fr) minmax(0, 0.9fr);
+  gap: 8px;
+}
+
+.a3s-form-flow-expression-empty,
+.a3s-form-flow-expression-preview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.a3s-form-flow-expression-empty > svg,
+.a3s-form-flow-expression-preview > svg {
+  margin-top: 1px;
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-field .a3s-form-flow-expression > textarea {
+  min-height: 86px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.a3s-form-flow-expression-advanced {
+  display: grid;
+  gap: 6px;
+}
+
+.a3s-form-field .a3s-form-flow-expression-advanced > textarea {
+  min-height: 150px;
+  font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.a3s-form-flow-expression-advanced > small,
+.a3s-form-flow-schema-json > small {
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+}
+
+.a3s-form-flow-expression-advanced[data-invalid="true"] > small,
+.a3s-form-flow-schema-json[data-invalid="true"] > small {
+  color: var(--a3s-form-red);
+}
+
+.a3s-form-flow-schema {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.a3s-form-flow-schema > ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--a3s-form-line);
+  list-style: none;
+}
+
+.a3s-form-flow-schema-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: end;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--a3s-form-line);
+}
+
+.a3s-form-flow-schema-row-fields {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.25fr) minmax(100px, 0.75fr);
+  gap: 8px;
+}
+
+.a3s-form-flow-schema-row label,
+.a3s-form-flow-batch-primary-fields label,
+.a3s-form-flow-batch-retry label {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.a3s-form-flow-schema-required {
+  min-height: 40px;
+  grid-template-columns: auto auto;
+  align-items: center;
+  align-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.a3s-form-flow-schema-row > button {
+  width: 40px;
+  height: 40px;
+}
+
+.a3s-form-flow-schema-row > small {
+  grid-column: 1 / -1;
+  color: var(--a3s-form-red);
+  font-size: 11px;
+}
+
+.a3s-form-flow-schema-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a3s-form-flow-schema-actions > label {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.a3s-form-flow-schema-empty,
+.a3s-form-flow-batch-empty {
+  display: grid;
+  min-height: 88px;
+  grid-template-columns: auto minmax(0, 1fr);
+  place-content: center;
+  align-items: center;
+  gap: 11px;
+  padding: 16px;
+  border: 1px dashed var(--a3s-form-line-strong);
+  border-radius: 10px;
+  color: var(--a3s-form-muted);
+}
+
+.a3s-form-flow-schema-empty > span,
+.a3s-form-flow-batch-empty > span {
+  display: grid;
+  gap: 2px;
+}
+
+.a3s-form-flow-schema-empty strong,
+.a3s-form-flow-batch-empty strong {
+  color: var(--a3s-form-ink);
+  font-size: 12px;
+}
+
+.a3s-form-flow-schema-empty small,
+.a3s-form-flow-batch-empty small {
+  font-size: 11px;
+}
+
+.a3s-form-flow-schema-advanced,
+.a3s-form-flow-batch-retry {
+  border-top: 1px solid var(--a3s-form-line);
+}
+
+.a3s-form-flow-schema-advanced > summary,
+.a3s-form-flow-batch-retry > summary {
+  min-height: 40px;
+  padding: 11px 0;
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+  font-weight: 620;
+  cursor: pointer;
+}
+
+.a3s-form-flow-schema-json {
+  display: grid;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.a3s-form-field .a3s-form-flow-schema-json > textarea {
+  min-height: 180px;
+  font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
+  font-size: 11px;
+}
+
+.a3s-form-flow-batch {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.a3s-form-flow-batch-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a3s-form-flow-batch-toolbar > span {
+  display: grid;
+  gap: 2px;
+}
+
+.a3s-form-flow-batch-toolbar strong {
+  font-size: 12px;
+}
+
+.a3s-form-flow-batch-toolbar small {
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+}
+
+.a3s-form-flow-batch-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a3s-form-flow-batch-list > li > details {
+  overflow: hidden;
+  border: 1px solid var(--a3s-form-line);
+  border-radius: 10px;
+  background: var(--a3s-form-panel);
+}
+
+.a3s-form-flow-batch-list > li > details[open] {
+  border-color: var(--a3s-form-line-strong);
+}
+
+.a3s-form-flow-batch-list > li[data-invalid="true"] > details {
+  border-color: var(--a3s-form-red);
+}
+
+.a3s-form-flow-batch-list > li > details > summary {
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 11px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.a3s-form-flow-batch-list > li > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.a3s-form-flow-batch-list > li > details > summary:hover {
+  background: var(--a3s-form-panel-soft);
+}
+
+.a3s-form-flow-batch-index {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--a3s-form-blue) 9%, var(--a3s-form-panel));
+  color: var(--a3s-form-blue);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.a3s-form-flow-batch-list > li > details > summary > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.a3s-form-flow-batch-list > li > details > summary strong,
+.a3s-form-flow-batch-list > li > details > summary small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-flow-batch-list > li > details > summary strong {
+  font-size: 12px;
+}
+
+.a3s-form-flow-batch-list > li > details > summary small,
+.a3s-form-flow-batch-summary-policy {
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+}
+
+.a3s-form-flow-batch-editor {
+  display: grid;
+  gap: 15px;
+  padding: 14px;
+  border-top: 1px solid var(--a3s-form-line);
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 34%, var(--a3s-form-panel));
+}
+
+.a3s-form-flow-batch-primary-fields,
+.a3s-form-flow-batch-retry-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.a3s-form-flow-batch-primary-fields small {
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.a3s-form-flow-batch-mapping {
+  display: grid;
+  gap: 7px;
+}
+
+.a3s-form-flow-batch-retry-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 4px 0 2px;
+}
+
+.a3s-form-flow-batch-row-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.a3s-form-flow-widget-errors {
+  display: grid;
+  gap: 5px;
+  color: var(--a3s-form-red);
+  font-size: 11px;
+}
+
+@container a3s-form-workflow-panel (max-width: 560px) {
+  .a3s-form-flow-expression-comparison,
+  .a3s-form-flow-batch-primary-fields,
+  .a3s-form-flow-batch-retry-fields,
+  .a3s-form-flow-schema-row-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .a3s-form-flow-schema-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .a3s-form-flow-schema-row-fields {
+    grid-column: 1 / -1;
+  }
+
+  .a3s-form-flow-schema-actions,
+  .a3s-form-flow-batch-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .a3s-form-flow-schema-actions > button,
+  .a3s-form-flow-batch-toolbar > button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .a3s-form-flow-batch-summary-policy {
+    display: none;
+  }
+
+  .a3s-form-flow-batch-list > li > details > summary {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+@container a3s-form-workflow-panel (max-width: 420px) {
+  .a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
+    padding-inline: 14px;
+  }
+
+  .a3s-form-flow-node-panel .a3s-form-workflow-node-form {
+    padding: 16px 14px 19px;
+  }
+
+  .a3s-form-flow-expression-mode,
+  .a3s-form-workflow-node-developer-details dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .a3s-form-flow-batch-row-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .a3s-form-flow-batch-row-actions > button:last-child {
+    grid-column: 1 / -1;
+  }
+}

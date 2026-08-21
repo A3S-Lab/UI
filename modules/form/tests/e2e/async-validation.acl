@@ -1,0 +1,62 @@
+suite "a3s-form-async-validation" {
+    version = 1
+
+    scenario "host-email-check" {
+        name = "宿主校验会拦截已占用的企业邮箱"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-workspace" {
+            url = "http://127.0.0.1:4176/"
+        }
+
+        viewport "desktop" {
+            width = 1440
+            height = 1000
+        }
+
+        wait "workspace-ready" {
+            text = "我的表单"
+        }
+
+        click "open-onboarding" {
+            target = role("button", "打开新员工入职申请")
+        }
+
+        wait "compiled" {
+            text = "编译通过"
+        }
+
+        click "preview" {
+            target = role("button", "预览")
+        }
+
+        fill "reserved-email" {
+            target = label("企业邮箱")
+            value = "used@a3s.dev"
+        }
+
+        click "leave-email" {
+            target = css("select[aria-label='所属部门']")
+        }
+
+        expect "host-error" {
+            text = "该企业邮箱已被占用。"
+        }
+
+        accessibility "validation-state" {
+            path = "evidence/validation-state.json"
+            interactive = true
+        }
+
+        console "console" {
+            path = "evidence/console.json"
+            clear = false
+        }
+
+        page_errors "page-errors" {
+            path = "evidence/page-errors.json"
+            clear = false
+        }
+    }
+}

@@ -1,0 +1,24 @@
+# Development baseline
+
+The current development channel includes:
+
+- A3S Flow `1.0.0`, tested workflow DSL `0.7.0`, lossless DAG validation, and semantic digests;
+- 18 visible host manifests, two internal container-start manifests, and all 14 runtime command bindings;
+- controlled and embeddable `A3SFlowDagNodeConfigurationPanel` and `A3SFlowDagNodePreview` surfaces built with `@a3s-lab/ui@0.3.0`;
+- one runtime-neutral `a3s.dev/flow-expression/v1` JSON AST for dynamic inputs and mappings;
+- compact semantic layouts, typed ports, runtime bindings, and live DAG-node configuration in the Playground;
+- a pinned Langflow `1.11.3` compatibility adapter kept outside the primary engine catalog;
+- React, Vue, and Web Component adapters with host errors, locale, read-only state, adapters, and extension registries;
+- React Hook Form subscriptions, field arrays, and resolver integration plus native Vue form, field, field-array, and context composables;
+- A3S Form Schema Profile 1 and native Rust/WASM submitted-value evaluation;
+- deterministic computed and row-scoped rules;
+- cancellable host validation and dynamic data sources with dependencies, caching, search, pagination, and recovery states;
+- field subscriptions and performance budgets for 100, 500, and 1,000-node forms;
+- nested object repeaters, dialog-edit data grids, sorting, filtering, selection, TSV append, fill-down, and measured virtualization;
+- branched wizards with page validation, review, error recovery, and digest-bound checkpoints;
+- 23 built-in fields, single- and multiple-choice matrices, file upload, and signature extensions;
+- live MDX examples, property tables, value contracts, keyboard behavior, and embedding usage for first-party fields, layouts, the Flow 1.0 DAG catalog, and the legacy eight-node migration API.
+
+Start with [React and Vue hooks](/next/en/guide/framework-hooks) for the two framework-state surfaces and their shared A3S Form Core semantics. Use [A3S Flow DAG-node configuration](/next/en/guide/workflow-node-embedding) for the Flow/host ownership boundary, manifest registry, DAG validation, semantic digest, and primary embedding API. The old eight-node chapters are explicitly retained as migration references. Use [Built-in fields](/next/en/guide/fields) for scalar controls, [Layouts](/next/en/guide/layouts) for composition, [Repeatable field groups](/next/en/guide/repeatable-field-groups) and [Data grids](/next/en/guide/data-grids) for arrays, and [Wizards](/next/en/guide/wizards) for multi-step flows.
+
+Run the [migration checklist](/next/en/guide/migration) before publishing a new form revision or digest. The `next` channel does not establish a compatibility promise until the corresponding package release is published.

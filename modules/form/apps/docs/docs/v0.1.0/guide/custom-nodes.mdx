@@ -1,0 +1,43 @@
+# 自定义表单节点
+
+自定义节点通过 `FormNodeRegistry` 进入设计器与运行时，宿主无需修改 A3S Form 内核。
+
+```tsx
+import type { FormNodeDefinition } from '@a3s-lab/ui/form/react';
+
+const ratingNode: FormNodeDefinition = {
+  type: 'company.rating',
+  catalog: {
+    label: '评分字段',
+    group: '业务组件',
+    create: ({ id, schemaPath }) => ({
+      id,
+      kind: 'field',
+      label: '满意度',
+      widget: 'company.rating',
+      schemaPath,
+      customProps: { max: 5 },
+    }),
+  },
+  render: ({ node, value, onChange }) => (
+    <Rating
+      max={Number(node.customProps?.max ?? 5)}
+      value={Number(value ?? 0)}
+      onChange={onChange}
+    />
+  ),
+  inspector: ({ node, schema, onUpdate }) => (
+    <RatingSettings
+      max={Number(node.customProps?.max ?? 5)}
+      onChange={(max) =>
+        onUpdate({
+          node: { customProps: { ...node.customProps, max } },
+          schema: { ...schema, maximum: max },
+        })
+      }
+    />
+  ),
+};
+```
+
+`onUpdate` 会在同一次修订中原子更新节点配置和 JSON Schema，避免配置面板产生中间不一致状态。宿主还需要把自定义 `widget` 加入编译能力声明。

@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">A3S Form runtime architecture</title>
+  <desc id="desc">People and AI agents use a controlled Designer to create a canonical Form Document. A deterministic compiler validates and transforms it into a Form Plan consumed by framework adapters. Trusted host registries provide widgets, data sources, actions, and validators while the host retains identity, persistence, submission, and side effects. A3S Workflow and A3S Cloud embed the same surfaces.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1200" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101118"/>
+      <stop offset="1" stop-color="#171329"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="58" y1="0" x2="1142" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2587f5"/>
+      <stop offset="0.54" stop-color="#3b53dc"/>
+      <stop offset="1" stop-color="#7137d8"/>
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L9 4.5L0 9Z" fill="#6ca3ff"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L9 4.5L0 9Z" fill="#ad87ff"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="640" rx="24" fill="url(#background)"/>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif">
+    <text x="58" y="54" fill="#f2f3f5" font-size="36" font-weight="740">One document. Two surfaces. Host-owned data.</text>
+    <text x="58" y="89" fill="#a4a8b2" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="1.2">DESIGN -> COMPILE -> RENDER / AI PROPOSES -> HOST APPROVES</text>
+
+    <text x="58" y="139" fill="#6ca3ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="1.5">AUTHORING SURFACE</text>
+    <rect x="58" y="157" width="1084" height="118" rx="16" fill="#151720" stroke="#3a3d48"/>
+
+    <g transform="translate(78 180)">
+      <rect width="170" height="72" rx="12" fill="#171820" stroke="#3a3d48" stroke-width="2"/>
+      <text x="18" y="30" fill="#a4a8b2" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">AUTHORS</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">People + agents</text>
+    </g>
+    <g transform="translate(294 180)">
+      <rect width="198" height="72" rx="12" fill="#111d32" stroke="#2864e8" stroke-width="2"/>
+      <text x="18" y="30" fill="#6ca3ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">DESIGNER</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">controlled editing</text>
+    </g>
+    <g transform="translate(538 180)">
+      <rect width="216" height="72" rx="12" fill="#1b1530" stroke="#7137d8" stroke-width="2"/>
+      <text x="18" y="30" fill="#ad87ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">AI PATCH</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">validate + preview</text>
+    </g>
+    <g transform="translate(800 180)">
+      <rect width="322" height="72" rx="12" fill="#16172a" stroke="#8c83ff" stroke-width="2"/>
+      <text x="18" y="30" fill="#8c83ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">FORM DOCUMENT</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">schema + UI + rules + digest</text>
+    </g>
+    <path d="M248 216H282" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M492 204H526" stroke="#ad87ff" stroke-width="3" marker-end="url(#arrow-purple)"/>
+    <path d="M754 216H788" stroke="#ad87ff" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+    <text x="58" y="321" fill="#8c83ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="1.5">DETERMINISTIC CORE</text>
+    <rect x="58" y="339" width="1084" height="118" rx="16" fill="#151720" stroke="#3a3d48"/>
+
+    <g transform="translate(78 362)">
+      <rect width="232" height="72" rx="12" fill="#111d32" stroke="#2864e8" stroke-width="2"/>
+      <text x="18" y="30" fill="#6ca3ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">VALIDATE + NORMALIZE</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">closed vocabularies</text>
+    </g>
+    <g transform="translate(356 362)">
+      <rect width="232" height="72" rx="12" fill="#15182d" stroke="#3b53dc" stroke-width="2"/>
+      <text x="18" y="30" fill="#8c83ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">DEPENDENCY GRAPH</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">rules + cycle check</text>
+    </g>
+    <g transform="translate(634 362)">
+      <rect width="204" height="72" rx="12" fill="#1b1530" stroke="#7137d8" stroke-width="2"/>
+      <text x="18" y="30" fill="#ad87ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">FORM PLAN</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">immutable + bounded</text>
+    </g>
+    <g transform="translate(884 362)">
+      <rect width="238" height="72" rx="12" fill="#171820" stroke="#3a3d48" stroke-width="2"/>
+      <text x="18" y="30" fill="#a4a8b2" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="16" font-weight="700">WORKER</text>
+      <text x="18" y="56" fill="#f2f3f5" font-size="19" font-weight="700">cancellable compile</text>
+    </g>
+    <path d="M310 398H344" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M588 398H622" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M884 416H850" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M961 252V330H322H194V350" fill="none" stroke="#8c83ff" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+    <text x="58" y="503" fill="#ad87ff" font-family="'Cascadia Mono', Consolas, ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="1.5">EMBEDDED RUNTIME + HOST BOUNDARY</text>
+    <rect x="58" y="521" width="1084" height="83" rx="16" fill="#151720" stroke="#3a3d48"/>
+
+    <g transform="translate(78 538)">
+      <rect width="216" height="49" rx="11" fill="#111d32" stroke="#2864e8" stroke-width="2"/>
+      <text x="18" y="31" fill="#f2f3f5" font-size="18" font-weight="700">React / Vue / Element</text>
+    </g>
+    <g transform="translate(334 538)">
+      <rect width="216" height="49" rx="11" fill="#16172a" stroke="#8c83ff" stroke-width="2"/>
+      <text x="18" y="31" fill="#f2f3f5" font-size="18" font-weight="700">Trusted registries</text>
+    </g>
+    <g transform="translate(590 538)">
+      <rect width="250" height="49" rx="11" fill="#1b1530" stroke="#7137d8" stroke-width="2"/>
+      <text x="18" y="31" fill="#f2f3f5" font-size="18" font-weight="700">Workflow / Cloud host</text>
+    </g>
+    <g transform="translate(880 538)">
+      <rect width="242" height="49" rx="11" fill="#171820" stroke="#3a3d48" stroke-width="2"/>
+      <text x="18" y="31" fill="#f2f3f5" font-size="18" font-weight="700">data + actions + audit</text>
+    </g>
+    <path d="M294 563H322" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M550 563H578" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+    <path d="M840 563H868" stroke="#ad87ff" stroke-width="3" marker-end="url(#arrow-purple)"/>
+    <path d="M736 434V516H186V526" fill="none" stroke="#6ca3ff" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+    <path d="M58 623H1142" stroke="url(#brand)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

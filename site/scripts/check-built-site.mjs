@@ -15,6 +15,11 @@ const base = "/UI/";
 const requiredFiles = [
   "index.html",
   "en/index.html",
+  "form/index.html",
+  "form/en/index.html",
+  "form/next/guide/framework-hooks.html",
+  "form/next/en/guide/framework-hooks.html",
+  "form/playground/index.html",
   "v0.2.0/index.html",
   "v0.2.0/en/index.html",
   "v0.1.0/index.html",

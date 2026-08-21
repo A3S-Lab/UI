@@ -1,0 +1,591 @@
+.a3s-form-signature {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+}
+
+.a3s-form-signature-heading {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a3s-form-signature-heading > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.a3s-form-signature-label {
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-ink);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.a3s-form-signature-required {
+  flex: 0 0 auto;
+  color: var(--a3s-form-red);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.a3s-form-signature-heading > small {
+  flex: 0 0 auto;
+  color: var(--a3s-form-faint);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.a3s-form-signature-help,
+.a3s-form-signature-empty-copy {
+  margin-top: -6px;
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.a3s-form-signature-editor {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--a3s-form-line);
+  border-radius: 13px;
+  background: var(--a3s-form-panel);
+}
+
+.a3s-form-signature-methods {
+  display: grid;
+  width: fit-content;
+  max-width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--a3s-form-panel-soft);
+}
+
+.a3s-form-signature-methods button {
+  min-height: 29px;
+  padding: 0 12px;
+  border-radius: 6px;
+  color: var(--a3s-form-muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 570;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.a3s-form-signature-methods button:hover:not(:disabled) {
+  color: var(--a3s-form-ink);
+}
+
+.a3s-form-signature-methods button.is-active {
+  background: var(--a3s-form-panel);
+  box-shadow: 0 1px 4px rgb(20 27 43 / 10%);
+  color: var(--a3s-form-ink);
+  font-weight: 650;
+}
+
+.a3s-form-signature-methods button:disabled {
+  color: var(--a3s-form-faint);
+  cursor: wait;
+}
+
+.a3s-form-signature-draw {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.a3s-form-signature-pad {
+  display: block;
+  width: 100%;
+  min-height: 156px;
+  aspect-ratio: 25 / 8;
+  overflow: hidden;
+  border: 1px solid var(--a3s-form-line-strong);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 52%, var(--a3s-form-panel));
+  color: var(--a3s-form-ink);
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.a3s-form-signature-pad[data-pen-color="blue"] {
+  color: color-mix(in srgb, var(--a3s-form-blue) 82%, #14244a);
+}
+
+.a3s-form-signature-pad:hover:not([aria-disabled="true"]) {
+  border-color: color-mix(in srgb, var(--a3s-form-blue) 42%, var(--a3s-form-line-strong));
+}
+
+.a3s-form-signature-pad:focus-visible {
+  border-color: color-mix(in srgb, var(--a3s-form-blue) 60%, var(--a3s-form-line));
+  outline: 2px solid color-mix(in srgb, var(--a3s-form-blue) 64%, white);
+  outline-offset: 2px;
+}
+
+.a3s-form-signature-pad[aria-disabled="true"] {
+  color: var(--a3s-form-faint);
+  cursor: wait;
+}
+
+.a3s-form-signature-guide {
+  stroke: color-mix(in srgb, var(--a3s-form-muted) 28%, transparent);
+  stroke-dasharray: 6 7;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.a3s-form-signature-stroke {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.a3s-form-signature-draw-meta {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a3s-form-signature-draw-meta > p {
+  max-width: 62ch;
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.a3s-form-signature-keyboard-hint {
+  color: var(--a3s-form-faint);
+}
+
+.a3s-form-signature-draw-actions,
+.a3s-form-signature-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.a3s-form-signature-draw-meta button {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border-radius: 7px;
+  color: var(--a3s-form-muted);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 600;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.a3s-form-signature-draw-meta button:hover:not(:disabled) {
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-ink);
+}
+
+.a3s-form-signature-draw-meta button:disabled {
+  color: var(--a3s-form-faint);
+  cursor: default;
+}
+
+.a3s-form-signature-typed {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 1fr);
+  gap: 7px 14px;
+  align-items: end;
+}
+
+.a3s-form-signature-typed > label {
+  grid-column: 1;
+  color: var(--a3s-form-ink);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.a3s-form-signature-typed > input {
+  width: 100%;
+  height: var(--a3s-form-field-height);
+  grid-column: 1;
+  padding: 0 11px;
+  border: 1px solid var(--a3s-form-field-border);
+  border-radius: var(--a3s-form-field-radius);
+  background: var(--a3s-form-panel);
+  color: var(--a3s-form-ink);
+  font-size: 12px;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.a3s-form-signature-typed > input:hover:not(:disabled) {
+  border-color: var(--a3s-form-field-border-hover);
+}
+
+.a3s-form-signature-typed > input:focus {
+  border-color: color-mix(in srgb, var(--a3s-form-blue) 62%, var(--a3s-form-line));
+  outline: 0;
+  box-shadow: var(--a3s-form-field-ring);
+}
+
+.a3s-form-signature-typed > input::placeholder {
+  color: var(--a3s-form-faint);
+}
+
+.a3s-form-signature-typed > input:disabled {
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-faint);
+}
+
+.a3s-form-signature-typed-preview {
+  display: grid;
+  min-width: 0;
+  min-height: 82px;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-items: end;
+  padding: 12px 16px 13px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--a3s-form-line-strong);
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 46%, var(--a3s-form-panel));
+}
+
+.a3s-form-signature-typed-preview-text {
+  overflow: hidden;
+  color: var(--a3s-form-ink);
+  font-family: "Kaiti SC", STKaiti, "Segoe Print", cursive;
+  font-size: clamp(20px, 4cqi, 30px);
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-signature-typed-preview-text:empty {
+  overflow-wrap: anywhere;
+}
+
+.a3s-form-signature-editor-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.a3s-form-signature-saving {
+  margin-inline-end: auto;
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+}
+
+.a3s-form-signature-editor-actions > .btn {
+  min-height: 34px;
+  flex: 0 0 auto;
+}
+
+.a3s-form-signature-saved {
+  display: grid;
+  min-width: 0;
+  min-height: 62px;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--a3s-form-green) 24%, var(--a3s-form-line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--a3s-form-green) 3%, var(--a3s-form-panel));
+}
+
+.a3s-form-signature-saved-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--a3s-form-green) 10%, var(--a3s-form-panel-soft));
+  color: var(--a3s-form-green);
+}
+
+.a3s-form-signature-saved-copy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.a3s-form-signature-saved-copy strong {
+  color: var(--a3s-form-ink);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.a3s-form-signature-saved-copy small {
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.a3s-form-signature-actions button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--a3s-form-muted);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.a3s-form-signature-actions button:hover:not(:disabled) {
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-signature-actions button:last-child:hover:not(:disabled) {
+  color: var(--a3s-form-red);
+}
+
+.a3s-form-signature-actions button:disabled {
+  color: var(--a3s-form-faint);
+  cursor: wait;
+}
+
+.a3s-form-signature-error {
+  padding: 9px 10px;
+  overflow-wrap: anywhere;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--a3s-form-red) 7%, var(--a3s-form-panel));
+  color: var(--a3s-form-red);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.a3s-form-signature-empty {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--a3s-form-line);
+  border-radius: 11px;
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+}
+
+.a3s-form-signature-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.a3s-form-signature-design {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 3px;
+}
+
+.a3s-form-signature-design-heading,
+.a3s-form-signature-design-label {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+}
+
+.a3s-form-signature-design-heading {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.a3s-form-signature-design-label {
+  gap: 6px;
+}
+
+.a3s-form-signature-design-heading strong {
+  overflow: hidden;
+  color: var(--a3s-form-ink);
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-signature-design-heading em {
+  color: var(--a3s-form-red);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.a3s-form-signature-design-heading small {
+  overflow: hidden;
+  max-width: 48%;
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-signature-design-pad {
+  display: grid;
+  min-width: 0;
+  min-height: 64px;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border: 1px solid var(--a3s-form-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 45%, var(--a3s-form-panel));
+  color: var(--a3s-form-ink);
+}
+
+.a3s-form-signature-design-pad[data-pen-color="blue"] {
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-signature-design-pad > svg:nth-of-type(2) {
+  width: 100%;
+  height: 36px;
+}
+
+.a3s-form-signature-design-pad > svg:nth-of-type(2) path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.a3s-form-signature-design-action {
+  color: var(--a3s-form-faint);
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.a3s-form-signature-inspector {
+  display: grid;
+  gap: 12px;
+}
+
+.a3s-form-signature-inspector > p {
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+@container a3s-form-renderer (max-width: 520px) {
+  .a3s-form-signature-pad {
+    min-height: 150px;
+    aspect-ratio: 12 / 5;
+  }
+
+  .a3s-form-signature-draw-meta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .a3s-form-signature-draw-actions {
+    justify-content: flex-end;
+  }
+
+  .a3s-form-signature-draw-meta button {
+    min-height: 36px;
+  }
+
+  .a3s-form-signature-typed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .a3s-form-signature-typed > input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .a3s-form-signature-typed-preview {
+    min-height: 78px;
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .a3s-form-signature-editor-actions {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .a3s-form-signature-saving {
+    width: 100%;
+    margin-inline-end: 0;
+  }
+
+  .a3s-form-signature-editor-actions > .btn {
+    min-height: 40px;
+    flex: 1 1 150px;
+  }
+
+  .a3s-form-signature-saved {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .a3s-form-signature-actions {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+}
+
+@media (forced-colors: active) {
+  .a3s-form-signature-methods button.is-active,
+  .a3s-form-signature-pad,
+  .a3s-form-signature-saved,
+  .a3s-form-signature-editor {
+    border: 1px solid CanvasText;
+  }
+
+  .a3s-form-signature-stroke,
+  .a3s-form-signature-guide {
+    color: CanvasText;
+    stroke: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-form-signature-methods button,
+  .a3s-form-signature-pad,
+  .a3s-form-signature-draw-meta button,
+  .a3s-form-signature-typed > input,
+  .a3s-form-signature-editor-actions > .btn,
+  .a3s-form-signature-actions button {
+    transition: none;
+  }
+}

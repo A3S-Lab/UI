@@ -1,0 +1,30 @@
+# Schema Profile 1
+
+The `next` compiler requires `a3s.dev/form-schema-profile/1`. This is a closed subset of JSON Schema 2020-12: the headless runtime, browser adapters, Compiler Worker, CLI, and fixed-digest workflow validation all use the same semantics. Behavior outside the profile fails compilation.
+
+## Supported features
+
+| Area | Supported features |
+| --- | --- |
+| Core | `$schema`, `$id`, `type`, `title`, `description`, `default`, `enum`, `const` |
+| Objects | `properties`, `required`, and boolean or Schema-form `additionalProperties` |
+| Arrays | `items`, `minItems`, `maxItems`, structural `uniqueItems` |
+| Strings | `minLength`, `maxLength`, Unicode `pattern`, and approved `format` values |
+| Numbers | `minimum`, `maximum`, and positive `multipleOf` values |
+
+Approved formats are `email`, `uri`, `date`, `date-time`, `time`, `hostname`, `ipv4`, `ipv6`, and `uuid`.
+
+`multipleOf` controls both numeric validation and the step of native number inputs. Decimal multiples use a tolerance comparison, so `multipleOf: 0.1` correctly accepts `0.3`.
+
+Profile 1 does not accept `$ref`, Schema combinators, conditional Schemas, tuple Schemas, or unevaluated-property keywords. The compiler does not silently ignore them; it reports `schema.keyword.unsupported` with the exact JSON Pointer.
+
+Every successfully compiled `FormPlan` contains:
+
+```json
+{
+  "apiVersion": "a3s.dev/form-plan/v1alpha1",
+  "schemaProfile": "a3s.dev/form-schema-profile/1"
+}
+```
+
+See the [Profile 1 specification](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/schema-profile-1.md) for value semantics, exclusions, and complete examples.

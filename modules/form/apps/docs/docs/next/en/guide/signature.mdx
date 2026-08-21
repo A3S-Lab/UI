@@ -1,0 +1,264 @@
+import { SignatureDemo } from '../../../../components/SignatureDemo';
+
+# Signature
+
+`a3s.signature` is an official host-capability extension. The browser only captures handwritten strokes or a typed name; the host service handles saving, removal, viewing, authorization, and audit.
+
+<SignatureDemo />
+
+The controlled value contains at most one stable reference. Handwritten points, typed names, images, object URLs, access tokens, and request state never enter the form document or form value.
+
+## Value shape
+
+```ts
+interface FormSignatureReference {
+  id: string;
+  method: 'drawn' | 'typed';
+  signedAt: string;
+}
+```
+
+| Property | Type | Constraint | Purpose |
+| --- | --- | --- | --- |
+| `id` | `string` | 1–512 characters | Stable signature identifier in host storage |
+| `method` | `'drawn' \| 'typed'` | Fixed enum | Records the capture method |
+| `signedAt` | `string` | RFC 3339 `date-time` | Records the signing time confirmed by the host |
+
+The field value is an array containing zero or one reference:
+
+```json
+{
+  "approvalSignature": [
+    {
+      "id": "sig_01K25TB9Q8",
+      "method": "drawn",
+      "signedAt": "2026-08-09T09:30:00.000Z"
+    }
+  ]
+}
+```
+
+Reference objects reject additional properties. The host should resolve the signature image, raw strokes, signer name, certificate, device information, and temporary access URL from `id`.
+
+## Schema
+
+```ts
+import { createFormSignatureSchema } from '@a3s-lab/ui/form/react';
+
+const schema = {
+  type: 'object',
+  properties: {
+    approvalSignature: createFormSignatureSchema({ required: true }),
+  },
+  required: ['approvalSignature'],
+  additionalProperties: false,
+};
+```
+
+| Parameter | Type | Default | Behavior |
+| --- | --- | --- | --- |
+| `required` | `boolean` | `false` | Produces `minItems: 1` when `true` |
+
+The generated Schema always includes `maxItems: 1`, `uniqueItems: true`, and a closed reference-object Schema. The parent object's `required` determines whether the field property must exist; the array's `minItems` determines whether signing must be completed.
+
+## UI node properties
+
+```ts
+const node = {
+  id: 'approvalSignature',
+  kind: 'field',
+  label: 'Release confirmation signature',
+  description: 'Review the release and sign',
+  schemaPath: '/properties/approvalSignature',
+  widget: 'a3s.signature',
+  customProps: {
+    captureMode: 'drawn-or-typed',
+    penColor: 'ink',
+  },
+};
+```
+
+| Property | Type | Default | Runtime behavior |
+| --- | --- | --- | --- |
+| `customProps.captureMode` | `'drawn' \| 'typed' \| 'drawn-or-typed'` | `'drawn-or-typed'` | Restricts the available capture methods |
+| `customProps.penColor` | `'ink' \| 'blue'` | `'ink'` | Sets the handwritten stroke color without changing controlled values |
+| Schema `minItems` | `0 \| 1` | `0` | Controls whether the signature is required |
+| Schema `maxItems` | `1` | `1` | Stores no more than one reference per field |
+
+`createSignatureNodeRegistry` provides Designer's component catalog entry, design state, and properties panel. Applications do not need to register another catalog item for the signature field.
+
+## Host signature service
+
+```ts
+import type {
+  FormSignatureService,
+  FormSignatureReference,
+} from '@a3s-lab/ui/form/react';
+
+const signatureService: FormSignatureService = {
+  async save({ capture, previous, signal, node, plan, valuePath }) {
+    const response = await signatureApi.save({
+      capture,
+      previousId: previous?.id,
+      formDigest: plan.digest,
+      nodeId: node.id,
+      valuePath,
+      signal,
+    });
+
+    return {
+      id: response.id,
+      method: capture.method,
+      signedAt: response.signedAt,
+    } satisfies FormSignatureReference;
+  },
+
+  async remove({ signature, signal, plan }) {
+    await signatureApi.remove(signature.id, {
+      formDigest: plan.digest,
+      signal,
+    });
+  },
+
+  async open({ signature, signal }) {
+    const temporaryUrl = await signatureApi.authorizePreview(signature.id, signal);
+    window.open(temporaryUrl, '_blank', 'noopener,noreferrer');
+  },
+};
+```
+
+### `save` request
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `capture` | `FormSignatureCapture` | Handwritten strokes or typed name currently held in memory |
+| `previous` | `FormSignatureReference \| undefined` | Old reference when re-signing; can support atomic replacement |
+| `signal` | `AbortSignal` | Cancellation, unmount, and task-replacement signal |
+| `node` | `CompiledNode` | Current signature field and its configuration |
+| `plan` | `FormPlan` | Current immutable compiled result |
+| `valuePath` | `string \| undefined` | Current concrete value path |
+| `rowIndices` | `readonly number[]` | Concrete row indices inside nested repeaters |
+
+Capture union:
+
+```ts
+type FormSignatureCapture =
+  | {
+      method: 'drawn';
+      strokes: readonly {
+        points: readonly {
+          x: number;       // normalized horizontal coordinate, 0–1
+          y: number;       // normalized vertical coordinate, 0–1
+          pressure: number; // pressure, 0–1
+        }[];
+      }[];
+    }
+  | {
+      method: 'typed';
+      text: string; // trimmed, at most 120 characters
+    };
+```
+
+Handwritten capture retains at most 128 strokes and 4,096 points. The browser enforces these limits during capture, but the host must still validate request size, signing permission, form digest, field identity, and business state.
+
+## React
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import {
+  createSignatureNodeRegistry,
+  FormRenderer,
+} from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const nodeRegistry = createSignatureNodeRegistry({
+  service: signatureService,
+  getErrorMessage(error, operation) {
+    return operation === 'save' ? 'The signature was not saved. Check the connection and retry.' : undefined;
+  },
+});
+
+const plan = assertCompiled(document, {
+  capabilities: { widgets: Object.keys(nodeRegistry) },
+});
+
+<FormRenderer
+  plan={plan}
+  value={value}
+  onChange={setValue}
+  nodeRegistry={nodeRegistry}
+/>;
+```
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { A3SFormRenderer } from '@a3s-lab/ui/form/vue';
+import { createSignatureNodeRegistry } from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const value = ref({ approvalSignature: [] });
+const nodeRegistry = createSignatureNodeRegistry({ service: signatureService });
+</script>
+
+<template>
+  <A3SFormRenderer
+    :plan="plan"
+    v-model="value"
+    :node-registry="nodeRegistry"
+  />
+</template>
+```
+
+## Web Component
+
+```ts
+import { defineA3SFormElements } from '@a3s-lab/ui/form/web-component';
+import { createSignatureNodeRegistry } from '@a3s-lab/ui/form/react';
+
+defineA3SFormElements();
+
+const renderer = document.querySelector('a3s-form-renderer');
+renderer.plan = plan;
+renderer.value = { approvalSignature: [] };
+renderer.nodeRegistry = createSignatureNodeRegistry({ service: signatureService });
+renderer.addEventListener('value-change', (event) => {
+  renderer.value = event.detail;
+});
+```
+
+## Interaction states
+
+| State | Behavior |
+| --- | --- |
+| Empty | Show the allowed signature methods and save entry point |
+| Drawing | Capture normalized mouse, stylus, or touch strokes; support undo and clear |
+| Typing | Limit input to 120 characters and show a local preview |
+| Saving | Lock capture, provide a cancel action, and terminate the request on unmount |
+| Save failed | Retain the current capture and provide retry |
+| Saved | Show the capture method and localized signing time |
+| Re-signing | Keep the old reference valid and replace it atomically only after host success |
+| Removing | Clear the controlled value only after host success |
+| Read-only | Prevent capture, replacement, and removal; keep the host-provided view action available |
+
+If the host replaces the controlled value during save or removal, the component does not overwrite the new value. It reports a conflict and requires another review.
+
+## Keyboard and assistive technology
+
+- Both drawing and typing are available by default, so keyboard users can complete a typed signature directly.
+- Signature methods use standard tab semantics, and the input retains native name autofill.
+- The drawing area can receive focus; `Backspace` or `Delete` undoes the last stroke.
+- Save, removal, and error states are announced with `status` or `alert` semantics.
+- When only drawing is allowed, the host must provide an accessible alternative that meets the signing policy.
+- A read-only signature can still use a host-authorized view action.
+
+## Security boundary
+
+- Form values must not store raw strokes, typed names, Base64 images, Blob URLs, cookies, tokens, or temporary signature URLs.
+- `save` must validate user permission, form revision, plan digest, field identity, and allowed capture method.
+- `previous` lets the host replace atomically and avoids a signing gap caused by deleting the old record first.
+- `remove` and `open` require fresh authorization every time.
+- Map host errors to display-safe copy; server stacks, object paths, and credentials must not enter the interface.
+- Legal effect, identity verification, certificates, timestamps, retention periods, and audit evidence are determined by host policy.

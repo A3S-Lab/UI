@@ -1,0 +1,26 @@
+# Deterministic computed rules
+
+The `next` runtime evaluates derived fields before validation and host actions. A form document cannot execute JavaScript.
+
+```json
+{
+  "id": "derive-total",
+  "target": "total",
+  "kind": "computed",
+  "expression": {
+    "op": "add",
+    "left": { "op": "field", "path": "subtotal" },
+    "right": { "op": "field", "path": "tax" }
+  }
+}
+```
+
+The compiler rejects duplicate targets, non-value nodes, undeclared field paths, and dependency cycles. A successful plan stores a stable topological order and the expression-operation limit used during compilation.
+
+`evaluateComputedRules` returns immutable derived values, stable errors, and an execution trace. Trace states are `set`, `removed`, `unchanged`, `error`, and `skipped`. When a rule fails, its result and downstream results are removed so the host cannot submit stale values from an earlier evaluation.
+
+React, Vue, and Web Component render computed targets as read-only controls. Derived values reach the host only after the workflow node passes revision and digest checks.
+
+Computed rules inside repeaters must declare `scope: "row"`. Paths can use forms such as `orders.*.lines.*.quantity`. A rule may read global fields, an outer row, and the current row; references to sibling rows or deeper scopes fail compilation. Every concrete row has an independent trace, error propagation path, and incremental cache. Validation, visibility, and enabled rules use the same row scope.
+
+See the [complete computed-rule protocol](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/computed-rules.md) for supported operations, trace privacy, and failure semantics.

@@ -1,0 +1,36 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-depth-conformance/v1",
+  "generator": "linear-layout-v1",
+  "cases": [
+    {
+      "name": "depth-32-boundary",
+      "depth": 32,
+      "maxDepth": 32,
+      "ok": true,
+      "normalizedDocumentSha256": "40325b5c68e5916cb80b55f52faab56030263fbc922cb532c63a13504b6f04c4",
+      "digest": "sha256:294f44ec48d17b5be8710015bad171f349d7196ac306736d618c1a7f577c46b1",
+      "formPlanSha256": "592ea874785795a3ecf868e7ba96566b5df84357de4325609c3c8bd36daf57dd",
+      "diagnostics": []
+    },
+    {
+      "name": "depth-33-rejected",
+      "depth": 33,
+      "maxDepth": 32,
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "limits.depth",
+          "severity": "error",
+          "message": "Layout depth exceeds the configured limit of 32.",
+          "path": "/ui/nodes"
+        },
+        {
+          "code": "layout.unreachable",
+          "severity": "warning",
+          "message": "Node level0033 is not reachable from the root layout.",
+          "path": "/ui/nodes"
+        }
+      ]
+    }
+  ]
+}

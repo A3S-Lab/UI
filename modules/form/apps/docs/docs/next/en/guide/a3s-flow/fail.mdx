@@ -1,0 +1,72 @@
+import { A3SFlowNodeDemo } from '../../../../../components/A3SFlowNodeDemo';
+
+# Fail Workflow
+
+> [!IMPORTANT]
+> This page documents the eight-node A3S Flow `0.4.2` compatibility API for migration only. New editors should use the [Flow 1.0 DAG-node contract](/next/en/guide/workflow-node-embedding) and `A3SFlowDagNodeConfigurationPanel`.
+
+`flow.fail` ends the workflow and saves the error produced by its expression; retries, compensation, and notifications are handled elsewhere.
+
+<A3SFlowNodeDemo nodeType="flow.fail" />
+
+## Developer contract
+
+| Contract | Value |
+| --- | --- |
+| Category | Control flow |
+| Runtime binding | `fail` |
+| A3S Flow command | `Fail` |
+| Stable command ID | No stable-ID binding declared by the descriptor |
+| A3S Flow version | `0.4.2` |
+
+## Use in MDX
+
+The example includes the failure-node preview and error-mapping configuration; Fail Workflow has no output ports.
+
+```mdx
+import { A3SFlowNodeDemo } from '../../../../../components/A3SFlowNodeDemo';
+
+<A3SFlowNodeDemo nodeType="flow.fail" />
+```
+
+## Configuration properties
+
+| Property | Value type | Required | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `error_expression` | Flow expression | Yes | `"Workflow failed: " + input.reason` | The resolved value is persisted on the failed run. |
+
+## Ports
+
+| Direction | ID | Label | Kind | Types | Availability |
+| --- | --- | --- | --- | --- | --- |
+| Input | `in` | In | Control | `FlowControl` | Always |
+| Input | `error` | Error | Data | `String` | Always |
+
+Fail Workflow has no output ports.
+
+## Configuration value
+
+```json
+{
+  "error_expression": {
+    "apiVersion": "a3s.dev/flow-expression/v1",
+    "expression": {
+      "op": "concat",
+      "values": [
+        { "op": "literal", "value": "Workflow failed: " },
+        { "op": "field", "path": "input.reason" }
+      ]
+    }
+  }
+}
+```
+
+## Validation and runtime contract
+
+- Form validation requires `error_expression` to be an object.
+- Node validation checks the expression version envelope and AST operators.
+- A3S Form does not statically prove that the expression resolves to a string; the host or runtime performs the final type check.
+- The host restricts field-path sources and lowers the resolved value to the `Fail` command's error text.
+- A Step with `fail_run` may enter the failure terminal directly after retry exhaustion; `continue_workflow` uses the Step's recoverable-error ports instead.
+
+Related nodes: [Run Step](/next/en/guide/a3s-flow/step), [Run Step Batch](/next/en/guide/a3s-flow/batch), and [Complete](/next/en/guide/a3s-flow/complete).

@@ -1,0 +1,1407 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-semantics-conformance/v1",
+  "bases": {
+    "wizard": {
+      "kind": "a3s.form",
+      "apiVersion": "a3s.dev/form/v1alpha1",
+      "revision": 1,
+      "metadata": {
+        "title": "Wizard semantics"
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ui": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "kind": "root",
+            "children": ["wizard"]
+          },
+          {
+            "id": "wizard",
+            "kind": "group",
+            "layout": "wizard",
+            "children": ["page-one", "page-review"]
+          },
+          {
+            "id": "page-one",
+            "kind": "group",
+            "layout": "page",
+            "pageRole": "form",
+            "children": ["name"]
+          },
+          {
+            "id": "name",
+            "kind": "field",
+            "schemaPath": "/properties/name"
+          },
+          {
+            "id": "page-review",
+            "kind": "group",
+            "layout": "page",
+            "pageRole": "review",
+            "children": []
+          }
+        ]
+      },
+      "rules": [],
+      "dataSources": [],
+      "actions": []
+    },
+    "repeater": {
+      "kind": "a3s.form",
+      "apiVersion": "a3s.dev/form/v1alpha1",
+      "revision": 1,
+      "metadata": {
+        "title": "Repeater semantics"
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "global": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rowId": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": ["rowId", "value"],
+              "additionalProperties": false
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ui": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "kind": "root",
+            "children": ["rows", "global"]
+          },
+          {
+            "id": "rows",
+            "kind": "repeater",
+            "schemaPath": "/properties/rows",
+            "itemKey": "rowId",
+            "children": ["row-value"]
+          },
+          {
+            "id": "row-value",
+            "kind": "field",
+            "schemaPath": "/properties/rows/items/properties/value"
+          },
+          {
+            "id": "global",
+            "kind": "field",
+            "schemaPath": "/properties/global"
+          }
+        ]
+      },
+      "rules": [],
+      "dataSources": [],
+      "actions": []
+    },
+    "dataGrid": {
+      "kind": "a3s.form",
+      "apiVersion": "a3s.dev/form/v1alpha1",
+      "revision": 1,
+      "metadata": {
+        "title": "Data-grid semantics"
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rowId": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": ["rowId", "value"],
+              "additionalProperties": false
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ui": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "kind": "root",
+            "children": ["rows"]
+          },
+          {
+            "id": "rows",
+            "kind": "repeater",
+            "layout": "data-grid",
+            "schemaPath": "/properties/rows",
+            "itemKey": "rowId",
+            "children": ["row-value"]
+          },
+          {
+            "id": "row-value",
+            "kind": "field",
+            "schemaPath": "/properties/rows/items/properties/value"
+          }
+        ]
+      },
+      "rules": [],
+      "dataSources": [],
+      "actions": []
+    },
+    "rules": {
+      "kind": "a3s.form",
+      "apiVersion": "a3s.dev/form/v1alpha1",
+      "revision": 1,
+      "metadata": {
+        "title": "Rule and data-source semantics"
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "global": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rowId": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": ["rowId", "value"],
+              "additionalProperties": false
+            }
+          },
+          "otherRows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ui": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "kind": "root",
+            "children": ["global", "rows", "other-rows"]
+          },
+          {
+            "id": "global",
+            "kind": "field",
+            "schemaPath": "/properties/global"
+          },
+          {
+            "id": "rows",
+            "kind": "repeater",
+            "schemaPath": "/properties/rows",
+            "itemKey": "rowId",
+            "children": ["row-value"]
+          },
+          {
+            "id": "row-value",
+            "kind": "field",
+            "schemaPath": "/properties/rows/items/properties/value",
+            "dataSource": "choices"
+          },
+          {
+            "id": "other-rows",
+            "kind": "repeater",
+            "schemaPath": "/properties/otherRows",
+            "children": ["other-value"]
+          },
+          {
+            "id": "other-value",
+            "kind": "field",
+            "schemaPath": "/properties/otherRows/items/properties/value"
+          }
+        ]
+      },
+      "rules": [],
+      "dataSources": [
+        {
+          "id": "choices",
+          "registryKey": "test.choices",
+          "dependencies": ["rows.*.value"],
+          "trigger": "focus",
+          "searchable": true,
+          "debounceMs": 100,
+          "pageSize": 20,
+          "cacheTtlMs": 1000
+        }
+      ],
+      "actions": []
+    }
+  },
+  "cases": [
+    {
+      "name": "wizard-page-role",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/2/pageRole",
+          "value": "summary"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.page_role",
+          "severity": "error",
+          "message": "Node page-one uses an unsupported wizard page role.",
+          "path": "/ui/nodes/2/pageRole"
+        }
+      ]
+    },
+    {
+      "name": "wizard-page-role-scope",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/3/pageRole",
+          "value": "form"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.page_role_scope",
+          "severity": "error",
+          "message": "Node name may declare pageRole only when layout is page.",
+          "path": "/ui/nodes/3/pageRole"
+        }
+      ]
+    },
+    {
+      "name": "wizard-page-parent",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/0/children",
+          "value": ["wizard", "page-one"]
+        },
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/children",
+          "value": ["page-review"]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.page_parent",
+          "severity": "error",
+          "message": "Wizard page page-one must be a group or section owned by exactly one wizard.",
+          "path": "/ui/nodes/2"
+        }
+      ]
+    },
+    {
+      "name": "wizard-container",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/kind",
+          "value": "content"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.container",
+          "severity": "error",
+          "message": "Wizard wizard must use a root, group, or section node.",
+          "path": "/ui/nodes/1"
+        }
+      ]
+    },
+    {
+      "name": "wizard-empty",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["wizard"]
+            },
+            {
+              "id": "wizard",
+              "kind": "group",
+              "layout": "wizard",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.empty",
+          "severity": "error",
+          "message": "Wizard wizard must contain at least one page.",
+          "path": "/ui/nodes/1"
+        }
+      ]
+    },
+    {
+      "name": "wizard-page",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/2/layout",
+          "value": "card"
+        },
+        {
+          "op": "remove",
+          "path": "/ui/nodes/2/pageRole"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.page",
+          "severity": "error",
+          "message": "Wizard wizard may contain only group or section nodes with page layout.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "wizard-review-count",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/2/pageRole",
+          "value": "review"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.review_count",
+          "severity": "error",
+          "message": "Wizard wizard may contain only one review page.",
+          "path": "/ui/nodes/1/children"
+        },
+        {
+          "code": "wizard.review_order",
+          "severity": "error",
+          "message": "Wizard wizard review page must be the final page.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "wizard-review-order",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/2/pageRole",
+          "value": "review"
+        },
+        {
+          "op": "set",
+          "path": "/ui/nodes/4/pageRole",
+          "value": "form"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.review_order",
+          "severity": "error",
+          "message": "Wizard wizard review page must be the final page.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "wizard-nested",
+      "base": "wizard",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["outer"]
+            },
+            {
+              "id": "outer",
+              "kind": "group",
+              "layout": "wizard",
+              "children": ["outer-page"]
+            },
+            {
+              "id": "outer-page",
+              "kind": "group",
+              "layout": "page",
+              "pageRole": "form",
+              "children": ["inner"]
+            },
+            {
+              "id": "inner",
+              "kind": "group",
+              "layout": "wizard",
+              "children": ["inner-page"]
+            },
+            {
+              "id": "inner-page",
+              "kind": "group",
+              "layout": "page",
+              "pageRole": "review",
+              "children": ["name"]
+            },
+            {
+              "id": "name",
+              "kind": "field",
+              "schemaPath": "/properties/name"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "wizard.nested",
+          "severity": "error",
+          "message": "Wizard inner cannot be nested inside another wizard or repeater.",
+          "path": "/ui/nodes/3"
+        }
+      ]
+    },
+    {
+      "name": "repeater-schema-type",
+      "base": "repeater",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["rows"]
+            },
+            {
+              "id": "rows",
+              "kind": "repeater",
+              "schemaPath": "/properties/global",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "repeater.schema_type",
+          "severity": "error",
+          "message": "Repeater rows must bind to an array schema.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "repeater-items-type",
+      "base": "repeater",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["tags"]
+            },
+            {
+              "id": "tags",
+              "kind": "repeater",
+              "schemaPath": "/properties/tags",
+              "children": ["tag"]
+            },
+            {
+              "id": "tag",
+              "kind": "field",
+              "schemaPath": "/properties/tags/items"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "repeater.items_type",
+          "severity": "error",
+          "message": "Repeater tags with child fields must use an object item schema.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "repeater-item-key",
+      "base": "repeater",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/itemKey",
+          "value": "missing"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "repeater.item_key",
+          "severity": "error",
+          "message": "Repeater rows itemKey must reference a required string property in its item schema.",
+          "path": "/ui/nodes/1/itemKey"
+        }
+      ]
+    },
+    {
+      "name": "repeater-dynamic-scope-missing-ancestor",
+      "base": "repeater",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/0/children",
+          "value": ["rows", "row-value", "global"]
+        },
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/children",
+          "value": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.dynamic_scope",
+          "severity": "error",
+          "message": "Node row-value must be nested under the repeaters declared by its schemaPath.",
+          "path": "/ui/nodes/2/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "repeater-dynamic-scope-multiple-parents",
+      "base": "repeater",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/0/children",
+          "value": ["rows", "row-value", "global"]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.dynamic_scope",
+          "severity": "error",
+          "message": "Node row-value must be nested under the repeaters declared by its schemaPath.",
+          "path": "/ui/nodes/2/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "data-grid-container",
+      "base": "dataGrid",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/kind",
+          "value": "field"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_grid.container",
+          "severity": "error",
+          "message": "Data grid rows must use a repeater node.",
+          "path": "/ui/nodes/1"
+        },
+        {
+          "code": "node.dynamic_scope",
+          "severity": "error",
+          "message": "Node row-value must be nested under the repeaters declared by its schemaPath.",
+          "path": "/ui/nodes/2/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "data-grid-items-type",
+      "base": "dataGrid",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["tags"]
+            },
+            {
+              "id": "tags",
+              "kind": "repeater",
+              "layout": "data-grid",
+              "schemaPath": "/properties/tags",
+              "children": ["tag"]
+            },
+            {
+              "id": "tag",
+              "kind": "field",
+              "schemaPath": "/properties/tags/items"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_grid.items_type",
+          "severity": "error",
+          "message": "Data grid tags must bind to an array of objects.",
+          "path": "/ui/nodes/1/schemaPath"
+        },
+        {
+          "code": "repeater.items_type",
+          "severity": "error",
+          "message": "Repeater tags with child fields must use an object item schema.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "data-grid-columns",
+      "base": "dataGrid",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": ["rows"]
+            },
+            {
+              "id": "rows",
+              "kind": "repeater",
+              "layout": "data-grid",
+              "schemaPath": "/properties/rows",
+              "itemKey": "rowId",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_grid.columns",
+          "severity": "error",
+          "message": "Data grid rows must contain at least one field column.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "data-grid-column",
+      "base": "dataGrid",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/2/kind",
+          "value": "group"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_grid.column",
+          "severity": "error",
+          "message": "Data grid rows may contain only direct field columns.",
+          "path": "/ui/nodes/1/children"
+        }
+      ]
+    },
+    {
+      "name": "data-grid-skips-uncompiled-node",
+      "base": "dataGrid",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            {
+              "id": "root",
+              "kind": "root",
+              "children": []
+            },
+            {
+              "kind": "repeater",
+              "layout": "data-grid",
+              "schemaPath": "/properties/rows",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.id",
+          "severity": "error",
+          "message": "Every node must have a non-empty id.",
+          "path": "/ui/nodes/1/id"
+        }
+      ]
+    },
+    {
+      "name": "rule-scope",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "invalid-scope",
+              "target": "global",
+              "kind": "visible",
+              "scope": "item",
+              "expression": {
+                "op": "literal",
+                "value": true
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.scope",
+          "severity": "error",
+          "message": "Rule invalid-scope scope must be form or row.",
+          "path": "/rules/0/scope"
+        }
+      ]
+    },
+    {
+      "name": "rule-computed-target",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "computed-root",
+              "target": "root",
+              "kind": "computed",
+              "expression": {
+                "op": "literal",
+                "value": true
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rules.computed_target",
+          "severity": "error",
+          "message": "Computed rule computed-root must target a value-bearing field or repeater.",
+          "path": "/rules/0/target"
+        }
+      ]
+    },
+    {
+      "name": "rule-computed-target-duplicate",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "computed-one",
+              "target": "global",
+              "kind": "computed",
+              "expression": {
+                "op": "literal",
+                "value": "one"
+              }
+            },
+            {
+              "id": "computed-two",
+              "target": "global",
+              "kind": "computed",
+              "expression": {
+                "op": "literal",
+                "value": "two"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rules.computed_target_duplicate",
+          "severity": "error",
+          "message": "Only one computed rule may target global.",
+          "path": "/rules/1/target"
+        }
+      ]
+    },
+    {
+      "name": "rule-dynamic-target",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "computed-row",
+              "target": "row-value",
+              "kind": "computed",
+              "expression": {
+                "op": "literal",
+                "value": "value"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.dynamic_target",
+          "severity": "error",
+          "message": "Rule computed-row cannot target a repeater item field without declaring row scope.",
+          "path": "/rules/0/target"
+        }
+      ]
+    },
+    {
+      "name": "rule-row-scope-target",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "row-global",
+              "target": "global",
+              "kind": "visible",
+              "scope": "row",
+              "expression": {
+                "op": "literal",
+                "value": true
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.row_scope_target",
+          "severity": "error",
+          "message": "Row-scoped rule row-global must target a field inside a repeater.",
+          "path": "/rules/0/target"
+        }
+      ]
+    },
+    {
+      "name": "rule-row-scope-target-and-expression",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "invalid-row-global",
+              "target": "global",
+              "kind": "visible",
+              "scope": "row",
+              "expression": {
+                "op": "unsupported"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.row_scope_target",
+          "severity": "error",
+          "message": "Row-scoped rule invalid-row-global must target a field inside a repeater.",
+          "path": "/rules/0/target"
+        },
+        {
+          "code": "rule.expression",
+          "severity": "error",
+          "message": "Rule invalid-row-global expression is invalid.",
+          "path": "/rules/0/expression"
+        }
+      ]
+    },
+    {
+      "name": "rule-row-field-scope",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "cross-row",
+              "target": "row-value",
+              "kind": "validate",
+              "scope": "row",
+              "expression": {
+                "op": "field",
+                "path": "otherRows.*.value"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.field_scope",
+          "severity": "error",
+          "message": "Rule cross-row cannot bind otherRows.*.value from the target row scope.",
+          "path": "/rules/0/expression"
+        }
+      ]
+    },
+    {
+      "name": "rule-form-field-scope",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "form-row-read",
+              "target": "global",
+              "kind": "visible",
+              "expression": {
+                "op": "field",
+                "path": "rows.*.value"
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.field_scope",
+          "severity": "error",
+          "message": "Rule form-row-read must declare row scope before reading rows.*.value.",
+          "path": "/rules/0/expression"
+        }
+      ]
+    },
+    {
+      "name": "data-source-keyword",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/url",
+          "value": "https://example.test"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.keyword",
+          "severity": "error",
+          "message": "Unsupported data-source property url.",
+          "path": "/dataSources/0/url"
+        }
+      ]
+    },
+    {
+      "name": "data-source-id",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "remove",
+          "path": "/ui/nodes/3/dataSource"
+        },
+        {
+          "op": "set",
+          "path": "/dataSources/0/id",
+          "value": ""
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.id",
+          "severity": "error",
+          "message": "Data-source id must be a non-empty string.",
+          "path": "/dataSources/0/id"
+        }
+      ]
+    },
+    {
+      "name": "data-source-duplicate",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources",
+          "value": [
+            {
+              "id": "choices",
+              "registryKey": "test.choices",
+              "dependencies": ["rows.*.value"],
+              "trigger": "focus",
+              "searchable": true,
+              "debounceMs": 100,
+              "pageSize": 20,
+              "cacheTtlMs": 1000
+            },
+            {
+              "id": "choices",
+              "registryKey": "test.other"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.duplicate",
+          "severity": "error",
+          "message": "Data-source id choices is duplicated.",
+          "path": "/dataSources/1/id"
+        }
+      ]
+    },
+    {
+      "name": "data-source-registry-key",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/registryKey",
+          "value": ""
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.registry_key",
+          "severity": "error",
+          "message": "Data-source registryKey must be a non-empty string.",
+          "path": "/dataSources/0/registryKey"
+        }
+      ]
+    },
+    {
+      "name": "data-source-parameters",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/parameters",
+          "value": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.parameters",
+          "severity": "error",
+          "message": "Data-source parameters must be a JSON object with finite values.",
+          "path": "/dataSources/0/parameters"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependencies",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/dependencies",
+          "value": "rows.*.value"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependencies",
+          "severity": "error",
+          "message": "Data-source dependencies must contain at most 32 paths.",
+          "path": "/dataSources/0/dependencies"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependency-limit",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/dependencies",
+          "value": [
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global",
+            "global"
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependencies",
+          "severity": "error",
+          "message": "Data-source dependencies must contain at most 32 paths.",
+          "path": "/dataSources/0/dependencies"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependency",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/dependencies",
+          "value": [""]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependency",
+          "severity": "error",
+          "message": "Data-source dependency must be a non-empty value path.",
+          "path": "/dataSources/0/dependencies/0"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependency-duplicate",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/dependencies",
+          "value": ["rows.*.value", "rows.*.value"]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependency_duplicate",
+          "severity": "error",
+          "message": "Data-source dependency rows.*.value is duplicated.",
+          "path": "/dataSources/0/dependencies/1"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependency-reference",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/dependencies",
+          "value": ["rows.*.missing"]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependency_reference",
+          "severity": "error",
+          "message": "Data-source dependency rows.*.missing is not declared by the schema.",
+          "path": "/dataSources/0/dependencies/0"
+        }
+      ]
+    },
+    {
+      "name": "data-source-dependency-scope",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/dataSource",
+          "value": "choices"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.dependency_scope",
+          "severity": "error",
+          "message": "Data-source dependency rows.*.value cannot be bound from node global.",
+          "path": "/dataSources/0/dependencies/0",
+          "hint": "Attach the source inside the same repeater scope or use a global dependency."
+        }
+      ]
+    },
+    {
+      "name": "data-source-trigger",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/trigger",
+          "value": "change"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.trigger",
+          "severity": "error",
+          "message": "Data-source trigger must be mount or focus.",
+          "path": "/dataSources/0/trigger"
+        }
+      ]
+    },
+    {
+      "name": "data-source-searchable",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/searchable",
+          "value": "yes"
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.searchable",
+          "severity": "error",
+          "message": "Data-source searchable must be a boolean.",
+          "path": "/dataSources/0/searchable"
+        }
+      ]
+    },
+    {
+      "name": "data-source-bounded-integers",
+      "base": "rules",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources/0/cacheTtlMs",
+          "value": -1
+        },
+        {
+          "op": "set",
+          "path": "/dataSources/0/debounceMs",
+          "value": 5001
+        },
+        {
+          "op": "set",
+          "path": "/dataSources/0/pageSize",
+          "value": 0
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "data_source.cache_ttl",
+          "severity": "error",
+          "message": "Data-source cacheTtlMs must be an integer from 0 to 86400000.",
+          "path": "/dataSources/0/cacheTtlMs"
+        },
+        {
+          "code": "data_source.debounce",
+          "severity": "error",
+          "message": "Data-source debounceMs must be an integer from 0 to 5000.",
+          "path": "/dataSources/0/debounceMs"
+        },
+        {
+          "code": "data_source.page_size",
+          "severity": "error",
+          "message": "Data-source pageSize must be an integer from 1 to 200.",
+          "path": "/dataSources/0/pageSize"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+import { RepeaterDemo, ScalarRepeaterDemo } from '../../../../components/RepeaterDemo';
+
+# Repeatable field groups
+
+Use a repeatable field group when an object array should be completed with ordinary fields instead of editing an entire JSON document. Workflow routes, recipients, request headers, tool parameters, and approval steps are common examples.
+
+## Object repeatable field group `repeater-group`
+
+<RepeaterDemo />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | Array of objects |
+| Schema | `type: "array"` with `items.type: "object"` |
+| Row template | `children` points to fields or layout nodes bound to object properties |
+| Row presentation | Card rows; can switch to `data-grid` when every direct child is a field |
+| Item limits | Schema `minItems`, `maxItems` |
+
+## Primitive repeatable items `repeater`
+
+Arrays of primitive values such as strings and numbers use a compact repeater. Each row edits one value directly and retains add, reorder, and remove actions.
+
+<ScalarRepeaterDemo />
+
+```ts
+schema: {
+  type: 'array',
+  minItems: 1,
+  maxItems: 6,
+  uniqueItems: true,
+  items: { type: 'string' },
+},
+ui: {
+  id: 'labels',
+  kind: 'repeater',
+  label: 'Route label',
+  schemaPath: '/properties/labels',
+}
+```
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `kind` | `"repeater"` | Fixed value for a repeater |
+| `schemaPath` | JSON Pointer | Points to the primitive array Schema |
+| `label` | `string` | List title and accessible name for each row input |
+| `description` | `string` | Explains list purpose or ordering rules |
+| `customProps.itemPlaceholder` | `string` | Placeholder for each item; defaults to the locale's list-item copy |
+| `customProps.addLabel` | `string` | Add-button copy; defaults to the current locale |
+| `customProps.emptyLabel` | `string` | Empty-state copy; defaults to the current locale |
+| Schema `items` | Primitive Schema | Determines each row's controlled value type |
+| Schema `minItems` / `maxItems` | `number` | Controls removal and addition boundaries |
+| Schema `uniqueItems` | `boolean` | Controls whether duplicate items are allowed |
+
+## Binding a row template
+
+The Schema defines the array and object structure. A `repeater` node binds the array, and its child fields bind below `items`.
+
+```ts
+schema: {
+  type: 'object',
+  properties: {
+    routes: {
+      type: 'array',
+      maxItems: 12,
+      items: {
+        type: 'object',
+        properties: {
+          match: { type: 'string', default: 'customer' },
+          route: { type: 'string', minLength: 1, default: 'customer' },
+        },
+        required: ['match', 'route'],
+        additionalProperties: false,
+      },
+    },
+  },
+},
+ui: {
+  root: 'root',
+  nodes: [
+    { id: 'root', kind: 'root', children: ['routes'] },
+    {
+      id: 'routes',
+      kind: 'repeater',
+      label: 'Routing rules',
+      schemaPath: '/properties/routes',
+      children: ['route-match', 'route-name'],
+    },
+    {
+      id: 'route-match',
+      kind: 'field',
+      label: 'Match condition',
+      schemaPath: '/properties/routes/items/properties/match',
+      width: 6,
+    },
+    {
+      id: 'route-name',
+      kind: 'field',
+      label: 'Destination route',
+      schemaPath: '/properties/routes/items/properties/route',
+      width: 6,
+    },
+  ],
+},
+```
+
+The compiler produces a path template such as `routes.*.match`, which the Renderer resolves to a concrete path such as `routes.1.match`. Each nested repeater level adds another index. Host errors and asynchronous field validation use concrete paths.
+
+## UI node properties
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Node identifier unique within the document |
+| `kind` | `"repeater"` | Yes | Fixed value for a repeatable field group |
+| `schemaPath` | JSON Pointer | Yes | Points to the object-array Schema |
+| `children` | `string[]` | Yes | Fields or layout nodes rendered in every row |
+| `label` | `string` | No | Group title and accessible name |
+| `description` | `string` | No | Guidance for adding, sorting, or completing rows |
+| `itemKey` | `string` | No | Points to a required string identifier in each row object |
+| `layout` | `"data-grid"` | No | Omit for card rows; see the separate data-grid chapter |
+
+The array Schema's `minItems` and `maxItems` control item counts. Child `width` uses the 12-column layout and automatically stacks in a narrow container.
+
+## Choosing a row identity protocol
+
+The default is a runtime identity. It preserves field state across local insertion, editing, movement, and removal without changing the controlled value.
+
+When an external state store replaces complete row objects, the host can provide `hostAdapter.identifyRepeaterItem` to derive a key from existing business data. The callback cannot mutate the object; duplicate, missing, or invalid identifiers fall back to a runtime key.
+
+`UiNode.itemKey` is optional. The compiler accepts it only when the item Schema declares the corresponding property as a required string. New rows receive that value because the document has explicitly included identity in the business-value protocol. Do not add a `rowId` to workflow configuration solely for an engine's internal needs.
+
+## Runtime behavior
+
+- Add, remove, move up, and move down return the complete controlled value.
+- The corresponding action becomes disabled at a `minItems` or `maxItems` boundary.
+- Read-only state covers row fields, ordering, addition, removal, and form actions.
+- The validation summary focuses the exact nested input.
+- Row grids automatically stack when the embedding container narrows.
+- Primitive arrays continue to use the compact repeater control.
+
+## Binding rules and data sources to the current row
+
+A `computed`, `validate`, `visible`, or `enabled` rule that runs per item must set `scope: "row"`. Paths in the document retain their template form:
+
+```ts
+{
+  id: 'route-must-differ-from-default',
+  target: 'route-name',
+  kind: 'validate',
+  scope: 'row',
+  expression: {
+    op: 'ne',
+    left: { op: 'field', path: 'routes.*.route' },
+    right: { op: 'field', path: 'default' },
+  },
+}
+```
+
+Row expressions can read global paths, the current row, or an enclosing row in a nested structure. Errors and traces use concrete paths, while calculation failures and incremental caches remain isolated to the current concrete row.
+
+Data-source dependencies use the same template. For `routes.*.provider`, a request for the third row includes both the template and `routes.2.provider` in `request.scope.dependencies`. The host reads the controlled value by concrete path and does not need to store row metadata.
+
+The Playground Router form is a reference workflow-node example. Its `routes` value remains a plain `{ when, route }[]` while supporting row validation and host-managed per-row options.
+
+## Current boundaries
+
+Use [Data grids](/next/en/guide/data-grids) when direct fields need compact comparison. Data grids support dialog drafts, bulk operations, and virtual scrolling for large arrays. Matrix questions that share one option set use the separate [`matrix-single` or `matrix-multiple` field](/next/en/guide/matrix-fields).

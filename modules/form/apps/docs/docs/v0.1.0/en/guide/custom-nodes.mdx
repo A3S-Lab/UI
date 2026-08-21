@@ -1,0 +1,43 @@
+# Custom Form Nodes
+
+Custom nodes enter the Designer and runtime through `FormNodeRegistry`. The host does not need to change A3S Form Core.
+
+```tsx
+import type { FormNodeDefinition } from '@a3s-lab/ui/form/react';
+
+const ratingNode: FormNodeDefinition = {
+  type: 'company.rating',
+  catalog: {
+    label: 'Rating field',
+    group: 'Business components',
+    create: ({ id, schemaPath }) => ({
+      id,
+      kind: 'field',
+      label: 'Satisfaction',
+      widget: 'company.rating',
+      schemaPath,
+      customProps: { max: 5 },
+    }),
+  },
+  render: ({ node, value, onChange }) => (
+    <Rating
+      max={Number(node.customProps?.max ?? 5)}
+      value={Number(value ?? 0)}
+      onChange={onChange}
+    />
+  ),
+  inspector: ({ node, schema, onUpdate }) => (
+    <RatingSettings
+      max={Number(node.customProps?.max ?? 5)}
+      onChange={(max) =>
+        onUpdate({
+          node: { customProps: { ...node.customProps, max } },
+          schema: { ...schema, maximum: max },
+        })
+      }
+    />
+  ),
+};
+```
+
+`onUpdate` atomically updates the node configuration and JSON Schema in the same revision, preventing an inconsistent intermediate state in the settings panel. The host must also add the custom `widget` to the declared compiler capabilities.

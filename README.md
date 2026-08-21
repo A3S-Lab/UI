@@ -83,6 +83,8 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 
 The optional Dockview integration sits beside the semantic manifest and adds Dock Workspace, Grid View, Split View, and Pane View without changing the 116-component count. It re-exports the complete Dockview 8.1 MIT surface for native TypeScript, React, and Vue, then adds A3S theme tokens, versioned layout persistence, and an Edge Group-safe layout reset.
 
+The integrated [A3S Form system](https://a3s-lab.github.io/UI/form/) adds a deterministic Form Core, visual Designer, controlled Renderer, A3S Flow node configuration, Cloud and Workflow contracts, CLI, Web Components, React Hook Form integration, and native Vue composables. Its documentation and [Playground](https://a3s-lab.github.io/UI/form/playground/) deploy with this repository under the same GitHub Pages site.
+
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Preview stages derive the correct control, content, overlay, or workspace layout, while phone and tablet modes run in isolated CSS viewports so responsive media queries use the selected width. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
 ## Design foundations
@@ -168,6 +170,16 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/dockview/react`        | Complete React Dockview API plus layout and view hooks                                                                       |
 | `@a3s-lab/ui/dockview/vue`          | Complete Vue 3 Dockview API plus matching composables                                                                        |
 | `@a3s-lab/ui/dockview/css`          | Dockview base CSS and A3S light/dark theme variables                                                                         |
+| `@a3s-lab/ui/form`                  | Form document, compiler, Designer, Renderer, adapters, and integration contracts                                             |
+| `@a3s-lab/ui/form/core`             | Framework-independent compilation, rules, validation, patches, locale catalogs, and headless state                          |
+| `@a3s-lab/ui/form/react`            | React Designer, Renderer, A3S Flow panels, and workflow configuration widgets                                                |
+| `@a3s-lab/ui/form/react-hooks`      | React Hook Form-compatible `useA3SForm`, resolver, field arrays, subscriptions, and Renderer binding                         |
+| `@a3s-lab/ui/form/vue`              | Vue 3 Designer and Renderer adapters                                                                                          |
+| `@a3s-lab/ui/form/vue-hooks`        | Native Vue `useA3SForm`, field, field-array, context, validation, and Renderer composables                                   |
+| `@a3s-lab/ui/form/web-component`    | Framework-neutral `<a3s-form-designer>` and `<a3s-form-renderer>` custom elements                                            |
+| `@a3s-lab/ui/form/workflow`         | Workflow configuration, request-bound interaction, digest, and protected-submission contracts                               |
+| `@a3s-lab/ui/form/cloud`            | Typed A3S Cloud host adapter                                                                                                  |
+| `@a3s-lab/ui/form/a3s-ui.css`       | A3S UI plus Form and A3S Flow styles for product surfaces                                                                     |
 | `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.

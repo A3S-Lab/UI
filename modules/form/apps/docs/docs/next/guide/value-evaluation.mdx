@@ -1,0 +1,30 @@
+# 原生提交值求值
+
+A3S Form Core 是提交值的语义权威。浏览器、Node、Worker、CLI、原生 Rust 和 Cloud 宿主共用同一个有界求值器，不分别维护校验器。
+
+一次求值会：
+
+1. 按编译器生成的依赖顺序执行计算规则；
+2. 把行作用域通配路径展开为具体数组索引；
+3. 移除旧输出并传播依赖失败；
+4. 依据 Schema Profile 1 与业务规则校验派生值；
+5. 过滤只属于隐藏向导页面的错误；
+6. 返回规范输出、确定性轨迹和有序错误。
+
+JavaScript 宿主调用 `evaluateFormValue(plan, value, options)`。原生宿主对已解析值调用 `evaluate_form_value`，在传输边界使用版本化字节协议：
+
+```json
+{
+  "apiVersion": "a3s.dev/form-core/evaluate-request/v1alpha1",
+  "formPlan": {},
+  "value": {},
+  "options": {
+    "includeValues": false,
+    "locale": "zh-CN"
+  }
+}
+```
+
+受保护的工作流命令必须加载并重新编译不可变 Form release，校验 revision 与 digest，通过原生 Form Core 求值候选值，执行规范输出上限，并且只持久化求值器生成的值。浏览器校验用于反馈，不等同于授权。
+
+原生 Rust 库、直接 WASM 字节接口、TypeScript 一致性参考和公开 Node 适配器必须对共享 golden corpus 产生字节一致的规范响应。边界、错误、适配器 API 与持久化宿主验收要求见[完整协议](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/value-evaluation.md)。

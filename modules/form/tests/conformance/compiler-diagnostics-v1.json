@@ -1,0 +1,542 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-diagnostics-conformance/v1",
+  "baseInputJson": "{\"kind\":\"a3s.form\",\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Portable diagnostics\",\"locale\":\"en-US\"},\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\"],\"additionalProperties\":false},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\",\"children\":[\"name\"]},{\"id\":\"name\",\"kind\":\"field\",\"schemaPath\":\"/properties/name\",\"widget\":\"text\"}]},\"rules\":[],\"dataSources\":[],\"actions\":[]}",
+  "cases": [
+    {
+      "name": "document-kind",
+      "operations": [{ "op": "set", "path": "/kind", "value": "other" }],
+      "diagnostics": [
+        {
+          "code": "document.kind",
+          "severity": "error",
+          "message": "kind must be a3s.form.",
+          "path": "/kind"
+        }
+      ]
+    },
+    {
+      "name": "document-api-version",
+      "operations": [{ "op": "set", "path": "/apiVersion", "value": "a3s.dev/form/v0" }],
+      "diagnostics": [
+        {
+          "code": "document.api_version",
+          "severity": "error",
+          "message": "Unsupported Form document apiVersion.",
+          "path": "/apiVersion",
+          "hint": "Use a3s.dev/form/v1alpha1."
+        }
+      ]
+    },
+    {
+      "name": "metadata-title",
+      "operations": [{ "op": "set", "path": "/metadata/title", "value": 7 }],
+      "diagnostics": [
+        {
+          "code": "metadata.title",
+          "severity": "error",
+          "message": "metadata.title must be a string.",
+          "path": "/metadata/title"
+        }
+      ]
+    },
+    {
+      "name": "document-revision",
+      "operations": [{ "op": "set", "path": "/revision", "value": -1 }],
+      "diagnostics": [
+        {
+          "code": "document.revision",
+          "severity": "error",
+          "message": "revision must be a non-negative safe integer.",
+          "path": "/revision"
+        }
+      ]
+    },
+    {
+      "name": "digest-required",
+      "operations": [],
+      "options": { "requireDigest": true },
+      "diagnostics": [
+        {
+          "code": "digest.required",
+          "severity": "error",
+          "message": "Published forms must contain a digest.",
+          "path": "/digest"
+        }
+      ]
+    },
+    {
+      "name": "digest-mismatch",
+      "operations": [{ "op": "set", "path": "/digest", "value": "sha256:invalid" }],
+      "diagnostics": [
+        {
+          "code": "digest.mismatch",
+          "severity": "error",
+          "message": "digest does not match the current document content.",
+          "path": "/digest",
+          "hint": "Seal the document again before publishing."
+        }
+      ]
+    },
+    {
+      "name": "digest-type",
+      "operations": [{ "op": "set", "path": "/digest", "value": 0 }],
+      "diagnostics": [
+        {
+          "code": "digest.mismatch",
+          "severity": "error",
+          "message": "digest must be a sha256 string when present.",
+          "path": "/digest"
+        }
+      ]
+    },
+    {
+      "name": "configured-document-size",
+      "operations": [],
+      "options": { "limits": { "maxSerializedBytes": 1 } },
+      "diagnostics": [
+        {
+          "code": "limits.document_size",
+          "severity": "error",
+          "message": "canonical document is 500 bytes; the configured limit is 1 bytes",
+          "path": "/document"
+        }
+      ]
+    },
+    {
+      "name": "node-limit",
+      "operations": [],
+      "options": { "limits": { "maxNodes": 1 } },
+      "diagnostics": [
+        {
+          "code": "limits.nodes",
+          "severity": "error",
+          "message": "Node count exceeds the configured limit of 1.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "node-schema-path",
+      "operations": [{ "op": "remove", "path": "/ui/nodes/1/schemaPath" }],
+      "diagnostics": [
+        {
+          "code": "node.schema_path",
+          "severity": "error",
+          "message": "Node name is missing schemaPath.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "node-schema-pointer",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/schemaPath", "value": "not-a-pointer" }],
+      "diagnostics": [
+        {
+          "code": "node.schema_reference",
+          "severity": "error",
+          "message": "Node name schemaPath is not a valid JSON Pointer.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "widget-capability",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/widget", "value": "unknown" }],
+      "diagnostics": [
+        {
+          "code": "capability.widget",
+          "severity": "error",
+          "message": "Widget unknown is not registered.",
+          "path": "/ui/nodes/1/widget"
+        }
+      ]
+    },
+    {
+      "name": "node-data-source",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/dataSource", "value": "missing" }],
+      "diagnostics": [
+        {
+          "code": "node.data_source",
+          "severity": "error",
+          "message": "Node name references an unknown data source.",
+          "path": "/ui/nodes/1/dataSource"
+        }
+      ]
+    },
+    {
+      "name": "child-reference-and-unreachable-node",
+      "operations": [{ "op": "set", "path": "/ui/nodes/0/children", "value": ["missing"] }],
+      "diagnostics": [
+        {
+          "code": "node.child_reference",
+          "severity": "error",
+          "message": "Child node missing does not exist.",
+          "path": "/ui/nodes/0/children"
+        },
+        {
+          "code": "layout.unreachable",
+          "severity": "warning",
+          "message": "Node name is not reachable from the root layout.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "layout-cycle",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/1/kind", "value": "group" },
+        { "op": "set", "path": "/ui/nodes/1/children", "value": ["root"] }
+      ],
+      "diagnostics": [
+        {
+          "code": "layout.cycle",
+          "severity": "error",
+          "message": "Layout node root forms a cycle.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "rule-limit",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "show-name",
+              "target": "name",
+              "kind": "visible",
+              "expression": { "op": "literal", "value": true }
+            }
+          ]
+        }
+      ],
+      "options": { "limits": { "maxRules": 0 } },
+      "diagnostics": [
+        {
+          "code": "limits.rules",
+          "severity": "error",
+          "message": "Rule count exceeds the configured limit of 0.",
+          "path": "/rules"
+        }
+      ]
+    },
+    {
+      "name": "expression-limit",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "show-name",
+              "target": "name",
+              "kind": "visible",
+              "expression": { "op": "literal", "value": true }
+            }
+          ]
+        }
+      ],
+      "options": { "limits": { "maxExpressionOperations": 0 } },
+      "diagnostics": [
+        {
+          "code": "limits.expression",
+          "severity": "error",
+          "message": "Rule show-name exceeds the expression operation limit.",
+          "path": "/rules/0/expression"
+        }
+      ]
+    },
+    {
+      "name": "rule-definition",
+      "operations": [{ "op": "set", "path": "/rules", "value": [null] }],
+      "diagnostics": [
+        {
+          "code": "rule.definition",
+          "severity": "error",
+          "message": "Rule definition is invalid.",
+          "path": "/rules/0"
+        }
+      ]
+    },
+    {
+      "name": "rule-target",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "show-name",
+              "target": "missing",
+              "kind": "visible",
+              "expression": { "op": "literal", "value": true }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.target",
+          "severity": "error",
+          "message": "Rule target missing does not exist.",
+          "path": "/rules/0/target"
+        }
+      ]
+    },
+    {
+      "name": "rule-expression",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "show-name",
+              "target": "name",
+              "kind": "visible",
+              "expression": { "op": "unsupported" }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rule.expression",
+          "severity": "error",
+          "message": "Rule show-name expression is invalid.",
+          "path": "/rules/0/expression"
+        }
+      ]
+    },
+    {
+      "name": "data-source-definition",
+      "operations": [{ "op": "set", "path": "/dataSources", "value": [null] }],
+      "diagnostics": [
+        {
+          "code": "data_source.definition",
+          "severity": "error",
+          "message": "Data-source definition must be an object.",
+          "path": "/dataSources/0"
+        }
+      ]
+    },
+    {
+      "name": "data-source-capability",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/dataSources",
+          "value": [{ "id": "roles", "registryKey": "test.roles" }]
+        }
+      ],
+      "options": { "capabilities": { "dataSources": ["other"] } },
+      "diagnostics": [
+        {
+          "code": "capability.data_source",
+          "severity": "error",
+          "message": "Host capability test.roles is not declared.",
+          "path": "/dataSources/0/registryKey"
+        }
+      ]
+    },
+    {
+      "name": "action-definition",
+      "operations": [{ "op": "set", "path": "/actions", "value": [null] }],
+      "diagnostics": [
+        {
+          "code": "action.definition",
+          "severity": "error",
+          "message": "Action definition is invalid.",
+          "path": "/actions/0"
+        }
+      ]
+    },
+    {
+      "name": "action-capability",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/actions",
+          "value": [{ "id": "submit", "registryKey": "test.submit" }]
+        }
+      ],
+      "options": { "capabilities": { "actions": ["other"] } },
+      "diagnostics": [
+        {
+          "code": "capability.action",
+          "severity": "error",
+          "message": "Host capability test.submit is not declared.",
+          "path": "/actions/0/registryKey"
+        }
+      ]
+    },
+    {
+      "name": "rules-array",
+      "operations": [{ "op": "set", "path": "/rules", "value": "invalid" }],
+      "diagnostics": [
+        {
+          "code": "rules.type",
+          "severity": "error",
+          "message": "rules must be an array when present.",
+          "path": "/rules"
+        }
+      ]
+    },
+    {
+      "name": "data-sources-array",
+      "operations": [{ "op": "set", "path": "/dataSources", "value": "invalid" }],
+      "diagnostics": [
+        {
+          "code": "data_source.type",
+          "severity": "error",
+          "message": "dataSources must be an array when present.",
+          "path": "/dataSources"
+        }
+      ]
+    },
+    {
+      "name": "actions-array",
+      "operations": [{ "op": "set", "path": "/actions", "value": "invalid" }],
+      "diagnostics": [
+        {
+          "code": "action.type",
+          "severity": "error",
+          "message": "actions must be an array when present.",
+          "path": "/actions"
+        }
+      ]
+    },
+    {
+      "name": "node-id",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/0/children", "value": [] },
+        { "op": "set", "path": "/ui/nodes/1/id", "value": "" }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.id",
+          "severity": "error",
+          "message": "Every node must have a non-empty id.",
+          "path": "/ui/nodes/1/id"
+        }
+      ]
+    },
+    {
+      "name": "node-kind",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/0/children", "value": [] },
+        { "op": "set", "path": "/ui/nodes/1/kind", "value": "unsupported" }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.kind",
+          "severity": "error",
+          "message": "Node name has an unsupported kind.",
+          "path": "/ui/nodes/1/kind"
+        }
+      ]
+    },
+    {
+      "name": "node-duplicate",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            { "id": "root", "kind": "root", "children": ["name"] },
+            { "id": "name", "kind": "field", "schemaPath": "/properties/name", "widget": "text" },
+            { "id": "name", "kind": "field", "schemaPath": "/properties/name", "widget": "text" }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "node.duplicate",
+          "severity": "error",
+          "message": "Node ID name is duplicated.",
+          "path": "/ui/nodes/2/id"
+        }
+      ]
+    },
+    {
+      "name": "node-children-array",
+      "operations": [{ "op": "set", "path": "/ui/nodes/0/children", "value": "invalid" }],
+      "diagnostics": [
+        {
+          "code": "node.children",
+          "severity": "error",
+          "message": "Node children must be an array.",
+          "path": "/ui/nodes/0/children"
+        },
+        {
+          "code": "layout.unreachable",
+          "severity": "warning",
+          "message": "Node name is not reachable from the root layout.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "node-child-string",
+      "operations": [{ "op": "set", "path": "/ui/nodes/0/children", "value": [7] }],
+      "diagnostics": [
+        {
+          "code": "node.child",
+          "severity": "error",
+          "message": "Node child references must be strings.",
+          "path": "/ui/nodes/0/children/0"
+        },
+        {
+          "code": "layout.unreachable",
+          "severity": "warning",
+          "message": "Node name is not reachable from the root layout.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "computed-rule-cycle",
+      "operations": [
+        { "op": "set", "path": "/schema/properties/age", "value": { "type": "number" } },
+        {
+          "op": "set",
+          "path": "/ui/nodes",
+          "value": [
+            { "id": "root", "kind": "root", "children": ["name", "age"] },
+            { "id": "name", "kind": "field", "schemaPath": "/properties/name", "widget": "text" },
+            { "id": "age", "kind": "field", "schemaPath": "/properties/age", "widget": "number" }
+          ]
+        },
+        {
+          "op": "set",
+          "path": "/rules",
+          "value": [
+            {
+              "id": "compute-name",
+              "target": "name",
+              "kind": "computed",
+              "expression": { "op": "field", "path": "age" }
+            },
+            {
+              "id": "compute-age",
+              "target": "age",
+              "kind": "computed",
+              "expression": { "op": "field", "path": "name" }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "rules.cycle",
+          "severity": "error",
+          "message": "Computed rule dependency cycle: age -> name -> age.",
+          "path": "/rules",
+          "hint": "Remove the circular computed dependency."
+        }
+      ]
+    }
+  ]
+}
