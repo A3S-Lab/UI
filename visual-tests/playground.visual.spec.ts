@@ -513,7 +513,9 @@ test("Resource library pages preserve navigation and production connection state
       playground.locator(
         id === "inspiration"
           ? '[data-product-surface="inspiration"]'
-          : `[data-resource="${id}"]`,
+          : id === "knowledge"
+            ? ".product-knowledge-library"
+            : `[data-resource="${id}"]`,
       ),
     ).toBeVisible();
   }
@@ -534,6 +536,41 @@ test("Resource library pages preserve navigation and production connection state
   await expect(
     mailbox.getByRole("heading", { name: "智能体邮箱已开通" }),
   ).toBeVisible();
+  await page.reload({ waitUntil: "networkidle" });
+  const restoredMailbox = page.locator(".product-mail__service");
+  await expect(restoredMailbox).toHaveAttribute("data-connected", "true");
+  await expect(
+    restoredMailbox.getByRole("heading", { name: "智能体邮箱已开通" }),
+  ).toBeVisible();
+  await restoredMailbox.getByRole("button", { name: "用于新任务" }).click();
+  await expect(playground).toHaveAttribute("data-view", "start");
+  await expect(
+    playground.locator(
+      '[data-composer-resources] [data-resource-id="connector:agent-mailbox"]',
+    ),
+  ).toContainText("tasks@local.a3s.dev");
+
+  await page.goto("playground/resources/mail.html", {
+    waitUntil: "networkidle",
+  });
+  const persistedMailbox = page.locator(".product-mail__service");
+  const disconnect = persistedMailbox.getByRole("button", {
+    name: "断开",
+    exact: true,
+  });
+  await disconnect.click();
+  const disconnectDialog = page.getByRole("dialog", {
+    name: "断开智能体邮箱？",
+  });
+  await expect(disconnectDialog).toBeVisible();
+  await disconnectDialog.getByRole("button", { name: "取消" }).click();
+  await expect(disconnect).toBeFocused();
+  await disconnect.click();
+  await disconnectDialog.getByRole("button", { name: "确认断开" }).click();
+  await expect(persistedMailbox).toHaveAttribute("data-connected", "false");
+  await expect(
+    persistedMailbox.getByRole("button", { name: "确认开通" }),
+  ).toBeDisabled();
 
   await revealProductNavigation(playground);
   more = playground.locator(".product-sidebar__more");
@@ -547,6 +584,30 @@ test("Resource library pages preserve navigation and production connection state
   ).toBeVisible();
 
   expect(runtimeErrors).toEqual([]);
+});
+
+test("Mailbox activation remains recoverable when browser storage is unavailable", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const nativeSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function setItem(key, value) {
+      if (key === "a3s-playground-agent-mailbox") {
+        throw new DOMException("Storage blocked", "SecurityError");
+      }
+      return nativeSetItem.call(this, key, value);
+    };
+  });
+
+  await page.goto("playground/resources/mail.html", {
+    waitUntil: "networkidle",
+  });
+  const mailbox = page.locator(".product-mail__service");
+  await mailbox.getByRole("checkbox").check();
+  await mailbox.getByRole("button", { name: "确认开通" }).click();
+  await expect(mailbox).toHaveAttribute("data-connected", "true");
+  await expect(mailbox.getByRole("status")).toContainText("浏览器未允许保存");
+  await expect(mailbox.getByRole("button", { name: "重试保存" })).toBeVisible();
 });
 
 test("Product shell mobile drawer, resource menu, and backdrop stay usable", async ({
