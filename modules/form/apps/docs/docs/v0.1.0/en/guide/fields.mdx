@@ -1,0 +1,161 @@
+import { FieldDemo } from '../../../../components/FieldDemo';
+
+# v0.1.0 Built-in Fields
+
+The stable release includes 10 foundational fields. JSON Schema defines value types and validation, while the UI node selects a control through `widget`. Every example uses the real `FormRenderer`; the JSON beneath it is the controlled value returned by the control.
+
+## Common properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Field identifier unique within the form document |
+| `kind` | `"field"` | Fixed value for a field node |
+| `schemaPath` | JSON Pointer | Points to the field's Schema |
+| `widget` | `string` | Built-in control name; defaults to `text` when omitted |
+| `label` | `string` | Visible title and accessible name |
+| `description` | `string` | Additional field guidance |
+| `placeholder` | `string` | Input hint for text controls |
+| `options` | `UiOption[]` | Static options for select and radio fields |
+| `width` | `1 \| 2 \| 3 \| 4 \| 6 \| 12` | Field width in the 12-column layout |
+
+Required state comes from the parent object Schema's `required` array. Constraints such as `minimum`, `maximum`, `minLength`, `maxLength`, and `pattern` belong only in the Schema.
+
+## Single-line text `text`
+
+Use for names, identifiers, and short titles. The Schema handles length and format limits.
+
+<FieldDemo widget="text" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", minLength?, maxLength?, pattern? }` |
+| UI property | `placeholder` |
+| Keyboard | Native browser text-input behavior |
+
+## Multiline text `textarea`
+
+Use for notes, instructions, and other content that must retain line breaks.
+
+<FieldDemo widget="textarea" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", minLength?, maxLength? }` |
+| UI property | `placeholder` |
+| Note | Line breaks remain unchanged in the controlled value |
+
+## Number `number`
+
+An empty input returns `null`; a populated input returns a JavaScript `number`.
+
+<FieldDemo widget="number" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `number \| null` |
+| Schema | `{ type: "number", minimum?, maximum? }` |
+| Note | Use a string or custom component for high-precision decimals and very large integers |
+
+## Email `email`
+
+Uses the native email input and Schema validation with `format: "email"`.
+
+<FieldDemo widget="email" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", format: "email" }` |
+| Mobile | The browser may provide an email keyboard |
+
+## Password `password`
+
+The password control masks input only. It does not provide encryption, transport protection, or secure storage.
+
+<FieldDemo widget="password" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", minLength?, maxLength? }` |
+| Security boundary | The host owns credential transport, storage, and redaction |
+
+## Date `date`
+
+Represents a calendar date without a time zone.
+
+<FieldDemo widget="date" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `YYYY-MM-DD` string |
+| Schema | `{ type: "string", format: "date" }` |
+| Note | Use a time-zone-aware time protocol for an exact instant |
+
+## Select `select`
+
+Use when a larger option set allows exactly one selection. Every `options` value must match the Schema `enum`.
+
+<FieldDemo widget="select" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string \| number \| boolean \| null` |
+| Schema | Matches the option value type and declares `enum` |
+| UI property | `options` |
+| Keyboard | Native browser select behavior |
+
+## Radio `radio`
+
+Use for a small option set that benefits from direct comparison.
+
+<FieldDemo widget="radio" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `JsonPrimitive` |
+| Schema | Matches the option value type and declares `enum` |
+| UI property | `options` |
+| Keyboard | Tab enters the group, arrow keys move, and Space selects |
+
+## Checkbox `checkbox`
+
+Use to confirm one independent Boolean state.
+
+<FieldDemo widget="checkbox" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| Keyboard | Space toggles the value |
+
+## Switch `switch`
+
+Represents an enabled or disabled state with `role="switch"` semantics.
+
+<FieldDemo widget="switch" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| Accessibility | `aria-checked` stays synchronized with the controlled value |
+
+## React usage
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { FormRenderer } from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const plan = assertCompiled(document);
+
+<FormRenderer plan={plan} value={value} onChange={setValue} />;
+```
+
+The host retains the complete form value and receives the next value through `onChange`. Field components do not own persistence, permissions, network requests, or business side effects.
+
+See [built-in fields in `next`](/next/en/guide/fields) for the development field set and its complete contracts.

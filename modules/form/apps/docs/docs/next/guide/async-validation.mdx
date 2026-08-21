@@ -1,0 +1,26 @@
+# 宿主异步校验
+
+`next` 运行时可以在字段失焦、向导翻页和最终提交前调用宿主校验。接口地址与凭证留在宿主中，不写入 `FormDocument`。
+
+```ts
+const hostAdapter = {
+  async validateValue(request, signal) {
+    const response = await validateWorkflowNode(request.value, { signal });
+    return {
+      issues: response.issues.map(({ field, code, message }) => ({
+        path: field,
+        code,
+        message,
+      })),
+    };
+  },
+};
+```
+
+同步校验会先运行。字段请求使用 `{ kind: "field", nodeId, path }`，向导翻页使用 `{ kind: "page", nodeId }`，最终提交使用 `{ kind: "form" }`。页面级响应只能报告当前页面的字段，或返回一条页面错误。
+
+受控值变化时，正在进行的校验会被取消。即使旧请求稍后返回，也不能覆盖当前表单状态。
+
+宿主错误码统一映射为 `async.<code>`。响应结构错误、服务不可用或校验范围不合法时，运行时使用稳定错误码关闭当前操作，不把上游异常细节暴露给填写者。React、Vue、Web Component、A3S Cloud 适配器和参考工作流宿主使用同一份协议。
+
+取消规则、无头校验和服务端强制校验见[完整异步校验协议](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/async-validation.md)。

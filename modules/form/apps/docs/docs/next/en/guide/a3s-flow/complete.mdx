@@ -1,0 +1,65 @@
+import { A3SFlowNodeDemo } from '../../../../../components/A3SFlowNodeDemo';
+
+# Complete
+
+> [!IMPORTANT]
+> This page documents the eight-node A3S Flow `0.4.2` compatibility API for migration only. New editors should use the [Flow 1.0 DAG-node contract](/next/en/guide/workflow-node-embedding) and `A3SFlowDagNodeConfigurationPanel`.
+
+`flow.complete` ends the workflow successfully and saves a JSON result produced by a side-effect-free expression.
+
+<A3SFlowNodeDemo nodeType="flow.complete" />
+
+## Developer contract
+
+| Contract | Value |
+| --- | --- |
+| Category | Control flow |
+| Runtime binding | `complete` |
+| A3S Flow command | `Complete` |
+| Stable command ID | No stable-ID binding declared by the descriptor |
+| A3S Flow version | `0.4.2` |
+
+## Use in MDX
+
+The example includes the terminal-node preview and final-output configuration; Complete has no output ports.
+
+```mdx
+import { A3SFlowNodeDemo } from '../../../../../components/A3SFlowNodeDemo';
+
+<A3SFlowNodeDemo nodeType="flow.complete" />
+```
+
+## Configuration properties
+
+| Property | Value type | Required | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `output_expression` | Flow expression | Yes | Field `input` | The result is persisted as the completed run's JSON output. |
+
+## Ports
+
+| Direction | ID | Label | Kind | Types | Availability |
+| --- | --- | --- | --- | --- | --- |
+| Input | `in` | In | Control | `FlowControl` | Always |
+| Input | `output` | Output | Data | `JsonValue` | Always |
+
+Complete has no output ports.
+
+## Configuration value
+
+```json
+{
+  "output_expression": {
+    "apiVersion": "a3s.dev/flow-expression/v1",
+    "expression": { "op": "field", "path": "input.result" }
+  }
+}
+```
+
+## Validation and runtime contract
+
+- Form validation requires `output_expression` to be an object.
+- Node validation checks the expression version envelope and AST operators.
+- The host restricts field-path sources and lowers the resolved value to the `Complete` command's JSON payload.
+- The run is terminal after Complete, so subsequent control edges do not execute.
+
+Related nodes: [Workflow Start](/next/en/guide/a3s-flow/start), [Run Step](/next/en/guide/a3s-flow/step), and [Fail Workflow](/next/en/guide/a3s-flow/fail).

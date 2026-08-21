@@ -1,0 +1,98 @@
+suite "a3s-form-matrix-fields" {
+    version = 1
+
+    scenario "choose-limit-and-resize" {
+        name = "Matrix fields keep controlled choices accessible across container sizes"
+        surface = "web"
+        timeout_ms = 90000
+
+        navigate "open-next-docs" {
+            url = "http://127.0.0.1:4178/Form/next/guide/matrix-fields"
+        }
+
+        viewport "desktop" {
+            width = 1600
+            height = 1000
+        }
+
+        wait "matrix-docs-ready" {
+            text = "矩阵字段"
+        }
+
+        expect "single-matrix" {
+            visible = css(".a3s-doc-matrix-demo[data-widget='matrix-single'] table[aria-label='协作体验评估']")
+        }
+
+        expect "multiple-matrix" {
+            visible = css(".a3s-doc-matrix-demo[data-widget='matrix-multiple'] table[aria-label='各环节具备哪些特征']")
+        }
+
+        check "choose-excellent" {
+            target = css(".a3s-form-matrix.is-single tbody tr:first-child input[value='excellent']")
+        }
+
+        expect "single-choice-controlled" {
+            visible = css(".a3s-form-matrix.is-single tbody tr:first-child input[value='excellent']:checked")
+        }
+
+        focus "focus-selected-radio" {
+            target = css(".a3s-form-matrix.is-single tbody tr:first-child input:checked")
+        }
+
+        press "wrap-to-first-choice" {
+            key = "ArrowRight"
+        }
+
+        expect "native-radio-keyboard-behavior" {
+            visible = css(".a3s-form-matrix.is-single tbody tr:first-child input[value='low']:checked")
+        }
+
+        uncheck "free-one-multiple-choice" {
+            target = css(".a3s-form-matrix.is-multiple tbody tr:first-child input[value='usable']")
+        }
+
+        check "choose-low" {
+            target = css(".a3s-form-matrix.is-multiple tbody tr:first-child input[value='low']")
+        }
+
+        expect "multiple-choice-limit" {
+            visible = css(".a3s-form-matrix.is-multiple tbody tr:first-child input[value='excellent']:disabled")
+        }
+
+        viewport "mobile" {
+            width = 390
+            height = 844
+        }
+
+        expect "mobile-row-card" {
+            visible = css(".a3s-form-matrix.is-single tbody tr:first-child td[data-column-label='待改进']")
+        }
+
+        screenshot "mobile-matrix" {
+            path = "screenshots/mobile-matrix.png"
+        }
+
+        accessibility "mobile-tree" {
+            path = "evidence/accessibility.json"
+            interactive = true
+        }
+
+        navigate "open-stable-docs" {
+            url = "http://127.0.0.1:4178/Form/guide/matrix-fields"
+        }
+
+        expect "stable-version-boundary" {
+            text = "不属于 v0.1.0 稳定契约"
+        }
+
+        console "console" {
+            path = "evidence/console.json"
+            clear = false
+        }
+
+        page_errors "page-errors" {
+            path = "evidence/page-errors.json"
+            clear = false
+        }
+    }
+}

@@ -1,0 +1,457 @@
+.a3s-form-file-upload {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+}
+
+.a3s-form-file-upload-heading {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a3s-form-file-upload-heading > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.a3s-form-file-upload-heading label {
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-ink);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.a3s-form-file-upload-heading > span {
+  flex: 0 0 auto;
+  color: var(--a3s-form-faint);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+
+.a3s-form-file-required {
+  flex: 0 0 auto;
+  color: var(--a3s-form-red);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.a3s-form-file-help,
+.a3s-form-file-constraints,
+.a3s-form-file-empty {
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.a3s-form-file-help {
+  margin-top: -6px;
+}
+
+.a3s-form-file-dropzone {
+  display: grid;
+  min-height: 112px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  border: 1px dashed color-mix(in srgb, var(--a3s-form-blue) 30%, var(--a3s-form-line-strong));
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--a3s-form-blue) 3%, var(--a3s-form-panel));
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.a3s-form-file-dropzone:has(button:hover:not(:disabled)),
+.a3s-form-file-dropzone[data-dragging="true"] {
+  border-color: color-mix(in srgb, var(--a3s-form-blue) 72%, var(--a3s-form-line));
+  background: color-mix(in srgb, var(--a3s-form-blue) 7%, var(--a3s-form-panel));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--a3s-form-blue) 8%, transparent);
+}
+
+.a3s-form-file-dropzone[data-disabled="true"] {
+  border-color: var(--a3s-form-line);
+  background: var(--a3s-form-panel-soft);
+}
+
+.a3s-form-file-drop-icon,
+.a3s-form-file-type {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-file-drop-icon {
+  width: 42px;
+  height: 42px;
+  border: 1px solid color-mix(in srgb, var(--a3s-form-blue) 18%, var(--a3s-form-line));
+  border-radius: 12px;
+  background: var(--a3s-form-panel);
+}
+
+.a3s-form-file-drop-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.a3s-form-file-drop-title {
+  color: var(--a3s-form-ink);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.a3s-form-file-drop-hint {
+  color: var(--a3s-form-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.a3s-form-file-dropzone > button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--a3s-form-line-strong);
+  border-radius: 9px;
+  background: var(--a3s-form-panel);
+  color: var(--a3s-form-ink);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 620;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.a3s-form-file-dropzone > button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--a3s-form-blue) 34%, var(--a3s-form-line));
+  background: color-mix(in srgb, var(--a3s-form-blue) 5%, var(--a3s-form-panel));
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-file-dropzone > button:disabled {
+  color: var(--a3s-form-faint);
+  cursor: not-allowed;
+}
+
+.a3s-form-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.a3s-form-file-constraints {
+  margin-top: -5px;
+  color: var(--a3s-form-faint);
+}
+
+.a3s-form-file-empty {
+  padding: 4px 1px 0;
+}
+
+.a3s-form-file-list {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  padding: 0;
+  list-style: none;
+}
+
+.a3s-form-file-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 8px 9px;
+  border: 1px solid var(--a3s-form-line);
+  border-radius: 11px;
+  background: var(--a3s-form-panel);
+}
+
+.a3s-form-file-row.is-error {
+  border-color: color-mix(in srgb, var(--a3s-form-red) 30%, var(--a3s-form-line));
+  background: color-mix(in srgb, var(--a3s-form-red) 3%, var(--a3s-form-panel));
+}
+
+.a3s-form-file-type {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--a3s-form-blue) 8%, var(--a3s-form-panel-soft));
+}
+
+.a3s-form-file-row.is-error .a3s-form-file-type {
+  background: color-mix(in srgb, var(--a3s-form-red) 8%, var(--a3s-form-panel-soft));
+  color: var(--a3s-form-red);
+}
+
+.a3s-form-file-details {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.a3s-form-file-name {
+  overflow: hidden;
+  color: var(--a3s-form-ink);
+  font-size: 10px;
+  font-weight: 620;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-file-meta {
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.a3s-form-file-error {
+  overflow-wrap: anywhere;
+  color: var(--a3s-form-red);
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.a3s-form-file-details progress {
+  appearance: none;
+  width: min(220px, 100%);
+  height: 3px;
+  margin-top: 4px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 2px;
+  background: var(--a3s-form-panel-strong);
+}
+
+.a3s-form-file-details progress::-webkit-progress-bar {
+  background: var(--a3s-form-panel-strong);
+}
+
+.a3s-form-file-details progress::-webkit-progress-value {
+  border-radius: 2px;
+  background: var(--a3s-form-blue);
+  transition: inline-size 160ms ease-out;
+}
+
+.a3s-form-file-details progress::-moz-progress-bar {
+  border-radius: 2px;
+  background: var(--a3s-form-blue);
+}
+
+.a3s-form-file-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.a3s-form-file-actions button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--a3s-form-muted);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.a3s-form-file-actions button:hover:not(:disabled) {
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-file-actions button:last-child:hover:not(:disabled) {
+  color: var(--a3s-form-red);
+}
+
+.a3s-form-file-actions button:disabled {
+  color: var(--a3s-form-faint);
+  cursor: wait;
+}
+
+.a3s-form-file-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.a3s-form-file-design {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 3px;
+}
+
+.a3s-form-file-design-heading,
+.a3s-form-file-design-heading > span {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+}
+
+.a3s-form-file-design-heading {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.a3s-form-file-design-heading > span {
+  gap: 6px;
+}
+
+.a3s-form-file-design-title {
+  overflow: hidden;
+  color: var(--a3s-form-ink);
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-file-design-heading em {
+  color: var(--a3s-form-red);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.a3s-form-file-design-heading > small {
+  overflow: hidden;
+  max-width: 48%;
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-file-design-drop {
+  display: grid;
+  min-width: 0;
+  min-height: 58px;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px dashed color-mix(in srgb, var(--a3s-form-blue) 24%, var(--a3s-form-line));
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--a3s-form-blue) 3%, var(--a3s-form-panel));
+}
+
+.a3s-form-file-design-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--a3s-form-panel);
+  color: var(--a3s-form-blue);
+}
+
+.a3s-form-file-design-drop > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.a3s-form-file-design-prompt,
+.a3s-form-file-design-constraints {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a3s-form-file-design-prompt {
+  font-size: 9px;
+  font-weight: 620;
+}
+
+.a3s-form-file-design-constraints {
+  color: var(--a3s-form-muted);
+  font-size: 8px;
+}
+
+.a3s-form-file-design-drop i {
+  padding: 4px 7px;
+  border: 1px solid var(--a3s-form-line);
+  border-radius: 7px;
+  background: var(--a3s-form-panel);
+  color: var(--a3s-form-muted);
+  font-size: 8px;
+  font-style: normal;
+}
+
+.a3s-form-file-inspector {
+  display: grid;
+  gap: 12px;
+}
+
+.a3s-form-file-inspector-note {
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--a3s-form-panel-soft);
+  color: var(--a3s-form-muted);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+@container a3s-form-renderer (max-width: 520px) {
+  .a3s-form-file-dropzone {
+    grid-template-columns: 38px minmax(0, 1fr);
+    min-height: 124px;
+    padding: 16px;
+  }
+
+  .a3s-form-file-drop-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .a3s-form-file-dropzone > button {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .a3s-form-file-row {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .a3s-form-file-actions {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-form-file-dropzone,
+  .a3s-form-file-dropzone > button,
+  .a3s-form-file-actions button,
+  .a3s-form-file-details progress::-webkit-progress-value {
+    transition: none;
+  }
+}

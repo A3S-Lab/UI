@@ -1,0 +1,166 @@
+import { RepeaterDemo, ScalarRepeaterDemo } from '../../../components/RepeaterDemo';
+
+# 重复字段组
+
+对象数组需要用普通字段填写，而不是整段编辑 JSON 时，可以使用重复字段组。工作流路由、收件人、请求头、工具参数和审批步骤都是常见场景。
+
+## 对象重复字段组 `repeater-group`
+
+<RepeaterDemo />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | 对象数组 |
+| Schema | `type: "array"`，且 `items.type: "object"` |
+| 行模板 | `children` 指向对象属性对应的字段或布局节点 |
+| 行展示 | 卡片行；直接子节点全为字段时可切换为 `data-grid` |
+| 数量限制 | Schema `minItems`、`maxItems` |
+
+## 基础值重复项 `repeater`
+
+字符串、数字等基础值数组使用紧凑的重复项。每一行直接编辑一个值，并保留添加、排序和删除操作。
+
+<ScalarRepeaterDemo />
+
+```ts
+schema: {
+  type: 'array',
+  minItems: 1,
+  maxItems: 6,
+  uniqueItems: true,
+  items: { type: 'string' },
+},
+ui: {
+  id: 'labels',
+  kind: 'repeater',
+  label: '路由标签',
+  schemaPath: '/properties/labels',
+}
+```
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `"repeater"` | 重复项固定值 |
+| `schemaPath` | JSON Pointer | 指向基础值数组 Schema |
+| `label` | `string` | 列表标题和每行输入的无障碍名称 |
+| `description` | `string` | 列表用途或排序规则 |
+| `customProps.itemPlaceholder` | `string` | 每一项输入框的占位提示，默认“列表项” |
+| `customProps.addLabel` | `string` | 添加按钮文案；未设置时使用当前 locale 文案 |
+| `customProps.emptyLabel` | `string` | 空列表提示；未设置时使用当前 locale 文案 |
+| Schema `items` | 基础类型 Schema | 决定每行受控值类型 |
+| Schema `minItems` / `maxItems` | `number` | 控制删除和添加边界 |
+| Schema `uniqueItems` | `boolean` | 控制项目是否允许重复 |
+
+## 绑定行模板
+
+Schema 决定数组和对象结构。一个 `repeater` 节点绑定数组，它的子字段绑定到 `items` 下面。
+
+```ts
+schema: {
+  type: 'object',
+  properties: {
+    routes: {
+      type: 'array',
+      maxItems: 12,
+      items: {
+        type: 'object',
+        properties: {
+          match: { type: 'string', default: 'customer' },
+          route: { type: 'string', minLength: 1, default: 'customer' },
+        },
+        required: ['match', 'route'],
+        additionalProperties: false,
+      },
+    },
+  },
+},
+ui: {
+  root: 'root',
+  nodes: [
+    { id: 'root', kind: 'root', children: ['routes'] },
+    {
+      id: 'routes',
+      kind: 'repeater',
+      label: '路由规则',
+      schemaPath: '/properties/routes',
+      children: ['route-match', 'route-name'],
+    },
+    {
+      id: 'route-match',
+      kind: 'field',
+      label: '匹配条件',
+      schemaPath: '/properties/routes/items/properties/match',
+      width: 6,
+    },
+    {
+      id: 'route-name',
+      kind: 'field',
+      label: '目标路由',
+      schemaPath: '/properties/routes/items/properties/route',
+      width: 6,
+    },
+  ],
+},
+```
+
+编译器生成 `routes.*.match` 这样的路径模板，Renderer 在具体行解析为 `routes.1.match`。嵌套重复组每深入一层就增加一个索引。宿主错误和字段异步校验都使用实际路径。
+
+## UI 节点属性
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一的节点标识 |
+| `kind` | `"repeater"` | 是 | 重复字段组固定值 |
+| `schemaPath` | JSON Pointer | 是 | 指向对象数组 Schema |
+| `children` | `string[]` | 是 | 每行渲染的字段或布局节点 |
+| `label` | `string` | 否 | 字段组标题和无障碍名称 |
+| `description` | `string` | 否 | 添加、排序或填写规则说明 |
+| `itemKey` | `string` | 否 | 指向行对象中的必填字符串标识 |
+| `layout` | `"data-grid"` | 否 | 省略时使用卡片行；数据表格见独立章节 |
+
+项目数量由数组 Schema 的 `minItems` 和 `maxItems` 控制。子字段的 `width` 使用 12 列布局，窄容器中自动切换为单列。
+
+## 选择行标识协议
+
+默认使用运行时标识。它可以在本地插入、编辑、移动和删除时保留字段状态，又不会改变受控值。
+
+如果外部状态仓库会整体替换行对象，宿主可以提供 `hostAdapter.identifyRepeaterItem`，从已有业务数据中推导 key。回调不能修改对象；标识重复、缺失或不合法时会回退到运行时 key。
+
+`UiNode.itemKey` 是可选项。只有 item Schema 把对应属性声明为必填字符串时，编译器才会接受它。新行会生成该值，因为文档已经明确把标识纳入业务值协议。不要为了引擎内部需要给工作流配置增加 `rowId`。
+
+## 运行时行为
+
+- 添加、删除、上移和下移都会回传完整受控值。
+- 到达 `minItems` 或 `maxItems` 边界时，相应操作会禁用。
+- 只读状态覆盖行字段、排序、添加、删除和表单操作。
+- 校验摘要会聚焦到准确的嵌套输入框。
+- 嵌入容器变窄时，行内网格自动变为单列。
+- 基础类型数组继续使用紧凑的重复项控件。
+
+## 把规则与数据源绑定到当前行
+
+需要逐项运行的 `computed`、`validate`、`visible` 或 `enabled` 规则必须设置 `scope: "row"`。文档中的路径保留模板形式：
+
+```ts
+{
+  id: 'route-must-differ-from-default',
+  target: 'route-name',
+  kind: 'validate',
+  scope: 'row',
+  expression: {
+    op: 'ne',
+    left: { op: 'field', path: 'routes.*.route' },
+    right: { op: 'field', path: 'default' },
+  },
+}
+```
+
+行表达式可以读取全局路径、当前行或嵌套结构中的外层行。错误与轨迹使用实际路径，计算失败和增量缓存限制在当前实际行内。
+
+数据源依赖使用相同模板。对于 `routes.*.provider`，第三行请求会在 `request.scope.dependencies` 中同时带上模板和 `routes.2.provider`。宿主按实际路径读取受控值，不需要保存行元数据。
+
+Playground 的 Router 表单是工作流节点参考示例。它的 `routes` 值仍是普通 `{ when, route }[]`，同时具备行校验和宿主管理的逐行选项。
+
+## 当前边界
+
+直接字段需要紧凑比较时可使用[数据表格](/next/guide/data-grids)。数据表格支持对话框草稿、批量操作和大数组虚拟滚动。共用选项的矩阵题使用独立的 [`matrix-single` 或 `matrix-multiple` 字段](/next/guide/matrix-fields)。

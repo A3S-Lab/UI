@@ -116,6 +116,31 @@ const requiredFiles = [
   "dist/integrations/dockview/vue.js",
   "dist/integrations/dockview/vue.d.ts",
   "dist/integrations/dockview/a3s.css",
+  "dist/form/index.js",
+  "dist/form/index.d.ts",
+  "dist/form/core.js",
+  "dist/form/core.d.ts",
+  "dist/form/react.js",
+  "dist/form/react.d.ts",
+  "dist/form/react-hooks.js",
+  "dist/form/react-hooks.d.ts",
+  "dist/form/vue.js",
+  "dist/form/vue.d.ts",
+  "dist/form/vue-hooks.js",
+  "dist/form/vue-hooks.d.ts",
+  "dist/form/web-component.js",
+  "dist/form/web-component.d.ts",
+  "dist/form/workflow.js",
+  "dist/form/workflow.d.ts",
+  "dist/form/cli.js",
+  "dist/form/workers/compiler.worker.js",
+  "dist/form/wasm/form-core.wasm",
+  "dist/form/wasm/sha256.wasm",
+  "dist/form/styles.css",
+  "dist/form/a3s-flow.css",
+  "dist/form/a3s-ui.css",
+  "dist/form/skills/a3s-form/SKILL.md",
+  "dist/form/docs/integration.md",
 ];
 
 for (const requiredFile of requiredFiles) {
@@ -212,6 +237,13 @@ for (const target of new Set(collectExportTargets(manifest.exports))) {
   }
   if (!packedFiles.has(relativeTarget)) {
     throw new Error(`Export target is not included in the tarball: ${target}`);
+  }
+}
+
+for (const [command, target] of Object.entries(manifest.bin ?? {})) {
+  const relativeTarget = target.replace(/^\.\//, "");
+  if (!packedFiles.has(relativeTarget)) {
+    throw new Error(`Executable ${command} is not included in the tarball: ${target}`);
   }
 }
 

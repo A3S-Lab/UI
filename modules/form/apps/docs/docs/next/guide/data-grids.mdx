@@ -1,0 +1,287 @@
+import { DataGridDemo, VirtualDataGridDemo } from '../../../components/DataGridDemo';
+
+# 可编辑数据表格
+
+数据表格把对象数组呈现为可比较的行列结构，受控值仍是普通 JSON 数组。订单明细、路由规则、检查记录和节点参数映射适合使用这种布局。
+
+<DataGridDemo />
+
+示例启用了批量粘贴、向下填充、跨列筛选、单列排序、对话框草稿编辑与多行选择。排序和筛选只改变当前视图；粘贴、填充和行草稿通过校验后一次写入 `value`。取消或按 Escape 不会产生受控值变更。
+
+## UI 节点属性
+
+数据表格是绑定对象数组的 `repeater`，直接子字段构成列。
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一节点标识 |
+| `kind` | `"repeater"` | 是 | 数据表格固定使用重复组节点 |
+| `layout` | `"data-grid"` | 是 | 启用表格与窄容器行卡片布局 |
+| `schemaPath` | JSON Pointer | 是 | 指向对象数组 Schema |
+| `children` | `string[]` | 是 | 直接字段列，至少一项 |
+| `itemKey` | `string` | 否 | 指向行对象中的必填字符串标识 |
+| `dataGrid` | `UiDataGridDefinition` | 否 | 编辑、视图和批量操作策略；缺省时保持内联编辑 |
+
+只读状态由 `FormRenderer` 的 `readOnly` 属性控制。只读时禁用编辑、选择和批量操作，排序与筛选保持可用。
+
+```ts
+interface UiDataGridDefinition {
+  editMode?: 'inline' | 'dialog';
+  selection?: 'none' | 'multiple';
+  sorting?: 'none' | 'single';
+  filtering?: 'none' | 'search';
+  paste?: 'none' | 'append';
+  fill?: 'none' | 'down';
+  virtualization?: {
+    mode: 'rows';
+    viewportHeight?: number;
+    overscan?: number;
+  };
+}
+```
+
+| `dataGrid` 属性 | 可选值 | 默认值 | 运行时行为 |
+| --- | --- | --- | --- |
+| `editMode` | `"inline"` \| `"dialog"` | `"inline"` | 直接回传单元格变更，或校验整行草稿后一次提交 |
+| `selection` | `"none"` \| `"multiple"` | `"none"` | 提供本地多选、当前视图全选与确认删除 |
+| `sorting` | `"none"` \| `"single"` | `"none"` | 提供本地单列升序、降序与恢复原始顺序 |
+| `filtering` | `"none"` \| `"search"` | `"none"` | 在可见列格式化文本中执行跨列关键词筛选 |
+| `paste` | `"none"` \| `"append"` | `"none"` | 解析 TSV 数据，整表校验通过后追加行 |
+| `fill` | `"none"` \| `"down"` | `"none"` | 从第一个可见所选行复制一列到其余可见所选行 |
+| `virtualization` | `UiDataGridVirtualizationDefinition` | 未启用 | 在固定高度滚动区域中只渲染当前行窗口；要求 `editMode: "dialog"` |
+
+虚拟化配置属性：
+
+| 属性 | 类型 | 默认值 | 约束 |
+| --- | --- | --- | --- |
+| `mode` | `"rows"` | 无 | 必填；按对象数组行建立窗口 |
+| `viewportHeight` | `number` | `480` | 240–960 的整数，单位为 CSS 像素 |
+| `overscan` | `number` | `6` | 2–24 的整数；在视口前后预渲染的行数 |
+
+全部属性均为显式开关。已有 `layout: "data-grid"` 文档无需迁移；未配置的属性保持关闭，`editMode` 仍默认为 `"inline"`。
+
+## 结构与 Schema
+
+```ts
+const document: FormDocument = {
+  kind: 'a3s.form',
+  apiVersion: 'a3s.dev/form/v1alpha1',
+  revision: 1,
+  metadata: { title: '路由规则', locale: 'zh-CN' },
+  schema: {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    type: 'object',
+    properties: {
+      routes: {
+        type: 'array',
+        minItems: 1,
+        maxItems: 500,
+        items: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            condition: { type: 'string', minLength: 1 },
+            destination: { type: 'string', minLength: 1 },
+          },
+          required: ['id', 'condition', 'destination'],
+          additionalProperties: false,
+        },
+      },
+    },
+    required: ['routes'],
+    additionalProperties: false,
+  },
+  ui: {
+    root: 'root',
+    nodes: [
+      { id: 'root', kind: 'root', children: ['routes'] },
+      {
+        id: 'routes',
+        kind: 'repeater',
+        layout: 'data-grid',
+        label: '分流规则',
+        schemaPath: '/properties/routes',
+        itemKey: 'id',
+        dataGrid: {
+          editMode: 'dialog',
+          selection: 'multiple',
+          sorting: 'single',
+          filtering: 'search',
+          paste: 'append',
+          fill: 'down',
+          virtualization: {
+            mode: 'rows',
+            viewportHeight: 420,
+          },
+        },
+        children: ['condition', 'destination'],
+      },
+      {
+        id: 'condition',
+        kind: 'field',
+        label: '条件值',
+        schemaPath: '/properties/routes/items/properties/condition',
+        width: 6,
+      },
+      {
+        id: 'destination',
+        kind: 'field',
+        label: '目标分支',
+        schemaPath: '/properties/routes/items/properties/destination',
+        width: 6,
+      },
+    ],
+  },
+};
+```
+
+编译器会拒绝以下结构：
+
+- `data-grid` 不是 `repeater`；
+- Schema 不是对象数组；
+- 没有直接字段列，或直接子节点不是 `field`；
+- `dataGrid` 用在其他布局；
+- `editMode`、`selection`、`sorting`、`filtering`、`paste`、`fill` 或 `virtualization.mode` 使用未支持的值；
+- `fill: "down"` 没有同时配置 `selection: "multiple"`；
+- 虚拟滚动没有同时配置 `editMode: "dialog"`；
+- `viewportHeight` 或 `overscan` 不是允许范围内的整数。
+
+嵌套属性仍可作为直接列，例如 `/properties/routes/items/properties/when/properties/equals`。
+
+## 编辑方式
+
+### 表内直接编辑
+
+`editMode: "inline"` 直接在单元格渲染真实字段。每次字段变更立即回传完整数组，适合列少、输入短且需要横向连续录入的场景。
+
+### 对话框草稿编辑
+
+`editMode: "dialog"` 在表格中显示字段摘要，通过“编辑”进入受保护的行级任务：
+
+1. 打开时克隆当前行，不修改宿主值；
+2. 对话框继续使用真实字段组件、行规则和行数据源；
+3. 保存前运行同步 Schema 与规则校验，错误留在对应字段并聚焦首错；
+4. 保存成功后一次回传完整数组；
+5. 取消、关闭或 Escape 丢弃草稿；
+6. 宿主在编辑期间替换同一行时阻止覆盖，并要求重新打开最新值。
+
+新增行也走草稿流程。`itemKey` 指向必填字符串属性时，运行时会为新行补充分离于 UI 状态的业务标识；已有行不会被改写。
+
+宿主异步校验在行提交到受控值后继续按字段失焦、向导步骤或最终提交协议执行。对话框本身不保存远端草稿。
+
+## 多行选择与删除
+
+`selection: "multiple"` 增加行复选框、全选和批量删除。选择集合使用稳定运行时行标识，不写入表单值，也不会跟随提交或序列化。
+
+批量删除分两步执行：先显示待删除数量，再确认提交。删除结果始终满足 `minItems`；会突破下限时按钮禁用并显示保留数量。移动行不会丢失选择，宿主移除行后对应选择自动失效。
+
+持久化、权限检查和远程操作仍由宿主管理。Form Renderer 只产生新的受控数组。
+
+## 批量粘贴
+
+`paste: "append"` 在表格工具栏提供“粘贴行”。对话框不读取系统剪贴板权限，只接收用户主动粘贴的文本。输入内容、解析预览和错误状态不会修改受控值。
+
+列顺序在对话框中明确列出。每个制表符分隔的单元格依次映射到可编辑列；`hidden`、`calculated`、`matrix-single` 和 `matrix-multiple` 不进入粘贴列。直接 UI 子字段可以绑定嵌套属性，粘贴结果按相对路径写入行对象。
+
+TSV 解析规则：
+
+- 支持 `LF` 与 `CRLF` 行结束符；
+- 双引号包裹的单元格可以包含制表符和换行；
+- 单元格中的双引号写为 `""`；
+- 所有单元格均为空的行忽略；
+- 单次最多 1,000 行、256 KiB，且不能超过 Schema 的 `maxItems`；
+- 单行单元格数量不能超过可编辑列数。
+
+Schema 类型决定单元格转换：
+
+| Schema 类型 | 输入规则 |
+| --- | --- |
+| `string` 或未声明 | 保留原始文本 |
+| `number` | 有限数值 |
+| `integer` | 整数 |
+| `boolean` | `true/false`、`1/0`、`yes/no`、`on/off`、`是/否` |
+| `object` | JSON 对象 |
+| `array` | JSON 数组 |
+| `null` | `null` |
+
+`enum` 在类型转换后检查。非字符串空单元格保留行 Schema 默认值；字符串空单元格写入空字符串。`itemKey` 的自动标识和对象默认值仍由重复组创建逻辑生成。
+
+点击“追加数据”后，解析结果与现有数组合并，再运行完整 Schema、规则和计算求值。任一行失败时显示首个错误，数组保持不变；全部通过后一次回传求值后的完整数组。
+
+## 向下填充
+
+`fill: "down"` 依赖 `selection: "multiple"`。Designer 开启向下填充时同步开启多行选择；关闭多行选择时同步关闭向下填充。编译器会拒绝不满足依赖关系的导入文档。
+
+操作顺序：
+
+1. 选择至少两个当前可见行；
+2. 打开“向下填充”；
+3. 选择可编辑列；
+4. 确认来源值与目标行数；
+5. 校验通过后一次写入完整数组。
+
+当前排序和筛选结果决定可见顺序。第一个可见所选行是来源，其余可见所选行是目标；已选择但被筛选隐藏的行不会修改。嵌套对象和数组值使用结构化克隆，来源属性不存在时删除目标行中的同一路径。
+
+对话框打开时保存来源行与目标行快照。宿主在确认前替换、删除或修改任一相关行时，填充会因冲突停止，当前受控值不会被旧快照覆盖。填充结果随后执行整表 Schema、规则和计算求值；任一错误都会取消整次写入。
+
+## 排序与筛选
+
+`sorting: "single"` 给每个列标题增加三段式排序：升序、降序、恢复原始顺序。数字按数值比较，文本使用当前 locale 的自然顺序，空值始终排在最后。窄容器不显示表头，改用与列契约同步的排序选择器。
+
+排序结果只作用于当前 Renderer，不会重排或回传受控数组。行编辑、删除和错误路径仍绑定原始数组索引。排序或筛选生效时，上移和下移按钮禁用；恢复原始完整视图后才能调整真实数组顺序。
+
+`filtering: "search"` 在所有可见列的格式化文本中匹配关键词，不读取未展示属性。多个关键词需要同时命中同一行，匹配忽略大小写并执行 Unicode 规范化。结果计数和空结果恢复操作使用本地化文案。
+
+筛选后的全选只选择当前可见行，先前选择但被筛选隐藏的行继续保留选择状态。点击“添加一行”会先清除筛选，避免新行创建后立即隐藏。表单产生校验错误时也会恢复完整视图，确保错误摘要可以定位并打开对应行。
+
+表内直接编辑与排序同时启用时，当前焦点所在行在失焦前保持位置，避免输入过程中跳行；失焦后按最新值重新排序。只读表单仍可使用排序与筛选，但编辑、选择和行操作保持禁用。
+
+## 行虚拟化
+
+`virtualization.mode: "rows"` 把表格限制在固定高度滚动区域，只挂载当前窗口与前后缓冲行。排序、筛选、全选、批量删除、粘贴、填充、Schema 校验和受控值仍处理完整数组；虚拟窗口不改变数据范围。
+
+<VirtualDataGridDemo />
+
+示例持有 500 行受控数组。页面初始只输出覆盖 420px 视口和缓冲区的行，滚动时根据实测行高替换窗口。桌面表格与窄容器行卡片共用同一套窗口计算。
+
+虚拟化要求对话框编辑。表内输入控件不会在滚出窗口时被卸载，行草稿也不会依赖虚拟行的挂载周期。Designer 开启虚拟滚动时自动切换到对话框编辑；改回表内直接编辑时移除虚拟化配置。编译器对导入文档执行相同约束。
+
+运行时行为：
+
+- 首次服务端渲染使用确定性行高估算，客户端挂载后通过 `ResizeObserver` 更新桌面行与移动卡片的实际高度；
+- 列标题在桌面滚动区域内固定，移动端继续使用字段标题完整的行卡片；
+- `aria-rowcount` 表示完整结果数量，已挂载行使用全局 `aria-rowindex`，占位空间不进入无障碍行模型；
+- 滚动区域可以通过键盘聚焦；Home、End、Page Up 和 Page Down 分别移动到起点、终点或相邻视口，静态说明会告知辅助技术完整行数和按键；
+- 错误摘要定位到未挂载行时，运行时先滚动并挂载目标行，再打开对应行对话框并聚焦错误字段；
+- 筛选和排序变化把窗口复位到结果起点，避免保留超出新结果范围的滚动位置；
+- 新增行和批量追加仍生成完整受控数组，当前筛选允许显示目标行时自动滚动到新增位置。
+
+`viewportHeight` 决定嵌入面板占用的纵向空间。工作流节点侧栏通常使用 320–480px；整页数据录入可以使用 560–720px。`overscan` 只调整滚动缓冲，不应按数组总长度增长。
+
+## Designer
+
+“数据表格”预设会创建名称、数量和备注三列。属性面板提供：
+
+- 卡片行与数据表格切换；
+- 表内直接编辑与对话框草稿编辑切换；
+- 虚拟滚动开关与滚动区域高度；
+- 多行选择开关；
+- 批量粘贴开关；
+- 向下填充开关；
+- 单列排序开关；
+- 跨列筛选开关；
+- 普通字段列的重命名、组件替换、排序、复制和删除。
+
+切回卡片行时会移除 `dataGrid` 策略，避免把表格专用配置留在其他布局。预览使用真实 Renderer，值结构与嵌入宿主一致。
+
+## 响应式与无障碍
+
+桌面端保留原生 `table`、列标题、`scope="row"` 行标题和明确的行操作名称。虚拟表格补充完整 `aria-rowcount` 与全局 `aria-rowindex`。行编辑、粘贴和填充使用原生 `<dialog>`，打开后限制焦点范围，错误发生时聚焦提示，关闭时把焦点还给触发按钮。粘贴预览使用语义表格，列顺序、输入标签、来源值和目标数量均提供明确名称。
+
+Form 容器宽度不超过 520px 时，每一行改为带字段标题的卡片。判断依据是嵌入容器，不是浏览器窗口；侧栏、节点面板和弹窗宿主都能得到一致结果。对话框字段按 12 列宽度配置，在窄容器中自动单列排列。
+
+## 当前边界
+
+当前实现覆盖内联编辑、对话框草稿、单列排序、跨列筛选、多行选择、确认删除、TSV 追加、向下填充、动态行高虚拟滚动、稳定行标识和数量边界。CSV 文件读取、导出、权限和远程批处理属于宿主能力，不能通过未声明属性隐式启用。
+
+共享选项的问卷矩阵使用 `matrix-single` 或 `matrix-multiple`，不使用数据表格布局。

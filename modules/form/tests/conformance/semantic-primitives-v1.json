@@ -1,0 +1,145 @@
+{
+  "apiVersion": "a3s.dev/form-semantic-primitives-conformance/v1",
+  "schemaCases": [
+    {
+      "name": "valid-closed-object",
+      "inputJson": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"name\"],\"additionalProperties\":false}",
+      "diagnostics": []
+    },
+    {
+      "name": "nested-unsupported-keyword",
+      "inputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"oneOf\":[]}}}",
+      "diagnostics": [
+        {
+          "code": "schema.keyword.unsupported",
+          "path": "/schema/properties/name/oneOf"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-required-entry",
+      "inputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\",\"name\"]}",
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "path": "/schema/required"
+        }
+      ]
+    },
+    {
+      "name": "invalid-property-name",
+      "inputJson": "{\"type\":\"object\",\"properties\":{\"profile.name\":{\"type\":\"string\"}}}",
+      "diagnostics": [
+        {
+          "code": "schema.property.invalid",
+          "path": "/schema/properties/profile.name"
+        }
+      ]
+    },
+    {
+      "name": "invalid-pattern",
+      "inputJson": "{\"type\":\"string\",\"pattern\":\"[\"}",
+      "diagnostics": [
+        {
+          "code": "schema.pattern.invalid",
+          "path": "/schema/pattern"
+        }
+      ]
+    },
+    {
+      "name": "unsupported-format",
+      "inputJson": "{\"type\":\"string\",\"format\":\"company-id\"}",
+      "diagnostics": [
+        {
+          "code": "schema.format.unsupported",
+          "path": "/schema/format"
+        }
+      ]
+    },
+    {
+      "name": "nested-dialect",
+      "inputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"string\"}}}",
+      "diagnostics": [
+        {
+          "code": "schema.dialect",
+          "path": "/schema/properties/name/$schema"
+        }
+      ]
+    }
+  ],
+  "expressionCases": [
+    {
+      "name": "branch-and-arithmetic",
+      "inputJson": "{\"op\":\"if\",\"condition\":{\"op\":\"field\",\"path\":\"active\"},\"whenTrue\":{\"op\":\"add\",\"left\":{\"op\":\"field\",\"path\":\"amount\"},\"right\":{\"op\":\"literal\",\"value\":1}},\"whenFalse\":{\"op\":\"field\",\"path\":\"amount\"}}",
+      "ok": true,
+      "size": 6,
+      "fieldPaths": ["active", "amount"]
+    },
+    {
+      "name": "collection-with-duplicate-dependency",
+      "inputJson": "{\"op\":\"all\",\"values\":[{\"op\":\"field\",\"path\":\"ready\"},{\"op\":\"field\",\"path\":\"ready\"}]}",
+      "ok": true,
+      "size": 3,
+      "fieldPaths": ["ready"]
+    },
+    {
+      "name": "unexpected-property",
+      "inputJson": "{\"op\":\"literal\",\"value\":true,\"script\":\"forbidden\"}",
+      "ok": false
+    },
+    {
+      "name": "empty-field-segment",
+      "inputJson": "{\"op\":\"field\",\"path\":\"profile..name\"}",
+      "ok": false
+    },
+    {
+      "name": "missing-binary-operand",
+      "inputJson": "{\"op\":\"eq\",\"left\":{\"op\":\"literal\",\"value\":true}}",
+      "ok": false
+    }
+  ],
+  "pointerCases": [
+    {
+      "name": "nested-array-field",
+      "pointer": "/properties/recipients/items/properties/email",
+      "template": "recipients.*.email"
+    },
+    {
+      "name": "escaped-property",
+      "pointer": "/properties/a~1b",
+      "template": "a/b"
+    },
+    {
+      "name": "unsupported-schema-location",
+      "pointer": "/definitions/name",
+      "template": null
+    },
+    {
+      "name": "root-schema",
+      "pointer": "",
+      "template": null
+    }
+  ],
+  "scopeCases": [
+    {
+      "target": "recipients.*.channels.*.address",
+      "dependency": "organizationId",
+      "compatible": true
+    },
+    {
+      "target": "recipients.*.channels.*.address",
+      "dependency": "recipients.*.name",
+      "compatible": true
+    },
+    {
+      "target": "recipients.*.name",
+      "dependency": "recipients.*.channels.*.address",
+      "compatible": false
+    },
+    {
+      "target": "recipients.*.name",
+      "dependency": "reviewers.*.name",
+      "compatible": false
+    }
+  ]
+}

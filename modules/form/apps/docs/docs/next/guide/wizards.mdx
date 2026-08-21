@@ -1,0 +1,99 @@
+import { WizardDemo } from '../../../components/WizardDemo';
+
+# 多步向导
+
+多步向导按页导航并逐步校验，适合需要固定顺序、条件分支或最终确认的填写流程。导航状态独立于受控表单值。
+
+<WizardDemo />
+
+## UI 节点属性
+
+向导容器可以使用 `root`、`group` 或 `section`。直接子节点必须是 `layout: "page"` 的 group 或 section。
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一的稳定标识 |
+| `kind` | `"root" \| "group" \| "section"` | 是 | 向导容器类型 |
+| `layout` | `"wizard"` | 是 | 启用步骤导航、页面校验和确认页 |
+| `children` | `string[]` | 是 | 按顺序排列的页面节点，至少一项 |
+| `label` | `string` | 否 | 向导标题和无障碍名称 |
+| `description` | `string` | 否 | 向导标题下方的补充说明 |
+
+页面节点属性：
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `kind` | `"group" \| "section"` | 是 | 页面容器类型 |
+| `layout` | `"page"` | 是 | 向导直接子页面固定值 |
+| `pageRole` | `"form" \| "review"` | 否 | 默认 `form`；最终确认页使用 `review` |
+| `label` | `string` | 是 | 步骤名称、进度名称和确认页分组名称 |
+| `description` | `string` | 否 | 当前步骤的填写说明 |
+| `children` | `string[]` | 是 | 页面内字段和布局节点；确认页可为空 |
+| `columns` | `1 \| 2 \| 3 \| 4 \| 6 \| 12` | 否 | 页面内部栅格列数 |
+| `gap` | `0 \| 8 \| 12 \| 16 \| 24 \| 32` | 否 | 页面字段间距 |
+
+## 编排结构
+
+向导是 `layout: "wizard"` 的 `root`、`group` 或 `section` 节点。它的直接子节点必须是 `layout: "page"` 的 group 或 section。
+
+```json
+{
+  "id": "onboarding",
+  "kind": "group",
+  "label": "创建 Workspace",
+  "layout": "wizard",
+  "children": ["identity-page", "contact-page", "review-page"]
+}
+```
+
+页面的 `pageRole` 默认为 `"form"`。最后一页可以设置为 `"review"`，用于展示本地化汇总和返回编辑链接。Designer 可以直接创建这套结构，作者能添加、移动、重命名和配置步骤，不需要编辑原始 JSON。
+
+编译器会拒绝有歧义的结构：空向导、非 page 子节点、孤立 page、嵌套向导、重复字段组中的 page，以及位置错误或重复的 review 页。
+
+## 分支与校验
+
+给页面添加普通 `visible` 规则即可分支。进度和导航只计算当前可见页面。
+
+“下一步”先同步校验当前页；配置宿主校验后，再调用 `{ kind: "page", nodeId }`。宿主如果返回当前页以外的字段错误，响应会按非法结果关闭。隐藏页面的同步错误不会阻塞当前分支，无头 `evaluateFormValue` 使用相同规则。
+
+主操作只在最后一个可见页面出现。最终提交仍执行表单级校验；如果错误属于前面的页面，Renderer 会自动返回该页并聚焦对应控件。
+
+## 不污染表单值的恢复协议
+
+导航状态不写入受控表单值。宿主单独保存与编译结果绑定的 checkpoint：
+
+```ts
+const created = createFormWizardCheckpoint(
+  plan,
+  'onboarding',
+  'contact-page',
+  ['identity-page'],
+);
+
+if (created.ok) {
+  await checkpointStore.put(runId, created.checkpoint);
+}
+```
+
+```tsx
+<FormRenderer
+  plan={plan}
+  value={value}
+  onChange={setValue}
+  wizardCheckpoints={checkpoints}
+  onWizardCheckpointChange={({ checkpoint }) => {
+    setCheckpoints((current) => ({
+      ...current,
+      [checkpoint.wizardId]: checkpoint,
+    }));
+  }}
+/>
+```
+
+`restoreFormWizardCheckpoint` 会拒绝不同的 digest、revision、wizard 或 page。持久化、恢复令牌、权限和保留周期仍由宿主负责。
+
+Vue 转发 `wizardCheckpoints` 并触发 `wizardCheckpointChange`；Web Component 提供同名属性，并触发 `wizard-checkpoint-change`。
+
+在 Playground 中打开“组织创建向导”，可以测试企业条件分支、页面级宿主校验、确认页、移动布局和受控 checkpoint 更新。
+
+完整 API、校验规则和宿主边界见仓库文档 [`docs/wizards.md`](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/wizards.md)。

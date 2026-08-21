@@ -1,0 +1,92 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-resource-conformance/v1",
+  "generator": "flat-string-fields-v1",
+  "cases": [
+    {
+      "name": "100-node-boundary",
+      "nodeCount": 100,
+      "maxNodes": 100,
+      "ok": true,
+      "normalizedDocumentSha256": "4e8340a0a8771faff6a2cf20103b4166ef933e10a16abe4f00e94fe03b557cad",
+      "digest": "sha256:c515f5c9647c962554f7c7a5cd9bd82158ce5f13b4bb7f362de5f50da8ad348a",
+      "formPlanSha256": "d6a91b4082d6869973e8a94cbc3ee7f8d4f708c87f864c5ad25490878cbf3885",
+      "diagnostics": []
+    },
+    {
+      "name": "100-node-limit",
+      "nodeCount": 100,
+      "maxNodes": 99,
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "limits.nodes",
+          "severity": "error",
+          "message": "Node count exceeds the configured limit of 99.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "500-node-boundary",
+      "nodeCount": 500,
+      "maxNodes": 500,
+      "ok": true,
+      "normalizedDocumentSha256": "0e4237ee9c3d8c3921bda1668e89e748ff7a2c355d1fff958dc8b261565055c9",
+      "digest": "sha256:4e6d253910efd5dd822fe462a05607a7c6d7264f3c385b84dc2864895bdea743",
+      "formPlanSha256": "ccffa73479540c9b7e4b1cf7e2f656d19669bece5c8c08981791bbc7c4b44b99",
+      "diagnostics": []
+    },
+    {
+      "name": "500-node-limit",
+      "nodeCount": 500,
+      "maxNodes": 499,
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "limits.nodes",
+          "severity": "error",
+          "message": "Node count exceeds the configured limit of 499.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "1000-node-boundary",
+      "nodeCount": 1000,
+      "maxNodes": 1000,
+      "ok": true,
+      "normalizedDocumentSha256": "4cd6663faa5a017b60318cb99b615dfeb0855cf82c7f9cb69a62bb50c279472e",
+      "digest": "sha256:2c10344c6feb779541ebc58176070287b929d097f7545b142557663b7f252c70",
+      "formPlanSha256": "c143a82677d7708973d17aba7bdeae86cc4fcb4fb93b1775b059f57519ad820c",
+      "diagnostics": []
+    },
+    {
+      "name": "1000-node-limit",
+      "nodeCount": 1000,
+      "maxNodes": 999,
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "limits.nodes",
+          "severity": "error",
+          "message": "Node count exceeds the configured limit of 999.",
+          "path": "/ui/nodes"
+        }
+      ]
+    },
+    {
+      "name": "default-limit-rejects-1001",
+      "nodeCount": 1001,
+      "maxNodes": 1000,
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "limits.nodes",
+          "severity": "error",
+          "message": "Node count exceeds the configured limit of 1000.",
+          "path": "/ui/nodes"
+        }
+      ]
+    }
+  ]
+}

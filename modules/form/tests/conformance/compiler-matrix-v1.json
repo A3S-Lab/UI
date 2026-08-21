@@ -1,0 +1,209 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-matrix-conformance/v1",
+  "baseInputJson": "{\"kind\":\"a3s.form\",\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"revision\":2,\"metadata\":{\"title\":\"Single matrix\",\"locale\":\"en-US\"},\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"answers\":{\"type\":\"object\",\"properties\":{\"quality\":{\"type\":\"integer\",\"enum\":[1,2]},\"speed\":{\"type\":\"number\",\"enum\":[1,2]}},\"required\":[\"quality\",\"speed\"],\"additionalProperties\":false}},\"required\":[\"answers\"],\"additionalProperties\":false},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\",\"children\":[\"answers\"]},{\"id\":\"answers\",\"kind\":\"field\",\"label\":\"Assessment\",\"widget\":\"matrix-single\",\"schemaPath\":\"/properties/answers\",\"matrix\":{\"rows\":[{\"id\":\"quality\",\"label\":\"Quality\"},{\"id\":\"speed\",\"label\":\"Speed\"}],\"columns\":[{\"label\":\"Low\",\"value\":1},{\"label\":\"High\",\"value\":2}]}}]},\"rules\":[],\"dataSources\":[],\"actions\":[]}",
+  "cases": [
+    {
+      "name": "matrix-on-ordinary-widget",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/widget", "value": "text" }],
+      "diagnostics": [
+        {
+          "code": "matrix.scope",
+          "severity": "error",
+          "message": "matrix is available only on matrix-single or matrix-multiple fields.",
+          "path": "/ui/nodes/1/matrix"
+        }
+      ]
+    },
+    {
+      "name": "matrix-requires-field-node",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/kind", "value": "content" }],
+      "diagnostics": [
+        {
+          "code": "matrix.container",
+          "severity": "error",
+          "message": "Matrix widgets must use field nodes.",
+          "path": "/ui/nodes/1/kind"
+        }
+      ]
+    },
+    {
+      "name": "matrix-rejects-static-options",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/options",
+          "value": [{ "label": "Conflict", "value": 3 }]
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.options_source",
+          "severity": "error",
+          "message": "Matrix columns must be declared by matrix.columns and cannot use options or dataSource.",
+          "path": "/ui/nodes/1"
+        }
+      ]
+    },
+    {
+      "name": "matrix-definition-required",
+      "operations": [{ "op": "remove", "path": "/ui/nodes/1/matrix" }],
+      "diagnostics": [
+        {
+          "code": "matrix.definition",
+          "severity": "error",
+          "message": "Matrix fields must declare a matrix object containing rows and columns.",
+          "path": "/ui/nodes/1/matrix"
+        }
+      ]
+    },
+    {
+      "name": "matrix-arrays-required",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/matrix/rows", "value": "invalid" }],
+      "diagnostics": [
+        {
+          "code": "matrix.definition",
+          "severity": "error",
+          "message": "matrix.rows and matrix.columns must be arrays.",
+          "path": "/ui/nodes/1/matrix"
+        }
+      ]
+    },
+    {
+      "name": "matrix-cannot-be-empty",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/1/matrix/rows", "value": [] },
+        { "op": "set", "path": "/ui/nodes/1/matrix/columns", "value": [] }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.rows",
+          "severity": "error",
+          "message": "A matrix must contain at least one row.",
+          "path": "/ui/nodes/1/matrix/rows"
+        },
+        {
+          "code": "matrix.columns",
+          "severity": "error",
+          "message": "A matrix must contain at least one column.",
+          "path": "/ui/nodes/1/matrix/columns"
+        }
+      ]
+    },
+    {
+      "name": "matrix-row-shape",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/1/matrix/rows/0", "value": { "id": "*", "label": "" } }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.row",
+          "severity": "error",
+          "message": "Matrix rows must contain a valid stable id and a non-empty label.",
+          "path": "/ui/nodes/1/matrix/rows/0"
+        }
+      ]
+    },
+    {
+      "name": "matrix-row-duplicate",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/matrix/rows/1/id", "value": "quality" }],
+      "diagnostics": [
+        {
+          "code": "matrix.row_duplicate",
+          "severity": "error",
+          "message": "Matrix row ID quality is duplicated.",
+          "path": "/ui/nodes/1/matrix/rows/1/id"
+        }
+      ]
+    },
+    {
+      "name": "matrix-column-shape",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/ui/nodes/1/matrix/columns/0",
+          "value": { "label": "", "value": null }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.column",
+          "severity": "error",
+          "message": "Matrix columns must contain a non-empty label and a string, number, or boolean value.",
+          "path": "/ui/nodes/1/matrix/columns/0"
+        }
+      ]
+    },
+    {
+      "name": "matrix-column-type",
+      "operations": [
+        { "op": "set", "path": "/ui/nodes/1/matrix/columns/1/value", "value": "high" }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.column_type",
+          "severity": "error",
+          "message": "All column values in a matrix must use the same primitive type.",
+          "path": "/ui/nodes/1/matrix/columns/1/value"
+        }
+      ]
+    },
+    {
+      "name": "matrix-column-duplicate",
+      "operations": [{ "op": "set", "path": "/ui/nodes/1/matrix/columns/1/value", "value": 1 }],
+      "diagnostics": [
+        {
+          "code": "matrix.column_duplicate",
+          "severity": "error",
+          "message": "Matrix column value 1 is duplicated.",
+          "path": "/ui/nodes/1/matrix/columns/1/value"
+        }
+      ]
+    },
+    {
+      "name": "matrix-closed-object-schema",
+      "operations": [
+        { "op": "set", "path": "/schema/properties/answers/additionalProperties", "value": true }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.schema_type",
+          "severity": "error",
+          "message": "Matrix fields must bind to an object schema with additionalProperties set to false.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "matrix-schema-properties",
+      "operations": [
+        {
+          "op": "set",
+          "path": "/schema/properties/answers/properties/orphan",
+          "value": { "type": "number", "enum": [1, 2] }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.schema_properties",
+          "severity": "error",
+          "message": "Matrix schema properties must exactly match the IDs in matrix.rows.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    },
+    {
+      "name": "matrix-row-schema",
+      "operations": [
+        { "op": "set", "path": "/schema/properties/answers/properties/quality/enum", "value": [1] }
+      ],
+      "diagnostics": [
+        {
+          "code": "matrix.row_schema",
+          "severity": "error",
+          "message": "Matrix row quality schema does not match the matrix-single column contract.",
+          "path": "/ui/nodes/1/schemaPath"
+        }
+      ]
+    }
+  ]
+}

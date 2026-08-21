@@ -1,0 +1,44 @@
+# Host-managed data sources
+
+The `next` runtime loads dynamic options through the embedding host. A form document stores only an approved registry key and bounded scheduling settings, never endpoint addresses or credentials.
+
+```ts
+const hostAdapter = {
+  async resolveDataSource(request, signal) {
+    return modelCatalog.list({
+      provider: request.value.provider,
+      query: request.query,
+      cursor: request.cursor,
+      limit: request.limit,
+      signal,
+    });
+  },
+};
+```
+
+A data source can declare field dependencies, a `mount` or `focus` trigger, TTL caching, search debounce, and cursor pagination. The Renderer coalesces identical in-flight requests, cancels work replaced by a newer request, and scopes caches to the current host adapter. Unrelated field changes do not reload options.
+
+## Option sources in Designer
+
+After a document declares `dataSources`, the property panel for `select`, `radio`, and `multi-select` displays an **Option source** setting. Selecting a host data source exposes the registry key, load trigger, and search capability while hiding the static option editor. Switching back to a static source restores the option editor.
+
+A dynamic source stores only its data-source ID. It does not store endpoints, credentials, or loaded results. Field Schema still owns value types and business constraints; an `enum` can remain as an allowlist when dynamic results must be restricted.
+
+Loading, unmet dependencies, empty results, failure and retry, and load-more behavior are accessible runtime states. Legacy option arrays and paginated `{ options, nextCursor }` responses are both accepted and structurally checked before rendering.
+
+Repeaters can declare dependencies such as `routes.*.provider`. The Renderer sends the concrete row location to the host:
+
+```ts
+request.scope = {
+  nodeId: 'route-model',
+  valuePath: 'routes.2.model',
+  rowIndices: [2],
+  dependencies: [
+    { template: 'routes.*.provider', path: 'routes.2.provider' },
+  ],
+};
+```
+
+The host reads `request.value` at the supplied concrete paths. Request keys, cancellation, caches, and pagination remain isolated per row. Form-level fields can still reuse an identical data-source request.
+
+See the [complete data-source protocol](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/data-sources.md) for compiler limits, request keys, custom components, and tenant isolation.

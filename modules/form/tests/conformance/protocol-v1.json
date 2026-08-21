@@ -1,0 +1,55 @@
+{
+  "apiVersion": "a3s.dev/form-core-protocol-conformance/v1",
+  "cases": [
+    {
+      "name": "unsupported-version",
+      "requestJson": "{\"apiVersion\":\"unsupported\",\"document\":{}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.api_version\",\"message\":\"unsupported compile request API version \\\"unsupported\\\"\",\"path\":\"/apiVersion\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "invalid-json",
+      "requestJson": "{\"apiVersion\":",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.invalid_json\",\"message\":\"compile request is not valid JSON at line 1, column 14\",\"path\":\"\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "missing-document",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\"}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.invalid_json\",\"message\":\"compile request is not valid JSON at line 1, column 59\",\"path\":\"\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "unknown-option",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{},\"options\":{\"unknown\":true}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.invalid_json\",\"message\":\"compile request is not valid JSON at line 1, column 93\",\"path\":\"\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "limit-out-of-range",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{},\"options\":{\"limits\":{\"maxNodes\":10001}}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.limit\",\"message\":\"compiler limit maxNodes is 10001; the hard maximum is 10000\",\"path\":\"/options/limits/maxNodes\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "empty-capability",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{},\"options\":{\"capabilities\":{\"widgets\":[\"\"]}}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.capability\",\"message\":\"capability \\\"\\\" at /options/capabilities/widgets/0 is invalid\",\"path\":\"/options/capabilities/widgets/0\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "duplicate-capability",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{},\"options\":{\"capabilities\":{\"widgets\":[\"text\",\"text\"]}}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.capability_duplicate\",\"message\":\"capability \\\"text\\\" is duplicated at /options/capabilities/widgets/1\",\"path\":\"/options/capabilities/widgets/1\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "configured-document-limit",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{\"value\":\"oversized\"},\"options\":{\"limits\":{\"maxSerializedBytes\":1}}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"limits.document_size\",\"message\":\"canonical document is 21 bytes; the configured limit is 1 bytes\",\"path\":\"/document\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "non-object-document",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":[]}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"document.type\",\"message\":\"Form document must be a JSON object.\",\"path\":\"\",\"severity\":\"error\"}],\"ok\":false}"
+    },
+    {
+      "name": "duplicate-document-key",
+      "requestJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-request/v1alpha1\",\"document\":{\"a\":1,\"a\":2}}",
+      "responseJson": "{\"apiVersion\":\"a3s.dev/form-core/compile-response/v1alpha1\",\"compilerRevision\":\"a3s-form-core@0.1.0\",\"diagnostics\":[{\"code\":\"protocol.invalid_json\",\"message\":\"compile request is not valid JSON at line 1, column 80\",\"path\":\"\",\"severity\":\"error\"}],\"ok\":false}"
+    }
+  ]
+}

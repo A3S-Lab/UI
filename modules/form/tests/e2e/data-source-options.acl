@@ -1,0 +1,81 @@
+suite "a3s-form-data-source-options" {
+    version = 1
+
+    scenario "workflow-model-catalog" {
+        name = "工作流节点加载、搜索并翻页模型目录"
+        surface = "web"
+        timeout_ms = 60000
+
+        navigate "open" {
+            url = "http://127.0.0.1:4176/"
+        }
+
+        viewport "desktop" {
+            width = 1440
+            height = 1000
+        }
+
+        wait "workspace-ready" {
+            text = "我的表单"
+        }
+
+        fill "find-llm-node" {
+            target = placeholder("搜索表单")
+            value = "大语言模型节点配置"
+        }
+
+        click "open-llm-node" {
+            target = role("button", "打开大语言模型节点配置")
+        }
+
+        wait "editor-ready" {
+            text = "表单内容"
+        }
+
+        click "preview" {
+            target = role("button", "预览")
+        }
+
+        expect "focus-trigger-idle" {
+            text = "聚焦字段后加载选项。"
+        }
+
+        focus "model-select" {
+            target = css("[id$='-llm-model']")
+        }
+
+        wait "first-page" {
+            text = "GPT-5"
+        }
+
+        click "load-more" {
+            target = role("button", "加载更多选项")
+        }
+
+        expect "second-page" {
+            text = "Gemini 2.5 Pro"
+        }
+
+        fill "search-catalog" {
+            target = css("input[aria-label='搜索 模型 选项']")
+            value = "Claude"
+        }
+
+        wait "search-result" {
+            text = "Claude Haiku 3.5"
+        }
+
+        select "choose-model" {
+            target = css("[id$='-llm-model']")
+            values = ["claude-sonnet-4"]
+        }
+
+        expect "renderer-is-embedded" {
+            visible = css(".a3s-form-designer[data-mode='preview'] .a3s-form-renderer")
+        }
+
+        screenshot "catalog-result" {
+            path = "screenshots/data-source-options.png"
+        }
+    }
+}

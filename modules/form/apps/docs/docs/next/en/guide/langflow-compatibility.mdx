@@ -1,0 +1,35 @@
+# Langflow compatibility
+
+A3S Form retains a pinned Langflow `1.11.3` descriptor adapter for hosts that import an existing Langflow component configuration. It is a compatibility layer, not the A3S Flow 1.0 DAG manifest catalog.
+
+| Source | Value |
+| --- | --- |
+| Repository | `langflow-ai/langflow` |
+| Revision | `3325c4642c489bfc2e2f4c9f3c63a32961f9581f` |
+| Component index SHA-256 | `9e19c76e01ef19fd82c6795f8c51c7c6eb7876bf2e9dfa0c33bb72b577d921e4` |
+| Categories | 17 |
+| Components | 131 |
+| Configuration fields | 797 |
+
+The adapter preserves source order, field metadata, typed ports, visibility, advanced placement, range metadata, options, table schemas, and source defaults normalized to their generated Schema types.
+
+```tsx
+import { LangflowNodeConfigurationPanel } from '@a3s-lab/ui/form/react';
+import {
+  createLangflowNodeDefaultValue,
+  requireLangflowNode,
+} from '@a3s-lab/ui/form/workflow';
+
+const component = requireLangflowNode('APIRequest');
+const initialValue = createLangflowNodeDefaultValue(component);
+
+<LangflowNodeConfigurationPanel
+  node={component}
+  value={initialValue}
+  onChange={setValue}
+/>;
+```
+
+Imported network, model, agent, database, and storage components should be lowered to registered `flow.step` handlers before A3S Flow execution. The compatibility adapter does not add runtime commands and does not own credentials, persistence, graph edges, or execution.
+
+The generated catalog lives in `src/integrations/langflow-catalog.generated.json`. Update it only from an explicit upstream revision and component-index checksum.

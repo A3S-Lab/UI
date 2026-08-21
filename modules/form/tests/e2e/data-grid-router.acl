@@ -1,0 +1,448 @@
+suite "a3s-form-data-grid-router" {
+    version = 1
+
+    scenario "dialog-edit-select-routes" {
+        name = "Router rows use validated drafts and atomic spreadsheet operations"
+        surface = "web"
+        timeout_ms = 120000
+
+        navigate "open-workspace" {
+            url = "http://127.0.0.1:4176/"
+        }
+
+        viewport "desktop" {
+            width = 1440
+            height = 1100
+        }
+
+        wait "workspace-ready" {
+            text = "我的表单"
+        }
+
+        click "open-router" {
+            target = role("button", "打开条件分支节点配置")
+        }
+
+        wait "compiled" {
+            text = "编译通过"
+        }
+
+        click "preview" {
+            target = role("button", "预览")
+        }
+
+        expect "semantic-grid" {
+            visible = css("table.a3s-form-data-grid[aria-label='分支规则']")
+        }
+
+        expect "empty-grid" {
+            text = "还没有数据，添加第一行后开始填写。"
+        }
+
+        click "open-cancelled-draft" {
+            target = role("button", "添加一行")
+        }
+
+        fill "cancelled-match" {
+            target = css(".a3s-form-data-grid-dialog textarea[id*='router-route-when-equals']")
+            value = "\"cancelled\""
+        }
+
+        click "cancel-draft" {
+            target = role("button", "取消")
+        }
+
+        expect "cancel-kept-empty" {
+            text = "还没有数据，添加第一行后开始填写。"
+        }
+
+        click "add-first-route" {
+            target = role("button", "添加一行")
+        }
+
+        wait "first-catalog" {
+            text = "客户成功"
+        }
+
+        select "first-route" {
+            target = css(".a3s-form-data-grid-dialog select[id*='router-route-name']")
+            values = ["customer-success"]
+        }
+
+        click "save-first-route" {
+            target = role("button", "保存本行")
+        }
+
+        click "add-second-route" {
+            target = role("button", "添加一行")
+        }
+
+        fill "second-match" {
+            target = css(".a3s-form-data-grid-dialog textarea[id*='router-route-when-equals']")
+            value = "\"enterprise\""
+        }
+
+        wait "second-catalog" {
+            text = "大客户团队"
+        }
+
+        select "second-route" {
+            target = css(".a3s-form-data-grid-dialog select[id*='router-route-name']")
+            values = ["account-team"]
+        }
+
+        click "save-second-route" {
+            target = role("button", "保存本行")
+        }
+
+        click "open-paste" {
+            target = role("button", "粘贴行")
+        }
+
+        fill "paste-third-route" {
+            target = label("制表符分隔的数据行")
+            value = "{{input.type}}\tpartner\taccount-team"
+        }
+
+        expect "paste-preview" {
+            text = "1 行 · 3 个单元格"
+        }
+
+        click "append-pasted-route" {
+            target = role("button", "追加数据")
+        }
+
+        check "select-fill-source" {
+            target = label("选择分支规则第 1 行")
+        }
+
+        check "select-fill-target" {
+            target = label("选择分支规则第 3 行")
+        }
+
+        click "open-fill-down" {
+            target = role("button", "向下填充")
+        }
+
+        select "fill-route-column" {
+            target = css(".a3s-form-data-grid-fill-column select")
+            values = ["router-route-name"]
+        }
+
+        expect "fill-source-value" {
+            text = "customer-success"
+        }
+
+        click "apply-fill-down" {
+            target = role("button", "填充所选行")
+        }
+
+        click "clear-fill-source" {
+            target = label("选择分支规则第 1 行")
+        }
+
+        click "clear-fill-target" {
+            target = label("选择分支规则第 3 行")
+        }
+
+        expect "row-headers" {
+            visible = css(".a3s-form-data-grid tbody tr:nth-child(2) th[scope='row'][aria-label='分支规则第 2 行']")
+        }
+
+        fill "filter-enterprise" {
+            target = label("筛选分支规则行")
+            value = "enterprise"
+        }
+
+        expect "filtered-count" {
+            text = "显示 1 / 3 行"
+        }
+
+        check "select-visible-route" {
+            target = label("选择分支规则当前显示的行")
+        }
+
+        expect "filtered-selection" {
+            text = "已选择 1 行"
+        }
+
+        click "clear-route-filter" {
+            target = role("button", "清除行筛选")
+        }
+
+        click "clear-filtered-selection" {
+            target = label("选择分支规则第 2 行")
+        }
+
+        click "sort-match-ascending" {
+            target = role("button", "按匹配值升序排列")
+        }
+
+        expect "reorder-locked-while-sorted" {
+            visible = css(".a3s-form-repeater-row-actions button[title='清除排序或筛选后才能调整行顺序。']:disabled")
+        }
+
+        click "sort-match-descending" {
+            target = role("button", "按匹配值降序排列")
+        }
+
+        click "clear-match-sort" {
+            target = role("button", "清除匹配值排序")
+        }
+
+        fill "conflicting-default" {
+            target = label("默认分支")
+            value = "account-team"
+        }
+
+        click "apply-invalid" {
+            target = role("button", "应用到节点")
+        }
+
+        expect "row-error" {
+            text = "目标分支不能与默认分支相同。"
+        }
+
+        expect "failing-row-dialog" {
+            visible = css(".a3s-form-data-grid-dialog[open]")
+        }
+
+        expect "failing-row-focused" {
+            visible = css(".a3s-form-data-grid-dialog select[id*='router-route-name']:focus")
+        }
+
+        click "close-invalid-row" {
+            target = role("button", "取消")
+        }
+
+        fill "valid-default" {
+            target = label("默认分支")
+            value = "default"
+        }
+
+        click "move-enterprise-first" {
+            target = role("button", "将分支规则第 2 项上移")
+        }
+
+        expect "enterprise-row-moved" {
+            visible = css(".a3s-form-data-grid tbody tr:nth-child(1) td[data-label='匹配值']")
+        }
+
+        check "select-customer-row" {
+            target = label("选择分支规则第 2 行")
+        }
+
+        expect "selection-count" {
+            text = "已选择 1 行"
+        }
+
+        click "request-bulk-delete" {
+            target = role("button", "删除所选行")
+        }
+
+        expect "bulk-confirmation" {
+            text = "确认删除选中的 1 行？"
+        }
+
+        click "confirm-bulk-delete" {
+            target = role("button", "删除 1 行")
+        }
+
+        expect "enterprise-row-remains" {
+            text = "account-team"
+        }
+
+        click "apply-valid" {
+            target = role("button", "应用到节点")
+        }
+
+        wait "applied" {
+            text = "申请已提交，正在等待审批。"
+        }
+
+        screenshot "desktop-grid" {
+            path = "screenshots/desktop-grid.png"
+        }
+
+        viewport "mobile" {
+            width = 390
+            height = 844
+        }
+
+        expect "mobile-row-card" {
+            visible = css(".a3s-form-data-grid tbody tr td[data-label='匹配值']")
+        }
+
+        expect "mobile-sort-control" {
+            visible = css(".a3s-form-data-grid-mobile-sort select")
+        }
+
+        expect "mobile-preview" {
+            visible = css(".a3s-form-designer[data-mode='preview'] .a3s-form-renderer")
+        }
+
+        screenshot "mobile-grid" {
+            path = "screenshots/mobile-grid.png"
+        }
+
+        accessibility "mobile-tree" {
+            path = "evidence/accessibility.json"
+            interactive = true
+        }
+
+        console "console" {
+            path = "evidence/console.json"
+            clear = false
+        }
+
+        page_errors "page-errors" {
+            path = "evidence/page-errors.json"
+            clear = false
+        }
+    }
+
+    scenario "virtualized-router-rows" {
+        name = "Router keeps large controlled arrays inside a bounded row viewport"
+        surface = "web"
+        timeout_ms = 120000
+
+        navigate "open-workspace" {
+            url = "http://127.0.0.1:4176/"
+        }
+
+        viewport "desktop" {
+            width = 1440
+            height = 1100
+        }
+
+        wait "workspace-ready" {
+            text = "我的表单"
+        }
+
+        click "open-router" {
+            target = role("button", "打开条件分支节点配置")
+        }
+
+        wait "compiled" {
+            text = "编译通过"
+        }
+
+        click "preview" {
+            target = role("button", "预览")
+        }
+
+        click "open-paste" {
+            target = role("button", "粘贴行")
+        }
+
+        fill "paste-eighty-routes" {
+            target = label("制表符分隔的数据行")
+            value = "{{input.batch_001}}\tsegment-001\tstandard\n{{input.batch_002}}\tsegment-002\tstandard\n{{input.batch_003}}\tsegment-003\tstandard\n{{input.batch_004}}\tsegment-004\tstandard\n{{input.batch_005}}\tsegment-005\tstandard\n{{input.batch_006}}\tsegment-006\tstandard\n{{input.batch_007}}\tsegment-007\tstandard\n{{input.batch_008}}\tsegment-008\tstandard\n{{input.batch_009}}\tsegment-009\tstandard\n{{input.batch_010}}\tsegment-010\tstandard\n{{input.batch_011}}\tsegment-011\tstandard\n{{input.batch_012}}\tsegment-012\tstandard\n{{input.batch_013}}\tsegment-013\tstandard\n{{input.batch_014}}\tsegment-014\tstandard\n{{input.batch_015}}\tsegment-015\tstandard\n{{input.batch_016}}\tsegment-016\tstandard\n{{input.batch_017}}\tsegment-017\tstandard\n{{input.batch_018}}\tsegment-018\tstandard\n{{input.batch_019}}\tsegment-019\tstandard\n{{input.batch_020}}\tsegment-020\tstandard\n{{input.batch_021}}\tsegment-021\tstandard\n{{input.batch_022}}\tsegment-022\tstandard\n{{input.batch_023}}\tsegment-023\tstandard\n{{input.batch_024}}\tsegment-024\tstandard\n{{input.batch_025}}\tsegment-025\tstandard\n{{input.batch_026}}\tsegment-026\tstandard\n{{input.batch_027}}\tsegment-027\tstandard\n{{input.batch_028}}\tsegment-028\tstandard\n{{input.batch_029}}\tsegment-029\tstandard\n{{input.batch_030}}\tsegment-030\tstandard\n{{input.batch_031}}\tsegment-031\tstandard\n{{input.batch_032}}\tsegment-032\tstandard\n{{input.batch_033}}\tsegment-033\tstandard\n{{input.batch_034}}\tsegment-034\tstandard\n{{input.batch_035}}\tsegment-035\tstandard\n{{input.batch_036}}\tsegment-036\tstandard\n{{input.batch_037}}\tsegment-037\tstandard\n{{input.batch_038}}\tsegment-038\tstandard\n{{input.batch_039}}\tsegment-039\tstandard\n{{input.batch_040}}\tsegment-040\tstandard\n{{input.batch_041}}\tsegment-041\tstandard\n{{input.batch_042}}\tsegment-042\tstandard\n{{input.batch_043}}\tsegment-043\tstandard\n{{input.batch_044}}\tsegment-044\tstandard\n{{input.batch_045}}\tsegment-045\tstandard\n{{input.batch_046}}\tsegment-046\tstandard\n{{input.batch_047}}\tsegment-047\tstandard\n{{input.batch_048}}\tsegment-048\tstandard\n{{input.batch_049}}\tsegment-049\tstandard\n{{input.batch_050}}\tsegment-050\tstandard\n{{input.batch_051}}\tsegment-051\tstandard\n{{input.batch_052}}\tsegment-052\tstandard\n{{input.batch_053}}\tsegment-053\tstandard\n{{input.batch_054}}\tsegment-054\tstandard\n{{input.batch_055}}\tsegment-055\tstandard\n{{input.batch_056}}\tsegment-056\tstandard\n{{input.batch_057}}\tsegment-057\tstandard\n{{input.batch_058}}\tsegment-058\tstandard\n{{input.batch_059}}\tsegment-059\tstandard\n{{input.batch_060}}\tsegment-060\tstandard\n{{input.batch_061}}\tsegment-061\tstandard\n{{input.batch_062}}\tsegment-062\tstandard\n{{input.batch_063}}\tsegment-063\tstandard\n{{input.batch_064}}\tsegment-064\tstandard\n{{input.batch_065}}\tsegment-065\tstandard\n{{input.batch_066}}\tsegment-066\tstandard\n{{input.batch_067}}\tsegment-067\tstandard\n{{input.batch_068}}\tsegment-068\tstandard\n{{input.batch_069}}\tsegment-069\tstandard\n{{input.batch_070}}\tsegment-070\tstandard\n{{input.batch_071}}\tsegment-071\tstandard\n{{input.batch_072}}\tsegment-072\tstandard\n{{input.batch_073}}\tsegment-073\tstandard\n{{input.batch_074}}\tsegment-074\tstandard\n{{input.batch_075}}\tsegment-075\tstandard\n{{input.batch_076}}\tsegment-076\tstandard\n{{input.batch_077}}\tsegment-077\tstandard\n{{input.batch_078}}\tsegment-078\tstandard\n{{input.batch_079}}\tsegment-079\tstandard\n{{input.batch_080}}\tsegment-080\tstandard"
+        }
+
+        expect "paste-count" {
+            text = "80 行 · 240 个单元格"
+        }
+
+        click "append-routes" {
+            target = role("button", "追加数据")
+        }
+
+        expect "complete-row-model" {
+            visible = css("table.a3s-form-data-grid[aria-rowcount='81']")
+        }
+
+        expect "first-window" {
+            visible = css("tr[aria-rowindex='2']")
+        }
+
+        focus "virtual-viewport" {
+            target = css("section.a3s-form-data-grid-scroll.is-virtualized")
+        }
+
+        press "scroll-to-end" {
+            key = "End"
+        }
+
+        expect "last-window" {
+            visible = css("tr[aria-rowindex='81']")
+        }
+
+        click "edit-last-row" {
+            target = css("tr[aria-rowindex='81'] button[data-a3s-form-grid-edit]")
+        }
+
+        wait "last-row-editor-ready" {
+            text = "编辑分支规则第 80 行"
+        }
+
+        expect "last-row-dialog" {
+            visible = css(".a3s-form-data-grid-dialog[open]")
+        }
+
+        click "close-last-row" {
+            target = role("button", "取消")
+        }
+
+        fill "filter-first-row" {
+            target = label("筛选分支规则行")
+            value = "segment-001"
+        }
+
+        expect "filtered-row-model" {
+            visible = css("table.a3s-form-data-grid[aria-rowcount='2']")
+        }
+
+        expect "filtered-first-row" {
+            visible = css("tr[aria-rowindex='2']")
+        }
+
+        screenshot "desktop-virtual-grid" {
+            path = "screenshots/desktop-virtual-grid.png"
+        }
+
+        click "clear-filter" {
+            target = role("button", "清除行筛选")
+        }
+
+        viewport "mobile" {
+            width = 390
+            height = 844
+        }
+
+        expect "mobile-virtual-cards" {
+            visible = css("section.a3s-form-data-grid-scroll.is-virtualized .a3s-form-data-grid tbody tr[data-row-key]")
+        }
+
+        focus "mobile-virtual-viewport" {
+            target = css("section.a3s-form-data-grid-scroll.is-virtualized")
+        }
+
+        press "mobile-scroll-to-end" {
+            key = "End"
+        }
+
+        expect "mobile-last-window" {
+            visible = css("tr[aria-rowindex='81']")
+        }
+
+        screenshot "mobile-virtual-grid" {
+            path = "screenshots/mobile-virtual-grid.png"
+        }
+
+        accessibility "virtual-grid-tree" {
+            path = "evidence/virtual-grid-accessibility.json"
+            interactive = true
+        }
+
+        console "virtual-grid-console" {
+            path = "evidence/virtual-grid-console.json"
+            clear = false
+        }
+
+        page_errors "virtual-grid-errors" {
+            path = "evidence/virtual-grid-errors.json"
+            clear = false
+        }
+    }
+}

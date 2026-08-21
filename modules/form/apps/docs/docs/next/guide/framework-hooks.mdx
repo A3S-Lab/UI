@@ -1,0 +1,124 @@
+# React 与 Vue 表单 Hooks
+
+A3S UI 提供两套可选的框架状态接口。React 应用通过 `@a3s-lab/ui/form/react-hooks` 使用 React Hook Form，Vue 3 应用通过 `@a3s-lab/ui/form/vue-hooks` 使用原生 composables。两套接口都把计算规则、Schema Profile 1、本地化消息、Rust/WASM 值语义、同步校验和宿主异步校验交给同一个 A3S Form Core。
+
+框架层只负责订阅与状态使用体验，不会引入第二份表单定义、校验引擎或提交值契约。
+
+## 安装
+
+```bash
+npm install @a3s-lab/ui
+```
+
+React 应用还需安装可选 peer dependencies：
+
+```bash
+npm install react react-dom react-hook-form
+```
+
+Vue 应用需安装 `vue`。当前 Renderer 适配器内部还会使用可选的 React 与 React DOM peer dependencies，但 Vue composables 本身不依赖 React Hook Form。
+
+## React Hook Form
+
+`useA3SForm` 接受 React Hook Form 的常规选项，并增加编译后的 `FormPlan`、宿主适配器、locale 和本地化覆盖。返回值是标准 `UseFormReturn`，另带 `formPlan` 和受控的 `rendererProps` 绑定。
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { FormRenderer } from '@a3s-lab/ui/form/react';
+import { useA3SForm, useFieldArray } from '@a3s-lab/ui/form/react-hooks';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+type FormValues = {
+  name: string;
+  recipients: Array<{ rowId: string; email: string }>;
+};
+
+const plan = assertCompiled(document);
+const form = useA3SForm<FormValues>({
+  plan,
+  defaultValues: { name: '', recipients: [] },
+  mode: 'onChange',
+  criteriaMode: 'all',
+  hostAdapter,
+});
+const recipients = useFieldArray({ control: form.control, name: 'recipients' });
+
+<FormRenderer
+  {...form.rendererProps}
+  onAction={(actionId) => {
+    if (actionId === 'submit') void form.handleSubmit(save)();
+  }}
+/>;
+```
+
+Renderer 变更会直接更新 React Hook Form store，并保留 dirty、touched、submitted 和字段数组 identity 状态。React Hook Form 请求单个明确路径时使用字段作用域校验，其余情况使用表单作用域；新的宿主校验会取消旧请求。
+
+该入口还重导出 `Controller`、`FormProvider`、`useController`、`useFieldArray`、`useFormContext`、`useFormState`、`useWatch` 及其公开类型。已有 React Hook Form 实例的应用可以使用 `createA3SFormResolver`。`toReactHookFormErrors` 与 `toA3SFormErrors` 在保留 A3S 错误码的前提下转换嵌套字段错误和表单根错误。
+
+## Vue composables
+
+`useA3SForm` 返回只读 values 与 errors、计算后的表单状态、Renderer 绑定、注册和赋值方法、可取消校验、reset 与提交处理。`provideA3SForm` 向后代 `useA3SField` 与 `useA3SFieldArray` 提供类型化上下文。
+
+```vue
+<script setup lang="ts">
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { A3SFormRenderer } from '@a3s-lab/ui/form/vue';
+import {
+  provideA3SForm,
+  useA3SField,
+  useA3SFieldArray,
+  useA3SForm,
+} from '@a3s-lab/ui/form/vue-hooks';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+type FormValues = {
+  name: string;
+  recipients: Array<{ rowId: string; email: string }>;
+};
+
+const form = provideA3SForm(
+  useA3SForm<FormValues>({
+    plan: assertCompiled(document),
+    initialValues: { name: '', recipients: [] },
+    mode: 'onBlur',
+    hostAdapter,
+  }),
+);
+const { value: name, errorMessage, handleBlur } = useA3SField<FormValues, string>({
+  name: 'name',
+});
+const recipients = useA3SFieldArray<FormValues, FormValues['recipients'][number]>({
+  name: 'recipients',
+});
+const submit = form.handleSubmit(save);
+
+function handleAction(event: { actionId: string }) {
+  if (event.actionId === 'submit') void submit();
+}
+</script>
+
+<template>
+  <input v-model="name" @blur="handleBlur" />
+  <span v-if="errorMessage">{{ errorMessage }}</span>
+  <button type="button" @click="recipients.append({ rowId: crypto.randomUUID(), email: '' })">
+    添加收件人
+  </button>
+  <A3SFormRenderer
+    :plan="form.plan.value"
+    :model-value="form.values.value"
+    :errors="[...form.errors.value]"
+    @update:model-value="form.rendererProps.value.onChange"
+    @action="handleAction"
+  />
+</template>
+```
+
+`useA3SField` 提供可写值、字段作用域错误、首条错误消息、dirty/touched/validating 元数据、blur 处理和字段校验。`useA3SFieldArray` 在提供 append、prepend、insert、remove、swap、move、update 和 replace 操作时保持稳定渲染 key。这些 key 只属于运行时元数据，不会写入提交值。
+
+## 所有权与校验
+
+- 编译后的 `FormPlan` 是两个框架共同的语义来源。
+- 宿主校验会尽量收到明确字段作用域，并通过 abort signal 取消过期工作。
+- React Hook Form 与 Vue 状态只负责 dirty、touched、validating、提交状态和数组 identity。
+- `rendererProps` 让每个框架只保留一份受控值，不会再镜像到第二个 A3S store。
+- 持久化、授权、密钥、网络请求、action 和持久提交仍由宿主负责。

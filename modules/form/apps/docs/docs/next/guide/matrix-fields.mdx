@@ -1,0 +1,281 @@
+import { MatrixDemo } from '../../../components/MatrixDemo';
+
+# 矩阵字段
+
+矩阵字段让多行问题共用同一组选项，适合评估量表、能力覆盖、权限组合和批量参数选择。字段值始终是普通 JSON 对象，不包含组件状态或运行时标识。
+
+- `matrix-single`：每行选择一项。
+- `matrix-multiple`：每行选择多项。
+
+行与列由 UI 节点的 `matrix` 属性声明，值类型和选择限制由 JSON Schema 声明。编译器会核对两部分，配置不一致时拒绝生成 `FormPlan`。
+
+## 单选矩阵 `matrix-single`
+
+单选矩阵的每个行值都是一个 JSON 基础类型。相同行内的 radio 共用原生 `name`，Tab 进入选项组，方向键移动并选择答案。
+
+<MatrixDemo mode="single" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `Record<string, JsonPrimitive>` |
+| 行值 | 每行选择一个稳定列值 |
+| Schema | 对象属性按行 ID 声明，并使用列值 `enum` |
+| UI 属性 | `matrix.rows`、`matrix.columns` |
+
+受控值结构：
+
+```ts
+type SingleMatrixValue = Record<string, string | number | boolean>;
+```
+
+示例值：
+
+```json
+{
+  "assessment": {
+    "coordination": "expected",
+    "traceability": "usable",
+    "recovery": "expected"
+  }
+}
+```
+
+## 多选矩阵 `matrix-multiple`
+
+多选矩阵的每个行值都是基础类型数组。`minItems`、`maxItems` 和 `uniqueItems` 分别控制最少选择数、最多选择数和去重。
+
+<MatrixDemo mode="multiple" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `Record<string, JsonPrimitive[]>` |
+| 行值 | 每行保存一组稳定列值 |
+| Schema | 每个行属性使用数组 Schema 和列值 `enum` |
+| 限制 | 行 Schema 的 `minItems`、`maxItems`、`uniqueItems` |
+
+达到 `maxItems` 后，当前行中未选的选项会禁用，已选项仍可取消。限制只作用于当前行，不影响其他行。
+
+```ts
+type MultipleMatrixValue = Record<string, Array<string | number | boolean>>;
+```
+
+## UI 节点属性
+
+矩阵字段沿用通用字段属性，并增加类型明确的 `matrix` 配置。
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一的节点标识 |
+| `kind` | `"field"` | 是 | 矩阵固定使用字段节点 |
+| `widget` | `"matrix-single" \| "matrix-multiple"` | 是 | 选择单选或多选值契约 |
+| `schemaPath` | JSON Pointer | 是 | 指向矩阵对象 Schema |
+| `label` | `string` | 否 | 可见标题、表格名称和无障碍名称 |
+| `description` | `string` | 否 | 矩阵填写说明 |
+| `matrix` | `UiMatrixDefinition` | 是 | 稳定的行、列配置 |
+| `readOnly` | `boolean` | 否 | 禁用矩阵内全部控件 |
+| `width` | `1–12` | 否 | 12 列布局中的宽度 |
+
+`UiMatrixDefinition`：
+
+```ts
+interface UiMatrixDefinition {
+  rows: UiMatrixRow[];
+  columns: UiMatrixColumn[];
+}
+
+interface UiMatrixRow {
+  id: string;
+  label: string;
+  description?: string;
+  disabled?: boolean;
+}
+
+interface UiMatrixColumn {
+  label: string;
+  value: string | number | boolean;
+  disabled?: boolean;
+}
+```
+
+### 行属性
+
+| 属性 | 作用 |
+| --- | --- |
+| `id` | 同时作为受控值键和矩阵子 Schema 属性名；发布后应保持稳定 |
+| `label` | 桌面端行标题、窄容器卡片标题和每个控件无障碍名称的一部分 |
+| `description` | 行标题下的补充说明，并通过 `aria-describedby` 关联到选项 |
+| `disabled` | 禁用整行，同时保留已受控的值 |
+
+行 `id` 不能为空，不能包含 `.`，也不能使用保留值 `*`。同一矩阵内的行 `id` 不得重复。
+
+### 列属性
+
+| 属性 | 作用 |
+| --- | --- |
+| `label` | 桌面端列标题和窄容器中的选项标题 |
+| `value` | 选择后写入受控值的稳定基础类型 |
+| `disabled` | 禁用这一列在所有行中的控件 |
+
+同一矩阵内的列值必须全部为 `string`、全部为 `number` 或全部为 `boolean`。`null` 不用作列值；未选择状态由行属性缺失表示。列值不得重复。
+
+## 单选矩阵 Schema
+
+矩阵本身绑定对象 Schema。每个 `matrix.rows[].id` 对应一个 `properties` 条目，行 Schema 的 `enum` 与列值完全一致。
+
+```ts
+const document: FormDocument = {
+  kind: 'a3s.form',
+  apiVersion: 'a3s.dev/form/v1alpha1',
+  revision: 1,
+  metadata: { title: '协作体验', locale: 'zh-CN' },
+  schema: {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    type: 'object',
+    properties: {
+      assessment: {
+        type: 'object',
+        properties: {
+          coordination: {
+            type: 'string',
+            enum: ['low', 'expected', 'excellent'],
+          },
+          traceability: {
+            type: 'string',
+            enum: ['low', 'expected', 'excellent'],
+          },
+        },
+        required: ['coordination', 'traceability'],
+        additionalProperties: false,
+      },
+    },
+    required: ['assessment'],
+    additionalProperties: false,
+  },
+  ui: {
+    root: 'root',
+    nodes: [
+      { id: 'root', kind: 'root', children: ['assessment'] },
+      {
+        id: 'assessment',
+        kind: 'field',
+        widget: 'matrix-single',
+        label: '协作体验评估',
+        schemaPath: '/properties/assessment',
+        matrix: {
+          rows: [
+            { id: 'coordination', label: '任务交接是否清晰' },
+            { id: 'traceability', label: '执行结果是否容易追溯' },
+          ],
+          columns: [
+            { label: '待改进', value: 'low' },
+            { label: '符合预期', value: 'expected' },
+            { label: '表现出色', value: 'excellent' },
+          ],
+        },
+      },
+    ],
+  },
+};
+```
+
+对象 Schema 必须设置 `additionalProperties: false`。`properties` 不能缺少已声明的行，也不能保留未出现在 `matrix.rows` 中的孤立属性。
+
+## 多选矩阵 Schema
+
+多选行使用数组 Schema。`items.enum` 与列值一致，`uniqueItems` 必须为 `true`。
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "coordination": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["low", "expected", "excellent"]
+      },
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true
+    }
+  },
+  "required": ["coordination"],
+  "additionalProperties": false
+}
+```
+
+`minItems` 和 `maxItems` 不能超过列数。父矩阵 Schema 的 `required` 决定哪些行必须出现在对象中；多选行通常同时设置 `minItems: 1`，避免空数组通过必选校验。
+
+## Designer 配置
+
+组件目录提供“单选矩阵”和“多选矩阵”两个预设。预设会一次写入 UI 节点、对象 Schema、行 Schema 和列值。
+
+属性面板支持：
+
+- 逐项修改行标题和列标题，并显示稳定的行 `id` 与列 `value`；
+- 添加、删除、排序、停用和重新启用行列；
+- 使用折叠的批量编辑器按行更新标题；
+- 在单选和多选矩阵之间切换，并同步替换行 Schema；
+- 保留已有行 `id` 和列 `value`，标题修改不会重写已有表单值。
+
+结构化编辑器与对象 Schema 同步：调整行顺序会按相同顺序重建 `properties`，删除行会删除对应属性和 `required` 项，调整列顺序会同步每行的 `enum`。停用行或列只改变 UI 可用性，不删除 Schema 值或已有受控值。
+
+新增行使用未占用的稳定 ID，并复制当前行 Schema 形状；新增列沿用现有列值类型。行数、列数和单元格总数达到编译器上限后，添加按钮会停用。
+
+校验面板支持：
+
+- 设置整个矩阵是否必填；
+- 设置每一行是否必选；
+- 设置多选矩阵每行的 `minItems` 与 `maxItems`。
+
+设计画布直接显示行列结构。交互预览使用真实 `FormRenderer`，选择结果按完整受控对象回传。
+
+## 键盘与读屏
+
+| 操作 | 单选矩阵 | 多选矩阵 |
+| --- | --- | --- |
+| Tab / Shift+Tab | 在各行 radio 组之间移动 | 依次移动到 checkbox |
+| 方向键 | 在当前行的 radio 选项之间切换 | 不改写选择 |
+| Space | 选择当前 radio | 切换当前 checkbox |
+| Home / End | 使用浏览器原生 radio 组行为 | 不改写选择 |
+
+运行时使用语义化 `table`、列标题和 `scope="row"` 行标题。每个控件的无障碍名称由“行标题：列标题”组成。行说明、选择计数、上限和错误信息通过 `aria-describedby` 关联。
+
+容器宽度不超过 520px 时，矩阵按行转为卡片布局。列标题会出现在每个选项旁边，DOM 仍保留表格语义。响应行为读取嵌入容器宽度，不依赖浏览器窗口宽度。
+
+## 状态与限制
+
+| 状态 | 行为 |
+| --- | --- |
+| 未选择 | 单选行不写入属性；多选行由宿主决定省略或传入空数组 |
+| 必选错误 | 错误绑定到 `矩阵路径.行标识`，对应行显示错误并参与首错聚焦 |
+| 禁用行 | 整行控件禁用，已有值不被删除 |
+| 禁用列 | 对应列在所有行中禁用 |
+| 达到上限 | 未选项禁用，已选项保持可取消 |
+| 只读表单 | 全部矩阵控件禁用，内容仍可读取 |
+| 长标题 | 标题自动换行；窄容器改用行卡片，避免横向压缩文字 |
+
+编译器边界：
+
+| 项目 | 上限 |
+| --- | --- |
+| 行数 | 50 |
+| 列数 | 20 |
+| 单元格总数 | 500 |
+
+超过边界的文档会收到 `matrix.limits` 诊断。更大的二维数据应采用分页编辑、虚拟化表格或宿主专用组件。
+
+## 嵌入边界
+
+矩阵值不包含提交记录、权限信息、网络地址或组件内部状态。嵌入式工作流节点配置只需保存普通对象，并通过 `value` 与 `onChange` 接入受控状态。
+
+```tsx
+<FormRenderer
+  plan={plan}
+  value={nodeConfiguration}
+  onChange={setNodeConfiguration}
+  readOnly={!canEdit}
+/>
+```
+
+动态列、远程选项和单元格级业务组件不属于内置矩阵契约。此类能力应通过经过审核的自定义节点实现，凭证、请求和副作用继续由宿主控制。

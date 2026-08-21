@@ -1,0 +1,24 @@
+# 开发基线
+
+当前开发版包含：
+
+- A3S Flow `1.0.0`、已测试 workflow DSL `0.7.0`、无损 DAG 校验与语义 digest；
+- 18 个可见宿主 manifest、2 个内部容器起始 manifest 和全部 14 个运行时命令 binding；
+- 基于 `@a3s-lab/ui@0.3.0` 的受控、可嵌入 `A3SFlowDagNodeConfigurationPanel` 与 `A3SFlowDagNodePreview`；
+- 用于动态输入和映射、与运行时无关的 `a3s.dev/flow-expression/v1` JSON AST；
+- 紧凑语义布局、类型化端口、运行时绑定，以及 Playground 中的实时 DAG 节点配置；
+- 位于主引擎目录之外、固定到 Langflow `1.11.3` 的导入兼容适配器；
+- 支持宿主错误、本地化、只读状态、适配器和扩展 registry 的 React、Vue 与 Web Component 适配器；
+- 基于 React Hook Form 的订阅、字段数组和 resolver，以及原生 Vue 表单、字段、字段数组和上下文 composables；
+- A3S Form Schema Profile 1 与原生 Rust/WASM 提交值求值；
+- 确定性计算规则与行作用域规则；
+- 可取消宿主校验，以及带依赖、缓存、搜索、分页和恢复状态的动态数据源；
+- 字段订阅和 100、500、1,000 节点性能预算；
+- 嵌套重复组、对话框编辑数据表格、排序、筛选、选择、TSV 追加、向下填充和经过测量的虚拟化；
+- 带逐页校验、复核、错误恢复和 digest 检查点的分支向导；
+- 23 个内置字段、单选与多选矩阵、文件上传和签名扩展；
+- 第一方字段、布局、Flow 1.0 DAG 目录，以及旧八节点迁移接口的实时 MDX 示例、属性表、值契约、键盘行为和嵌入用法。
+
+[React 与 Vue Hooks](/next/guide/framework-hooks)说明两套框架状态接口如何共享 A3S Form Core 语义。[A3S Flow DAG 节点配置](/next/guide/workflow-node-embedding)说明 Flow 与宿主的所有权边界、manifest registry、DAG 校验、语义 digest 和主嵌入 API。旧八节点章节明确保留为迁移参考。[内置字段](/next/guide/fields)说明标量控件，[布局](/next/guide/layouts)说明组合方式，[重复字段组](/next/guide/repeatable-field-groups)与[数据表格](/next/guide/data-grids)说明数组结构，[多步向导](/next/guide/wizards)说明分步流程。
+
+发布新的表单 revision 或 digest 前应执行[迁移清单](/next/guide/migration)。对应包版本正式发布前，`next` 不构成兼容性承诺。

@@ -1,0 +1,115 @@
+/* Form-specific composition over A3S UI primitives. */
+
+.a3s-form-panel-tabs[role="tablist"] {
+  width: 100%;
+}
+
+.a3s-form-node-profile.item {
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  flex-wrap: nowrap;
+}
+
+.a3s-form-node-profile.item > section {
+  min-width: 0;
+}
+
+.a3s-form-node-profile-meta,
+.a3s-form-node-profile-status {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.a3s-form-data-source-setting {
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 1281px) {
+  .a3s-form-designer-main.is-design:has(
+    > .a3s-form-inspector[data-editor]:not([data-editor="standard"])
+  ) {
+    grid-template-columns: 258px minmax(520px, 1fr) 420px;
+  }
+}
+
+@media (min-width: 1121px) and (max-width: 1280px) {
+  .a3s-form-designer-main.is-design:has(
+    > .a3s-form-inspector[data-editor]:not([data-editor="standard"])
+  ) {
+    grid-template-columns: 226px minmax(460px, 1fr) 390px;
+  }
+}
+
+@media (max-width: 840px) {
+  .a3s-form-node-profile.item {
+    position: relative;
+  }
+
+  .a3s-form-toolbar-panel-controls,
+  .a3s-form-toolbar-divider.is-panel-separator {
+    display: none;
+  }
+}
+
+@media (min-width: 1281px) {
+  .a3s-form-designer.is-left-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: minmax(520px, 1fr) 352px;
+  }
+
+  .a3s-form-designer.is-left-panel-collapsed
+    .a3s-form-designer-main.is-design:has(
+      > .a3s-form-inspector[data-editor]:not([data-editor="standard"])
+    ) {
+    grid-template-columns: minmax(520px, 1fr) 420px;
+  }
+
+  .a3s-form-designer.is-right-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: 258px minmax(520px, 1fr);
+  }
+}
+
+@media (min-width: 1121px) and (max-width: 1280px) {
+  .a3s-form-designer.is-left-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: minmax(460px, 1fr) 320px;
+  }
+
+  .a3s-form-designer.is-left-panel-collapsed
+    .a3s-form-designer-main.is-design:has(
+      > .a3s-form-inspector[data-editor]:not([data-editor="standard"])
+    ) {
+    grid-template-columns: minmax(460px, 1fr) 390px;
+  }
+
+  .a3s-form-designer.is-right-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: 226px minmax(460px, 1fr);
+  }
+}
+
+@media (min-width: 841px) and (max-width: 1120px) {
+  .a3s-form-designer.is-left-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: minmax(430px, 1fr) 310px;
+  }
+
+  .a3s-form-designer.is-right-panel-collapsed .a3s-form-designer-main.is-design {
+    grid-template-columns: 210px minmax(430px, 1fr);
+  }
+}
+
+@media (min-width: 841px) {
+  .a3s-form-designer.is-left-panel-collapsed .a3s-form-designer-main.is-design > .a3s-form-palette,
+  .a3s-form-designer.is-right-panel-collapsed
+    .a3s-form-designer-main.is-design
+    > .a3s-form-inspector {
+    display: none;
+  }
+
+  .a3s-form-designer.is-left-panel-collapsed.is-right-panel-collapsed
+    .a3s-form-designer-main.is-design {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

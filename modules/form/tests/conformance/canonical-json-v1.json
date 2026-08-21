@@ -1,0 +1,43 @@
+{
+  "apiVersion": "a3s.dev/form-canonical-conformance/v1",
+  "cases": [
+    {
+      "name": "object-array-unicode",
+      "inputJson": "{\"z\":[3,null,\"中\"],\"a\":true}",
+      "canonical": "{\"a\":true,\"z\":[3,null,\"中\"]}",
+      "sha256": "385cf22963bc25647c2e83949f50064a1272e38f55e05f2e2b409b070e1029ed"
+    },
+    {
+      "name": "utf16-key-order",
+      "inputJson": "{\"\":\"bmp-private-use\",\"😀\":\"astral-grinning\",\"𝄞\":\"astral-music\",\"a\":\"ascii\"}",
+      "canonical": "{\"a\":\"ascii\",\"𝄞\":\"astral-music\",\"😀\":\"astral-grinning\",\"\":\"bmp-private-use\"}",
+      "sha256": "11b3ec9034fa4f578fab9a779ae107a6677f55bba33326c4f5dca4a0f48b10b9"
+    },
+    {
+      "name": "string-escaping",
+      "inputJson": "{\"value\":\"quote:\\\" slash:/ backslash:\\\\ controls:\\b\\t\\n\\f\\r nul:\\u0000 separators:  \"}",
+      "canonical": "{\"value\":\"quote:\\\" slash:/ backslash:\\\\ controls:\\b\\t\\n\\f\\r nul:\\u0000 separators:  \"}",
+      "sha256": "d17626017480657e83f1d1fdf793758ff642e879c0c4939c6634ad37a5164571"
+    },
+    {
+      "name": "number-format-boundaries",
+      "inputJson": "[-0,1e-7,1e-6,1e20,1e21,333333333.33333329,4.50,9007199254740993]",
+      "canonical": "[0,1e-7,0.000001,100000000000000000000,1e+21,333333333.3333333,4.5,9007199254740992]",
+      "sha256": "5fab0ef5abe9cbbd1db5f19c07f0c9d1324a9657a59c9c43e8495c2256ef9561"
+    },
+    {
+      "name": "nested-boundaries",
+      "inputJson": "{\"emptyArray\":[],\"emptyObject\":{},\"nested\":[{},[true,false],{\"/\":\"~\"}]}",
+      "canonical": "{\"emptyArray\":[],\"emptyObject\":{},\"nested\":[{},[true,false],{\"/\":\"~\"}]}",
+      "sha256": "9c4ffd3432191d77d60da1df39871bd3741404f11562d7b40204a6002b3b0692"
+    }
+  ],
+  "digestCases": [
+    {
+      "name": "top-level-digest-excluded",
+      "inputJson": "{\"kind\":\"a3s.form\",\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"revision\":1,\"metadata\":{\"title\":\"Digest Ω\"},\"schema\":{\"type\":\"object\"},\"ui\":{\"root\":\"root\",\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}]},\"digest\":\"sha256:stale\"}",
+      "canonical": "{\"apiVersion\":\"a3s.dev/form/v1alpha1\",\"kind\":\"a3s.form\",\"metadata\":{\"title\":\"Digest Ω\"},\"revision\":1,\"schema\":{\"type\":\"object\"},\"ui\":{\"nodes\":[{\"id\":\"root\",\"kind\":\"root\"}],\"root\":\"root\"}}",
+      "sha256": "sha256:c6e8b895095e0853370857f504a997ad6dc0564360295c976eca7cbf49e0a9ab"
+    }
+  ]
+}

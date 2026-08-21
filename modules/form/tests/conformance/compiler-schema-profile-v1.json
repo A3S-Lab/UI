@@ -1,0 +1,378 @@
+{
+  "apiVersion": "a3s.dev/form-compiler-schema-profile-conformance/v1",
+  "generator": "root-only-form-v1",
+  "cases": [
+    {
+      "name": "complete-supported-profile",
+      "schemaInputJson": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"$id\":\"https://example.com/forms/profile\",\"type\":\"object\",\"title\":\"Profile\",\"description\":\"Complete supported profile\",\"properties\":{\"name\":{\"type\":\"string\",\"title\":\"Name\",\"description\":\"Display name\",\"default\":\"Ada\",\"const\":\"Ada\",\"enum\":[\"Ada\",\"Grace\"],\"minLength\":1,\"maxLength\":64,\"pattern\":\"^[A-Za-z]+$\",\"format\":\"hostname\"},\"score\":{\"type\":\"number\",\"minimum\":0,\"maximum\":100},\"count\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":10},\"active\":{\"type\":\"boolean\"},\"empty\":{\"type\":\"null\"},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"string\"},\"minItems\":0,\"maxItems\":5,\"uniqueItems\":true},\"metadata\":{\"type\":\"object\",\"properties\":{\"note\":{\"type\":\"string\"}},\"additionalProperties\":{\"type\":\"string\"}}},\"required\":[\"name\",\"active\"],\"additionalProperties\":false}",
+      "ok": true,
+      "normalizedDocumentSha256": "0d780fe3722428bfdefdf00b79832b3c0accb5fd2770532fe39ba292b3fce481",
+      "digest": "sha256:ea9402a05c43d69fb3e52e94c0127c6c16237fffd4a5fe039b3aee687d5739d2",
+      "formPlanSha256": "6476041b9414ff19eae0674987a055bb9695a693a2f8fb8e9027561ae728eac8",
+      "diagnostics": []
+    },
+    {
+      "name": "all-supported-formats",
+      "schemaInputJson": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"email\":{\"type\":\"string\",\"format\":\"email\"},\"uri\":{\"type\":\"string\",\"format\":\"uri\"},\"date\":{\"type\":\"string\",\"format\":\"date\"},\"date_time\":{\"type\":\"string\",\"format\":\"date-time\"},\"time\":{\"type\":\"string\",\"format\":\"time\"},\"hostname\":{\"type\":\"string\",\"format\":\"hostname\"},\"ipv4\":{\"type\":\"string\",\"format\":\"ipv4\"},\"ipv6\":{\"type\":\"string\",\"format\":\"ipv6\"},\"uuid\":{\"type\":\"string\",\"format\":\"uuid\"}},\"additionalProperties\":false}",
+      "ok": true,
+      "normalizedDocumentSha256": "343b792da90a513e5bd882b98c2c5246bb659add0cc802118bcc9e7d1c6f4687",
+      "digest": "sha256:927480626273e601953441a58ba5ee09084bc52b358b9e419ee3cc439251b446",
+      "formPlanSha256": "8c6080b05b51ad004eae9dfad7308c73db94829e7369da0ba8440589369dc55d",
+      "diagnostics": []
+    },
+    {
+      "name": "unsupported-keyword",
+      "schemaInputJson": "{\"type\":\"string\",\"oneOf\":[]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.unsupported",
+          "severity": "error",
+          "message": "Schema keyword oneOf is not supported by A3S Form Schema Profile 1.",
+          "path": "/schema/oneOf",
+          "hint": "Use one of: $schema, $id, type, title, description, default, enum, const, properties, required, items, additionalProperties, minLength, maxLength, pattern, format, minimum, maximum, multipleOf, minItems, maxItems, uniqueItems."
+        }
+      ]
+    },
+    {
+      "name": "invalid-root-dialect",
+      "schemaInputJson": "{\"$schema\":\"https://json-schema.org/draft-07/schema\",\"type\":\"string\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.dialect",
+          "severity": "error",
+          "message": "Schema dialect must be https://json-schema.org/draft/2020-12/schema at the document root.",
+          "path": "/schema/$schema"
+        }
+      ]
+    },
+    {
+      "name": "invalid-id",
+      "schemaInputJson": "{\"$id\":\"relative/path\",\"type\":\"string\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword $id must be an absolute URI.",
+          "path": "/schema/$id"
+        }
+      ]
+    },
+    {
+      "name": "invalid-type",
+      "schemaInputJson": "{\"type\":\"decimal\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword type must be a supported singular JSON type.",
+          "path": "/schema/type"
+        }
+      ]
+    },
+    {
+      "name": "invalid-title",
+      "schemaInputJson": "{\"type\":\"string\",\"title\":7}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword title must be a string.",
+          "path": "/schema/title"
+        }
+      ]
+    },
+    {
+      "name": "invalid-description",
+      "schemaInputJson": "{\"type\":\"string\",\"description\":false}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword description must be a string.",
+          "path": "/schema/description"
+        }
+      ]
+    },
+    {
+      "name": "empty-enum",
+      "schemaInputJson": "{\"type\":\"string\",\"enum\":[]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword enum must contain unique finite JSON values.",
+          "path": "/schema/enum"
+        }
+      ]
+    },
+    {
+      "name": "duplicate-enum",
+      "schemaInputJson": "{\"type\":\"object\",\"enum\":[{\"a\":1,\"b\":2},{\"b\":2,\"a\":1}]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword enum must contain unique finite JSON values.",
+          "path": "/schema/enum"
+        }
+      ]
+    },
+    {
+      "name": "invalid-properties",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":[]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword properties must be an object of child schemas.",
+          "path": "/schema/properties"
+        }
+      ]
+    },
+    {
+      "name": "invalid-child-schema",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":{\"broken\":null}}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.definition.invalid",
+          "severity": "error",
+          "message": "Every properties entry must be a schema object.",
+          "path": "/schema/properties/broken"
+        }
+      ]
+    },
+    {
+      "name": "invalid-property-name",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":{\"profile.name\":{\"type\":\"string\"}}}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.property.invalid",
+          "severity": "error",
+          "message": "Property names must be non-empty and cannot contain dots or the reserved * segment.",
+          "path": "/schema/properties/profile.name",
+          "hint": "A3S Form uses dot-separated paths and * for repeater rows."
+        }
+      ]
+    },
+    {
+      "name": "invalid-required-shape",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\",\"name\"]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword required must contain unique, non-empty strings.",
+          "path": "/schema/required"
+        }
+      ]
+    },
+    {
+      "name": "undeclared-required",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"missing\"]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword required must reference declared properties.",
+          "path": "/schema/required"
+        }
+      ]
+    },
+    {
+      "name": "invalid-items",
+      "schemaInputJson": "{\"type\":\"array\",\"items\":true}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword items must be a schema object.",
+          "path": "/schema/items"
+        }
+      ]
+    },
+    {
+      "name": "invalid-additional-properties",
+      "schemaInputJson": "{\"type\":\"object\",\"additionalProperties\":[]}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword additionalProperties must be a boolean or schema.",
+          "path": "/schema/additionalProperties"
+        }
+      ]
+    },
+    {
+      "name": "invalid-length-bound",
+      "schemaInputJson": "{\"type\":\"string\",\"minLength\":-1}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword minLength must be a non-negative safe integer.",
+          "path": "/schema/minLength"
+        }
+      ]
+    },
+    {
+      "name": "reversed-length-bounds",
+      "schemaInputJson": "{\"type\":\"string\",\"minLength\":5,\"maxLength\":2}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword maxLength must be greater than or equal to minLength.",
+          "path": "/schema/maxLength"
+        }
+      ]
+    },
+    {
+      "name": "invalid-item-bound",
+      "schemaInputJson": "{\"type\":\"array\",\"maxItems\":1.5}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword maxItems must be a non-negative safe integer.",
+          "path": "/schema/maxItems"
+        }
+      ]
+    },
+    {
+      "name": "reversed-item-bounds",
+      "schemaInputJson": "{\"type\":\"array\",\"minItems\":3,\"maxItems\":2}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword maxItems must be greater than or equal to minItems.",
+          "path": "/schema/maxItems"
+        }
+      ]
+    },
+    {
+      "name": "invalid-number-bound",
+      "schemaInputJson": "{\"type\":\"number\",\"maximum\":\"10\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword maximum must be a finite number.",
+          "path": "/schema/maximum"
+        }
+      ]
+    },
+    {
+      "name": "reversed-number-bounds",
+      "schemaInputJson": "{\"type\":\"number\",\"minimum\":10,\"maximum\":2}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword maximum must be greater than or equal to minimum.",
+          "path": "/schema/maximum"
+        }
+      ]
+    },
+    {
+      "name": "invalid-multiple-of",
+      "schemaInputJson": "{\"type\":\"number\",\"multipleOf\":0}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword multipleOf must be a finite number greater than zero.",
+          "path": "/schema/multipleOf"
+        }
+      ]
+    },
+    {
+      "name": "invalid-unique-items",
+      "schemaInputJson": "{\"type\":\"array\",\"uniqueItems\":\"yes\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword uniqueItems must be a boolean.",
+          "path": "/schema/uniqueItems"
+        }
+      ]
+    },
+    {
+      "name": "invalid-pattern-type",
+      "schemaInputJson": "{\"type\":\"string\",\"pattern\":1}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.keyword.invalid",
+          "severity": "error",
+          "message": "Schema keyword pattern must be a string.",
+          "path": "/schema/pattern"
+        }
+      ]
+    },
+    {
+      "name": "invalid-pattern",
+      "schemaInputJson": "{\"type\":\"string\",\"pattern\":\"[\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.pattern.invalid",
+          "severity": "error",
+          "message": "Schema pattern must be a valid ECMAScript Unicode regular expression.",
+          "path": "/schema/pattern"
+        }
+      ]
+    },
+    {
+      "name": "unsupported-format",
+      "schemaInputJson": "{\"type\":\"string\",\"format\":\"company-id\"}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.format.unsupported",
+          "severity": "error",
+          "message": "Schema format company-id is not supported by A3S Form Schema Profile 1.",
+          "path": "/schema/format",
+          "hint": "Use one of: email, uri, date, date-time, time, hostname, ipv4, ipv6, uuid."
+        }
+      ]
+    },
+    {
+      "name": "nested-dialect",
+      "schemaInputJson": "{\"type\":\"object\",\"properties\":{\"name\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"string\"}}}",
+      "ok": false,
+      "diagnostics": [
+        {
+          "code": "schema.dialect",
+          "severity": "error",
+          "message": "Schema dialect must be https://json-schema.org/draft/2020-12/schema at the document root.",
+          "path": "/schema/properties/name/$schema"
+        }
+      ]
+    }
+  ]
+}
