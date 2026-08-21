@@ -42,6 +42,10 @@ export function ProductOfficeWorkbench({
   );
   const [retryRevision, setRetryRevision] = useState(0);
   const userChangeIntentRef = useRef(false);
+  const loadPdfSource = useCallback(async () => {
+    if (!pdfSource) throw new Error("PDF source is not ready.");
+    return pdfSource;
+  }, [pdfSource]);
 
   useEffect(() => {
     const kind = entry.workbench;
@@ -316,7 +320,7 @@ export function ProductOfficeWorkbench({
         <PdfViewer
           className="product-office-surface"
           fileName={entry.name}
-          loadSource={() => Promise.resolve(pdfSource)}
+          loadSource={loadPdfSource}
           onSave={async () => {
             onSaved(zh ? "PDF 更改已保存" : "PDF changes saved");
             return true;

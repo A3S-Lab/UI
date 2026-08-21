@@ -55,6 +55,8 @@ export function ProductNavigationSidebar({
   const zh = locale === "zh";
   const accountTriggerRef = useRef<HTMLButtonElement>(null);
   const moreRef = useRef<HTMLDetailsElement>(null);
+  const notificationPanelRef = useRef<HTMLElement>(null);
+  const notificationTriggerRef = useRef<HTMLButtonElement>(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
@@ -99,6 +101,34 @@ export function ProductNavigationSidebar({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (!notificationOpen) return undefined;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (
+        !notificationPanelRef.current?.contains(target) &&
+        !notificationTriggerRef.current?.contains(target)
+      ) {
+        setNotificationOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setNotificationOpen(false);
+      notificationTriggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [notificationOpen]);
 
   const statusOptions = [
     ["all", zh ? "全部状态" : "All statuses"],
@@ -510,17 +540,20 @@ export function ProductNavigationSidebar({
         <button
           aria-expanded={notificationOpen}
           aria-label={zh ? "通知" : "Notifications"}
+          data-product-control="notifications"
           onClick={() => {
             setAccountOpen(false);
             setFilterOpen(false);
             setNotificationOpen((value) => !value);
           }}
+          ref={notificationTriggerRef}
           type="button"
         >
           <ProductPlaygroundIcon name="notification" />
         </button>
         <button
           aria-label={zh ? "设置" : "Settings"}
+          data-product-control="settings"
           onClick={() => {
             setAccountOpen(false);
             onOpenSettings("system");
@@ -543,12 +576,18 @@ export function ProductNavigationSidebar({
         <section
           aria-label={zh ? "消息中心" : "Notifications"}
           className="product-sidebar__notifications"
+          ref={notificationPanelRef}
         >
           <header>
             <strong>{zh ? "消息" : "Notifications"}</strong>
             <button
               aria-label={zh ? "关闭消息" : "Close notifications"}
-              onClick={() => setNotificationOpen(false)}
+              onClick={() => {
+                setNotificationOpen(false);
+                window.requestAnimationFrame(() =>
+                  notificationTriggerRef.current?.focus(),
+                );
+              }}
               type="button"
             >
               <ProductPlaygroundIcon name="close" />

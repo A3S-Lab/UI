@@ -1,6 +1,33 @@
 suite "a3s-ui-product-workspace-capabilities" {
     version = 1
 
+    scenario "sidebar-control-semantics" {
+        name = "Every sidebar icon communicates and performs the action named by its control"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-playground" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "navigation-ready" { visible = css(".product-sidebar__footer") }
+
+        expect "notification-icon-matches-control" { visible = css("[data-product-control=notifications] svg[data-icon=notification]") }
+        click "open-notifications" { target = css("[data-product-control=notifications]") }
+        expect "notification-result" { visible = css(".product-sidebar__notifications[aria-label='消息中心']") }
+        press "close-notifications" { key = "Escape" }
+        expect "notification-focus-restored" { visible = css("[data-product-control=notifications]:focus") }
+
+        expect "settings-icon-matches-control" { visible = css("[data-product-control=settings] svg[data-icon=settings]") }
+        click "open-settings" { target = css("[data-product-control=settings]") }
+        expect "settings-result" { visible = css(".product-settings[open] aside button[aria-current=page]") }
+        expect "system-section-open" { text = "系统设置" }
+        screenshot "sidebar-controls" { path = "product/sidebar-control-semantics.png" }
+        click "close-settings" { target = role("button", "关闭设置") }
+
+        console "console" { path = "product/sidebar-control-semantics-console.json" clear = false }
+        page_errors "page-errors" { path = "product/sidebar-control-semantics-page-errors.json" clear = false }
+    }
+
     scenario "all-file-workbenches" {
         name = "Every admitted A3S file type opens in a task-appropriate workbench"
         surface = "web"
@@ -63,7 +90,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "open-file-assistant" { target = role("button", "打开文件助手") }
         expect "file-assistant" { visible = css("[data-file-assistant]") }
         expect "pdf-canvas-visible-with-assistant" { visible = css(".product-file-workbench[data-assistant-open=true] .work-pdf-viewer [role=application]") }
-        click "previous-page-with-assistant" { target = role("button", "上一页") }
+        click "previous-page-with-assistant" { target = css(".product-file-workbench[data-assistant-open=true] .work-pdf-viewer button[aria-label='上一页']:not(:disabled)") }
         expect "pdf-remains-interactive-with-assistant" { visible = css(".work-pdf-viewer button[aria-label='下一页']:not(:disabled)") }
         screenshot "pdf-with-assistant" { path = "product/file-pdf-with-assistant-desktop.png" }
         click "close-file-assistant" { target = css(".product-file-workbench__header button[aria-label='关闭文件助手']") }
@@ -190,7 +217,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "graph-zoom-updated" { text = "120%" }
         screenshot "graph-evidence" { path = "product/memory-graph-desktop.png" }
 
-        click "open-evolution" { target = role("tab", "演化候选") }
+        click "open-evolution" { target = css(".product-memory > nav button[aria-controls$='evolution-panel']") }
         expect "pending-count-before-review" { visible = css("[data-memory-pending-count='2']") }
         expect "pending-candidate" { visible = css(".product-memory__evolution article[data-state=pending]") }
         click "accept-candidate" { target = css("[data-memory-candidate-id=terminology] button[data-primary]") }
@@ -218,7 +245,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "undo-removal" { target = role("button", "撤销遗忘") }
         expect "removal-restored" { visible = css(".product-memory__inspector:not([data-removal]) button[data-primary]:not(:disabled)") }
 
-        click "review-evolution-again" { target = role("tab", "演化候选") }
+        click "review-evolution-again" { target = css(".product-memory > nav button[aria-controls$='evolution-panel']") }
         click "reopen-candidate-review" { target = css("[data-memory-candidate-id=terminology] footer button") }
         expect "candidate-reopened" { visible = css("[data-memory-candidate-id=terminology][data-state=pending]") }
         expect "generated-record-removed" { visible = css(".product-memory[data-memory-record-count='5']") }
@@ -288,7 +315,12 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "permissions-visible" { text = "请求的权限" }
         click "open-extension" { target = role("button", "打开扩展") }
         expect "isolated-host" { visible = css("[data-product-surface=extension-host]") }
+        click "reload-host" { target = role("button", "重新加载扩展宿主") }
+        expect "host-reloading" { visible = css("[data-product-surface=extension-host][data-reload-state=reloading]") }
+        wait "host-ready-again" { visible = css("[data-product-surface=extension-host][data-reload-state=ready][data-reload-count='1']") }
+        expect "reload-feedback" { text = "扩展宿主已重新加载" }
         expect "proposal-pending" { visible = css(".product-extension-host__proposal[data-state=pending]") }
+        screenshot "isolated-host-evidence" { path = "product/extension-isolated-host-desktop.png" }
         click "accept-proposal" { target = role("button", "添加到当前任务") }
         expect "proposal-accepted" { visible = css(".product-extension-host__proposal[data-state=accepted]") }
         click "back-to-marketplace" { target = role("button", "返回扩展市场") }
@@ -300,6 +332,125 @@ suite "a3s-ui-product-workspace-capabilities" {
         page_errors "page-errors" { path = "product/extension-host-page-errors.json" clear = false }
     }
 
+    scenario "extension-install-lifecycle" {
+        name = "Installing requires permission review, persists across reload, and uninstalling explains its consequences"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-extensions" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "marketplace-ready" { visible = css("[data-product-surface=marketplace][data-hydrated=true]") }
+
+        click "review-uninstalled-extension" { target = css("[data-extension-id=dependency-watch] [data-extension-review]") }
+        expect "permission-review-visible" { visible = css(".product-marketplace__detail [data-extension-permissions]") }
+        expect "not-installed" { visible = css(".product-marketplace__detail dd[data-installed=false]") }
+        click "confirm-install" { target = role("button", "确认并安装") }
+        expect "installing-state" { visible = css(".product-marketplace__detail button[aria-busy=true]:disabled") }
+        wait "installed-state" { visible = css("[data-extension-id=dependency-watch][data-installed=true]") }
+        expect "install-feedback" { text = "依赖巡检 已安装" }
+
+        navigate "reload-extensions" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "reloaded" { load = "networkidle" }
+        wait "restored-install" { visible = css("[data-product-surface=marketplace][data-hydrated=true] [data-extension-id=dependency-watch][data-installed=true]") }
+
+        click "review-installed-extension" { target = css("[data-extension-id=dependency-watch] [data-extension-review]") }
+        click "request-uninstall" { target = role("button", "卸载") }
+        expect "uninstall-consequences" { text = "已经生成的任务内容和证据不会被删除" }
+        click "cancel-uninstall" { target = role("button", "取消") }
+        expect "uninstall-focus-restored" { visible = css(".product-marketplace__detail button[data-danger]:focus") }
+        click "request-uninstall-again" { target = role("button", "卸载") }
+        click "confirm-uninstall" { target = role("button", "确认卸载") }
+        expect "uninstalled-state" { visible = css("[data-extension-id=dependency-watch][data-installed=false]") }
+        expect "uninstall-feedback" { text = "已有任务内容保持不变" }
+
+        select "sort-by-updated" {
+            target = css("select[aria-label='扩展排序']")
+            values = ["updated"]
+        }
+        expect "real-updated-order" { visible = css(".product-marketplace__directory article:first-child[data-extension-id=dependency-watch]") }
+
+        screenshot "install-lifecycle" { path = "product/extension-install-lifecycle.png" }
+        console "console" { path = "product/extension-install-lifecycle-console.json" clear = false }
+        page_errors "page-errors" { path = "product/extension-install-lifecycle-page-errors.json" clear = false }
+    }
+
+    scenario "extension-detail-mobile" {
+        name = "Phone users can review permissions, install actions, and return focus from extension details"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "phone" { width = 390 height = 844 }
+
+        navigate "open-extensions" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "marketplace-ready" { visible = css("[data-product-surface=marketplace][data-hydrated=true]") }
+        click "open-mobile-detail" { target = css("[data-extension-id=dependency-watch] [data-extension-review]") }
+        expect "mobile-detail-visible" { visible = css("[data-extension-detail-dialog][open]") }
+        expect "mobile-permissions-visible" { visible = css("[data-extension-detail-dialog] [data-extension-permissions]") }
+        expect "mobile-close-focused" { visible = css("[data-extension-detail-dialog] [data-extension-detail-close]:focus") }
+        screenshot "mobile-detail" { path = "product/extension-detail-mobile.png" }
+        press "close-mobile-detail" { key = "Escape" }
+        expect "mobile-card-focus-restored" { visible = css("[data-extension-id=dependency-watch] [data-extension-review]:focus") }
+
+        console "console" { path = "product/extension-detail-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/extension-detail-mobile-page-errors.json" clear = false }
+    }
+
+    scenario "extension-marketplace-dark-english" {
+        name = "Extension controls preserve their meaning in English and dark appearance"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-english-extensions" { url = "http://127.0.0.1:4178/UI/en/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "marketplace-ready" { visible = css("[data-product-surface=marketplace][data-hydrated=true]") }
+        click "open-account-menu" { target = css(".product-sidebar__footer > button:first-child") }
+        click "enable-dark-appearance" { target = role("menuitemcheckbox", "Dark appearance") }
+        expect "dark-appearance-active" { visible = css("html.dark [data-product-surface=marketplace]") }
+        click "review-extension" { target = css("[data-extension-id=dependency-watch] [data-extension-review]") }
+        expect "english-permissions" { text = "Requested permissions" }
+        expect "english-install-action" { visible = css(".product-marketplace__detail button[data-primary]") }
+        screenshot "dark-english" { path = "product/extension-marketplace-dark-english.png" }
+
+        console "console" { path = "product/extension-marketplace-dark-english-console.json" clear = false }
+        page_errors "page-errors" { path = "product/extension-marketplace-dark-english-page-errors.json" clear = false }
+    }
+
+    scenario "extension-source-management" {
+        name = "Source management exposes refresh progress, validation recovery, and static source records"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open-extensions" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-sources" { target = role("tab", "来源") }
+        expect "sources-table" { visible = css("[role=table][aria-label='扩展来源'] [data-source-id=verified]") }
+
+        click "refresh-sources" { target = role("button", "刷新来源") }
+        expect "refreshing-sources" { visible = css("button[data-source-refresh-state=refreshing]:disabled") }
+        wait "sources-refreshed" { visible = css("button[data-source-refresh-state=ready]:not(:disabled)") }
+        expect "refresh-result" { text = "未自动加载新内容" }
+
+        click "open-add-source" { target = role("button", "添加来源") }
+        expect "source-name-focused" { visible = css(".product-marketplace__source-dialog[open] input[aria-label='来源名称']:focus") }
+        click "submit-empty-source" { target = role("button", "加入待验证清单") }
+        expect "required-name-error" { text = "请输入来源名称" }
+        fill "source-name" { target = css(".product-marketplace__source-dialog input[aria-label='来源名称']") value = "Design registry" }
+        fill "invalid-source-address" { target = css(".product-marketplace__source-dialog input[aria-label='来源地址']") value = "http://extensions.example.com" }
+        press "submit-insecure-source" { key = "Enter" }
+        expect "https-validation" { text = "远程来源必须使用 HTTPS" }
+        fill "valid-source-address" { target = css(".product-marketplace__source-dialog input[aria-label='来源地址']") value = "https://extensions.example.com" }
+        press "submit-valid-source" { key = "Enter" }
+        expect "source-added" { visible = css("[data-source-count='3'] [data-source-id='custom-3'] [data-trust=pending]") }
+        expect "source-safety-feedback" { text = "身份验证完成前不会加载可执行内容" }
+
+        screenshot "source-management" { path = "product/extension-source-management.png" }
+        console "console" { path = "product/extension-source-management-console.json" clear = false }
+        page_errors "page-errors" { path = "product/extension-source-management-page-errors.json" clear = false }
+    }
+
     scenario "automation-run-recovery" {
         name = "Automation history exposes inputs, outputs, failed steps, and bounded retry"
         surface = "web"
@@ -309,7 +460,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         navigate "open-automations" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
         wait "loaded" { load = "networkidle" }
         wait "automation-ready" { visible = css("[data-product-surface=automation]") }
-        click "open-history" { target = role("tab", "运行记录") }
+        click "open-history" { target = css("[data-product-surface=automation] [role=tab][aria-controls$='history-panel']") }
         expect "history-ready" { visible = css(".product-run-history[aria-label='运行记录']") }
         click "filter-failed" { target = role("button", "失败") }
         expect "failed-run" { visible = css(".product-run-history__list [role=option] [data-state=failed]") }
