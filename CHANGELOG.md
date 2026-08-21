@@ -27,6 +27,7 @@
 
 ### Changed
 
+- Completed the Playground collaborative-document connection lifecycle with explicit permission consent, browser persistence, bounded connection feedback, storage-failure recovery, task-context handoff, and a focus-restoring disconnect confirmation across desktop and mobile layouts.
 - Completed the Playground agent-mailbox path with browser-persisted activation, explicit permission disclosure, recoverable storage and clipboard feedback, a focus-restoring disconnect confirmation, and a truthful handoff that attaches the mailbox to a new task.
 - Rebuilt the Playground capability catalog around scenario-led assistant discovery, rotating skill recommendations, dense connector browsing, stable visual identities, focus-contained detail dialogs, reviewed setup lifecycles, and direct handoff into a new task across desktop, mobile, dark mode, and both locales.
 - Unified every component Preview's HTML, React, and Vue guidance into one compact code workspace with a copyable install row and entry/example file tabs.

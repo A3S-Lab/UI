@@ -120,16 +120,12 @@ export function ProductResourcesSurface({
                 id: "connector:documents",
                 kind: "connector",
                 label: locale === "zh" ? "协作文档" : "Collaborative documents",
-                meta:
-                  locale === "zh"
-                    ? "已授权连接器"
-                    : "Authorized connector",
+                meta: locale === "zh" ? "已授权连接器" : "Authorized connector",
               },
             ],
             workspace: "ui",
           })
         }
-        resource={resource}
       />
     </section>
   );

@@ -49,6 +49,49 @@ suite "a3s-ui-product-resource-surfaces" {
         page_errors "page-errors" { path = "product/mailbox-activation-page-errors.json" clear = false }
     }
 
+    scenario "document-connection-lifecycle" {
+        name = "Document connection requires informed consent, persists, hands context to a task, and disconnects safely"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "connection-ready" { visible = css(".product-connection[data-state=inactive]") }
+        expect "consent-required" { visible = css(".product-connection__actions button[data-primary]:disabled") }
+        check "accept-scope" { target = css(".product-connection__consent input[type=checkbox]") }
+        expect "connect-enabled" { visible = css(".product-connection__actions button[data-primary]:not(:disabled)") }
+        click "connect" { target = role("button", "连接协作文档") }
+        expect "connecting" { visible = css(".product-connection[data-state=connecting][aria-busy=true]") }
+        wait "connection-active" { visible = css(".product-connection[data-state=active][data-connected=true]") }
+        expect "ready-heading" { text = "协作文档已连接" }
+        screenshot "connected-desktop" { path = "product/document-connection-desktop.png" }
+
+        viewport "mobile" { width = 390 height = 844 }
+        expect "mobile-primary-action" { visible = css(".product-connection__actions button[data-primary]") }
+        screenshot "connected-mobile" { path = "product/document-connection-mobile.png" }
+
+        viewport "desktop-restored" { width = 1440 height = 1000 }
+        navigate "restore" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
+        wait "restored-loaded" { load = "networkidle" }
+        expect "connection-persisted" { visible = css(".product-connection[data-state=active][data-connected=true]") }
+        click "use-in-task" { target = role("button", "用于新任务") }
+        expect "document-context-attached" { visible = css("[data-composer-resources] [data-resource-id='connector:documents']") }
+
+        navigate "return" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
+        wait "return-loaded" { load = "networkidle" }
+        click "disconnect" { target = role("button", "断开") }
+        expect "disconnect-dialog" { visible = css(".product-connection__dialog[open]") }
+        click "cancel-disconnect" { target = role("button", "取消") }
+        expect "disconnect-focus-restored" { visible = css(".product-connection__actions button[data-danger]:focus") }
+        click "disconnect-again" { target = role("button", "断开") }
+        click "confirm-disconnect" { target = role("button", "确认断开") }
+        expect "connection-cleared" { visible = css(".product-connection[data-state=inactive][data-connected=false]") }
+
+        console "console" { path = "product/document-connection-console.json" clear = false }
+        page_errors "page-errors" { path = "product/document-connection-page-errors.json" clear = false }
+    }
+
     scenario "files-mobile-hierarchy" {
         name = "Finder-style workspace files remain searchable, selectable, and previewable on mobile"
         surface = "web"

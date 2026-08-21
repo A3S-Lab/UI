@@ -577,11 +577,52 @@ test("Resource library pages preserve navigation and production connection state
   await more.locator("summary").click();
   await more.getByRole("menuitem", { name: "协作文档" }).click();
   const connection = playground.locator(".product-connection");
-  await connection.getByRole("button", { name: "连接协作文档" }).click();
+  const connectDocuments = connection.getByRole("button", {
+    name: "连接协作文档",
+  });
+  await expect(connectDocuments).toBeDisabled();
+  await connection.getByRole("checkbox").check();
+  await expect(connectDocuments).toBeEnabled();
+  await connectDocuments.click();
+  await expect(connection).toHaveAttribute("data-state", "connecting");
   await expect(connection).toHaveAttribute("data-connected", "true");
   await expect(
-    connection.getByRole("heading", { name: "连接已就绪" }),
+    connection.getByRole("heading", { name: "协作文档已连接" }),
   ).toBeVisible();
+  await page.reload({ waitUntil: "networkidle" });
+  const restoredDocuments = page.locator(".product-connection");
+  await expect(restoredDocuments).toHaveAttribute("data-state", "active");
+  await restoredDocuments.getByRole("button", { name: "用于新任务" }).click();
+  await expect(playground).toHaveAttribute("data-view", "start");
+  await expect(
+    playground.locator(
+      '[data-composer-resources] [data-resource-id="connector:documents"]',
+    ),
+  ).toContainText("协作文档");
+
+  await page.goto("playground/resources/documents.html", {
+    waitUntil: "networkidle",
+  });
+  const persistedDocuments = page.locator(".product-connection");
+  const disconnectDocuments = persistedDocuments.getByRole("button", {
+    name: "断开",
+    exact: true,
+  });
+  await disconnectDocuments.click();
+  const documentDisconnectDialog = page.getByRole("dialog", {
+    name: "断开协作文档？",
+  });
+  await expect(documentDisconnectDialog).toBeVisible();
+  await documentDisconnectDialog.getByRole("button", { name: "取消" }).click();
+  await expect(disconnectDocuments).toBeFocused();
+  await disconnectDocuments.click();
+  await documentDisconnectDialog
+    .getByRole("button", { name: "确认断开" })
+    .click();
+  await expect(persistedDocuments).toHaveAttribute("data-connected", "false");
+  await expect(
+    persistedDocuments.getByRole("button", { name: "连接协作文档" }),
+  ).toBeDisabled();
 
   expect(runtimeErrors).toEqual([]);
 });
@@ -592,7 +633,10 @@ test("Mailbox activation remains recoverable when browser storage is unavailable
   await page.addInitScript(() => {
     const nativeSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function setItem(key, value) {
-      if (key === "a3s-playground-agent-mailbox") {
+      if (
+        key === "a3s-playground-agent-mailbox" ||
+        key === "a3s-playground-document-connection"
+      ) {
         throw new DOMException("Storage blocked", "SecurityError");
       }
       return nativeSetItem.call(this, key, value);
@@ -608,6 +652,18 @@ test("Mailbox activation remains recoverable when browser storage is unavailable
   await expect(mailbox).toHaveAttribute("data-connected", "true");
   await expect(mailbox.getByRole("status")).toContainText("浏览器未允许保存");
   await expect(mailbox.getByRole("button", { name: "重试保存" })).toBeVisible();
+
+  await page.goto("playground/resources/documents.html", {
+    waitUntil: "networkidle",
+  });
+  const documents = page.locator(".product-connection");
+  await documents.getByRole("checkbox").check();
+  await documents.getByRole("button", { name: "连接协作文档" }).click();
+  await expect(documents).toHaveAttribute("data-connected", "true");
+  await expect(documents.getByRole("status")).toContainText("浏览器未允许保存");
+  await expect(
+    documents.getByRole("button", { name: "重试保存" }),
+  ).toBeVisible();
 });
 
 test("Product shell mobile drawer, resource menu, and backdrop stay usable", async ({
