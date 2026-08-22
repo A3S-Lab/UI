@@ -667,9 +667,9 @@ suite "a3s-ui-application-and-utilities" {
         expect "filter-result-visible" { visible = css("#file-explorer-demo-en[data-filter=results] [data-value='src/components/Status.tsx']:not([hidden])") }
         fill "clear-status-filter" { target = css("#file-explorer-demo-en [data-file-explorer-search]") value = "" }
         expect "collapsed-branch-restored" { visible = css("#file-explorer-demo-en [data-value=tests][aria-expanded=false]:not([hidden])") }
-        click "select-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'] > [data-tree-row]") }
-        expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]") }
         focus "focus-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']") }
+        press "select-status-file" { key = "Enter" }
+        expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]") }
         press "open-file-menu" { key = "Shift+F10" }
         expect "file-menu-open" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-context-content][aria-hidden=false]") }
         click "rename-status-file" { target = css("#file-explorer-demo-en [data-context-content] [data-value=rename]") }
@@ -695,7 +695,8 @@ suite "a3s-ui-application-and-utilities" {
         fill "filter-report" { target = css("#file-manager-demo-en [data-file-manager-search] input") value = "visual" }
         expect "report-visible" { visible = css("#file-manager-demo-en [data-file-value=report]:not([hidden])") }
         fill "clear-filter" { target = css("#file-manager-demo-en [data-file-manager-search] input") value = "" }
-        click "select-design" { target = css("#file-manager-demo-en [data-file-value=design]") }
+        focus "focus-src" { target = css("#file-manager-demo-en [data-file-value=src]") }
+        press "select-design" { key = "ArrowRight" }
         expect "design-selected" { visible = css("#file-manager-demo-en [data-file-value=design][aria-selected=true]") }
         click "open-quick-look" { target = css("#file-manager-demo-en [data-file-action=preview]") }
         expect "quick-look-visible" { visible = css("#file-manager-demo-en [data-file-manager-preview]:not([hidden]) [data-preview-for=design]:not([hidden])") }
@@ -721,7 +722,8 @@ suite "a3s-ui-application-and-utilities" {
         click "show-updating" { target = css("#knowledge-library-demo-en [data-knowledge-filter=updating]") }
         expect "release-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-value=release]:not([hidden])") }
         click "show-all" { target = css("#knowledge-library-demo-en [data-knowledge-filter=all]") }
-        click "select-migration" { target = css("#knowledge-library-demo-en [data-knowledge-value=migration]") }
+        focus "focus-migration" { target = css("#knowledge-library-demo-en [data-knowledge-value=migration]") }
+        press "select-migration" { key = "Enter" }
         expect "migration-selected" { visible = css("#knowledge-library-demo-en [data-knowledge-value=migration][aria-selected=true]") }
         expect "failure-recovery-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-detail-for=migration]:not([hidden]) [data-knowledge-action=retry]") }
         viewport "phone" { width = 390 height = 844 }
