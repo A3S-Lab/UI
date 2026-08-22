@@ -33,18 +33,24 @@ suite "a3s-ui-product-resource-surfaces" {
         viewport "desktop-restored" { width = 1440 height = 1000 }
         navigate "restore-mailbox" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
         wait "restored-loaded" { load = "networkidle" }
-        expect "connection-persisted" { visible = css(".product-mail__service[data-connected=true]") }
-        click "use-mailbox" { target = role("button", "用于新任务") }
-        expect "mailbox-attached" { visible = css("[data-composer-resources] [data-resource-id='connector:agent-mailbox']") }
+        wait "connection-persisted" { visible = css(".product-mail__service[data-connected=true]") }
+        focus "focus-use-mailbox" { target = css(".product-mail__ready button[data-primary]") }
+        press "use-mailbox" { key = "Enter" }
+        wait "mailbox-attached" { visible = css("[data-composer-resources] [data-resource-id='connector:agent-mailbox']") }
         navigate "return-to-mailbox" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
         wait "return-loaded" { load = "networkidle" }
-        click "disconnect" { target = role("button", "断开") }
-        expect "disconnect-dialog" { visible = css(".product-mail__dialog[open]") }
-        click "cancel-disconnect" { target = role("button", "取消") }
+        focus "focus-disconnect" { target = css(".product-mail__ready button[data-danger]") }
+        press "disconnect" { key = "Enter" }
+        wait "disconnect-dialog" { visible = css(".product-mail__dialog[open]") }
+        focus "focus-cancel-disconnect" { target = css(".product-mail__dialog[open] footer button:first-child") }
+        press "cancel-disconnect" { key = "Enter" }
         expect "connection-kept" { visible = css(".product-mail__service[data-connected=true]") }
-        click "disconnect-again" { target = role("button", "断开") }
-        click "confirm-disconnect" { target = role("button", "确认断开") }
-        expect "connection-cleared" { visible = css(".product-mail__service[data-connected=false]") }
+        expect "disconnect-focus-restored" { visible = css(".product-mail__ready button[data-danger]:focus") }
+        press "disconnect-again" { key = "Enter" }
+        wait "disconnect-dialog-again" { visible = css(".product-mail__dialog[open]") }
+        focus "focus-confirm-disconnect" { target = css(".product-mail__dialog[open] footer button[data-danger]") }
+        press "confirm-disconnect" { key = "Enter" }
+        wait "connection-cleared" { visible = css(".product-mail__service[data-connected=false]") }
         console "console" { path = "product/mailbox-activation-console.json" clear = false }
         page_errors "page-errors" { path = "product/mailbox-activation-page-errors.json" clear = false }
     }
