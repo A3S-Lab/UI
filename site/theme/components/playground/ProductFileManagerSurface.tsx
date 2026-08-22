@@ -266,7 +266,7 @@ function ProductWorkspaceFileManagerSurface({
             onClick={() => setFavoritesOnly((value) => !value)}
             type="button"
           >
-            <ProductPlaygroundIcon name="pin" />
+            <ProductPlaygroundIcon name="heart" />
             {zh ? "收藏" : "Favorites"}
           </button>
           <span>{zh ? "快速访问" : "Quick access"}</span>
@@ -520,14 +520,14 @@ function ProductWorkspaceFileManagerSurface({
               }
               type="button"
             >
-              <ProductPlaygroundIcon name="arrow" />
+              <ProductPlaygroundIcon name="cut" />
               {zh ? "剪切" : "Cut"}
             </button>
             <button
               onClick={() => toggleFavorite([...selectedIds])}
               type="button"
             >
-              <ProductPlaygroundIcon name="pin" />
+              <ProductPlaygroundIcon name="heart" />
               {zh ? "收藏" : "Favorite"}
             </button>
             <button
@@ -704,7 +704,7 @@ function ProductWorkspaceFileManagerSurface({
                   <span data-file-icon>
                     <ProductPlaygroundIcon name={productFileEntryIcon(entry)} />
                     {entry.favorite ? (
-                      <ProductPlaygroundIcon data-favorite name="pin" />
+                      <ProductPlaygroundIcon data-favorite name="heart" />
                     ) : null}
                   </span>
                   <strong title={entry.name}>{entry.name}</strong>
@@ -862,15 +862,12 @@ function ProductWorkspaceFileManagerSurface({
                 onClick={() => setWorkbenchId(quickLook.id)}
                 type="button"
               >
-                <ProductPlaygroundIcon name="edit" />
+                <ProductPlaygroundIcon name="arrow" />
                 {zh ? "打开" : "Open"}
               </button>
             ) : null}
             {quickLook.transferState === "error" ? (
-              <button
-                onClick={() => retryDroppedFile(quickLook)}
-                type="button"
-              >
+              <button onClick={() => retryDroppedFile(quickLook)} type="button">
                 <ProductPlaygroundIcon name="refresh" />
                 {zh ? "重试导入" : "Retry import"}
               </button>
@@ -963,7 +960,7 @@ function ProductWorkspaceFileManagerSurface({
             role="menuitem"
             type="button"
           >
-            <ProductPlaygroundIcon name="pin" />
+            <ProductPlaygroundIcon name="heart" />
             {zh ? "切换收藏" : "Toggle favorite"}
           </button>
           <hr />

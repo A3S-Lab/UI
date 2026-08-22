@@ -141,7 +141,7 @@ function getGroupCopy(
   }
   return {
     add: zh ? "添加待开始的任务" : "Add a task to start",
-    icon: "more",
+    icon: "minus",
     title: zh ? "待开始" : "To start",
   };
 }
@@ -266,6 +266,7 @@ export function ProductProjectPlanSurface({
           const groupTasks = visibleTasks.filter(
             (task) => task.status === group,
           );
+          if (normalizedQuery && groupTasks.length === 0) return null;
           const collapsed = collapsedGroups.includes(group);
           return (
             <section

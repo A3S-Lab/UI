@@ -35,6 +35,7 @@ export function ProductMemorySurface({
   const zh = locale === "zh";
   const tabId = useId().replaceAll(":", "");
   const refreshTimer = useRef<number | undefined>(undefined);
+  const inspectorReturnFocusIdRef = useRef<string | null>(null);
   const recordTriggerRefs = useRef<Record<string, HTMLButtonElement | null>>(
     {},
   );
@@ -82,6 +83,25 @@ export function ProductMemorySurface({
     },
     [],
   );
+
+  useEffect(() => {
+    const returnFocusId = inspectorReturnFocusIdRef.current;
+    if (inspectorOpen || !returnFocusId) return;
+    const timer = window.setTimeout(() => {
+      const recordElement = document.querySelector<HTMLElement>(
+        `.product-memory__workspace main [data-memory-id="${CSS.escape(returnFocusId)}"]`,
+      );
+      const fallbackTrigger =
+        recordElement instanceof HTMLButtonElement
+          ? recordElement
+          : recordElement?.querySelector<HTMLButtonElement>("button");
+      (recordTriggerRefs.current[returnFocusId] ?? fallbackTrigger)?.focus({
+        preventScroll: true,
+      });
+      inspectorReturnFocusIdRef.current = null;
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [inspectorOpen]);
 
   const visibleMemories = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
@@ -164,15 +184,14 @@ export function ProductMemorySurface({
   };
 
   const selectMemory = (id: string) => {
+    inspectorReturnFocusIdRef.current = null;
     setSelectedId(id);
     setInspectorOpen(true);
   };
 
   const closeInspector = () => {
+    inspectorReturnFocusIdRef.current = selectedId;
     setInspectorOpen(false);
-    window.requestAnimationFrame(() =>
-      recordTriggerRefs.current[selectedId]?.focus(),
-    );
   };
 
   const updateCandidateState = (
@@ -425,11 +444,10 @@ export function ProductMemorySurface({
         </main>
 
         {modalInspectorOpen ? (
-          <button
-            aria-label={zh ? "关闭记忆详情" : "Close memory details"}
+          <div
+            aria-hidden="true"
             data-memory-inspector-backdrop
             onClick={closeInspector}
-            type="button"
           />
         ) : null}
         {view !== "evolution" && selected ? (

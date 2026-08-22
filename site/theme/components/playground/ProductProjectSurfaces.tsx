@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductComposer } from "./ProductComposer";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
-import {
-  ProductSessionInspector,
-  type ProductSessionInspectorTab,
-} from "./ProductSessionInspector";
 import {
   ProductProjectBreadcrumb,
   ProductProjectPresence,
 } from "./ProductProjectPrimitives";
+import {
+  ProductSessionInspector,
+  type ProductSessionInspectorTab,
+} from "./ProductSessionInspector";
+import { ProductSessionMessageActions } from "./ProductSessionMessageActions";
+import type { ProductPlaygroundLocale } from "./product-playground-data";
 
 const projectConversation = {
   en: [
@@ -77,6 +78,23 @@ const projectArtifacts = [
   },
 ] as const;
 
+const projectReadinessRows = {
+  en: [
+    ["Documentation routes", "Passed", "Chinese, English, and version paths resolve."],
+    ["Project navigation", "Passed", "Project and child-task context remain selected."],
+    ["Interaction regression", "12 / 12", "Critical flows and focus restoration pass."],
+    ["Responsive layout", "Passed", "Desktop and phone controls remain reachable."],
+    ["Visual acceptance", "Review", "Light, dark, and mobile evidence is retained."],
+  ],
+  zh: [
+    ["文档路由", "通过", "中文、英文与版本路径均可访问。"],
+    ["项目导航", "通过", "项目与子任务上下文始终保持选中。"],
+    ["交互回归", "12 / 12", "关键流程与焦点恢复均已通过。"],
+    ["响应式布局", "通过", "桌面端与移动端控件均可触达。"],
+    ["视觉验收", "待复核", "浅色、深色与移动端证据均已保留。"],
+  ],
+} as const;
+
 export function ProductProjectSessionSurface({
   locale,
   onOpenModelSettings,
@@ -90,6 +108,8 @@ export function ProductProjectSessionSurface({
 }) {
   const zh = locale === "zh";
   const copy = projectConversation[locale];
+  const readinessRows = projectReadinessRows[locale];
+  const title = zh ? "发布就绪检查" : "Release readiness";
   const [followUps, setFollowUps] = useState<string[]>([]);
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
@@ -99,6 +119,7 @@ export function ProductProjectSessionSurface({
   const [searchOpen, setSearchOpen] = useState(false);
   const inspectorCloseRef = useRef<HTMLButtonElement>(null);
   const inspectorRef = useRef<HTMLElement>(null);
+  const inspectorReturnFocusRef = useRef<HTMLElement | null>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -113,9 +134,32 @@ export function ProductProjectSessionSurface({
   }, []);
 
   const closeInspector = useCallback(() => {
+    const returnFocus =
+      inspectorReturnFocusRef.current ?? inspectorTriggerRef.current;
     setInspectorOpen(false);
-    window.requestAnimationFrame(() => inspectorTriggerRef.current?.focus());
+    window.requestAnimationFrame(() => returnFocus?.focus());
   }, []);
+
+  const openInspector = useCallback(
+    (tab: ProductSessionInspectorTab, returnFocus?: HTMLElement | null) => {
+      inspectorReturnFocusRef.current =
+        returnFocus ?? inspectorTriggerRef.current;
+      setInspectorTab(tab);
+      setInspectorOpen(true);
+    },
+    [],
+  );
+
+  const responseText = useMemo(
+    () =>
+      [
+        copy[1],
+        ...readinessRows.map((row) => row.join(" — ")),
+        copy[2],
+        `${zh ? "主要产物" : "Primary deliverable"}: release-readiness.md`,
+      ].join("\n\n"),
+    [copy, readinessRows, zh],
+  );
 
   useEffect(() => {
     if (!inspectorOpen) return undefined;
@@ -176,7 +220,7 @@ export function ProductProjectSessionSurface({
     >
       <header className="product-session__header">
         <ProductProjectBreadcrumb
-          current={zh ? "发布就绪检查" : "Release readiness"}
+          current={title}
           locale={locale}
           projectHref={projectHref}
           projectsHref={projectsHref}
@@ -205,8 +249,10 @@ export function ProductProjectSessionSurface({
                   : "Open project details"
             }
             data-active={inspectorOpen ? "true" : undefined}
-            onClick={() =>
-              inspectorOpen ? closeInspector() : setInspectorOpen(true)
+            onClick={(event) =>
+              inspectorOpen
+                ? closeInspector()
+                : openInspector("overview", event.currentTarget)
             }
             ref={inspectorTriggerRef}
             type="button"
@@ -338,7 +384,83 @@ export function ProductProjectSessionSurface({
                   </section>
                 </details>
                 <p>{copy[2]}</p>
+                <section
+                  aria-labelledby="product-project-readiness-title"
+                  className="product-project-session__report"
+                >
+                  <header>
+                    <div>
+                      <small>{zh ? "验收摘要" : "Acceptance summary"}</small>
+                      <h2 id="product-project-readiness-title">
+                        {zh ? "发布就绪报告" : "Release readiness report"}
+                      </h2>
+                    </div>
+                    <span data-status="review">
+                      {zh ? "待视觉复核" : "Visual review due"}
+                    </span>
+                  </header>
+                  <div className="product-project-session__report-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th scope="col">{zh ? "检查项" : "Check"}</th>
+                          <th scope="col">{zh ? "状态" : "Status"}</th>
+                          <th scope="col">{zh ? "证据" : "Evidence"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {readinessRows.map(([area, status, evidence]) => (
+                          <tr key={area}>
+                            <th scope="row">{area}</th>
+                            <td>{status}</td>
+                            <td>{evidence}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+                <button
+                  className="product-project-session__deliverable"
+                  data-project-deliverable
+                  onClick={(event) =>
+                    openInspector("artifacts", event.currentTarget)
+                  }
+                  type="button"
+                >
+                  <span data-deliverable-icon>
+                    <ProductPlaygroundIcon name="document" />
+                  </span>
+                  <span data-deliverable-identity>
+                    <small>{zh ? "主要产物" : "Primary deliverable"}</small>
+                    <strong>release-readiness.md</strong>
+                  </span>
+                  <em>Markdown</em>
+                  <ProductPlaygroundIcon name="arrow" />
+                </button>
+                <button
+                  className="product-project-session__artifacts-link"
+                  data-project-artifacts-trigger
+                  onClick={(event) =>
+                    openInspector("artifacts", event.currentTarget)
+                  }
+                  type="button"
+                >
+                  {zh
+                    ? `查看所有产物 (${projectArtifacts.length})`
+                    : `View all artifacts (${projectArtifacts.length})`}
+                  <ProductPlaygroundIcon name="chevron" />
+                </button>
               </div>
+              <ProductSessionMessageActions
+                exportContent={[copy[0], responseText, ...followUps]}
+                locale={locale}
+                onOpenArtifacts={(returnFocus) =>
+                  openInspector("artifacts", returnFocus)
+                }
+                responseText={responseText}
+                title={title}
+              />
             </article>
           </li>
           {followUps.map((message, index) => (

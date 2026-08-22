@@ -171,15 +171,15 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/dockview/vue`          | Complete Vue 3 Dockview API plus matching composables                                                                        |
 | `@a3s-lab/ui/dockview/css`          | Dockview base CSS and A3S light/dark theme variables                                                                         |
 | `@a3s-lab/ui/form`                  | Form document, compiler, Designer, Renderer, adapters, and integration contracts                                             |
-| `@a3s-lab/ui/form/core`             | Framework-independent compilation, rules, validation, patches, locale catalogs, and headless state                          |
+| `@a3s-lab/ui/form/core`             | Framework-independent compilation, rules, validation, patches, locale catalogs, and headless state                           |
 | `@a3s-lab/ui/form/react`            | React Designer, Renderer, A3S Flow panels, and workflow configuration widgets                                                |
 | `@a3s-lab/ui/form/react-hooks`      | React Hook Form-compatible `useA3SForm`, resolver, field arrays, subscriptions, and Renderer binding                         |
-| `@a3s-lab/ui/form/vue`              | Vue 3 Designer and Renderer adapters                                                                                          |
+| `@a3s-lab/ui/form/vue`              | Vue 3 Designer and Renderer adapters                                                                                         |
 | `@a3s-lab/ui/form/vue-hooks`        | Native Vue `useA3SForm`, field, field-array, context, validation, and Renderer composables                                   |
 | `@a3s-lab/ui/form/web-component`    | Framework-neutral `<a3s-form-designer>` and `<a3s-form-renderer>` custom elements                                            |
-| `@a3s-lab/ui/form/workflow`         | Workflow configuration, request-bound interaction, digest, and protected-submission contracts                               |
-| `@a3s-lab/ui/form/cloud`            | Typed A3S Cloud host adapter                                                                                                  |
-| `@a3s-lab/ui/form/a3s-ui.css`       | A3S UI plus Form and A3S Flow styles for product surfaces                                                                     |
+| `@a3s-lab/ui/form/workflow`         | Workflow configuration, request-bound interaction, digest, and protected-submission contracts                                |
+| `@a3s-lab/ui/form/cloud`            | Typed A3S Cloud host adapter                                                                                                 |
+| `@a3s-lab/ui/form/a3s-ui.css`       | A3S UI plus Form and A3S Flow styles for product surfaces                                                                    |
 | `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
@@ -208,7 +208,7 @@ npm run test:visual
 
 Run the documentation site locally with `npm run docs:dev`. The static build is written to `site/doc_build` and deployed to GitHub Pages from `main`.
 
-Run the component-specific browser suites with `npm run test:e2e:a3s`. Scenarios run serially by default so stateful previews stay deterministic; set `A3S_TEST_MAX_PARALLEL` only when the browser adapter has enough isolated capacity. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
+Run the component- and route-specific browser suites with `npm run test:e2e:a3s`. Reported defect classes are retained as page-level A3S Test regressions with action-state assertions, screenshots, console output, and page-error evidence. Scenarios run serially by default so stateful previews stay deterministic; set `A3S_TEST_MAX_PARALLEL` only when the browser adapter has enough isolated capacity. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
 Visual checks use Playwright with platform-specific desktop and compact baselines. Every public component route also has a component-root geometry and state contract plus browser diagnostic coverage. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
 

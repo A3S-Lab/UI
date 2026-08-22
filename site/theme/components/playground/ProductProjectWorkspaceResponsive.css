@@ -73,8 +73,12 @@
   }
 
   .product-project-workspace__toolbar > div {
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
+
+  .product-project-workspace__toolbar > div > span[data-task-privacy] {
+    width: 100%;
   }
 
   .product-project-workspace__toolbar [data-plan-navigation],
@@ -121,27 +125,6 @@
 
   .product-project-workspace__activity time {
     grid-column: 2;
-  }
-
-  .product-project-workspace__assets > button {
-    grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem;
-  }
-
-  .product-project-workspace__assets > button > :is(span:nth-child(3), time) {
-    display: none;
-  }
-
-  .product-project-workspace__assets > button > svg {
-    grid-column: 3;
-  }
-
-  .product-project-workspace__assets > footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .product-project-workspace__assets > footer button {
-    justify-content: center;
   }
 
   .product-project-workspace__composer {

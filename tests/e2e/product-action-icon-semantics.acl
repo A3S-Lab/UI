@@ -1,0 +1,310 @@
+suite "a3s-ui-product-action-icon-semantics" {
+    version = 1
+
+    scenario "mail-back-action" {
+        name = "Mailbox back action uses backward navigation semantics and reaches the task composer"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "mail-ready" { visible = css(".product-mail[data-resource=mail]") }
+        expect "back-icon" { visible = css("a[aria-label='返回新建任务'] svg[data-icon=back]") }
+        accessibility "mail-accessibility" { path = "product/action-icons-mail-accessibility.json" interactive = true }
+
+        click "back-to-task" { target = role("link", "返回新建任务") }
+        wait "task-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        expect "task-composer" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
+
+        screenshot "result" { path = "product/action-icons-mail-back.png" }
+        console "console" { path = "product/action-icons-mail-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-mail-page-errors.json" clear = false }
+    }
+
+    scenario "file-manager-actions" {
+        name = "File actions use copy, cut, favorite, open, and save semantics and complete their operations"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-workspace" { target = role("tab", "工作区") }
+        wait "files-ready" { visible = css(".product-file-manager[data-file-manager-initialized=true]") }
+        fill "find-file" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "release-readiness.md" }
+        click "select-file" { target = css(".product-file-manager [data-file-manager-item]") }
+
+        expect "copy-icon" { visible = css("[data-file-manager-selection-toolbar] button:has(svg[data-icon=copy])") }
+        expect "cut-icon" { visible = css("[data-file-manager-selection-toolbar] button:has(svg[data-icon=cut])") }
+        expect "favorite-icon" { visible = css("[data-file-manager-selection-toolbar] button:has(svg[data-icon=heart])") }
+        click "copy-file" { target = role("button", "复制") }
+        expect "paste-enabled-after-copy" { visible = css("[data-file-manager-toolbar] button:not(:disabled):has(svg[data-icon=copy])") }
+        click "cut-file" { target = role("button", "剪切") }
+        expect "paste-enabled-after-cut" { visible = css("[data-file-manager-toolbar] button:not(:disabled):has(svg[data-icon=copy])") }
+        click "favorite-file" { target = role("button", "收藏") }
+        expect "favorite-applied" { visible = css("[data-file-manager-item][aria-selected=true] svg[data-favorite][data-icon=heart]") }
+
+        double_click "open-quick-look" { target = css(".product-file-manager [data-file-manager-item]") }
+        expect "quick-look" { visible = css("[data-file-manager-quicklook]") }
+        expect "open-icon" { visible = css("[data-file-manager-quicklook] button:has(svg[data-icon=arrow])") }
+        click "open-file" { target = role("button", "打开") }
+        wait "workbench-ready" { visible = css(".product-file-workbench[data-workbench-kind=code]") }
+        type "edit-file" { target = css(".product-code-workbench textarea[aria-label='编辑 release-readiness.md']") value = "\n逐项图标语义回归已覆盖。" }
+        expect "save-icon" { visible = css("button[aria-label='保存文件']:not(:disabled) svg[data-icon=save]") }
+        click "save-file" { target = role("button", "保存文件") }
+        expect "saved-state" { visible = css("button[aria-label='保存文件']:disabled svg[data-icon=save]") }
+        expect "saved-status" { text = "所有更改已保存" }
+        accessibility "file-accessibility" { path = "product/action-icons-file-accessibility.json" interactive = true }
+
+        screenshot "result" { path = "product/action-icons-file-actions.png" }
+        console "console" { path = "product/action-icons-file-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-file-page-errors.json" clear = false }
+    }
+
+    scenario "composer-capability-actions" {
+        name = "Composer assistant, skill, and connector actions use matching icons and attach selected capabilities"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "composer-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+
+        click "open-context-menu" { target = role("button", "添加任务上下文") }
+        expect "assistant-menu-icon" { visible = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(3) svg[data-icon=assistant]") }
+        expect "skill-menu-icon" { visible = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(4) svg[data-icon=checklist]") }
+        expect "connector-menu-icon" { visible = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(5) svg[data-icon=link]") }
+        screenshot "menu" { path = "product/action-icons-composer-menu.png" }
+
+        click "open-assistant-picker" { target = role("menuitem", "专家") }
+        expect "assistant-picker-icon" { visible = css("[data-composer-resource-picker=assistant] > header > span > svg[data-icon=assistant]") }
+        expect "assistant-search-focused" { visible = css("[data-composer-resource-picker=assistant] [data-resource-picker-search]:focus-within input:focus-visible") }
+        expect "assistant-option-icon" { visible = css("[data-composer-resource-picker=assistant] [role=option] svg[data-icon=assistant]") }
+        screenshot "assistant-picker" { path = "product/action-icons-composer-assistant.png" }
+        click "attach-assistant" { target = css("[data-composer-resource-picker=assistant] [role=option]:first-child") }
+        expect "assistant-attached" { visible = css("[data-composer-resources] [data-resource-kind=assistant]") }
+
+        click "reopen-context-for-skill" { target = role("button", "添加任务上下文") }
+        click "open-skill-picker" { target = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(4)") }
+        expect "skill-picker-kind" { visible = css("[data-composer-suggestions][data-suggestion-kind=skill]") }
+        expect "skill-picker-icon" { visible = css("[data-composer-suggestions][aria-label='选择技能'] > header > span > svg[data-icon=checklist]") }
+        expect "skill-option-icon" { visible = css("[data-composer-suggestions][aria-label='选择技能'] [role=option] svg[data-icon=checklist]") }
+        screenshot "skill-picker" { path = "product/action-icons-composer-skill.png" }
+        click "attach-skill" { target = css("[data-composer-suggestions][aria-label='选择技能'] [role=option]:first-child") }
+        expect "skill-attached" { visible = css("[data-composer-resources] [data-resource-kind=skill] svg[data-icon=checklist]") }
+
+        click "reopen-context-for-connector" { target = role("button", "添加任务上下文") }
+        click "open-connector-picker" { target = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(5)") }
+        expect "connector-picker-icon" { visible = css("[data-composer-resource-picker=connector] > header > span > svg[data-icon=link]") }
+        expect "connector-search-focused" { visible = css("[data-composer-resource-picker=connector] [data-resource-picker-search]:focus-within input:focus-visible") }
+        expect "connector-option-icon" { visible = css("[data-composer-resource-picker=connector] [role=option] svg[data-icon=link]") }
+        screenshot "connector-picker" { path = "product/action-icons-composer-connector.png" }
+        click "attach-connector" { target = css("[data-composer-resource-picker=connector] [role=option]:first-child") }
+        expect "connector-attached" { visible = css("[data-composer-resources] [data-resource-kind=connector]") }
+        accessibility "composer-accessibility" { path = "product/action-icons-composer-accessibility.json" interactive = true }
+
+        screenshot "result" { path = "product/action-icons-composer-result.png" }
+        console "console" { path = "product/action-icons-composer-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-composer-page-errors.json" clear = false }
+    }
+
+    scenario "follow-up-queue-actions" {
+        name = "Follow-up queue run and ordering controls use play, up, and down semantics and update queue state"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        fill "task" { target = css(".product-start [role=textbox][aria-label='任务指令']") value = "验证后续指令控制语义" }
+        click "create-task" { target = role("button", "发送任务") }
+        wait "session-ready" { visible = css("[data-product-surface=session][data-session-state=ready][data-variant=created]") }
+
+        fill "first-follow-up" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "第一条后续指令" }
+        press "queue-first" { key = "Enter" }
+        fill "second-follow-up" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "第二条后续指令" }
+        press "queue-second" { key = "Enter" }
+        expect "two-items" { visible = css(".product-follow-up-queue li:nth-child(2)") }
+        click "stop-current-run" { target = role("button", "停止任务") }
+
+        expect "run-next-icon" { visible = css(".product-follow-up-queue header button:has(svg[data-icon=play])") }
+        expect "move-up-icon" { visible = css(".product-follow-up-queue li:nth-child(2) button[aria-label='提前第 2 条指令'] svg[data-icon=up]") }
+        expect "move-down-icon" { visible = css(".product-follow-up-queue li:first-child button[aria-label='后移第 1 条指令'] svg[data-icon=down]") }
+        click "move-second-up" { target = role("button", "提前第 2 条指令") }
+        expect "moved-item-at-start" { visible = css(".product-follow-up-queue li:first-child button[aria-label='提前第 1 条指令']:disabled svg[data-icon=up]") }
+        click "move-first-down" { target = role("button", "后移第 1 条指令") }
+        expect "moved-item-at-end" { visible = css(".product-follow-up-queue li:nth-child(2) button[aria-label='后移第 2 条指令']:disabled svg[data-icon=down]") }
+
+        click "run-next" { target = css(".product-follow-up-queue header button") }
+        expect "one-item-remains" { visible = css(".product-follow-up-queue li:only-child") }
+        expect "executed-message" { text = "第一条后续指令" }
+        accessibility "queue-accessibility" { path = "product/action-icons-follow-up-accessibility.json" interactive = true }
+
+        screenshot "result" { path = "product/action-icons-follow-up-queue.png" }
+        console "console" { path = "product/action-icons-follow-up-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-follow-up-page-errors.json" clear = false }
+    }
+
+    scenario "settings-navigation-actions" {
+        name = "Settings navigation uses execution, memory, model, and help icons and opens the matching section"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
+
+        expect "execution-navigation-icon" { visible = css(".product-settings > aside button:nth-child(3) svg[data-icon=automation]") }
+        expect "memory-navigation-icon" { visible = css(".product-settings > aside button:nth-child(5) svg[data-icon=brain]") }
+        expect "model-navigation-icon" { visible = css(".product-settings > aside button:nth-child(6) svg[data-icon=model]") }
+        expect "help-navigation-icon" { visible = css(".product-settings > aside button:last-child svg[data-icon=help]") }
+
+        click "open-execution" { target = role("button", "执行设置") }
+        expect "execution-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=automation]") }
+        expect "execution-content" { visible = css(".product-settings main .product-settings__boundary svg[data-icon=shield]") }
+        click "open-memory" { target = role("button", "记忆") }
+        expect "memory-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=brain]") }
+        expect "memory-content" { visible = css(".product-settings main .product-settings__rows") }
+        click "open-models" { target = role("button", "模型") }
+        expect "models-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=model]") }
+        expect "models-content" { visible = css(".product-settings main .product-model-toolbar") }
+        click "open-help" { target = role("button", "帮助与反馈") }
+        expect "help-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=help]") }
+        expect "help-content" { visible = css(".product-settings main .product-settings__about") }
+        accessibility "settings-accessibility" { path = "product/action-icons-settings-accessibility.json" interactive = true }
+
+        screenshot "result" { path = "product/action-icons-settings-navigation.png" }
+        console "console" { path = "product/action-icons-settings-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-settings-page-errors.json" clear = false }
+    }
+
+    scenario "memory-detail-actions" {
+        name = "Memory detail uses memory and close semantics and restores the selected record after closing"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "compact" { width = 1024 height = 800 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/memory.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "memory-ready" { visible = css("[data-product-surface=memory]") }
+        click "open-first-memory" { target = css(".product-memory__timeline [data-memory-id]:first-child > button") }
+        expect "memory-detail-open" { visible = css(".product-memory__inspector[data-open=true]") }
+        expect "memory-detail-icon" { visible = css(".product-memory__inspector[data-open=true] > header svg[data-icon=brain]") }
+        expect "close-detail-icon" { visible = css(".product-memory__inspector button[aria-label='关闭记忆详情'] svg[data-icon=close]") }
+        expect "source-action-icon" { visible = css(".product-memory__inspector footer button:has(svg[data-icon=link])") }
+        accessibility "memory-accessibility" { path = "product/action-icons-memory-accessibility.json" interactive = true }
+        screenshot "open-detail" { path = "product/action-icons-memory-detail-open.png" }
+
+        click "close-detail" { target = role("button", "关闭记忆详情") }
+        wait "record-focus-restored" { visible = css(".product-memory__timeline [data-memory-id]:first-child > button:focus") }
+
+        screenshot "result" { path = "product/action-icons-memory-detail-closed.png" }
+        console "console" { path = "product/action-icons-memory-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-memory-page-errors.json" clear = false }
+    }
+
+    scenario "device-simulator-actions" {
+        name = "Device simulator expand and collapse controls use directional sizing semantics and update inspector state"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "session-ready" { visible = css("[data-product-surface=session]") }
+        click "open-preview" { target = role("button", "设备预览") }
+        wait "preview-ready" { visible = css(".product-session-inspector .product-device-shell") }
+        expect "expand-icon" { visible = css("button[aria-label='打开完整设备模拟器'][aria-pressed=false] svg[data-icon=expand]") }
+        accessibility "compact-preview-accessibility" { path = "product/action-icons-device-compact-accessibility.json" interactive = true }
+
+        click "expand-simulator" { target = role("button", "打开完整设备模拟器") }
+        expect "expanded-state" { visible = css(".product-session-inspector[data-preview-expanded=true] .device-simulator") }
+        expect "collapse-label-visible" { visible = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true]") }
+        expect "collapse-icon" { visible = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true] svg[data-icon=contract]") }
+        screenshot "expanded" { path = "product/action-icons-device-expanded.png" }
+        click "collapse-simulator" { target = role("button", "收起") }
+        expect "compact-state" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
+        expect "expand-restored" { visible = css("button[aria-label='打开完整设备模拟器'][aria-pressed=false] svg[data-icon=expand]") }
+
+        screenshot "result" { path = "product/action-icons-device-collapsed.png" }
+        console "console" { path = "product/action-icons-device-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-device-page-errors.json" clear = false }
+    }
+
+    scenario "knowledge-library-actions" {
+        name = "Knowledge refresh, import, and create actions use matching icons and complete their workflows"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/knowledge.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "knowledge-ready" { visible = css(".product-knowledge-library[data-knowledge-library-initialized=true]") }
+        expect "refresh-icon" { visible = css("button[aria-label='刷新知识库'] svg[data-icon=refresh]") }
+        expect "import-icon" { visible = css("[data-knowledge-library-header] button:has(svg[data-icon=upload])") }
+        expect "create-icon" { visible = css("[data-knowledge-library-header] button:has(svg[data-icon=plus])") }
+
+        click "refresh" { target = role("button", "刷新知识库") }
+        expect "refresh-result" { text = "已检查" }
+        click "open-import" { target = role("button", "导入") }
+        expect "import-form-icon" { visible = css("[data-knowledge-library-form] header svg[data-icon=upload]") }
+        fill "import-name" { target = css("[data-knowledge-library-form] input:first-of-type") value = "视觉验收资料" }
+        fill "import-source" { target = css("[data-knowledge-library-form] div > label:nth-child(2) input") value = "/workspace/visual-evidence" }
+        click "submit-import" { target = role("button", "导入并更新") }
+        expect "import-created" { text = "视觉验收资料" }
+
+        click "open-create" { target = role("button", "新建知识库") }
+        expect "create-form-icon" { visible = css("[data-knowledge-library-form] header svg[data-icon=plus]") }
+        fill "create-name" { target = css("[data-knowledge-library-form] input:first-of-type") value = "逐项交互规范" }
+        click "submit-create" { target = role("button", "创建") }
+        expect "knowledge-created" { text = "逐项交互规范" }
+        accessibility "knowledge-accessibility" { path = "product/action-icons-knowledge-accessibility.json" interactive = true }
+
+        screenshot "result" { path = "product/action-icons-knowledge-actions.png" }
+        console "console" { path = "product/action-icons-knowledge-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-knowledge-page-errors.json" clear = false }
+    }
+
+    scenario "inspiration-actions" {
+        name = "Inspiration favorite, search, close, and task actions use matching icons and preserve the selected workflow"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/inspiration.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "gallery-ready" { visible = css(".product-inspiration__gallery") }
+        expect "favorite-filter-icon" { visible = css(".product-inspiration > header button svg[data-icon=heart]") }
+        expect "search-icon" { visible = css(".product-inspiration > header label svg[data-icon=search]") }
+        click "enable-favorites-filter" { target = role("button", "我的收藏") }
+        expect "favorites-enabled" { visible = css(".product-inspiration > header button[aria-pressed=true] svg[data-icon=heart]") }
+        click "disable-favorites-filter" { target = role("button", "我的收藏") }
+        expect "favorites-disabled" { visible = css(".product-inspiration > header button[aria-pressed=false] svg[data-icon=heart]") }
+        fill "search-workbench" { target = css(".product-inspiration input[aria-label='搜索灵感']") value = "个人工作台" }
+        expect "search-result" { visible = css(".product-inspiration__gallery article:only-child") }
+
+        click "open-workbench" { target = role("button", "打开个人工作台") }
+        expect "detail-open" { visible = css(".product-inspiration__detail[open]") }
+        expect "detail-favorite-icon" { visible = css(".product-inspiration__detail button[aria-label='收藏个人工作台'] svg[data-icon=heart]") }
+        expect "detail-close-icon" { visible = css(".product-inspiration__detail button[aria-label='关闭灵感详情'] svg[data-icon=close]") }
+        click "favorite-workbench" { target = css(".product-inspiration__detail[open] > header button[aria-pressed=false]") }
+        expect "favorite-result" { visible = css(".product-inspiration__detail[open] > header button[aria-pressed=true] svg[data-icon=heart]") }
+        screenshot "detail" { path = "product/action-icons-inspiration-detail.png" }
+        click "close-detail" { target = role("button", "关闭灵感详情") }
+
+        click "reopen-workbench" { target = role("button", "打开个人工作台") }
+        expect "create-task-icon" { visible = css(".product-inspiration__detail footer button[data-primary] svg[data-icon=arrow]") }
+        accessibility "inspiration-accessibility" { path = "product/action-icons-inspiration-accessibility.json" interactive = true }
+        click "create-task" { target = role("button", "一键创建任务") }
+        wait "task-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        expect "template-attached" { visible = css("[data-composer-resources] [data-resource-id='inspiration:personal-workbench']") }
+
+        screenshot "result" { path = "product/action-icons-inspiration-task.png" }
+        console "console" { path = "product/action-icons-inspiration-console.json" clear = false }
+        page_errors "page-errors" { path = "product/action-icons-inspiration-page-errors.json" clear = false }
+    }
+}

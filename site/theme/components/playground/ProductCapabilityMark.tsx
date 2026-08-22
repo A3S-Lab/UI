@@ -14,6 +14,12 @@ export function capabilityVisualTone(id: string) {
   return stableVisualIndex(id, 5);
 }
 
+export function capabilityIconName(definition: ProductCapabilityDefinition) {
+  return (
+    definition.icon ?? (definition.tab === "skills" ? "checklist" : "link")
+  );
+}
+
 export function ProductCapabilityMark({
   definition,
   size = 44,
@@ -37,7 +43,9 @@ export function ProductCapabilityMark({
 
   return (
     <ProductPlaygroundIcon
-      name={definition.tab === "skills" ? "checklist" : "link"}
+      height={size}
+      name={capabilityIconName(definition)}
+      width={size}
     />
   );
 }

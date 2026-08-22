@@ -5,12 +5,10 @@ import {
   type ProductCapabilityTab,
   type ProductLocalizedText,
 } from "./product-playground-data";
+import type { ProductPlaygroundIconName } from "./ProductPlaygroundIcon";
 
 export type ProductCapabilityLifecycle =
-  | "attention"
-  | "available"
-  | "disabled"
-  | "ready";
+  "attention" | "available" | "disabled" | "ready";
 
 export type ProductCapabilityScope = "all-workspaces" | "current-workspace";
 
@@ -42,6 +40,7 @@ export type ProductCapabilityDefinition = {
   category: ProductCapabilityCategory;
   custom: boolean;
   description: ProductLocalizedText;
+  icon?: ProductPlaygroundIconName;
   id: string;
   label: ProductLocalizedText;
   source?: string;
@@ -53,11 +52,13 @@ const STORAGE_KEY = "a3s-playground-capabilities-v1";
 const CHANGE_EVENT = "a3s:playground-capabilities-change";
 
 function slug(value: string) {
-  return value
-    .normalize("NFKC")
-    .toLocaleLowerCase("en")
-    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
-    .replace(/^-|-$/gu, "") || "custom";
+  return (
+    value
+      .normalize("NFKC")
+      .toLocaleLowerCase("en")
+      .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
+      .replace(/^-|-$/gu, "") || "custom"
+  );
 }
 
 export function getProductCapabilityId(
@@ -65,21 +66,27 @@ export function getProductCapabilityId(
   label: string,
 ) {
   const prefix =
-    tab === "assistants" ? "assistant" : tab === "skills" ? "skill" : "connector";
+    tab === "assistants"
+      ? "assistant"
+      : tab === "skills"
+        ? "skill"
+        : "connector";
   return `${prefix}:${slug(label)}`;
 }
 
 function createDefaultRegistry(): ProductCapabilityRegistry {
   const records: Record<string, ProductCapabilityPreference> = {};
-  (Object.keys(capabilityDirectory) as ProductCapabilityTab[]).forEach((tab) => {
-    capabilityDirectory[tab].forEach((capability) => {
-      const id = getProductCapabilityId(tab, capability.label.en);
-      records[id] = {
-        lifecycle: capability.owned ? "ready" : "available",
-        scope: "current-workspace",
-      };
-    });
-  });
+  (Object.keys(capabilityDirectory) as ProductCapabilityTab[]).forEach(
+    (tab) => {
+      capabilityDirectory[tab].forEach((capability) => {
+        const id = getProductCapabilityId(tab, capability.label.en);
+        records[id] = {
+          lifecycle: capability.owned ? "ready" : "available",
+          scope: "current-workspace",
+        };
+      });
+    },
+  );
 
   const documentLibrary = getProductCapabilityId(
     "connectors",
@@ -119,7 +126,9 @@ function normalizeRegistry(value: unknown): ProductCapabilityRegistry {
           ? record.description.slice(0, 240)
           : undefined;
       const source =
-        typeof record.source === "string" ? record.source.slice(0, 500) : undefined;
+        typeof record.source === "string"
+          ? record.source.slice(0, 500)
+          : undefined;
       const normalizedPermissions = Array.isArray(record.permissions)
         ? record.permissions.slice(0, 3).map(Boolean)
         : undefined;
@@ -267,9 +276,7 @@ export function useProductCapabilityRegistry() {
 
   const updateRegistry = useCallback(
     (
-      update: (
-        current: ProductCapabilityRegistry,
-      ) => ProductCapabilityRegistry,
+      update: (current: ProductCapabilityRegistry) => ProductCapabilityRegistry,
     ) => {
       const next = normalizeRegistry(update(registryRef.current));
       registryRef.current = next;

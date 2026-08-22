@@ -9,7 +9,9 @@ import {
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
-type ComposerControlKey = "mode" | "run" | "workspace";
+type ComposerControlKey = "mode" | "run" | "target" | "workspace";
+
+export type ProductComposerExecutionTarget = "local" | "managed";
 
 function ComposerControl({
   activeControl,
@@ -177,6 +179,106 @@ export function ProductComposerModeControl({
             ? "可随时收紧权限；已经开始的高风险操作不会绕过确认。"
             : "You can tighten permissions at any time; in-flight risky actions cannot bypass confirmation."}
       </p>
+    </ComposerControl>
+  );
+}
+
+export function ProductComposerExecutionTargetControl({
+  activeControl,
+  executionTarget,
+  locale,
+  onActiveControlChange,
+  onExecutionTargetChange,
+}: {
+  activeControl: ComposerControlKey | null;
+  executionTarget: ProductComposerExecutionTarget;
+  locale: ProductPlaygroundLocale;
+  onActiveControlChange: (control: ComposerControlKey | null) => void;
+  onExecutionTargetChange: (target: ProductComposerExecutionTarget) => void;
+}) {
+  const zh = locale === "zh";
+  const targets = [
+    {
+      description: zh
+        ? "在所选工作区内运行，文件与命令保持在本机边界内"
+        : "Run in the selected workspace while files and commands remain local",
+      icon: "workspace" as const,
+      id: "local" as const,
+      label: zh ? "本地任务" : "Local task",
+    },
+    {
+      description: zh
+        ? "在托管执行环境中运行，并保留可恢复的任务记录"
+        : "Run in a managed environment with a recoverable execution record",
+      icon: "automation" as const,
+      id: "managed" as const,
+      label: zh ? "托管任务" : "Managed task",
+    },
+  ];
+  const selected =
+    targets.find((target) => target.id === executionTarget) ?? targets[0];
+
+  return (
+    <ComposerControl
+      activeControl={activeControl}
+      control="target"
+      label={
+        zh
+          ? `执行位置：${selected.label}`
+          : `Execution target: ${selected.label}`
+      }
+      onActiveControlChange={onActiveControlChange}
+      panelLabel={zh ? "选择执行位置" : "Choose execution target"}
+      trigger={
+        <>
+          <ProductPlaygroundIcon name={selected.icon} />
+          <span data-setting-label>{selected.label}</span>
+          <ProductPlaygroundIcon name="chevron" />
+        </>
+      }
+    >
+      <header>
+        <span>
+          <ProductPlaygroundIcon name={selected.icon} />
+          <span>
+            <strong>{zh ? "执行位置" : "Execution target"}</strong>
+            <small>
+              {zh
+                ? "选择任务在哪里运行；权限与工作区边界仍单独生效"
+                : "Choose where the task runs; permissions and workspace boundaries still apply"}
+            </small>
+          </span>
+        </span>
+      </header>
+      <div
+        aria-label={zh ? "执行位置" : "Execution target"}
+        data-mode-options
+        role="listbox"
+      >
+        {targets.map((target) => (
+          <button
+            aria-selected={executionTarget === target.id}
+            key={target.id}
+            onClick={() => {
+              onExecutionTargetChange(target.id);
+              onActiveControlChange(null);
+            }}
+            role="option"
+            type="button"
+          >
+            <span>
+              <ProductPlaygroundIcon name={target.icon} />
+            </span>
+            <span>
+              <strong>{target.label}</strong>
+              <small>{target.description}</small>
+            </span>
+            {executionTarget === target.id ? (
+              <ProductPlaygroundIcon name="check" />
+            ) : null}
+          </button>
+        ))}
+      </div>
     </ComposerControl>
   );
 }
@@ -428,7 +530,7 @@ export function ProductComposerRunSettings({
       panelLabel={zh ? "运行设置面板" : "Run settings panel"}
       trigger={
         <>
-          <ProductPlaygroundIcon name="assistant" />
+          <ProductPlaygroundIcon name="model" />
           <span data-setting-label>{currentModelName}</span>
           <i>{currentEffort.label[locale]}</i>
           <ProductPlaygroundIcon name="chevron" />
@@ -489,7 +591,7 @@ export function ProductComposerRunSettings({
             }
             type="button"
           >
-            <ProductPlaygroundIcon name="assistant" />
+            <ProductPlaygroundIcon name="model" />
             {currentModelName}
             <ProductPlaygroundIcon name="chevron" />
           </button>
@@ -565,7 +667,7 @@ export function ProductComposerRunSettings({
         >
           <header>
             <span>
-              <ProductPlaygroundIcon name="assistant" />
+              <ProductPlaygroundIcon name="model" />
               <strong>{zh ? "选择模型" : "Choose a model"}</strong>
             </span>
             <button
@@ -653,7 +755,7 @@ export function ProductComposerRunSettings({
                 type="button"
               >
                 <span data-model-mark>
-                  <ProductPlaygroundIcon name="assistant" />
+                  <ProductPlaygroundIcon name="model" />
                 </span>
                 <span>
                   <strong>{item.name[locale]}</strong>

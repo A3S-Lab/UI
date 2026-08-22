@@ -18,9 +18,11 @@ export type ProductPlaygroundIconName =
   | "collapse"
   | "contract"
   | "copy"
+  | "cut"
   | "database"
   | "document"
   | "download"
+  | "down"
   | "edit"
   | "eye"
   | "eye-off"
@@ -45,6 +47,7 @@ export type ProductPlaygroundIconName =
   | "menu"
   | "microphone"
   | "minus"
+  | "model"
   | "moon"
   | "more"
   | "notification"
@@ -58,6 +61,7 @@ export type ProductPlaygroundIconName =
   | "project"
   | "refresh"
   | "report"
+  | "save"
   | "search"
   | "send"
   | "share"
@@ -67,12 +71,15 @@ export type ProductPlaygroundIconName =
   | "stop"
   | "sun"
   | "task-add"
+  | "thumb-down"
+  | "thumb-up"
   | "trash"
   | "upload"
   | "update"
   | "up"
   | "version"
   | "video"
+  | "volume"
   | "warning"
   | "workspace";
 
@@ -81,9 +88,9 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
   back: <path d="M19 12H5m5 5-5-5 5-5" />,
   assistant: (
     <>
-      <path d="M8 7.5V6a4 4 0 0 1 8 0v1.5" />
-      <rect x="5" y="7.5" width="14" height="13" rx="4" />
-      <path d="M9 12h.01M15 12h.01M9 16h6" />
+      <circle cx="11" cy="8" r="4" />
+      <path d="M3.5 21a7.5 7.5 0 0 1 15 0" />
+      <path d="M18.5 4.5h3M20 3v3" />
     </>
   ),
   automation: (
@@ -149,6 +156,13 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
       <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
     </>
   ),
+  cut: (
+    <>
+      <circle cx="6" cy="7" r="3" />
+      <circle cx="6" cy="17" r="3" />
+      <path d="m8.7 8.5 11.3 6.7M8.7 15.5 20 8.8" />
+    </>
+  ),
   database: (
     <>
       <ellipse cx="12" cy="5" rx="8" ry="3" />
@@ -162,6 +176,7 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   download: <path d="M12 3v12m-5-5 5 5 5-5M4 20h16" />,
+  down: <path d="M12 5v14m-5-5 5 5 5-5" />,
   edit: (
     <>
       <path d="M12 20h9" />
@@ -268,6 +283,13 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   minus: <path d="M5 12h14" />,
+  model: (
+    <>
+      <rect x="5" y="5" width="14" height="14" rx="3" />
+      <rect x="9" y="9" width="6" height="6" rx="1" />
+      <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+    </>
+  ),
   moon: <path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />,
   more: (
     <>
@@ -329,6 +351,12 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
       <path d="M8 8h8M8 12h5M8 16h7" />
     </>
   ),
+  save: (
+    <>
+      <path d="M4 3h13l3 3v15H4Z" />
+      <path d="M8 3v6h8V3M8 21v-7h8v7" />
+    </>
+  ),
   search: (
     <>
       <circle cx="10.5" cy="10.5" r="6.5" />
@@ -374,6 +402,16 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
       <path d="M12 8v6M9 11h6" />
     </>
   ),
+  "thumb-down": (
+    <>
+      <path d="M7 14V4H3v10h4Zm0-9h9.5a2 2 0 0 1 1.9 1.4l2.1 6.5a2 2 0 0 1-1.9 2.6H14l.6 3a2 2 0 0 1-3.6 1.5l-4-6Z" />
+    </>
+  ),
+  "thumb-up": (
+    <>
+      <path d="M7 10v10H3V10h4Zm0 9h9.5a2 2 0 0 0 1.9-1.4l2.1-6.5a2 2 0 0 0-1.9-2.6H14l.6-3A2 2 0 0 0 11 4l-4 6Z" />
+    </>
+  ),
   trash: (
     <>
       <path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6" />
@@ -397,6 +435,12 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     <>
       <rect x="3" y="5" width="14" height="14" rx="3" />
       <path d="m17 10 4-2v8l-4-2ZM9 9l4 3-4 3Z" />
+    </>
+  ),
+  volume: (
+    <>
+      <path d="M4 10h4l5-4v12l-5-4H4Z" />
+      <path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" />
     </>
   ),
   warning: (

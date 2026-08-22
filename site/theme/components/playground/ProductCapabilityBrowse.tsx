@@ -212,7 +212,7 @@ function ProductCapabilityFeatured({
               key={definition.id}
             >
               <span data-capability-mark>
-                <ProductPlaygroundIcon name="checklist" />
+                <ProductCapabilityMark definition={definition} size={20} />
               </span>
               <button
                 className="product-catalog__featured-main"

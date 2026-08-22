@@ -7,7 +7,6 @@ export function ProductProjectPlanToolbar({
   mineOnly,
   onAddTask,
   onMineOnlyChange,
-  onOpenConfiguration,
   onQueryChange,
   query,
 }: {
@@ -15,7 +14,6 @@ export function ProductProjectPlanToolbar({
   mineOnly: boolean;
   onAddTask: () => void;
   onMineOnlyChange: (mineOnly: boolean) => void;
-  onOpenConfiguration: () => void;
   onQueryChange: (query: string) => void;
   query: string;
 }) {
@@ -25,17 +23,10 @@ export function ProductProjectPlanToolbar({
   return (
     <>
       <div data-plan-navigation>
-        <button type="button">
+        <span data-plan-scope>
           <ProductPlaygroundIcon name="folder" />
           {zh ? "全部" : "All"}
-        </button>
-        <button
-          aria-label={zh ? "添加计划任务" : "Add a plan task"}
-          onClick={onAddTask}
-          type="button"
-        >
-          <ProductPlaygroundIcon name="plus" />
-        </button>
+        </span>
       </div>
       <div data-plan-actions>
         <button
@@ -72,14 +63,6 @@ export function ProductProjectPlanToolbar({
             value={query}
           />
         </label>
-        <button
-          aria-label={zh ? "打开项目配置" : "Open project configuration"}
-          onClick={onOpenConfiguration}
-          title={zh ? "项目配置" : "Project configuration"}
-          type="button"
-        >
-          <ProductPlaygroundIcon name="settings" />
-        </button>
         <button data-plan-primary onClick={onAddTask} type="button">
           {zh ? "添加" : "Add"}
         </button>

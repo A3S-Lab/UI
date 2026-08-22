@@ -171,8 +171,8 @@ export function ProductModelSettings({
       <SettingsHeader
         description={
           zh
-            ? "管理默认模型、Provider 连接、模型目录与运行参数；凭据只显示产品交互，不写入文档站。"
-            : "Manage the default model, provider connections, model catalog, and runtime overrides. Credentials remain host-owned."
+            ? "管理默认模型、Provider 连接、模型目录和运行参数。凭据由宿主安全保管。"
+            : "Manage the default model, provider connections, model catalog, and runtime parameters. Credentials are stored securely by the host."
         }
         title={zh ? "模型" : "Models"}
       />
@@ -217,7 +217,7 @@ export function ProductModelSettings({
             {zh ? "重置" : "Reset"}
           </button>
           <button data-primary disabled={!dirty} onClick={save} type="button">
-            <ProductPlaygroundIcon name="check" />
+            <ProductPlaygroundIcon name="save" />
             {zh ? "保存更改" : "Save changes"}
           </button>
         </div>

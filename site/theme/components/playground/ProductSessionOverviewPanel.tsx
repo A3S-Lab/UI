@@ -146,7 +146,7 @@ export function ProductSessionOverviewPanel({
           </div>
           <div>
             <dt>
-              <ProductPlaygroundIcon name="assistant" />
+              <ProductPlaygroundIcon name="model" />
               {zh ? "模型" : "Model"}
             </dt>
             <dd>{details.model}</dd>

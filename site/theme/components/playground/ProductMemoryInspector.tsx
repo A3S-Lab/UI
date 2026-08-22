@@ -127,7 +127,7 @@ export function ProductMemoryInspector({
     >
       <header>
         <span data-kind={record.kind}>
-          <ProductPlaygroundIcon name="knowledge" />
+          <ProductPlaygroundIcon name="brain" />
         </span>
         <div>
           <small>{productMemoryKindCopy[record.kind][locale]}</small>

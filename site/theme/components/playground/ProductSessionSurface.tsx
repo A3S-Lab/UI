@@ -1,3 +1,4 @@
+import { Link } from "@rspress/core/theme";
 import {
   Fragment,
   useCallback,
@@ -6,8 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { Link } from "@rspress/core/theme";
-import type { ProductPlaygroundLocale } from "./product-playground-data";
 import {
   ProductComposer,
   type ProductComposerContext,
@@ -19,6 +18,8 @@ import {
   ProductSessionInspector,
   type ProductSessionInspectorTab,
 } from "./ProductSessionInspector";
+import { ProductSessionMessageActions } from "./ProductSessionMessageActions";
+import type { ProductPlaygroundLocale } from "./product-playground-data";
 import {
   seededSessionArtifacts,
   seededSessionCopy,
@@ -94,13 +95,10 @@ export function ProductSessionSurface({
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
-  const [messageStatus, setMessageStatus] = useState("");
-  const [messageMenuOpen, setMessageMenuOpen] = useState(false);
   const inspectorCloseRef = useRef<HTMLButtonElement>(null);
   const inspectorRef = useRef<HTMLElement>(null);
   const inspectorReturnFocusRef = useRef<HTMLElement | null>(null);
   const inspectorTriggerRef = useRef<HTMLButtonElement>(null);
-  const messageMenuRef = useRef<HTMLDetailsElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -180,30 +178,6 @@ export function ProductSessionSurface({
     };
   }, [closeInspector, inspectorOpen, inspectorOverlay]);
 
-  useEffect(() => {
-    if (!messageMenuOpen) return undefined;
-    const handlePointerDown = (event: PointerEvent) => {
-      if (
-        event.target instanceof Node &&
-        !messageMenuRef.current?.contains(event.target)
-      ) {
-        setMessageMenuOpen(false);
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      setMessageMenuOpen(false);
-      messageMenuRef.current?.querySelector<HTMLElement>("summary")?.focus();
-    };
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [messageMenuOpen]);
-
   const matchCount = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(locale);
     if (!normalizedQuery) return 0;
@@ -227,54 +201,6 @@ export function ProductSessionSurface({
     } catch {
       setShareStatus(zh ? "无法复制链接" : "Unable to copy link");
     }
-  };
-
-  const copyResponse = async () => {
-    try {
-      await navigator.clipboard.writeText(copy.slice(1).join("\n\n"));
-      setMessageStatus(zh ? "回复已复制" : "Response copied");
-    } catch {
-      setMessageStatus(zh ? "无法复制回复" : "Unable to copy response");
-    }
-  };
-
-  const saveResponseToMemory = () => {
-    try {
-      const key = "a3s-playground-saved-responses";
-      const stored = JSON.parse(window.localStorage.getItem(key) ?? "[]");
-      const items = Array.isArray(stored) ? stored : [];
-      window.localStorage.setItem(
-        key,
-        JSON.stringify([
-          {
-            content: copy.slice(1).join("\n\n"),
-            savedAt: new Date().toISOString(),
-            title,
-          },
-          ...items,
-        ]),
-      );
-      setMessageStatus(zh ? "回复已保存到记忆" : "Response saved to memory");
-    } catch {
-      setMessageStatus(
-        zh ? "浏览器未允许保存记忆" : "Browser storage is unavailable",
-      );
-    }
-    setMessageMenuOpen(false);
-  };
-
-  const exportConversation = () => {
-    const body = [`# ${title}`, "", ...copy, ...followUps].join("\n\n");
-    const href = URL.createObjectURL(
-      new Blob([body], { type: "text/markdown;charset=utf-8" }),
-    );
-    const link = document.createElement("a");
-    link.download = `${title.replace(/[\\/:*?"<>|]/gu, "-")}.md`;
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
-    setMessageStatus(zh ? "会话已导出" : "Conversation exported");
-    setMessageMenuOpen(false);
   };
 
   if (created && !taskSessionReady) {
@@ -474,73 +400,15 @@ export function ProductSessionSurface({
                   {created ? `${copy[2]} ${copy[3]}` : copy[3]}
                 </p>
               </div>
-              <footer className="product-session__message-actions">
-                <button
-                  aria-label={zh ? "复制回复" : "Copy response"}
-                  onClick={copyResponse}
-                  type="button"
-                >
-                  <ProductPlaygroundIcon name="copy" />
-                </button>
-                <button
-                  aria-label={zh ? "回复有帮助" : "Helpful response"}
-                  onClick={() =>
-                    setMessageStatus(
-                      zh ? "感谢反馈" : "Thanks for the feedback",
-                    )
-                  }
-                  type="button"
-                >
-                  <ProductPlaygroundIcon name="check" />
-                </button>
-                <details
-                  className="product-session__message-menu"
-                  onToggle={(event) =>
-                    setMessageMenuOpen(event.currentTarget.open)
-                  }
-                  open={messageMenuOpen}
-                  ref={messageMenuRef}
-                >
-                  <summary
-                    aria-label={zh ? "更多回复操作" : "More response actions"}
-                  >
-                    <ProductPlaygroundIcon name="more" />
-                  </summary>
-                  <div role="menu">
-                    <button
-                      onClick={() => {
-                        openInspector(
-                          "artifacts",
-                          messageMenuRef.current?.querySelector("summary"),
-                        );
-                        setMessageMenuOpen(false);
-                      }}
-                      role="menuitem"
-                      type="button"
-                    >
-                      <ProductPlaygroundIcon name="document" />
-                      {zh ? "查看交付产物" : "Review deliverables"}
-                    </button>
-                    <button
-                      onClick={saveResponseToMemory}
-                      role="menuitem"
-                      type="button"
-                    >
-                      <ProductPlaygroundIcon name="brain" />
-                      {zh ? "保存到记忆" : "Save to memory"}
-                    </button>
-                    <button
-                      onClick={exportConversation}
-                      role="menuitem"
-                      type="button"
-                    >
-                      <ProductPlaygroundIcon name="download" />
-                      {zh ? "导出会话" : "Export conversation"}
-                    </button>
-                  </div>
-                </details>
-                <output aria-live="polite">{messageStatus}</output>
-              </footer>
+              <ProductSessionMessageActions
+                exportContent={[...copy, ...followUps]}
+                locale={locale}
+                onOpenArtifacts={(returnFocus) =>
+                  openInspector("artifacts", returnFocus)
+                }
+                responseText={copy.slice(1).join("\n\n")}
+                title={title}
+              />
             </article>
           </li>
           {followUps.map((message, index) => (

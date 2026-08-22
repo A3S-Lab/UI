@@ -10,6 +10,7 @@ import {
   type SpreadsheetContent,
 } from "@a3s-lab/office/core";
 import {
+  defaultPdfiumWasmUrl,
   DocumentEditor,
   PdfViewer,
   PresentationEditor,
@@ -22,6 +23,10 @@ import { getProductWorkspaceFile } from "./product-workspace-files";
 import { useProductAppearance } from "./useProductAppearance";
 
 type OfficeLoadState = "error" | "loading" | "ready";
+type SeededOfficeEntry = {
+  artifact: OfficeArtifact;
+  pdfSource: Blob | null;
+};
 
 export function ProductOfficeWorkbench({
   entry,
@@ -33,10 +38,20 @@ export function ProductOfficeWorkbench({
 }: ProductFileSurfaceProps) {
   const zh = locale === "zh";
   const { mode: colorMode } = useProductAppearance();
-  const [artifact, setArtifact] = useState<OfficeArtifact | null>(null);
+  const [initialSeed] = useState(() => ({
+    entryId: entry.id,
+    value: createSeededOfficeEntry(entry),
+  }));
+  const [artifact, setArtifact] = useState<OfficeArtifact | null>(
+    initialSeed.value?.artifact ?? null,
+  );
   const [error, setError] = useState("");
-  const [loadState, setLoadState] = useState<OfficeLoadState>("loading");
-  const [pdfSource, setPdfSource] = useState<Blob | null>(null);
+  const [loadState, setLoadState] = useState<OfficeLoadState>(
+    initialSeed.value ? "ready" : "loading",
+  );
+  const [pdfSource, setPdfSource] = useState<Blob | null>(
+    initialSeed.value?.pdfSource ?? null,
+  );
   const [progress, setProgress] = useState<OfficeFileImportProgress | null>(
     null,
   );
@@ -95,30 +110,14 @@ export function ProductOfficeWorkbench({
             title: fileTitle(entry.name),
           });
           if (kind === "pdf") setPdfSource(workspaceFile.file);
-        } else if (kind === "pdf") {
-          const source = createSeedPdf();
-          const now = Date.now();
-          setPdfSource(source);
-          setArtifact({
-            content: { pageCount: 2, type: "pdf" },
-            createdAt: now,
-            favorite: false,
-            id: createOfficeId("playground-pdf"),
-            kind: "pdf",
-            lastOpenedAt: now,
-            revision: 1,
-            source: {
-              contentType: "application/pdf",
-              name: entry.name,
-              size: source.size,
-              updatedAt: now,
-            },
-            title: fileTitle(entry.name),
-            updatedAt: now,
-          });
         } else {
-          const seeded = createArtifact(templateForKind(kind));
-          setArtifact({ ...seeded, title: fileTitle(entry.name) });
+          const seeded =
+            initialSeed.entryId === entry.id
+              ? initialSeed.value
+              : createSeededOfficeEntry(entry);
+          if (!seeded) throw new Error("Office seed data is not available.");
+          setArtifact(seeded.artifact);
+          setPdfSource(seeded.pdfSource);
         }
         if (!active) return;
         setLoadState("ready");
@@ -144,6 +143,7 @@ export function ProductOfficeWorkbench({
     entry.name,
     entry.workbench,
     entry.workspaceFileId,
+    initialSeed,
     retryRevision,
     zh,
   ]);
@@ -327,6 +327,7 @@ export function ProductOfficeWorkbench({
           }}
           sourceKey={`${artifact.id}:${artifact.revision}`}
           theme={colorMode}
+          wasmUrl={defaultPdfiumWasmUrl}
         />
       </section>
     );
@@ -341,6 +342,44 @@ function templateForKind(
   if (kind === "spreadsheet") return "quarterly-plan";
   if (kind === "presentation") return "strategy-deck";
   return "project-brief";
+}
+
+function createSeededOfficeEntry(
+  entry: ProductFileSurfaceProps["entry"],
+): SeededOfficeEntry | null {
+  const kind = entry.workbench;
+  if (!kind || kind === "code" || entry.workspaceFileId) return null;
+
+  if (kind !== "pdf") {
+    const artifact = createArtifact(templateForKind(kind));
+    return {
+      artifact: { ...artifact, title: fileTitle(entry.name) },
+      pdfSource: null,
+    };
+  }
+
+  const pdfSource = createSeedPdf();
+  const now = Date.now();
+  return {
+    artifact: {
+      content: { pageCount: 2, type: "pdf" },
+      createdAt: now,
+      favorite: false,
+      id: createOfficeId("playground-pdf"),
+      kind: "pdf",
+      lastOpenedAt: now,
+      revision: 1,
+      source: {
+        contentType: "application/pdf",
+        name: entry.name,
+        size: pdfSource.size,
+        updatedAt: now,
+      },
+      title: fileTitle(entry.name),
+      updatedAt: now,
+    },
+    pdfSource,
+  };
 }
 
 function fileTitle(name: string) {

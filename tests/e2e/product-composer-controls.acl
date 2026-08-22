@@ -13,7 +13,7 @@ suite "a3s-ui-product-composer-controls" {
 
         click "open-context-for-file" { target = role("button", "添加任务上下文") }
         click "open-file-menu" { target = role("menuitem", "添加文件") }
-        click "choose-workspace-file" { target = role("menuitem", "工作区文件") }
+        click "choose-workspace-file" { target = css("[data-composer-attachment-submenu=file] [role=menuitem]:nth-child(2)") }
         expect "workspace-tree" { visible = css("[data-composer-suggestions][aria-label='工作区文件'] [role=tree]") }
         screenshot "workspace-picker-evidence" { path = "product/composer-workspace-picker-desktop.png" }
         click "expand-css-folder" { target = css("[data-composer-suggestions] [role=treeitem]:nth-child(2)") }
@@ -21,19 +21,19 @@ suite "a3s-ui-product-composer-controls" {
         expect "file-chip" { visible = css("[data-composer-resources] [data-resource-kind=file]") }
 
         click "open-context-for-skill" { target = role("button", "添加任务上下文") }
-        click "choose-skill" { target = role("menuitem", "技能") }
+        click "choose-skill" { target = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(4)") }
         expect "skill-list" { visible = css("[data-composer-suggestions][aria-label='选择技能'] [role=listbox]") }
         click "attach-skill" { target = css("[data-composer-suggestions] [role=option]:first-child") }
         expect "skill-chip" { visible = css("[data-composer-resources] [data-resource-kind=skill]") }
 
         click "open-context-for-assistant" { target = role("button", "添加任务上下文") }
-        click "choose-assistant" { target = role("menuitem", "专家") }
+        click "choose-assistant" { target = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(3)") }
         expect "assistant-picker" { visible = css("[data-composer-resource-picker=assistant][role=dialog]") }
         click "attach-assistant" { target = css("[data-composer-resource-picker=assistant] [role=option][data-configured=true]:first-child") }
         expect "assistant-chip" { visible = css("[data-composer-resources] [data-resource-kind=assistant]") }
 
         click "open-context-for-connector" { target = role("button", "添加任务上下文") }
-        click "choose-connector" { target = role("menuitem", "连接器") }
+        click "choose-connector" { target = css("[data-composer-attachment-menu] [role=menuitem]:nth-child(5)") }
         expect "connector-picker" { visible = css("[data-composer-resource-picker=connector][role=dialog]") }
         click "attach-connector" { target = css("[data-composer-resource-picker=connector] [role=option][data-configured=true]:first-child") }
         expect "connector-chip" { visible = css("[data-composer-resources] [data-resource-kind=connector]") }
@@ -59,7 +59,7 @@ suite "a3s-ui-product-composer-controls" {
         click "reopen-models" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
         click "configure-models" { target = role("button", "配置模型与提供方") }
         expect "model-settings-open" { visible = css(".product-settings[open] > aside button[aria-current=page]") }
-        expect "model-settings-heading" { text = "管理默认模型、Provider 连接、模型目录与运行参数；凭据只显示产品交互，不写入文档站。" }
+        expect "model-settings-heading" { text = "管理默认模型、Provider 连接、模型目录和运行参数。凭据由宿主安全保管。" }
         click "close-model-settings" { target = role("button", "关闭设置") }
 
         click "open-execution-mode" { target = css(".product-start [data-composer-control=mode] > button") }

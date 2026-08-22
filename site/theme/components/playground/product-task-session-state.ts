@@ -101,6 +101,8 @@ export type ProductTaskContextDetails = {
 
 function normalizeContext(value: unknown): ProductComposerContext {
   const context = value as Partial<ProductComposerContext> | null;
+  const executionTarget =
+    context?.executionTarget === "managed" ? "managed" : "local";
   const rawModel = context?.model as string | undefined;
   const model =
     rawModel === "default" || rawModel === "reasoner"
@@ -157,6 +159,7 @@ function normalizeContext(value: unknown): ProductComposerContext {
   return {
     deepResearch: context?.deepResearch === true,
     effort,
+    executionTarget,
     mode,
     model,
     permissions,

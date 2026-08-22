@@ -211,7 +211,7 @@ export function ProductFileArtifactsSurface({
                         </span>
                         <span>{artifact.name}</span>
                         {artifact.favorite ? (
-                          <ProductPlaygroundIcon data-favorite name="pin" />
+                          <ProductPlaygroundIcon data-favorite name="heart" />
                         ) : null}
                       </button>
                     </th>

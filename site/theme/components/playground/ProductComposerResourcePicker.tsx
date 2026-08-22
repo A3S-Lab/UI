@@ -99,7 +99,7 @@ export function ProductComposerResourcePicker({
       <header>
         <span>
           <ProductPlaygroundIcon
-            name={kind === "assistant" ? "assistant" : "knowledge"}
+            name={kind === "assistant" ? "assistant" : "link"}
           />
           <span>
             <strong>{title}</strong>

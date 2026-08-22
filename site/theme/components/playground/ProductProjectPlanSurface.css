@@ -135,40 +135,51 @@
 }
 
 .product-project-plan [data-plan-check] {
+  position: relative;
   display: grid;
   width: 1.125rem;
   height: 1.125rem;
   padding: 0;
-  border: 1.5px dashed var(--ui-line-strong);
-  border-radius: 50%;
-  background: var(--ui-paper);
+  border: 0;
+  background: transparent;
   color: var(--ui-green);
   cursor: pointer;
   place-items: center;
 }
 
-.product-project-plan [data-plan-check]:hover {
+.product-project-plan [data-plan-check]::before {
+  position: absolute;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1.5px dashed var(--ui-line-strong);
+  border-radius: 50%;
+  background: var(--ui-paper);
+  content: "";
+}
+
+.product-project-plan [data-plan-check]:hover::before {
   border-color: var(--ui-blue);
 }
 
-.product-project-plan__group[data-group="active"] [data-plan-check] {
+.product-project-plan__group[data-group="active"] [data-plan-check]::before {
   border-style: solid;
   border-color: color-mix(in srgb, var(--ui-blue) 62%, var(--ui-line));
   box-shadow: none;
   background: var(--ui-blue);
 }
 
-.product-project-plan__group[data-group="paused"] [data-plan-check] {
+.product-project-plan__group[data-group="paused"] [data-plan-check]::before {
   border-style: solid;
   border-color: color-mix(in srgb, var(--ui-amber) 62%, var(--ui-line));
 }
 
-.product-project-plan__group[data-group="complete"] [data-plan-check] {
+.product-project-plan__group[data-group="complete"] [data-plan-check]::before {
   border-style: solid;
   border-color: var(--ui-green);
 }
 
 .product-project-plan [data-plan-check] svg {
+  position: relative;
   width: 0.75rem;
   height: 0.75rem;
   stroke-width: 2.4;
@@ -353,6 +364,38 @@
 
   .product-project-plan [data-plan-create] button:last-child {
     grid-column: 3;
+  }
+}
+
+@media (pointer: coarse) {
+  .product-project-plan__group > header {
+    min-height: 3.5rem;
+    grid-template-columns:
+      2.75rem 1.5rem max-content 2rem minmax(0, 1fr)
+      2.75rem;
+  }
+
+  .product-project-plan [data-plan-collapse],
+  .product-project-plan [data-plan-add-task],
+  .product-project-plan [data-plan-check] {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .product-project-plan [data-plan-task] {
+    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem 5.5rem;
+  }
+
+  .product-project-plan [data-plan-task] > a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+}
+
+@media (pointer: coarse) and (max-width: 42rem) {
+  .product-project-plan [data-plan-task] {
+    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
   }
 }
 

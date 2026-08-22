@@ -87,7 +87,7 @@ export function ProductFollowUpQueue({
         <div>
           {running ? (
             <button onClick={paused ? onResume : onPause} type="button">
-              <ProductPlaygroundIcon name={paused ? "refresh" : "pause"} />
+              <ProductPlaygroundIcon name={paused ? "play" : "pause"} />
               {paused
                 ? zh
                   ? "恢复后续"
@@ -98,7 +98,7 @@ export function ProductFollowUpQueue({
             </button>
           ) : (
             <button onClick={onRunNext} type="button">
-              <ProductPlaygroundIcon name="up" />
+              <ProductPlaygroundIcon name="play" />
               {paused
                 ? zh
                   ? "恢复并执行"
@@ -224,7 +224,7 @@ export function ProductFollowUpQueue({
                       onClick={() => onMove(item.id, 1)}
                       type="button"
                     >
-                      <ProductPlaygroundIcon name="up" />
+                      <ProductPlaygroundIcon name="down" />
                     </button>
                     <button
                       aria-label={

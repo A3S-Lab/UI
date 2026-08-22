@@ -223,25 +223,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  .product-settings {
-    width: calc(100vw - 2rem);
-    height: calc(100dvh - 2rem);
-    grid-template-columns: 12rem minmax(0, 1fr);
-  }
-
-  .product-settings > aside {
-    padding-inline: 0.5rem;
-  }
-
-  .product-settings > aside button {
-    padding-inline: 0.5rem;
-    font-size: 0.8125rem;
-  }
-
-  .product-settings > main {
-    padding-inline: 1rem;
-  }
 }
 
 @media (max-width: 34rem) {
@@ -326,71 +307,6 @@
   .product-projects__templates button {
     min-height: 5.5rem;
   }
-
-  .product-settings {
-    width: 100vw;
-    height: 100dvh;
-    border: 0;
-    border-radius: 0;
-    grid-template-columns: minmax(0, 1fr) 3.25rem;
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .product-settings > aside {
-    display: flex;
-    min-width: 0;
-    min-height: 3.5rem;
-    padding: 0.5rem;
-    border-inline-end: 0;
-    border-bottom: 1px solid var(--ui-line);
-    grid-column: 1;
-    grid-row: 1;
-    overflow-x: auto;
-  }
-
-  .product-settings > aside button {
-    width: auto;
-    min-width: max-content;
-    flex: 0 0 auto;
-  }
-
-  .product-settings__close {
-    position: static;
-    z-index: 3;
-    margin-block: 0.5rem;
-    margin-inline: 0 0.5rem;
-    border: 1px solid var(--ui-line);
-    background: var(--ui-paper);
-    box-shadow:
-      0 1px 2px rgb(0 0 0 / 4%),
-      0 1px 6px rgb(0 0 0 / 5%);
-    grid-column: 2;
-    grid-row: 1;
-    place-self: center;
-  }
-
-  .product-settings > main {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .product-settings__featured {
-    min-height: 16rem;
-  }
-
-  .product-settings__integration {
-    grid-template-columns: 1fr;
-  }
-
-  .product-settings__integration button {
-    justify-self: start;
-  }
-
-  .product-settings__rows > label {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
 }
 
 @media (pointer: coarse) {
@@ -400,8 +316,7 @@
   .product-catalog button,
   .product-projects button,
   .product-automation button,
-  .product-resources button,
-  .product-settings > aside button {
+  .product-resources button {
     min-height: 2.75rem;
   }
 }

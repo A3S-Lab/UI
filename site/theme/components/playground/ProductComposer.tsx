@@ -12,10 +12,12 @@ import {
   type AgentComposerTrigger,
 } from "../../../../src/integrations/tiptap/react.js";
 import {
+  ProductComposerExecutionTargetControl,
   ProductComposerModeControl,
   ProductComposerRunSettings,
   ProductComposerWorkspaceControl,
   type ComposerControlKey,
+  type ProductComposerExecutionTarget,
 } from "./ProductComposerRunSettings";
 import {
   ProductComposerSuggestions,
@@ -49,6 +51,7 @@ import { useProductComposerSpeech } from "./useProductComposerSpeech";
 export type ProductComposerContext = {
   deepResearch: boolean;
   effort: ProductComposerEffort;
+  executionTarget: ProductComposerExecutionTarget;
   mode: "agent" | "answer" | "plan";
   model: ProductComposerModel["id"];
   permissions: "ask" | "edit" | "read";
@@ -62,6 +65,7 @@ export function ProductComposer({
   busy = false,
   compact = false,
   contextual = false,
+  docked = false,
   initialValue = "",
   initialResources = [],
   initialWorkspace = "",
@@ -70,12 +74,14 @@ export function ProductComposer({
   onStop,
   onSubmit,
   placeholder,
+  showExecutionTarget = false,
   showPermissions = true,
   submitSuccessMessage,
 }: {
   busy?: boolean;
   compact?: boolean;
   contextual?: boolean;
+  docked?: boolean;
   initialValue?: string;
   initialResources?: readonly ProductComposerResource[];
   initialWorkspace?: ProductComposerContext["workspace"];
@@ -84,6 +90,7 @@ export function ProductComposer({
   onStop?: () => void;
   onSubmit?: (value: string, context: ProductComposerContext) => void;
   placeholder?: string;
+  showExecutionTarget?: boolean;
   showPermissions?: boolean;
   submitSuccessMessage?: string;
 }) {
@@ -106,7 +113,10 @@ export function ProductComposer({
   const [deepResearch, setDeepResearch] = useState(false);
   const [draft, setDraft] = useState(initialValue);
   const [dropActive, setDropActive] = useState(false);
+  const [focused, setFocused] = useState(false);
   const [effort, setEffort] = useState<ProductComposerEffort>("medium");
+  const [executionTarget, setExecutionTarget] =
+    useState<ProductComposerExecutionTarget>("local");
   const [manualSuggestionKind, setManualSuggestionKind] =
     useState<ProductComposerSuggestionKind | null>(null);
   const [localTransferIds, setLocalTransferIds] = useState<string[]>([]);
@@ -129,6 +139,21 @@ export function ProductComposer({
     return record ? [record] : [];
   });
   const menuKind = trigger?.kind ?? manualSuggestionKind;
+  const engaged =
+    !docked ||
+    focused ||
+    busy ||
+    Boolean(draft.trim()) ||
+    resources.length > 0 ||
+    localTransfers.length > 0 ||
+    Boolean(
+      activeControl ||
+      attachmentMenuOpen ||
+      attachmentSubmenu ||
+      resourcePickerKind ||
+      menuKind ||
+      dropActive,
+    );
   const { listening, speechSupported, toggleSpeechInput } =
     useProductComposerSpeech({
       editorRef,
@@ -204,7 +229,9 @@ export function ProductComposer({
   };
 
   useEffect(() => {
-    const completed = localTransfers.filter((record) => record.state === "ready");
+    const completed = localTransfers.filter(
+      (record) => record.state === "ready",
+    );
     if (completed.length === 0) return;
     setResources((current) => {
       const ids = new Set(current.map((resource) => resource.id));
@@ -333,6 +360,7 @@ export function ProductComposer({
     onSubmit(normalizedDraft, {
       deepResearch,
       effort,
+      executionTarget,
       mode,
       model,
       permissions,
@@ -378,11 +406,24 @@ export function ProductComposer({
       className="agent-composer product-composer"
       data-compact={compact ? "true" : undefined}
       data-contextual={contextual ? "true" : undefined}
+      data-docked={docked ? "true" : undefined}
+      data-engaged={engaged ? "true" : "false"}
       data-layout={compact ? "compact" : "default"}
       data-task-mode={mode}
       data-state={busy ? "busy" : "ready"}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
+      onBlurCapture={(event) => {
+        const nextTarget = event.relatedTarget;
+        if (
+          nextTarget instanceof Node &&
+          event.currentTarget.contains(nextTarget)
+        ) {
+          return;
+        }
+        setFocused(false);
+      }}
+      onFocusCapture={() => setFocused(true)}
       onDragOver={(event) => {
         if (!event.dataTransfer.types.includes("Files")) return;
         event.preventDefault();
@@ -407,7 +448,7 @@ export function ProductComposer({
               <ProductPlaygroundIcon
                 name={
                   resource.kind === "skill"
-                    ? "brain"
+                    ? "checklist"
                     : resource.kind === "assistant"
                       ? "assistant"
                       : resource.kind === "connector"
@@ -466,10 +507,14 @@ export function ProductComposer({
               </small>
               {record.state === "error" ? (
                 <button
-                  aria-label={zh ? `重试 ${record.name}` : `Retry ${record.name}`}
+                  aria-label={
+                    zh ? `重试 ${record.name}` : `Retry ${record.name}`
+                  }
                   data-composer-action="retry-resource"
                   onClick={() => {
-                    setStatus(zh ? "正在重试文件导入…" : "Retrying file import…");
+                    setStatus(
+                      zh ? "正在重试文件导入…" : "Retrying file import…",
+                    );
                     void retryProductWorkspaceFile(record.id);
                   }}
                   type="button"
@@ -478,7 +523,9 @@ export function ProductComposer({
                 </button>
               ) : null}
               <button
-                aria-label={zh ? `取消 ${record.name}` : `Cancel ${record.name}`}
+                aria-label={
+                  zh ? `取消 ${record.name}` : `Cancel ${record.name}`
+                }
                 data-composer-action="remove-resource"
                 onClick={() => {
                   removeProductWorkspaceFiles([record.id]);
@@ -630,7 +677,7 @@ export function ProductComposer({
                   role="menuitem"
                   type="button"
                 >
-                  <ProductPlaygroundIcon name="brain" />
+                  <ProductPlaygroundIcon name="checklist" />
                   <span>{zh ? "技能" : "Skills"}</span>
                   <kbd>$</kbd>
                 </button>
@@ -642,7 +689,7 @@ export function ProductComposer({
                   role="menuitem"
                   type="button"
                 >
-                  <ProductPlaygroundIcon name="knowledge" />
+                  <ProductPlaygroundIcon name="link" />
                   <span>{zh ? "连接器" : "Connectors"}</span>
                   <ProductPlaygroundIcon name="chevron" />
                 </button>
@@ -931,6 +978,22 @@ export function ProductComposer({
           aria-label={zh ? "任务边界" : "Task boundary"}
           data-composer-context-bar
         >
+          {showExecutionTarget ? (
+            <div data-context-target>
+              <ProductComposerExecutionTargetControl
+                activeControl={activeControl}
+                executionTarget={executionTarget}
+                locale={locale}
+                onActiveControlChange={setActiveControl}
+                onExecutionTargetChange={(next) => {
+                  setExecutionTarget(next);
+                  setStatus(
+                    zh ? "执行位置已更新。" : "Execution target updated.",
+                  );
+                }}
+              />
+            </div>
+          ) : null}
           <div data-context-workspace>
             <ProductComposerWorkspaceControl
               activeControl={activeControl}

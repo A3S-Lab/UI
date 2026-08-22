@@ -18,6 +18,7 @@ suite "a3s-ui-product-session-detail" {
         expect "details-hidden-by-default" { visible = css("[data-product-surface=session]:not(:has(aside[aria-label='任务详情']))") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
         expect "completed-plan-collapsed" { visible = css("details.product-execution-plan[data-state=complete]:not([open])") }
+        expect "response-actions-match-icons" { visible = css(".product-session__message-actions:has(button[aria-label='复制回复'] svg[data-icon=copy]):has(button[aria-label='回复有帮助'] svg[data-icon=thumb-up]):has(button[aria-label='回复没有帮助'] svg[data-icon=thumb-down]):has(button[aria-label='朗读回复'] svg[data-icon=volume]):has(summary[aria-label='更多回复操作'] svg[data-icon=more])") }
 
         click "expand-completed-plan" { target = css(".product-execution-plan > summary") }
         expect "completed-plan-steps-visible" { visible = css(".product-execution-plan[open] ol") }
@@ -109,6 +110,10 @@ suite "a3s-ui-product-session-detail" {
         expect "mobile-details-full-width" { visible = css(".product-session-inspector[role=dialog]") }
 
         screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
+        press "close-mobile-details" { key = "Escape" }
+        expect "mobile-details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
+        expect "mobile-session-restored" { visible = css("[data-product-surface=session]:has(.product-session__viewport):has(.product-session__composer .ProseMirror):not(:has(aside[aria-label='任务详情']))") }
+        screenshot "mobile-restored-evidence" { path = "product/session-detail-mobile-restored.png" }
         console "console" { path = "product/session-detail-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/session-detail-mobile-page-errors.json" clear = false }
     }

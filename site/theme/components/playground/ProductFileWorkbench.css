@@ -66,6 +66,17 @@
   outline-offset: 2px;
 }
 
+.a3s-product-application
+  .product-file-workbench__header
+  > button[data-file-workbench-close]:focus-visible {
+  border-color: color-mix(in srgb, var(--ui-blue) 38%, var(--ui-line));
+  outline: 0;
+  outline-offset: 0;
+  background: var(--ui-panel);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--ui-blue) 12%, transparent);
+}
+
 .product-file-workbench__header svg {
   width: 0.9375rem;
   height: 0.9375rem;
@@ -575,10 +586,7 @@
     box-shadow 150ms ease;
 }
 
-.product-file-workbench
-  [data-file-assistant]
-  > form
-  textarea:focus-visible {
+.product-file-workbench [data-file-assistant] > form textarea:focus-visible {
   border-color: color-mix(in srgb, var(--ui-ink) 20%, var(--ui-line-strong));
   outline: 0;
   box-shadow: 0 1px 2px rgb(15 23 42 / 5%);

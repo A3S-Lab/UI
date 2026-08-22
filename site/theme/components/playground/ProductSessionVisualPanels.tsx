@@ -80,7 +80,7 @@ export function ProductSessionPreviewPanel({
               onClick={() => onExpandedChange(false)}
               type="button"
             >
-              <ProductPlaygroundIcon name="close" />
+              <ProductPlaygroundIcon name="contract" />
               {zh ? "收起" : "Collapse"}
             </button>
           </header>
@@ -135,7 +135,7 @@ export function ProductSessionPreviewPanel({
                 onClick={() => onExpandedChange(true)}
                 type="button"
               >
-                <ProductPlaygroundIcon name="eye" />
+                <ProductPlaygroundIcon name="expand" />
               </button>
             </span>
           </header>

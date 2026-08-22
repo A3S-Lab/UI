@@ -14,19 +14,22 @@ export function ProductFileWorkbench({
   entry,
   locale,
   onBack,
+  presentation = "workspace",
 }: {
   entry: ProductFileEntry;
   locale: ProductPlaygroundLocale;
   onBack: () => void;
+  presentation?: "dialog" | "workspace";
 }) {
   const zh = locale === "zh";
   const kind = entry.workbench ?? "code";
+  const dialogPresentation = presentation === "dialog";
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [assistantPrompt, setAssistantPrompt] = useState("");
   const [assistantQuestion, setAssistantQuestion] = useState("");
   const [fileName, setFileName] = useState(entry.name);
   const [mode, setMode] = useState<"edit" | "preview">(
-    kind === "pdf" ? "preview" : "edit",
+    kind === "pdf" || dialogPresentation ? "preview" : "edit",
   );
   const [proposalState, setProposalState] = useState<
     "idle" | "accepted" | "dismissed"
@@ -91,19 +94,38 @@ export function ProductFileWorkbench({
 
   return (
     <section
-      aria-label={zh ? `编辑 ${fileName}` : `Edit ${fileName}`}
+      aria-label={
+        dialogPresentation
+          ? zh
+            ? `预览 ${fileName}`
+            : `Preview ${fileName}`
+          : zh
+            ? `编辑 ${fileName}`
+            : `Edit ${fileName}`
+      }
       className="product-file-workbench"
       data-assistant-open={assistantOpen ? "true" : undefined}
+      data-presentation={presentation}
       data-workbench-kind={kind}
     >
       <header className="product-file-workbench__header">
         <button
-          aria-label={zh ? "返回文件" : "Back to files"}
-          data-file-workbench-back
+          aria-label={
+            dialogPresentation
+              ? zh
+                ? "关闭文件预览"
+                : "Close file preview"
+              : zh
+                ? "返回文件"
+                : "Back to files"
+          }
+          autoFocus={dialogPresentation}
+          data-file-workbench-back={dialogPresentation ? undefined : ""}
+          data-file-workbench-close={dialogPresentation ? "" : undefined}
           onClick={onBack}
           type="button"
         >
-          <ProductPlaygroundIcon name="back" />
+          <ProductPlaygroundIcon name={dialogPresentation ? "close" : "back"} />
         </button>
         <span data-file-workbench-icon>
           <ProductPlaygroundIcon name={workbenchIcon(kind)} />
@@ -164,7 +186,7 @@ export function ProductFileWorkbench({
               onClick={() => save()}
               type="button"
             >
-              <ProductPlaygroundIcon name="check" />
+              <ProductPlaygroundIcon name="save" />
               <span>{zh ? "保存" : "Save"}</span>
             </button>
           ) : null}

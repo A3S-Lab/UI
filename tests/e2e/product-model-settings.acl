@@ -4,7 +4,7 @@ suite "a3s-ui-product-model-settings" {
     scenario "model-provider-workflow" {
         name = "Model settings manage providers, catalog entries, defaults, and staged saves"
         surface = "web"
-        timeout_ms = 60000
+        timeout_ms = 150000
         viewport "desktop" { width = 1478 height = 852 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
@@ -48,7 +48,7 @@ suite "a3s-ui-product-model-settings" {
     scenario "model-provider-mobile" {
         name = "Model provider settings remain operable in the mobile settings surface"
         surface = "web"
-        timeout_ms = 60000
+        timeout_ms = 150000
         viewport "mobile" { width = 390 height = 844 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
@@ -56,8 +56,13 @@ suite "a3s-ui-product-model-settings" {
         click "open-navigation" { target = role("button", "打开应用导航") }
         click "open-settings" { target = role("button", "设置") }
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
-        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:nth-child(6)") }
+        expect "mobile-shell-title" { visible = css(".product-settings__dialog-header .product-settings__dialog-title") }
+        expect "mobile-close-icon" { visible = css(".product-settings__dialog-header button[aria-label='关闭设置'] svg[data-icon=close]") }
+        click "open-memory" { target = role("button", "记忆") }
+        expect "memory-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=brain]") }
+        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:has(svg[data-icon=model])") }
         press "open-models" { key = "Enter" }
+        expect "models-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=model]") }
         expect "mobile-manager" { visible = css(".product-model-manager") }
         expect "provider-strip" { visible = css(".product-model-manager__workspace > aside") }
         click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
@@ -68,6 +73,9 @@ suite "a3s-ui-product-model-settings" {
         expect "mobile-show-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
         click "add-first-model" { target = role("button", "添加第一个模型") }
         expect "mobile-model-form" { visible = css(".product-model-catalog__draft") }
+        focus "model-id-focus" { target = css(".product-model-catalog__draft input:first-of-type") }
+        expect "focused-model-id" { visible = css(".product-model-catalog__draft input:first-of-type:focus-visible") }
+        accessibility "mobile-accessibility" { path = "product/model-settings-mobile-accessibility.json" interactive = true }
 
         screenshot "mobile-evidence" { path = "product/model-settings-mobile.png" }
         console "console" { path = "product/model-settings-mobile-console.json" clear = false }

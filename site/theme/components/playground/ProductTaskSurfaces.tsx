@@ -327,6 +327,7 @@ export function ProductProjectsSurface({
           <label>
             <ProductPlaygroundIcon name="search" />
             <input
+              aria-label={zh ? "搜索项目" : "Search projects"}
               onChange={(event) => setQuery(event.currentTarget.value)}
               placeholder={zh ? "搜索项目" : "Search projects"}
               type="search"
@@ -341,7 +342,7 @@ export function ProductProjectsSurface({
             </span>
             <strong>{productProjectName[locale]}</strong>
             <small>{zh ? "最近更新 · 今天" : "Updated today"}</small>
-            <ProductPlaygroundIcon name="more" />
+            <ProductPlaygroundIcon data-project-destination name="arrow" />
           </Link>
         ) : (
           <p role="status">{zh ? "没有匹配的项目" : "No matching projects"}</p>

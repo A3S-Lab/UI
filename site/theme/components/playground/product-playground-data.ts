@@ -213,7 +213,7 @@ export const automationTemplates: readonly {
     },
   },
   {
-    icon: "project",
+    icon: "filter",
     label: { en: "Issue intake triage", zh: "问题接收分诊" },
     description: {
       en: "Group new issues, flag duplicates, and assign an owner.",
@@ -253,7 +253,7 @@ export const automationTemplates: readonly {
     },
   },
   {
-    icon: "automation",
+    icon: "refresh",
     label: { en: "Nightly recovery drill", zh: "夜间恢复演练" },
     description: {
       en: "Exercise a bounded recovery path and retain the evidence.",
@@ -334,6 +334,7 @@ export const capabilityDirectory: Record<
   readonly {
     category: ProductCapabilityCategory;
     description: ProductLocalizedText;
+    icon?: ProductPlaygroundIconName;
     label: ProductLocalizedText;
     owned?: boolean;
     tag: ProductLocalizedText;
@@ -454,6 +455,7 @@ export const capabilityDirectory: Record<
   skills: [
     {
       category: "engineering",
+      icon: "search",
       label: { en: "Repository inspection", zh: "仓库巡检" },
       description: {
         en: "Inspects structure, status, ownership, and focused changes.",
@@ -464,6 +466,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "checklist",
       label: { en: "Test execution", zh: "测试执行" },
       description: {
         en: "Runs bounded suites and preserves failures as evidence.",
@@ -474,6 +477,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "product",
+      icon: "eye",
       label: { en: "Visual acceptance", zh: "视觉验收" },
       description: {
         en: "Captures representative viewports and compares visible states.",
@@ -483,6 +487,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "knowledge",
+      icon: "document",
       label: { en: "Document synthesis", zh: "文档综合" },
       description: {
         en: "Combines approved sources without losing provenance.",
@@ -492,6 +497,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "data",
+      icon: "chart",
       label: { en: "Result comparison", zh: "结果对比" },
       description: {
         en: "Normalizes structured output and highlights meaningful drift.",
@@ -501,6 +507,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "operations",
+      icon: "calendar",
       label: { en: "Scheduled review", zh: "定时巡检" },
       description: {
         en: "Runs a repeatable check on a declared schedule and scope.",
@@ -510,6 +517,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "content",
+      icon: "edit",
       label: { en: "Release note drafting", zh: "版本说明撰写" },
       description: {
         en: "Turns verified changes into concise user-facing notes.",
@@ -519,6 +527,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "product",
+      icon: "shield",
       label: { en: "Accessibility review", zh: "无障碍评审" },
       description: {
         en: "Checks names, order, focus, contrast, and keyboard completion.",
@@ -528,6 +537,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "operations",
+      icon: "refresh",
       label: { en: "Recovery rehearsal", zh: "恢复演练" },
       description: {
         en: "Exercises rollback steps without expanding the declared scope.",
@@ -537,6 +547,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "search",
       label: { en: "Workspace quick open", zh: "工作区快速打开" },
       description: {
         en: "Searches open tabs and local workspace files from one keyboard flow.",
@@ -546,6 +557,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "project",
       label: { en: "Code graph navigation", zh: "代码图谱导航" },
       description: {
         en: "Explores symbols, ownership, and dependency paths in an interactive graph.",
@@ -555,6 +567,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "product",
+      icon: "eye",
       label: { en: "Device preview", zh: "设备预览" },
       description: {
         en: "Reviews responsive output in realistic desktop and mobile hardware shells.",
@@ -564,6 +577,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "product",
+      icon: "checklist",
       label: { en: "Structured proposal review", zh: "结构化提案评审" },
       description: {
         en: "Compares targets, before and after values, stale state, and safe apply scope.",
@@ -573,6 +587,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "knowledge",
+      icon: "knowledge",
       label: { en: "Knowledge compilation", zh: "知识库编译" },
       description: {
         en: "Compiles approved sources with retry, quiet-window, and bulk-change safeguards.",
@@ -582,6 +597,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "knowledge",
+      icon: "brain",
       label: { en: "Memory retrieval", zh: "记忆检索" },
       description: {
         en: "Finds relevant local memories through filters, timeline, and graph context.",
@@ -591,6 +607,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "content",
+      icon: "presentation",
       label: { en: "Office deliverable editing", zh: "Office 交付物编辑" },
       description: {
         en: "Edits documents, spreadsheets, presentations, and reviewed PDF output.",
@@ -602,6 +619,7 @@ export const capabilityDirectory: Record<
   connectors: [
     {
       category: "engineering",
+      icon: "code",
       label: { en: "Git repository", zh: "Git 仓库" },
       description: {
         en: "Read branches, reviews, checks, and authorized file content.",
@@ -612,6 +630,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "knowledge",
+      icon: "document",
       label: { en: "Document library", zh: "文档资料库" },
       description: {
         en: "Search approved documents and attach source excerpts.",
@@ -622,6 +641,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "operations",
+      icon: "checklist",
       label: { en: "Issue tracker", zh: "问题跟踪系统" },
       description: {
         en: "Read work items, status, ownership, and linked evidence.",
@@ -631,6 +651,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "operations",
+      icon: "mail",
       label: { en: "Team messages", zh: "团队消息" },
       description: {
         en: "Search authorized threads and prepare bounded replies.",
@@ -640,6 +661,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "data",
+      icon: "chart",
       label: { en: "Metrics store", zh: "指标数据源" },
       description: {
         en: "Query approved metrics without exposing credentials.",
@@ -649,6 +671,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "eye",
       label: { en: "Browser surface", zh: "浏览器表面" },
       description: {
         en: "Inspect and test an explicitly authorized Web origin.",
@@ -658,6 +681,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "knowledge",
+      icon: "files",
       label: { en: "Workspace files", zh: "工作区文件" },
       description: {
         en: "Reference local artifacts within declared file boundaries.",
@@ -667,6 +691,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "product",
+      icon: "palette",
       label: { en: "Design source", zh: "设计资料源" },
       description: {
         en: "Read approved frames, tokens, and exported assets.",
@@ -676,6 +701,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "content",
+      icon: "upload",
       label: { en: "Publishing target", zh: "发布目标" },
       description: {
         en: "Prepare a release and require confirmation before publishing.",
@@ -685,6 +711,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "brain",
       label: { en: "Local model runtime", zh: "本地模型运行时" },
       description: {
         en: "Uses configured local inference endpoints without exposing credentials.",
@@ -695,6 +722,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "engineering",
+      icon: "link",
       label: { en: "MCP service", zh: "MCP 服务" },
       description: {
         en: "Connects reviewed tool servers through explicit capability and permission scope.",
@@ -704,6 +732,7 @@ export const capabilityDirectory: Record<
     },
     {
       category: "operations",
+      icon: "automation",
       label: { en: "Automation runner", zh: "自动化运行器" },
       description: {
         en: "Runs declared schedules and retains status, history, and recovery evidence.",

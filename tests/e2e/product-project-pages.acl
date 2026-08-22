@@ -1,0 +1,345 @@
+suite "a3s-ui-product-project-pages" {
+    version = 1
+
+    scenario "project-list-page" {
+        name = "Project discovery page keeps its hierarchy and destinations"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=projects]") }
+        expect "page-title" { text = "项目" }
+        expect "create-project" { visible = css("[data-product-surface=projects] button[data-primary]") }
+        expect "owned-project" { visible = css(".product-projects__owned > a[href$='a3s-ui-experience.html']") }
+        expect "owned-project-navigation-icon" { visible = css(".product-projects__owned > a[href$='a3s-ui-experience.html'] > svg[data-icon=arrow][data-project-destination]") }
+        expect "no-false-overflow-action" { visible = css(".product-projects__owned > a:not(:has(svg[data-icon=more]))") }
+        expect "project-search" { visible = css(".product-projects__owned input[type=search]") }
+        expect "templates" { visible = css(".product-projects__templates > div > button:nth-child(5)") }
+
+        screenshot "visual" { path = "product/project-list-page.png" }
+        accessibility "accessibility" { path = "product/project-list-page-accessibility.json" interactive = true }
+
+        fill "search-missing-project" { target = css("input[aria-label='搜索项目']") value = "missing-project" }
+        expect "empty-project-search" { visible = css(".product-projects__owned > p[role=status]") }
+        screenshot "empty-visual" { path = "product/project-list-empty.png" }
+        fill "restore-project" { target = css("input[aria-label='搜索项目']") value = "AnyBuddy" }
+        expect "project-restored" { visible = css(".product-projects__owned > a[href$='a3s-ui-experience.html']") }
+        click "follow-project-navigation" { target = css(".product-projects__owned > a[href$='a3s-ui-experience.html']") }
+        wait "project-destination" { visible = css("[data-product-surface=project]") }
+        expect "project-destination-current" { visible = css(".product-sidebar__primary a[href$='/playground/projects.html'][aria-current=page]") }
+        screenshot "destination-visual" { path = "product/project-list-destination.png" }
+        console "console" { path = "product/project-list-page-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-list-page-errors.json" clear = false }
+    }
+
+    scenario "project-activity-page" {
+        name = "Project activity tab exposes updates, configuration, and composer"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 720 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        expect "selected-tab" { visible = css("#product-project-tab-activity[aria-selected=true]") }
+        expect "activity-controls" { visible = css("button[data-activity-compose]") }
+        expect "activity-feed" { visible = css(".product-project-workspace__activity li") }
+        expect "configuration" { visible = css("aside[aria-label='项目配置']") }
+        expect "composer" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked]) .ProseMirror") }
+        expect "execution-target-control" { visible = css(".product-project-workspace__composer [data-composer-control=target]") }
+        expect "workspace-control" { visible = css(".product-project-workspace__composer [data-composer-control=workspace]") }
+        expect "permissions-control" { visible = css(".product-project-workspace__composer [data-composer-control=mode]") }
+
+        click "select-team-activity" { target = role("button", "成员动态") }
+        expect "team-activity-selected" { visible = css("[data-activity-filters] button[aria-pressed=true]:nth-child(2)") }
+        click "open-update-composer" { target = role("button", "发布留言") }
+        fill "write-update" { target = css("textarea[aria-label='项目留言']") value = "项目页面交互已进入逐页验收" }
+        click "publish-update" { target = css(".product-project-workspace__activity-composer button[type=submit]") }
+        expect "published-update" { visible = css(".product-project-workspace__activity li[data-posted]") }
+
+        screenshot "visual" { path = "product/project-activity-page.png" }
+        console "console" { path = "product/project-activity-page-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-activity-page-errors.json" clear = false }
+    }
+
+    scenario "project-plan-page" {
+        name = "Project plan tab presents status-grouped work instead of dashboard cards"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 720 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-plan" { target = role("tab", "计划") }
+        expect "selected-tab" { visible = css("#product-project-tab-plan[aria-selected=true]") }
+        expect "plan-surface" { visible = css(".product-project-plan") }
+        expect "backlog" { visible = css(".product-project-plan__group[data-group=backlog]") }
+        expect "active" { visible = css(".product-project-plan__group[data-group=active]") }
+        expect "paused" { visible = css(".product-project-plan__group[data-group=paused]") }
+        expect "complete" { visible = css(".product-project-plan__group[data-group=complete]") }
+        expect "plan-scope-is-label" { visible = css("[data-plan-navigation] [data-plan-scope]") }
+        expect "single-global-add" { visible_count = 1 target = css("[data-plan-actions] button[data-plan-primary]") }
+        expect "backlog-status-icon" { visible = css(".product-project-plan__group[data-group=backlog] [data-plan-status] svg[data-icon=minus]") }
+        expect "no-false-overflow-status" { visible = css(".product-project-plan:not(:has(svg[data-icon=more]))") }
+
+        click "collapse-backlog" { target = role("button", "折叠待开始") }
+        expect "backlog-collapsed" { visible = css(".product-project-plan__group[data-group=backlog] button[data-plan-collapse][aria-expanded=false]") }
+        click "expand-backlog" { target = role("button", "展开待开始") }
+        expect "backlog-expanded" { visible = css(".product-project-plan__group[data-group=backlog] button[data-plan-collapse][aria-expanded=true]") }
+        fill "search-single-plan-task" { target = css("input[aria-label='搜索计划任务']") value = "统一产品体验" }
+        expect "search-hides-empty-groups" { visible = css(".product-project-plan:has([data-group=active]):not(:has([data-group=backlog], [data-group=paused], [data-group=complete]))") }
+
+        screenshot "visual" { path = "product/project-plan-page.png" }
+        console "console" { path = "product/project-plan-page-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-plan-page-errors.json" clear = false }
+    }
+
+    scenario "project-tasks-page" {
+        name = "Project tasks tab keeps filtering and child-task navigation coherent"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 720 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-tasks" { target = role("tab", "任务") }
+        expect "selected-tab" { visible = css("#product-project-tab-tasks[aria-selected=true]") }
+        expect "state-filter" { visible = css("select[aria-label='任务状态']") }
+        expect "source-filter" { visible = css("select[aria-label='任务来源']") }
+        expect "search" { visible = css("input[aria-label='搜索任务标题']") }
+        expect "child-task" { visible = css(".product-project-workspace__task-list a[href$='release-readiness.html']") }
+        expect "privacy-note" { visible = css("[data-task-privacy][aria-label='未分享的任务仅你可见，分享后项目成员可以协作']") }
+        expect "privacy-icon" { visible = css("[data-task-privacy] svg[data-icon=shield]") }
+        expect "navigation-icon" { visible = css(".product-project-workspace__task-list a[href$='release-readiness.html'] > svg[data-icon=arrow][data-task-destination]") }
+        expect "no-false-overflow-action" { visible = css(".product-project-workspace__task-list:not(:has(svg[data-icon=more]))") }
+
+        fill "search-missing-task" { target = css("input[aria-label='搜索任务标题']") value = "不存在的任务" }
+        expect "empty-filter-result" { visible = css(".product-project-workspace__empty[role=status]") }
+        fill "restore-task" { target = css("input[aria-label='搜索任务标题']") value = "发布" }
+        expect "restored-child-task" { visible = css(".product-project-workspace__task-list a[href$='release-readiness.html']") }
+
+        screenshot "visual" { path = "product/project-tasks-page.png" }
+        click "follow-navigation-icon" { target = css(".product-project-workspace__task-list a[href$='release-readiness.html']") }
+        wait "task-destination" { visible = css("[data-product-surface=project-session]") }
+        expect "task-destination-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
+        expect "task-destination-path" { visible = css("nav[aria-label='项目路径']") }
+        screenshot "destination-visual" { path = "product/project-task-destination.png" }
+        console "console" { path = "product/project-tasks-page-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-tasks-page-errors.json" clear = false }
+    }
+
+    scenario "project-assets-page" {
+        name = "Project assets support production file management and workbench handoff"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-assets" { target = role("tab", "资产") }
+        expect "selected-tab" { visible = css("#product-project-tab-assets[aria-selected=true]") }
+        expect "asset-toolbar" { visible = css("[data-asset-toolbar]") }
+        expect "asset-table" { visible = css("[data-asset-table-scroll] table") }
+        expect "asset-rows" { visible = css("[data-asset-row]") }
+        expect "asset-name-column" { visible = css("[data-asset-table-scroll] th:nth-child(2)") }
+        expect "asset-type-column" { visible = css("[data-asset-table-scroll] th:nth-child(3)") }
+        expect "asset-owner-column" { visible = css("[data-asset-table-scroll] th:nth-child(4)") }
+        expect "asset-updated-column" { visible = css("[data-asset-table-scroll] th:nth-child(5)") }
+        expect "asset-size-column" { visible = css("[data-asset-table-scroll] th:nth-child(6)") }
+        expect "upload-control" { visible = css("[data-asset-upload]") }
+        expect "storage-meter" { visible = css("[data-asset-storage] progress") }
+        expect "type-filter" { visible = css("[data-asset-type-filter] select") }
+        expect "search" { visible = css("input[aria-label='搜索项目资产']") }
+        expect "no-false-overflow-action" { visible = css(".product-project-workspace__assets:not(:has(svg[data-icon=more]))") }
+
+        click "open-new-folder-form" { target = role("button", "新建文件夹") }
+        fill "name-new-folder" { target = css("input[aria-label='新文件夹名称']") value = "acceptance-evidence" }
+        click "create-folder" { target = role("button", "创建") }
+        expect "new-folder-visible" { visible = css("[data-asset-row] [data-asset-open][aria-label='打开文件夹 acceptance-evidence']") }
+
+        upload "upload-asset" {
+            target = css("[data-asset-upload] input[type=file]")
+            paths = ["tests/fixtures/workspace-drop-note.txt"]
+        }
+        expect "uploaded-asset-visible" { visible = css("[data-asset-row] [data-asset-open][aria-label='打开 workspace-drop-note.txt']") }
+
+        select "filter-files" { target = css("[data-asset-type-filter] select") values = ["document"] }
+        expect "file-filter-result" { visible = css("[data-asset-id=design-md][data-asset-row]") }
+        fill "search-missing-asset" { target = css("input[aria-label='搜索项目资产']") value = "missing-asset" }
+        expect "empty-search-state" { visible = css("[data-asset-empty][role=status]") }
+        screenshot "empty-visual" { path = "product/project-assets-empty.png" }
+        click "clear-filters" { target = role("button", "清除筛选") }
+        expect "assets-restored" { visible = css("[data-asset-id=visual-acceptance][data-asset-row]") }
+
+        fill "search-design" { target = css("input[aria-label='搜索项目资产']") value = "DESIGN.md" }
+        expect "design-search-result" { visible = css("[data-asset-id=design-md][data-asset-row]") }
+
+        click "open-design-file" { target = css("[data-asset-id=design-md] [data-asset-open]") }
+        expect "asset-preview-dialog" { visible = css("dialog[data-project-asset-dialog][open][aria-modal=true]") }
+        expect "code-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=code][data-presentation=dialog]") }
+        expect "project-context-retained" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer):has(aside[aria-label='项目配置'])") }
+        expect "close-action-semantic" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
+        expect "dialog-focus-contained" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        screenshot "code-workbench-visual" { path = "product/project-asset-code-workbench.png" }
+        press "close-code-preview-with-escape" { key = "Escape" }
+        expect "asset-preview-closed" { visible = css("[data-product-surface=project]:not(:has(dialog[data-project-asset-dialog][open]))") }
+        expect "file-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
+        expect "composer-did-not-steal-focus" { visible = css(".product-project-workspace__composer .agent-composer-editor__content:not(:focus)") }
+
+        select "restore-all-asset-types" { target = css("[data-asset-type-filter] select") values = ["all"] }
+        fill "restore-unfiltered-asset-search" { target = css("input[aria-label='搜索项目资产']") value = " " }
+        expect "evidence-folder-restored" { visible = css("[data-asset-id=visual-acceptance][data-asset-row]") }
+        click "open-evidence-folder" { target = css("[data-asset-id=visual-acceptance] [data-asset-open]") }
+        expect "folder-visible" { visible = css("[data-asset-location]:has(strong)") }
+        expect "pdf-asset-visible" { visible = css("[data-asset-id=visual-report][data-asset-row]") }
+        click "open-pdf-file" { target = css("[data-asset-id=visual-report] [data-asset-open]") }
+        expect "pdf-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=pdf][data-presentation=dialog]") }
+        wait "pdf-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        expect "pdf-search" { visible = css("input[aria-label='在 PDF 中搜索']") }
+        wait "pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
+        wait "pdf-renderer-ready" { visible = css(".work-pdf-embed[data-ready=true]") }
+        wait "pdf-first-thumbnail-rendered" { visible = css("[data-pdf-page-index='0'] .work-pdf-thumbnail-preview > img") }
+        click "select-pdf-second-page" { target = role("button", "第 2 页") }
+        wait "pdf-second-page-selected" { visible = css("input[aria-label='页码'][value='2']") }
+        screenshot "pdf-second-page-visual" { path = "product/project-asset-pdf-second-page.png" }
+        click "restore-pdf-first-page" { target = role("button", "第 1 页") }
+        wait "pdf-first-page-restored" { visible = css("input[aria-label='页码'][value='1']") }
+        screenshot "pdf-workbench-visual" { path = "product/project-asset-pdf-workbench.png" }
+        click "close-pdf-preview" { target = role("button", "关闭文件预览") }
+        expect "pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
+        click "return-to-asset-root" { target = css("[data-asset-back]") }
+
+        click "open-word-file" { target = css("[data-asset-id=experience-brief] [data-asset-open]") }
+        expect "office-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=document][data-presentation=dialog]") }
+        wait "office-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        expect "office-preview-tools-visible" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
+        expect "office-preview-document-visible" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
+        screenshot "office-workbench-visual" { path = "product/project-asset-office-workbench.png" }
+        click "close-office-preview" { target = role("button", "关闭文件预览") }
+        expect "office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
+
+        click "select-design-asset" { target = css("[data-asset-id=design-md] [data-asset-select]") }
+        expect "selected-row" { visible = css("[data-asset-id=design-md][data-selected=true]") }
+        expect "selected-control" { visible = css("[data-asset-id=design-md] [data-asset-select]:checked") }
+        expect "task-handoff" { visible = css(".product-project-workspace__context-actions [data-asset-action-bar] button[data-primary] svg[data-icon=task-add]") }
+        expect "clear-selection-icon" { visible = css(".product-project-workspace__context-actions [data-asset-action-bar] button[data-clear] svg[data-icon=close]") }
+        expect "selection-retains-composer" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has(> .product-project-workspace__composer .product-composer:not([data-docked]))") }
+        expect "selection-retains-context-controls" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has([data-composer-control=target]):has([data-composer-control=workspace]):has([data-composer-control=mode])") }
+        expect "selection-actions-overlay-context" {
+            target = css("[data-asset-action-bar]")
+            relative_to = css(".product-project-workspace__composer [data-composer-context-bar]")
+            layout = "overlaps"
+            tolerance_px = 0
+        }
+
+        screenshot "visual" { path = "product/project-assets-page.png" }
+        accessibility "accessibility" { path = "product/project-assets-page-accessibility.json" interactive = true }
+        click "create-linked-task" { target = role("button", "创建关联任务") }
+        expect "tasks-selected" { visible = css("#product-project-tab-tasks[aria-selected=true]") }
+        expect "draft-created" { visible = css(".product-project-workspace__task-list article[data-draft-task]") }
+        expect "draft-has-no-false-action" { visible = css(".product-project-workspace__task-list article[data-draft-task]:not(:has(> svg))") }
+        screenshot "handoff-visual" { path = "product/project-assets-handoff.png" }
+        console "console" { path = "product/project-assets-page-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-assets-page-errors.json" clear = false }
+    }
+
+    scenario "project-assets-midwidth-english" {
+        name = "Project asset controls reflow by workbench width without overlap"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "midwidth" { width = 1160 height = 800 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-assets" { target = role("tab", "Assets") }
+        expect "asset-toolbar" { visible = css("[data-asset-toolbar]") }
+        expect "toolbar-rows-do-not-overlap" {
+            target = css("[data-asset-primary-actions]")
+            relative_to = css("[data-asset-filter-actions]")
+            layout = "above"
+            tolerance_px = 1
+        }
+        expect "storage-does-not-overlap-filter" {
+            target = css("[data-asset-storage]")
+            relative_to = css("[data-asset-type-filter]")
+            layout = "not_overlapping"
+        }
+        expect "new-folder-pointer-reachable" { pointer_reachable = role("button", "New folder") }
+        expect "type-filter-pointer-reachable" { pointer_reachable = css("[data-asset-type-filter] select") }
+        screenshot "visual" { path = "product/project-assets-midwidth-english.png" }
+        console "console" { path = "product/project-assets-midwidth-english-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-assets-midwidth-english-errors.json" clear = false }
+    }
+
+    scenario "project-plan-mobile" {
+        name = "Project plan preserves task space and reachable controls on mobile"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-plan" { target = role("tab", "计划") }
+        expect "plan-surface" { visible = css(".product-project-plan") }
+        expect "composer-full" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked])") }
+        expect "execution-target-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=target] > [data-composer-setting]") }
+        expect "workspace-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=workspace] > [data-composer-setting]") }
+        expect "permissions-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=mode] > [data-composer-setting]") }
+        expect "collapse-pointer-reachable" { pointer_reachable = role("button", "折叠待开始") }
+        expect "group-add-pointer-reachable" { pointer_reachable = role("button", "添加待开始的任务") }
+        expect "completion-pointer-reachable" { pointer_reachable = css("[data-group=backlog] [data-plan-task]:first-child [data-plan-check]") }
+        expect "task-link-pointer-reachable" { pointer_reachable = css("[data-group=backlog] [data-plan-task]:first-child > a") }
+        expect "global-add-pointer-reachable" { pointer_reachable = css("[data-plan-actions] button[data-plan-primary]") }
+        expect "composer-primary-controls-align" {
+            target = css(".product-project-workspace__composer [data-composer-attachment-trigger]")
+            relative_to = css(".product-project-workspace__composer button[data-composer-action=submit]")
+            layout = "aligned_center_y"
+            tolerance_px = 2
+        }
+        screenshot "visual" { path = "product/project-plan-mobile.png" }
+        accessibility "accessibility" { path = "product/project-plan-mobile-accessibility.json" interactive = true }
+        console "console" { path = "product/project-plan-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-plan-mobile-errors.json" clear = false }
+    }
+
+    scenario "project-assets-mobile-selection" {
+        name = "Selected project assets own the mobile action slot"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("[data-product-surface=project]") }
+        click "select-assets" { target = role("tab", "资产") }
+        expect "checkbox-hit-area" { visible = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
+        expect "checkbox-pointer-reachable" { pointer_reachable = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
+        click "select-design" { target = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
+        expect "selection-action-bar" { visible = css("[data-asset-action-bar]") }
+        expect "selection-retains-composer" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has(> .product-project-workspace__composer .product-composer:not([data-docked]))") }
+        expect "execution-target-remains-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=target]") }
+        expect "workspace-remains-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=workspace]") }
+        expect "permissions-remain-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=mode]") }
+        expect "selection-actions-overlay-context" {
+            target = css("[data-asset-action-bar]")
+            relative_to = css(".product-project-workspace__composer [data-composer-context-bar]")
+            layout = "overlaps"
+            tolerance_px = 0
+        }
+        expect "linked-task-pointer-reachable" { pointer_reachable = role("button", "创建关联任务") }
+        expect "clear-pointer-reachable" { pointer_reachable = role("button", "清除资产选择") }
+        screenshot "selected-visual" { path = "product/project-assets-selection-mobile.png" }
+        click "clear-selection" { target = role("button", "清除资产选择") }
+        expect "composer-remains-full" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked])") }
+        screenshot "cleared-visual" { path = "product/project-assets-cleared-mobile.png" }
+        console "console" { path = "product/project-assets-selection-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/project-assets-selection-mobile-errors.json" clear = false }
+    }
+}

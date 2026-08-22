@@ -20,6 +20,7 @@ export function ProductSettingsDialog({
 }) {
   const zh = locale === "zh";
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const contentRef = useRef<HTMLElement>(null);
   const [section, setSection] = useState<SettingsSection>(initialSection);
   const closeDialog = () => {
     if (dialogRef.current?.open) dialogRef.current.close();
@@ -42,6 +43,11 @@ export function ProductSettingsDialog({
     if (!open && dialog?.open) dialog.close();
   });
 
+  useEffect(() => {
+    if (!open || !contentRef.current) return;
+    contentRef.current.scrollTop = 0;
+  }, [open, section]);
+
   return (
     <dialog
       aria-label={zh ? "设置" : "Settings"}
@@ -53,6 +59,19 @@ export function ProductSettingsDialog({
       onClose={onClose}
       ref={dialogRef}
     >
+      <header className="product-settings__dialog-header">
+        <strong className="product-settings__dialog-title">
+          {zh ? "设置" : "Settings"}
+        </strong>
+        <button
+          aria-label={zh ? "关闭设置" : "Close settings"}
+          className="product-settings__close"
+          onClick={closeDialog}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
+      </header>
       <aside aria-label={zh ? "设置分组" : "Settings sections"}>
         {settingsSections.map((item) => (
           <button
@@ -66,17 +85,9 @@ export function ProductSettingsDialog({
           </button>
         ))}
       </aside>
-      <main>
+      <main ref={contentRef}>
         <ProductSettingsSectionContent locale={locale} section={section} />
       </main>
-      <button
-        aria-label={zh ? "关闭设置" : "Close settings"}
-        className="product-settings__close"
-        onClick={closeDialog}
-        type="button"
-      >
-        <ProductPlaygroundIcon name="close" />
-      </button>
     </dialog>
   );
 }

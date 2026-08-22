@@ -393,6 +393,14 @@ A component or composition is finished only when all applicable evidence exists:
 - Inclusion in the standalone Playground when it participates in an application composition.
 - No stale generated files edited by hand.
 
+Every reported defect class becomes a deterministic A3S Test regression for each
+affected route or component page. A route-level scenario must verify that the
+control's icon and accessible name describe the result of its next activation,
+perform that activation, assert the resulting state, capture viewport evidence,
+and record console plus page errors. Page-family audits use independently
+cleanable scenarios so one infrastructure failure cannot hide the acceptance
+result of another page.
+
 The release audit compares the pinned 160-page reference inventory with `LOBEUI_COVERAGE.md`, then compares every A3S mapping with source, exports, manifest, docs, adapters, and tests. Strict evidence uses one of six explicit kinds: component, composition, foundation, brand, integration, or standalone route. `check:framework-docs` verifies React and Vue parity, while `check:boundaries` verifies applicable hooks, ownership, official identity, prohibited public references, and the separate Playground information architecture. Passing a narrow build does not prove full coverage.
 
 ## 9. Do and do not

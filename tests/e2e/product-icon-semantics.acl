@@ -1,0 +1,139 @@
+suite "a3s-ui-product-icon-semantics" {
+    version = 1
+
+    scenario "capability-tab-icons" {
+        name = "Capability tab icons match the destination reached by activation"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
+        wait "loaded" { load = "networkidle" }
+        expect "assistant-icon" { visible = css("[role=tab][href*='capability=assistants'] svg[data-icon=assistant]") }
+        expect "skill-icon" { visible = css("[role=tab][href*='capability=skills'] svg[data-icon=checklist]") }
+        expect "connector-icon" { visible = css("[role=tab][href*='capability=connectors'] svg[data-icon=link]") }
+
+        click "open-skills" { target = role("tab", "技能") }
+        expect "skills-selected" { visible = css("[data-product-surface=catalog][data-catalog-tab=skills] [role=tab][aria-selected=true] svg[data-icon=checklist]") }
+        click "open-connectors" { target = role("tab", "连接器") }
+        expect "connectors-selected" { visible = css("[data-product-surface=catalog][data-catalog-tab=connectors] [role=tab][aria-selected=true] svg[data-icon=link]") }
+
+        screenshot "tabs" { path = "product/icon-semantics-capability-tabs.png" }
+        console "console" { path = "product/icon-semantics-capability-tabs-console.json" clear = false }
+        page_errors "page-errors" { path = "product/icon-semantics-capability-tabs-page-errors.json" clear = false }
+    }
+
+    scenario "skill-card-icons" {
+        name = "Every skill card uses a function-specific icon and opens matching details"
+        surface = "web"
+        timeout_ms = 120000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
+        wait "loaded" { load = "networkidle" }
+        expect "repository-icon" { visible = css("[data-capability-id='skill:repository-inspection'] svg[data-icon=search]") }
+        expect "test-icon" { visible = css("[data-capability-id='skill:test-execution'] svg[data-icon=checklist]") }
+        expect "visual-icon" { visible = css("[data-capability-id='skill:visual-acceptance'] svg[data-icon=eye]") }
+        expect "document-icon" { visible = css("[data-capability-id='skill:document-synthesis'] svg[data-icon=document]") }
+        expect "comparison-icon" { visible = css("[data-capability-id='skill:result-comparison'] svg[data-icon=chart]") }
+        expect "scheduled-icon" { visible = css("[data-capability-id='skill:scheduled-review'] svg[data-icon=calendar]") }
+        expect "release-note-icon" { visible = css("[data-capability-id='skill:release-note-drafting'] svg[data-icon=edit]") }
+        expect "accessibility-icon" { visible = css("[data-capability-id='skill:accessibility-review'] svg[data-icon=shield]") }
+        expect "recovery-icon" { visible = css("[data-capability-id='skill:recovery-rehearsal'] svg[data-icon=refresh]") }
+        expect "quick-open-icon" { visible = css("[data-capability-id='skill:workspace-quick-open'] svg[data-icon=search]") }
+        expect "graph-icon" { visible = css("[data-capability-id='skill:code-graph-navigation'] svg[data-icon=project]") }
+        expect "device-icon" { visible = css("[data-capability-id='skill:device-preview'] svg[data-icon=eye]") }
+        expect "proposal-icon" { visible = css("[data-capability-id='skill:structured-proposal-review'] svg[data-icon=checklist]") }
+        expect "knowledge-icon" { visible = css("[data-capability-id='skill:knowledge-compilation'] svg[data-icon=knowledge]") }
+        expect "memory-icon" { visible = css("[data-capability-id='skill:memory-retrieval'] svg[data-icon=brain]") }
+        expect "office-icon" { visible = css("[data-capability-id='skill:office-deliverable-editing'] svg[data-icon=presentation]") }
+
+        click "open-repository" { target = css("[data-capability-id='skill:repository-inspection'] .product-catalog__entry-main") }
+        expect "repository-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=search]") }
+        click "close-repository" { target = role("button", "关闭能力详情") }
+        click "open-visual" { target = css("[data-capability-id='skill:visual-acceptance'] .product-catalog__entry-main") }
+        expect "visual-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=eye]") }
+        click "close-visual" { target = role("button", "关闭能力详情") }
+        click "open-graph" { target = css("[data-capability-id='skill:code-graph-navigation'] .product-catalog__entry-main") }
+        expect "graph-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=project]") }
+        click "close-graph" { target = role("button", "关闭能力详情") }
+        click "open-office" { target = css("[data-capability-id='skill:office-deliverable-editing'] .product-catalog__entry-main") }
+        expect "office-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=presentation]") }
+
+        screenshot "skills" { path = "product/icon-semantics-skills.png" }
+        console "console" { path = "product/icon-semantics-skills-console.json" clear = false }
+        page_errors "page-errors" { path = "product/icon-semantics-skills-page-errors.json" clear = false }
+    }
+
+    scenario "connector-card-icons" {
+        name = "Every connector card uses a function-specific icon and opens matching details"
+        surface = "web"
+        timeout_ms = 120000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=connectors" }
+        wait "loaded" { load = "networkidle" }
+        expect "git-icon" { visible = css("[data-capability-id='connector:git-repository'] svg[data-icon=code]") }
+        expect "documents-icon" { visible = css("[data-capability-id='connector:document-library'] svg[data-icon=document]") }
+        expect "issues-icon" { visible = css("[data-capability-id='connector:issue-tracker'] svg[data-icon=checklist]") }
+        expect "messages-icon" { visible = css("[data-capability-id='connector:team-messages'] svg[data-icon=mail]") }
+        expect "metrics-icon" { visible = css("[data-capability-id='connector:metrics-store'] svg[data-icon=chart]") }
+        expect "browser-icon" { visible = css("[data-capability-id='connector:browser-surface'] svg[data-icon=eye]") }
+        expect "files-icon" { visible = css("[data-capability-id='connector:workspace-files'] svg[data-icon=files]") }
+        expect "design-icon" { visible = css("[data-capability-id='connector:design-source'] svg[data-icon=palette]") }
+        expect "publish-icon" { visible = css("[data-capability-id='connector:publishing-target'] svg[data-icon=upload]") }
+        expect "runtime-icon" { visible = css("[data-capability-id='connector:local-model-runtime'] svg[data-icon=brain]") }
+        expect "service-icon" { visible = css("[data-capability-id='connector:mcp-service'] svg[data-icon=link]") }
+        expect "automation-icon" { visible = css("[data-capability-id='connector:automation-runner'] svg[data-icon=automation]") }
+
+        click "open-git" { target = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main") }
+        expect "git-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=code]") }
+        click "close-git" { target = role("button", "关闭能力详情") }
+        click "open-documents" { target = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main") }
+        expect "documents-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=document]") }
+        click "close-documents" { target = role("button", "关闭能力详情") }
+        click "open-design" { target = css("[data-capability-id='connector:design-source'] .product-catalog__entry-main") }
+        expect "design-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=palette]") }
+        click "close-design" { target = role("button", "关闭能力详情") }
+        click "open-automation" { target = css("[data-capability-id='connector:automation-runner'] .product-catalog__entry-main") }
+        expect "automation-details" { visible = css("dialog.product-capability-detail-dialog[open] [data-capability-detail] svg[data-icon=automation]") }
+
+        screenshot "connectors" { path = "product/icon-semantics-connectors.png" }
+        console "console" { path = "product/icon-semantics-connectors-console.json" clear = false }
+        page_errors "page-errors" { path = "product/icon-semantics-connectors-page-errors.json" clear = false }
+    }
+
+    scenario "automation-template-icons" {
+        name = "Every automation template icon matches the task opened by activation"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 900 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        click "show-all" { target = role("button", "查看全部 12 个") }
+        expect "release-icon" { visible = css("[data-automation-template-index='0'] svg[data-icon=report]") }
+        expect "dependency-icon" { visible = css("[data-automation-template-index='1'] svg[data-icon=checklist]") }
+        expect "meeting-icon" { visible = css("[data-automation-template-index='2'] svg[data-icon=calendar]") }
+        expect "regression-icon" { visible = css("[data-automation-template-index='3'] svg[data-icon=search]") }
+        expect "documentation-icon" { visible = css("[data-automation-template-index='4'] svg[data-icon=document]") }
+        expect "permission-icon" { visible = css("[data-automation-template-index='5'] svg[data-icon=shield]") }
+        expect "triage-icon" { visible = css("[data-automation-template-index='6'] svg[data-icon=filter]") }
+        expect "artifact-icon" { visible = css("[data-automation-template-index='7'] svg[data-icon=files]") }
+        expect "workspace-icon" { visible = css("[data-automation-template-index='8'] svg[data-icon=workspace]") }
+        expect "reminder-icon" { visible = css("[data-automation-template-index='9'] svg[data-icon=notification]") }
+        expect "capability-icon" { visible = css("[data-automation-template-index='10'] svg[data-icon=catalog]") }
+        expect "recovery-icon" { visible = css("[data-automation-template-index='11'] svg[data-icon=refresh]") }
+
+        click "open-triage" { target = css("[data-automation-template-index='6']") }
+        expect "triage-builder" { visible = css("[data-product-surface=automation-builder] input[aria-label='名称']") }
+        click "cancel-triage" { target = role("button", "取消") }
+        expect "templates-restored" { visible = css("[data-automation-template-index='11']") }
+        click "open-recovery" { target = css("[data-automation-template-index='11']") }
+        expect "recovery-builder" { visible = css("[data-product-surface=automation-builder] input[aria-label='名称']") }
+
+        screenshot "automation" { path = "product/icon-semantics-automation.png" }
+        console "console" { path = "product/icon-semantics-automation-console.json" clear = false }
+        page_errors "page-errors" { path = "product/icon-semantics-automation-page-errors.json" clear = false }
+    }
+}

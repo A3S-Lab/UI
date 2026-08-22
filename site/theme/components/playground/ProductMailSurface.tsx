@@ -187,7 +187,7 @@ export function ProductMailSurface({
         className="product-mail__back"
         href={startHref}
       >
-        <ProductPlaygroundIcon name="arrow" />
+        <ProductPlaygroundIcon name="back" />
       </a>
       <header>
         <h1>{zh ? "智能体邮箱" : "Agent mailbox"}</h1>

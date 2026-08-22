@@ -13,6 +13,7 @@ import {
   ProductPlaygroundIcon,
   type ProductPlaygroundIconName,
 } from "./ProductPlaygroundIcon";
+import { ProductProjectAssetsWorkspace } from "./ProductProjectAssetsSurface";
 import {
   ProductProjectBreadcrumb,
   ProductProjectPresence,
@@ -76,7 +77,6 @@ export function ProductProjectWorkspaceSurface({
   const [planCreateRequest, setPlanCreateRequest] = useState(0);
   const [planMineOnly, setPlanMineOnly] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
   const configurationCloseRef = useRef<HTMLButtonElement>(null);
@@ -88,6 +88,11 @@ export function ProductProjectWorkspaceSurface({
     window.requestAnimationFrame(() =>
       configurationTriggerRef.current?.focus(),
     );
+  }, []);
+
+  const selectWorkspaceTab = useCallback((tab: ProjectWorkspaceTab) => {
+    setActiveTab(tab);
+    setQuery("");
   }, []);
 
   useEffect(() => {
@@ -408,10 +413,7 @@ export function ProductProjectWorkspaceSurface({
                 aria-selected={activeTab === tab.id}
                 id={"product-project-tab-" + tab.id}
                 key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setQuery("");
-                }}
+                onClick={() => selectWorkspaceTab(tab.id)}
                 onKeyDown={(event) => {
                   const currentIndex = tabs.findIndex(
                     (item) => item.id === tab.id,
@@ -429,8 +431,7 @@ export function ProductProjectWorkspaceSurface({
                   if (nextIndex < 0) return;
                   event.preventDefault();
                   const nextTab = tabs[nextIndex];
-                  setActiveTab(nextTab.id);
-                  setQuery("");
+                  selectWorkspaceTab(nextTab.id);
                   document
                     .getElementById("product-project-tab-" + nextTab.id)
                     ?.focus();
@@ -444,438 +445,358 @@ export function ProductProjectWorkspaceSurface({
             ))}
           </nav>
 
-          <div className="product-project-workspace__toolbar">
-            {activeTab === "tasks" ? (
-              <>
-                <div>
-                  <label>
-                    <span className="sr-only">
-                      {zh ? "任务状态" : "Task state"}
-                    </span>
-                    <select
-                      aria-label={zh ? "任务状态" : "Task state"}
-                      onChange={(event) =>
-                        setStateFilter(event.currentTarget.value)
+          {activeTab === "assets" ? (
+            <ProductProjectAssetsWorkspace
+              locale={locale}
+              onCreateTask={(assets) => {
+                const names = assets.map((asset) => asset.name).join("、");
+                setDraftTask(zh ? `检查 ${names}` : `Review ${names}`);
+                selectWorkspaceTab("tasks");
+              }}
+            />
+          ) : null}
+
+          {activeTab !== "assets" ? (
+            <div className="product-project-workspace__toolbar">
+              {activeTab === "tasks" ? (
+                <>
+                  <div>
+                    <label>
+                      <span className="sr-only">
+                        {zh ? "任务状态" : "Task state"}
+                      </span>
+                      <select
+                        aria-label={zh ? "任务状态" : "Task state"}
+                        onChange={(event) =>
+                          setStateFilter(event.currentTarget.value)
+                        }
+                        value={stateFilter}
+                      >
+                        <option value="all">
+                          {zh ? "全部任务" : "All tasks"}
+                        </option>
+                        <option value="active">
+                          {zh ? "进行中" : "In progress"}
+                        </option>
+                        <option value="draft">{zh ? "草稿" : "Drafts"}</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span className="sr-only">
+                        {zh ? "任务来源" : "Task source"}
+                      </span>
+                      <select
+                        aria-label={zh ? "任务来源" : "Task source"}
+                        onChange={(event) =>
+                          setSourceFilter(event.currentTarget.value)
+                        }
+                        value={sourceFilter}
+                      >
+                        <option value="all">
+                          {zh ? "全部来源" : "All sources"}
+                        </option>
+                        <option value="project">
+                          {zh ? "项目" : "Project"}
+                        </option>
+                        <option value="member">{zh ? "成员" : "Member"}</option>
+                      </select>
+                    </label>
+                    <span
+                      aria-label={
+                        zh
+                          ? "未分享的任务仅你可见，分享后项目成员可以协作"
+                          : "Unshared tasks are visible only to you; project members can collaborate after sharing"
                       }
-                      value={stateFilter}
+                      data-task-privacy
+                      role="note"
                     >
-                      <option value="all">
-                        {zh ? "全部任务" : "All tasks"}
-                      </option>
-                      <option value="active">
-                        {zh ? "进行中" : "In progress"}
-                      </option>
-                      <option value="draft">{zh ? "草稿" : "Drafts"}</option>
-                    </select>
-                  </label>
-                  <label>
-                    <span className="sr-only">
-                      {zh ? "任务来源" : "Task source"}
+                      <ProductPlaygroundIcon name="shield" />
+                      <span>
+                        {zh ? "未分享，仅你可见" : "Private until shared"}
+                      </span>
                     </span>
-                    <select
-                      aria-label={zh ? "任务来源" : "Task source"}
-                      onChange={(event) =>
-                        setSourceFilter(event.currentTarget.value)
-                      }
-                      value={sourceFilter}
-                    >
-                      <option value="all">
-                        {zh ? "全部来源" : "All sources"}
-                      </option>
-                      <option value="project">{zh ? "项目" : "Project"}</option>
-                      <option value="member">{zh ? "成员" : "Member"}</option>
-                    </select>
-                  </label>
-                  <span>
-                    {zh
-                      ? "你的任务默认仅自己可见，分享后成员可协作"
-                      : "Tasks stay private until you share them"}
-                  </span>
-                </div>
-                <label data-search>
-                  <ProductPlaygroundIcon name="search" />
-                  <input
-                    aria-label={zh ? "搜索任务标题" : "Search task titles"}
-                    onChange={(event) => setQuery(event.currentTarget.value)}
-                    placeholder={zh ? "搜索任务标题" : "Search task titles"}
-                    type="search"
-                    value={query}
-                  />
-                </label>
-              </>
-            ) : activeTab === "activity" ? (
-              <>
-                <button
-                  aria-expanded={activityComposerOpen}
-                  data-activity-compose
-                  onClick={() => setActivityComposerOpen((value) => !value)}
-                  type="button"
-                >
-                  <ProductPlaygroundIcon name="plus" />
-                  {zh ? "发布留言" : "Post update"}
-                </button>
-                <div
-                  aria-label={zh ? "动态筛选" : "Activity filter"}
-                  data-activity-filters
-                  role="group"
-                >
-                  <button
-                    aria-pressed={activityFilter === "mine"}
-                    onClick={() => setActivityFilter("mine")}
-                    type="button"
-                  >
-                    {zh ? "与我相关" : "Relevant to me"}
-                  </button>
-                  <button
-                    aria-pressed={activityFilter === "team"}
-                    onClick={() => setActivityFilter("team")}
-                    type="button"
-                  >
-                    {zh ? "成员动态" : "Team activity"}
-                  </button>
-                </div>
-              </>
-            ) : activeTab === "plan" ? (
-              <ProductProjectPlanToolbar
-                locale={locale}
-                mineOnly={planMineOnly}
-                onAddTask={() => setPlanCreateRequest((value) => value + 1)}
-                onMineOnlyChange={setPlanMineOnly}
-                onOpenConfiguration={() => setConfigurationOpen(true)}
-                onQueryChange={setQuery}
-                query={query}
-              />
-            ) : (
-              <>
-                <strong>{zh ? "共享项目资产" : "Shared project assets"}</strong>
-                {activeTab === "assets" ? (
+                  </div>
                   <label data-search>
                     <ProductPlaygroundIcon name="search" />
                     <input
-                      aria-label={zh ? "搜索项目资产" : "Search project assets"}
+                      aria-label={zh ? "搜索任务标题" : "Search task titles"}
                       onChange={(event) => setQuery(event.currentTarget.value)}
-                      placeholder={zh ? "搜索资产" : "Search assets"}
+                      placeholder={zh ? "搜索任务标题" : "Search task titles"}
                       type="search"
                       value={query}
                     />
                   </label>
-                ) : null}
-              </>
-            )}
-          </div>
-
-          <div className="product-project-workspace__viewport">
-            <section
-              aria-labelledby={"product-project-tab-" + activeTab}
-              className="product-project-workspace__panel"
-              id={"product-project-panel-" + activeTab}
-              role="tabpanel"
-            >
-              {activeTab === "tasks" ? (
-                <div className="product-project-workspace__task-list">
-                  {tasks.length ? (
-                    tasks.map((task) =>
-                      task.id === "release-readiness" ? (
-                        <Link href={sessionHref} key={task.id}>
-                          <span data-task-icon>
-                            <ProductPlaygroundIcon name="task-add" />
-                          </span>
-                          <span data-task-copy>
-                            <strong>{task.title}</strong>
-                            <small>{task.summary}</small>
-                          </span>
-                          <span
-                            data-collaborators
-                            aria-label={zh ? "3 位协作者" : "3 collaborators"}
-                          >
-                            <i>R</i>
-                            <i>B</i>
-                            <b>3</b>
-                          </span>
-                          <span data-progress>{task.progress}</span>
-                          <ProductPlaygroundIcon name="more" />
-                        </Link>
-                      ) : (
-                        <article data-draft-task key={task.id}>
-                          <span data-task-icon>
-                            <ProductPlaygroundIcon name="document" />
-                          </span>
-                          <span data-task-copy>
-                            <strong>{task.title}</strong>
-                            <small>{task.summary}</small>
-                          </span>
-                          <span data-task-state>
-                            <i aria-hidden="true" />
-                            {zh ? "草稿" : "Draft"}
-                          </span>
-                          <span data-progress>{task.progress}</span>
-                          <ProductPlaygroundIcon name="more" />
-                        </article>
-                      ),
-                    )
-                  ) : (
-                    <div
-                      className="product-project-workspace__empty"
-                      role="status"
+                </>
+              ) : activeTab === "activity" ? (
+                <>
+                  <button
+                    aria-expanded={activityComposerOpen}
+                    data-activity-compose
+                    onClick={() => setActivityComposerOpen((value) => !value)}
+                    type="button"
+                  >
+                    <ProductPlaygroundIcon name="plus" />
+                    {zh ? "发布留言" : "Post update"}
+                  </button>
+                  <div
+                    aria-label={zh ? "动态筛选" : "Activity filter"}
+                    data-activity-filters
+                    role="group"
+                  >
+                    <button
+                      aria-pressed={activityFilter === "mine"}
+                      onClick={() => setActivityFilter("mine")}
+                      type="button"
                     >
-                      <ProductPlaygroundIcon name="search" />
-                      <strong>
-                        {zh ? "没有匹配的任务" : "No matching tasks"}
-                      </strong>
-                      <span>
-                        {zh
-                          ? "调整筛选条件或清空搜索关键词。"
-                          : "Adjust the filters or clear the search query."}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ) : null}
-
-              {activeTab === "activity" ? (
-                <div className="product-project-workspace__activity-region">
-                  {activityComposerOpen ? (
-                    <form
-                      className="product-project-workspace__activity-composer"
-                      onSubmit={publishActivityMessage}
+                      {zh ? "与我相关" : "Relevant to me"}
+                    </button>
+                    <button
+                      aria-pressed={activityFilter === "team"}
+                      onClick={() => setActivityFilter("team")}
+                      type="button"
                     >
-                      <label>
-                        <span className="sr-only">
-                          {zh ? "项目留言" : "Project update"}
-                        </span>
-                        <textarea
-                          aria-label={zh ? "项目留言" : "Project update"}
-                          autoFocus
-                          onChange={(event) =>
-                            setActivityMessage(event.currentTarget.value)
-                          }
-                          placeholder={
-                            zh
-                              ? "同步进展、提出问题或 @ 项目成员"
-                              : "Share progress, raise a question, or @ a project member"
-                          }
-                          rows={3}
-                          value={activityMessage}
-                        />
-                      </label>
-                      <footer>
-                        <small>
-                          {zh
-                            ? "留言会显示在项目动态中"
-                            : "The update will appear in project activity"}
-                        </small>
-                        <div>
-                          <button
-                            onClick={() => {
-                              setActivityComposerOpen(false);
-                              setActivityMessage("");
-                            }}
-                            type="button"
-                          >
-                            {zh ? "取消" : "Cancel"}
-                          </button>
-                          <button
-                            data-primary
-                            disabled={!activityMessage.trim()}
-                            type="submit"
-                          >
-                            {zh ? "发布" : "Post"}
-                          </button>
-                        </div>
-                      </footer>
-                    </form>
-                  ) : null}
-                  <ol className="product-project-workspace__activity">
-                    {activityMessages.map((message, index) => (
-                      <li data-posted key={`${message}-${index}`}>
-                        <span>
-                          <ProductPlaygroundIcon name="edit" />
-                        </span>
-                        <div>
-                          <header>
-                            <strong>{zh ? "你" : "You"}</strong>
-                            <span>
-                              {zh ? "发布了留言" : "posted an update"}
-                            </span>
-                          </header>
-                          <p>{message}</p>
-                        </div>
-                        <time>{zh ? "刚刚" : "Now"}</time>
-                      </li>
-                    ))}
-                    {visibleActivityItems.map((item) => (
-                      <li key={item.id}>
-                        <span>
-                          <ProductPlaygroundIcon name={item.icon} />
-                        </span>
-                        <div>
-                          <header>
-                            <strong>{item.actor}</strong>
-                            <span>{item.action}</span>
-                          </header>
-                          <p>{item.detail}</p>
-                          {item.label ? (
-                            item.target === "session" ? (
-                              <Link href={sessionHref}>
-                                <ProductPlaygroundIcon name="task-add" />
-                                {item.label}
-                              </Link>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  setActiveTab(
-                                    item.target === "assets"
-                                      ? "assets"
-                                      : "plan",
-                                  )
-                                }
-                                type="button"
-                              >
-                                <ProductPlaygroundIcon
-                                  name={
-                                    item.target === "assets"
-                                      ? "document"
-                                      : "checklist"
-                                  }
-                                />
-                                {item.label}
-                              </button>
-                            )
-                          ) : null}
-                        </div>
-                        <time>{item.time}</time>
-                      </li>
-                    ))}
-                  </ol>
-                  <p className="product-project-workspace__activity-end">
-                    {zh ? "没有更多动态" : "No more activity"}
-                  </p>
-                </div>
-              ) : null}
-
-              {activeTab === "plan" ? (
-                <ProductProjectPlanSurface
-                  createRequest={planCreateRequest}
+                      {zh ? "成员动态" : "Team activity"}
+                    </button>
+                  </div>
+                </>
+              ) : activeTab === "plan" ? (
+                <ProductProjectPlanToolbar
                   locale={locale}
                   mineOnly={planMineOnly}
+                  onAddTask={() => setPlanCreateRequest((value) => value + 1)}
+                  onMineOnlyChange={setPlanMineOnly}
+                  onQueryChange={setQuery}
                   query={query}
-                  sessionHref={sessionHref}
                 />
               ) : null}
+            </div>
+          ) : null}
 
-              {activeTab === "assets" ? (
-                <div className="product-project-workspace__assets">
-                  {[
-                    ["DESIGN.md", "Markdown", zh ? "今天" : "Today"],
-                    [
-                      "visual-acceptance",
-                      zh ? "文件夹" : "Folder",
-                      zh ? "今天" : "Today",
-                    ],
-                    [
-                      "product-project-workflow.acl",
-                      "ACL",
-                      zh ? "昨天" : "Yesterday",
-                    ],
-                    [
-                      "release-readiness.md",
-                      "Markdown",
-                      zh ? "周一" : "Monday",
-                    ],
-                  ]
-                    .filter(([name]) =>
-                      name
-                        .toLocaleLowerCase(locale)
-                        .includes(query.trim().toLocaleLowerCase(locale)),
-                    )
-                    .map(([name, type, updated]) => (
-                      <button
-                        aria-pressed={selectedAsset === name}
-                        key={name}
-                        onClick={() =>
-                          setSelectedAsset((current) =>
-                            current === name ? "" : name,
-                          )
-                        }
-                        type="button"
+          {activeTab !== "assets" ? (
+            <div className="product-project-workspace__viewport">
+              <section
+                aria-labelledby={"product-project-tab-" + activeTab}
+                className="product-project-workspace__panel"
+                id={"product-project-panel-" + activeTab}
+                role="tabpanel"
+              >
+                {activeTab === "tasks" ? (
+                  <div className="product-project-workspace__task-list">
+                    {tasks.length ? (
+                      tasks.map((task) =>
+                        task.id === "release-readiness" ? (
+                          <Link href={sessionHref} key={task.id}>
+                            <span data-task-icon>
+                              <ProductPlaygroundIcon name="task-add" />
+                            </span>
+                            <span data-task-copy>
+                              <strong>{task.title}</strong>
+                              <small>{task.summary}</small>
+                            </span>
+                            <span
+                              data-collaborators
+                              aria-label={zh ? "3 位协作者" : "3 collaborators"}
+                            >
+                              <i>R</i>
+                              <i>B</i>
+                              <b>3</b>
+                            </span>
+                            <span data-progress>{task.progress}</span>
+                            <ProductPlaygroundIcon
+                              data-task-destination
+                              name="arrow"
+                            />
+                          </Link>
+                        ) : (
+                          <article data-draft-task key={task.id}>
+                            <span data-task-icon>
+                              <ProductPlaygroundIcon name="document" />
+                            </span>
+                            <span data-task-copy>
+                              <strong>{task.title}</strong>
+                              <small>{task.summary}</small>
+                            </span>
+                            <span data-task-state>
+                              <i aria-hidden="true" />
+                              {zh ? "草稿" : "Draft"}
+                            </span>
+                            <span data-progress>{task.progress}</span>
+                          </article>
+                        ),
+                      )
+                    ) : (
+                      <div
+                        className="product-project-workspace__empty"
+                        role="status"
                       >
+                        <ProductPlaygroundIcon name="search" />
+                        <strong>
+                          {zh ? "没有匹配的任务" : "No matching tasks"}
+                        </strong>
                         <span>
-                          <ProductPlaygroundIcon
-                            name={
-                              type === (zh ? "文件夹" : "Folder")
-                                ? "folder"
-                                : "document"
-                            }
-                          />
-                        </span>
-                        <span>
-                          <strong>{name}</strong>
-                          <small>{type}</small>
-                        </span>
-                        <span>{zh ? "项目共享" : "Project shared"}</span>
-                        <time>{updated}</time>
-                        <ProductPlaygroundIcon name="more" />
-                      </button>
-                    ))}
-                  {selectedAsset ? (
-                    <footer>
-                      <div>
-                        <ProductPlaygroundIcon name="document" />
-                        <span>
-                          <strong>{selectedAsset}</strong>
-                          <small>
-                            {zh
-                              ? "已选中，可创建一个继承该资产上下文的任务"
-                              : "Selected and ready to seed a task with this asset context"}
-                          </small>
+                          {zh
+                            ? "调整筛选条件或清空搜索关键词。"
+                            : "Adjust the filters or clear the search query."}
                         </span>
                       </div>
-                      <button
-                        onClick={() => {
-                          setDraftTask(
-                            zh
-                              ? `检查 ${selectedAsset}`
-                              : `Review ${selectedAsset}`,
-                          );
-                          setActiveTab("tasks");
-                        }}
-                        type="button"
+                    )}
+                  </div>
+                ) : null}
+
+                {activeTab === "activity" ? (
+                  <div className="product-project-workspace__activity-region">
+                    {activityComposerOpen ? (
+                      <form
+                        className="product-project-workspace__activity-composer"
+                        onSubmit={publishActivityMessage}
                       >
-                        <ProductPlaygroundIcon name="task-add" />
-                        {zh ? "创建关联任务" : "Create linked task"}
-                      </button>
-                    </footer>
-                  ) : null}
-                </div>
-              ) : null}
-            </section>
-          </div>
+                        <label>
+                          <span className="sr-only">
+                            {zh ? "项目留言" : "Project update"}
+                          </span>
+                          <textarea
+                            aria-label={zh ? "项目留言" : "Project update"}
+                            autoFocus
+                            onChange={(event) =>
+                              setActivityMessage(event.currentTarget.value)
+                            }
+                            placeholder={
+                              zh
+                                ? "同步进展、提出问题或 @ 项目成员"
+                                : "Share progress, raise a question, or @ a project member"
+                            }
+                            rows={3}
+                            value={activityMessage}
+                          />
+                        </label>
+                        <footer>
+                          <small>
+                            {zh
+                              ? "留言会显示在项目动态中"
+                              : "The update will appear in project activity"}
+                          </small>
+                          <div>
+                            <button
+                              onClick={() => {
+                                setActivityComposerOpen(false);
+                                setActivityMessage("");
+                              }}
+                              type="button"
+                            >
+                              {zh ? "取消" : "Cancel"}
+                            </button>
+                            <button
+                              data-primary
+                              disabled={!activityMessage.trim()}
+                              type="submit"
+                            >
+                              {zh ? "发布" : "Post"}
+                            </button>
+                          </div>
+                        </footer>
+                      </form>
+                    ) : null}
+                    <ol className="product-project-workspace__activity">
+                      {activityMessages.map((message, index) => (
+                        <li data-posted key={`${message}-${index}`}>
+                          <span>
+                            <ProductPlaygroundIcon name="edit" />
+                          </span>
+                          <div>
+                            <header>
+                              <strong>{zh ? "你" : "You"}</strong>
+                              <span>
+                                {zh ? "发布了留言" : "posted an update"}
+                              </span>
+                            </header>
+                            <p>{message}</p>
+                          </div>
+                          <time>{zh ? "刚刚" : "Now"}</time>
+                        </li>
+                      ))}
+                      {visibleActivityItems.map((item) => (
+                        <li key={item.id}>
+                          <span>
+                            <ProductPlaygroundIcon name={item.icon} />
+                          </span>
+                          <div>
+                            <header>
+                              <strong>{item.actor}</strong>
+                              <span>{item.action}</span>
+                            </header>
+                            <p>{item.detail}</p>
+                            {item.label ? (
+                              item.target === "session" ? (
+                                <Link href={sessionHref}>
+                                  <ProductPlaygroundIcon name="task-add" />
+                                  {item.label}
+                                </Link>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    selectWorkspaceTab(
+                                      item.target === "assets"
+                                        ? "assets"
+                                        : "plan",
+                                    )
+                                  }
+                                  type="button"
+                                >
+                                  <ProductPlaygroundIcon
+                                    name={
+                                      item.target === "assets"
+                                        ? "document"
+                                        : "checklist"
+                                    }
+                                  />
+                                  {item.label}
+                                </button>
+                              )
+                            ) : null}
+                          </div>
+                          <time>{item.time}</time>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="product-project-workspace__activity-end">
+                      {zh ? "没有更多动态" : "No more activity"}
+                    </p>
+                  </div>
+                ) : null}
+
+                {activeTab === "plan" ? (
+                  <ProductProjectPlanSurface
+                    createRequest={planCreateRequest}
+                    locale={locale}
+                    mineOnly={planMineOnly}
+                    query={query}
+                    sessionHref={sessionHref}
+                  />
+                ) : null}
+              </section>
+            </div>
+          ) : null}
 
           <footer className="product-project-workspace__composer">
             <ProductComposer
-              compact
               contextual
-              initialWorkspace="ui"
+              initialWorkspace=""
               locale={locale}
               onConfigureModels={onOpenModelSettings}
               onSubmit={setDraftTask}
               placeholder={
                 zh
-                  ? "今天帮你做些什么？ @ 引用项目资产、待办或调用技能"
-                  : "What should we do next? Use @ for project assets, todos, or skills"
+                  ? "今天帮你做些什么？@ 引用资产文件、项目待办或调用技能"
+                  : "What should we do next? Use @ for assets, project todos, or skills"
               }
-              showPermissions={false}
+              showExecutionTarget
+              showPermissions
               submitSuccessMessage={
                 zh
                   ? "已在项目中创建任务草稿。"
                   : "A task draft was created in the project."
               }
             />
-            <small>
-              {zh
-                ? "此处创建的任务会继承项目上下文"
-                : "Tasks created here inherit the project context"}
-            </small>
           </footer>
         </section>
 

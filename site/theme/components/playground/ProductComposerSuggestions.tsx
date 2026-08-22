@@ -80,8 +80,12 @@ export const ProductComposerSuggestions = forwardRef<
   const { registry } = useProductCapabilityRegistry();
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);
   const workspaceFiles = useProductWorkspaceFiles();
-  const workspaceNodes = useMemo<readonly ProductComposerWorkspaceNode[]>(() => {
-    const imported = workspaceFiles.filter((record) => record.state === "ready");
+  const workspaceNodes = useMemo<
+    readonly ProductComposerWorkspaceNode[]
+  >(() => {
+    const imported = workspaceFiles.filter(
+      (record) => record.state === "ready",
+    );
     if (imported.length === 0) return productComposerWorkspace;
     return [
       {
@@ -256,13 +260,18 @@ export const ProductComposerSuggestions = forwardRef<
       aria-label={title}
       className="product-composer-suggestions"
       data-composer-suggestions
+      data-suggestion-kind={kind}
       data-popover
     >
       <header>
         <span>
           <ProductPlaygroundIcon
             name={
-              kind === "file" ? "folder" : kind === "skill" ? "brain" : "code"
+              kind === "file"
+                ? "folder"
+                : kind === "skill"
+                  ? "checklist"
+                  : "code"
             }
           />
           <strong>{title}</strong>
@@ -353,7 +362,7 @@ export const ProductComposerSuggestions = forwardRef<
               >
                 <span data-composer-suggestion-icon>
                   <ProductPlaygroundIcon
-                    name={kind === "skill" ? "brain" : "code"}
+                    name={kind === "skill" ? "checklist" : "code"}
                   />
                 </span>
                 <span data-composer-suggestion-copy>

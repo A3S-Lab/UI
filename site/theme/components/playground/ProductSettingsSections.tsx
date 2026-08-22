@@ -48,14 +48,18 @@ export const settingsSections: readonly {
     icon: "assistant",
     label: { en: "Account", zh: "账户管理" },
   },
-  { id: "agent", icon: "catalog", label: { en: "Execution", zh: "执行设置" } },
+  {
+    id: "agent",
+    icon: "automation",
+    label: { en: "Execution", zh: "执行设置" },
+  },
   {
     id: "personalization",
     icon: "inspiration",
     label: { en: "Personalization", zh: "个性化" },
   },
-  { id: "memory", icon: "knowledge", label: { en: "Memory", zh: "记忆" } },
-  { id: "models", icon: "workspace", label: { en: "Models", zh: "模型" } },
+  { id: "memory", icon: "brain", label: { en: "Memory", zh: "记忆" } },
+  { id: "models", icon: "model", label: { en: "Models", zh: "模型" } },
   {
     id: "assistant",
     icon: "assistant",
@@ -78,7 +82,7 @@ export const settingsSections: readonly {
     label: { en: "Shortcuts", zh: "快捷键" },
   },
   { id: "security", icon: "shield", label: { en: "Security", zh: "安全中心" } },
-  { id: "help", icon: "report", label: { en: "Help", zh: "帮助与反馈" } },
+  { id: "help", icon: "help", label: { en: "Help", zh: "帮助与反馈" } },
 ];
 
 export function ProductSettingsSectionContent({

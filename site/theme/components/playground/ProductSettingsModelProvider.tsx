@@ -80,7 +80,7 @@ export function ProductModelProviderManager({
           <strong>{zh ? "Provider 与模型" : "Providers and models"}</strong>
           <small>
             {zh
-              ? "左侧选择 Provider，右侧配置连接和模型。"
+              ? "选择 Provider 后配置连接和模型。"
               : "Choose a provider, then configure its connection and models."}
           </small>
         </div>
