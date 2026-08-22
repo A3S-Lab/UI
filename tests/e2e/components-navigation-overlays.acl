@@ -88,12 +88,12 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-dialog" { target = role("button", "Show Dialog") }
+        click "open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
         expect "dialog-open" { visible = css("#demo-alert-dialog[open][role=alertdialog]") }
         expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
         screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
-        click "cancel-dialog" { target = role("button", "Cancel") }
-        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] .a3s-preview__canvas > button:focus") }
+        click "cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
+        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']:focus") }
     }
 
     scenario "dialog" {

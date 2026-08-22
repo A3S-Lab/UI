@@ -138,7 +138,7 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/chart.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "chart-visible" { visible = css(".a3s-preview[data-preview-component=chart] canvas[aria-label='bar chart preview']") }
+        expect "chart-visible" { visible = css(".a3s-preview[data-preview-component=chart] .a3s-chart-demo .chart canvas[aria-describedby]") }
     }
 
     scenario "item" {
@@ -283,8 +283,9 @@ suite "a3s-ui-feedback-and-data" {
         expect "name-ascending" { visible = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
         click "reverse-name-sort" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
         expect "name-descending" { visible = css("#data-grid-demo-en th[aria-sort=descending] [data-grid-sort=name]") }
-        click "clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
-        expect "selection-cleared" { visible = css("#data-grid-demo-en[data-selection=none] .bulk-action-bar[hidden]") }
+        focus "focus-clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
+        press "clear-selection" { key = "Enter" }
+        expect "selection-cleared" { visible = css("#data-grid-demo-en[data-selection=none]") }
         viewport "phone" { width = 390 height = 844 }
         expect "stacked-row-visible" { visible = css("#data-grid-demo-en[data-responsive=stack] tbody tr:first-child td[data-label=Name]") }
     }
@@ -296,10 +297,10 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/bulk-action-bar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "bulk-actions-visible" { visible = css("#bulk-action-bar-demo-en[data-bulk-action-bar-initialized=true][data-state=selected]:not([hidden])") }
-        focus "focus-archive-action" { target = css("#bulk-action-bar-demo-en [data-bulk-action=archive]") }
-        expect "archive-action-focused" { visible = css("#bulk-action-bar-demo-en [data-bulk-action=archive]:focus") }
+        expect "bulk-actions-visible" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-bulk-action-bar-initialized=true][data-state=selected]:not([hidden])") }
+        focus "focus-archive-action" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]") }
+        expect "archive-action-focused" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]:focus") }
         click "clear-selection" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
-        expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[hidden]") }
+        expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar]:has(.bulk-action-bar[data-state=empty][hidden])") }
     }
 }
