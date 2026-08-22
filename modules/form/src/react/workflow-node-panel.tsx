@@ -1,4 +1,12 @@
-import { type ReactNode, useCallback, useId, useMemo, useState } from 'react';
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { compileForm, type FormDocument, type FormHostAdapter, type JsonObject } from '../core';
 import {
   type CreateWorkflowNodeFormOptions,
@@ -118,6 +126,8 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
   const [resetPending, setResetPending] = useState(false);
   const [activeTab, setActiveTab] = useState<'settings' | 'last-run'>('settings');
   const [running, setRunning] = useState(false);
+  const settingsTabRef = useRef<HTMLButtonElement>(null);
+  const lastRunTabRef = useRef<HTMLButtonElement>(null);
   const panelId = useId();
   const formOptions = useMemo<CreateWorkflowNodeFormOptions>(
     () => ({
@@ -187,6 +197,18 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
       ? props.node.runtimeBinding
       : undefined;
   const nodeVisual = workflowNodeVisual(props.node);
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    let nextTab: 'settings' | 'last-run' | undefined;
+    if (event.key === 'Home') nextTab = 'settings';
+    if (event.key === 'End') nextTab = 'last-run';
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      nextTab = activeTab === 'settings' ? 'last-run' : 'settings';
+    }
+    if (!nextTab) return;
+    event.preventDefault();
+    setActiveTab(nextTab);
+    (nextTab === 'settings' ? settingsTabRef : lastRunTabRef).current?.focus();
+  };
   const renderNodeAccessory = useCallback(
     ({ node, valuePath, value, disabled }: FormNodeAccessoryContext) => (
       <WorkflowFieldAccessory
@@ -322,23 +344,27 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
         <div className="a3s-form-workflow-node-tabs" role="tablist" aria-label={copy.panelSections}>
           <button
             type="button"
+            ref={settingsTabRef}
             id={`${panelId}-settings-tab`}
             role="tab"
             aria-controls={`${panelId}-settings-panel`}
             aria-selected={activeTab === 'settings'}
             tabIndex={activeTab === 'settings' ? 0 : -1}
             onClick={() => setActiveTab('settings')}
+            onKeyDown={onTabKeyDown}
           >
             {copy.settings}
           </button>
           <button
             type="button"
+            ref={lastRunTabRef}
             id={`${panelId}-last-run-tab`}
             role="tab"
             aria-controls={`${panelId}-last-run-panel`}
             aria-selected={activeTab === 'last-run'}
             tabIndex={activeTab === 'last-run' ? 0 : -1}
             onClick={() => setActiveTab('last-run')}
+            onKeyDown={onTabKeyDown}
           >
             {copy.lastRun}
           </button>

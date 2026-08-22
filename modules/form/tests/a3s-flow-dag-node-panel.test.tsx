@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import {
   type A3SFlowWorkflowDagNode,
   a3sFlowDagNodeManifestCatalog,
@@ -131,6 +132,78 @@ describe('A3S Flow DAG node configuration panel', () => {
     expect(screen.getByText('In')).toBeTruthy();
     expect(screen.getByText('Approved')).toBeTruthy();
     expect(screen.getByText('acme.approval')).toBeTruthy();
+  });
+
+  it('shows the current defining configuration for every public DAG node', () => {
+    const expected: Readonly<Record<string, readonly [string, string][]>> = {
+      'flow.start': [
+        ['workflow', 'workflow.main'],
+        ['version', '0.1.0'],
+      ],
+      'flow.condition': [['rule', 'input.approved Equals true']],
+      'flow.complete': [['output', 'input']],
+      'flow.fail': [['message', 'Workflow failed: {{input.reason}}']],
+      'flow.step': [
+        ['handler', 'task.run'],
+        ['input', 'input'],
+      ],
+      'flow.batch': [
+        ['steps', '1'],
+        ['first', 'task.run'],
+      ],
+      'flow.wait': [['resume', 'input.deadline']],
+      'flow.hook': [
+        ['callback', 'Human approval'],
+        ['title', 'Review workflow request'],
+      ],
+      'flow.cancel': [['state', 'Ready to run']],
+      'flow.timeout': [['deadline', 'input.deadline']],
+      'flow.continue-as-new': [['input', 'input']],
+      'flow.progress': [
+        ['progress', 'progress'],
+        ['completed', '0'],
+      ],
+      'flow.child-operation': [
+        ['reference', 'child'],
+        ['operation', 'operation'],
+      ],
+      'flow.child-workflow': [
+        ['child', 'child'],
+        ['workflow', 'workflow.child · 0.1.0'],
+      ],
+      'flow.child-workflows': [
+        ['children', '1'],
+        ['workflow', 'workflow.child · 0.1.0'],
+      ],
+      'flow.signal': [
+        ['signal', 'workflow.signal'],
+        ['wait', 'signal'],
+      ],
+      iteration: [['items', 'input.items']],
+      loop: [
+        ['rule', 'loop.index Less than 10'],
+        ['limit', '100'],
+      ],
+    };
+
+    const publicManifests = a3sFlowDagNodeManifestCatalog.filter((manifest) => !manifest.internal);
+    expect(publicManifests).toHaveLength(Object.keys(expected).length);
+    for (const manifest of publicManifests) {
+      const markup = renderToStaticMarkup(
+        <A3SFlowDagNodePreview
+          dagNode={createA3SFlowDagNode(`summary-${manifest.type}`, manifest)}
+          manifest={manifest}
+          locale="en-US"
+        />,
+      );
+      const entries = expected[manifest.type];
+      expect(entries).toBeDefined();
+      expect(markup.match(/data-summary-id=/gu) ?? []).toHaveLength(entries?.length ?? 0);
+      for (const [id, value] of entries ?? []) {
+        expect(markup).toContain(`data-summary-id="${id}"`);
+        expect(markup).toContain(value);
+      }
+    }
   });
 
   it('shows only control and data outputs available for the current DAG configuration', () => {

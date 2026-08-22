@@ -15,8 +15,15 @@ export interface WorkflowNodePreviewProps {
   locale?: string;
   technical?: boolean;
   status?: WorkflowNodePreviewStatus;
+  summary?: readonly WorkflowNodePreviewSummaryItem[];
   onSelect?: () => void;
   onRequestNext?: (port: WorkflowNodePreviewPort) => void;
+}
+
+export interface WorkflowNodePreviewSummaryItem {
+  id: string;
+  label: string;
+  value: string;
 }
 
 export interface WorkflowNodePreviewPort {
@@ -92,6 +99,7 @@ function previewCopy(chinese: boolean) {
         containerScope: '容器内部画布',
         containerStart: '容器起点',
         containerHint: '后续节点在这个作用域内运行',
+        configurationSummary: '当前配置',
         status: {
           running: '运行中',
           success: '运行成功',
@@ -109,6 +117,7 @@ function previewCopy(chinese: boolean) {
         containerScope: 'Container canvas',
         containerStart: 'Scope start',
         containerHint: 'Following nodes run inside this scope',
+        configurationSummary: 'Current configuration',
         status: {
           running: 'Running',
           success: 'Succeeded',
@@ -190,6 +199,7 @@ export function WorkflowNodePreview({
   locale = 'en',
   technical = true,
   status = 'idle',
+  summary = [],
   onSelect,
   onRequestNext,
 }: WorkflowNodePreviewProps) {
@@ -216,6 +226,7 @@ export function WorkflowNodePreview({
       data-selected={selected || undefined}
       data-status={status}
       data-technical={technical || undefined}
+      data-has-summary={summary.length > 0 || undefined}
       aria-label={interactive ? undefined : accessibleName}
     >
       {interactive && (
@@ -251,6 +262,19 @@ export function WorkflowNodePreview({
         {(node.beta || node.legacy) && <em>{node.beta ? 'Beta' : 'Legacy'}</em>}
       </header>
       <div className="a3s-form-workflow-node-preview-body">
+        {summary.length > 0 && (
+          <dl
+            className="a3s-form-workflow-node-preview-summary"
+            aria-label={copy.configurationSummary}
+          >
+            {summary.map((entry) => (
+              <div data-summary-id={entry.id} key={entry.id}>
+                <dt>{entry.label}</dt>
+                <dd title={entry.value}>{entry.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         <PortList direction="input" ports={inputs} technical={technical} copy={copy} />
         {visual.family === 'container' && (
           <section

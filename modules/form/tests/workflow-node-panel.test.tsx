@@ -357,9 +357,24 @@ describe('Workflow node configuration panel', () => {
 
     render(<InspectorHarness />);
 
-    expect(screen.getByRole('tab', { name: 'Settings' }).getAttribute('aria-selected')).toBe(
-      'true',
-    );
+    const settingsTab = screen.getByRole('tab', { name: 'Settings' });
+    const lastRunTab = screen.getByRole('tab', { name: 'Last run' });
+    expect(settingsTab.getAttribute('aria-selected')).toBe('true');
+
+    fireEvent.keyDown(settingsTab, { key: 'End' });
+    expect(lastRunTab.getAttribute('aria-selected')).toBe('true');
+    expect(document.activeElement).toBe(lastRunTab);
+    expect(screen.getByText('Verified output')).toBeTruthy();
+
+    fireEvent.keyDown(lastRunTab, { key: 'Home' });
+    expect(settingsTab.getAttribute('aria-selected')).toBe('true');
+    expect(document.activeElement).toBe(settingsTab);
+
+    fireEvent.keyDown(settingsTab, { key: 'ArrowRight' });
+    expect(lastRunTab.getAttribute('aria-selected')).toBe('true');
+    fireEvent.keyDown(lastRunTab, { key: 'ArrowLeft' });
+    expect(settingsTab.getAttribute('aria-selected')).toBe('true');
+
     fireEvent.click(screen.getByRole('button', { name: 'Run node' }));
     await waitFor(() => expect(runs).toBe(1));
 

@@ -13,6 +13,7 @@ import {
   selectA3SFlowDagNodeConfiguration,
 } from '../integrations/a3s-flow-node-manifest';
 import { isA3SFlowCorePortAvailable } from '../integrations/a3s-flow-validation';
+import { a3sFlowDagNodePreviewSummary } from './a3s-flow-node-summary';
 import {
   createA3SFlowPanelHostAdapter,
   localizeA3SFlowDagNodeManifest,
@@ -104,6 +105,10 @@ export function A3SFlowDagNodePreview({
       }),
     };
   }, [coreDefinition, dagNode.data, localizedManifest]);
+  const previewSummary = useMemo(
+    () => a3sFlowDagNodePreviewSummary(dagNode, props.locale),
+    [dagNode, props.locale],
+  );
   if (!localizedManifest) {
     return missingManifestAlert(
       dagNode.data.type,
@@ -118,6 +123,7 @@ export function A3SFlowDagNodePreview({
     className: ['a3s-form-flow-node-preview', className].filter(Boolean).join(' '),
     node: localizedManifest,
     ports: previewPorts,
+    summary: props.summary ?? previewSummary,
     technical,
   });
 }

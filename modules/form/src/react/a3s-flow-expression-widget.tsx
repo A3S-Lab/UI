@@ -1,27 +1,24 @@
 import { useEffect, useState } from 'react';
 import { analyzeExpression, type FormExpression, type JsonObject, type JsonValue } from '../core';
 import { A3S_FLOW_EXPRESSION_API_VERSION } from '../integrations/a3s-flow-core';
+import {
+  A3S_FLOW_COMPARISON_OPERATORS as COMPARISON_OPERATORS,
+  type A3SFlowComparisonExpression as ComparisonExpression,
+  type A3SFlowComparisonOperator as ComparisonOperator,
+  type A3SFlowExpressionPurpose as ExpressionPurpose,
+  a3sFlowExpressionFrom as expressionFrom,
+  a3sFlowExpressionToTemplate as expressionToTemplate,
+  isA3SFlowComparisonExpression as isComparison,
+  isJsonObjectValue as isObject,
+  a3sFlowExpressionLiteralText as literalText,
+  a3sFlowComparisonOperatorLabel as operatorLabel,
+  a3sFlowExpressionPreviewText as previewText,
+} from './a3s-flow-expression-format';
 import { DesignerIcon } from './designer-icons';
 import type { FormWidgetProps } from './native-widget';
 import { SelectControl } from './select-control';
 
 type ExpressionMode = 'none' | 'source' | 'value' | 'compare' | 'template' | 'advanced';
-type ExpressionPurpose =
-  | 'condition'
-  | 'datetime'
-  | 'error'
-  | 'input'
-  | 'output'
-  | 'run-id'
-  | 'token';
-
-const COMPARISON_OPERATORS = ['eq', 'ne', 'gt', 'gte', 'lt', 'lte', 'contains', 'in'] as const;
-type ComparisonOperator = (typeof COMPARISON_OPERATORS)[number];
-type ComparisonExpression = {
-  op: ComparisonOperator;
-  left: FormExpression;
-  right: FormExpression;
-};
 
 interface FlowExpressionEditorProps {
   id: string;
@@ -43,23 +40,6 @@ function isChinese(locale: string): boolean {
   return locale.toLocaleLowerCase().startsWith('zh');
 }
 
-function isObject(value: unknown): value is JsonObject {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function expressionFrom(value: JsonValue | undefined): FormExpression | undefined {
-  if (!isObject(value) || value.apiVersion !== A3S_FLOW_EXPRESSION_API_VERSION) return undefined;
-  if (Object.keys(value).some((key) => key !== 'apiVersion' && key !== 'expression')) {
-    return undefined;
-  }
-  try {
-    analyzeExpression(value.expression);
-    return value.expression as FormExpression;
-  } catch {
-    return undefined;
-  }
-}
-
 function envelope(expression: FormExpression): JsonObject {
   return { apiVersion: A3S_FLOW_EXPRESSION_API_VERSION, expression };
 }
@@ -76,10 +56,6 @@ function purposeFrom(value: string | undefined): ExpressionPurpose {
     default:
       return 'input';
   }
-}
-
-function isComparison(expression: FormExpression): expression is ComparisonExpression {
-  return COMPARISON_OPERATORS.some((operator) => operator === expression.op);
 }
 
 function editableComparison(expression: FormExpression): expression is ComparisonExpression {
@@ -182,11 +158,6 @@ function defaultExpression(mode: ExpressionMode, purpose: ExpressionPurpose): Fo
   return { op: 'field', path: purpose === 'datetime' ? 'input.resumeAt' : 'input' };
 }
 
-function literalText(value: JsonValue): string {
-  if (typeof value === 'string') return value;
-  return JSON.stringify(value);
-}
-
 function parseLiteral(value: string): JsonValue {
   const trimmed = value.trim();
   if (!trimmed) return '';
@@ -195,17 +166,6 @@ function parseLiteral(value: string): JsonValue {
   } catch {
     return value;
   }
-}
-
-function expressionToTemplate(expression: FormExpression): string {
-  if (expression.op !== 'concat') return '';
-  return expression.values
-    .map((part) => {
-      if (part.op === 'field') return `{{${part.path}}}`;
-      if (part.op === 'literal') return String(part.value ?? '');
-      return '{{advanced}}';
-    })
-    .join('');
 }
 
 function templateToExpression(source: string): FormExpression {
@@ -223,31 +183,6 @@ function templateToExpression(source: string): FormExpression {
   return { op: 'concat', values };
 }
 
-function operatorLabel(operator: ComparisonOperator, chinese: boolean): string {
-  const labels = chinese
-    ? {
-        eq: '等于',
-        ne: '不等于',
-        gt: '大于',
-        gte: '大于等于',
-        lt: '小于',
-        lte: '小于等于',
-        contains: '包含',
-        in: '属于',
-      }
-    : {
-        eq: 'Equals',
-        ne: 'Does not equal',
-        gt: 'Greater than',
-        gte: 'At least',
-        lt: 'Less than',
-        lte: 'At most',
-        contains: 'Contains',
-        in: 'Is in',
-      };
-  return labels[operator];
-}
-
 function modeLabel(mode: ExpressionMode, purpose: ExpressionPurpose, chinese: boolean): string {
   if (mode === 'none') return chinese ? '由接入系统生成' : 'Host generated';
   if (mode === 'source') return chinese ? '来自工作流字段' : 'Workflow field';
@@ -256,37 +191,6 @@ function modeLabel(mode: ExpressionMode, purpose: ExpressionPurpose, chinese: bo
   if (mode === 'advanced') return chinese ? '高级表达式' : 'Advanced expression';
   if (purpose === 'datetime') return chinese ? '固定 UTC 时间' : 'Fixed UTC time';
   return chinese ? '固定值' : 'Fixed value';
-}
-
-function previewText(
-  expression: FormExpression,
-  purpose: ExpressionPurpose,
-  chinese: boolean,
-): string {
-  if (purpose === 'run-id' && expression.op === 'literal' && expression.value === null) {
-    return chinese ? '每次启动时由接入系统创建运行 ID。' : 'The host creates an ID for each run.';
-  }
-  if (expression.op === 'field') {
-    return chinese
-      ? `使用字段 ${expression.path} 的值。`
-      : `Use the value from ${expression.path}.`;
-  }
-  if (expression.op === 'literal') {
-    return chinese
-      ? `使用固定值：${literalText(expression.value)}`
-      : `Use fixed value: ${literalText(expression.value)}`;
-  }
-  if (isComparison(expression)) {
-    const left = expression.left.op === 'field' ? expression.left.path : '…';
-    const right = expression.right.op === 'literal' ? literalText(expression.right.value) : '…';
-    return `${left} ${operatorLabel(expression.op, chinese)} ${right}`;
-  }
-  if (expression.op === 'concat') {
-    return chinese
-      ? `生成文本：${expressionToTemplate(expression)}`
-      : `Build text: ${expressionToTemplate(expression)}`;
-  }
-  return chinese ? '使用高级表达式计算结果。' : 'Evaluate the advanced expression.';
 }
 
 function AdvancedExpressionEditor({
