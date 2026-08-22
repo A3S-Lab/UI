@@ -44,8 +44,9 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/color-swatches.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        check "choose-blue" { target = label("A3S Blue") }
-        expect "blue-selected" { visible = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label='A3S Blue']:checked") }
+        focus "focus-violet" { target = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label=Violet]") }
+        press "choose-violet" { key = "Space" }
+        expect "violet-selected" { visible = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label=Violet]:checked") }
     }
 
     scenario "copy-button" {
@@ -78,8 +79,8 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/editable-text.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "begin-edit" { target = role("button", "Edit") }
-        fill "change-title" { target = label("Title") value = "Release plan" }
+        click "begin-edit" { target = css(".a3s-preview[data-preview-component=editable-text] [data-editable-action=edit]") }
+        fill "change-title" { target = css(".a3s-preview[data-preview-component=editable-text] input[aria-label=Title]") value = "Release plan" }
         press "commit-title" { key = "Enter" }
         expect "title-committed" { text = "Release plan" }
         expect "display-mode" { visible = css(".a3s-preview[data-preview-component=editable-text] .editable-text[data-state=display]") }
@@ -92,8 +93,9 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/emoji-picker.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "filter-reactions" { target = label("Search reactions") value = "celebrate" }
-        click "choose-celebrate" { target = role("button", "Celebrate") }
+        fill "filter-reactions" { target = css(".a3s-preview[data-preview-component=emoji-picker] input[aria-label='Search reactions']") value = "celebrate" }
+        focus "focus-celebrate" { target = css(".a3s-preview[data-preview-component=emoji-picker] [data-emoji-value='🎉']") }
+        press "choose-celebrate" { key = "Enter" }
         expect "celebrate-selected" { visible = css(".a3s-preview[data-preview-component=emoji-picker] [data-emoji-value='🎉'][aria-selected=true]") }
     }
 
