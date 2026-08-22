@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { a3sFlowDagNodeManifestCatalog } from '../src/a3s-flow';
+import { a3sFlowDagNodeManifestCatalog, requireA3SFlowDagNodeManifest } from '../src/a3s-flow';
 import { WorkflowNodePreview } from '../src/react';
 import type { WorkflowNodeDefinition } from '../src/workflow';
 
@@ -72,6 +72,38 @@ describe('Workflow node preview', () => {
     });
 
     expect(failures).toEqual([]);
+  });
+
+  it('assigns every public Flow node to an explicit visual family', () => {
+    const expectedFamilies: Readonly<Record<string, string>> = {
+      'flow.start': 'entry',
+      'flow.condition': 'branch',
+      'flow.complete': 'terminal',
+      'flow.fail': 'terminal',
+      'flow.step': 'action',
+      'flow.batch': 'action',
+      'flow.wait': 'suspension',
+      'flow.hook': 'suspension',
+      'flow.cancel': 'terminal',
+      'flow.timeout': 'terminal',
+      'flow.continue-as-new': 'action',
+      'flow.progress': 'action',
+      'flow.child-operation': 'action',
+      'flow.child-workflow': 'action',
+      'flow.child-workflows': 'action',
+      'flow.signal': 'suspension',
+      iteration: 'container',
+      loop: 'container',
+    };
+
+    const visibleManifests = a3sFlowDagNodeManifestCatalog.filter((manifest) => !manifest.internal);
+    expect(visibleManifests).toHaveLength(18);
+    for (const manifest of visibleManifests) {
+      const markup = renderToStaticMarkup(
+        <WorkflowNodePreview node={manifest} ports={manifest.ports} />,
+      );
+      expect(markup).toContain(`data-node-family="${expectedFamilies[manifest.type]}"`);
+    }
   });
 
   it('renders descriptor fallbacks, unselected nodes, and empty port contracts', () => {
@@ -188,7 +220,7 @@ describe('Workflow node preview', () => {
     expect(screen.getByRole('article', { name: 'Bound preview节点预览' })).toBeTruthy();
     expect(screen.getByText('Beta')).toBeTruthy();
     expect(screen.getByText('flow.step')).toBeTruthy();
-    expect(screen.getByText('Any')).toBeTruthy();
+    expect(screen.getByText('任意类型')).toBeTruthy();
 
     const emptyNode: WorkflowNodeDefinition = {
       ...previewBase,
@@ -236,7 +268,7 @@ describe('Workflow node preview', () => {
       ],
     };
 
-    render(
+    const { rerender } = render(
       <WorkflowNodePreview
         node={node}
         onSelect={() => {
@@ -256,7 +288,70 @@ describe('Workflow node preview', () => {
     expect(screen.getByText('Choose the next branch from workflow data.')).toBeTruthy();
 
     fireEvent.click(preview);
-    fireEvent.keyDown(preview, { key: 'Enter' });
-    expect(selections).toBe(2);
+    expect(preview.tagName).toBe('BUTTON');
+    expect(selections).toBe(1);
+
+    rerender(
+      <WorkflowNodePreview
+        node={node}
+        onSelect={() => undefined}
+        status="error"
+        technical={false}
+      />,
+    );
+    expect(screen.getByRole('status', { name: 'Failed' })).toBeTruthy();
+    expect(
+      screen
+        .getByRole('button', { name: 'Condition workflow node preview' })
+        .getAttribute('data-status'),
+    ).toBe('error');
+  });
+
+  it('offers next-node actions only from control-flow outputs', () => {
+    const condition = requireA3SFlowDagNodeManifest('flow.condition');
+    const requested: string[] = [];
+    render(
+      <WorkflowNodePreview
+        node={condition}
+        ports={condition.ports}
+        technical={false}
+        onRequestNext={(port) => requested.push(port.id)}
+      />,
+    );
+
+    const matched = screen.getByRole('button', { name: 'Add next node from Matched' });
+    expect(screen.getByRole('button', { name: 'Add next node from Otherwise' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Value/u })).toBeNull();
+    fireEvent.click(matched);
+    expect(requested).toEqual(['matched']);
+  });
+
+  it('keeps terminal outputs closed and renders structural nodes as scoped canvases', () => {
+    for (const type of ['flow.complete', 'flow.fail', 'flow.cancel', 'flow.timeout']) {
+      const terminal = requireA3SFlowDagNodeManifest(type);
+      const markup = renderToStaticMarkup(
+        <WorkflowNodePreview
+          node={terminal}
+          ports={terminal.ports}
+          onRequestNext={() => undefined}
+        />,
+      );
+      expect(markup).toContain('data-node-family="terminal"');
+      expect(markup).not.toContain('a3s-form-workflow-node-preview-next');
+    }
+
+    const iteration = requireA3SFlowDagNodeManifest('iteration');
+    render(
+      <WorkflowNodePreview
+        node={iteration}
+        ports={iteration.ports}
+        locale="zh-CN"
+        technical={false}
+        onRequestNext={() => undefined}
+      />,
+    );
+    expect(screen.getByRole('region', { name: '容器内部画布' })).toBeTruthy();
+    expect(screen.getByText('容器起点')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '从「Done」添加下一个节点' })).toBeTruthy();
   });
 });

@@ -1,46 +1,120 @@
 suite "a3s-ui-workflow-documentation" {
     version = 1
 
-    scenario "workflow-editor-desktop" {
-        name = "Workflow documentation exposes the node library, canvas node, and inspector contract"
+    scenario "workflow-editor-catalog" {
+        name = "Workflow documentation exposes all public nodes with semantic canvas behavior"
         surface = "web"
-        timeout_ms = 90000
+        timeout_ms = 180000
         viewport "desktop" { width = 1440 height = 1000 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/workflow-node-embedding.html" }
         wait "loaded" { load = "networkidle" }
         wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
 
-        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
-        expect "compact-selected-node" { visible = css(".a3s-form-workflow-node-preview[data-selected=true][data-node-tone=blue][role=button]") }
-        expect "inspector-settings-visible" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel [role=tab][aria-selected=true]") }
+        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open='true'][data-palette-open='false']") }
+        expect "initial-action-node" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'][data-node-family='action'][data-node-tone='blue']") }
+        expect "inspector-settings-visible" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel [role='tab'][aria-selected='true']") }
 
-        expect "node-library-closed" { visible = css(".a3s-doc-workflow-studio[data-palette-open=false]") }
-        focus "focus-open-library" { target = css(".a3s-doc-workflow-studio__add") }
-        press "open-library" { key = "Enter" }
-        expect "node-library-visible" { visible = css(".a3s-doc-workflow-studio[data-palette-open=true] .a3s-doc-workflow-studio__palette .a3s-doc-workflow-library") }
+        focus "focus-open-library-with-keyboard" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        press "open-library-with-keyboard" { key = "Enter" }
+        expect "library-replaces-inspector" { visible = css(".a3s-doc-workflow-studio[data-panel-open='false'][data-palette-open='true'] .a3s-doc-workflow-studio__palette") }
 
-        fill "find-condition" { target = css("input[aria-label='搜索节点']") value = "条件" }
-        expect "condition-result" { visible = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
-        focus "focus-condition" { target = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
-        press "select-condition" { key = "Enter" }
-        expect "condition-node-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-node-shape=branch][data-node-tone=cyan]") }
-        expect "condition-panel-matched" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'][data-node-tone=cyan]") }
-        expect "node-library-closed-after-selection" { visible = css(".a3s-doc-workflow-studio[data-palette-open=false]") }
+        fill "find-start" { target = css("input[aria-label='搜索节点']") value = "flow.start" }
+        focus "focus-start" { target = css("button[data-node-type='flow.start']") }
+        press "select-start-with-keyboard" { key = "Enter" }
+        expect "start-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-node-family='entry'][data-node-tone='blue']") }
+        expect "start-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start']") }
 
-        focus "focus-close-inspector" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='关闭面板']") }
-        press "close-inspector" { key = "Enter" }
-        expect "inspector-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false] .a3s-doc-workflow-studio__workspace") }
-        focus "focus-reopen-node" { target = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']") }
-        press "reopen-from-node" { key = "Enter" }
-        expect "inspector-restored" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
+        click "open-library-for-condition" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-condition" { target = css("input[aria-label='搜索节点']") value = "flow.condition" }
+        click "select-condition" { target = css("button[data-node-type='flow.condition']") }
+        expect "condition-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-node-family='branch'][data-node-tone='cyan']") }
+        expect "condition-branch-actions" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']:has([data-port-id='matched'] .a3s-form-workflow-node-preview-next):has([data-port-id='otherwise'] .a3s-form-workflow-node-preview-next)") }
 
-        focus "focus-run-node" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='运行节点']") }
-        press "run-node" { key = "Enter" }
-        wait "run-complete" { text = "运行成功" }
-        focus "focus-latest-run" { target = css(".a3s-form-workflow-node-tabs > button:nth-child(2)") }
-        press "latest-run" { key = "Enter" }
-        expect "latest-result-visible" { text = "当前 DAG 节点已成功完成。" }
+        click "open-library-for-complete" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-complete" { target = css("input[aria-label='搜索节点']") value = "flow.complete" }
+        click "select-complete" { target = css("button[data-node-type='flow.complete']") }
+        expect "complete-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete'][data-node-family='terminal'][data-node-tone='green']:not(:has(.a3s-form-workflow-node-preview-next))") }
+
+        click "open-library-for-fail" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-fail" { target = css("input[aria-label='搜索节点']") value = "flow.fail" }
+        click "select-fail" { target = css("button[data-node-type='flow.fail']") }
+        expect "fail-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail'][data-node-family='terminal'][data-node-tone='red']:not(:has(.a3s-form-workflow-node-preview-next))") }
+
+        click "open-library-for-step" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-step" { target = css("input[aria-label='搜索节点']") value = "flow.step" }
+        click "select-step" { target = css("button[data-node-type='flow.step']") }
+        expect "step-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'][data-node-family='action'][data-node-tone='blue']") }
+
+        click "open-library-for-batch" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-batch" { target = css("input[aria-label='搜索节点']") value = "flow.batch" }
+        click "select-batch" { target = css("button[data-node-type='flow.batch']") }
+        expect "batch-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch'][data-node-family='action'][data-node-tone='blue']") }
+
+        click "open-library-for-wait" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-wait" { target = css("input[aria-label='搜索节点']") value = "flow.wait" }
+        click "select-wait" { target = css("button[data-node-type='flow.wait']") }
+        expect "wait-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait'][data-node-family='suspension'][data-node-tone='violet']") }
+
+        click "open-library-for-hook" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-hook" { target = css("input[aria-label='搜索节点']") value = "flow.hook" }
+        click "select-hook" { target = css("button[data-node-type='flow.hook']") }
+        expect "hook-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook'][data-node-family='suspension'][data-node-tone='violet']") }
+
+        click "open-library-for-cancel" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-cancel" { target = css("input[aria-label='搜索节点']") value = "flow.cancel" }
+        click "select-cancel" { target = css("button[data-node-type='flow.cancel']") }
+        expect "cancel-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.cancel'][data-node-family='terminal'][data-node-tone='red']:not(:has(.a3s-form-workflow-node-preview-next))") }
+        expect "cancel-ready-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.cancel'] .a3s-form-workflow-node-settings-empty") }
+
+        click "open-library-for-timeout" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-timeout" { target = css("input[aria-label='搜索节点']") value = "flow.timeout" }
+        click "select-timeout" { target = css("button[data-node-type='flow.timeout']") }
+        expect "timeout-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.timeout'][data-node-family='terminal'][data-node-tone='red']:not(:has(.a3s-form-workflow-node-preview-next))") }
+
+        click "open-library-for-continue" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-continue" { target = css("input[aria-label='搜索节点']") value = "flow.continue-as-new" }
+        click "select-continue" { target = css("button[data-node-type='flow.continue-as-new']") }
+        expect "continue-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.continue-as-new'][data-node-family='action'][data-node-tone='cyan']") }
+
+        click "open-library-for-progress" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-progress" { target = css("input[aria-label='搜索节点']") value = "flow.progress" }
+        click "select-progress" { target = css("button[data-node-type='flow.progress']") }
+        expect "progress-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.progress'][data-node-family='action'][data-node-tone='cyan']") }
+
+        click "open-library-for-child-operation" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-child-operation" { target = css("input[aria-label='搜索节点']") value = "flow.child-operation" }
+        click "select-child-operation" { target = css("button[data-node-type='flow.child-operation']") }
+        expect "child-operation-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.child-operation'][data-node-family='action'][data-node-tone='blue']") }
+
+        click "open-library-for-child-workflow" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-child-workflow" { target = css("input[aria-label='搜索节点']") value = "flow.child-workflow" }
+        click "select-child-workflow" { target = css("button[data-node-type='flow.child-workflow']") }
+        expect "child-workflow-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.child-workflow'][data-node-family='action'][data-node-tone='blue']") }
+
+        click "open-library-for-child-workflows" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-child-workflows" { target = css("input[aria-label='搜索节点']") value = "flow.child-workflows" }
+        click "select-child-workflows" { target = css("button[data-node-type='flow.child-workflows']") }
+        expect "child-workflows-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.child-workflows'][data-node-family='action'][data-node-tone='blue']") }
+
+        click "open-library-for-signal" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-signal" { target = css("input[aria-label='搜索节点']") value = "flow.signal" }
+        click "select-signal" { target = css("button[data-node-type='flow.signal']") }
+        expect "signal-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.signal'][data-node-family='suspension'][data-node-tone='violet']") }
+
+        click "open-library-for-iteration" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-iteration" { target = css("input[aria-label='搜索节点']") value = "iteration" }
+        click "select-iteration" { target = css("button[data-node-type='iteration']") }
+        expect "iteration-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='iteration'][data-node-family='container'][data-node-tone='green'] .a3s-form-workflow-node-preview-container") }
+
+        click "open-library-for-loop" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        fill "find-loop" { target = css("input[aria-label='搜索节点']") value = "loop" }
+        click "select-loop" { target = css("button[data-node-type='loop']") }
+        expect "loop-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='loop'][data-node-family='container'][data-node-tone='green'] .a3s-form-workflow-node-preview-container") }
+
+        click "run-node" { target = css(".a3s-doc-workflow-studio__actions button[aria-label='运行']") }
+        wait "run-complete" { visible = css(".a3s-form-workflow-node-preview[data-status='success']") }
+        expect "success-boundary" { visible = css(".a3s-form-workflow-node-preview[data-status='success']") }
 
         screenshot "desktop-workflow" { path = "workflow/editor-desktop.png" }
         focus "focus-dark-theme" { target = css(".rp-nav__others .rp-switch-appearance") }
@@ -53,7 +127,7 @@ suite "a3s-ui-workflow-documentation" {
     }
 
     scenario "workflow-node-mobile" {
-        name = "Workflow node and inspector remain usable in the mobile documentation layout"
+        name = "Workflow node and inspector remain keyboard-usable in the mobile documentation layout"
         surface = "web"
         timeout_ms = 90000
         viewport "mobile" { width = 390 height = 844 }
@@ -62,17 +136,18 @@ suite "a3s-ui-workflow-documentation" {
         wait "loaded" { load = "networkidle" }
         wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
 
-        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
-        expect "entry-node-visible" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-node-shape=entry]") }
+        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open='true']") }
+        expect "entry-node-visible" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-node-family='entry']") }
         expect "stacked-inspector-visible" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
         focus "focus-close-inspector" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='关闭面板']") }
         press "close-inspector" { key = "Enter" }
-        expect "canvas-only" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false] .a3s-doc-workflow-studio__workspace") }
-        focus "focus-node" { target = css(".a3s-form-workflow-node-preview[data-node-type='flow.start']") }
+        expect "canvas-only" { visible = css(".a3s-doc-workflow-studio[data-panel-open='false'] .a3s-doc-workflow-studio__workspace") }
+        focus "focus-node" { target = css(".a3s-form-workflow-node-preview-select[data-node-type='flow.start']") }
         press "open-node" { key = "Enter" }
         expect "inspector-restored" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
 
         screenshot "mobile-workflow" { path = "workflow/node-mobile.png" }
+        accessibility "mobile-tree" { path = "workflow/node-mobile-accessibility.json" interactive = true }
         console "mobile-console" { path = "workflow/node-mobile-console.json" clear = false }
         page_errors "mobile-errors" { path = "workflow/node-mobile-errors.json" clear = false }
     }

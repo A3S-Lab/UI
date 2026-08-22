@@ -306,10 +306,9 @@ describe('Workflow node configuration panel', () => {
     const { unmount } = render(<PanelHarness node={statusNode} readOnly />);
     expect(screen.getByText('Beta')).toBeTruthy();
     expect(screen.getByText('Legacy')).toBeTruthy();
-    expect(screen.getByText('No parameters')).toBeTruthy();
-    expect((screen.getByRole('button', { name: 'Reset' }) as HTMLButtonElement).disabled).toBe(
-      true,
-    );
+    expect(screen.getByText('No configuration required')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Reset' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Apply changes' })).toBeNull();
     expect(document.querySelector('.a3s-form-workflow-node-ports')).toBeNull();
     unmount();
 
@@ -433,8 +432,9 @@ describe('Workflow node configuration panel', () => {
     const { unmount } = render(<PanelHarness node={inputOnly} />);
     expect(screen.getByText('No typed outputs')).toBeTruthy();
     expect(screen.queryByRole('link', { name: 'Reference' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+    expect(screen.getByText('No configuration required')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Reset' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Apply changes' })).toBeNull();
     unmount();
 
     const outputOnly: WorkflowNodeDefinition = {

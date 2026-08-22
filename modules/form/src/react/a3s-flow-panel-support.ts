@@ -3,6 +3,7 @@ import type { A3SFlowCoreNodeDefinition } from '../integrations/a3s-flow-core';
 import {
   isA3SFlowChineseLocale,
   localizeA3SFlowCoreNode,
+  localizeA3SFlowDagManifest,
 } from '../integrations/a3s-flow-localization';
 import type { A3SFlowDagNodeManifest } from '../integrations/a3s-flow-node-manifest';
 import { validateA3SFlowNodeConfiguration } from '../integrations/a3s-flow-validation';
@@ -72,16 +73,19 @@ export function localizeA3SFlowDagNodeManifest(
   definition: A3SFlowCoreNodeDefinition | undefined,
   locale?: string,
 ): A3SFlowDagNodeManifest {
-  if (!definition) return manifest;
-  const localized = localizeA3SFlowCoreNode(definition, locale);
-  if (localized === definition) return manifest;
-  return {
-    ...manifest,
-    display_name: localized.display_name,
-    description: localized.description,
-    categoryLabel: localized.categoryLabel,
-    fields: localized.fields,
-    outputs: localized.outputs,
-    ports: localized.ports,
-  };
+  if (definition) {
+    const localized = localizeA3SFlowCoreNode(definition, locale);
+    if (localized !== definition) {
+      return {
+        ...manifest,
+        display_name: localized.display_name,
+        description: localized.description,
+        categoryLabel: localized.categoryLabel,
+        fields: localized.fields,
+        outputs: localized.outputs,
+        ports: localized.ports,
+      };
+    }
+  }
+  return localizeA3SFlowDagManifest(manifest, locale);
 }
