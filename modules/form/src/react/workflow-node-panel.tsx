@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useId, useMemo, useState } from 'react';
 import { compileForm, type FormDocument, type FormHostAdapter, type JsonObject } from '../core';
 import {
   type CreateWorkflowNodeFormOptions,
@@ -8,7 +8,7 @@ import {
   type WorkflowNodeDefinition,
   type WorkflowNodeFieldDefinition,
 } from '../integrations/workflow-node-form';
-import { DesignerIcon, type DesignerIconName } from './designer-icons';
+import { DesignerIcon } from './designer-icons';
 import type { FormWidgetRegistry } from './native-widget';
 import type { FormNodeRegistry } from './node-registry';
 import { type FormNodeAccessoryContext, FormRenderer } from './renderer';
@@ -17,6 +17,7 @@ import {
   type WorkflowConfigurationWidgetCallbacks,
   WorkflowFieldAccessory,
 } from './workflow-configuration-widgets';
+import { workflowNodeVisual } from './workflow-node-visual';
 
 export interface WorkflowNodeConfigurationPanelProps {
   node: WorkflowNodeDefinition;
@@ -38,6 +39,9 @@ export interface WorkflowNodeConfigurationPanelProps {
   readOnly?: boolean;
   className?: string;
   presentation?: 'catalog' | 'task';
+  onRun?: (value: JsonObject) => void | Promise<void>;
+  onClose?: () => void;
+  lastRun?: ReactNode;
 }
 
 function panelCopy(locale: string | undefined) {
@@ -53,6 +57,13 @@ function panelCopy(locale: string | undefined) {
         advanced: '个高级项',
         conditional: '个按条件显示',
         developerDetails: '开发信息',
+        settings: '设置',
+        lastRun: '最近运行',
+        run: '运行节点',
+        running: '正在运行节点',
+        close: '关闭面板',
+        panelSections: '节点面板',
+        emptyRun: '运行这个节点后，可在这里查看最近结果。',
         nodeType: '节点类型',
         runtimeBinding: '运行绑定',
         compileTitle: '无法生成这个节点的配置界面。',
@@ -68,6 +79,13 @@ function panelCopy(locale: string | undefined) {
         advanced: 'advanced',
         conditional: 'conditional',
         developerDetails: 'Developer details',
+        settings: 'Settings',
+        lastRun: 'Last run',
+        run: 'Run node',
+        running: 'Running node',
+        close: 'Close panel',
+        panelSections: 'Node panel',
+        emptyRun: 'Run this node to inspect its latest result.',
         nodeType: 'Node type',
         runtimeBinding: 'Runtime binding',
         compileTitle: 'This node configuration could not be compiled.',
@@ -90,24 +108,13 @@ function panelOutputTypes(node: WorkflowNodeDefinition): string[] {
   return uniqueTypes([...node.output_types, ...node.outputs.flatMap((output) => output.types)]);
 }
 
-function panelNodeIcon(node: WorkflowNodeDefinition): DesignerIconName {
-  const category = node.category.toLocaleLowerCase('en');
-  if (category.includes('agent') || category.includes('model') || category.includes('llm')) {
-    return 'sparkles';
-  }
-  if (category.includes('file') || category.includes('knowledge')) return 'file';
-  if (category.includes('data') || category.includes('cassandra')) return 'grid';
-  if (category.includes('flow') || category.includes('input')) return 'layout';
-  if (category.includes('tool') || category.includes('utilit')) return 'calculator';
-  if (category.includes('embedding') || category.includes('search')) return 'search';
-  if (category.includes('processing')) return 'settings';
-  return 'components';
-}
-
 export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationPanelProps) {
   const copy = panelCopy(props.locale);
   const taskPresentation = props.presentation === 'task';
   const [resetPending, setResetPending] = useState(false);
+  const [activeTab, setActiveTab] = useState<'settings' | 'last-run'>('settings');
+  const [running, setRunning] = useState(false);
+  const panelId = useId();
   const formOptions = useMemo<CreateWorkflowNodeFormOptions>(
     () => ({
       locale: props.locale,
@@ -175,6 +182,7 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
     'runtimeBinding' in props.node && typeof props.node.runtimeBinding === 'string'
       ? props.node.runtimeBinding
       : undefined;
+  const nodeVisual = workflowNodeVisual(props.node);
   const renderNodeAccessory = useCallback(
     ({ node, valuePath, value, disabled }: FormNodeAccessoryContext) => (
       <WorkflowFieldAccessory
@@ -206,6 +214,7 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
     <section
       className={['a3s-form-workflow-node-panel', props.className].filter(Boolean).join(' ')}
       data-node-type={props.node.type}
+      data-node-tone={nodeVisual.tone}
       data-read-only={props.readOnly || undefined}
     >
       <header className="a3s-form-workflow-node-panel-header">
@@ -215,7 +224,7 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
             data-source-icon={props.node.icon || undefined}
             title={props.node.icon || props.node.categoryLabel}
           >
-            <DesignerIcon name={panelNodeIcon(props.node)} size={18} />
+            <DesignerIcon name={nodeVisual.icon} size={18} />
           </span>
           <span>
             <span className="a3s-form-workflow-node-title-line">
@@ -235,11 +244,28 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
           </span>
         </div>
         <div className="a3s-form-workflow-node-header-actions">
+          {props.onRun && (
+            <button
+              type="button"
+              className="btn"
+              data-size="icon-sm"
+              data-variant="ghost"
+              aria-label={running ? copy.running : copy.run}
+              disabled={props.readOnly || running}
+              onClick={() => {
+                setRunning(true);
+                void Promise.resolve(props.onRun?.(props.value)).finally(() => setRunning(false));
+              }}
+            >
+              <DesignerIcon name="play" size={14} />
+            </button>
+          )}
           <button
             type="button"
             className="btn"
             data-size="sm"
             data-variant="ghost"
+            aria-label={resetPending ? copy.confirmReset : copy.reset}
             disabled={props.readOnly}
             onBlur={() => setResetPending(false)}
             onClick={() => {
@@ -254,23 +280,63 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
             }}
           >
             <DesignerIcon name="undo" size={14} />
-            {resetPending ? copy.confirmReset : copy.reset}
+            <span>{resetPending ? copy.confirmReset : copy.reset}</span>
           </button>
           {props.node.documentation && (
             <a
               className="btn"
               data-size="sm"
               data-variant="ghost"
+              aria-label={copy.reference}
               href={props.node.documentation}
               target="_blank"
               rel="noreferrer"
             >
               <DesignerIcon name="link" size={14} />
-              {copy.reference}
+              <span>{copy.reference}</span>
             </a>
+          )}
+          {props.onClose && (
+            <button
+              type="button"
+              className="btn"
+              data-size="icon-sm"
+              data-variant="ghost"
+              aria-label={copy.close}
+              onClick={props.onClose}
+            >
+              <DesignerIcon name="close" size={15} />
+            </button>
           )}
         </div>
       </header>
+
+      {taskPresentation && (
+        <div className="a3s-form-workflow-node-tabs" role="tablist" aria-label={copy.panelSections}>
+          <button
+            type="button"
+            id={`${panelId}-settings-tab`}
+            role="tab"
+            aria-controls={`${panelId}-settings-panel`}
+            aria-selected={activeTab === 'settings'}
+            tabIndex={activeTab === 'settings' ? 0 : -1}
+            onClick={() => setActiveTab('settings')}
+          >
+            {copy.settings}
+          </button>
+          <button
+            type="button"
+            id={`${panelId}-last-run-tab`}
+            role="tab"
+            aria-controls={`${panelId}-last-run-panel`}
+            aria-selected={activeTab === 'last-run'}
+            tabIndex={activeTab === 'last-run' ? 0 : -1}
+            onClick={() => setActiveTab('last-run')}
+          >
+            {copy.lastRun}
+          </button>
+        </div>
+      )}
 
       {!taskPresentation && (
         <div className="a3s-form-workflow-node-contract">
@@ -319,43 +385,72 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
         </div>
       )}
 
-      <div className="a3s-form-workflow-node-form">
-        <FormRenderer
-          plan={compilation.plan}
-          value={props.value}
-          onChange={props.onChange}
-          onAction={async (actionId, value) => {
-            if (actionId === 'apply') await props.onApply?.(value, compiledDocument);
-          }}
-          hostAdapter={props.hostAdapter}
-          locale={props.locale}
-          readOnly={props.readOnly}
-          nodeRegistry={props.nodeRegistry}
-          renderNodeAccessory={renderNodeAccessory}
-          widgetRegistry={widgets}
-        />
-      </div>
+      {(!taskPresentation || activeTab === 'settings') && (
+        <div
+          {...(taskPresentation
+            ? {
+                id: `${panelId}-settings-panel`,
+                role: 'tabpanel',
+                'aria-labelledby': `${panelId}-settings-tab`,
+              }
+            : {})}
+          className="a3s-form-workflow-node-settings"
+        >
+          <div className="a3s-form-workflow-node-form">
+            <FormRenderer
+              plan={compilation.plan}
+              value={props.value}
+              onChange={props.onChange}
+              onAction={async (actionId, value) => {
+                if (actionId === 'apply') await props.onApply?.(value, compiledDocument);
+              }}
+              hostAdapter={props.hostAdapter}
+              locale={props.locale}
+              readOnly={props.readOnly}
+              nodeRegistry={props.nodeRegistry}
+              renderNodeAccessory={renderNodeAccessory}
+              widgetRegistry={widgets}
+            />
+          </div>
 
-      {taskPresentation && (
-        <details className="a3s-form-workflow-node-developer-details">
-          <summary>{copy.developerDetails}</summary>
-          <dl>
-            <div>
-              <dt>{copy.nodeType}</dt>
-              <dd>
-                <code>{props.node.type}</code>
-              </dd>
+          {taskPresentation && (
+            <details className="a3s-form-workflow-node-developer-details">
+              <summary>{copy.developerDetails}</summary>
+              <dl>
+                <div>
+                  <dt>{copy.nodeType}</dt>
+                  <dd>
+                    <code>{props.node.type}</code>
+                  </dd>
+                </div>
+                {runtimeBinding && (
+                  <div>
+                    <dt>{copy.runtimeBinding}</dt>
+                    <dd>
+                      <code>{runtimeBinding}</code>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </details>
+          )}
+        </div>
+      )}
+
+      {taskPresentation && activeTab === 'last-run' && (
+        <div
+          id={`${panelId}-last-run-panel`}
+          role="tabpanel"
+          aria-labelledby={`${panelId}-last-run-tab`}
+          className="a3s-form-workflow-node-last-run"
+        >
+          {props.lastRun ?? (
+            <div className="a3s-form-workflow-node-last-run-empty">
+              <DesignerIcon name="play" size={18} />
+              <p>{copy.emptyRun}</p>
             </div>
-            {runtimeBinding && (
-              <div>
-                <dt>{copy.runtimeBinding}</dt>
-                <dd>
-                  <code>{runtimeBinding}</code>
-                </dd>
-              </div>
-            )}
-          </dl>
-        </details>
+          )}
+        </div>
       )}
     </section>
   );

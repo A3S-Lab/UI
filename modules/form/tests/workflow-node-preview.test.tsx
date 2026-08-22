@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { a3sFlowDagNodeManifestCatalog } from '../src/a3s-flow';
 import { WorkflowNodePreview } from '../src/react';
@@ -198,5 +198,65 @@ describe('Workflow node preview', () => {
     rerender(<WorkflowNodePreview node={emptyNode} locale="zh-CN" technical={false} />);
     expect(screen.getByText('这个节点没有连接端口。')).toBeTruthy();
     expect(screen.getByText('0 个输入 · 0 个输出')).toBeTruthy();
+  });
+
+  it('behaves like a selectable canvas node without hiding its workflow identity', () => {
+    let selections = 0;
+    const node: WorkflowNodeDefinition = {
+      ...previewBase,
+      type: 'flow.condition',
+      display_name: 'Condition',
+      description: 'Choose the next branch from workflow data.',
+      fields: [
+        {
+          name: 'value',
+          display_name: 'Value',
+          type: 'other',
+          input_types: ['JsonValue'],
+          show: true,
+        },
+      ],
+      outputs: [
+        {
+          name: 'matched',
+          display_name: 'Matched',
+          types: ['FlowControl'],
+          group_outputs: false,
+          allows_loop: false,
+          tool_mode: false,
+        },
+        {
+          name: 'otherwise',
+          display_name: 'Otherwise',
+          types: ['FlowControl'],
+          group_outputs: false,
+          allows_loop: false,
+          tool_mode: false,
+        },
+      ],
+    };
+
+    render(
+      <WorkflowNodePreview
+        node={node}
+        onSelect={() => {
+          selections += 1;
+        }}
+        status="running"
+        technical={false}
+      />,
+    );
+
+    const preview = screen.getByRole('button', {
+      name: 'Condition workflow node preview',
+    });
+    expect(preview.getAttribute('data-node-shape')).toBe('branch');
+    expect(preview.getAttribute('data-node-tone')).toBe('cyan');
+    expect(preview.getAttribute('data-status')).toBe('running');
+    expect(screen.getByText('Choose the next branch from workflow data.')).toBeTruthy();
+
+    fireEvent.click(preview);
+    fireEvent.keyDown(preview, { key: 'Enter' });
+    expect(selections).toBe(2);
   });
 });

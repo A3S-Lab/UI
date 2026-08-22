@@ -8,9 +8,14 @@ import {
   requireA3SFlowCoreNode,
 } from '../../../../modules/form/src/a3s-flow';
 import type { JsonObject } from '../../../../modules/form/src/core';
-import { A3SFlowNodeConfigurationPanel, A3SFlowNodePreview } from '../../../../modules/form/src/react';
+import {
+  A3SFlowNodeConfigurationPanel,
+  A3SFlowNodePreview,
+  type WorkflowNodePreviewStatus,
+} from '../../../../modules/form/src/react';
 import '../../../../modules/form/src/styles.css';
 import '../../../../modules/form/src/a3s-flow.css';
+import { WorkflowStudioFrame } from './WorkflowStudioFrame';
 
 export type DocumentedA3SFlowNodeType = (typeof A3S_FLOW_CORE_NODE_TYPES)[number];
 
@@ -103,66 +108,96 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
   const node = requireA3SFlowCoreNode(nodeType);
   const localizedNode = useMemo(() => localizeA3SFlowCoreNode(node, locale), [locale, node]);
   const [value, setValue] = useState<JsonObject>(() => createExampleValue(nodeType));
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [nodeStatus, setNodeStatus] = useState<WorkflowNodePreviewStatus>('idle');
   const [status, setStatus] = useState(
     isEnglish
       ? 'Changes update the preview and JSON below.'
       : '修改配置后，节点预览和下方 JSON 会同步更新。',
   );
 
+  const runNode = () => {
+    setNodeStatus('running');
+    setStatus(
+      isEnglish
+        ? `${localizedNode.display_name} is running with the current configuration.`
+        : `正在使用当前配置运行「${localizedNode.display_name}」。`,
+    );
+    window.setTimeout(() => {
+      setNodeStatus('success');
+      setStatus(
+        isEnglish
+          ? `${localizedNode.display_name} completed successfully.`
+          : `「${localizedNode.display_name}」运行成功。`,
+      );
+    }, 650);
+  };
+
   return (
-    <section
-      className="a3s-doc-workflow-demo a3s-doc-flow-node-demo"
-      data-a3s-flow-node={node.type}
-      aria-label={`${localizedNode.display_name}${isEnglish ? ' live configuration' : '配置示例'}`}
-    >
-      <header className="a3s-doc-workflow-demo-header">
-        <div>
-          <strong>{localizedNode.display_name}</strong>
-          <span>
-            {localizedNode.categoryLabel} · {localizedNode.description}
-          </span>
-        </div>
-      </header>
-
-      <p
-        className="a3s-doc-workflow-demo-status"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {status}
-      </p>
-
-      <div className="a3s-doc-workflow-demo-panel a3s-doc-flow-demo-panel">
-        <A3SFlowNodePreview node={node} value={value} locale={locale} />
-        <A3SFlowNodeConfigurationPanel
-          node={node}
-          value={value}
-          onChange={setValue}
-          locale={locale}
-          onApply={() =>
-            setStatus(
-              isEnglish
-                ? `${localizedNode.display_name} configuration applied.`
-                : `已应用「${localizedNode.display_name}」配置。`,
-            )
-          }
-          onReset={() =>
-            setStatus(
-              isEnglish
-                ? `${localizedNode.display_name} reset to defaults.`
-                : `已恢复「${localizedNode.display_name}」默认配置。`,
-            )
-          }
-          onRequestConnection={() =>
-            setStatus(
-              isEnglish
-                ? 'The host must provide a connection picker for this input.'
-                : '这个输入需要由宿主提供连接选择器。',
-            )
-          }
-        />
-      </div>
+    <section className="a3s-doc-flow-node-demo" data-a3s-flow-node={node.type}>
+      <WorkflowStudioFrame
+        locale={locale}
+        title={localizedNode.display_name}
+        panelOpen={panelOpen}
+        onOpenPanel={() => setPanelOpen(true)}
+        onRun={runNode}
+        status={status}
+        node={
+          <A3SFlowNodePreview
+            node={node}
+            value={value}
+            locale={locale}
+            status={nodeStatus}
+            selected={panelOpen}
+            onSelect={() => setPanelOpen(true)}
+          />
+        }
+        inspector={
+          <A3SFlowNodeConfigurationPanel
+            node={node}
+            value={value}
+            onChange={setValue}
+            locale={locale}
+            onClose={() => setPanelOpen(false)}
+            onRun={runNode}
+            lastRun={
+              <div className="a3s-doc-workflow-run-result" data-status={nodeStatus}>
+                <strong>{isEnglish ? 'Latest result' : '最近结果'}</strong>
+                <p>
+                  {nodeStatus === 'success'
+                    ? isEnglish
+                      ? 'The node completed with the current controlled value.'
+                      : '节点已使用当前受控值成功完成。'
+                    : isEnglish
+                      ? 'Run the node to inspect its latest result.'
+                      : '运行节点后可在这里查看最近结果。'}
+                </p>
+              </div>
+            }
+            onApply={() =>
+              setStatus(
+                isEnglish
+                  ? `${localizedNode.display_name} configuration applied.`
+                  : `已应用「${localizedNode.display_name}」配置。`,
+              )
+            }
+            onReset={() =>
+              setStatus(
+                isEnglish
+                  ? `${localizedNode.display_name} reset to defaults.`
+                  : `已恢复「${localizedNode.display_name}」默认配置。`,
+              )
+            }
+            onRequestConnection={() =>
+              setStatus(
+                isEnglish
+                  ? 'The host must provide a connection picker for this input.'
+                  : '这个输入需要由宿主提供连接选择器。',
+              )
+            }
+          />
+        }
+      />
 
       <details className="a3s-doc-flow-node-demo__value">
         <summary>{isEnglish ? 'Current configuration (JSON)' : '当前配置（JSON）'}</summary>

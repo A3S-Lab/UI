@@ -35,6 +35,7 @@ export type DesignerIconName =
   | 'more'
   | 'multi-select'
   | 'phone'
+  | 'play'
   | 'radio'
   | 'redo'
   | 'search'
@@ -561,6 +562,14 @@ export function DesignerIcon({ name, size = 16, ...props }: DesignerIconProps) {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="1.6"
+        />
+      )}
+      {name === 'play' && (
+        <path
+          d="m8 5 11 7-11 7V5Z"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
         />
       )}
       {name === 'radio' && (

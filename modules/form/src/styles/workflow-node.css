@@ -12,9 +12,13 @@
   --a3s-form-blue: var(--a3s-blue, #2864e8);
   --a3s-form-green: var(--a3s-green, #14835f);
   --a3s-form-red: var(--a3s-red, #c83f45);
+  --a3s-node-accent: var(--a3s-form-blue);
   container: a3s-form-workflow-panel / inline-size;
+  display: flex;
   width: 100%;
   min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--a3s-form-line);
   border-radius: 14px;
   background: var(--a3s-form-panel);
@@ -28,6 +32,26 @@
     "Segoe UI",
     sans-serif
   );
+}
+
+.a3s-form-workflow-node-panel[data-node-tone="cyan"] {
+  --a3s-node-accent: #0798bd;
+}
+
+.a3s-form-workflow-node-panel[data-node-tone="green"] {
+  --a3s-node-accent: #16845b;
+}
+
+.a3s-form-workflow-node-panel[data-node-tone="orange"] {
+  --a3s-node-accent: #e77700;
+}
+
+.a3s-form-workflow-node-panel[data-node-tone="red"] {
+  --a3s-node-accent: #c93d45;
+}
+
+.a3s-form-workflow-node-panel[data-node-tone="violet"] {
+  --a3s-node-accent: #7c5ce7;
 }
 
 .a3s-form-workflow-node-panel-header {
@@ -56,9 +80,9 @@
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--a3s-form-blue) 20%, var(--a3s-form-line));
-  background: color-mix(in srgb, var(--a3s-form-blue) 7%, var(--a3s-form-panel));
-  color: var(--a3s-form-blue);
+  border: 1px solid color-mix(in srgb, var(--a3s-node-accent) 20%, var(--a3s-form-line));
+  background: color-mix(in srgb, var(--a3s-node-accent) 8%, var(--a3s-form-panel));
+  color: var(--a3s-node-accent);
 }
 
 .a3s-form-workflow-node-icon {
@@ -108,6 +132,87 @@
   color: var(--a3s-form-muted);
   font-size: 12px;
   text-decoration: none;
+}
+
+.a3s-form-workflow-node-tabs {
+  display: flex;
+  min-height: 37px;
+  flex: 0 0 auto;
+  align-items: end;
+  gap: 18px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--a3s-form-line);
+}
+
+.a3s-form-workflow-node-tabs > button {
+  position: relative;
+  min-height: 36px;
+  padding: 0 1px;
+  border: 0;
+  background: transparent;
+  color: var(--a3s-form-subtle);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 680;
+}
+
+.a3s-form-workflow-node-tabs > button::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  content: "";
+}
+
+.a3s-form-workflow-node-tabs > button:hover,
+.a3s-form-workflow-node-tabs > button[aria-selected="true"] {
+  color: var(--a3s-form-ink);
+}
+
+.a3s-form-workflow-node-tabs > button[aria-selected="true"]::after {
+  background: var(--a3s-node-accent);
+}
+
+.a3s-form-workflow-node-tabs > button:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--a3s-node-accent);
+  outline-offset: 2px;
+}
+
+.a3s-form-workflow-node-settings {
+  min-height: 0;
+}
+
+.a3s-form-workflow-node-last-run {
+  min-height: 220px;
+  flex: 1 1 auto;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.a3s-form-workflow-node-last-run-empty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  place-content: center;
+  gap: 9px;
+  color: var(--a3s-form-subtle);
+  text-align: center;
+}
+
+.a3s-form-workflow-node-last-run-empty > svg {
+  color: var(--a3s-node-accent);
+}
+
+.a3s-form-workflow-node-last-run-empty > p {
+  max-width: 28ch;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .a3s-form-workflow-node-contract {
@@ -838,13 +943,28 @@
 }
 
 .a3s-form-workflow-node-preview {
-  width: 100%;
-  min-width: 0;
+  --a3s-form-panel: var(--a3s-panel, #fff);
+  --a3s-form-panel-soft: var(--a3s-panel-soft, #f2f3f5);
+  --a3s-form-ink: var(--a3s-ink, #17181a);
+  --a3s-form-muted: var(--a3s-muted, #62666e);
+  --a3s-form-line: var(--a3s-line, #e2e4e8);
+  --a3s-form-line-strong: var(--a3s-line-strong, #d3d6dc);
+  --a3s-form-blue: var(--a3s-blue, #2864e8);
+  --a3s-form-green: var(--a3s-green, #14835f);
+  --a3s-node-accent: var(--a3s-form-blue);
+  position: relative;
+  width: 240px;
+  min-width: 240px;
+  max-width: 100%;
   overflow: visible;
-  border: 1px solid var(--a3s-form-line-strong);
-  border-radius: 12px;
+  padding-bottom: 4px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  outline: none;
   background: var(--a3s-form-panel);
-  box-shadow: 0 14px 32px rgb(20 27 43 / 10%);
+  box-shadow:
+    0 1px 2px rgb(20 27 43 / 7%),
+    0 3px 8px rgb(20 27 43 / 5%);
   color: var(--a3s-form-ink);
   font-family: var(
     --a3s-ui-font,
@@ -854,95 +974,171 @@
     "Segoe UI",
     sans-serif
   );
+  transition:
+    border-color 140ms ease-out,
+    box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.a3s-form-workflow-node-preview[data-node-tone="cyan"] {
+  --a3s-node-accent: #0798bd;
+}
+
+.a3s-form-workflow-node-preview[data-node-tone="green"] {
+  --a3s-node-accent: #16845b;
+}
+
+.a3s-form-workflow-node-preview[data-node-tone="orange"] {
+  --a3s-node-accent: #e77700;
+}
+
+.a3s-form-workflow-node-preview[data-node-tone="red"] {
+  --a3s-node-accent: #c93d45;
+}
+
+.a3s-form-workflow-node-preview[data-node-tone="violet"] {
+  --a3s-node-accent: #7c5ce7;
+}
+
+.a3s-form-workflow-node-preview[role="button"] {
+  cursor: pointer;
+}
+
+.a3s-form-workflow-node-preview[role="button"]:hover {
+  box-shadow:
+    0 2px 4px rgb(20 27 43 / 8%),
+    0 8px 20px rgb(20 27 43 / 9%);
+}
+
+.a3s-form-workflow-node-preview[role="button"]:focus-visible {
+  border-color: var(--a3s-node-accent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--a3s-node-accent) 15%, transparent),
+    0 8px 20px rgb(20 27 43 / 9%);
 }
 
 .a3s-form-workflow-node-preview[data-selected="true"] {
-  border-color: color-mix(in srgb, var(--a3s-form-blue) 54%, var(--a3s-form-line));
+  border-color: var(--a3s-node-accent);
   box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--a3s-form-blue) 10%, transparent),
-    0 18px 38px rgb(20 27 43 / 12%);
+    0 0 0 1px color-mix(in srgb, var(--a3s-node-accent) 12%, transparent),
+    0 8px 20px rgb(20 27 43 / 9%);
 }
 
 .a3s-form-workflow-node-preview > header {
   display: grid;
-  min-height: 58px;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 44px;
+  grid-template-columns: 24px minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--a3s-form-line);
+  gap: 8px;
+  padding: 11px 11px 7px;
 }
 
-.a3s-form-workflow-node-preview > header > span {
+.a3s-form-workflow-node-preview > header > span:first-child {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--a3s-form-blue) 22%, var(--a3s-form-line));
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--a3s-form-blue) 7%, var(--a3s-form-panel));
-  color: var(--a3s-form-blue);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--a3s-node-accent) 12%, var(--a3s-form-panel));
+  color: var(--a3s-node-accent);
 }
 
 .a3s-form-workflow-node-preview > header > div {
   display: grid;
   min-width: 0;
-  gap: 2px;
+  gap: 1px;
 }
 
 .a3s-form-workflow-node-preview > header strong {
   overflow: hidden;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 680;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.a3s-form-workflow-node-preview > header small,
+.a3s-form-workflow-node-preview > header small {
+  display: none;
+}
+
 .a3s-form-workflow-node-preview > header em {
   color: var(--a3s-form-muted);
-  font-size: 11px;
+  font-size: 9px;
   font-style: normal;
 }
 
 .a3s-form-workflow-node-preview > header em {
-  padding: 3px 6px;
-  border-radius: 999px;
+  padding: 2px 5px;
+  border-radius: 5px;
   background: var(--a3s-form-panel-soft);
+}
+
+.a3s-form-workflow-node-preview-status {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: var(--a3s-node-accent);
+}
+
+.a3s-form-workflow-node-preview-status[data-status="running"] {
+  border: 2px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-top-color: currentColor;
+  animation: a3s-form-workflow-node-spin 760ms linear infinite;
+}
+
+.a3s-form-workflow-node-preview-status[data-status="success"] {
+  background: var(--a3s-form-green);
+  box-shadow: inset 0 0 0 4px var(--a3s-form-panel);
+}
+
+.a3s-form-workflow-node-preview-status[data-status="waiting"] {
+  border: 2px solid currentColor;
+  box-shadow: inset 0 0 0 3px var(--a3s-form-panel);
+}
+
+.a3s-form-workflow-node-preview-status[data-status="error"] {
+  background: var(--a3s-form-red);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
 .a3s-form-workflow-node-preview-body {
   display: grid;
-  max-height: 360px;
-  gap: 14px;
-  padding: 12px 0;
+  max-height: 260px;
+  gap: 4px;
+  padding: 0 8px 4px;
   overflow-y: auto;
 }
 
 .a3s-form-workflow-node-preview-body > p {
-  margin: 4px 14px;
+  margin: 3px 4px 4px;
   color: var(--a3s-form-muted);
   font-size: 11px;
+  line-height: 1.45;
 }
 
 .a3s-form-workflow-node-preview-port-list {
   display: grid;
-  gap: 3px;
+  gap: 4px;
 }
 
 .a3s-form-workflow-node-preview-port {
   position: relative;
   display: flex;
-  min-height: 38px;
+  min-height: 30px;
   align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--a3s-form-panel-soft) 86%, var(--a3s-form-panel));
 }
 
 .a3s-form-workflow-node-preview-port-list[data-direction="output"]
   .a3s-form-workflow-node-preview-port {
-  justify-content: flex-end;
-  text-align: right;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .a3s-form-workflow-node-preview-port span {
@@ -954,7 +1150,7 @@
 .a3s-form-workflow-node-preview-port strong {
   overflow: hidden;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 590;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -969,46 +1165,66 @@
 }
 
 .a3s-form-workflow-node-preview-port i {
-  width: 10px;
-  height: 10px;
-  flex: 0 0 10px;
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
   border: 2px solid var(--a3s-form-panel);
   border-radius: 50%;
-  outline: 1px solid color-mix(in srgb, var(--a3s-form-blue) 58%, var(--a3s-form-line));
-  background: var(--a3s-form-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-form-blue) 10%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--a3s-node-accent) 54%, var(--a3s-form-line));
+  background: var(--a3s-form-panel);
+  transform: translateY(-50%);
 }
 
 .a3s-form-workflow-node-preview-port[data-port-kind="control"] i {
-  border-radius: 2px;
-  outline-color: color-mix(in srgb, var(--a3s-form-green) 58%, var(--a3s-form-line));
-  background: var(--a3s-form-green);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-form-green) 10%, transparent);
-  transform: rotate(45deg);
+  outline-color: color-mix(in srgb, var(--a3s-node-accent) 66%, var(--a3s-form-line));
+  background: var(--a3s-node-accent);
 }
 
 .a3s-form-workflow-node-preview-port-list[data-direction="input"]
   .a3s-form-workflow-node-preview-port
   i {
-  margin-left: -17px;
+  left: -13px;
 }
 
 .a3s-form-workflow-node-preview-port-list[data-direction="output"]
   .a3s-form-workflow-node-preview-port
   i {
-  margin-right: -17px;
+  right: -13px;
+}
+
+.a3s-form-workflow-node-preview-description {
+  display: -webkit-box;
+  margin: 0;
+  padding: 4px 11px 7px;
+  overflow: hidden;
+  color: var(--a3s-form-muted);
+  font-size: 11px;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .a3s-form-workflow-node-preview > footer {
   display: flex;
-  min-height: 38px;
+  min-height: 28px;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 7px 12px;
-  border-top: 1px solid var(--a3s-form-line);
+  padding: 5px 11px 4px;
+  border-top: 1px solid color-mix(in srgb, var(--a3s-form-line) 70%, transparent);
   color: var(--a3s-form-muted);
   font-size: 10px;
+}
+
+.a3s-form-workflow-node-preview:not([data-technical="true"]) > footer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .a3s-form-workflow-node-preview > footer code {
@@ -1016,6 +1232,12 @@
   font-family: var(--font-mono, "SFMono-Regular", Consolas, monospace);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@keyframes a3s-form-workflow-node-spin {
+  to {
+    transform: rotate(1turn);
+  }
 }
 
 @keyframes a3s-form-workflow-disclosure {

@@ -103,7 +103,7 @@ export function A3SFlowDagNodePreview({
 
   return createElement(WorkflowNodePreview, {
     ...props,
-    className,
+    className: ['a3s-form-flow-node-preview', className].filter(Boolean).join(' '),
     node: localizedManifest,
     ports: localizedManifest.ports,
     technical,
@@ -177,7 +177,7 @@ export function A3SFlowDagNodeConfigurationPanel({
   return createElement(WorkflowNodeConfigurationPanel, {
     ...props,
     buildConfig: resolvedBuildConfig,
-    className,
+    className: ['a3s-form-flow-node-panel', className].filter(Boolean).join(' '),
     compatibility: A3S_FLOW_V1_COMPATIBILITY,
     hostAdapter: validatingHostAdapter,
     locale,

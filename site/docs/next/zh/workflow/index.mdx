@@ -1,0 +1,31 @@
+# Workflow
+
+Workflow 将 A3S Flow 节点目录、画布节点契约和配置检查器集中在 A3S UI 文档的同一个分组中。它属于当前网站，不会创建独立应用或单独的 Playground。
+
+## 从当前 DAG 契约开始
+
+[Flow 1.0 DAG 节点配置](/components/form-system/workflow-node-embedding)是主接入指南。页面内嵌的编辑器提供节点库、点阵画布、类型化连接柄、节点选中状态、可调整尺寸的检查器模型、设置与最近运行标签页，以及受控 React 配置界面。
+
+宿主继续负责图持久化、凭证、授权、执行和连接选择。A3S UI 负责可见的节点与检查器契约，A3S Flow 负责图校验与执行语义。
+
+## 核心节点目录
+
+| 节点 | 用途 |
+| --- | --- |
+| [工作流开始](/components/form-system/a3s-flow/start) | 声明工作流标识、运行时入口、输入 Schema 与运行标识 |
+| [执行步骤](/components/form-system/a3s-flow/step) | 按重试策略调度一个持久任务 |
+| [批量执行步骤](/components/form-system/a3s-flow/batch) | 按顺序运行一组持久任务 |
+| [条件分支](/components/form-system/a3s-flow/condition) | 根据工作流数据选择两个图分支之一 |
+| [等待到时间](/components/form-system/a3s-flow/wait) | 暂停到指定的 UTC 绝对时间 |
+| [等待回调](/components/form-system/a3s-flow/hook) | 等待审批、Webhook、界面操作或宿主事件 |
+| [成功完成](/components/form-system/a3s-flow/complete) | 保存 JSON 结果并成功结束 |
+| [失败终止](/components/form-system/a3s-flow/fail) | 保存错误并结束工作流 |
+
+这八篇章节记录早期的纯配置值兼容界面。新编辑器应使用 Flow 1.0 DAG 节点契约，同时保留这些页面用于迁移。
+
+## 视觉与交互契约
+
+- 画布节点使用稳定的 240 像素宽度、语义节点颜色、紧凑变量行、外置连接柄、选中与执行状态，并支持键盘激活。
+- 节点库支持搜索、语义分组、指针选择和可见焦点，不会改变 manifest 目录。
+- 400 像素检查器固定显示节点标识与操作，设置区域独立滚动，并覆盖运行、重置、参考、关闭、最近结果、加载、校验与只读状态。
+- 内嵌示例保持受控组件边界。没有显式宿主回调时，它不会保存、执行或解析图连接。
