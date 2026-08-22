@@ -4,7 +4,7 @@
 
 ### Added
 
-- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, A3S Flow configuration, CLI, Cloud and Workflow contracts into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; moved every current Form guide into the A3S UI component catalog; and placed the interactive designer under `/UI/playground/forms/` without a separate Form site.
+- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, A3S Flow configuration, CLI, Cloud and Workflow contracts into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.

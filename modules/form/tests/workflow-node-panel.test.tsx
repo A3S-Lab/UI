@@ -12,18 +12,118 @@ import {
 } from '../src/core';
 import {
   createWorkflowConfigurationWidgetRegistry,
-  LangflowNodeConfigurationPanel,
   type WorkflowConfigurationWidgetCallbacks,
   WorkflowFieldAccessory,
+  WorkflowNodeConfigurationPanel,
 } from '../src/react';
 import type { FormDataSourceState } from '../src/react/data-source';
 import type { FormWidgetProps } from '../src/react/native-widget';
 import {
-  createLangflowNodeDefaultValue,
-  type LangflowNodeDefinition,
-  requireLangflowNode,
+  createWorkflowNodeDefaultValue,
   WORKFLOW_CONFIGURATION_WIDGETS,
+  type WorkflowNodeDefinition,
 } from '../src/workflow';
+
+const baseWorkflowNode: WorkflowNodeDefinition = {
+  category: 'workflow',
+  categoryLabel: 'Workflow',
+  type: 'BaseFixture',
+  display_name: 'Workflow node',
+  description: 'Host-owned workflow node fixture.',
+  documentation: 'https://github.com/A3S-Lab/Flow',
+  beta: false,
+  legacy: false,
+  official: true,
+  tool_mode: false,
+  base_classes: ['WorkflowNode'],
+  input_types: [],
+  output_types: [],
+  fields: [],
+  outputs: [],
+};
+
+function workflowNodeFixture(kind: 'base' | 'panel' | 'advanced'): WorkflowNodeDefinition {
+  if (kind === 'panel') {
+    return {
+      ...baseWorkflowNode,
+      type: 'PanelFixture',
+      display_name: 'Task configuration',
+      input_types: ['Message'],
+      output_types: ['DataFrame'],
+      fields: [
+        {
+          name: 'instructions',
+          display_name: 'Instructions',
+          type: 'str',
+          _input_type: 'StrInput',
+          value: '',
+          input_types: ['Message'],
+          show: true,
+        },
+        {
+          name: 'language_model',
+          display_name: 'Language Model',
+          type: 'model',
+          _input_type: 'ModelInput',
+          value: '',
+          refresh_button: true,
+          show: true,
+        },
+        {
+          name: 'input_table',
+          display_name: 'Input Table',
+          type: 'other',
+          _input_type: 'HandleInput',
+          value: null,
+          input_types: ['DataFrame', 'Table'],
+          show: true,
+        },
+        {
+          name: 'schema',
+          display_name: 'Schema',
+          type: 'other',
+          _input_type: 'HandleInput',
+          value: null,
+          input_types: ['DataFrame', 'Table'],
+          show: true,
+        },
+        {
+          name: 'max_retries',
+          display_name: 'Max retries',
+          type: 'int',
+          _input_type: 'IntInput',
+          value: 3,
+          advanced: true,
+          show: true,
+        },
+      ],
+      outputs: [
+        {
+          name: 'table',
+          display_name: 'DataFrame',
+          types: ['DataFrame'],
+          group_outputs: false,
+          allows_loop: false,
+          tool_mode: false,
+        },
+      ],
+    };
+  }
+  if (kind === 'advanced') {
+    return {
+      ...baseWorkflowNode,
+      type: 'AdvancedFixture',
+      display_name: 'Advanced configuration',
+      fields: [
+        { name: 'mode', type: 'bool', value: true, advanced: true, show: true },
+        { name: 'output_format', type: 'str', value: 'json', advanced: true, show: true },
+        { name: 'response_timeout', type: 'int', value: 30, advanced: true, show: true },
+        { name: 'prompt', type: 'str', value: '', advanced: true, show: true },
+      ],
+    };
+  }
+  return structuredClone(baseWorkflowNode);
+}
 
 const idleDataSource: FormDataSourceState = {
   options: [],
@@ -106,17 +206,17 @@ function PanelHarness({
   callbacks,
   readOnly,
 }: {
-  node: LangflowNodeDefinition;
+  node: WorkflowNodeDefinition;
   callbacks?: WorkflowConfigurationWidgetCallbacks & {
     onApply?: (value: JsonObject) => void;
     onReset?: (value: JsonObject) => void;
   };
   readOnly?: boolean;
 }) {
-  const [value, setValue] = useState<JsonObject>(() => createLangflowNodeDefaultValue(node));
+  const [value, setValue] = useState<JsonObject>(() => createWorkflowNodeDefaultValue(node));
   return (
     <>
-      <LangflowNodeConfigurationPanel
+      <WorkflowNodeConfigurationPanel
         node={node}
         value={value}
         onChange={setValue}
@@ -133,9 +233,9 @@ function PanelHarness({
   );
 }
 
-describe('Langflow node configuration panel', () => {
+describe('Workflow node configuration panel', () => {
   it('renders source-order fields, typed ports, advanced settings, and host actions', async () => {
-    const node = requireLangflowNode('AMapComponent');
+    const node = workflowNodeFixture('panel');
     const applied: JsonObject[] = [];
     const reset: JsonObject[] = [];
     const connections: string[][] = [];
@@ -153,7 +253,7 @@ describe('Langflow node configuration panel', () => {
     );
 
     expect(screen.getByRole('heading', { name: node.display_name })).toBeTruthy();
-    expect(screen.getByText('Agentics')).toBeTruthy();
+    expect(screen.getByText('Workflow')).toBeTruthy();
     expect(document.querySelector('.a3s-form-workflow-node-contract')).toBeTruthy();
     expect(document.querySelector('.a3s-form-workflow-node-ports')).toBeTruthy();
     expect(screen.queryByText('Developer details')).toBeNull();
@@ -182,8 +282,7 @@ describe('Langflow node configuration panel', () => {
     expect(refreshed).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: 'Choose Input Table connection' }));
     expect(connections.at(-1)).toEqual(['DataFrame', 'Table']);
-    expect(screen.getByRole('group', { name: 'Schema workflow input' })).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Connect Schema' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Schema connection' }));
     expect(connections.at(-1)).toEqual(['DataFrame', 'Table']);
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
@@ -194,8 +293,8 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('supports compact, read-only, beta, legacy, and compile-error states', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const statusNode: LangflowNodeDefinition = {
+    const base = workflowNodeFixture('base');
+    const statusNode: WorkflowNodeDefinition = {
       ...base,
       beta: true,
       legacy: true,
@@ -214,7 +313,7 @@ describe('Langflow node configuration panel', () => {
     expect(document.querySelector('.a3s-form-workflow-node-ports')).toBeNull();
     unmount();
 
-    const broken: LangflowNodeDefinition = {
+    const broken: WorkflowNodeDefinition = {
       ...base,
       type: 'BrokenTable',
       display_name: 'Broken table',
@@ -227,14 +326,14 @@ describe('Langflow node configuration panel', () => {
         },
       ],
     };
-    render(<LangflowNodeConfigurationPanel node={broken} value={{}} onChange={() => undefined} />);
+    render(<WorkflowNodeConfigurationPanel node={broken} value={{}} onChange={() => undefined} />);
     expect(screen.getByRole('alert').textContent).toContain(
       'This node configuration could not be compiled.',
     );
   });
 
   it('resolves every workflow category icon with host-provided field configuration', () => {
-    const base = requireLangflowNode('Prompt Template');
+    const base = workflowNodeFixture('base');
     const categories = [
       'Files',
       'Knowledge bases',
@@ -252,7 +351,7 @@ describe('Langflow node configuration panel', () => {
 
     const markup = categories
       .map((category, index) => {
-        const node: LangflowNodeDefinition = {
+        const node: WorkflowNodeDefinition = {
           ...base,
           type: `CategoryIconFixture${index}`,
           display_name: category,
@@ -265,7 +364,7 @@ describe('Langflow node configuration panel', () => {
           outputs: [],
         };
         return renderToStaticMarkup(
-          <LangflowNodeConfigurationPanel
+          <WorkflowNodeConfigurationPanel
             node={node}
             value={{}}
             buildConfig={{}}
@@ -281,8 +380,8 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('describes one-sided node contracts without inventing missing ports', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const inputOnly: LangflowNodeDefinition = {
+    const base = workflowNodeFixture('base');
+    const inputOnly: WorkflowNodeDefinition = {
       ...base,
       type: 'InputOnly',
       display_name: 'Input only',
@@ -299,7 +398,7 @@ describe('Langflow node configuration panel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
     unmount();
 
-    const outputOnly: LangflowNodeDefinition = {
+    const outputOnly: WorkflowNodeDefinition = {
       ...inputOnly,
       type: 'OutputOnly',
       display_name: 'Output only',
@@ -311,8 +410,8 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('renders wrapped boolean parameters as one compact labelled switch row', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const booleanNode: LangflowNodeDefinition = {
+    const base = workflowNodeFixture('base');
+    const booleanNode: WorkflowNodeDefinition = {
       ...base,
       type: 'BooleanLayoutFixture',
       display_name: 'Boolean layout fixture',
@@ -341,7 +440,7 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('keeps semantic group headings visible inside the advanced disclosure', () => {
-    render(<PanelHarness node={requireLangflowNode('URLComponent')} />);
+    render(<PanelHarness node={workflowNodeFixture('advanced')} />);
 
     const details = document.querySelector('.a3s-form-collapse details');
     expect(details).toBeTruthy();
@@ -356,9 +455,9 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('expands and collapses long field help without duplicating the description', () => {
-    const base = requireLangflowNode('Prompt Template');
+    const base = workflowNodeFixture('base');
     const description = 'Long field guidance. '.repeat(12);
-    const node: LangflowNodeDefinition = {
+    const node: WorkflowNodeDefinition = {
       ...base,
       type: 'LongHelpFixture',
       display_name: 'Long help fixture',
@@ -386,8 +485,8 @@ describe('Langflow node configuration panel', () => {
   });
 
   it('routes descriptor copy and data-display actions through the panel host', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const node: LangflowNodeDefinition = {
+    const base = workflowNodeFixture('base');
+    const node: WorkflowNodeDefinition = {
       ...base,
       type: 'PanelActionsFixture',
       display_name: 'Panel actions fixture',
@@ -431,9 +530,59 @@ describe('Langflow node configuration panel', () => {
     expect(copied).toEqual(['https://example.test/hooks/1']);
     expect(actions).toEqual(['Open card']);
   });
+
+  it('shows runtime and conditional metadata and uses task-safe compile errors', () => {
+    const runtimeNode = {
+      ...workflowNodeFixture('base'),
+      category: 'Agents',
+      categoryLabel: 'Agents',
+      type: 'RuntimeMetadataFixture',
+      display_name: 'Runtime metadata fixture',
+      runtimeBinding: 'flow.step',
+      fields: [
+        { name: 'prompt', type: 'str', _input_type: 'StrInput', value: '', show: true },
+        { name: 'internal', type: 'str', _input_type: 'StrInput', value: '', show: false },
+      ],
+    } as WorkflowNodeDefinition & { runtimeBinding: string };
+    const { unmount } = render(
+      <WorkflowNodeConfigurationPanel
+        node={runtimeNode}
+        value={createWorkflowNodeDefaultValue(runtimeNode)}
+        onChange={() => undefined}
+      />,
+    );
+
+    expect(screen.getByText('flow.step')).toBeTruthy();
+    expect(screen.getByText('1 conditional')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+    unmount();
+
+    const broken: WorkflowNodeDefinition = {
+      ...workflowNodeFixture('base'),
+      type: 'BrokenTaskTable',
+      display_name: 'Broken task table',
+      fields: [
+        {
+          name: 'rows',
+          type: 'table',
+          table_schema: [{ name: 'duplicate' }, { name: 'duplicate' }],
+        },
+      ],
+    };
+    render(
+      <WorkflowNodeConfigurationPanel
+        node={broken}
+        value={{}}
+        onChange={() => undefined}
+        presentation="task"
+        locale="zh-CN"
+      />,
+    );
+    expect(screen.getByRole('alert').textContent).toContain('请检查节点定义或联系接入系统维护者。');
+  });
 });
 
-describe('Langflow workflow widgets', () => {
+describe('Workflow configuration widgets', () => {
   it('combines native entry, connection, refresh, live, and tool-mode behavior', () => {
     const connected: string[][] = [];
     const refreshed: string[] = [];

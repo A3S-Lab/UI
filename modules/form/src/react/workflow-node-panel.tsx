@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { compileForm, type FormDocument, type FormHostAdapter, type JsonObject } from '../core';
 import {
-  type CreateLangflowNodeFormOptions,
-  createLangflowNodeDefaultValue,
-  createLangflowNodeForm,
-  type LangflowFieldDefinition,
-  type LangflowNodeDefinition,
+  type CreateWorkflowNodeFormOptions,
+  createWorkflowNodeDefaultValue,
+  createWorkflowNodeForm,
   WORKFLOW_CONFIGURATION_WIDGET_KEYS,
-} from '../integrations/langflow';
+  type WorkflowNodeDefinition,
+  type WorkflowNodeFieldDefinition,
+} from '../integrations/workflow-node-form';
 import { DesignerIcon, type DesignerIconName } from './designer-icons';
 import type { FormWidgetRegistry } from './native-widget';
 import type { FormNodeRegistry } from './node-registry';
@@ -18,8 +18,8 @@ import {
   WorkflowFieldAccessory,
 } from './workflow-configuration-widgets';
 
-export interface LangflowNodeConfigurationPanelProps {
-  node: LangflowNodeDefinition;
+export interface WorkflowNodeConfigurationPanelProps {
+  node: WorkflowNodeDefinition;
   value: JsonObject;
   onChange: (value: JsonObject) => void;
   onApply?: (value: JsonObject, document: FormDocument) => void | Promise<void>;
@@ -28,7 +28,7 @@ export interface LangflowNodeConfigurationPanelProps {
   onRefreshField?: WorkflowConfigurationWidgetCallbacks['onRefreshField'];
   onCopyField?: WorkflowConfigurationWidgetCallbacks['onCopyField'];
   onDataDisplayAction?: WorkflowConfigurationWidgetCallbacks['onDataDisplayAction'];
-  buildConfig?: Readonly<Record<string, LangflowFieldDefinition>>;
+  buildConfig?: Readonly<Record<string, WorkflowNodeFieldDefinition>>;
   fieldVisibility?: Readonly<Record<string, boolean>>;
   compatibility?: readonly string[];
   hostAdapter?: FormHostAdapter;
@@ -79,18 +79,18 @@ function uniqueTypes(values: readonly string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
-function panelInputTypes(node: LangflowNodeDefinition): string[] {
+function panelInputTypes(node: WorkflowNodeDefinition): string[] {
   return uniqueTypes([
     ...node.input_types,
     ...node.fields.flatMap((field) => field.input_types ?? []),
   ]);
 }
 
-function panelOutputTypes(node: LangflowNodeDefinition): string[] {
+function panelOutputTypes(node: WorkflowNodeDefinition): string[] {
   return uniqueTypes([...node.output_types, ...node.outputs.flatMap((output) => output.types)]);
 }
 
-function panelNodeIcon(node: LangflowNodeDefinition): DesignerIconName {
+function panelNodeIcon(node: WorkflowNodeDefinition): DesignerIconName {
   const category = node.category.toLocaleLowerCase('en');
   if (category.includes('agent') || category.includes('model') || category.includes('llm')) {
     return 'sparkles';
@@ -104,11 +104,11 @@ function panelNodeIcon(node: LangflowNodeDefinition): DesignerIconName {
   return 'components';
 }
 
-export function LangflowNodeConfigurationPanel(props: LangflowNodeConfigurationPanelProps) {
+export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationPanelProps) {
   const copy = panelCopy(props.locale);
   const taskPresentation = props.presentation === 'task';
   const [resetPending, setResetPending] = useState(false);
-  const formOptions = useMemo<CreateLangflowNodeFormOptions>(
+  const formOptions = useMemo<CreateWorkflowNodeFormOptions>(
     () => ({
       locale: props.locale,
       presentation: props.presentation,
@@ -125,7 +125,7 @@ export function LangflowNodeConfigurationPanel(props: LangflowNodeConfigurationP
     ],
   );
   const document = useMemo(
-    () => createLangflowNodeForm(props.node, formOptions),
+    () => createWorkflowNodeForm(props.node, formOptions),
     [formOptions, props.node],
   );
   const compilation = useMemo(
@@ -160,13 +160,13 @@ export function LangflowNodeConfigurationPanel(props: LangflowNodeConfigurationP
     [builtInWidgets, props.widgetRegistry],
   );
   const defaults = useMemo(
-    () => createLangflowNodeDefaultValue(props.node, formOptions),
+    () => createWorkflowNodeDefaultValue(props.node, formOptions),
     [formOptions, props.node],
   );
   const inputTypes = panelInputTypes(props.node);
   const outputTypes = panelOutputTypes(props.node);
   const activeFields = props.buildConfig ? Object.values(props.buildConfig) : props.node.fields;
-  const isVisible = (field: LangflowFieldDefinition) =>
+  const isVisible = (field: WorkflowNodeFieldDefinition) =>
     props.fieldVisibility?.[field.name] ?? field.show !== false;
   const visibleCount = activeFields.filter(isVisible).length;
   const advancedCount = activeFields.filter((field) => field.advanced && isVisible(field)).length;

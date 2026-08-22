@@ -9,20 +9,18 @@ import type {
   UiOption,
 } from '../core/types';
 import type {
-  LangflowFieldDefinition,
-  LangflowNodeDefinition,
-  LangflowTableColumn,
-} from './langflow-catalog';
+  WorkflowNodeDefinition,
+  WorkflowNodeFieldDefinition,
+  WorkflowNodeTableColumn,
+} from './workflow-node-manifest';
 
 export type {
-  LangflowCatalogProvenance,
-  LangflowFieldDefinition,
-  LangflowNodeCategory,
-  LangflowNodeDefinition,
-  LangflowOutputDefinition,
-  LangflowRangeSpec,
-  LangflowTableColumn,
-} from './langflow-catalog';
+  WorkflowNodeDefinition,
+  WorkflowNodeFieldDefinition,
+  WorkflowNodeOutputDefinition,
+  WorkflowNodeRangeSpec,
+  WorkflowNodeTableColumn,
+} from './workflow-node-manifest';
 
 export const WORKFLOW_CONFIGURATION_WIDGETS = Object.freeze({
   actionPicker: 'a3s.workflow.action-picker',
@@ -47,7 +45,7 @@ export const WORKFLOW_CONFIGURATION_WIDGET_KEYS = Object.freeze(
   Object.values(WORKFLOW_CONFIGURATION_WIDGETS),
 );
 
-export const LANGFLOW_SEMANTIC_FIELD_GROUPS = Object.freeze({
+export const WORKFLOW_NODE_FIELD_GROUPS = Object.freeze({
   input: 'Input',
   'provider-credentials': 'Provider & credentials',
   behavior: 'Behavior',
@@ -56,13 +54,13 @@ export const LANGFLOW_SEMANTIC_FIELD_GROUPS = Object.freeze({
   'storage-retrieval': 'Storage & retrieval',
 } as const);
 
-export type LangflowSemanticFieldGroup = keyof typeof LANGFLOW_SEMANTIC_FIELD_GROUPS;
+export type WorkflowNodeFieldGroup = keyof typeof WORKFLOW_NODE_FIELD_GROUPS;
 
-export interface CreateLangflowNodeFormOptions {
+export interface CreateWorkflowNodeFormOptions {
   locale?: string;
   presentation?: 'catalog' | 'task';
   fieldVisibility?: Readonly<Record<string, boolean>>;
-  buildConfig?: Readonly<Record<string, LangflowFieldDefinition>>;
+  buildConfig?: Readonly<Record<string, WorkflowNodeFieldDefinition>>;
   actions?: readonly ActionDefinition[];
   compatibility?: readonly string[];
 }
@@ -102,7 +100,7 @@ function isJsonValue(value: unknown): value is JsonValue {
   return Object.values(value).every(isJsonValue);
 }
 
-function fallbackValue(field: LangflowFieldDefinition, type: JsonSchema['type']): JsonValue {
+function fallbackValue(field: WorkflowNodeFieldDefinition, type: JsonSchema['type']): JsonValue {
   if (type === 'array') return [];
   if (type === 'object') return {};
   if (type === 'boolean') return false;
@@ -135,7 +133,7 @@ function normalizedValue(value: unknown, type: JsonSchema['type'], fallback: Jso
 }
 
 function normalizedTableDefault(
-  field: LangflowFieldDefinition,
+  field: WorkflowNodeFieldDefinition,
   value: readonly JsonValue[],
 ): JsonValue[] {
   const columns = tableColumns(field);
@@ -156,7 +154,7 @@ function normalizedTableDefault(
   });
 }
 
-export function langflowFieldDefault(field: LangflowFieldDefinition): JsonValue {
+export function workflowNodeFieldDefault(field: WorkflowNodeFieldDefinition): JsonValue {
   const presentation = semanticFieldPresentation(field, [field]);
   const fallback = fallbackValue(field, presentation.schemaType);
   const source = field.value === '__UNDEFINED__' ? undefined : field.value;
@@ -176,7 +174,7 @@ export function langflowFieldDefault(field: LangflowFieldDefinition): JsonValue 
   return value;
 }
 
-function tableColumns(field: LangflowFieldDefinition): readonly LangflowTableColumn[] {
+function tableColumns(field: WorkflowNodeFieldDefinition): readonly WorkflowNodeTableColumn[] {
   const schema = field.table_schema;
   if (Array.isArray(schema)) return schema;
   return Array.isArray(schema?.columns) ? schema.columns : [];
@@ -191,7 +189,7 @@ function schemaTypeForColumn(type: string | undefined): JsonSchema['type'] {
   return 'string';
 }
 
-function tableSchema(field: LangflowFieldDefinition): JsonSchema {
+function tableSchema(field: WorkflowNodeFieldDefinition): JsonSchema {
   const columns = tableColumns(field);
   const properties = Object.fromEntries(
     columns.map((column) => {
@@ -217,7 +215,7 @@ function tableSchema(field: LangflowFieldDefinition): JsonSchema {
     type: 'array',
     title: field.display_name ?? field.name,
     description: field.info,
-    default: langflowFieldDefault(field),
+    default: workflowNodeFieldDefault(field),
     items: {
       type: 'object',
       properties,
@@ -227,7 +225,7 @@ function tableSchema(field: LangflowFieldDefinition): JsonSchema {
   };
 }
 
-function schemaForField(field: LangflowFieldDefinition): JsonSchema {
+function schemaForField(field: WorkflowNodeFieldDefinition): JsonSchema {
   if (field.type === 'table') return tableSchema(field);
   const presentation = semanticFieldPresentation(field, [field]);
   const type = presentation.schemaType;
@@ -238,7 +236,7 @@ function schemaForField(field: LangflowFieldDefinition): JsonSchema {
     type,
     title: field.display_name ?? field.name,
     description: field.info,
-    default: langflowFieldDefault(field),
+    default: workflowNodeFieldDefault(field),
   };
   if (type === 'array') {
     schema.items = presentation.arrayItemType ? { type: presentation.arrayItemType } : {};
@@ -259,7 +257,7 @@ function schemaForField(field: LangflowFieldDefinition): JsonSchema {
   return schema;
 }
 
-function simpleOptions(field: LangflowFieldDefinition): UiOption[] {
+function simpleOptions(field: WorkflowNodeFieldDefinition): UiOption[] {
   if (!Array.isArray(field.options)) return [];
   return field.options.flatMap((option) => {
     if (isPrimitive(option)) return [{ label: String(option ?? ''), value: option }];
@@ -272,7 +270,7 @@ function simpleOptions(field: LangflowFieldDefinition): UiOption[] {
   });
 }
 
-function isCollectionField(field: LangflowFieldDefinition): boolean {
+function isCollectionField(field: WorkflowNodeFieldDefinition): boolean {
   return (
     field.type === 'table' ||
     field.type === 'sortableList' ||
@@ -284,7 +282,7 @@ function isCollectionField(field: LangflowFieldDefinition): boolean {
   );
 }
 
-function scalarSchemaTypeForField(field: LangflowFieldDefinition): JsonSchema['type'] {
+function scalarSchemaTypeForField(field: WorkflowNodeFieldDefinition): JsonSchema['type'] {
   const inputType = field._input_type;
   if (field.type === 'bool' || inputType === 'BoolInput') return 'boolean';
   if (field.type === 'int' || inputType === 'IntInput') return 'integer';
@@ -313,7 +311,7 @@ function scalarSchemaTypeForField(field: LangflowFieldDefinition): JsonSchema['t
   return 'string';
 }
 
-function isConnectionField(field: LangflowFieldDefinition): boolean {
+function isConnectionField(field: WorkflowNodeFieldDefinition): boolean {
   const inputType = field._input_type;
   return (
     field.type === 'other' ||
@@ -322,7 +320,7 @@ function isConnectionField(field: LangflowFieldDefinition): boolean {
   );
 }
 
-function workflowControlWidget(field: LangflowFieldDefinition): string {
+function workflowControlWidget(field: WorkflowNodeFieldDefinition): string {
   const inputType = field._input_type;
   if (inputType === 'A3SFlowExpressionInput') {
     return WORKFLOW_CONFIGURATION_WIDGETS.flowExpression;
@@ -403,7 +401,7 @@ function workflowControlWidget(field: LangflowFieldDefinition): string {
   return 'text';
 }
 
-function semanticName(field: LangflowFieldDefinition): string {
+function semanticName(field: WorkflowNodeFieldDefinition): string {
   return `${field.name} ${field.display_name ?? ''}`
     .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
     .toLocaleLowerCase()
@@ -412,9 +410,9 @@ function semanticName(field: LangflowFieldDefinition): string {
 }
 
 function semanticGroupForField(
-  field: LangflowFieldDefinition,
+  field: WorkflowNodeFieldDefinition,
   controlWidget: string,
-): LangflowSemanticFieldGroup {
+): WorkflowNodeFieldGroup {
   const name = semanticName(field);
   const terms = new Set(name.split('_'));
   const hasAny = (...values: string[]) => values.some((value) => terms.has(value));
@@ -507,9 +505,7 @@ function semanticGroupForField(
   return 'input';
 }
 
-export function langflowFieldSemanticGroup(
-  field: LangflowFieldDefinition,
-): LangflowSemanticFieldGroup {
+export function workflowNodeFieldGroup(field: WorkflowNodeFieldDefinition): WorkflowNodeFieldGroup {
   return semanticGroupForField(field, workflowControlWidget(field));
 }
 
@@ -517,13 +513,13 @@ interface SemanticFieldPresentation {
   schemaType: JsonSchema['type'];
   arrayItemType: JsonSchema['type'];
   controlWidget: string;
-  semanticGroup: LangflowSemanticFieldGroup;
+  semanticGroup: WorkflowNodeFieldGroup;
   width: UiNode['width'];
 }
 
 function semanticFieldPresentation(
-  field: LangflowFieldDefinition,
-  fields: readonly LangflowFieldDefinition[],
+  field: WorkflowNodeFieldDefinition,
+  fields: readonly WorkflowNodeFieldDefinition[],
 ): SemanticFieldPresentation {
   const collection = isCollectionField(field);
   const scalarType = scalarSchemaTypeForField(field);
@@ -600,7 +596,7 @@ function workflowWidget(control: string): string {
 }
 
 function fieldCustomProps(
-  field: LangflowFieldDefinition,
+  field: WorkflowNodeFieldDefinition,
   presentation: SemanticFieldPresentation,
 ): JsonObject {
   const props: JsonObject = {
@@ -615,7 +611,7 @@ function fieldCustomProps(
     combobox: field.combobox === true,
     controlWidget: presentation.controlWidget,
     semanticGroup: presentation.semanticGroup,
-    semanticGroupLabel: LANGFLOW_SEMANTIC_FIELD_GROUPS[presentation.semanticGroup],
+    semanticGroupLabel: WORKFLOW_NODE_FIELD_GROUPS[presentation.semanticGroup],
   };
   if (Array.isArray(field.options) && isJsonValue(field.options)) {
     props.sourceOptions = structuredClone(field.options);
@@ -669,9 +665,9 @@ function fieldId(type: string, name: string): string {
 }
 
 function tableFieldNodes(
-  node: LangflowNodeDefinition,
-  field: LangflowFieldDefinition,
-  fields: readonly LangflowFieldDefinition[],
+  node: WorkflowNodeDefinition,
+  field: WorkflowNodeFieldDefinition,
+  fields: readonly WorkflowNodeFieldDefinition[],
 ): UiNode[] {
   const id = fieldId(node.type, field.name);
   const path = `/properties/${pointerToken(field.name)}`;
@@ -726,9 +722,9 @@ function tableFieldNodes(
 }
 
 function fieldsForNode(
-  node: LangflowNodeDefinition,
-  options: CreateLangflowNodeFormOptions,
-): LangflowFieldDefinition[] {
+  node: WorkflowNodeDefinition,
+  options: CreateWorkflowNodeFormOptions,
+): WorkflowNodeFieldDefinition[] {
   const configured = options.buildConfig
     ? Object.values(options.buildConfig)
     : node.fields.map((field) => ({ ...field }));
@@ -741,20 +737,20 @@ function fieldsForNode(
 interface SemanticFieldRun {
   id: string;
   label: string;
-  semanticGroup: LangflowSemanticFieldGroup;
-  fields: LangflowFieldDefinition[];
+  semanticGroup: WorkflowNodeFieldGroup;
+  fields: WorkflowNodeFieldDefinition[];
 }
 
 function semanticFieldRuns(
-  node: LangflowNodeDefinition,
-  fields: readonly LangflowFieldDefinition[],
+  node: WorkflowNodeDefinition,
+  fields: readonly WorkflowNodeFieldDefinition[],
   scope: 'parameters' | 'advanced',
   locale?: string,
 ): SemanticFieldRun[] {
   const runs: SemanticFieldRun[] = [];
   const runsByGroup = new Map<string, SemanticFieldRun>();
   for (const field of fields) {
-    const semanticGroup = langflowFieldSemanticGroup(field);
+    const semanticGroup = workflowNodeFieldGroup(field);
     const configuredGroup =
       typeof field.ui_group === 'string' && field.ui_group.length > 0
         ? field.ui_group
@@ -781,7 +777,7 @@ function semanticFieldRuns(
               output: '输出设置',
               'storage-retrieval': '存储与检索',
             }[semanticGroup]
-          : LANGFLOW_SEMANTIC_FIELD_GROUPS[semanticGroup]),
+          : WORKFLOW_NODE_FIELD_GROUPS[semanticGroup]),
       semanticGroup,
       fields: [field],
     } satisfies SemanticFieldRun;
@@ -791,7 +787,7 @@ function semanticFieldRuns(
   return runs;
 }
 
-function semanticGroupNode(node: LangflowNodeDefinition, run: SemanticFieldRun): UiNode {
+function semanticGroupNode(node: WorkflowNodeDefinition, run: SemanticFieldRun): UiNode {
   return {
     id: run.id,
     kind: 'group',
@@ -809,21 +805,21 @@ function semanticGroupNode(node: LangflowNodeDefinition, run: SemanticFieldRun):
   };
 }
 
-export function createLangflowNodeDefaultValue(
-  node: LangflowNodeDefinition,
-  options: CreateLangflowNodeFormOptions = {},
+export function createWorkflowNodeDefaultValue(
+  node: WorkflowNodeDefinition,
+  options: CreateWorkflowNodeFormOptions = {},
 ): JsonObject {
   return Object.fromEntries(
-    fieldsForNode(node, options).map((field) => [field.name, langflowFieldDefault(field)]),
+    fieldsForNode(node, options).map((field) => [field.name, workflowNodeFieldDefault(field)]),
   );
 }
 
-export function createLangflowNodeForm(
-  node: LangflowNodeDefinition,
-  options: CreateLangflowNodeFormOptions = {},
+export function createWorkflowNodeForm(
+  node: WorkflowNodeDefinition,
+  options: CreateWorkflowNodeFormOptions = {},
 ): FormDocument {
   const fields = fieldsForNode(node, options);
-  const defaultValue = createLangflowNodeDefaultValue(node, options);
+  const defaultValue = createWorkflowNodeDefaultValue(node, options);
   const properties = Object.fromEntries(fields.map((field) => [field.name, schemaForField(field)]));
   const required = fields
     .filter(
@@ -843,11 +839,13 @@ export function createLangflowNodeForm(
   const advancedPanel = `${advancedSection}-panel`;
   const rootId = `${fieldId(node.type, 'node')}-root`;
   const taskPresentation = options.presentation === 'task';
+  const firstBasicRun = basicRuns[0];
+  const flattenedBasicField = firstBasicRun?.fields[0];
   const flattenBasicRun =
-    taskPresentation && basicRuns.length === 1 && basicRuns[0]?.fields.length === 1;
+    taskPresentation && firstBasicRun?.fields.length === 1 && flattenedBasicField !== undefined;
   const basicChildren = taskPresentation
     ? flattenBasicRun
-      ? [fieldId(node.type, basicRuns[0]?.fields[0]?.name ?? '')]
+      ? [fieldId(node.type, flattenedBasicField.name)]
       : basicRuns.map((run) => run.id)
     : [basicSection];
   const nodes: UiNode[] = [
@@ -951,7 +949,7 @@ export function createLangflowNodeForm(
       locale: options.locale ?? 'en',
       owner: 'A3S Form',
       tags: ['Workflow node', node.categoryLabel, node.type],
-      compatibility: [...(options.compatibility ?? ['a3s-workflow/v1', 'langflow/1.11.3'])],
+      compatibility: [...(options.compatibility ?? ['a3s-workflow/v1'])],
     },
     revision: 1,
     schema: {

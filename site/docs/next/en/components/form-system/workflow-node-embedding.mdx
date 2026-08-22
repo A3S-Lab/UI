@@ -15,7 +15,7 @@ A3S Form treats the Flow workflow DSL as a lossless DAG contract. Flow owns grap
 | Component system | `@a3s-lab/ui@0.3.0` |
 | Form compatibility | `a3s-flow/1.0.0`, `a3s-flow-workflow-dsl/0.7.0` |
 
-The primary Playground groups the 18 visible manifests into Control flow, Task execution, Wait & callbacks, Run outcome, Run control, Child work, and Containers. `iteration-start` and `loop-start` are created inside their owning container and stay out of the insertion catalog.
+The built-in catalog groups the 18 visible manifests into Control flow, Task execution, Wait & callbacks, Run outcome, Run control, Child work, and Containers. `iteration-start` and `loop-start` are created inside their owning container and stay out of the insertion catalog.
 
 <A3SFlowDagDemo />
 
@@ -167,5 +167,3 @@ The parser enforces the 10 MiB document limit and classifies DSL-version compati
 ## Migration compatibility
 
 `A3SFlowNodeConfigurationPanel`, `A3SFlowNodePreview`, `A3SFlowCoreNodeDefinition`, and the eight-node `0.4.2` catalog remain available only for migrations. Their individual [legacy node chapters](/components/form-system/a3s-flow/start) document the old value-only contract. New editors should store an `A3SFlowWorkflowDagNode` and use the DAG panel and preview.
-
-The pinned Langflow `1.11.3` descriptor adapter is a separate import compatibility layer, not a Flow node catalog. See [Langflow compatibility](/components/form-system/langflow-compatibility).

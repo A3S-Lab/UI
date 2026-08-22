@@ -96,7 +96,7 @@ function WidgetHarness({
 }
 
 describe('workflow configuration widget metadata and actions', () => {
-  it('uses Langflow list insertion labels from either metadata spelling', () => {
+  it('uses list insertion labels from either source metadata spelling', () => {
     render(
       <>
         <WidgetHarness

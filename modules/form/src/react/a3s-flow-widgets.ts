@@ -1,4 +1,4 @@
-import { WORKFLOW_CONFIGURATION_WIDGETS } from '../integrations/langflow';
+import { WORKFLOW_CONFIGURATION_WIDGETS } from '../integrations/workflow-node-form';
 import { A3SFlowBatchWidget } from './a3s-flow-batch-widget';
 import { A3SFlowExpressionWidget } from './a3s-flow-expression-widget';
 import { A3SFlowSchemaWidget } from './a3s-flow-schema-widget';

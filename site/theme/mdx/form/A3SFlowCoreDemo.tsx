@@ -67,10 +67,10 @@ export function A3SFlowDagDemo() {
 
   return (
     <section
-      className="a3s-doc-langflow-demo"
+      className="a3s-doc-workflow-demo"
       aria-label={isEnglish ? 'A3S Flow DAG-node demo' : 'A3S Flow DAG 节点示例'}
     >
-      <header className="a3s-doc-langflow-demo-header">
+      <header className="a3s-doc-workflow-demo-header">
         <div>
           <strong>A3S Flow {A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.engineVersion}</strong>
           <span>
@@ -79,17 +79,9 @@ export function A3SFlowDagDemo() {
               : `${visibleManifests.length} 个可见 manifest · ${A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.runtimeCommands} 个运行时命令`}
           </span>
         </div>
-        <a
-          className="btn"
-          data-size="sm"
-          data-variant="outline"
-          href="https://a3s-lab.github.io/UI/playground/forms/"
-        >
-          {isEnglish ? 'Open Playground' : '打开 Playground'}
-        </a>
       </header>
 
-      <div className="a3s-doc-langflow-demo-controls" data-control-count="two">
+      <div className="a3s-doc-workflow-demo-controls" data-control-count="two">
         <label className="field">
           <span>{isEnglish ? 'Category' : '分类'}</span>
           <select
@@ -123,7 +115,7 @@ export function A3SFlowDagDemo() {
       </div>
 
       <p
-        className="a3s-doc-langflow-demo-status"
+        className="a3s-doc-workflow-demo-status"
         role="status"
         aria-live="polite"
         aria-atomic="true"
@@ -131,7 +123,7 @@ export function A3SFlowDagDemo() {
         {status}
       </p>
 
-      <div className="a3s-doc-langflow-demo-panel a3s-doc-flow-demo-panel">
+      <div className="a3s-doc-workflow-demo-panel a3s-doc-flow-demo-panel">
         <A3SFlowDagNodePreview dagNode={dagNode} manifest={manifest} locale={locale} />
         <A3SFlowDagNodeConfigurationPanel
           dagNode={dagNode}
@@ -155,8 +147,8 @@ export function A3SFlowDagDemo() {
           onRequestConnection={() =>
             setStatus(
               isEnglish
-                ? 'Open the Playground to connect this input.'
-                : '请在 Playground 中连接这个输入。',
+                ? 'The host must provide a connection picker for this input.'
+                : '这个输入需要由宿主提供连接选择器。',
             )
           }
         />

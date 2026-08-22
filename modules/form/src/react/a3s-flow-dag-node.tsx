@@ -18,17 +18,14 @@ import {
 } from './a3s-flow-panel-support';
 import { a3sFlowWidgetRegistry } from './a3s-flow-widgets';
 import {
-  LangflowNodeConfigurationPanel,
-  type LangflowNodeConfigurationPanelProps,
-} from './langflow-node-panel';
-import {
-  LangflowWorkflowNodePreview,
-  type LangflowWorkflowNodePreviewProps,
-} from './langflow-workflow-node-preview';
+  WorkflowNodeConfigurationPanel,
+  type WorkflowNodeConfigurationPanelProps,
+} from './workflow-node-panel';
+import { WorkflowNodePreview, type WorkflowNodePreviewProps } from './workflow-node-preview';
 
 export interface A3SFlowDagNodeConfigurationPanelProps
   extends Omit<
-    LangflowNodeConfigurationPanelProps,
+    WorkflowNodeConfigurationPanelProps,
     'compatibility' | 'node' | 'onApply' | 'onChange' | 'onReset' | 'value'
   > {
   dagNode: A3SFlowWorkflowDagNode;
@@ -41,7 +38,7 @@ export interface A3SFlowDagNodeConfigurationPanelProps
 }
 
 export interface A3SFlowDagNodePreviewProps
-  extends Omit<LangflowWorkflowNodePreviewProps, 'node' | 'ports'> {
+  extends Omit<WorkflowNodePreviewProps, 'node' | 'ports'> {
   dagNode: A3SFlowWorkflowDagNode;
   manifest?: A3SFlowDagNodeManifest;
   registry?: A3SFlowDagNodeRegistry;
@@ -104,7 +101,7 @@ export function A3SFlowDagNodePreview({
     );
   }
 
-  return createElement(LangflowWorkflowNodePreview, {
+  return createElement(WorkflowNodePreview, {
     ...props,
     className,
     node: localizedManifest,
@@ -177,7 +174,7 @@ export function A3SFlowDagNodeConfigurationPanel({
   const nextNode = (configuration: JsonObject) =>
     mergeA3SFlowDagNodeConfiguration(dagNode, manifest, configuration);
 
-  return createElement(LangflowNodeConfigurationPanel, {
+  return createElement(WorkflowNodeConfigurationPanel, {
     ...props,
     buildConfig: resolvedBuildConfig,
     className,

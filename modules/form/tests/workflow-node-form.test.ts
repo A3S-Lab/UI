@@ -1,14 +1,15 @@
+import { a3sFlowDagNodeManifestCatalog } from '../src/a3s-flow';
 import { compileForm, evaluateFormValue, type JsonSchema, type JsonValue } from '../src/core';
 import {
-  createLangflowNodeDefaultValue,
-  createLangflowNodeForm,
-  type LangflowNodeDefinition,
-  langflowNodeCatalog,
+  createWorkflowNodeDefaultValue,
+  createWorkflowNodeForm,
   WORKFLOW_CONFIGURATION_WIDGET_KEYS,
   WORKFLOW_CONFIGURATION_WIDGETS,
+  type WorkflowNodeDefinition,
+  workflowNodeFieldDefault,
 } from '../src/workflow';
 
-function semanticNode(fields: LangflowNodeDefinition['fields']): LangflowNodeDefinition {
+function semanticNode(fields: WorkflowNodeDefinition['fields']): WorkflowNodeDefinition {
   return {
     category: 'tests',
     categoryLabel: 'Tests',
@@ -68,7 +69,7 @@ function pointerToken(value: string): string {
   return value.replaceAll('~', '~0').replaceAll('/', '~1');
 }
 
-function fieldNode(document: ReturnType<typeof createLangflowNodeForm>, name: string) {
+function fieldNode(document: ReturnType<typeof createWorkflowNodeForm>, name: string) {
   return document.ui.nodes.find((node) => node.schemaPath === `/properties/${pointerToken(name)}`);
 }
 
@@ -84,7 +85,7 @@ const fullWidthControls = new Set<string>([
   WORKFLOW_CONFIGURATION_WIDGETS.sortableList,
 ]);
 
-describe('Langflow semantic field presentation', () => {
+describe('Workflow node semantic field presentation', () => {
   it('prioritizes explicit JSON inputs and normalizes object and collection defaults', () => {
     const node = semanticNode([
       {
@@ -108,7 +109,7 @@ describe('Langflow semantic field presentation', () => {
         value: {},
       },
     ]);
-    const document = createLangflowNodeForm(node);
+    const document = createWorkflowNodeForm(node);
     const payload = fieldNode(document, 'payload');
 
     expect(document.schema.properties?.payload).toEqual(
@@ -117,7 +118,7 @@ describe('Langflow semantic field presentation', () => {
     expect(document.schema.properties?.records).toEqual(
       expect.objectContaining({ type: 'array', default: [] }),
     );
-    expect(createLangflowNodeDefaultValue(node)).toEqual({ payload: {}, records: [] });
+    expect(createWorkflowNodeDefaultValue(node)).toEqual({ payload: {}, records: [] });
     expect(payload).toEqual(
       expect.objectContaining({
         width: 12,
@@ -139,11 +140,11 @@ describe('Langflow semantic field presentation', () => {
     );
   });
 
-  it('keeps every catalog default type-aligned with its compiled schema', () => {
+  it('keeps every A3S Flow manifest default type-aligned with its compiled schema', () => {
     const failures: string[] = [];
 
-    for (const node of langflowNodeCatalog) {
-      const document = createLangflowNodeForm(node);
+    for (const node of a3sFlowDagNodeManifestCatalog) {
+      const document = createWorkflowNodeForm(node);
       const compiled = compileForm(document, {
         capabilities: { widgets: [...WORKFLOW_CONFIGURATION_WIDGET_KEYS] },
       });
@@ -151,7 +152,7 @@ describe('Langflow semantic field presentation', () => {
         failures.push(`${node.type}: ${JSON.stringify(compiled.diagnostics)}`);
         continue;
       }
-      const value = createLangflowNodeDefaultValue(node);
+      const value = createWorkflowNodeDefaultValue(node);
       const evaluation = evaluateFormValue(compiled.plan, value);
       const typeErrors = evaluation.errors.filter((error) => error.code === 'type');
       if (typeErrors.length > 0) failures.push(`${node.type}: ${JSON.stringify(typeErrors)}`);
@@ -161,12 +162,15 @@ describe('Langflow semantic field presentation', () => {
     expect(failures).toEqual([]);
   });
 
-  it('keeps all 797 catalog fields within the semantic width contract', () => {
+  it('keeps every A3S Flow manifest field within the semantic width contract', () => {
     const failures: string[] = [];
     let generatedFields = 0;
+    const expectedFields = a3sFlowDagNodeManifestCatalog.flatMap(
+      (manifest) => manifest.fields,
+    ).length;
 
-    for (const node of langflowNodeCatalog) {
-      const document = createLangflowNodeForm(node);
+    for (const node of a3sFlowDagNodeManifestCatalog) {
+      const document = createWorkflowNodeForm(node);
       const presentations = node.fields.map((field) => ({
         field,
         schema: document.schema.properties?.[field.name],
@@ -210,8 +214,8 @@ describe('Langflow semantic field presentation', () => {
       }
     }
 
-    expect(langflowNodeCatalog).toHaveLength(131);
-    expect(generatedFields).toBe(797);
+    expect(a3sFlowDagNodeManifestCatalog).toHaveLength(20);
+    expect(generatedFields).toBe(expectedFields);
     expect(failures).toEqual([]);
   });
 
@@ -233,7 +237,7 @@ describe('Langflow semantic field presentation', () => {
         options: ['body', 'metadata'],
       },
     ]);
-    const document = createLangflowNodeForm(node);
+    const document = createWorkflowNodeForm(node);
     const parameters = document.ui.nodes.find((candidate) =>
       candidate.id.endsWith('-node-parameters'),
     );
@@ -311,7 +315,7 @@ describe('Langflow semantic field presentation', () => {
       { name: 'result', type: 'data_display', _input_type: 'DataDisplayInput' },
       { name: 'collection_name', type: 'str', _input_type: 'StrInput' },
     ]);
-    const document = createLangflowNodeForm(node);
+    const document = createWorkflowNodeForm(node);
     const widths = Object.fromEntries(
       node.fields.map((field) => [field.name, fieldNode(document, field.name)?.width]),
     );
@@ -393,5 +397,259 @@ describe('Langflow semantic field presentation', () => {
       'Output',
       'Storage & retrieval',
     ]);
+  });
+
+  it('normalizes workflow defaults, table columns, ranges, and option descriptors', () => {
+    expect(workflowNodeFieldDefault({ name: 'ratio', type: 'float', value: 1.5 })).toBe(1.5);
+    expect(workflowNodeFieldDefault({ name: 'unset', value: '__UNDEFINED__' })).toBe('');
+
+    const node = semanticNode([
+      {
+        name: 'matrix',
+        type: 'table',
+        _input_type: 'TableInput',
+        required: true,
+        value: [
+          null,
+          {
+            enabled: true,
+            count: 2,
+            score: 1.25,
+            metadata: { source: 'fixture' },
+            tags: ['a'],
+            mode: 'fast',
+            label: 'ready',
+          },
+          {
+            enabled: 'yes',
+            count: 2.5,
+            score: 'high',
+            metadata: [],
+            tags: 'a',
+            mode: 3,
+            label: 4,
+          },
+          { enabled: false },
+        ],
+        table_schema: {
+          columns: [
+            { name: 'enabled', type: 'bool', required: true, default: false },
+            { name: 'count', type: 'integer', default: 1 },
+            { name: 'score', type: 'number', default: 0.5 },
+            { name: 'metadata', type: 'object', default: { source: 'default' } },
+            { name: 'tags', type: 'array', default: [] },
+            { name: 'mode', options: ['fast', 'safe'] },
+            { name: 'label' },
+          ],
+        },
+      },
+      {
+        name: 'records',
+        type: 'dict',
+        list: true,
+        value: [{ valid: true }, 'invalid'],
+      },
+      {
+        name: 'labels',
+        type: 'str',
+        _input_type: 'StrInput',
+        list: true,
+        value: ['fast'],
+        options: ['fast', 'safe'],
+      },
+      {
+        name: 'temperature',
+        type: 'slider',
+        value: 0.75,
+        range_spec: { min: 0, max: 2, step: 0.25 },
+      },
+      {
+        name: 'retries',
+        type: 'int',
+        rangeSpec: { min: Number.NaN, max: Number.POSITIVE_INFINITY, step: 0 },
+      },
+      {
+        name: 'provider',
+        options: [
+          'local',
+          null,
+          undefined,
+          { name: 'remote', display_name: 'Remote' },
+          { value: 'edge', label: 'Edge' },
+          { value: 'raw' },
+          { value: { unsupported: true } },
+        ],
+      },
+      { name: 'empty_option_label', options: [{ value: null, name: null }] },
+    ]);
+    const document = createWorkflowNodeForm(node);
+    const matrix = document.schema.properties?.matrix;
+    const defaults = createWorkflowNodeDefaultValue(node);
+
+    expect(matrix?.items?.properties?.enabled?.type).toBe('boolean');
+    expect(matrix?.items?.properties?.count?.type).toBe('integer');
+    expect(matrix?.items?.properties?.score?.type).toBe('number');
+    expect(matrix?.items?.properties?.metadata?.additionalProperties).toBe(true);
+    expect(matrix?.items?.properties?.tags?.items).toEqual({});
+    expect(matrix?.items?.properties?.mode?.enum).toEqual(['fast', 'safe']);
+    expect(matrix?.items?.required).toEqual(['enabled']);
+    expect(defaults.matrix).toEqual([
+      {},
+      {
+        enabled: true,
+        count: 2,
+        score: 1.25,
+        metadata: { source: 'fixture' },
+        tags: ['a'],
+        mode: 'fast',
+        label: 'ready',
+      },
+      { enabled: false, count: 0, score: 0, metadata: {}, tags: [], mode: '', label: '' },
+      { enabled: false },
+    ]);
+    expect(defaults.records).toEqual([{ valid: true }, {}]);
+    expect(document.schema.properties?.records?.items).toEqual({
+      type: 'object',
+      additionalProperties: true,
+    });
+    expect(document.schema.properties?.labels?.items?.enum).toEqual(['fast', 'safe']);
+    expect(document.schema.properties?.temperature).toEqual(
+      expect.objectContaining({ minimum: 0, maximum: 2, multipleOf: 0.25 }),
+    );
+    expect(document.schema.properties?.retries).not.toEqual(
+      expect.objectContaining({ minimum: expect.anything() }),
+    );
+    expect(document.schema.properties?.provider?.enum).toEqual([
+      'local',
+      null,
+      'remote',
+      'edge',
+      'raw',
+    ]);
+    expect(document.schema.properties?.empty_option_label?.enum).toEqual([null]);
+
+    const tableFields = document.ui.nodes.filter((candidate) =>
+      candidate.schemaPath?.startsWith('/properties/matrix/items/properties/'),
+    );
+    expect(Object.fromEntries(tableFields.map((field) => [field.label, field.widget]))).toEqual({
+      enabled: 'switch',
+      count: 'number',
+      score: 'number',
+      metadata: 'text',
+      tags: 'text',
+      mode: 'select',
+      label: 'text',
+    });
+    expect(tableFields.find((field) => field.label === 'mode')?.options).toEqual([
+      { label: 'fast', value: 'fast' },
+      { label: 'safe', value: 'safe' },
+    ]);
+  });
+
+  it('maps the complete host-owned control vocabulary and applies visibility overrides', () => {
+    const node = semanticNode([
+      { name: 'operations', type: 'sortableList', _input_type: 'SortableListInput' },
+      { name: 'decisions', type: 'actionPicker', _input_type: 'ActionPickerInput' },
+      { name: 'server', type: 'mcp', _input_type: 'McpInput' },
+      { name: 'threshold', type: 'slider', _input_type: 'SliderInput' },
+      {
+        name: 'choices',
+        type: 'str',
+        _input_type: 'MultiselectInput',
+        options: ['one', 'two'],
+      },
+      { name: 'notes', type: 'str', _input_type: 'MultilineInput' },
+      {
+        name: 'named_choices',
+        type: 'str',
+        _input_type: 'StrInput',
+        list: true,
+        options: ['one'],
+      },
+      { name: 'tags', type: 'str', _input_type: 'StrInput', is_list: true },
+      { name: 'mode', type: 'str', _input_type: 'StrInput', options: ['safe'] },
+      { name: 'summary', type: 'str', _input_type: 'StrInput', multiline: true },
+      { name: 'generic_choices', list: true, options: ['left', 'right'] },
+      { name: 'generic_mode', options: ['automatic', 'manual'] },
+    ]);
+    const document = createWorkflowNodeForm(node, {
+      fieldVisibility: { generic_mode: false },
+    });
+    const controls = Object.fromEntries(
+      node.fields.map((field) => [
+        field.name,
+        fieldNode(document, field.name)?.customProps?.controlWidget,
+      ]),
+    );
+
+    expect(controls).toEqual({
+      operations: WORKFLOW_CONFIGURATION_WIDGETS.sortableList,
+      decisions: WORKFLOW_CONFIGURATION_WIDGETS.actionPicker,
+      server: WORKFLOW_CONFIGURATION_WIDGETS.mcp,
+      threshold: 'slider',
+      choices: 'multi-select',
+      notes: 'textarea',
+      named_choices: 'multi-select',
+      tags: 'tags',
+      mode: 'select',
+      summary: 'textarea',
+      generic_choices: 'multi-select',
+      generic_mode: 'select',
+    });
+    expect(fieldNode(document, 'generic_mode')).toEqual(
+      expect.objectContaining({
+        hidden: true,
+        customProps: expect.objectContaining({ sourceType: '' }),
+      }),
+    );
+  });
+
+  it('localizes semantic groups and empty sections without changing task-mode structure', () => {
+    const node = semanticNode([
+      { name: 'prompt', type: 'str', _input_type: 'StrInput' },
+      { name: 'api_key', type: 'str', _input_type: 'SecretStrInput', password: true },
+      { name: 'enabled', type: 'bool', _input_type: 'BoolInput' },
+      { name: 'timeout', type: 'int', _input_type: 'IntInput' },
+      { name: 'result', type: 'data_display', _input_type: 'DataDisplayInput' },
+      { name: 'collection_name', type: 'str', _input_type: 'StrInput' },
+    ]);
+    const localized = createWorkflowNodeForm(node, { locale: 'zh-CN' });
+    const section = localized.ui.nodes.find((candidate) =>
+      candidate.id.endsWith('-node-parameters'),
+    );
+    const groups = (section?.children ?? []).map((id) =>
+      localized.ui.nodes.find((candidate) => candidate.id === id),
+    );
+
+    expect(section).toEqual(
+      expect.objectContaining({
+        label: '节点设置',
+        description: '填写这个节点执行时需要的信息。',
+      }),
+    );
+    expect(groups.map((group) => group?.label)).toEqual([
+      '主要设置',
+      '服务与凭据',
+      '执行方式',
+      '失败与重试',
+      '输出设置',
+      '存储与检索',
+    ]);
+
+    const empty = createWorkflowNodeForm(semanticNode([]), { locale: 'zh-CN' });
+    expect(empty.ui.nodes.find((candidate) => candidate.id.endsWith('-node-parameters'))).toEqual(
+      expect.objectContaining({
+        label: '无需设置',
+        description: '这个节点没有需要填写的配置。',
+      }),
+    );
+
+    const task = createWorkflowNodeForm(semanticNode([node.fields[0]]), {
+      locale: 'zh-CN',
+      presentation: 'task',
+    });
+    const root = task.ui.nodes.find((candidate) => candidate.kind === 'root');
+    expect(root?.children).toEqual([fieldNode(task, 'prompt')?.id]);
+    expect(task.ui.nodes.some((candidate) => candidate.kind === 'section')).toBe(false);
   });
 });
