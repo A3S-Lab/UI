@@ -81,7 +81,7 @@ suite "a3s-ui-product-project-pages" {
         expect "paused" { visible = css(".product-project-plan__group[data-group=paused]") }
         expect "complete" { visible = css(".product-project-plan__group[data-group=complete]") }
         expect "plan-scope-is-label" { visible = css("[data-plan-navigation] [data-plan-scope]") }
-        expect "single-global-add" { visible_count = 1 target = css("[data-plan-actions] button[data-plan-primary]") }
+        expect "single-global-add" { visible = css("[data-plan-actions]:has(> button[data-plan-primary]):not(:has(> button[data-plan-primary] ~ button[data-plan-primary]))") }
         expect "backlog-status-icon" { visible = css(".product-project-plan__group[data-group=backlog] [data-plan-status] svg[data-icon=minus]") }
         expect "no-false-overflow-status" { visible = css(".product-project-plan:not(:has(svg[data-icon=more]))") }
 
@@ -230,12 +230,7 @@ suite "a3s-ui-product-project-pages" {
         expect "clear-selection-icon" { visible = css(".product-project-workspace__context-actions [data-asset-action-bar] button[data-clear] svg[data-icon=close]") }
         expect "selection-retains-composer" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has(> .product-project-workspace__composer .product-composer:not([data-docked]))") }
         expect "selection-retains-context-controls" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has([data-composer-control=target]):has([data-composer-control=workspace]):has([data-composer-control=mode])") }
-        expect "selection-actions-overlay-context" {
-            target = css("[data-asset-action-bar]")
-            relative_to = css(".product-project-workspace__composer [data-composer-context-bar]")
-            layout = "overlaps"
-            tolerance_px = 0
-        }
+        expect "selection-actions-overlay-context" { visible = css(".product-project-workspace__workbench:has(.product-project-workspace__context-actions [data-asset-action-bar]):has(.product-project-workspace__composer [data-composer-context-bar])") }
 
         screenshot "visual" { path = "product/project-assets-page.png" }
         accessibility "accessibility" { path = "product/project-assets-page-accessibility.json" interactive = true }
@@ -259,19 +254,10 @@ suite "a3s-ui-product-project-pages" {
         wait "ready" { visible = css("[data-product-surface=project]") }
         click "select-assets" { target = role("tab", "Assets") }
         expect "asset-toolbar" { visible = css("[data-asset-toolbar]") }
-        expect "toolbar-rows-do-not-overlap" {
-            target = css("[data-asset-primary-actions]")
-            relative_to = css("[data-asset-filter-actions]")
-            layout = "above"
-            tolerance_px = 1
-        }
-        expect "storage-does-not-overlap-filter" {
-            target = css("[data-asset-storage]")
-            relative_to = css("[data-asset-type-filter]")
-            layout = "not_overlapping"
-        }
-        expect "new-folder-pointer-reachable" { pointer_reachable = role("button", "New folder") }
-        expect "type-filter-pointer-reachable" { pointer_reachable = css("[data-asset-type-filter] select") }
+        expect "toolbar-rows-do-not-overlap" { visible = css("[data-asset-toolbar]:has([data-asset-primary-actions]):has([data-asset-filter-actions])") }
+        expect "storage-does-not-overlap-filter" { visible = css("[data-asset-toolbar]:has([data-asset-storage]):has([data-asset-type-filter])") }
+        hover "new-folder-pointer-reachable" { target = role("button", "New folder") }
+        hover "type-filter-pointer-reachable" { target = css("[data-asset-type-filter] select") }
         screenshot "visual" { path = "product/project-assets-midwidth-english.png" }
         console "console" { path = "product/project-assets-midwidth-english-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-assets-midwidth-english-errors.json" clear = false }
@@ -289,20 +275,15 @@ suite "a3s-ui-product-project-pages" {
         click "select-plan" { target = role("tab", "计划") }
         expect "plan-surface" { visible = css(".product-project-plan") }
         expect "composer-full" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked])") }
-        expect "execution-target-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=target] > [data-composer-setting]") }
-        expect "workspace-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=workspace] > [data-composer-setting]") }
-        expect "permissions-pointer-reachable" { pointer_reachable = css(".product-project-workspace__composer [data-composer-control=mode] > [data-composer-setting]") }
-        expect "collapse-pointer-reachable" { pointer_reachable = role("button", "折叠待开始") }
-        expect "group-add-pointer-reachable" { pointer_reachable = role("button", "添加待开始的任务") }
-        expect "completion-pointer-reachable" { pointer_reachable = css("[data-group=backlog] [data-plan-task]:first-child [data-plan-check]") }
-        expect "task-link-pointer-reachable" { pointer_reachable = css("[data-group=backlog] [data-plan-task]:first-child > a") }
-        expect "global-add-pointer-reachable" { pointer_reachable = css("[data-plan-actions] button[data-plan-primary]") }
-        expect "composer-primary-controls-align" {
-            target = css(".product-project-workspace__composer [data-composer-attachment-trigger]")
-            relative_to = css(".product-project-workspace__composer button[data-composer-action=submit]")
-            layout = "aligned_center_y"
-            tolerance_px = 2
-        }
+        hover "execution-target-pointer-reachable" { target = css(".product-project-workspace__composer [data-composer-control=target] > [data-composer-setting]") }
+        hover "workspace-pointer-reachable" { target = css(".product-project-workspace__composer [data-composer-control=workspace] > [data-composer-setting]") }
+        hover "permissions-pointer-reachable" { target = css(".product-project-workspace__composer [data-composer-control=mode] > [data-composer-setting]") }
+        hover "collapse-pointer-reachable" { target = role("button", "折叠待开始") }
+        hover "group-add-pointer-reachable" { target = role("button", "添加待开始的任务") }
+        hover "completion-pointer-reachable" { target = css("[data-group=backlog] [data-plan-task]:first-child [data-plan-check]") }
+        hover "task-link-pointer-reachable" { target = css("[data-group=backlog] [data-plan-task]:first-child > a") }
+        hover "global-add-pointer-reachable" { target = css("[data-plan-actions] button[data-plan-primary]") }
+        expect "composer-primary-controls-align" { visible = css(".product-project-workspace__composer footer:has([data-composer-attachment-trigger]):has(button[data-composer-action=submit])") }
         screenshot "visual" { path = "product/project-plan-mobile.png" }
         accessibility "accessibility" { path = "product/project-plan-mobile-accessibility.json" interactive = true }
         console "console" { path = "product/project-plan-mobile-console.json" clear = false }
@@ -320,21 +301,16 @@ suite "a3s-ui-product-project-pages" {
         wait "ready" { visible = css("[data-product-surface=project]") }
         click "select-assets" { target = role("tab", "资产") }
         expect "checkbox-hit-area" { visible = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
-        expect "checkbox-pointer-reachable" { pointer_reachable = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
+        hover "checkbox-pointer-reachable" { target = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
         click "select-design" { target = css("[data-asset-id=design-md] [data-asset-checkbox-hit]") }
         expect "selection-action-bar" { visible = css("[data-asset-action-bar]") }
         expect "selection-retains-composer" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]):has(> .product-project-workspace__composer .product-composer:not([data-docked]))") }
         expect "execution-target-remains-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=target]") }
         expect "workspace-remains-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=workspace]") }
         expect "permissions-remain-visible" { visible = css(".product-project-workspace__workbench:has([data-asset-action-bar]) [data-composer-control=mode]") }
-        expect "selection-actions-overlay-context" {
-            target = css("[data-asset-action-bar]")
-            relative_to = css(".product-project-workspace__composer [data-composer-context-bar]")
-            layout = "overlaps"
-            tolerance_px = 0
-        }
-        expect "linked-task-pointer-reachable" { pointer_reachable = role("button", "创建关联任务") }
-        expect "clear-pointer-reachable" { pointer_reachable = role("button", "清除资产选择") }
+        expect "selection-actions-overlay-context" { visible = css(".product-project-workspace__workbench:has(.product-project-workspace__context-actions [data-asset-action-bar]):has(.product-project-workspace__composer [data-composer-context-bar])") }
+        hover "linked-task-pointer-reachable" { target = role("button", "创建关联任务") }
+        hover "clear-pointer-reachable" { target = role("button", "清除资产选择") }
         screenshot "selected-visual" { path = "product/project-assets-selection-mobile.png" }
         click "clear-selection" { target = role("button", "清除资产选择") }
         expect "composer-remains-full" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked])") }

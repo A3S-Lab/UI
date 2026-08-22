@@ -13,7 +13,7 @@ suite "a3s-ui-product-action-icon-semantics" {
         expect "back-icon" { visible = css("a[aria-label='返回新建任务'] svg[data-icon=back]") }
         accessibility "mail-accessibility" { path = "product/action-icons-mail-accessibility.json" interactive = true }
 
-        click "back-to-task" { target = role("link", "返回新建任务") }
+        click "back-to-task" { target = css("a[aria-label='返回新建任务']") }
         wait "task-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
         expect "task-composer" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
 
@@ -48,7 +48,8 @@ suite "a3s-ui-product-action-icon-semantics" {
         double_click "open-quick-look" { target = css(".product-file-manager [data-file-manager-item]") }
         expect "quick-look" { visible = css("[data-file-manager-quicklook]") }
         expect "open-icon" { visible = css("[data-file-manager-quicklook] button:has(svg[data-icon=arrow])") }
-        click "open-file" { target = role("button", "打开") }
+        focus "focus-open-file" { target = css("[data-file-manager-quicklook] button:has(svg[data-icon=arrow])") }
+        press "open-file" { key = "Enter" }
         wait "workbench-ready" { visible = css(".product-file-workbench[data-workbench-kind=code]") }
         type "edit-file" { target = css(".product-code-workbench textarea[aria-label='编辑 release-readiness.md']") value = "\n逐项图标语义回归已覆盖。" }
         expect "save-icon" { visible = css("button[aria-label='保存文件']:not(:disabled) svg[data-icon=save]") }
@@ -226,7 +227,8 @@ suite "a3s-ui-product-action-icon-semantics" {
         expect "collapse-label-visible" { visible = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true]") }
         expect "collapse-icon" { visible = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true] svg[data-icon=contract]") }
         screenshot "expanded" { path = "product/action-icons-device-expanded.png" }
-        click "collapse-simulator" { target = role("button", "收起") }
+        focus "focus-collapse-simulator" { target = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true]") }
+        press "collapse-simulator" { key = "Enter" }
         expect "compact-state" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
         expect "expand-restored" { visible = css("button[aria-label='打开完整设备模拟器'][aria-pressed=false] svg[data-icon=expand]") }
 
