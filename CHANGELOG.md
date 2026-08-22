@@ -54,6 +54,7 @@
 
 ### Fixed
 
+- Made all 18 public workflow nodes expose their defining current configuration on the canvas, restored readable inspector descriptions at the standard 400-pixel width, enlarged dense node and panel controls, and added complete arrow, Home, and End key navigation to inspector tabs.
 - Made workflow documentation canvas zoom controls functional, focused node-library search on open, switched narrow article embeds to a container-sized stacked canvas and inspector layout so branch actions remain reachable, and captured deterministic evidence for every public node.
 - Kept container nodes fully visible beside the inspector in narrow documentation embeds and made the editor run regression use stable semantic state instead of transient copy.
 - Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group, documentation catalog, and every Playground search field; added focused desktop and phone regression evidence for each surface.

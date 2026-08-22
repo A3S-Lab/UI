@@ -232,6 +232,35 @@ describe('Workflow node preview', () => {
     expect(screen.getByText('0 个输入 · 0 个输出')).toBeTruthy();
   });
 
+  it('renders a concise current-configuration summary without replacing port semantics', () => {
+    const node: WorkflowNodeDefinition = {
+      ...previewBase,
+      type: 'SummaryPreview',
+      display_name: 'Summary preview',
+      output_types: ['FlowControl'],
+    };
+
+    const { container } = render(
+      <WorkflowNodePreview
+        node={node}
+        summary={[
+          { id: 'handler', label: 'Handler', value: 'task.run' },
+          { id: 'input', label: 'Input', value: 'input.order' },
+        ]}
+      />,
+    );
+
+    const summary = container.querySelector('.a3s-form-workflow-node-preview-summary');
+    expect(summary?.getAttribute('aria-label')).toBe('Current configuration');
+    expect(summary?.querySelector('[data-summary-id="handler"]')?.textContent).toContain(
+      'task.run',
+    );
+    expect(summary?.querySelector('[data-summary-id="input"]')?.textContent).toContain(
+      'input.order',
+    );
+    expect(screen.getByRole('region', { name: 'Output ports' })).toBeTruthy();
+  });
+
   it('behaves like a selectable canvas node without hiding its workflow identity', () => {
     let selections = 0;
     const node: WorkflowNodeDefinition = {

@@ -82,7 +82,7 @@
 
 .a3s-doc-workflow-studio__actions > button {
   display: inline-flex;
-  min-height: 30px;
+  min-height: 36px;
   padding: 0 11px;
   border: 1px solid color-mix(in srgb, var(--workflow-studio-blue) 76%, #1748a8);
   border-radius: 8px;
@@ -146,7 +146,7 @@
 
 .a3s-doc-workflow-studio__node {
   position: absolute;
-  top: 176px;
+  top: 128px;
   left: calc((100% - 416px) / 2);
   z-index: 2;
   transform: translateX(-50%) scale(var(--workflow-studio-zoom, 1));
@@ -168,7 +168,7 @@
   bottom: calc(100% + 8px);
   left: 50%;
   display: flex;
-  min-height: 30px;
+  min-height: 38px;
   padding: 3px;
   border: 0.5px solid var(--workflow-studio-line-strong);
   border-radius: 9px;
@@ -181,8 +181,8 @@
 
 .a3s-doc-workflow-studio__node-actions button {
   display: grid;
-  width: 26px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 6px;
@@ -200,7 +200,7 @@
 .a3s-doc-workflow-studio__node
   .a3s-form-workflow-node-preview-port-list[data-direction="output"]
   .a3s-form-workflow-node-preview-port:has(.a3s-form-workflow-node-preview-next) {
-  padding-right: 30px;
+  padding-right: 38px;
 }
 
 .a3s-doc-workflow-studio__node
@@ -210,7 +210,7 @@
 }
 
 .a3s-doc-workflow-studio__node .a3s-form-workflow-node-preview-next {
-  right: -12px;
+  right: -16px;
 }
 
 .a3s-doc-workflow-studio__node .a3s-form-workflow-node-preview-next::before {
@@ -250,8 +250,8 @@
   top: 10px;
   right: 9px;
   display: grid;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 6px;
@@ -289,7 +289,7 @@
 
 .a3s-doc-workflow-library > header > input {
   width: 100%;
-  height: 32px;
+  height: 36px;
   padding: 0 10px 0 32px;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -297,7 +297,7 @@
   background: var(--workflow-studio-panel);
   color: var(--workflow-studio-ink);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .a3s-doc-workflow-library > header > input::placeholder {
@@ -344,7 +344,7 @@
 
 .a3s-doc-workflow-library__tabs > span {
   color: var(--workflow-studio-muted);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .a3s-doc-workflow-library__list {
@@ -369,7 +369,7 @@
   margin: 0;
   padding: 4px 8px 0;
   color: var(--workflow-studio-muted);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 18px;
 }
@@ -377,8 +377,8 @@
 .a3s-doc-workflow-library__list section > button {
   display: flex;
   width: 100%;
-  min-height: 50px;
-  padding: 6px 8px;
+  min-height: 58px;
+  padding: 8px;
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
@@ -457,13 +457,13 @@
 
 .a3s-doc-workflow-library__list section > button > span:last-child > strong {
   color: var(--workflow-studio-ink);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 640;
 }
 
 .a3s-doc-workflow-library__list section > button > span:last-child > small {
   color: var(--workflow-studio-muted);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.35;
 }
 
@@ -611,20 +611,20 @@
 
 @container a3s-doc-workflow-studio (max-width: 660px) {
   .a3s-doc-workflow-studio__workspace {
-    min-height: 1080px;
+    min-height: 1260px;
   }
 
   .a3s-doc-workflow-studio__canvas {
-    height: 420px;
+    height: 600px;
   }
 
   .a3s-doc-workflow-studio__node {
-    top: 104px;
+    top: 86px;
     left: 50%;
   }
 
   .a3s-doc-workflow-studio__inspector {
-    top: 428px;
+    top: 608px;
     right: 8px;
     bottom: 8px;
     left: 8px;
@@ -636,9 +636,10 @@
   }
 
   .a3s-doc-workflow-studio__status {
+    top: 556px;
     right: 12px;
-    bottom: 12px;
-    max-width: calc(100% - 24px);
+    bottom: auto;
+    max-width: calc(100% - 170px);
   }
 }
 
@@ -669,7 +670,7 @@
   }
 
   .a3s-doc-workflow-studio__workspace {
-    min-height: 1120px;
+    min-height: 1280px;
   }
 
   .a3s-doc-workflow-studio__palette {

@@ -9,29 +9,35 @@
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
-  min-height: 72px;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 12px 9px 16px;
+  min-height: 124px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 14px 12px 12px 16px;
   border-bottom: 0;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-identity {
+  width: 100%;
   flex: 1 1 auto;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
+.a3s-form-flow-node-panel .a3s-form-workflow-node-identity > span:last-child {
+  flex: 1 1 auto;
+}
+
 .a3s-form-flow-node-panel .a3s-form-workflow-node-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: 0;
   border-radius: 7px;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-title-line h2 {
   overflow: hidden;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 680;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -43,20 +49,21 @@
   max-width: 42ch;
   margin-top: 2px;
   overflow: hidden;
-  font-size: 10px;
-  line-height: 1.35;
+  font-size: 11px;
+  line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions {
-  gap: 1px;
+  gap: 2px;
+  justify-content: flex-end;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions :is(button, a) {
-  width: 28px;
-  min-width: 28px;
-  min-height: 28px;
+  width: 36px;
+  min-width: 36px;
+  min-height: 36px;
   padding: 0;
   border-radius: 6px;
   justify-content: center;
@@ -64,6 +71,11 @@
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-tabs {
   padding-inline: 16px;
+}
+
+:where(.a3s-form-flow-node-panel) .a3s-form-workflow-node-tabs > button {
+  min-height: 42px;
+  font-size: 12px;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-settings {
@@ -607,27 +619,28 @@
   }
 }
 
-@container a3s-form-workflow-panel (max-width: 420px) {
+@container a3s-form-workflow-panel (max-width: 340px) {
   .a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
-    min-height: 64px;
-    padding: 12px 10px 8px 12px;
-    flex-direction: row;
-    align-items: center;
+    min-height: auto;
+    padding: 13px 12px 10px;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
   }
 
   .a3s-form-flow-node-panel .a3s-form-workflow-node-identity {
     min-width: 0;
+    align-items: flex-start;
   }
 
   .a3s-form-flow-node-panel .a3s-form-workflow-node-identity p {
-    display: none;
+    display: -webkit-box;
   }
 
   .a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions {
-    width: auto;
-    margin-left: auto;
-    flex: 0 0 auto;
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-end;
   }
 
   .a3s-form-flow-node-panel .a3s-form-workflow-node-form {
