@@ -166,7 +166,10 @@ export function ShortcutSettings({
         }
         title={zh ? "快捷键" : "Shortcuts"}
       />
-      <label className="product-settings__shortcut-search">
+      <label
+        className="product-settings__shortcut-search"
+        data-focus-owner="container"
+      >
         <ProductPlaygroundIcon name="search" />
         <input
           aria-label={zh ? "搜索快捷键" : "Search shortcuts"}

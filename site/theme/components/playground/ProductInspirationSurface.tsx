@@ -465,7 +465,7 @@ export function ProductInspirationSurface({
             <ProductPlaygroundIcon name="heart" />
             {zh ? "我的收藏" : "Favorites"}
           </button>
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索灵感" : "Search inspiration"}

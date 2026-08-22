@@ -29,6 +29,7 @@ import {
 } from "./product-automation-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
+import { SettingsSwitch } from "./ProductSettingsPrimitives";
 
 type ValidationErrors = {
   date?: string;
@@ -244,9 +245,7 @@ export function ProductAutomationBuilder({
           <ProductPlaygroundIcon name="chevron" />
           <strong>
             {initialDraft
-              ? zh
-                ? "编辑自动化"
-                : "Edit automation"
+              ? name || (zh ? "编辑自动化" : "Edit automation")
               : zh
                 ? "新建自动化"
                 : "New automation"}
@@ -256,8 +255,13 @@ export function ProductAutomationBuilder({
           <button onClick={onCancel} type="button">
             {zh ? "取消" : "Cancel"}
           </button>
-          <button data-primary form="product-automation-form" type="submit">
-            {zh ? "保存自动化" : "Save automation"}
+          <button
+            aria-label={zh ? "保存自动化" : "Save automation"}
+            data-primary
+            form="product-automation-form"
+            type="submit"
+          >
+            {zh ? "保存" : "Save"}
           </button>
         </nav>
       </header>
@@ -266,11 +270,11 @@ export function ProductAutomationBuilder({
         <div className="product-automation-builder__notice" role="note">
           <ProductPlaygroundIcon name="info" />
           <p>
-            <strong>{zh ? "本地运行" : "Local execution"}</strong>
+            <strong>{zh ? "提示" : "Notice"}</strong>
             <span>
               {zh
-                ? "设备离线时暂停调度，恢复连接后只执行仍在有效窗口内的任务，不补跑过期任务。"
-                : "Schedules pause while this device is offline. After reconnection, only runs still inside their valid window resume; expired runs are not replayed."}
+                ? "自动化在本地运行；设备离线时暂停调度，恢复连接后只执行仍在有效窗口内的任务。"
+                : "Automations run locally. Schedules pause while this device is offline and resume only runs still inside their valid window."}
             </span>
           </p>
         </div>
@@ -324,105 +328,6 @@ export function ProductAutomationBuilder({
           </select>
         </label>
 
-        <label className="product-automation-builder__field">
-          <span>
-            {zh ? "连接器" : "Connector"}
-            <small>
-              {zh ? "仅列出已授权连接器" : "Authorized connectors only"}
-            </small>
-          </span>
-          <select
-            aria-label={zh ? "连接器" : "Connector"}
-            onChange={(event) =>
-              setConnector(
-                event.currentTarget.value as ProductAutomationConnector,
-              )
-            }
-            value={connector}
-          >
-            <option value="none">{zh ? "不使用连接器" : "No connector"}</option>
-            <option value="repository">{zh ? "代码仓库" : "Repository"}</option>
-            <option value="webview">{zh ? "本地预览" : "Local preview"}</option>
-          </select>
-        </label>
-
-        <fieldset className="product-automation-builder__runtime">
-          <legend>
-            {zh ? "运行配置" : "Runtime configuration"}
-            <small>
-              {zh
-                ? "每次运行使用同一模型、努力程度和权限边界"
-                : "Every run uses the same model, effort, and permission boundary"}
-            </small>
-          </legend>
-          <div>
-            <label>
-              <span>{zh ? "模型" : "Model"}</span>
-              <select
-                aria-label={zh ? "模型" : "Model"}
-                onChange={(event) =>
-                  setModel(
-                    event.currentTarget.value as ProductComposerModel["id"],
-                  )
-                }
-                value={model}
-              >
-                {productComposerModels.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name[locale]}
-                  </option>
-                ))}
-              </select>
-              <small>{selectedModel?.description[locale]}</small>
-            </label>
-            <label>
-              <span>{zh ? "努力程度" : "Effort"}</span>
-              <select
-                aria-label={zh ? "努力程度" : "Effort"}
-                onChange={(event) =>
-                  setEffort(event.currentTarget.value as ProductComposerEffort)
-                }
-                value={effort}
-              >
-                {productComposerEfforts.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.label[locale]}
-                  </option>
-                ))}
-              </select>
-              <small>{selectedEffort?.description[locale]}</small>
-            </label>
-            <label>
-              <span>{zh ? "权限边界" : "Permission boundary"}</span>
-              <select
-                aria-label={zh ? "权限边界" : "Permission boundary"}
-                onChange={(event) =>
-                  setPermission(
-                    event.currentTarget.value as ProductAutomationPermission,
-                  )
-                }
-                value={permission}
-              >
-                <option value="read-only">
-                  {zh ? "只读工作区" : "Read-only workspace"}
-                </option>
-                <option value="workspace-write">
-                  {zh ? "允许写入工作区" : "Allow workspace writes"}
-                </option>
-              </select>
-              <small>
-                {permission === "read-only"
-                  ? zh
-                    ? "可读取文件和运行无副作用检查。"
-                    : "Can read files and run checks without side effects."
-                  : zh
-                    ? "仅允许修改已选工作区；高风险操作仍需按次确认。"
-                    : "Writes stay inside the selected workspace; high-risk actions still require per-run confirmation."}
-              </small>
-            </label>
-          </div>
-        </fieldset>
-
         <section
           className="product-automation-builder__prompt"
           data-invalid={errors.prompt ? "true" : undefined}
@@ -454,30 +359,169 @@ export function ProductAutomationBuilder({
             value={prompt}
           />
           <footer>
-            <button
-              aria-pressed={skillEnabled}
-              onClick={() => setSkillEnabled((value) => !value)}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="checklist" />
-              {zh ? "视觉验收技能" : "Visual acceptance skill"}
-              {skillEnabled ? <ProductPlaygroundIcon name="check" /> : null}
-            </button>
-            <button
-              aria-pressed={assistantEnabled}
-              onClick={() => setAssistantEnabled((value) => !value)}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="assistant" />
-              {zh ? "发布评审专家" : "Release reviewer"}
-              {assistantEnabled ? <ProductPlaygroundIcon name="check" /> : null}
-            </button>
-            <span>
-              <ProductPlaygroundIcon name="shield" />
-              {zh
-                ? "高风险操作每次确认"
-                : "Confirm high-risk actions every run"}
-            </span>
+            <fieldset className="product-automation-builder__runtime">
+              <legend className="product-automation-builder__visually-hidden">
+                {zh ? "运行配置" : "Runtime configuration"}
+              </legend>
+              <div>
+                <label data-runtime-control="model">
+                  <ProductPlaygroundIcon name="model" />
+                  <span>
+                    {selectedModel?.name[locale] ?? (zh ? "模型" : "Model")}
+                  </span>
+                  <select
+                    aria-describedby="automation-model-description"
+                    aria-label={zh ? "模型" : "Model"}
+                    onChange={(event) =>
+                      setModel(
+                        event.currentTarget.value as ProductComposerModel["id"],
+                      )
+                    }
+                    value={model}
+                  >
+                    {productComposerModels.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name[locale]}
+                      </option>
+                    ))}
+                  </select>
+                  <ProductPlaygroundIcon name="chevron" />
+                </label>
+                <label data-runtime-control="effort">
+                  <ProductPlaygroundIcon name="brain" />
+                  <span>
+                    {selectedEffort?.label[locale] ??
+                      (zh ? "努力程度" : "Effort")}
+                  </span>
+                  <select
+                    aria-describedby="automation-effort-description"
+                    aria-label={zh ? "努力程度" : "Effort"}
+                    onChange={(event) =>
+                      setEffort(
+                        event.currentTarget.value as ProductComposerEffort,
+                      )
+                    }
+                    value={effort}
+                  >
+                    {productComposerEfforts.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.label[locale]}
+                      </option>
+                    ))}
+                  </select>
+                  <ProductPlaygroundIcon name="chevron" />
+                </label>
+                <label data-runtime-control="skill">
+                  <ProductPlaygroundIcon name="checklist" />
+                  <span>
+                    {skillEnabled
+                      ? zh
+                        ? "视觉验收"
+                        : "Visual acceptance"
+                      : zh
+                        ? "技能"
+                        : "Skill"}
+                  </span>
+                  <select
+                    aria-label={zh ? "技能" : "Skill"}
+                    onChange={(event) =>
+                      setSkillEnabled(event.currentTarget.value === "visual")
+                    }
+                    value={skillEnabled ? "visual" : "none"}
+                  >
+                    <option value="none">{zh ? "技能" : "Skill"}</option>
+                    <option value="visual">
+                      {zh ? "视觉验收" : "Visual acceptance"}
+                    </option>
+                  </select>
+                  <ProductPlaygroundIcon name="chevron" />
+                </label>
+                <label data-runtime-control="assistant">
+                  <ProductPlaygroundIcon name="assistant" />
+                  <span>
+                    {assistantEnabled
+                      ? zh
+                        ? "发布评审"
+                        : "Release reviewer"
+                      : zh
+                        ? "召唤专家"
+                        : "Add assistant"}
+                  </span>
+                  <select
+                    aria-label={zh ? "专家" : "Assistant"}
+                    onChange={(event) =>
+                      setAssistantEnabled(
+                        event.currentTarget.value === "reviewer",
+                      )
+                    }
+                    value={assistantEnabled ? "reviewer" : "none"}
+                  >
+                    <option value="none">
+                      {zh ? "召唤专家" : "Add assistant"}
+                    </option>
+                    <option value="reviewer">
+                      {zh ? "发布评审" : "Release reviewer"}
+                    </option>
+                  </select>
+                  <ProductPlaygroundIcon name="chevron" />
+                </label>
+                <label data-runtime-control="permission">
+                  <ProductPlaygroundIcon name="shield" />
+                  <span>
+                    {permission === "read-only"
+                      ? zh
+                        ? "只读工作区"
+                        : "Read-only workspace"
+                      : zh
+                        ? "允许写入"
+                        : "Allow writes"}
+                  </span>
+                  <select
+                    aria-describedby="automation-permission-description"
+                    aria-label={zh ? "权限边界" : "Permission boundary"}
+                    onChange={(event) =>
+                      setPermission(
+                        event.currentTarget
+                          .value as ProductAutomationPermission,
+                      )
+                    }
+                    value={permission}
+                  >
+                    <option value="read-only">
+                      {zh ? "只读工作区" : "Read-only workspace"}
+                    </option>
+                    <option value="workspace-write">
+                      {zh ? "允许写入" : "Allow writes"}
+                    </option>
+                  </select>
+                  <ProductPlaygroundIcon name="chevron" />
+                </label>
+              </div>
+              <span
+                className="product-automation-builder__visually-hidden"
+                id="automation-model-description"
+              >
+                {selectedModel?.description[locale]}
+              </span>
+              <span
+                className="product-automation-builder__visually-hidden"
+                id="automation-effort-description"
+              >
+                {selectedEffort?.description[locale]}
+              </span>
+              <span
+                className="product-automation-builder__visually-hidden"
+                id="automation-permission-description"
+              >
+                {permission === "read-only"
+                  ? zh
+                    ? "可读取文件和运行无副作用检查。"
+                    : "Can read files and run checks without side effects."
+                  : zh
+                    ? "仅允许修改已选工作区；高风险操作仍需按次确认。"
+                    : "Writes stay inside the selected workspace; high-risk actions still require per-run confirmation."}
+              </span>
+            </fieldset>
           </footer>
           {errors.prompt ? (
             <small id="automation-prompt-error" role="alert">
@@ -485,6 +529,35 @@ export function ProductAutomationBuilder({
             </small>
           ) : null}
         </section>
+
+        <label
+          className="product-automation-builder__field"
+          data-field="connector"
+        >
+          <span>
+            {zh ? "连接器" : "Connector"}
+            <small>
+              {zh
+                ? "选中后，该连接器在任务中免确认使用"
+                : "Selected connectors can be used in this task without another prompt"}
+            </small>
+          </span>
+          <select
+            aria-label={zh ? "连接器" : "Connector"}
+            onChange={(event) =>
+              setConnector(
+                event.currentTarget.value as ProductAutomationConnector,
+              )
+            }
+            value={connector}
+          >
+            <option value="none">
+              {zh ? "选择连接器" : "Choose connector"}
+            </option>
+            <option value="repository">{zh ? "代码仓库" : "Repository"}</option>
+            <option value="webview">{zh ? "本地预览" : "Local preview"}</option>
+          </select>
+        </label>
 
         <fieldset className="product-automation-builder__schedule">
           <legend>
@@ -762,12 +835,10 @@ export function ProductAutomationBuilder({
                 </small>
               </span>
             </span>
-            <input
+            <SettingsSwitch
               checked={desktopNotice}
-              onChange={(event) =>
-                setDesktopNotice(event.currentTarget.checked)
-              }
-              type="checkbox"
+              label={zh ? "桌面通知" : "Desktop notification"}
+              onCheckedChange={setDesktopNotice}
             />
           </label>
           <label>
@@ -782,14 +853,12 @@ export function ProductAutomationBuilder({
                 </small>
               </span>
             </span>
-            <input
+            <SettingsSwitch
               checked={notificationChannel !== "none"}
-              onChange={(event) =>
-                setNotificationChannel(
-                  event.currentTarget.checked ? "release" : "none",
-                )
+              label={zh ? "远程渠道" : "Remote channel"}
+              onCheckedChange={(checked) =>
+                setNotificationChannel(checked ? "release" : "none")
               }
-              type="checkbox"
             />
           </label>
           {notificationChannel !== "none" ? (

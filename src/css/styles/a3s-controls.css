@@ -258,7 +258,7 @@
     .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
     .field > select,
     select.select
-  ):focus-visible {
+  ):not(.input-group > *):focus-visible {
     outline: var(--a3s-focus-outline);
     outline-offset: var(--a3s-outline-offset);
   }
@@ -270,7 +270,7 @@
     .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
     .field > select,
     select.select
-  )[aria-invalid="true"]:focus-visible {
+  ):not(.input-group > *)[aria-invalid="true"]:focus-visible {
     outline-color: var(--a3s-red);
   }
 

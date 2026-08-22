@@ -404,7 +404,7 @@ export function ProductCatalogSurface({
           ))}
         </div>
         <div className="product-catalog__topbar-actions">
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={`${zh ? "搜索" : "Search"}${tabLabel(tab, locale)}`}

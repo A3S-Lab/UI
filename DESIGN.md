@@ -203,7 +203,7 @@ Reduced motion removes travel, blur animation, and looping decoration while pres
 
 ### 3.2 Focus and keyboard
 
-Every standalone operable element receives a visible 2px accent outline with a 2–3px offset. A compound field uses `:focus-within` on its rounded container as the single visual focus owner; its focused native field keeps the caret and semantics but does not draw a second outline, ring, border, or shadow. Roving-tabindex components support Home, End, and orientation-aware arrows. Escape closes only the topmost dismissible layer and returns focus to its trigger.
+Every standalone operable element receives a visible 2px accent outline with a 2–3px offset. A compound field uses `:focus-within` on its rounded container as the single visual focus owner; its focused native field keeps the caret and semantics but does not draw a second outline, ring, border, or shadow. Persistent search fields are the restrained exception: default, hover, and focus advance through the subtle, default, and strong neutral border tokens with no external ring or focus shadow, keeping accent color available for selection and action state. Roving-tabindex components support Home, End, and orientation-aware arrows. Escape closes only the topmost dismissible layer and returns focus to its trigger.
 
 Native reading order is the keyboard order. Responsive CSS may change placement but never the meaningful DOM sequence. RTL reverses directional navigation and physical placement through logical properties; object icons do not mirror.
 

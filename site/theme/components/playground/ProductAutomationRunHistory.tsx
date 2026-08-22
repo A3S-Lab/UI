@@ -183,7 +183,7 @@ export function ProductAutomationRunHistory({
         </button>
       </header>
       <div className="product-run-history__toolbar">
-        <label>
+        <label data-focus-owner="container">
           <ProductPlaygroundIcon name="search" />
           <input
             aria-label={zh ? "搜索运行记录" : "Search runs"}

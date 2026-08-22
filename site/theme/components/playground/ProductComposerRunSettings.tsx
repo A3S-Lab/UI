@@ -362,7 +362,7 @@ export function ProductComposerWorkspaceControl({
           </span>
         </span>
       </header>
-      <label data-workspace-search>
+      <label data-focus-owner="container" data-workspace-search>
         <ProductPlaygroundIcon name="search" />
         <input
           aria-label={zh ? "搜索工作区" : "Search workspaces"}

@@ -516,7 +516,7 @@ export function ProductProjectWorkspaceSurface({
                       </span>
                     </span>
                   </div>
-                  <label data-search>
+                  <label data-focus-owner="container" data-search>
                     <ProductPlaygroundIcon name="search" />
                     <input
                       aria-label={zh ? "搜索任务标题" : "Search task titles"}

@@ -436,7 +436,7 @@ export function ProductProjectAssetsWorkspace({
               <option value="document">{zh ? "文件" : "Files"}</option>
             </select>
           </label>
-          <label data-search>
+          <label data-focus-owner="container" data-search>
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索项目资产" : "Search project assets"}

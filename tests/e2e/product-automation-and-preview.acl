@@ -17,7 +17,19 @@ suite "a3s-ui-product-automation-and-preview" {
         expect "prefilled-name" {
             visible = css("[data-product-surface=automation-builder] input[value='每日发布摘要']")
         }
-        expect "workspace-control" { visible = css(".product-automation-builder select option[value=a3s-ui]") }
+        expect "workspace-control" {
+            visible = css(".product-automation-builder__field:has(select[aria-label='工作区'] option[value='a3s-ui'])")
+        }
+        expect "runtime-inside-composer" {
+            visible = css(".product-automation-builder__prompt > footer .product-automation-builder__runtime")
+        }
+        expect "desktop-notification-switch" {
+            visible = css(".product-automation-builder__delivery .product-settings__switch:has(input[role=switch][aria-label='桌面通知'])")
+        }
+        expect "remote-notification-switch" {
+            visible = css(".product-automation-builder__delivery .product-settings__switch:has(input[role=switch][aria-label='远程渠道'])")
+        }
+        screenshot "builder-initial" { path = "product/automation-builder-initial.png" }
 
         select "workspace" {
             target = css("select[aria-label='工作区']")
@@ -64,19 +76,19 @@ suite "a3s-ui-product-automation-and-preview" {
 
         click "edit" { target = role("button", "编辑 发布就绪巡检") }
         expect "workspace-preserved" {
-            visible = css("select[aria-label='工作区'] option[value='a3s-ui']:checked")
+            visible = css(".product-automation-builder__field:has(select[aria-label='工作区'] option[value='a3s-ui']:checked)")
         }
         expect "connector-preserved" {
-            visible = css("select[aria-label='连接器'] option[value='webview']:checked")
+            visible = css(".product-automation-builder__field:has(select[aria-label='连接器'] option[value='webview']:checked)")
         }
         expect "model-preserved" {
-            visible = css("select[aria-label='模型'] option[value='default']:checked")
+            visible = css("[data-runtime-control='model']:has(select[aria-label='模型'] option[value='default']:checked)")
         }
         expect "effort-preserved" {
-            visible = css("select[aria-label='努力程度'] option[value='xhigh']:checked")
+            visible = css("[data-runtime-control='effort']:has(select[aria-label='努力程度'] option[value='xhigh']:checked)")
         }
         expect "permission-preserved" {
-            visible = css("select[aria-label='权限边界'] option[value='workspace-write']:checked")
+            visible = css("[data-runtime-control='permission']:has(select[aria-label='权限边界'] option[value='workspace-write']:checked)")
         }
         expect "anchor-preserved" {
             visible = css("input[aria-label='间隔锚点时间'][value='09:30']")
@@ -185,7 +197,7 @@ suite "a3s-ui-product-automation-and-preview" {
         }
         click "edit" { target = role("button", "编辑 每日发布摘要") }
         expect "runtime-controls" {
-            visible = css(".product-automation-builder__runtime select[aria-label='权限边界']")
+            visible = css(".product-automation-builder__runtime [data-runtime-control='permission']:has(select[aria-label='权限边界'])")
         }
         focus "focus-interval" { target = css("[aria-label='执行频率类型'] button:nth-of-type(2)") }
         press "interval" { key = "Enter" }

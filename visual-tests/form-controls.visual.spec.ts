@@ -165,12 +165,11 @@ test("MDX form previews preserve mutable native checked state", async ({
   await comfortableRadio.check();
   await expect(comfortableRadio).toBeChecked();
 
-  const labelGeometry = await page.locator('label[for="r1"]').evaluate(
-    (label) => {
+  const labelGeometry = await page
+    .locator('label[for="r1"]')
+    .evaluate((label) => {
       const labelRect = label.getBoundingClientRect();
-      const inputRect = document
-        .getElementById("r1")!
-        .getBoundingClientRect();
+      const inputRect = document.getElementById("r1")!.getBoundingClientRect();
       const style = getComputedStyle(label);
       return {
         fontSize: style.fontSize,
@@ -178,8 +177,7 @@ test("MDX form previews preserve mutable native checked state", async ({
         gap: labelRect.left - inputRect.right,
         minHeight: style.minHeight,
       };
-    },
-  );
+    });
   expect(labelGeometry).toEqual({
     fontSize: "12px",
     fontWeight: "600",
@@ -357,7 +355,7 @@ test("Button Group presents one focus boundary for composite inputs", async ({
   }
 });
 
-test("Input Group owns focus when its child keeps a standalone control class", async ({
+test("Search Input Group owns one restrained neutral focus boundary", async ({
   page,
 }) => {
   await openComponent(page, "input-group");
@@ -366,18 +364,27 @@ test("Input Group owns focus when its child keeps a standalone control class", a
     .locator(".a3s-preview[data-preview-component=input-group] .input-group")
     .first();
   const input = group.locator("input");
-  const readControlBoundary = () =>
-    input.evaluate((control) => {
+  await expect(input).toHaveAttribute("type", "search");
+
+  const readBoundaries = () =>
+    group.evaluate((element) => {
+      const control = element.querySelector<HTMLInputElement>("input")!;
+      const groupStyle = getComputedStyle(element);
       const style = getComputedStyle(control);
       return {
-        background: style.backgroundColor,
-        borderWidth: style.borderWidth,
-        hasVisibleShadow: Array.from(
-          style.boxShadow.matchAll(/(-?\d+(?:\.\d+)?)px/g),
-          (match) => Number(match[1]),
-        ).some((value) => Math.abs(value) > 0),
-        outlineStyle: style.outlineStyle,
-        radius: style.borderRadius,
+        control: {
+          background: style.backgroundColor,
+          borderWidth: style.borderWidth,
+          boxShadow: style.boxShadow,
+          outlineStyle: style.outlineStyle,
+          radius: style.borderRadius,
+        },
+        group: {
+          borderColor: groupStyle.borderColor,
+          borderWidth: groupStyle.borderWidth,
+          boxShadow: groupStyle.boxShadow,
+          outlineStyle: groupStyle.outlineStyle,
+        },
       };
     });
 
@@ -387,35 +394,36 @@ test("Input Group owns focus when its child keeps a standalone control class", a
       await input.evaluate((element) => element.classList.remove("input"));
       await input.focus();
       await expect(input).toBeFocused();
-      const nativeBoundary = await readControlBoundary();
+      const focusedBorderColor =
+        theme === "light" ? "rgb(200, 200, 200)" : "rgb(74, 74, 78)";
+      await expect(group).toHaveCSS("border-color", focusedBorderColor);
+      const nativeBoundary = await readBoundaries();
 
       await input.evaluate((element) => element.classList.add("input"));
-      const classedBoundary = await readControlBoundary();
+      const classedBoundary = await readBoundaries();
       await input.evaluate((element) =>
         element.setAttribute("aria-invalid", "true"),
       );
-      const invalidBoundary = await readControlBoundary();
-      const focusState = await group.evaluate((element) => {
-        const control = element.querySelector<HTMLInputElement>("input")!;
-        const groupShadow = getComputedStyle(element).boxShadow;
-        return {
-          groupHasVisibleShadow: Array.from(
-            groupShadow.matchAll(/(-?\d+(?:\.\d+)?)px/g),
-            (match) => Number(match[1]),
-          ).some((value) => Math.abs(value) > 0),
-          inputIsFocusVisible: control.matches(":focus-visible"),
-        };
-      });
+      const invalidBoundary = await readBoundaries();
 
-      expect(focusState.inputIsFocusVisible).toBe(true);
-      expect(focusState.groupHasVisibleShadow).toBe(true);
-      expect(nativeBoundary.background).toBe("rgba(0, 0, 0, 0)");
-      expect(nativeBoundary.borderWidth).toBe("0px");
-      expect(nativeBoundary.hasVisibleShadow).toBe(false);
-      expect(nativeBoundary.radius).toBe("0px");
-      expect(nativeBoundary.outlineStyle).toBe("none");
+      expect(nativeBoundary.group).toEqual({
+        borderColor: focusedBorderColor,
+        borderWidth: "1px",
+        boxShadow: "none",
+        outlineStyle: "none",
+      });
+      expect(nativeBoundary.control).toEqual({
+        background: "rgba(0, 0, 0, 0)",
+        borderWidth: "0px",
+        boxShadow: "none",
+        outlineStyle: "none",
+        radius: "0px",
+      });
       expect(classedBoundary).toEqual(nativeBoundary);
-      expect(invalidBoundary).toEqual(nativeBoundary);
+      expect(invalidBoundary.control).toEqual(nativeBoundary.control);
+      expect(invalidBoundary.group.borderColor).not.toBe(
+        nativeBoundary.group.borderColor,
+      );
       await input.evaluate((element) =>
         element.removeAttribute("aria-invalid"),
       );

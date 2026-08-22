@@ -44,11 +44,11 @@
   }
 
   :is(
-    .field > input[type="checkbox"],
-    .input[type="checkbox"],
-    .field > input[type="radio"],
-    .input[type="radio"]
-  )[aria-invalid="true"]:focus-visible {
+      .field > input[type="checkbox"],
+      .input[type="checkbox"],
+      .field > input[type="radio"],
+      .input[type="radio"]
+    )[aria-invalid="true"]:focus-visible {
     outline-color: var(--a3s-red);
   }
 
@@ -245,6 +245,24 @@
   }
 
   .input-group:focus-within {
+    outline: 0;
+    box-shadow: none;
+  }
+
+  .input-group:has(> input[type="search"]):not(:has([aria-invalid="true"])) {
+    border-color: var(--a3s-search-border);
+  }
+
+  .input-group:has(> input[type="search"]):not(
+      :has([aria-invalid="true"])
+    ):hover {
+    border-color: var(--a3s-search-hover-border);
+  }
+
+  .input-group:has(> input[type="search"]):not(
+      :has([aria-invalid="true"])
+    ):focus-within {
+    border-color: var(--a3s-search-focus-border);
     outline: 0;
     box-shadow: none;
   }

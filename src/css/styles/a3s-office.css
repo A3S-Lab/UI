@@ -495,6 +495,24 @@
     box-shadow: none;
   }
 
+  .input-group:has(> input[type="search"]):not(:has([aria-invalid="true"])) {
+    border-color: var(--a3s-search-border);
+  }
+
+  .input-group:has(> input[type="search"]):not(
+      :has([aria-invalid="true"])
+    ):hover {
+    border-color: var(--a3s-search-hover-border);
+  }
+
+  .input-group:has(> input[type="search"]):not(
+      :has([aria-invalid="true"])
+    ):focus-within {
+    border-color: var(--a3s-search-focus-border);
+    outline: 0;
+    box-shadow: none;
+  }
+
   .input-group:has([aria-invalid="true"]) {
     border-color: var(--a3s-red);
   }

@@ -410,7 +410,7 @@ export function ProductKnowledgeLibrarySurface({
         </header>
 
         <div data-knowledge-library-toolbar>
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索知识库" : "Search knowledge bases"}

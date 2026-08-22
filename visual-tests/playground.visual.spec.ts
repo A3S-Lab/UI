@@ -212,6 +212,77 @@ test("Product application opens in the approved task shell with complete navigat
   expect(runtimeErrors).toEqual([]);
 });
 
+test("Automation editor keeps runtime controls inside the composer footer", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  await page.goto("playground/automations.html", { waitUntil: "networkidle" });
+
+  const application = page.locator(".a3s-product-application");
+  await expect(application).toHaveAttribute("data-view", "automation");
+  await application
+    .getByRole("button", { name: "新建自动化", exact: true })
+    .click();
+
+  const builder = application.locator(
+    '[data-product-surface="automation-builder"]',
+  );
+  const footer = builder.locator(
+    ".product-automation-builder__prompt > footer",
+  );
+  const runtime = footer.locator(".product-automation-builder__runtime");
+  await expect(runtime.locator("[data-runtime-control]")).toHaveCount(5);
+  await expect(builder.getByRole("switch")).toHaveCount(2);
+
+  const geometry = await footer.evaluate((element) => {
+    const footerRect = element.getBoundingClientRect();
+    const runtimeElement = element.querySelector<HTMLElement>(
+      ".product-automation-builder__runtime",
+    )!;
+    const runtimeRect = runtimeElement.getBoundingClientRect();
+    const controls = Array.from(
+      runtimeElement.querySelectorAll<HTMLElement>("[data-runtime-control]"),
+    );
+    const icons = Array.from(
+      runtimeElement.querySelectorAll<SVGElement>("svg"),
+    );
+    return {
+      controlMaxHeight: Math.max(
+        ...controls.map((control) => control.getBoundingClientRect().height),
+      ),
+      contained:
+        runtimeRect.top >= footerRect.top - 1 &&
+        runtimeRect.bottom <= footerRect.bottom + 1,
+      iconMaxSize: Math.max(
+        ...icons.flatMap((icon) => {
+          const rect = icon.getBoundingClientRect();
+          return [rect.width, rect.height];
+        }),
+      ),
+      runtimeHeight: runtimeRect.height,
+    };
+  });
+  expect(geometry.contained).toBe(true);
+  expect(geometry.controlMaxHeight).toBeLessThanOrEqual(36);
+  expect(geometry.iconMaxSize).toBeLessThanOrEqual(16);
+  expect(geometry.runtimeHeight).toBeLessThanOrEqual(40);
+
+  const model = builder.getByRole("combobox", { name: "模型" });
+  await model.focus();
+  const focusBoundary = await runtime
+    .locator('[data-runtime-control="model"]')
+    .evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        boxShadow: style.boxShadow,
+        outlineStyle: style.outlineStyle,
+      };
+    });
+  expect(focusBoundary.boxShadow).not.toBe("none");
+  expect(focusBoundary.outlineStyle).toBe("none");
+  expect(runtimeErrors).toEqual([]);
+});
+
 test("Capability navigation preserves the selected catalog tab", async ({
   page,
 }) => {
@@ -291,6 +362,39 @@ test("Session detail keeps artifacts in a focused secondary inspector", async ({
   await expect(
     playground.locator(".product-session__search > output"),
   ).toHaveText("3 个结果");
+  const sessionSearch = playground.locator(".product-session__search");
+  await expect(sessionSearch).toHaveCSS("border-color", "rgb(200, 200, 200)");
+  const searchFocusState = await sessionSearch.evaluate((element) => {
+      const input = element.querySelector<HTMLInputElement>("input")!;
+      const containerStyle = getComputedStyle(element);
+      const inputStyle = getComputedStyle(input);
+      return {
+        container: {
+          borderColor: containerStyle.borderColor,
+          borderWidth: containerStyle.borderWidth,
+          boxShadow: containerStyle.boxShadow,
+          outlineStyle: containerStyle.outlineStyle,
+        },
+        input: {
+          borderWidth: inputStyle.borderWidth,
+          boxShadow: inputStyle.boxShadow,
+          outlineStyle: inputStyle.outlineStyle,
+        },
+      };
+    });
+  expect(searchFocusState).toEqual({
+    container: {
+      borderColor: "rgb(200, 200, 200)",
+      borderWidth: "1px",
+      boxShadow: "none",
+      outlineStyle: "none",
+    },
+    input: {
+      borderWidth: "0px",
+      boxShadow: "none",
+      outlineStyle: "none",
+    },
+  });
   await playground.getByRole("button", { name: "关闭会话搜索" }).click();
 
   const detailsTrigger = playground.locator(

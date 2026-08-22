@@ -346,7 +346,7 @@ export function ProductMarketplaceSurface({
           </div>
         </div>
         <div>
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索扩展" : "Search extensions"}

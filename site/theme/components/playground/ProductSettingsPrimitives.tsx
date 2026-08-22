@@ -17,10 +17,12 @@ export function SettingsHeader({
 
 export function SettingsSwitch({
   checked = false,
+  disabled = false,
   label,
   onCheckedChange,
 }: {
   checked?: boolean;
+  disabled?: boolean;
   label: string;
   onCheckedChange?: (checked: boolean) => void;
 }) {
@@ -30,7 +32,9 @@ export function SettingsSwitch({
         aria-label={label}
         checked={onCheckedChange ? checked : undefined}
         defaultChecked={onCheckedChange ? undefined : checked}
+        disabled={disabled}
         onChange={(event) => onCheckedChange?.(event.currentTarget.checked)}
+        role="switch"
         type="checkbox"
       />
       <span />
