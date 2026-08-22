@@ -184,6 +184,35 @@ suite "a3s-ui-workflow-documentation" {
         page_errors "desktop-errors" { path = "workflow/editor-desktop-errors.json" clear = false }
     }
 
+    scenario "workflow-node-compact-desktop" {
+        name = "Workflow node and inspector stack without covering branch actions in a narrow desktop article"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "compact-desktop" { width = 1280 height = 720 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/workflow-node-embedding.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open='true']") }
+        focus "focus-open-library" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        press "open-library" { key = "Enter" }
+        expect "library-search-focused" { visible = css("input[aria-label='搜索节点']:focus") }
+        fill "find-condition" { target = css("input[aria-label='搜索节点']") value = "flow.condition" }
+        wait "condition-visible" { visible = css(".a3s-doc-workflow-library__list button[data-node-type='flow.condition']") }
+        focus "focus-condition" { target = css(".a3s-doc-workflow-library__list button[data-node-type='flow.condition']") }
+        press "select-condition" { key = "Enter" }
+        wait "condition-panel-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "condition-branch-actions-visible" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']:has([data-port-id='matched'] .a3s-form-workflow-node-preview-next):has([data-port-id='otherwise'] .a3s-form-workflow-node-preview-next)") }
+        screenshot "compact-condition" { path = "workflow/condition-compact-desktop.png" }
+
+        focus "focus-matched-next" { target = css("[data-port-id='matched'] .a3s-form-workflow-node-preview-next") }
+        press "request-matched-next" { key = "Enter" }
+        wait "matched-request-opens-library" { visible = css(".a3s-doc-workflow-studio[data-panel-open='false'][data-palette-open='true']") }
+        console "compact-console" { path = "workflow/condition-compact-desktop-console.json" clear = false }
+        page_errors "compact-errors" { path = "workflow/condition-compact-desktop-errors.json" clear = false }
+    }
+
     scenario "workflow-node-mobile" {
         name = "Workflow node and inspector remain keyboard-usable in the mobile documentation layout"
         surface = "web"
