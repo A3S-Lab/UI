@@ -265,6 +265,7 @@ export function ProductProjectSessionSurface({
       {searchOpen ? (
         <form
           className="product-session__search"
+          data-focus-owner="container"
           onSubmit={(event) => event.preventDefault()}
           role="search"
         >

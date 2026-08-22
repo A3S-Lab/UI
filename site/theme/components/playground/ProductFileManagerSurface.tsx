@@ -341,7 +341,7 @@ function ProductWorkspaceFileManagerSurface({
               </span>
             ))}
           </nav>
-          <label data-file-search>
+          <label data-file-search data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索文件" : "Search files"}

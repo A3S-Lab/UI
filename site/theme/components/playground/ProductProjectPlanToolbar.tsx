@@ -46,7 +46,11 @@ export function ProductProjectPlanToolbar({
         >
           <ProductPlaygroundIcon name="filter" />
         </button>
-        <label data-plan-search data-open={searchOpen || undefined}>
+        <label
+          data-focus-owner="container"
+          data-plan-search
+          data-open={searchOpen || undefined}
+        >
           <span className="sr-only">
             {zh ? "搜索计划任务" : "Search plan tasks"}
           </span>

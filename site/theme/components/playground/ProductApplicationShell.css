@@ -48,6 +48,27 @@
   outline-offset: 2px;
 }
 
+/* Compound fields expose one continuous focus boundary. Their native field is
+ * still the keyboard focus target, but the rounded container owns the visual
+ * state so a host-level input outline cannot cut a square ring through it. */
+.a3s-product-application [data-focus-owner="container"]:focus-within {
+  border-color: color-mix(in srgb, var(--ui-blue) 62%, var(--ui-line));
+}
+
+.a3s-product-application
+  :is(.input-group, [data-focus-owner="container"])
+  > :is(
+    input,
+    textarea,
+    select,
+    [contenteditable],
+    [data-control]
+  ):focus-visible {
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
 .product-application__main {
   position: relative;
   min-width: 0;

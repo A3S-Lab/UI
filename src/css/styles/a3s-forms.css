@@ -245,12 +245,12 @@
   }
 
   .input-group:focus-within {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    outline: 0;
+    box-shadow: none;
   }
 
   .input-group:has([aria-invalid="true"]):focus-within {
-    outline-color: var(--a3s-red);
+    border-color: var(--a3s-red);
   }
 
   .input-group:has(> :is(input, textarea, select, [data-control]):disabled) {

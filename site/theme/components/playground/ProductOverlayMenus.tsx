@@ -255,7 +255,7 @@ export function ProductSearchDialog({
       ref={dialogRef}
     >
       <header>
-        <label>
+        <label data-focus-owner="container">
           <ProductPlaygroundIcon name="search" />
           <input
             aria-activedescendant={

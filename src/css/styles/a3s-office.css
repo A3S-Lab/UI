@@ -491,8 +491,8 @@
 
   .input-group:focus-within {
     border-color: var(--a3s-blue);
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    outline: 0;
+    box-shadow: none;
   }
 
   .input-group:has([aria-invalid="true"]) {
@@ -500,7 +500,7 @@
   }
 
   .input-group:has([aria-invalid="true"]):focus-within {
-    outline-color: var(--a3s-red);
+    border-color: var(--a3s-red);
   }
 
   .input-group > :is(input, textarea, select, [data-control]) {

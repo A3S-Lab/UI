@@ -203,7 +203,7 @@ Reduced motion removes travel, blur animation, and looping decoration while pres
 
 ### 3.2 Focus and keyboard
 
-Every operable element receives a visible 2px accent outline with a 2–3px offset. Compound controls use `:focus-within` without suppressing the focused descendant. Roving-tabindex components support Home, End, and orientation-aware arrows. Escape closes only the topmost dismissible layer and returns focus to its trigger.
+Every standalone operable element receives a visible 2px accent outline with a 2–3px offset. A compound field uses `:focus-within` on its rounded container as the single visual focus owner; its focused native field keeps the caret and semantics but does not draw a second outline, ring, border, or shadow. Roving-tabindex components support Home, End, and orientation-aware arrows. Escape closes only the topmost dismissible layer and returns focus to its trigger.
 
 Native reading order is the keyboard order. Responsive CSS may change placement but never the meaningful DOM sequence. RTL reverses directional navigation and physical placement through logical properties; object icons do not mirror.
 
@@ -262,7 +262,7 @@ Buttons use the neutral ink action for the default primary treatment. A bounded 
 
 #### Fields and choice controls
 
-Inputs use the paper surface, a strong neutral border, a 10px radius, and concise labels. Focus increases border contrast and adds a restrained 2px accent ring; it never produces a thick luminous halo. Compound fields align prefix, value, suffix, validation, and loading without nested borders. Date, shortcut, color, image, and emoji selection extend the same field grammar rather than inventing standalone visual worlds.
+Inputs use the paper surface, a strong neutral border, a 10px radius, and concise labels. Focus increases border contrast and may add one restrained 2px accent ring to a standalone field; it never produces a thick luminous halo. Compound fields align prefix, value, suffix, validation, and loading inside one container stroke without nested or concentric focus boundaries. Date, shortcut, color, image, and emoji selection extend the same field grammar rather than inventing standalone visual worlds.
 
 #### Navigation
 

@@ -324,7 +324,7 @@ export function ProductProjectsSurface({
       <section className="product-projects__owned">
         <div>
           <h2>{zh ? "我的项目" : "My projects"}</h2>
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索项目" : "Search projects"}

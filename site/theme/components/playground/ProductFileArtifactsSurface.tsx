@@ -124,7 +124,7 @@ export function ProductFileArtifactsSurface({
       className="product-file-artifacts"
     >
       <div className="product-file-artifacts__filters">
-        <label data-kind-filter>
+        <label data-focus-owner="container" data-kind-filter>
           <ProductPlaygroundIcon name="filter" />
           <span className="sr-only">{zh ? "文件类型" : "File type"}</span>
           <select
@@ -144,7 +144,7 @@ export function ProductFileArtifactsSurface({
             <option value="pdf">PDF</option>
           </select>
         </label>
-        <label data-artifact-search>
+        <label data-artifact-search data-focus-owner="container">
           <ProductPlaygroundIcon name="search" />
           <input
             aria-label={zh ? "搜索任务成果" : "Search task artifacts"}

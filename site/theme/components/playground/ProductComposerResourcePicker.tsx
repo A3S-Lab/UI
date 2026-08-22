@@ -118,7 +118,7 @@ export function ProductComposerResourcePicker({
           <ProductPlaygroundIcon name="close" />
         </button>
       </header>
-      <label data-resource-picker-search>
+      <label data-focus-owner="container" data-resource-picker-search>
         <ProductPlaygroundIcon name="search" />
         <input
           aria-activedescendant={

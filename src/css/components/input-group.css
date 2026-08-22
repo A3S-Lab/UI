@@ -14,6 +14,14 @@
     @apply text-foreground placeholder:text-muted-foreground block min-w-0 flex-1 appearance-none rounded-none border-0 bg-transparent shadow-none outline-none ring-0 focus-visible:ring-0 aria-invalid:ring-0;
   }
 
+  /* The group shell is the single visual focus owner. Keep this explicit so
+   * host-level native-control rules cannot add a second, square boundary. */
+  .input-group > :is(input, textarea, select, [data-control]):focus-visible {
+    outline: 0;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+
   .input-group > :is(input, select, [data-control]) {
     @apply h-full;
   }

@@ -694,7 +694,7 @@ export function ProductComposerRunSettings({
               </button>
             ))}
           </div>
-          <label data-model-search>
+          <label data-focus-owner="container" data-model-search>
             <ProductPlaygroundIcon name="search" />
             <input
               aria-activedescendant={

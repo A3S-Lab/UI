@@ -1,0 +1,47 @@
+suite "a3s-ui-focus-boundaries" {
+    version = 1
+
+    scenario "input-group-search" {
+        name = "Input Group keeps one container-owned focus boundary"
+        surface = "web"
+        timeout_ms = 45000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        fill "search" { target = placeholder("Search...") value = "agent runtime" }
+        focus "focus-search" { target = css(".a3s-preview[data-preview-component=input-group] .input-group > input") }
+        expect "container-owns-focus" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group:focus-within > input:focus-visible") }
+        screenshot "focused-light" { path = "focus/input-group-light.png" }
+
+        click "dark-preview" { target = css(".a3s-preview[data-preview-component=input-group] [data-preview-control=appearance]") }
+        expect "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-scheme=dark]") }
+        focus "refocus-dark-search" { target = css(".a3s-preview[data-preview-component=input-group] .input-group > input") }
+        screenshot "focused-dark" { path = "focus/input-group-dark.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        focus "refocus-phone-search" { target = css(".a3s-preview[data-preview-component=input-group] .input-group > input") }
+        screenshot "focused-phone" { path = "focus/input-group-phone.png" }
+    }
+
+    scenario "playground-artifact-search" {
+        name = "Playground artifact search keeps one rounded container-owned focus boundary"
+        surface = "web"
+        timeout_ms = 45000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "artifacts-ready" { visible = css(".product-file-artifacts table") }
+        focus "focus-artifact-search" { target = css("[data-artifact-search] input[type=search]") }
+        expect "container-owns-focus" { visible = css("[data-artifact-search][data-focus-owner=container]:focus-within > input:focus-visible") }
+        screenshot "focused-desktop" { path = "focus/playground-search-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        focus "refocus-artifact-search" { target = css("[data-artifact-search] input[type=search]") }
+        screenshot "focused-phone" { path = "focus/playground-search-phone.png" }
+        console "console" { path = "focus/playground-search-console.json" clear = false }
+        page_errors "page-errors" { path = "focus/playground-search-page-errors.json" clear = false }
+    }
+}

@@ -274,7 +274,7 @@ export function ProductMemorySurface({
           </div>
         </div>
         <div>
-          <label>
+          <label data-focus-owner="container">
             <ProductPlaygroundIcon name="search" />
             <input
               aria-label={zh ? "搜索记忆" : "Search memory"}
