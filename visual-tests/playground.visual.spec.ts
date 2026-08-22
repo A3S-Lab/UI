@@ -34,6 +34,50 @@ async function openProductApplication(page: Page) {
   return application;
 }
 
+async function expectNeutralSearchBoundary(search: Locator) {
+  await search.focus();
+  const focusState = await search.evaluate(async (input) => {
+    const owner = input.closest<HTMLElement>(
+      "[data-focus-owner=container], .input-group",
+    );
+    if (!owner) throw new Error("Search field has no container focus owner");
+    await Promise.all(
+      owner
+        .getAnimations()
+        .map((animation) => animation.finished.catch(() => undefined)),
+    );
+    const inputStyle = getComputedStyle(input);
+    const ownerStyle = getComputedStyle(owner);
+    return {
+      input: {
+        borderWidth: inputStyle.borderWidth,
+        boxShadow: inputStyle.boxShadow,
+        outlineStyle: inputStyle.outlineStyle,
+      },
+      owner: {
+        borderColor: ownerStyle.borderColor,
+        borderWidth: ownerStyle.borderWidth,
+        boxShadow: ownerStyle.boxShadow,
+        outlineStyle: ownerStyle.outlineStyle,
+      },
+    };
+  });
+
+  expect(focusState).toEqual({
+    input: {
+      borderWidth: "0px",
+      boxShadow: "none",
+      outlineStyle: "none",
+    },
+    owner: {
+      borderColor: "rgb(200, 200, 200)",
+      borderWidth: "1px",
+      boxShadow: "none",
+      outlineStyle: "none",
+    },
+  });
+}
+
 async function revealProductNavigation(playground: Locator) {
   const mobileMenu = playground.getByRole("button", {
     name: "打开应用导航",
@@ -174,7 +218,9 @@ test("Product application opens in the approved task shell with complete navigat
   await expect(more).toHaveAttribute("open", "");
   await more.getByRole("menuitem", { name: "我的文件" }).click();
   await expect(playground).toHaveAttribute("data-view", "resources");
-  await expect(playground.locator('[data-resource="files"]')).toBeVisible();
+  await expect(
+    playground.locator('[data-product-surface="files"]'),
+  ).toBeVisible();
 
   await revealProductNavigation(playground);
   await playground.getByRole("button", { name: "设置", exact: true }).click();
@@ -187,10 +233,11 @@ test("Product application opens in the approved task shell with complete navigat
   await playground.getByRole("button", { name: "搜索", exact: true }).click();
   const search = page.getByRole("dialog", { name: "全局搜索" });
   await expect(search).toBeVisible();
-  await search
-    .getByRole("searchbox", { name: "搜索任务、文件和操作" })
-    .fill("恢复");
-  await search.getByRole("button", { name: /修复会话恢复/ }).click();
+  const globalSearch = search.getByRole("combobox", {
+    name: "搜索任务、文件和操作",
+  });
+  await globalSearch.fill("恢复");
+  await search.getByRole("option", { name: /修复会话恢复/ }).click();
   await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
   await expect(playground).toHaveAttribute("data-view", "session");
   await expect(
@@ -209,6 +256,31 @@ test("Product application opens in the approved task shell with complete navigat
     playground.getByText("继续检查移动端焦点顺序", { exact: true }),
   ).toBeVisible();
 
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Product searches keep one neutral container-owned focus boundary", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const playground = await openProductApplication(page);
+
+  await playground.getByRole("button", { name: "搜索", exact: true }).click();
+  const searchDialog = page.getByRole("dialog", { name: "全局搜索" });
+  await expect(searchDialog).toBeVisible();
+  await expectNeutralSearchBoundary(
+    searchDialog.getByRole("combobox", {
+      name: "搜索任务、文件和操作",
+    }),
+  );
+  await page.keyboard.press("Escape");
+  await expect(searchDialog).not.toBeVisible();
+
+  await playground.getByRole("link", { name: "项目", exact: true }).click();
+  await expect(playground).toHaveAttribute("data-view", "projects");
+  await expectNeutralSearchBoundary(
+    playground.getByRole("searchbox", { name: "搜索项目" }),
+  );
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -362,39 +434,7 @@ test("Session detail keeps artifacts in a focused secondary inspector", async ({
   await expect(
     playground.locator(".product-session__search > output"),
   ).toHaveText("3 个结果");
-  const sessionSearch = playground.locator(".product-session__search");
-  await expect(sessionSearch).toHaveCSS("border-color", "rgb(200, 200, 200)");
-  const searchFocusState = await sessionSearch.evaluate((element) => {
-      const input = element.querySelector<HTMLInputElement>("input")!;
-      const containerStyle = getComputedStyle(element);
-      const inputStyle = getComputedStyle(input);
-      return {
-        container: {
-          borderColor: containerStyle.borderColor,
-          borderWidth: containerStyle.borderWidth,
-          boxShadow: containerStyle.boxShadow,
-          outlineStyle: containerStyle.outlineStyle,
-        },
-        input: {
-          borderWidth: inputStyle.borderWidth,
-          boxShadow: inputStyle.boxShadow,
-          outlineStyle: inputStyle.outlineStyle,
-        },
-      };
-    });
-  expect(searchFocusState).toEqual({
-    container: {
-      borderColor: "rgb(200, 200, 200)",
-      borderWidth: "1px",
-      boxShadow: "none",
-      outlineStyle: "none",
-    },
-    input: {
-      borderWidth: "0px",
-      boxShadow: "none",
-      outlineStyle: "none",
-    },
-  });
+  await expectNeutralSearchBoundary(conversationSearch);
   await playground.getByRole("button", { name: "关闭会话搜索" }).click();
 
   const detailsTrigger = playground.locator(

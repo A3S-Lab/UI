@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openDocumentationPage(page: Page, route: string) {
   await page.goto(route, { waitUntil: "networkidle" });
@@ -16,6 +16,48 @@ async function openResponsiveNavigation(page: Page) {
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
 
   return navigation;
+}
+
+async function expectNeutralSearchBoundary(search: Locator) {
+  await search.focus();
+  const focusState = await search.evaluate(async (input) => {
+    const owner = input.closest<HTMLElement>("[data-focus-owner=container]");
+    if (!owner) throw new Error("Search field has no container focus owner");
+    await Promise.all(
+      owner
+        .getAnimations()
+        .map((animation) => animation.finished.catch(() => undefined)),
+    );
+    const inputStyle = getComputedStyle(input);
+    const ownerStyle = getComputedStyle(owner);
+    return {
+      input: {
+        boxShadow: inputStyle.boxShadow,
+        outlineStyle: inputStyle.outlineStyle,
+        outlineWidth: inputStyle.outlineWidth,
+      },
+      owner: {
+        borderColor: ownerStyle.borderColor,
+        borderWidth: ownerStyle.borderWidth,
+        boxShadow: ownerStyle.boxShadow,
+        outlineStyle: ownerStyle.outlineStyle,
+      },
+    };
+  });
+
+  expect(focusState).toEqual({
+    input: {
+      boxShadow: "none",
+      outlineStyle: "none",
+      outlineWidth: "0px",
+    },
+    owner: {
+      borderColor: "rgb(200, 200, 200)",
+      borderWidth: "1px",
+      boxShadow: "none",
+      outlineStyle: "none",
+    },
+  });
 }
 
 test("desktop menus remain operable before any client JavaScript runs", async ({
@@ -267,7 +309,7 @@ test("component catalog searches both languages and filters by product group", a
     .filter({ hasText: "Harness" });
   await harnessFilter.click();
   await expect(harnessFilter).toHaveAttribute("aria-pressed", "true");
-  await expect(catalog.getByRole("status")).toHaveText("显示 28 个组件");
+  await expect(catalog.getByRole("status")).toHaveText("显示 30 个组件");
 
   await openDocumentationPage(page, "en/components/index.html");
   catalog = page.locator("[data-component-catalog]");
@@ -281,4 +323,5 @@ test("component catalog searches both languages and filters by product group", a
   await search.fill("");
   await page.keyboard.press("/");
   await expect(search).toBeFocused();
+  await expectNeutralSearchBoundary(search);
 });

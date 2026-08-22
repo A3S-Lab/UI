@@ -27,28 +27,6 @@
   opacity: 1;
 }
 
-/* Search is a persistent orientation control, so its focus state advances one
- * neutral border step instead of drawing an accent ring. The container is the
- * only visual focus owner; the native field still owns caret and semantics. */
-.a3s-product-application
-  [data-focus-owner="container"]:has(> input[type="search"]) {
-  border-color: var(--a3s-search-border, var(--ui-line));
-  box-shadow: none;
-  transition: border-color var(--a3s-motion-normal) var(--a3s-ease-out);
-}
-
-.a3s-product-application
-  [data-focus-owner="container"]:has(> input[type="search"]):hover {
-  border-color: var(--a3s-search-hover-border, var(--ui-line-strong));
-}
-
-.a3s-product-application
-  [data-focus-owner="container"]:has(> input[type="search"]):focus-within {
-  border-color: var(--a3s-search-focus-border, var(--ui-border-strong));
-  outline: 0;
-  box-shadow: none;
-}
-
 .product-application__main {
   background: var(--ui-paper);
 }

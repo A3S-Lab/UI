@@ -53,7 +53,7 @@
 
 ### Fixed
 
-- Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group and every Playground search field.
+- Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group, documentation catalog, and every Playground search field; added focused desktop and phone regression evidence for each surface.
 - Aligned documentation Preview and Playground action icons with their next operation: fluid width no longer masquerades as a desktop preset, appearance and direction controls expose their target state, secret visibility uses eye/eye-off, and graph expansion uses expand/contract semantics.
 - Replaced the decorative Color Swatches selection halo with a bounded selected surface and consolidated floating utility shadows onto the shared overlay depth token.
 - Kept all canonical buttons, fields, choice controls, menus, tabs, and navigation rows at 44-pixel targets for coarse pointers by applying input-method guarantees after every visual family.

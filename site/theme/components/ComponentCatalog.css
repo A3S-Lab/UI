@@ -50,18 +50,24 @@
   display: flex;
   height: 50px;
   margin: 0 24px;
-  border: 1px solid var(--ui-border-strong);
+  border: 1px solid var(--a3s-search-border, var(--ui-line));
   border-radius: 8px;
   background: var(--ui-canvas);
   align-items: center;
   transition:
-    border-color 140ms ease-out,
-    box-shadow 140ms ease-out;
+    border-color var(--a3s-motion-normal, 160ms) var(--a3s-ease-out, ease-out),
+    background-color var(--a3s-motion-normal, 160ms)
+      var(--a3s-ease-out, ease-out);
+}
+
+.component-catalog__search:hover {
+  border-color: var(--a3s-search-hover-border, var(--ui-line-strong));
 }
 
 .component-catalog__search:focus-within {
-  border-color: var(--ui-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-blue) 13%, transparent);
+  border-color: var(--a3s-search-focus-border, var(--ui-border-strong));
+  outline: 0;
+  box-shadow: none;
 }
 
 .component-catalog__search > svg {
@@ -83,6 +89,12 @@
   color: var(--ui-ink);
   font: inherit;
   font-size: 14px;
+}
+
+.component-catalog__search input:focus-visible {
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 .component-catalog__search input::placeholder {

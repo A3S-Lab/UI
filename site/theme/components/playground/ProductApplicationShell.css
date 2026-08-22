@@ -69,6 +69,40 @@
   box-shadow: none;
 }
 
+/* Persistent search is orientation, not a primary action. Keep one neutral
+ * boundary on the field shell and suppress every native or host-level ring on
+ * the focused input. Descendant matching also covers compound fields whose
+ * icon or result-count wrapper sits between the shell and the native input. */
+.a3s-product-application input[type="search"]:focus-visible {
+  border-color: var(--a3s-search-focus-border, var(--ui-border-strong));
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+.a3s-product-application
+  :is(.input-group, [data-focus-owner="container"]):has(input[type="search"]) {
+  border-color: var(--a3s-search-border, var(--ui-line));
+  outline: 0;
+  box-shadow: none;
+}
+
+.a3s-product-application
+  :is(.input-group, [data-focus-owner="container"]):has(
+    input[type="search"]
+  ):hover {
+  border-color: var(--a3s-search-hover-border, var(--ui-line-strong));
+}
+
+.a3s-product-application
+  :is(.input-group, [data-focus-owner="container"]):has(
+    input[type="search"]:focus
+  ) {
+  border-color: var(--a3s-search-focus-border, var(--ui-border-strong));
+  outline: 0;
+  box-shadow: none;
+}
+
 .product-application__main {
   position: relative;
   min-width: 0;

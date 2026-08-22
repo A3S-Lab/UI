@@ -217,7 +217,11 @@ export function ComponentCatalog() {
         </span>
       </header>
 
-      <div className="component-catalog__search" role="search">
+      <div
+        className="component-catalog__search"
+        data-focus-owner="container"
+        role="search"
+      >
         <SearchIcon />
         <input
           ref={inputRef}

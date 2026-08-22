@@ -1,6 +1,24 @@
 suite "a3s-ui-focus-boundaries" {
     version = 1
 
+    scenario "component-catalog-search-focus" {
+        name = "Component catalog search uses one neutral focus boundary"
+        surface = "web"
+        timeout_ms = 45000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/index.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        focus "focus-search" { target = css("[data-component-catalog] input[type=search]") }
+        expect "container-owns-focus" { visible = css("[data-component-catalog] [data-focus-owner=container]:focus-within > input:focus-visible") }
+        screenshot "focused-desktop" { path = "focus/component-catalog-search-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        focus "refocus-search" { target = css("[data-component-catalog] input[type=search]") }
+        screenshot "focused-phone" { path = "focus/component-catalog-search-phone.png" }
+    }
+
     scenario "input-group-search" {
         name = "Input Group keeps one container-owned focus boundary"
         surface = "web"
@@ -43,5 +61,23 @@ suite "a3s-ui-focus-boundaries" {
         screenshot "focused-phone" { path = "focus/playground-search-phone.png" }
         console "console" { path = "focus/playground-search-console.json" clear = false }
         page_errors "page-errors" { path = "focus/playground-search-page-errors.json" clear = false }
+    }
+
+    scenario "playground-global-search-focus" {
+        name = "Playground global search uses one neutral focus boundary"
+        surface = "web"
+        timeout_ms = 45000
+        viewport "desktop" { width = 1478 height = 852 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "application-ready" { visible = css(".a3s-product-application[data-view=start]") }
+        click "open-search" { target = role("button", "Search") }
+        expect "dialog-visible" { visible = css(".product-search-dialog[open]") }
+        focus "focus-search" { target = css(".product-search-dialog input[type=search]") }
+        expect "container-owns-focus" { visible = css(".product-search-dialog [data-focus-owner=container]:focus-within > input:focus-visible") }
+        screenshot "focused-desktop" { path = "focus/playground-global-search-desktop.png" }
+        console "console" { path = "focus/playground-global-search-console.json" clear = false }
+        page_errors "page-errors" { path = "focus/playground-global-search-page-errors.json" clear = false }
     }
 }
