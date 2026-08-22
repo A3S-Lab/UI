@@ -144,6 +144,7 @@ assert.deepEqual(
   componentGroupsByLocale.zh.map((group) => group.label),
   [
     "操作与输入",
+    "结构化表单",
     "选择与筛选",
     "导航与定位",
     "应用结构",
@@ -157,6 +158,7 @@ assert.deepEqual(
   componentGroupsByLocale.en.map((group) => group.label),
   [
     "Actions and input",
+    "Structured forms",
     "Selection and filtering",
     "Navigation and wayfinding",
     "Application structure",
@@ -211,9 +213,15 @@ for (const locale of locales) {
   );
 }
 
-const generalComponentLinks = componentGroupsByLocale.en.flatMap((group) =>
+const generalNavigationLinks = componentGroupsByLocale.en.flatMap((group) =>
   group.items.map((item) => item.link),
 );
+const generalComponentLinks = componentGroupsByLocale.en
+  .filter((group) => group.componentCatalog !== false)
+  .flatMap((group) => group.items.map((item) => item.link));
+const structuredFormGuideLinks = componentGroupsByLocale.en
+  .filter((group) => group.componentCatalog === false)
+  .flatMap((group) => group.items.map((item) => item.link));
 const harnessLinks = harnessGroupsByLocale.en.flatMap((group) =>
   group.items.map((item) => item.link),
 );
@@ -229,6 +237,14 @@ const semanticCatalogLinks = [
 ];
 
 assert.equal(generalComponentLinks.length, 86);
+assert.equal(generalNavigationLinks.length, 105);
+assert.equal(structuredFormGuideLinks.length, 19);
+assert.ok(
+  structuredFormGuideLinks.every((link) =>
+    link.startsWith("components/form-system/"),
+  ),
+  "Non-catalog component navigation must remain scoped to the structured form guides.",
+);
 assert.equal(harnessComponentLinks.length, 30);
 assert.deepEqual(harnessLayoutLinks, [
   "harness/dock-workspace",
@@ -260,7 +276,7 @@ for (const locale of locales) {
 assert.equal(semanticCatalogLinks.length, 116);
 assertUniqueLinks(semanticCatalogLinks, "Semantic component navigation");
 assertUniqueLinks(
-  [...generalComponentLinks, ...harnessLinks],
+  [...generalNavigationLinks, ...harnessLinks],
   "General-component and Harness navigation",
 );
 assert.deepEqual(
