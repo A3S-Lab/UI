@@ -11,16 +11,13 @@ import { isA3SFlowCorePortAvailable } from '../integrations/a3s-flow-validation'
 import { createA3SFlowPanelHostAdapter } from './a3s-flow-panel-support';
 import { a3sFlowWidgetRegistry } from './a3s-flow-widgets';
 import {
-  LangflowNodeConfigurationPanel,
-  type LangflowNodeConfigurationPanelProps,
-} from './langflow-node-panel';
-import {
-  LangflowWorkflowNodePreview,
-  type LangflowWorkflowNodePreviewProps,
-} from './langflow-workflow-node-preview';
+  WorkflowNodeConfigurationPanel,
+  type WorkflowNodeConfigurationPanelProps,
+} from './workflow-node-panel';
+import { WorkflowNodePreview, type WorkflowNodePreviewProps } from './workflow-node-preview';
 
 export interface A3SFlowNodeConfigurationPanelProps
-  extends Omit<LangflowNodeConfigurationPanelProps, 'compatibility' | 'node'> {
+  extends Omit<WorkflowNodeConfigurationPanelProps, 'compatibility' | 'node'> {
   node: A3SFlowCoreNodeDefinition;
   connectedOutputPortIds?: readonly string[];
 }
@@ -57,7 +54,7 @@ export function A3SFlowNodeConfigurationPanel({
   );
 
   return (
-    <LangflowNodeConfigurationPanel
+    <WorkflowNodeConfigurationPanel
       {...props}
       buildConfig={resolvedBuildConfig}
       className={['a3s-form-flow-node-panel', className].filter(Boolean).join(' ')}
@@ -72,8 +69,7 @@ export function A3SFlowNodeConfigurationPanel({
   );
 }
 
-export interface A3SFlowNodePreviewProps
-  extends Omit<LangflowWorkflowNodePreviewProps, 'node' | 'ports'> {
+export interface A3SFlowNodePreviewProps extends Omit<WorkflowNodePreviewProps, 'node' | 'ports'> {
   node: A3SFlowCoreNodeDefinition;
   value?: JsonObject;
 }
@@ -92,7 +88,7 @@ export function A3SFlowNodePreview({
   };
 
   return (
-    <LangflowWorkflowNodePreview
+    <WorkflowNodePreview
       {...props}
       className={['a3s-form-flow-node-preview', className].filter(Boolean).join(' ')}
       locale={locale}

@@ -140,7 +140,7 @@ The Designer prevents switching to table layout until the repeater has at least 
 
 ## Workflow-node embedding
 
-The Playground Router form uses a virtualized data grid for `routes`. Its value remains the ordinary metadata-free `{ when, route }[]` node configuration. Per-row validation and host-owned branch options keep their existing wildcard dependency paths and concrete request bindings. The sample also exercises typed TSV append and visible-selection fill-down without adding engine metadata to route objects.
+The documented Router workflow-node example uses a virtualized data grid for `routes`. Its value remains the ordinary metadata-free `{ when, route }[]` node configuration. Per-row validation and host-owned branch options keep their existing wildcard dependency paths and concrete request bindings. The sample also exercises typed TSV append and visible-selection fill-down without adding engine metadata to route objects.
 
 ## Current limits
 

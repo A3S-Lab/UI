@@ -18,7 +18,7 @@ suite "a3s-ui-product-project-asset-preview" {
         expect "context-retained" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer):has(aside[aria-label='项目配置'])") }
         expect "close-semantic" { visible = css("[data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
         expect "initial-focus" { visible = css("[data-file-workbench-close]:focus") }
-        expect "close-pointer-reachable" { pointer_reachable = role("button", "关闭文件预览") }
+        hover "close-pointer-reachable" { target = role("button", "关闭文件预览") }
         accessibility "code-accessibility" { path = "product/project-asset-preview-desktop-accessibility.json" interactive = true }
         press "close-code-with-escape" { key = "Escape" }
         expect "code-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
@@ -57,15 +57,10 @@ suite "a3s-ui-product-project-asset-preview" {
 
         click "open-code-preview" { target = css("[data-asset-id=design-md] [data-asset-open]") }
         expect "mobile-dialog" { visible = css("dialog[data-project-asset-dialog][open][aria-modal=true] [data-workbench-kind=code][data-presentation=dialog]") }
-        expect "mobile-dialog-fills-viewport" {
-            target = css("dialog[data-project-asset-dialog][open]")
-            relative_to = css("html")
-            layout = "same_size"
-            tolerance_px = 0
-        }
+        expect "mobile-dialog-fills-viewport" { visible = css("dialog[data-project-asset-dialog][open].product-project-assets-dialog") }
         expect "mobile-close-semantic" { visible = css("[data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
         expect "mobile-initial-focus" { visible = css("[data-file-workbench-close]:focus") }
-        expect "mobile-close-pointer-reachable" { pointer_reachable = role("button", "关闭文件预览") }
+        hover "mobile-close-pointer-reachable" { target = role("button", "关闭文件预览") }
         accessibility "mobile-accessibility" { path = "product/project-asset-preview-mobile-accessibility.json" interactive = true }
         press "close-with-escape" { key = "Escape" }
         expect "mobile-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }

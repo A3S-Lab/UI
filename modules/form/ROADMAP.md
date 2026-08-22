@@ -2,7 +2,7 @@
 
 A3S Form is a governed form engine for AI-native products. People and agents edit the same versioned contract, the compiler remains the semantic authority, and production side effects stay behind host-owned capabilities.
 
-This roadmap describes product outcomes and release gates. It does not assign calendar dates. A milestone is complete only when its acceptance criteria pass in code, tests, documentation, and the reference Playground.
+This roadmap describes product outcomes and release gates. It does not assign calendar dates. A milestone is complete only when its acceptance criteria pass in code, tests, documentation, and reference host examples.
 
 ## Product Scope
 
@@ -35,7 +35,7 @@ The current release proves the architecture and embedding model:
 - React, React-backed Vue, and Web Component adapters;
 - A3S Cloud and A3S Workflow contracts with revision and digest pinning;
 - revision-bound `FormPatch`, JSON CLI, compiler Worker, and the `$a3s-form` coding-agent skill;
-- browser-local Playground workspace and import/export flow.
+- validated Designer import and export flow for embedding hosts.
 
 Known boundaries are intentional roadmap inputs, not completed capabilities:
 
@@ -45,7 +45,6 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 - repeaters contain primitive values rather than nested field groups;
 - the runtime does not yet provide field-level subscriptions or a large-form performance contract;
 - locale metadata does not yet provide complete translated content and runtime messages;
-- local Playground persistence is not a draft, release, collaboration, or offline-sync service.
 
 ## v0.2 — Runtime Integrity
 
@@ -98,10 +97,10 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 
 - The primary contract targets A3S Flow `1.0.0` and the tested workflow DSL `0.7.0`. Flow owns lossless DAG structure, limits, scopes, container invariants, deterministic ordering, compatibility classification, and semantic digests.
 - The host owns every `node.data.type`, its `A3SFlowDagNodeManifest`, property semantics, ports, compilation, credentials, persistence, and execution. Manifest-backed edits preserve unknown DAG and presentation fields.
-- The built-in registry contains 20 manifests: 18 visible nodes across seven Playground groups plus the internal `iteration-start` and `loop-start` nodes. Fourteen manifests bind directly to Flow 1.0 runtime commands; entry, condition, container, and internal start nodes remain explicit graph/compiler constructs.
-- HTTP, model, agent, database, storage, search, email, messaging, approval, and product actions can be host manifests or registered durable handlers without expanding the Flow protocol. The pinned Langflow `1.11.3` descriptor catalog remains an import compatibility adapter.
+- The built-in registry contains 20 manifests: 18 visible nodes across seven catalog groups plus the internal `iteration-start` and `loop-start` nodes. Fourteen manifests bind directly to Flow 1.0 runtime commands; entry, condition, container, and internal start nodes remain explicit graph/compiler constructs.
+- HTTP, model, agent, database, storage, search, email, messaging, approval, and product actions can be host manifests or registered durable handlers without expanding the Flow protocol.
 - The embeddable `A3SFlowDagNodeConfigurationPanel` and `A3SFlowDagNodePreview` operate on a complete `A3SFlowWorkflowDagNode`. They provide task-owned groups, Chinese and English copy where defined, structured expression, input-schema, and batch editors, Apply and guarded Reset actions, host callbacks, read-only behavior, registries, missing-manifest safety, collapsed developer details, and container-responsive A3S UI 0.3.0 composition.
-- Focused tests assert DSL parsing and compatibility, DAG limits and scopes, container invariants, deterministic ordering and digests, catalog order and visibility, registry failures, lossless configuration merge, runtime bindings and ports, manifest-driven Form compilation, semantic widget behavior, panel Apply metadata, missing-manifest handling, preview bindings, and the 18-node Playground listing.
+- Focused tests assert DSL parsing and compatibility, DAG limits and scopes, container invariants, deterministic ordering and digests, catalog order and visibility, registry failures, lossless configuration merge, runtime bindings and ports, manifest-driven Form compilation, semantic widget behavior, panel Apply metadata, missing-manifest handling, preview bindings, and all 18 visible catalog entries.
 - `A3SFlowNodeConfigurationPanel`, `A3SFlowNodePreview`, and the eight-node `0.4.2` catalog remain migration compatibility only. Engine replay and cross-run reservation of resolved hook tokens remain runtime and host obligations.
 - The compiler resolves object-array fields to concrete row paths and supports arbitrarily nested repeatable groups.
 - React rows can be added, removed, and reordered with `minItems` and `maxItems` enforcement, concrete field errors, and responsive single-column fallback.
@@ -120,7 +119,7 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 - The same browser suite appends 80 rows, verifies the complete ARIA row model, drives Home/End navigation across desktop rows and mobile cards, edits the final mounted row, filters the complete array, captures both layouts, and records clean accessibility, console, and page-error evidence.
 - Wizard and page layouts now provide visible-rule branches, progress, previous/next navigation, page-scoped synchronous and host validation, a localized review step, and earlier-page error recovery.
 - Navigation checkpoints are controlled, pinned to the plan digest and revision, and forwarded across React, Vue, Web Components, and Designer preview without adding engine metadata to form values.
-- The Organization onboarding Playground form demonstrates a skipped branch, review flow, page validation, and host-controlled checkpoint updates.
+- The documented Organization onboarding form demonstrates a skipped branch, review flow, page validation, and host-controlled checkpoint updates.
 - The committed A3S Test flow covers required-field focus, Enter-to-advance, personal and enterprise branches, page-scoped host validation, retained review values, review editing, semantic output, and desktop/390 px layouts in Chrome. Firefox/WebKit evidence and a formal WCAG 2.2 AA audit remain release work.
 - The 23-widget built-in field catalog includes URL, phone, date-time, time, multi-select, single-choice matrix, multiple-choice matrix, tags, currency, rating, slider, hidden, and calculated widgets. Designer authors their matching schemas, Renderer preserves typed controlled values, and the Chinese MDX reference renders every field with its properties and usage contract.
 - Designer settings are grouped by authoring task and limited to controls supported by the selected node. Each of the 38 production nodes now declares its label, category, purpose, common-setting order, advanced-setting order, and editor density in one UX profile registry. The inspector exposes typed defaults where the value contract permits them, uses the runtime's native UTC controls for date-time and time, switches option fields between static and host-owned sources, and widens structured, collection, and host editors without breaking compact panels. The complete catalog is exercised through an explicit 38-entry configuration contract and one authoring-to-runtime smoke matrix. Native controls and application panels use the published A3S UI toolbar, task-pane, tabs, accordion, item, badge, input, input-group, textarea, select, button, field, and fieldset contracts. Public Inspector primitives keep extension settings on the same A3S UI contract. Design previews use inert runtime components instead of washing every field out as disabled. Common copy and component behavior stay visible; component type, initial value, data binding, and placement remain in a compact advanced disclosure. Structured choice and matrix actions use low-density menus, repeaters expose authored runtime copy, column presets edit real ratios, and tabs, collapse panels, and wizard steps can be renamed, ordered, duplicated, removed, and opened from one manager while the final review step remains fixed.

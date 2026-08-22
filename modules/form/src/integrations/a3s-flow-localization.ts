@@ -1,5 +1,5 @@
 import type { A3SFlowCoreNodeDefinition } from './a3s-flow-core';
-import type { LangflowFieldDefinition, LangflowTableColumn } from './langflow';
+import type { WorkflowNodeFieldDefinition, WorkflowNodeTableColumn } from './workflow-node-form';
 
 interface LocalizedFieldCopy {
   label: string;
@@ -273,9 +273,9 @@ function localizeOptions(
 }
 
 function localizeTableColumns(
-  tableSchema: LangflowFieldDefinition['table_schema'],
+  tableSchema: WorkflowNodeFieldDefinition['table_schema'],
   copy: LocalizedFieldCopy,
-): LangflowFieldDefinition['table_schema'] {
+): WorkflowNodeFieldDefinition['table_schema'] {
   if (!Array.isArray(tableSchema) || !copy.columns) {
     return tableSchema ? structuredClone(tableSchema) : undefined;
   }
@@ -286,12 +286,12 @@ function localizeTableColumns(
           ...column,
           display_name: localized.label,
           description: localized.help,
-        } satisfies LangflowTableColumn)
+        } satisfies WorkflowNodeTableColumn)
       : structuredClone(column);
   });
 }
 
-function localizeField(field: LangflowFieldDefinition, copy: LocalizedFieldCopy | undefined) {
+function localizeField(field: WorkflowNodeFieldDefinition, copy: LocalizedFieldCopy | undefined) {
   if (!copy) return structuredClone(field);
   return {
     ...field,
@@ -301,7 +301,7 @@ function localizeField(field: LangflowFieldDefinition, copy: LocalizedFieldCopy 
     ui_group_label: copy.group,
     options: localizeOptions(field.options, copy.options),
     table_schema: localizeTableColumns(field.table_schema, copy),
-  } satisfies LangflowFieldDefinition;
+  } satisfies WorkflowNodeFieldDefinition;
 }
 
 export function localizeA3SFlowCoreNode(

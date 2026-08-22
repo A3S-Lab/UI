@@ -6,7 +6,7 @@ const moduleRoot = resolve(import.meta.dirname, '..');
 const projectRoot = resolve(moduleRoot, '../..');
 const distRoot = resolve(projectRoot, 'dist/form');
 const packageManifest = JSON.parse(await readFile(resolve(projectRoot, 'package.json'), 'utf8'));
-const generatedCatalogSentinel = '9e19c76e01ef19fd82c6795f8c51c7c6eb7876bf2e9dfa0c33bb72b577d921e4';
+const removedIntegrationName = ['lang', 'flow'].join('');
 const staticImportPattern = /\b(?:import|export)\s*(?:[\w*\s{},]+?\s+from\s*)?["']([^"']+)["']/g;
 
 const expectedA3SFlowExport = {
@@ -58,41 +58,30 @@ async function staticImportClosure(entryName) {
 
 const entrypoints = {
   'a3s-flow.js': {
-    allowGeneratedCatalog: false,
     rawBudget: 250_000,
     gzipBudget: 50_000,
   },
   'react.js': {
-    allowGeneratedCatalog: false,
     rawBudget: 2_300_000,
     gzipBudget: 700_000,
   },
   'react-hooks.js': {
-    allowGeneratedCatalog: false,
     rawBudget: 1_600_000,
     gzipBudget: 600_000,
   },
   'vue-hooks.js': {
-    allowGeneratedCatalog: false,
     rawBudget: 1_600_000,
     gzipBudget: 600_000,
   },
-  'workflow.js': {
-    allowGeneratedCatalog: true,
-  },
+  'workflow.js': {},
 };
 
 const results = new Map();
 for (const [entryName, policy] of Object.entries(entrypoints)) {
   const closure = await staticImportClosure(entryName);
   results.set(entryName, closure);
-  const containsGeneratedCatalog = closure.text.includes(generatedCatalogSentinel);
-  if (containsGeneratedCatalog !== policy.allowGeneratedCatalog) {
-    throw new Error(
-      policy.allowGeneratedCatalog
-        ? `${entryName} no longer exposes the backward-compatible Langflow catalog.`
-        : `${entryName} statically loads the generated Langflow catalog through: ${closure.files.join(', ')}`,
-    );
+  if (closure.text.toLocaleLowerCase('en').includes(removedIntegrationName)) {
+    throw new Error(`${entryName} still contains the removed workflow compatibility layer.`);
   }
   if (
     (policy.rawBudget && closure.rawBytes > policy.rawBudget) ||
@@ -111,5 +100,5 @@ const leanSummary = ['a3s-flow.js', 'react.js', 'react-hooks.js', 'vue-hooks.js'
   })
   .join('; ');
 console.log(
-  `Package entry points verified without the generated Langflow catalog: ${leanSummary}.`,
+  `Package entry points verified without the removed workflow compatibility layer: ${leanSummary}.`,
 );

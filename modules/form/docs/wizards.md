@@ -187,4 +187,4 @@ Each review row includes an edit action that returns to the owning page. The con
 - Page visibility uses bounded Form expressions; documents do not contain executable JavaScript.
 - A hidden branch is excluded from synchronous form validation, but hosts may still enforce organization policy during final form-level validation.
 
-The Playground includes the **Organization onboarding wizard** example with conditional enterprise verification, page-scoped host validation, a review page, and host-controlled checkpoint updates.
+The Form component guides include the **Organization onboarding wizard** example with conditional enterprise verification, page-scoped host validation, a review page, and host-controlled checkpoint updates.

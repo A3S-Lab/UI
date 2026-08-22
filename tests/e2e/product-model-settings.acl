@@ -58,7 +58,8 @@ suite "a3s-ui-product-model-settings" {
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
         expect "mobile-shell-title" { visible = css(".product-settings__dialog-header .product-settings__dialog-title") }
         expect "mobile-close-icon" { visible = css(".product-settings__dialog-header button[aria-label='关闭设置'] svg[data-icon=close]") }
-        click "open-memory" { target = role("button", "记忆") }
+        focus "focus-memory" { target = css("dialog.product-settings[open] > aside button:has(svg[data-icon=brain])") }
+        press "open-memory" { key = "Enter" }
         expect "memory-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=brain]") }
         focus "focus-models" { target = css("dialog.product-settings[open] > aside button:has(svg[data-icon=model])") }
         press "open-models" { key = "Enter" }

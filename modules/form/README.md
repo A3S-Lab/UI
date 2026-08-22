@@ -17,7 +17,6 @@
 
 <p align="center">
   <a href="https://a3s-lab.github.io/UI/components/form-system/">Documentation</a> ·
-  <a href="https://a3s-lab.github.io/UI/playground/forms/">Live Playground</a> ·
   <a href="#quick-start">Quick Start</a> ·
   <a href="#capabilities">Capabilities</a> ·
   <a href="#architecture">Architecture</a> ·
@@ -34,42 +33,19 @@
 
 ## Quick Start
 
-The hosted documentation and Playground are available at:
+The hosted documentation and embedded examples are available at:
 
 - [Documentation](https://a3s-lab.github.io/UI/components/form-system/)
-- [Live Playground](https://a3s-lab.github.io/UI/playground/forms/)
 
-For local development, install Git and Node.js 20 or newer. The deployment scripts install the root lockfile, build the unified package and Form Playground, and start a local server at `http://127.0.0.1:4176`.
-
-**Windows PowerShell**
-
-```powershell
-git clone https://github.com/A3S-Lab/UI.git
-Set-Location UI
-powershell -NoProfile -ExecutionPolicy Bypass -File .\modules\form\scripts\deploy.ps1
-```
-
-The Windows service starts as a hidden process. Stop it with:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\modules\form\scripts\stop.ps1
-```
-
-**macOS / Linux**
+For local development, install Git and Node.js 20 or newer, then build and test the Form package from the UI repository root:
 
 ```bash
 git clone https://github.com/A3S-Lab/UI.git
 cd UI
-./modules/form/scripts/install.sh
+npm ci
+npm run form:build
+npm run form:test
 ```
-
-Stop the service with:
-
-```bash
-./modules/form/scripts/stop.sh
-```
-
-Use `-NoStart` on Windows or `--no-start` on macOS/Linux to install and build without starting the server. Use `-Port 4200` or `--port 4200` to choose another port. Run the same build directly with `npm run form:build` and `npm run form:playground:build` from the UI repository root. The local server is intended for evaluation and embedding development; production hosting should use the host product's existing static asset and authentication infrastructure.
 
 <a id="capabilities"></a>
 
@@ -81,7 +57,7 @@ A basic schema renderer only draws inputs. A3S Form gives design, preview, runti
 | --- | --- |
 | **Form Designer** | Published A3S UI component contracts, explicit UX profiles for all 38 production nodes, a 23-widget field catalog with single- and multiple-choice matrices, context-aware task sections, typed default values, static or host-owned option sources, structured option and matrix editors with stable submitted values, host-owned file-upload and signature extensions, structure tree, grid/column/tab/collapse layouts, authored wizard pages and review steps, nested repeatable field groups, editable data-grid authoring with paste and fill policies, cross-container drag and drop, custom nodes, focused preview, responsive component/canvas/settings panels, undo/redo, save feedback, and compiler diagnostics |
 | **Form Renderer** | A3S UI fields, controls and actions with typed controlled values, URL/phone/time/collection/business widgets, bounded host-owned file-upload and signature runtimes, responsive single- and multiple-choice matrices, true wizard branches and digest-bound checkpoints, field-level subscriptions, localized validation summaries, cancellable field/page/form validation, async action states, row-scoped rules and data sources, custom nodes, nested object repeaters, and responsive semantic data grids with sorting, filtering, bounded TSV append, visible-selection fill-down, and measured row virtualization |
-| **Workflow Node Configuration** | A3S Flow 1.0 lossless DAG contracts with 18 visible host-owned node manifests, two internal container-start manifests, all 14 runtime command bindings, scoped validation, and semantic digests. The controlled A3S UI 0.3 panel and preview edit complete DAG nodes while preserving unknown presentation fields. The eight-node 0.4.2 API and pinned Langflow catalog remain migration and import compatibility layers only. |
+| **Workflow Node Configuration** | A3S Flow 1.0 lossless DAG contracts with 18 visible host-owned node manifests, two internal container-start manifests, all 14 runtime command bindings, scoped validation, and semantic digests. The controlled A3S UI 0.3 panel and preview edit complete DAG nodes while preserving unknown presentation fields. The eight-node 0.4.2 API remains available only for A3S Flow migrations. |
 | **Form Core** | Package-embedded native Rust/WASM compiler and submitted-value evaluator, exact compiler revisions, bounded byte protocols, Schema Profile 1 validation, form/row rule scopes, wildcard path binding, dependency indexes, cycle detection, capability checks, canonical SHA-256, immutable `FormPlan`, deterministic traces, and a cancellable compiler Worker |
 | **Agent Interface** | JSON CLI, revision-bound `FormPatch`, in-Designer JSON preflight and conflict feedback, `$a3s-form` skill, machine-readable diagnostics, and atomic changes |
 
@@ -123,7 +99,7 @@ Core invariants:
 
 Authoring and runtime behavior:
 
-- The Playground imports a JSON document only after it compiles successfully, then adds it to the browser-local workspace.
+- Designer hosts import a JSON document only after it compiles successfully.
 - Preview mode removes the component catalog and inspector so the real form runtime owns the canvas. On compact screens, authoring switches between dedicated Components, Canvas, and Settings panels without horizontal overflow.
 - Clicking a catalog item appends it to the form root, so the result does not depend on a stale selection. Dragging is the explicit path for exact placement inside columns, tabs, repeaters, data grids, and custom containers; incompatible data-grid children are rejected before the document changes.
 - The inspector uses the published A3S UI task-pane, tabs, accordion, field, input-group, item, badge, and button contracts. Every production node has an explicit label, category, purpose, common-setting order, advanced-setting order, and editor density. Content and component behavior stay visible; component type, initial value, data contracts, layout details, submitted values, matrix row IDs, and bulk grid controls expand only when needed. Typed defaults use the same native control as the runtime, including UTC date-time and time inputs. Choice and matrix editors preserve stable values while synchronizing structural edits with JSON Schema. Extensions compose the exported `FormInspectorControl`, `FormInspectorSection`, `FormInspectorSettingGroup`, and `FormInspectorToggle` primitives instead of maintaining a second panel style.
@@ -133,7 +109,7 @@ Authoring and runtime behavior:
 - Draft actions receive the current controlled value without being blocked by required-field validation. Submit actions run synchronous and host-owned asynchronous validation, show a summary, and focus the first invalid field.
 
 > [!IMPORTANT]
-> The v0.1 contract is a foundation, not a claim of full JSON Schema or enterprise-form parity. The unreleased `next` baseline now covers the A3S Flow 1.0 DAG and host-manifest contract, a pinned Langflow import adapter, Schema Profile 1, computed rules, host-neutral embedding, async validation, dynamic data sources, field subscriptions, runtime locale catalogs, large-form budgets, nested repeatable field groups, per-row rule/data-source binding, controlled multi-page wizards, inline and dialog-edit data grids with sorting, filtering, bulk selection, bounded TSV append, visible-selection fill-down, measured row virtualization, single- and multiple-choice matrices, a 23-widget built-in field catalog, and host-owned file-upload and signature extensions. Draft/release collaboration remains planned work. See the [product roadmap](ROADMAP.md) for scope and release gates.
+> The v0.1 contract is a foundation, not a claim of full JSON Schema or enterprise-form parity. The unreleased `next` baseline now covers the A3S Flow 1.0 DAG and host-manifest contract, Schema Profile 1, computed rules, host-neutral embedding, async validation, dynamic data sources, field subscriptions, runtime locale catalogs, large-form budgets, nested repeatable field groups, per-row rule/data-source binding, controlled multi-page wizards, inline and dialog-edit data grids with sorting, filtering, bulk selection, bounded TSV append, visible-selection fill-down, measured row virtualization, single- and multiple-choice matrices, a 23-widget built-in field catalog, and host-owned file-upload and signature extensions. Draft/release collaboration remains planned work. See the [product roadmap](ROADMAP.md) for scope and release gates.
 
 Existing integrations should follow the [v0.1-to-next migration checklist](docs/migration-v0.1-to-next.md) before publishing a new form revision or digest.
 
@@ -309,8 +285,8 @@ Supported exports:
 | Export | Purpose |
 | --- | --- |
 | `@a3s-lab/ui/form/core` | Documents, compilation, validation, locale catalogs, patches, templates, and headless state |
-| `@a3s-lab/ui/form/a3s-flow` | Flow 1.0 workflow DSL types, DAG validation and digest, host-owned manifest registry, built-in 20-manifest catalog, node factories, expression contract, and migration APIs without loading the Langflow compatibility catalog |
-| `@a3s-lab/ui/form/react` | React Designer, Renderer, Flow 1.0 DAG-node panel and preview, legacy core-node surfaces, Langflow compatibility panel, and workflow configuration widgets |
+| `@a3s-lab/ui/form/a3s-flow` | Flow 1.0 workflow DSL types, DAG validation and digest, host-owned manifest registry, built-in 20-manifest catalog, node factories, expression contract, and migration APIs |
+| `@a3s-lab/ui/form/react` | React Designer, Renderer, Flow 1.0 DAG-node panel and preview, legacy core-node surfaces, and workflow configuration widgets |
 | `@a3s-lab/ui/form/react-hooks` | React Hook Form-compatible state, resolver, subscriptions, field arrays, error mapping, and controlled Renderer binding |
 | `@a3s-lab/ui/form/vue` | Vue 3 `v-model` adapter |
 | `@a3s-lab/ui/form/vue-hooks` | Native Vue form, field, field-array, injection-context, state, validation, submission, and controlled Renderer composables |
@@ -362,7 +338,7 @@ A3S Form is planned as five coordinated product layers: deterministic Form Core,
 | --- | --- |
 | **v0.1 · current** | Prove the versioned document, deterministic compiler, controlled runtime, visual Designer, host adapters, and governed patch model. |
 | **v0.2 · runtime integrity** | Lock down host-neutral embedding, schema and computed semantics, async validation, data sources, localization, and incremental performance. |
-| **v0.3 · complex forms** | The A3S Flow 1.0 DAG and host-manifest contract, 18-node primary catalog, scoped validation and semantic digests, pinned Langflow import adapter, graph-node preview, semantically grouped compact configuration panel, nested object repeaters, stable row reordering, row-scoped rules, row-bound data sources, controlled multi-page wizards, sortable, filterable, virtualized dialog-edit data grids with bulk selection, bounded TSV append and fill-down, single- and multiple-choice matrices, a 23-widget built-in field kit, and host-owned file-upload and signature extensions are implemented; remaining official extensions and visual rule/integration editors follow. |
+| **v0.3 · complex forms** | The A3S Flow 1.0 DAG and host-manifest contract, 18-node primary catalog, scoped validation and semantic digests, graph-node preview, semantically grouped compact configuration panel, nested object repeaters, stable row reordering, row-scoped rules, row-bound data sources, controlled multi-page wizards, sortable, filterable, virtualized dialog-edit data grids with bulk selection, bounded TSV append and fill-down, single- and multiple-choice matrices, a 23-widget built-in field kit, and host-owned file-upload and signature extensions are implemented; remaining official extensions and visual rule/integration editors follow. |
 | **v0.4 · governance** | Add draft/release history, diff and rollback, approvals, collaboration contracts, offline sync, audit, policy, and migration tools. |
 | **v1.0 · AI-native production** | Stabilize contracts and deliver inspect → patch → simulate → test → approve → publish workflows across people, agents, Cloud, and Workflow. |
 
@@ -382,10 +358,9 @@ Current full runtime coverage:
 | Lines | **≥ 95% CI gate** |
 
 - The complete unit, contract-conformance, and cross-framework integration suite passes in CI.
-- The Langflow compatibility suite includes exact 17-category, 131-node, 797-field provenance, untouched-default type alignment, semantic layout coverage, graph-node rendering, and one-to-one mapping assertions.
-- The repository includes local A3S Test flows covering Designer → focused Preview → validation → action, host-owned field validation, responsive mobile authoring, browser-local persistence, validated JSON import, and responsive data-grid editing, TSV append, fill-down, sorting, filtering, selection, error focus, and 80-row desktop/mobile virtualization.
-- A3S Test is intended for local coding agents and does not upload screenshots, video, or evidence.
-- CI installs locked dependencies and runs linting, type checks, coverage gates, 100/500/1,000-node performance budgets, package/CLI builds, documentation builds, and the Playground build.
+- A3S Flow manifest, workflow-node form, graph preview, and panel suites cover default alignment, semantic layouts, host actions, and every built-in manifest.
+- The unified A3S UI browser suites cover the published component documentation and retain bounded local evidence.
+- CI installs locked dependencies and runs linting, type checks, coverage gates, 100/500/1,000-node performance budgets, package/CLI builds, and documentation builds.
 
 ```bash
 npm run form:check
@@ -393,18 +368,15 @@ npm run form:check
 
 ## GitHub Pages
 
-Every push to `main` runs [the Pages workflow](../../.github/workflows/pages.yml), builds the unified A3S UI documentation and Form Playground, combines the static outputs under the shared site, and deploys them through GitHub Actions.
+Every push to `main` runs [the Pages workflow](../../.github/workflows/pages.yml), builds the unified A3S UI documentation, verifies the embedded Form guides, and deploys the shared site through GitHub Actions.
 
 - Site: <https://a3s-lab.github.io/UI/components/form-system/>
 - English: <https://a3s-lab.github.io/UI/en/components/form-system/>
-- Playground: <https://a3s-lab.github.io/UI/playground/forms/>
-
-The Form guides follow A3S UI's bilingual versioned documentation contract. Chinese is the default language; no standalone Form documentation site is published.
+The Form guides follow A3S UI's bilingual versioned documentation contract. Chinese is the default language; no standalone Form documentation site or demo route is published.
 
 ## Repository Layout
 
 ```text
-modules/form/apps/playground/  runnable product workspace and form designer
 site/docs/next/*/components/form-system/  unified bilingual component guides
 modules/form/src/core/         documents, compiler, patches, expressions, state, and WASM
 modules/form/src/react/        Designer, Renderer, control system, and custom node registry

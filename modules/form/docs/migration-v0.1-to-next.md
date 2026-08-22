@@ -37,4 +37,4 @@ Run the complete package check before publication:
 npm run form:check
 ```
 
-The check covers formatting rules, type contracts, coverage, builds, runtime performance, embedding isolation, the CLI, Playground, and Rspress documentation.
+The check covers formatting rules, type contracts, coverage, builds, runtime performance, embedding isolation, the CLI, and Rspress documentation.

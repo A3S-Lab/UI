@@ -9,12 +9,12 @@ import {
   A3S_FLOW_ENGINE_VERSION,
   type A3SFlowWorkflowDagNode,
 } from './a3s-flow-dsl-types';
-import { createLangflowNodeDefaultValue } from './langflow';
+import { createWorkflowNodeDefaultValue } from './workflow-node-form';
 import type {
-  LangflowFieldDefinition,
-  LangflowNodeDefinition,
-  LangflowOutputDefinition,
-} from './langflow-catalog';
+  WorkflowNodeDefinition,
+  WorkflowNodeFieldDefinition,
+  WorkflowNodeOutputDefinition,
+} from './workflow-node-manifest';
 
 /** Runtime command discriminators implemented by A3S Flow 1.0. */
 export const A3S_FLOW_RUNTIME_COMMAND_BINDINGS = Object.freeze([
@@ -66,7 +66,7 @@ export interface A3SFlowDagContainerContract {
  * Host-owned property manifest for one Flow DAG `data.type` discriminator.
  * Flow owns DAG structure; the host owns this definition and compilation.
  */
-export interface A3SFlowDagNodeManifest extends LangflowNodeDefinition {
+export interface A3SFlowDagNodeManifest extends WorkflowNodeDefinition {
   manifestVersion: 1;
   owner: 'host';
   role: A3SFlowDagNodeRole;
@@ -175,7 +175,7 @@ function output(
   name: string,
   displayName: string,
   types: readonly string[],
-): LangflowOutputDefinition {
+): WorkflowNodeOutputDefinition {
   return {
     name,
     display_name: displayName,
@@ -193,7 +193,7 @@ function expressionField(
   purpose: 'condition' | 'datetime' | 'error' | 'input' | 'output' | 'token',
   value: JsonValue,
   options: { advanced?: boolean; required?: boolean; group?: string; groupLabel?: string } = {},
-): LangflowFieldDefinition {
+): WorkflowNodeFieldDefinition {
   return {
     name,
     display_name: displayName,
@@ -221,7 +221,7 @@ function stringField(
     group?: string;
     groupLabel?: string;
   } = {},
-): LangflowFieldDefinition {
+): WorkflowNodeFieldDefinition {
   return {
     name,
     display_name: displayName,
@@ -243,7 +243,7 @@ function jsonField(
   info: string,
   value: JsonValue,
   options: { advanced?: boolean; required?: boolean; collection?: boolean } = {},
-): LangflowFieldDefinition {
+): WorkflowNodeFieldDefinition {
   return {
     name,
     display_name: displayName,
@@ -278,7 +278,7 @@ function adaptCoreNode(definition: A3SFlowCoreNodeDefinition): A3SFlowDagNodeMan
       ? undefined
       : runtimeBinding;
   return defineA3SFlowDagNodeManifest({
-    ...(definition as LangflowNodeDefinition),
+    ...(definition as WorkflowNodeDefinition),
     role,
     runtimeBinding: mappedBinding,
     stableIdBinding: definition.stableIdBinding,
@@ -774,7 +774,7 @@ export function createA3SFlowDagNode(
     ...cloneJson(presentation),
     id,
     data: {
-      ...createLangflowNodeDefaultValue(manifest),
+      ...createWorkflowNodeDefaultValue(manifest),
       ...configurationOverrides(configuration),
       type: manifest.type,
     },
@@ -791,7 +791,7 @@ export function selectA3SFlowDagNodeConfiguration(
       `A3S Flow DAG node type ${node.data.type} does not match manifest ${manifest.type}.`,
     );
   }
-  const defaults = createLangflowNodeDefaultValue(manifest);
+  const defaults = createWorkflowNodeDefaultValue(manifest);
   return Object.fromEntries(
     manifest.fields.map((field) => [
       field.name,

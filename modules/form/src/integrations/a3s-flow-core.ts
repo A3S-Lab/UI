@@ -1,15 +1,15 @@
 import { analyzeExpression } from '../core/expression';
 import type { FormExpression, JsonObject, JsonValue } from '../core/types';
 import {
-  type CreateLangflowNodeFormOptions,
-  createLangflowNodeDefaultValue,
-  createLangflowNodeForm,
-} from './langflow';
+  type CreateWorkflowNodeFormOptions,
+  createWorkflowNodeDefaultValue,
+  createWorkflowNodeForm,
+} from './workflow-node-form';
 import type {
-  LangflowFieldDefinition,
-  LangflowNodeDefinition,
-  LangflowOutputDefinition,
-} from './langflow-catalog';
+  WorkflowNodeDefinition,
+  WorkflowNodeFieldDefinition,
+  WorkflowNodeOutputDefinition,
+} from './workflow-node-manifest';
 
 export const A3S_FLOW_CORE_VERSION = '0.4.2' as const;
 
@@ -71,7 +71,7 @@ export interface A3SFlowCoreNodePorts {
   outputs: readonly A3SFlowCorePortDefinition[];
 }
 
-export interface A3SFlowCoreNodeDefinition extends LangflowNodeDefinition {
+export interface A3SFlowCoreNodeDefinition extends WorkflowNodeDefinition {
   runtimeBinding: A3SFlowRuntimeBinding;
   stableIdBinding?: 'graph_node_id' | 'graph_node_id_plus_member_key';
   ports: A3SFlowCoreNodePorts;
@@ -131,7 +131,7 @@ function output(
   name: string,
   displayName: string,
   types: readonly string[],
-): LangflowOutputDefinition {
+): WorkflowNodeOutputDefinition {
   return {
     name,
     display_name: displayName,
@@ -172,7 +172,7 @@ function node(
   };
 }
 
-function retryFields(): LangflowFieldDefinition[] {
+function retryFields(): WorkflowNodeFieldDefinition[] {
   return [
     {
       name: 'max_attempts',
@@ -797,12 +797,12 @@ export function requireA3SFlowCoreNode(type: string): A3SFlowCoreNodeDefinition 
   return definition;
 }
 
-export type CreateA3SFlowNodeFormOptions = Omit<CreateLangflowNodeFormOptions, 'compatibility'>;
+export type CreateA3SFlowNodeFormOptions = Omit<CreateWorkflowNodeFormOptions, 'compatibility'>;
 
 export function createA3SFlowNodeBuildConfig(
-  definition: Pick<LangflowNodeDefinition, 'fields'>,
-  extensions: Readonly<Record<string, LangflowFieldDefinition>> = {},
-): Readonly<Record<string, LangflowFieldDefinition>> {
+  definition: Pick<WorkflowNodeDefinition, 'fields'>,
+  extensions: Readonly<Record<string, WorkflowNodeFieldDefinition>> = {},
+): Readonly<Record<string, WorkflowNodeFieldDefinition>> {
   const fields = new Map(definition.fields.map((field) => [field.name, { ...field }] as const));
   for (const [name, field] of Object.entries(extensions)) {
     if (field.name !== name) {
@@ -816,7 +816,7 @@ export function createA3SFlowNodeBuildConfig(
 function createA3SFlowFormOptions(
   definition: A3SFlowCoreNodeDefinition,
   options: CreateA3SFlowNodeFormOptions,
-): CreateLangflowNodeFormOptions {
+): CreateWorkflowNodeFormOptions {
   return {
     ...options,
     buildConfig: options.buildConfig
@@ -830,12 +830,12 @@ export function createA3SFlowNodeDefaultValue(
   definition: A3SFlowCoreNodeDefinition,
   options: CreateA3SFlowNodeFormOptions = {},
 ): JsonObject {
-  return createLangflowNodeDefaultValue(definition, createA3SFlowFormOptions(definition, options));
+  return createWorkflowNodeDefaultValue(definition, createA3SFlowFormOptions(definition, options));
 }
 
 export function createA3SFlowNodeForm(
   definition: A3SFlowCoreNodeDefinition,
   options: CreateA3SFlowNodeFormOptions = {},
 ) {
-  return createLangflowNodeForm(definition, createA3SFlowFormOptions(definition, options));
+  return createWorkflowNodeForm(definition, createA3SFlowFormOptions(definition, options));
 }

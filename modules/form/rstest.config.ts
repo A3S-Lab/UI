@@ -19,11 +19,7 @@ export default defineConfig({
       'src/vue-hooks.ts',
       'src/web-component.tsx',
     ],
-    exclude: [
-      'src/core/types.ts',
-      'src/core/compiler-reference.ts',
-      'src/integrations/langflow-catalog.generated.json',
-    ],
+    exclude: ['src/core/types.ts', 'src/core/compiler-reference.ts'],
     thresholds: {
       lines: 95,
       functions: 95,

@@ -1,17 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { LangflowWorkflowNodePreview } from '../src/react';
-import {
-  type LangflowNodeDefinition,
-  langflowNodeCatalog,
-  requireLangflowNode,
-} from '../src/workflow';
+import { a3sFlowDagNodeManifestCatalog } from '../src/a3s-flow';
+import { WorkflowNodePreview } from '../src/react';
+import type { WorkflowNodeDefinition } from '../src/workflow';
 
-describe('Langflow workflow node preview', () => {
+const previewBase: WorkflowNodeDefinition = {
+  category: 'workflow',
+  categoryLabel: 'Workflow',
+  type: 'PreviewBase',
+  display_name: 'Preview base',
+  description: 'Workflow preview fixture.',
+  beta: false,
+  legacy: false,
+  official: true,
+  tool_mode: false,
+  base_classes: ['WorkflowNode'],
+  input_types: [],
+  output_types: [],
+  fields: [],
+  outputs: [],
+};
+
+describe('Workflow node preview', () => {
   it('renders field-level input ports and declared output ports', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const node: LangflowNodeDefinition = {
-      ...base,
+    const node: WorkflowNodeDefinition = {
+      ...previewBase,
       type: 'PreviewFixture',
       display_name: 'Preview fixture',
       fields: [
@@ -42,7 +55,7 @@ describe('Langflow workflow node preview', () => {
       ],
     };
 
-    render(<LangflowWorkflowNodePreview node={node} />);
+    render(<WorkflowNodePreview node={node} />);
 
     expect(
       screen.getByRole('article', { name: 'Preview fixture workflow node preview' }),
@@ -52,9 +65,9 @@ describe('Langflow workflow node preview', () => {
     expect(screen.getAllByText('Message')).toHaveLength(2);
   });
 
-  it('renders all 131 catalog nodes through the reusable graph-node surface', () => {
-    const failures = langflowNodeCatalog.flatMap((node) => {
-      const markup = renderToStaticMarkup(<LangflowWorkflowNodePreview node={node} />);
+  it('renders every A3S Flow manifest through the reusable graph-node surface', () => {
+    const failures = a3sFlowDagNodeManifestCatalog.flatMap((node) => {
+      const markup = renderToStaticMarkup(<WorkflowNodePreview node={node} />);
       return markup.includes(`data-node-type="${node.type}"`) ? [] : [node.type];
     });
 
@@ -62,9 +75,8 @@ describe('Langflow workflow node preview', () => {
   });
 
   it('renders descriptor fallbacks, unselected nodes, and empty port contracts', () => {
-    const base = requireLangflowNode('Prompt Template');
-    const fieldFallback: LangflowNodeDefinition = {
-      ...base,
+    const fieldFallback: WorkflowNodeDefinition = {
+      ...previewBase,
       type: 'FieldFallbackPreview',
       display_name: 'Field fallback preview',
       fields: [
@@ -86,8 +98,8 @@ describe('Langflow workflow node preview', () => {
         },
       ],
     };
-    const contractFallback: LangflowNodeDefinition = {
-      ...base,
+    const contractFallback: WorkflowNodeDefinition = {
+      ...previewBase,
       type: 'ContractFallbackPreview',
       display_name: 'Contract fallback preview',
       fields: [],
@@ -96,7 +108,7 @@ describe('Langflow workflow node preview', () => {
       outputs: [],
       legacy: true,
     };
-    const empty: LangflowNodeDefinition = {
+    const empty: WorkflowNodeDefinition = {
       ...contractFallback,
       type: 'EmptyPreview',
       display_name: 'Empty preview',
@@ -105,9 +117,7 @@ describe('Langflow workflow node preview', () => {
       legacy: false,
     };
 
-    const { rerender } = render(
-      <LangflowWorkflowNodePreview node={fieldFallback} selected={false} />,
-    );
+    const { rerender } = render(<WorkflowNodePreview node={fieldFallback} selected={false} />);
     expect(screen.getByText('source')).toBeTruthy();
     expect(screen.getByText('result')).toBeTruthy();
     expect(screen.getByText('Any')).toBeTruthy();
@@ -117,12 +127,76 @@ describe('Langflow workflow node preview', () => {
         .getAttribute('data-selected'),
     ).toBeNull();
 
-    rerender(<LangflowWorkflowNodePreview node={contractFallback} />);
+    rerender(<WorkflowNodePreview node={contractFallback} />);
     expect(screen.getByText('Input')).toBeTruthy();
     expect(screen.getByText('Output')).toBeTruthy();
     expect(screen.getByText('Legacy')).toBeTruthy();
 
-    rerender(<LangflowWorkflowNodePreview node={empty} />);
+    rerender(<WorkflowNodePreview node={empty} />);
     expect(screen.getByText('This node has no typed ports.')).toBeTruthy();
+  });
+
+  it('localizes compact previews and resolves the complete workflow category icon set', () => {
+    const categories = [
+      'Agents',
+      'Files',
+      'Data',
+      'Tools',
+      'Embeddings',
+      'Processing',
+      'Workflow',
+      'Other',
+    ];
+    const markup = categories
+      .map((category, index) =>
+        renderToStaticMarkup(
+          <WorkflowNodePreview
+            node={{
+              ...previewBase,
+              type: `CategoryPreview${index}`,
+              display_name: category,
+              category,
+              categoryLabel: category,
+            }}
+          />,
+        ),
+      )
+      .join('');
+
+    for (const index of categories.keys()) {
+      expect(markup).toContain(`data-node-type="CategoryPreview${index}"`);
+    }
+
+    const runtimeNode = {
+      ...previewBase,
+      type: 'BoundPreview',
+      display_name: 'Bound preview',
+      beta: true,
+      runtimeBinding: 'flow.step',
+    } as WorkflowNodeDefinition & { runtimeBinding: string };
+    const { rerender } = render(
+      <WorkflowNodePreview
+        node={runtimeNode}
+        locale="zh-CN"
+        ports={{
+          inputs: [{ id: 'command', label: 'Command', types: [], kind: 'control' }],
+          outputs: [{ id: 'result', label: 'Result', types: ['Message'], kind: 'data' }],
+        }}
+      />,
+    );
+
+    expect(screen.getByRole('article', { name: 'Bound preview节点预览' })).toBeTruthy();
+    expect(screen.getByText('Beta')).toBeTruthy();
+    expect(screen.getByText('flow.step')).toBeTruthy();
+    expect(screen.getByText('Any')).toBeTruthy();
+
+    const emptyNode: WorkflowNodeDefinition = {
+      ...previewBase,
+      type: 'LocalizedEmptyPreview',
+      display_name: 'Localized empty preview',
+    };
+    rerender(<WorkflowNodePreview node={emptyNode} locale="zh-CN" technical={false} />);
+    expect(screen.getByText('这个节点没有连接端口。')).toBeTruthy();
+    expect(screen.getByText('0 个输入 · 0 个输出')).toBeTruthy();
   });
 });

@@ -15,7 +15,7 @@ A3S Form 将 Flow workflow DSL 作为无损 DAG 契约处理。Flow 负责图结
 | 组件系统 | `@a3s-lab/ui@0.3.0` |
 | Form 兼容标识 | `a3s-flow/1.0.0`、`a3s-flow-workflow-dsl/0.7.0` |
 
-主 Playground 将 18 个可见 manifest 分为 Control flow、Task execution、Wait & callbacks、Run outcome、Run control、Child work 和 Containers。`iteration-start` 与 `loop-start` 由所属容器创建，不显示在插入目录中。
+内置目录将 18 个可见 manifest 分为 Control flow、Task execution、Wait & callbacks、Run outcome、Run control、Child work 和 Containers。`iteration-start` 与 `loop-start` 由所属容器创建，不显示在插入目录中。
 
 <A3SFlowDagDemo />
 
@@ -167,5 +167,3 @@ const executionDigest = digestA3SFlowWorkflowDag(graph);
 ## 迁移兼容
 
 `A3SFlowNodeConfigurationPanel`、`A3SFlowNodePreview`、`A3SFlowCoreNodeDefinition` 与八节点 `0.4.2` 目录仅保留用于迁移。对应的[旧版节点章节](/components/form-system/a3s-flow/start)记录旧的纯配置值契约。新编辑器应保存 `A3SFlowWorkflowDagNode`，并使用 DAG 面板与预览。
-
-固定到 Langflow `1.11.3` 的描述符适配器是独立导入兼容层，不是 Flow 节点目录。参见 [Langflow 兼容性](/components/form-system/langflow-compatibility)。

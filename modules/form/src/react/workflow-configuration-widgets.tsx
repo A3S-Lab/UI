@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { canonicalize, type JsonObject, type JsonValue } from '../core';
-import { WORKFLOW_CONFIGURATION_WIDGETS } from '../integrations/langflow';
+import { WORKFLOW_CONFIGURATION_WIDGETS } from '../integrations/workflow-node-form';
 import { DesignerIcon, type DesignerIconName } from './designer-icons';
 import { type FormWidgetProps, type FormWidgetRegistry, NativeWidget } from './native-widget';
 import { SelectControl } from './select-control';

@@ -11,6 +11,8 @@ const docsRoot = path.join(siteRoot, "docs");
 const standalonePagesRoot = path.join(siteRoot, "pages");
 const outputRoot = path.join(siteRoot, "doc_build");
 const base = "/UI/";
+const removedIntegrationName = ["lang", "flow"].join("");
+const removedFormRoute = ["playground", "forms"].join("/");
 
 const requiredFiles = [
   "index.html",
@@ -23,7 +25,6 @@ const requiredFiles = [
   "en/components/form-system/workflow-node-embedding.html",
   "components/form-system/a3s-flow/start.html",
   "en/components/form-system/a3s-flow/start.html",
-  "playground/forms/index.html",
   "v0.2.0/index.html",
   "v0.2.0/en/index.html",
   "v0.1.0/index.html",
@@ -1033,6 +1034,7 @@ const productApplicationExpectations = [
 const disallowedPublicProductNames = [
   ["cod", "ex"].join(""),
   ["work", "buddy"].join(""),
+  removedIntegrationName,
 ];
 const nextExtractedComponentHistoricalExpectations = [
   "agent-workbench",
@@ -1211,6 +1213,21 @@ for (const file of requiredFiles) {
   await access(path.join(outputRoot, file));
 }
 
+const forbiddenFiles = [
+  `${removedFormRoute}/index.html`,
+  `components/form-system/${removedIntegrationName}-compatibility.html`,
+  `en/components/form-system/${removedIntegrationName}-compatibility.html`,
+];
+for (const file of forbiddenFiles) {
+  try {
+    await access(path.join(outputRoot, file));
+  } catch (error) {
+    if (error?.code === "ENOENT") continue;
+    throw error;
+  }
+  throw new Error(`The built site still publishes removed Form surface: ${file}`);
+}
+
 if ((await readdir(outputRoot)).includes("form")) {
   throw new Error("The built site still publishes the removed standalone /UI/form/ site.");
 }
@@ -1223,7 +1240,6 @@ const integratedFormExpectations = [
       "@a3s-lab/ui/form/core",
       "@a3s-lab/ui/form/react-hooks",
       "@a3s-lab/ui/form/vue-hooks",
-      'href="https://a3s-lab.github.io/UI/playground/forms/"',
     ],
   },
   {
@@ -1233,7 +1249,6 @@ const integratedFormExpectations = [
       "@a3s-lab/ui/form/core",
       "@a3s-lab/ui/form/react-hooks",
       "@a3s-lab/ui/form/vue-hooks",
-      'href="https://a3s-lab.github.io/UI/playground/forms/"',
     ],
   },
   {
@@ -1243,10 +1258,6 @@ const integratedFormExpectations = [
   {
     file: "en/components/form-system/framework-hooks.html",
     markers: ["React Hook Form", "Vue composables", "useA3SFieldArray"],
-  },
-  {
-    file: "playground/forms/index.html",
-    markers: ["A3S UI · Form Playground"],
   },
 ];
 
@@ -1450,6 +1461,7 @@ for (const expectation of styleExpectations) {
 
 const brokenReferences = [];
 const publicBrandingLeaks = [];
+const removedFormSurfaceLeaks = [];
 const chineseTerminologyLeaks = [];
 const invalidHtmlNesting = [];
 const disallowedChineseTerms = [
@@ -1671,6 +1683,9 @@ let builtPreviewCount = 0;
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
   const relativeHtmlFile = path.relative(outputRoot, htmlFile);
+  if (html.toLocaleLowerCase("en").includes(removedFormRoute)) {
+    removedFormSurfaceLeaks.push(relativeHtmlFile);
+  }
   const documentMarkup = html
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
@@ -1819,6 +1834,14 @@ if (invalidHtmlNesting.length > 0) {
 if (publicBrandingLeaks.length > 0) {
   throw new Error(
     `Public website branding check failed:\n${publicBrandingLeaks
+      .map((file) => `  - ${file}`)
+      .join("\n")}`,
+  );
+}
+
+if (removedFormSurfaceLeaks.length > 0) {
+  throw new Error(
+    `Removed Form route is still referenced by built pages:\n${removedFormSurfaceLeaks
       .map((file) => `  - ${file}`)
       .join("\n")}`,
   );

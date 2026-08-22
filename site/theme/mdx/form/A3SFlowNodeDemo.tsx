@@ -111,29 +111,21 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
 
   return (
     <section
-      className="a3s-doc-langflow-demo a3s-doc-flow-node-demo"
+      className="a3s-doc-workflow-demo a3s-doc-flow-node-demo"
       data-a3s-flow-node={node.type}
       aria-label={`${localizedNode.display_name}${isEnglish ? ' live configuration' : '配置示例'}`}
     >
-      <header className="a3s-doc-langflow-demo-header">
+      <header className="a3s-doc-workflow-demo-header">
         <div>
           <strong>{localizedNode.display_name}</strong>
           <span>
             {localizedNode.categoryLabel} · {localizedNode.description}
           </span>
         </div>
-        <a
-          className="btn"
-          data-size="sm"
-          data-variant="outline"
-          href="https://a3s-lab.github.io/UI/playground/forms/"
-        >
-          {isEnglish ? 'Open Playground' : '打开 Playground'}
-        </a>
       </header>
 
       <p
-        className="a3s-doc-langflow-demo-status"
+        className="a3s-doc-workflow-demo-status"
         role="status"
         aria-live="polite"
         aria-atomic="true"
@@ -141,7 +133,7 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
         {status}
       </p>
 
-      <div className="a3s-doc-langflow-demo-panel a3s-doc-flow-demo-panel">
+      <div className="a3s-doc-workflow-demo-panel a3s-doc-flow-demo-panel">
         <A3SFlowNodePreview node={node} value={value} locale={locale} />
         <A3SFlowNodeConfigurationPanel
           node={node}
@@ -165,8 +157,8 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
           onRequestConnection={() =>
             setStatus(
               isEnglish
-                ? 'Open the Playground to connect this input.'
-                : '请在 Playground 中连接这个输入。',
+                ? 'The host must provide a connection picker for this input.'
+                : '这个输入需要由宿主提供连接选择器。',
             )
           }
         />

@@ -490,7 +490,8 @@ suite "a3s-ui-application-and-utilities" {
             value = "PromptEditor"
         }
         expect "prompt-editor-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor]:not([hidden])") }
-        click "select-prompt-editor" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor] > button") }
+        focus "focus-prompt-editor" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor] > button") }
+        press "select-prompt-editor" { key = "Enter" }
         expect "prompt-editor-selected" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor][aria-selected=true]") }
         expect "selection-inspector-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-inspector]:not([data-empty]) [data-code-graph-field=path]") }
         screenshot "filtered-list" { path = "components/code-graph-filtered-list.png" }

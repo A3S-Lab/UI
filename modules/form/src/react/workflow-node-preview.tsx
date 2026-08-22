@@ -1,8 +1,11 @@
-import type { LangflowNodeDefinition } from '../integrations/langflow';
+import type {
+  WorkflowNodeDefinition,
+  WorkflowNodeFieldDefinition,
+} from '../integrations/workflow-node-manifest';
 import { DesignerIcon, type DesignerIconName } from './designer-icons';
 
-export interface LangflowWorkflowNodePreviewProps {
-  node: LangflowNodeDefinition;
+export interface WorkflowNodePreviewProps {
+  node: WorkflowNodeDefinition;
   className?: string;
   selected?: boolean;
   ports?: WorkflowNodePreviewPorts;
@@ -40,20 +43,24 @@ function previewIcon(category: string): DesignerIconName {
   return 'components';
 }
 
-function inputPorts(node: LangflowNodeDefinition): WorkflowNodePreviewPort[] {
-  const fields = node.fields
-    .filter((field) => field.show !== false && (field.input_types?.length ?? 0) > 0)
-    .map((field) => ({
-      id: field.name,
-      label: field.display_name ?? field.name,
-      types: uniqueTypes(field.input_types ?? []),
-    }));
+function isVisibleInputPortField(
+  field: WorkflowNodeFieldDefinition,
+): field is WorkflowNodeFieldDefinition & { input_types: string[] } {
+  return field.show !== false && (field.input_types?.length ?? 0) > 0;
+}
+
+function inputPorts(node: WorkflowNodeDefinition): WorkflowNodePreviewPort[] {
+  const fields = node.fields.filter(isVisibleInputPortField).map((field) => ({
+    id: field.name,
+    label: field.display_name ?? field.name,
+    types: uniqueTypes(field.input_types),
+  }));
   if (fields.length > 0) return fields;
   const types = uniqueTypes(node.input_types);
   return types.length > 0 ? [{ id: 'input', label: 'Input', types }] : [];
 }
 
-function outputPorts(node: LangflowNodeDefinition): WorkflowNodePreviewPort[] {
+function outputPorts(node: WorkflowNodeDefinition): WorkflowNodePreviewPort[] {
   if (node.outputs.length > 0) {
     return node.outputs.map((output) => ({
       id: output.name,
@@ -95,14 +102,14 @@ function PortList({
   );
 }
 
-export function LangflowWorkflowNodePreview({
+export function WorkflowNodePreview({
   node,
   className,
   ports,
   selected = true,
   locale = 'en',
   technical = true,
-}: LangflowWorkflowNodePreviewProps) {
+}: WorkflowNodePreviewProps) {
   const chinese = locale.toLocaleLowerCase().startsWith('zh');
   const inputs = ports?.inputs ?? inputPorts(node);
   const outputs = ports?.outputs ?? outputPorts(node);
