@@ -8,6 +8,7 @@ on:
       - ".github/workflows/a3s-test.yml"
       - "package-lock.json"
       - "package.json"
+      - "modules/form/**"
       - "scripts/**"
       - "site/**"
       - "src/**"
@@ -17,6 +18,7 @@ on:
       - ".github/workflows/a3s-test.yml"
       - "package-lock.json"
       - "package.json"
+      - "modules/form/**"
       - "scripts/**"
       - "site/**"
       - "src/**"
@@ -63,6 +65,7 @@ jobs:
       - name: Build and verify documentation
         run: |
           npm run build --prefix site
+          npm run form:playground:site
           npm run check:site --prefix site
 
       - name: Install A3S Test browser runtime
