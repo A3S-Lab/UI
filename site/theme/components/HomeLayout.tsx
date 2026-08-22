@@ -29,6 +29,16 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "操作与输入", en: "Actions and input" },
   },
   {
+    category: { zh: "Schema 运行时", en: "Schema runtime" },
+    count: "19",
+    description: {
+      zh: "Designer、Renderer、复杂字段、React/Vue 状态与 Flow 节点配置。",
+      en: "Designer, Renderer, complex fields, React/Vue state, and Flow node configuration.",
+    },
+    href: "/components/form-system/",
+    title: { zh: "结构化表单", en: "Structured forms" },
+  },
+  {
     category: { zh: "选择控制", en: "Choice controls" },
     count: "12",
     description: {
@@ -112,11 +122,11 @@ const componentFamilies: ComponentFamily[] = [
 
 const legacyComponentFamilies: ComponentFamily[] = [
   { ...componentFamilies[0], count: "07" },
-  componentFamilies[2],
-  { ...componentFamilies[4], count: "07" },
-  componentFamilies[5],
-  { ...componentFamilies[6], count: "12", href: "/components/card" },
-  { ...componentFamilies[3], count: "12" },
+  componentFamilies[3],
+  { ...componentFamilies[5], count: "07" },
+  componentFamilies[6],
+  { ...componentFamilies[7], count: "12", href: "/components/card" },
+  { ...componentFamilies[4], count: "12" },
 ];
 
 const resourceKinds = [
@@ -164,7 +174,7 @@ const homeCopy = {
     serverTemplates: "服务端模板",
     catalogTitle: "从一个控件，到整个工作台。",
     catalogBody:
-      "通用组件按界面职责分组；Harness 集中任务、对话、执行、审阅和开发预览组件。每篇指南都提供可运行样例与完整状态契约。",
+      "通用组件按界面职责分组；结构化表单与 Harness 继续使用同一套组件导航、视觉语言和状态契约。每篇指南都提供可运行样例。",
     guides: "个契约",
     browseCatalog: "查看全部组件契约",
     foundationsTitle: "一套语义契约，多种视觉基础。",
@@ -225,7 +235,7 @@ const homeCopy = {
     serverTemplates: "Server templates",
     catalogTitle: "From one control to a complete workspace.",
     catalogBody:
-      "General components are grouped by interface responsibility. Harness brings task, conversation, execution, review, and preview tools together. Every guide includes a live specimen and complete state contract.",
+      "General components are grouped by interface responsibility. Structured forms and Harness use the same component navigation, visual language, and state contracts. Every guide includes a live specimen.",
     guides: "CONTRACTS",
     browseCatalog: "View all component contracts",
     foundationsTitle: "One semantic contract. Multiple visual foundations.",

@@ -83,7 +83,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 
 The optional Dockview integration sits beside the semantic manifest and adds Dock Workspace, Grid View, Split View, and Pane View without changing the 116-component count. It re-exports the complete Dockview 8.1 MIT surface for native TypeScript, React, and Vue, then adds A3S theme tokens, versioned layout persistence, and an Edge Group-safe layout reset.
 
-The integrated [A3S Form system](https://a3s-lab.github.io/UI/form/) adds a deterministic Form Core, visual Designer, controlled Renderer, A3S Flow node configuration, Cloud and Workflow contracts, CLI, Web Components, React Hook Form integration, and native Vue composables. Its documentation and [Playground](https://a3s-lab.github.io/UI/form/playground/) deploy with this repository under the same GitHub Pages site.
+The integrated [Form system](https://a3s-lab.github.io/UI/components/form-system/) adds a deterministic Form Core, visual Designer, controlled Renderer, A3S Flow node configuration, Cloud and Workflow contracts, CLI, Web Components, React Hook Form integration, and native Vue composables. Its guides live in the A3S UI component catalog, and its interactive designer lives in the unified [Playground](https://a3s-lab.github.io/UI/playground/forms/) route family.
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Preview stages derive the correct control, content, overlay, or workspace layout, while phone and tablet modes run in isolated CSS viewports so responsive media queries use the selected width. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 

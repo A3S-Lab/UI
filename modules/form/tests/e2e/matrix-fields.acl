@@ -7,7 +7,7 @@ suite "a3s-form-matrix-fields" {
         timeout_ms = 90000
 
         navigate "open-next-docs" {
-            url = "http://127.0.0.1:4178/Form/next/guide/matrix-fields"
+            url = "http://127.0.0.1:4178/UI/components/form-system/matrix-fields.html"
         }
 
         viewport "desktop" {
@@ -75,14 +75,6 @@ suite "a3s-form-matrix-fields" {
         accessibility "mobile-tree" {
             path = "evidence/accessibility.json"
             interactive = true
-        }
-
-        navigate "open-stable-docs" {
-            url = "http://127.0.0.1:4178/Form/guide/matrix-fields"
-        }
-
-        expect "stable-version-boundary" {
-            text = "不属于 v0.1.0 稳定契约"
         }
 
         console "console" {

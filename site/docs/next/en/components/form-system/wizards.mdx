@@ -1,0 +1,99 @@
+import { WizardDemo } from '../../../../../theme/mdx/form/WizardDemo';
+
+# Multi-page wizards
+
+Multi-page wizards navigate and validate one page at a time. They suit flows with a fixed sequence, conditional branches, or a final review. Navigation state remains separate from the controlled form value.
+
+<WizardDemo />
+
+## UI node properties
+
+A wizard container may use `root`, `group`, or `section`. Its direct children must be group or section nodes with `layout: "page"`.
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Stable identifier unique within the document |
+| `kind` | `"root" \| "group" \| "section"` | Yes | Wizard container type |
+| `layout` | `"wizard"` | Yes | Enables step navigation, page validation, and a review page |
+| `children` | `string[]` | Yes | Ordered page nodes; at least one is required |
+| `label` | `string` | No | Wizard title and accessible name |
+| `description` | `string` | No | Supporting text below the wizard title |
+
+Page node properties:
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `kind` | `"group" \| "section"` | Yes | Page container type |
+| `layout` | `"page"` | Yes | Fixed value for a wizard's direct child pages |
+| `pageRole` | `"form" \| "review"` | No | Defaults to `form`; use `review` for the final review page |
+| `label` | `string` | Yes | Step, progress, and review-section name |
+| `description` | `string` | No | Instructions for the current step |
+| `children` | `string[]` | Yes | Fields and layout nodes on the page; may be empty on a review page |
+| `columns` | `1 \| 2 \| 3 \| 4 \| 6 \| 12` | No | Grid column count within the page |
+| `gap` | `0 \| 8 \| 12 \| 16 \| 24 \| 32` | No | Spacing between fields on the page |
+
+## Orchestration structure
+
+A wizard is a `root`, `group`, or `section` node with `layout: "wizard"`. Its direct children must be group or section nodes with `layout: "page"`.
+
+```json
+{
+  "id": "onboarding",
+  "kind": "group",
+  "label": "Create workspace",
+  "layout": "wizard",
+  "children": ["identity-page", "contact-page", "review-page"]
+}
+```
+
+A page's `pageRole` defaults to `"form"`. The last page may use `"review"` to show a localized summary and edit links. The Designer can create this structure directly, so authors can add, move, rename, and configure steps without editing raw JSON.
+
+The compiler rejects ambiguous structures: empty wizards, non-page children, orphan pages, nested wizards, pages inside repeatable groups, and misplaced or duplicate review pages.
+
+## Branching and validation
+
+Add an ordinary `visible` rule to a page to create a branch. Progress and navigation count only the currently visible pages.
+
+**Next** first runs synchronous validation for the current page. When host validation is configured, it then calls `{ kind: "page", nodeId }`. If the host returns a field error outside the current page, the response fails closed as invalid. Synchronous errors on hidden pages do not block the active branch; headless `evaluateFormValue` uses the same rule.
+
+The primary action appears only on the last visible page. Final submission still runs form-level validation. If an error belongs to an earlier page, the Renderer returns to that page and focuses the matching control.
+
+## Recovery without polluting form values
+
+Navigation state is not written into the controlled form value. The host stores a checkpoint separately and binds it to the compiled result:
+
+```ts
+const created = createFormWizardCheckpoint(
+  plan,
+  'onboarding',
+  'contact-page',
+  ['identity-page'],
+);
+
+if (created.ok) {
+  await checkpointStore.put(runId, created.checkpoint);
+}
+```
+
+```tsx
+<FormRenderer
+  plan={plan}
+  value={value}
+  onChange={setValue}
+  wizardCheckpoints={checkpoints}
+  onWizardCheckpointChange={({ checkpoint }) => {
+    setCheckpoints((current) => ({
+      ...current,
+      [checkpoint.wizardId]: checkpoint,
+    }));
+  }}
+/>
+```
+
+`restoreFormWizardCheckpoint` rejects a different digest, revision, wizard, or page. Durable storage, resume tokens, authorization, and retention remain the host's responsibility.
+
+Vue forwards `wizardCheckpoints` and emits `wizardCheckpointChange`. The Web Component exposes the property with the same name and emits `wizard-checkpoint-change`.
+
+Open **Organization onboarding wizard** in the Playground to test conditional enterprise branches, page-scoped host validation, the review page, mobile layout, and controlled checkpoint updates.
+
+See the repository guide [`docs/wizards.md`](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/wizards.md) for the complete API, validation rules, and host boundaries.

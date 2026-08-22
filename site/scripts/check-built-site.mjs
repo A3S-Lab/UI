@@ -15,11 +15,15 @@ const base = "/UI/";
 const requiredFiles = [
   "index.html",
   "en/index.html",
-  "form/index.html",
-  "form/en/index.html",
-  "form/next/guide/framework-hooks.html",
-  "form/next/en/guide/framework-hooks.html",
-  "form/playground/index.html",
+  "components/form-system/index.html",
+  "en/components/form-system/index.html",
+  "components/form-system/framework-hooks.html",
+  "en/components/form-system/framework-hooks.html",
+  "components/form-system/workflow-node-embedding.html",
+  "en/components/form-system/workflow-node-embedding.html",
+  "components/form-system/a3s-flow/start.html",
+  "en/components/form-system/a3s-flow/start.html",
+  "playground/forms/index.html",
   "v0.2.0/index.html",
   "v0.2.0/en/index.html",
   "v0.1.0/index.html",
@@ -223,6 +227,7 @@ const homepageExpectations = [
       "复制安装命令",
       "npm install @a3s-lab/ui",
       "从一个控件，到整个工作台。",
+      "结构化表单",
       "公开组件组合",
       "data-a3s-customizer",
       'data-mobile-expanded="false"',
@@ -242,6 +247,7 @@ const homepageExpectations = [
       "Copy install command",
       "npm install @a3s-lab/ui",
       "From one control to a complete workspace.",
+      "Structured forms",
       "PUBLIC COMPONENT COMPOSITION",
       "data-a3s-customizer",
       'aria-live="polite"',
@@ -1205,6 +1211,54 @@ for (const file of requiredFiles) {
   await access(path.join(outputRoot, file));
 }
 
+if ((await readdir(outputRoot)).includes("form")) {
+  throw new Error("The built site still publishes the removed standalone /UI/form/ site.");
+}
+
+const integratedFormExpectations = [
+  {
+    file: "components/form-system/index.html",
+    markers: [
+      "Form 系统",
+      "@a3s-lab/ui/form/core",
+      "@a3s-lab/ui/form/react-hooks",
+      "@a3s-lab/ui/form/vue-hooks",
+      'href="https://a3s-lab.github.io/UI/playground/forms/"',
+    ],
+  },
+  {
+    file: "en/components/form-system/index.html",
+    markers: [
+      "Form system",
+      "@a3s-lab/ui/form/core",
+      "@a3s-lab/ui/form/react-hooks",
+      "@a3s-lab/ui/form/vue-hooks",
+      'href="https://a3s-lab.github.io/UI/playground/forms/"',
+    ],
+  },
+  {
+    file: "components/form-system/framework-hooks.html",
+    markers: ["React Hook Form", "Vue composables", "useA3SFieldArray"],
+  },
+  {
+    file: "en/components/form-system/framework-hooks.html",
+    markers: ["React Hook Form", "Vue composables", "useA3SFieldArray"],
+  },
+  {
+    file: "playground/forms/index.html",
+    markers: ["A3S UI · Form Playground"],
+  },
+];
+
+for (const expectation of integratedFormExpectations) {
+  const html = await readFile(path.join(outputRoot, expectation.file), "utf8");
+  for (const marker of expectation.markers) {
+    if (!html.includes(marker)) {
+      throw new Error(`${expectation.file} is missing integrated Form marker: ${marker}`);
+    }
+  }
+}
+
 const logoDigest = createHash("sha256")
   .update(await readFile(path.join(outputRoot, "logo.png")))
   .digest("hex");
@@ -1456,11 +1510,17 @@ for (const mdxFile of mdxFiles) {
   const sourcePreviewCount = (source.match(/<Preview\b/g) ?? []).length;
   const builtFile = builtPathForMdx(mdxFile);
   const sourceParts = path.relative(docsRoot, mdxFile).split(path.sep);
+  const isStructuredFormGuide =
+    sourceParts[0] === "next" &&
+    ["en", "zh"].includes(sourceParts[1]) &&
+    sourceParts[2] === "components" &&
+    sourceParts[3] === "form-system";
   const isVersionedComponentGuide =
     ["next", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
     ["en", "zh"].includes(sourceParts[1]) &&
     sourceParts[2] === "components" &&
-    sourceParts[3] !== "index.mdx";
+    sourceParts[3] !== "index.mdx" &&
+    !isStructuredFormGuide;
   const isHarnessLayoutGuide =
     sourceParts[0] === "next" &&
     ["en", "zh"].includes(sourceParts[1]) &&

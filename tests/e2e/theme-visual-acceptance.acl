@@ -200,15 +200,15 @@ suite "a3s-ui-theme-visual-acceptance" {
         }
 
         expect "syntax-highlighted-code-visible" {
-            visible = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .shiki .line > span[style*='--shiki-token']")
+            visible = css(".rp-doc > .rp-codeblock .shiki .line > span[style*='--shiki-token']")
         }
 
         expect "code-copy-control-visible" {
-            visible = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .rp-code-copy-button[title='Copy code']")
+            visible = css(".rp-doc > .rp-codeblock .rp-code-copy-button[title='Copy code']")
         }
 
         hover "reveal-code-controls" {
-            target = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type")
+            target = css(".rp-doc > .rp-codeblock")
         }
 
         screenshot "code-documentation-evidence" {
@@ -216,7 +216,7 @@ suite "a3s-ui-theme-visual-acceptance" {
         }
 
         click "copy-highlighted-code" {
-            target = css(".a3s-steps > .a3s-step:first-child .rp-codeblock:first-of-type .rp-code-copy-button[title='Copy code']")
+            target = css(".rp-doc > .rp-codeblock .rp-code-copy-button[title='Copy code']")
         }
 
         screenshot "code-copy-feedback-evidence" {

@@ -1,0 +1,95 @@
+import { A3SFlowNodeDemo } from '../../../../../../theme/mdx/form/A3SFlowNodeDemo';
+
+# Run Step Batch
+
+> [!IMPORTANT]
+> This page documents the eight-node A3S Flow `0.4.2` compatibility API for migration only. New editors should use the [Flow 1.0 DAG-node contract](/components/form-system/workflow-node-embedding) and `A3SFlowDagNodeConfigurationPanel`.
+
+`flow.batch` runs a non-empty list of steps in order and collects their results; execution is currently serial rather than parallel.
+
+<A3SFlowNodeDemo nodeType="flow.batch" />
+
+## Developer contract
+
+| Contract | Value |
+| --- | --- |
+| Category | Task execution |
+| Runtime binding | `schedule_steps` |
+| A3S Flow command | `ScheduleSteps` |
+| Stable command ID | Immutable graph node ID plus `step_key` |
+| A3S Flow version | `0.4.2` |
+
+## Use in MDX
+
+Each table row writes directly to the `steps` configuration; row-only UI metadata is not serialized.
+
+```mdx
+import { A3SFlowNodeDemo } from '../../../../../../theme/mdx/form/A3SFlowNodeDemo';
+
+<A3SFlowNodeDemo nodeType="flow.batch" />
+```
+
+## Configuration properties
+
+The node has one required `steps` table. Every member uses the following properties.
+
+| Member property | Value type | Required | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `step_key` | `string` | Yes | — | Non-empty and unique within the batch. |
+| `step_name` | `string` | Yes | — | Task registered by the integrating system. |
+| `input_mapping` | Flow expression | Yes | Field `input` | Resolved before scheduling. |
+| `max_attempts` | Integer `1..100` | Yes | `3` | Includes the first execution. |
+| `retry_delay_ms` | Integer `0..86400000` | Yes | `0` | Durable delay between attempts. |
+| `on_exhausted` | `fail_run \| continue_workflow` | Yes | `fail_run` | Controls recoverable batch ports. |
+
+## Ports
+
+| Direction | ID | Label | Kind | Types | Availability |
+| --- | --- | --- | --- | --- | --- |
+| Input | `in` | In | Control | `FlowControl` | Always |
+| Input | `input` | Input | Data | `JsonValue` | Always |
+| Output | `done` | Done | Control | `FlowControl` | Always |
+| Output | `results` | Results | Data | `JsonValue[]` | Always |
+| Output | `recoverable_failure` | Recoverable failure | Control | `FlowControl` | At least one member continues workflow |
+| Output | `errors` | Recoverable errors | Data | `String[]` | At least one member continues workflow |
+
+## Configuration value
+
+```json
+{
+  "steps": [
+    {
+      "step_key": "load-record",
+      "step_name": "records.load",
+      "input_mapping": {
+        "apiVersion": "a3s.dev/flow-expression/v1",
+        "expression": { "op": "field", "path": "input.recordId" }
+      },
+      "max_attempts": 3,
+      "retry_delay_ms": 500,
+      "on_exhausted": "fail_run"
+    },
+    {
+      "step_key": "write-audit",
+      "step_name": "audit.write",
+      "input_mapping": {
+        "apiVersion": "a3s.dev/flow-expression/v1",
+        "expression": { "op": "field", "path": "input.requestId" }
+      },
+      "max_attempts": 2,
+      "retry_delay_ms": 1000,
+      "on_exhausted": "continue_workflow"
+    }
+  ]
+}
+```
+
+## Validation and runtime contract
+
+- Form validation checks table and member property shapes.
+- Node validation rejects an empty batch, non-object members, empty or duplicate keys, empty handler names, invalid expressions, retry ranges, and unavailable connected ports.
+- `recoverable_failure` and `errors` are available only when at least one member uses `continue_workflow`.
+- The host resolves every handler and derives a durable member ID from the immutable graph node ID plus `step_key`.
+- When resuming a saved workflow, member order and keys must stay the same. Changing a key changes the durable command identity.
+
+Related nodes: [Run Step](/components/form-system/a3s-flow/step), [Condition](/components/form-system/a3s-flow/condition), and [Complete](/components/form-system/a3s-flow/complete).

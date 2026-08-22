@@ -16,8 +16,8 @@
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/UI/form/">Documentation</a> ·
-  <a href="https://a3s-lab.github.io/UI/form/playground/">Live Playground</a> ·
+  <a href="https://a3s-lab.github.io/UI/components/form-system/">Documentation</a> ·
+  <a href="https://a3s-lab.github.io/UI/playground/forms/">Live Playground</a> ·
   <a href="#quick-start">Quick Start</a> ·
   <a href="#capabilities">Capabilities</a> ·
   <a href="#architecture">Architecture</a> ·
@@ -36,8 +36,8 @@
 
 The hosted documentation and Playground are available at:
 
-- [Documentation](https://a3s-lab.github.io/UI/form/)
-- [Live Playground](https://a3s-lab.github.io/UI/form/playground/)
+- [Documentation](https://a3s-lab.github.io/UI/components/form-system/)
+- [Live Playground](https://a3s-lab.github.io/UI/playground/forms/)
 
 For local development, install Git and Node.js 20 or newer. The deployment scripts install the root lockfile, build the unified package and Form Playground, and start a local server at `http://127.0.0.1:4176`.
 
@@ -107,7 +107,7 @@ const [dagNode, setDagNode] = useState(() =>
 />
 ```
 
-See the [A3S Flow DAG-node configuration guide](https://a3s-lab.github.io/UI/form/next/guide/workflow-node-embedding) for the ownership boundary, manifest registry, React API, structural validation, semantic digest, and migration path. `A3SFlowNodeConfigurationPanel`, `A3SFlowNodePreview`, and the eight-node 0.4.2 catalog remain available for migration, but are no longer the primary editor contract.
+See the [A3S Flow DAG-node configuration guide](https://a3s-lab.github.io/UI/components/form-system/workflow-node-embedding) for the ownership boundary, manifest registry, React API, structural validation, semantic digest, and migration path. `A3SFlowNodeConfigurationPanel`, `A3SFlowNodePreview`, and the eight-node 0.4.2 catalog remain available for migration, but are no longer the primary editor contract.
 
 Core invariants:
 
@@ -279,17 +279,17 @@ The development compiler enforces [A3S Form Schema Profile 1](docs/schema-profil
 
 [Editable data grids](docs/data-grids.md) present an object repeater as a semantic table on desktop and labeled row cards in narrow embedded containers. Columns, row actions, validation, rules, host-owned data sources, bounded TSV append, and visible-selection fill-down keep the same metadata-free controlled value contract.
 
-[Matrix fields](https://a3s-lab.github.io/UI/form/next/guide/matrix-fields) bind explicit rows and columns to an object Schema. Single-choice rows emit one JSON primitive, multiple-choice rows emit primitive arrays, and the Renderer switches from a semantic table to row cards according to the embedding container width.
+[Matrix fields](https://a3s-lab.github.io/UI/components/form-system/matrix-fields) bind explicit rows and columns to an object Schema. Single-choice rows emit one JSON primitive, multiple-choice rows emit primitive arrays, and the Renderer switches from a semantic table to row cards according to the embedding container width.
 
 [Multi-page wizards](docs/wizards.md) provide visible-rule branches, page-scoped validation, progress, review, earlier-page error recovery, and digest-bound host checkpoints. Navigation state stays outside submitted values and remains controlled across React, Vue, Web Components, and Designer preview.
 
 [Built-in fields](docs/built-in-fields.md) define the value, Schema, UI properties, keyboard behavior, limits, and host boundaries for all 23 widgets. The versioned Chinese documentation renders the real controlled components through MDX.
 
-[Layout components](https://a3s-lab.github.io/UI/form/next/guide/layouts) document and render the grid, two-column, three-column, card, tabs, collapse, content, divider, and spacer contracts. The [wizard guide](https://a3s-lab.github.io/UI/form/next/guide/wizards) includes a live page-validation and review flow.
+[Layout components](https://a3s-lab.github.io/UI/components/form-system/layouts) document and render the grid, two-column, three-column, card, tabs, collapse, content, divider, and spacer contracts. The [wizard guide](https://a3s-lab.github.io/UI/components/form-system/wizards) includes a live page-validation and review flow.
 
-[File upload](https://a3s-lab.github.io/UI/form/next/guide/file-upload) defines the closed JSON reference, typed host service, Designer settings, upload lifecycle, accessibility behavior, and security boundary for React, Vue, and Web Components.
+[File upload](https://a3s-lab.github.io/UI/components/form-system/file-upload) defines the closed JSON reference, typed host service, Designer settings, upload lifecycle, accessibility behavior, and security boundary for React, Vue, and Web Components.
 
-[Signature](https://a3s-lab.github.io/UI/form/next/guide/signature) captures bounded pointer strokes or a typed signing name in browser memory while a typed host service owns storage, authorization, atomic replacement, deletion, preview, and audit. Controlled values contain only a closed single-reference array.
+[Signature](https://a3s-lab.github.io/UI/components/form-system/signature) captures bounded pointer strokes or a typed signing name in browser memory while a typed host service owns storage, authorization, atomic replacement, deletion, preview, and audit. Controlled values contain only a closed single-reference array.
 
 <a id="embedding"></a>
 
@@ -393,19 +393,19 @@ npm run form:check
 
 ## GitHub Pages
 
-Every push to `main` runs [the Pages workflow](../../.github/workflows/pages.yml), builds the versioned documentation and Playground, combines both static outputs, and deploys them through GitHub Actions.
+Every push to `main` runs [the Pages workflow](../../.github/workflows/pages.yml), builds the unified A3S UI documentation and Form Playground, combines the static outputs under the shared site, and deploys them through GitHub Actions.
 
-- Site: <https://a3s-lab.github.io/UI/form/>
-- English: <https://a3s-lab.github.io/UI/form/en/>
-- Playground: <https://a3s-lab.github.io/UI/form/playground/>
+- Site: <https://a3s-lab.github.io/UI/components/form-system/>
+- English: <https://a3s-lab.github.io/UI/en/components/form-system/>
+- Playground: <https://a3s-lab.github.io/UI/playground/forms/>
 
-The Rspress site keeps stable and preview documentation versioned in both Chinese and English. Chinese is the default language.
+The Form guides follow A3S UI's bilingual versioned documentation contract. Chinese is the default language; no standalone Form documentation site is published.
 
 ## Repository Layout
 
 ```text
 modules/form/apps/playground/  runnable product workspace and form designer
-modules/form/apps/docs/        versioned documentation site
+site/docs/next/*/components/form-system/  unified bilingual component guides
 modules/form/src/core/         documents, compiler, patches, expressions, state, and WASM
 modules/form/src/react/        Designer, Renderer, control system, and custom node registry
 modules/form/src/adapters/     A3S Cloud host adapter

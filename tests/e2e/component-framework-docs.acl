@@ -79,6 +79,7 @@ suite "a3s-ui-component-framework-docs" {
         expect "mobile-dark-action-matches-icon" { visible = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] button[data-preview-control=appearance][data-preview-target=dark] svg[data-preview-icon=theme-dark]") }
         expect "mobile-rtl-action-matches-icon" { visible = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] button[data-preview-control=direction][data-preview-target=rtl] [data-preview-icon=direction-rtl]") }
         click "show-integration" { target = role("button", "展开接入代码") }
+        focus "react-tab-in-view" { target = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration [role=tab][id$='-react-tab']") }
         click "react" { target = role("tab", "React") }
         expect "controller-hook" { text = "useAgentComposer" }
         expect "editor-hook" { text = "useAgentComposerEditor" }

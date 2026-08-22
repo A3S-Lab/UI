@@ -20,7 +20,8 @@ suite "a3s-ui-actions-and-forms" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "group-visible" { visible = css(".a3s-preview[data-preview-component=button-group] .btn + .btn") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-group-menu" { target = css("#dropdown-menu-609880-trigger") }
+        focus "group-menu-trigger-in-view" { target = css("#dropdown-menu-609880-trigger") }
+        press "open-group-menu" { key = "Enter" }
         expect "group-menu-open" { visible = css("#dropdown-menu-609880-popover[aria-hidden=false]") }
         screenshot "button-group-phone-open" { path = "components/button-group-phone-open.png" }
         press "close-group-menu" { key = "Escape" }
@@ -92,9 +93,11 @@ suite "a3s-ui-actions-and-forms" {
         fill "filter-panel-command" { target = css("[data-workbench-command-input]") value = "panel" }
         click "toggle-panel-command" { target = css("[data-workbench-command=toggle-panel]") }
         expect "panel-closed" { visible = css(".monaco-workbench[data-panel-open=false]") }
-        click "reopen-panel" { target = css(".monaco-workbench__statusbar button[aria-label='Toggle bottom panel']") }
+        focus "panel-toggle-in-view" { target = css(".monaco-workbench__statusbar button[aria-label='Toggle bottom panel']") }
+        press "reopen-panel" { key = "Enter" }
         expect "panel-reopened" { visible = css(".monaco-workbench[data-panel-open=true] [data-workbench-panel]") }
-        click "open-runtime-model" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
+        focus "runtime-model-tab-in-view" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
+        press "open-runtime-model" { key = "Enter" }
         expect "runtime-model-active" { visible = css(".monaco-workbench[data-active-file='config/runtime.json']") }
         screenshot "monaco-workbench" { path = "components/code-editor-monaco.png" }
         wait "interactive-ready" { visible = css("#code-editor-demo[data-code-editor-initialized=true]") }
@@ -141,10 +144,10 @@ suite "a3s-ui-actions-and-forms" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        check "accept-terms" { target = label("Accept terms and conditions") }
-        expect "checked" { visible = css("#terms-checkbox:checked") }
-        click "clear-prechecked-option" { target = css("#terms-checkbox-2") }
-        expect "prechecked-option-cleared" { visible = css("#terms-checkbox-2:not(:checked)") }
+        check "enable-desktop-notifications" { target = css("#release-desktop-en") }
+        expect "desktop-notifications-checked" { visible = css("#release-desktop-en:checked") }
+        click "disable-email-notifications" { target = css("#release-email-en") }
+        expect "email-notifications-cleared" { visible = css("#release-email-en:not(:checked)") }
     }
 
     scenario "radio-group" {

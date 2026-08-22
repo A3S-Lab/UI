@@ -74,19 +74,24 @@ suite "a3s-ui-product-resource-surfaces" {
         viewport "desktop-restored" { width = 1440 height = 1000 }
         navigate "restore" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
         wait "restored-loaded" { load = "networkidle" }
-        expect "connection-persisted" { visible = css(".product-connection[data-state=active][data-connected=true]") }
-        click "use-in-task" { target = role("button", "用于新任务") }
-        expect "document-context-attached" { visible = css("[data-composer-resources] [data-resource-id='connector:documents']") }
+        wait "connection-persisted" { visible = css(".product-connection[data-state=active][data-connected=true]") }
+        focus "focus-use-in-task" { target = css(".product-connection__actions button[data-primary]") }
+        press "use-in-task" { key = "Enter" }
+        wait "document-context-attached" { visible = css("[data-composer-resources] [data-resource-id='connector:documents']") }
 
         navigate "return" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
         wait "return-loaded" { load = "networkidle" }
-        click "disconnect" { target = role("button", "断开") }
-        expect "disconnect-dialog" { visible = css(".product-connection__dialog[open]") }
-        click "cancel-disconnect" { target = role("button", "取消") }
+        focus "focus-disconnect" { target = css(".product-connection__actions button[data-danger]") }
+        press "disconnect" { key = "Enter" }
+        wait "disconnect-dialog" { visible = css(".product-connection__dialog[open]") }
+        focus "focus-cancel-disconnect" { target = css(".product-connection__dialog[open] footer button:first-child") }
+        press "cancel-disconnect" { key = "Enter" }
         expect "disconnect-focus-restored" { visible = css(".product-connection__actions button[data-danger]:focus") }
-        click "disconnect-again" { target = role("button", "断开") }
-        click "confirm-disconnect" { target = role("button", "确认断开") }
-        expect "connection-cleared" { visible = css(".product-connection[data-state=inactive][data-connected=false]") }
+        press "disconnect-again" { key = "Enter" }
+        wait "disconnect-dialog-again" { visible = css(".product-connection__dialog[open]") }
+        focus "focus-confirm-disconnect" { target = css(".product-connection__dialog[open] footer button[data-danger]") }
+        press "confirm-disconnect" { key = "Enter" }
+        wait "connection-cleared" { visible = css(".product-connection[data-state=inactive][data-connected=false]") }
 
         console "console" { path = "product/document-connection-console.json" clear = false }
         page_errors "page-errors" { path = "product/document-connection-page-errors.json" clear = false }

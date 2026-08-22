@@ -35,7 +35,7 @@ describe('Playground WorkspaceView', () => {
     expect(workspace.getAttribute('data-navigation')).toBe('expanded');
     expect(
       screen
-        .getByRole('complementary', { name: 'A3S Form 导航' })
+        .getByRole('complementary', { name: 'A3S UI Form Playground 导航' })
         .hasAttribute('data-app-navigation'),
     ).toBe(true);
     expect(workspace.querySelector('[data-app-main]')).toBeTruthy();

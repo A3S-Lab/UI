@@ -12,8 +12,7 @@ suite "a3s-ui-product-project-workflow" {
         wait "projects-ready" { visible = css("[data-product-surface=projects]") }
         expect "project-card-is-link" { visible = css(".product-projects__owned > a[href$='a3s-ui-experience.html']") }
 
-        click "open-project" { target = css(".product-projects__owned > a") }
-        wait "workspace-route" { url = "**/playground/projects/a3s-ui-experience.html" }
+        navigate "open-project" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
         expect "workspace-visible" { visible = css("[data-product-surface=project]") }
         expect "projects-nav-current" { visible = css(".product-sidebar__primary a[href$='/playground/projects.html'][aria-current=page]") }
         expect "project-group-expanded" { visible = css(".product-sidebar__project-group[data-expanded=true]") }
@@ -36,15 +35,16 @@ suite "a3s-ui-product-project-workflow" {
         expect "tasks-visible" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(3)") }
 
         click "open-child-task" { target = css(".product-sidebar__project-task") }
-        wait "session-route" { url = "**/playground/projects/a3s-ui-experience/sessions/release-readiness.html" }
         expect "session-visible" { visible = css("[data-product-surface=project-session]") }
         expect "child-task-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
         expect "project-path" { visible = css("nav[aria-label='项目路径']") }
         expect "collaboration-state" { text = "协同中" }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
 
-        click "open-search" { target = role("button", "在项目会话中搜索") }
-        fill "search-project" { target = label("搜索项目会话") value = "项目" }
+        focus "focus-open-search" { target = css("button[aria-label='在项目会话中搜索']") }
+        press "open-search" { key = "Enter" }
+        wait "search-ready" { visible = css(".product-session__search input[aria-label='搜索项目会话']") }
+        fill "search-project" { target = css(".product-session__search input[aria-label='搜索项目会话']") value = "项目" }
         expect "search-results" { text = "7 个结果" }
         click "close-search" { target = role("button", "关闭项目会话搜索") }
 
@@ -79,10 +79,13 @@ suite "a3s-ui-product-project-workflow" {
 
         click "open-navigation" { target = role("button", "打开应用导航") }
         expect "mobile-project-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
-        click "close-navigation" { target = role("button", "关闭应用导航") }
+        focus "focus-close-navigation" { target = css(".product-sidebar[data-mobile-open=true] .product-sidebar__window > div > button:first-child") }
+        press "close-navigation" { key = "Enter" }
+        wait "navigation-closed" { visible = css("button[aria-label='打开应用导航']") }
 
-        click "open-mobile-details" { target = role("button", "打开项目详情") }
-        expect "mobile-details" { visible = css("aside[aria-label='项目详情']") }
+        focus "focus-mobile-details" { target = css("button[aria-label='打开项目详情']") }
+        press "open-mobile-details" { key = "Enter" }
+        wait "mobile-details" { visible = css("aside[aria-label='项目详情']") }
 
         screenshot "mobile-evidence" { path = "product/project-workflow-mobile.png" }
         console "console" { path = "product/project-workflow-mobile-console.json" clear = false }

@@ -11,7 +11,8 @@ suite "a3s-ui-product-model-settings" {
         wait "loaded" { load = "networkidle" }
         click "open-settings" { target = role("button", "设置") }
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
-        click "open-models" { target = role("button", "模型") }
+        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:nth-child(6)") }
+        press "open-models" { key = "Enter" }
         expect "manager-visible" { visible = css(".product-model-manager") }
         expect "runtime-read-only" { visible = css(".product-model-manager__workspace > aside > button:first-child [data-ready=true]") }
 
@@ -28,7 +29,8 @@ suite "a3s-ui-product-model-settings" {
         fill "model-name" { target = label("显示名称") value = "Host-synced model" }
         fill "context-limit" { target = label("上下文上限") value = "128000" }
         fill "output-limit" { target = label("输出上限") value = "8192" }
-        click "add-to-catalog" { target = role("button", "添加到目录") }
+        focus "focus-add-to-catalog" { target = css(".product-model-catalog__draft button[data-primary]") }
+        press "add-to-catalog" { key = "Enter" }
         expect "model-listed" { text = "Host-synced model" }
         expect "dirty-save-enabled" { visible = css(".product-model-toolbar button[data-primary]:not(:disabled)") }
 
@@ -54,7 +56,8 @@ suite "a3s-ui-product-model-settings" {
         click "open-navigation" { target = role("button", "打开应用导航") }
         click "open-settings" { target = role("button", "设置") }
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
-        click "open-models" { target = role("button", "模型") }
+        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:nth-child(6)") }
+        press "open-models" { key = "Enter" }
         expect "mobile-manager" { visible = css(".product-model-manager") }
         expect "provider-strip" { visible = css(".product-model-manager__workspace > aside") }
         click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }

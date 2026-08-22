@@ -39,7 +39,8 @@ suite "a3s-ui-product-automation-and-preview" {
             target = css("select[aria-label='权限边界']")
             values = ["workspace-write"]
         }
-        click "interval-schedule" { target = role("button", "按间隔") }
+        focus "focus-interval-schedule" { target = css("[aria-label='执行频率类型'] button:nth-of-type(2)") }
+        press "interval-schedule" { key = "Enter" }
         select "interval" {
             target = css("select[aria-label='执行间隔']")
             values = ["12"]
@@ -139,7 +140,8 @@ suite "a3s-ui-product-automation-and-preview" {
             visible = css("[data-run-id='regression-watch-0818'][data-automation-run-state='failed']")
         }
 
-        click "retry" { target = role("button", "从失败步骤重试") }
+        focus "focus-retry" { target = css(".product-run-history__detail footer button") }
+        press "retry" { key = "Enter" }
         expect "all-filter-selected" {
             visible = css("[data-run-filter='all'][aria-pressed='true']")
         }
@@ -185,7 +187,8 @@ suite "a3s-ui-product-automation-and-preview" {
         expect "runtime-controls" {
             visible = css(".product-automation-builder__runtime select[aria-label='权限边界']")
         }
-        click "interval" { target = role("button", "按间隔") }
+        focus "focus-interval" { target = css("[aria-label='执行频率类型'] button:nth-of-type(2)") }
+        press "interval" { key = "Enter" }
         expect "anchor-control" {
             visible = css("input[aria-label='间隔锚点时间']")
         }

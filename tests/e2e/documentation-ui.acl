@@ -108,20 +108,32 @@ suite "a3s-ui-site-and-overlays" {
             load = "domcontentloaded"
         }
 
-        click "open-selection-group" {
+        focus "focus-selection-group" {
             target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与筛选'] > summary")
+        }
+
+        press "open-selection-group" {
+            key = "Enter"
         }
 
         expect "selection-link-visible" {
             visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='选择与筛选'][open] a[href='/UI/components/select.html']")
         }
 
-        click "open-harness-group" {
+        focus "focus-harness-group" {
             target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='Harness'] > summary")
         }
 
-        click "open-conversation-group" {
+        press "open-harness-group" {
+            key = "Enter"
+        }
+
+        focus "focus-conversation-group" {
             target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='会话与消息'] > summary")
+        }
+
+        press "open-conversation-group" {
+            key = "Enter"
         }
 
         expect "workbench-link-visible" {

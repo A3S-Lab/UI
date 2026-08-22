@@ -11,6 +11,7 @@ type MetadataItem = {
 };
 
 type MetadataGroup = {
+  componentCatalog: boolean;
   items: MetadataItem[];
   label: string;
   type: "custom-link";
@@ -96,6 +97,7 @@ function metadataGroups(value: unknown): MetadataGroup[] {
     return items.length > 0
       ? [
           {
+            componentCatalog: group.componentCatalog !== false,
             items,
             label: group.label,
             type: "custom-link" as const,
@@ -107,8 +109,9 @@ function metadataGroups(value: unknown): MetadataGroup[] {
 
 function localizedItems(language: CatalogLanguage) {
   const metadata = metadataByLanguage[language];
-  const componentItems = metadataGroups(metadata.components).flatMap(
-    (group, groupIndex) =>
+  const componentItems = metadataGroups(metadata.components)
+    .filter((group) => group.componentCatalog)
+    .flatMap((group, groupIndex) =>
       group.items.map((item) => ({
         filterKey: `components-${groupIndex}`,
         filterLabel: group.label,
@@ -116,7 +119,7 @@ function localizedItems(language: CatalogLanguage) {
         label: item.label,
         link: item.link,
       })),
-  );
+    );
   const harnessItems = metadataGroups(metadata.harness).flatMap((group) =>
     group.items
       .filter((item) => item.link.startsWith("components/"))
