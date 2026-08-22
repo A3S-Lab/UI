@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 import { DesignerIcon } from '../../../../modules/form/src/react/designer-icons';
 import './WorkflowStudioFrame.css';
@@ -17,6 +17,14 @@ interface WorkflowStudioFrameProps {
   title?: string;
 }
 
+const MIN_ZOOM = 0.7;
+const MAX_ZOOM = 1.3;
+const ZOOM_STEP = 0.1;
+
+function clampZoom(value: number): number {
+  return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Number(value.toFixed(1))));
+}
+
 export function WorkflowStudioFrame({
   inspector,
   locale,
@@ -32,6 +40,7 @@ export function WorkflowStudioFrame({
 }: WorkflowStudioFrameProps) {
   const chinese = locale.toLocaleLowerCase().startsWith('zh');
   const [uncontrolledPaletteOpen, setUncontrolledPaletteOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
   const paletteOpen = controlledPaletteOpen ?? uncontrolledPaletteOpen;
   const setPaletteOpen = (open: boolean) => {
     if (controlledPaletteOpen === undefined) setUncontrolledPaletteOpen(open);
@@ -50,6 +59,7 @@ export function WorkflowStudioFrame({
         zoomOut: '缩小画布',
         zoomIn: '放大画布',
         fit: '适应画布',
+        zoomControls: '画布缩放',
       }
     : {
         workflow: 'Workflow',
@@ -63,6 +73,7 @@ export function WorkflowStudioFrame({
         zoomOut: 'Zoom out',
         zoomIn: 'Zoom in',
         fit: 'Fit canvas',
+        zoomControls: 'Canvas zoom',
       };
 
   const openPanel = () => {
@@ -75,6 +86,7 @@ export function WorkflowStudioFrame({
       className="a3s-doc-workflow-studio"
       data-palette-open={paletteOpen}
       data-panel-open={panelOpen}
+      data-zoom={Math.round(zoom * 100)}
       aria-label={title ?? copy.workflow}
     >
       <header className="a3s-doc-workflow-studio__bar">
@@ -111,7 +123,11 @@ export function WorkflowStudioFrame({
 
       <div className="a3s-doc-workflow-studio__workspace">
         <div className="a3s-doc-workflow-studio__canvas" onDoubleClick={openPanel}>
-          <div className="a3s-doc-workflow-studio__node" onDoubleClick={(event) => event.stopPropagation()}>
+          <div
+            className="a3s-doc-workflow-studio__node"
+            style={{ '--workflow-studio-zoom': zoom } as CSSProperties}
+            onDoubleClick={(event) => event.stopPropagation()}
+          >
             <div
               className="a3s-doc-workflow-studio__node-actions"
               role="toolbar"
@@ -145,11 +161,34 @@ export function WorkflowStudioFrame({
             </aside>
           )}
 
-          <div className="a3s-doc-workflow-studio__zoom" role="group" aria-label={copy.fit}>
-            <button type="button" aria-label={copy.zoomOut}>−</button>
-            <span>100%</span>
-            <button type="button" aria-label={copy.zoomIn}>+</button>
-            <button type="button" aria-label={copy.fit}>
+          <div
+            className="a3s-doc-workflow-studio__zoom"
+            role="group"
+            aria-label={copy.zoomControls}
+          >
+            <button
+              type="button"
+              aria-label={copy.zoomOut}
+              disabled={zoom <= MIN_ZOOM}
+              onClick={() => setZoom((current) => clampZoom(current - ZOOM_STEP))}
+            >
+              −
+            </button>
+            <output aria-live="polite">{Math.round(zoom * 100)}%</output>
+            <button
+              type="button"
+              aria-label={copy.zoomIn}
+              disabled={zoom >= MAX_ZOOM}
+              onClick={() => setZoom((current) => clampZoom(current + ZOOM_STEP))}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              aria-label={copy.fit}
+              disabled={zoom === 1}
+              onClick={() => setZoom(1)}
+            >
               <DesignerIcon name="grid" size={14} />
             </button>
           </div>

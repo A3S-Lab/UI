@@ -149,7 +149,9 @@
   top: 176px;
   left: calc((100% - 416px) / 2);
   z-index: 2;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(var(--workflow-studio-zoom, 1));
+  transform-origin: top center;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .a3s-doc-workflow-studio:not([data-panel-open="true"]):not([data-palette-open="true"])
@@ -193,6 +195,26 @@
 .a3s-doc-workflow-studio__node-actions button:hover {
   background: var(--workflow-studio-panel);
   color: var(--workflow-studio-blue);
+}
+
+.a3s-doc-workflow-studio__node
+  .a3s-form-workflow-node-preview-port-list[data-direction="output"]
+  .a3s-form-workflow-node-preview-port:has(.a3s-form-workflow-node-preview-next) {
+  padding-right: 30px;
+}
+
+.a3s-doc-workflow-studio__node
+  .a3s-form-workflow-node-preview-port:has(.a3s-form-workflow-node-preview-next)
+  > i {
+  display: none;
+}
+
+.a3s-doc-workflow-studio__node .a3s-form-workflow-node-preview-next {
+  right: -12px;
+}
+
+.a3s-doc-workflow-studio__node .a3s-form-workflow-node-preview-next::before {
+  display: none;
 }
 
 .a3s-doc-workflow-studio__inspector {
@@ -529,7 +551,17 @@
   color: var(--workflow-studio-ink);
 }
 
-.a3s-doc-workflow-studio__zoom span {
+.a3s-doc-workflow-studio__zoom button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.a3s-doc-workflow-studio__zoom button:disabled:hover {
+  background: transparent;
+  color: var(--workflow-studio-muted);
+}
+
+.a3s-doc-workflow-studio__zoom output {
   min-width: 42px;
   color: var(--workflow-studio-muted);
   font-size: 10px;
