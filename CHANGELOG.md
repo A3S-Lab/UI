@@ -54,6 +54,7 @@
 
 ### Fixed
 
+- Made workflow documentation canvas zoom controls functional, focused node-library search on open, kept branch connection actions reachable beside the inspector, and captured deterministic evidence for every public node.
 - Kept container nodes fully visible beside the inspector in narrow documentation embeds and made the editor run regression use stable semantic state instead of transient copy.
 - Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group, documentation catalog, and every Playground search field; added focused desktop and phone regression evidence for each surface.
 - Aligned documentation Preview and Playground action icons with their next operation: fluid width no longer masquerades as a desktop preset, appearance and direction controls expose their target state, secret visibility uses eye/eye-off, and graph expansion uses expand/contract semantics.

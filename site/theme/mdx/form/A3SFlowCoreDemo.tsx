@@ -1,5 +1,5 @@
 import { useLang } from '@rspress/core/runtime';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE,
   type A3SFlowDagNodeManifest,
@@ -34,6 +34,7 @@ export function A3SFlowDagDemo() {
   const isEnglish = useLang() === 'en';
   const locale = isEnglish ? 'en-US' : 'zh-CN';
   const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const [dagNode, setDagNode] = useState(() =>
     createA3SFlowDagNode('docs-flow-step', requireA3SFlowDagNodeManifest(initialType)),
   );
@@ -70,10 +71,15 @@ export function A3SFlowDagDemo() {
     [filteredManifests, locale],
   );
 
+  useEffect(() => {
+    if (paletteOpen) searchRef.current?.focus();
+  }, [paletteOpen]);
+
   const selectNode = (nextType: string) => {
     const nextManifest = requireA3SFlowDagNodeManifest(nextType);
     const nextLabel = manifestLabel(nextManifest, locale);
     setDagNode(createA3SFlowDagNode(`docs-${nextType}`, nextManifest));
+    setQuery('');
     setPanelOpen(true);
     setPaletteOpen(false);
     setNodeStatus('idle');
@@ -116,9 +122,15 @@ export function A3SFlowDagDemo() {
           <header>
             <DesignerIcon name="search" size={16} />
             <input
+              ref={searchRef}
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== 'Escape') return;
+                event.preventDefault();
+                setPaletteOpen(false);
+              }}
               aria-label={isEnglish ? 'Search nodes' : '搜索节点'}
               placeholder={isEnglish ? 'Search nodes…' : '搜索节点…'}
             />
