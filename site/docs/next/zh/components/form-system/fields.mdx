@@ -1,0 +1,537 @@
+import { FieldDemo } from '../../../../../theme/mdx/form/FieldDemo';
+
+# 内置字段组件
+
+A3S Form 的字段由两部分组成：JSON Schema 负责值类型与校验，UI 节点负责控件、文案和展示方式。Renderer 只回传受控值，不保存业务数据，也不会替宿主执行网络请求。
+
+交互示例直接渲染仓库里的 `FormRenderer`，字段修改结果会以实际回传的 JSON 显示。
+
+## 通用属性
+
+所有字段节点都使用 `kind: "field"`，并通过 `schemaPath` 绑定 Schema。下列属性由 Renderer、Designer、Vue 适配器和 Web Component 共用。
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一的稳定标识 |
+| `kind` | `"field"` | 是 | 字段节点固定值 |
+| `schemaPath` | JSON Pointer | 是 | 指向字段 Schema，例如 `/properties/name` |
+| `widget` | `string` | 否 | 内置组件名；省略时按 `text` 渲染 |
+| `label` | `string` | 否 | 可见标题和无障碍名称；未设置时使用 `id` |
+| `description` | `string` | 否 | 标题与控件之间的补充说明 |
+| `placeholder` | `string` | 否 | 文本类控件的输入提示，不代替 `label` |
+| `width` | `1–12` | 否 | 在 12 列布局中占用的列数，默认 `12` |
+| `options` | `UiOption[]` | 按组件 | 单选、多选和下拉选项；值必须与 Schema 一致 |
+| `customProps` | `JsonObject` | 按组件 | 金额、滑块等组件的专属配置 |
+| `matrix` | `UiMatrixDefinition` | 按组件 | 单选与多选矩阵的稳定行列配置 |
+| `dataSource` | `string` | 否 | 绑定宿主提供的动态选项源 |
+| `readOnly` | `boolean` | 否 | 标记只读用途；整个表单的只读状态由宿主控制 |
+
+`UiOption` 的结构为 `{ label, value, disabled? }`。`value` 只能是 JSON 基础类型，不能放函数或组件实例。
+
+Designer 开启数组字段的“必填字段”时，会同时把字段加入父级 `required`，并保证 `minItems` 至少为 `1`。关闭后 `minItems` 恢复为 `0`，避免空数组在界面标记为必填后仍通过校验。
+
+## Designer 配置面板
+
+Designer 为 38 个生产节点维护统一的 UX profile。节点选中后，面板顶部显示组件类型、分类、用途、字段绑定和当前状态；内容与常用行为直接展示，组件类型、初始值、字段契约和画布位置收进“高级配置”。矩阵、选项集合、数据表格和宿主组件自动使用更宽的任务面板。
+
+配置面板使用 `@a3s-lab/ui@0.3.0` 的语义结构，Form 只补充节点级布局：
+
+| 界面区域 | A3S UI 契约 |
+| --- | --- |
+| 右侧面板 | `task-pane`、`tabs` |
+| 节点摘要与数据源摘要 | `item`、`badge`、`btn` |
+| 常用与高级设置 | `field`、`input`、`textarea`、`select`、`accordion` |
+| 选项与矩阵编辑器 | `item-group`、`item`、`btn` |
+
+Schema 允许默认值时，属性面板提供与值类型匹配的控件。密码、文件上传、签名和矩阵不会显示不合适的默认值输入。单选默认值来自稳定提交值，多选默认值保存为同类型数组。
+
+扩展组件应使用 Form 提供的 Inspector primitives。它们会为原生控件补上 A3S UI 的 `field`、`input`、`textarea`、`select`、`accordion` 和开关契约，不需要单独复制面板样式。
+
+| 组件 | 主要属性 | 用途 |
+| --- | --- | --- |
+| `FormInspectorControl` | `label`、`hint`、单个原生控件 | 生成标签关联，并为输入控件补齐 A3S UI class |
+| `FormInspectorSection` | `title`、`description`、`collapsible`、`summary` | 组织一个完整设置区；低频内容可折叠 |
+| `FormInspectorSettingGroup` | `title`、`collapsible`、`summary` | 在设置区内组织相关参数 |
+| `FormInspectorToggle` | `label`、`checked`、`onChange` | 使用 A3S UI 开关语义编辑布尔值 |
+
+```tsx
+import {
+  FormInspectorControl,
+  FormInspectorToggle,
+  type FormNodeInspectorProps,
+} from '@a3s-lab/ui/form/react';
+
+function Inspector({ node, onUpdateNode }: FormNodeInspectorProps) {
+  return (
+    <>
+      <FormInspectorControl label="编辑区高度">
+        <select
+          value={Number(node.customProps?.rows ?? 10)}
+          onChange={(event) =>
+            onUpdateNode({
+              customProps: { ...node.customProps, rows: Number(event.target.value) },
+            })
+          }
+        >
+          <option value="6">紧凑</option>
+          <option value="10">标准</option>
+          <option value="16">展开</option>
+        </select>
+      </FormInspectorControl>
+      <FormInspectorToggle
+        label="显示行号"
+        checked={node.customProps?.lineNumbers === true}
+        onChange={(lineNumbers) =>
+          onUpdateNode({ customProps: { ...node.customProps, lineNumbers } })
+        }
+      />
+    </>
+  );
+}
+```
+
+## Designer 中的选项配置
+
+`select`、`radio` 和 `multi-select` 使用结构化选项编辑器。显示标签可以修改，提交值保持独立，排序和改名不会改变已经保存的值。
+
+| 操作 | UI 节点变化 | Schema 变化 |
+| --- | --- | --- |
+| 修改标签 | 只更新 `label` | `enum` 保持不变 |
+| 调整顺序 | 调整 `options` 顺序，保留每项 `value` | `enum` 按相同顺序同步 |
+| 停用选项 | 设置 `disabled: true`，不再接受新的选择 | 保留对应 `enum` 值，已有数据仍可校验 |
+| 删除选项 | 删除完整选项 | 删除对应 `enum` 值 |
+| 添加选项 | 生成与现有选项同类型的新值 | 将新值加入 `enum` |
+
+批量编辑按行修改标签。已有行按位置保留提交值；新增行获得新的稳定值；删除行会同时删除选项和 Schema 枚举值。需要保留历史数据时，应停用选项而不是删除。
+
+组件选择器按值结构分组。切换到不同值结构的组件会重建字段 Schema，发布前应检查编译结果和现有受控值。
+
+```ts
+const node = {
+  id: 'name',
+  kind: 'field',
+  label: '任务名称',
+  widget: 'text',
+  schemaPath: '/properties/name',
+  width: 6,
+};
+```
+
+## 组件速查
+
+| `widget` | 受控值 | 推荐 Schema | 专属属性 |
+| --- | --- | --- | --- |
+| `text` | `string` | `type: "string"` | `placeholder` |
+| `textarea` | `string` | `type: "string"` | `placeholder` |
+| `number` | `number \| null` | `type: "number"` | `minimum`、`maximum`、`multipleOf` |
+| `email` | `string` | `type: "string", format: "email"` | `placeholder` |
+| `password` | `string` | `type: "string"` | `minLength`、`maxLength` |
+| `date` | `string` | `type: "string", format: "date"` | — |
+| `url` | `string` | `type: "string", format: "uri"` | `placeholder` |
+| `tel` | `string` | `type: "string"` | `pattern`、`placeholder` |
+| `date-time` | UTC `string` | `type: "string", format: "date-time"` | — |
+| `time` | UTC `string` | `type: "string", format: "time"` | — |
+| `select` | `JsonPrimitive` | `enum` 与 `options` 对齐 | `options`、`dataSource` |
+| `radio` | `JsonPrimitive` | `enum` 与 `options` 对齐 | `options` |
+| `checkbox` | `boolean` | `type: "boolean"` | — |
+| `switch` | `boolean` | `type: "boolean"` | — |
+| `multi-select` | `JsonPrimitive[]` | `type: "array"` | `options`、`minItems`、`maxItems` |
+| `matrix-single` | `Record<string, JsonPrimitive>` | 对象及逐行 `enum` | `matrix.rows`、`matrix.columns` |
+| `matrix-multiple` | `Record<string, JsonPrimitive[]>` | 对象及逐行数组 Schema | `matrix.rows`、`matrix.columns` |
+| `tags` | `string[]` | 字符串数组 | `minItems`、`maxItems` |
+| `currency` | `number \| null` | `type: "number"` | `customProps.currency`、`customProps.step` |
+| `rating` | `number` | `minimum: 1`、`maximum: 1..10` | `options` 可覆盖默认等级 |
+| `slider` | `number` | `minimum`、`maximum` | `customProps.step` |
+| `hidden` | `JsonValue` | 与业务值一致 | 无可见控件 |
+| `calculated` | `JsonValue` | 与计算结果一致 | 通常配合 `computed` 规则 |
+
+## 文本输入
+
+### 单行文本 `text`
+
+适合名称、标识和短标题。长度、格式和正则约束都放在 Schema 中。
+
+<FieldDemo widget="text" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", minLength?, maxLength?, pattern? }` |
+| UI 属性 | `placeholder` |
+| 键盘 | 使用浏览器原生文本输入行为 |
+
+### 多行文本 `textarea`
+
+适合备注和说明。长文本应设置合理的 `maxLength`，避免把大段文件内容塞进表单值。
+
+<FieldDemo widget="textarea" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", maxLength? }` |
+| UI 属性 | `placeholder` |
+| 注意 | 换行符会原样保留在受控值中 |
+
+### 数字 `number`
+
+输入为空时回传 `null`，有值时回传 JavaScript `number`。范围和步长约束以 Schema 为准。
+
+<FieldDemo widget="number" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `number \| null` |
+| Schema | `{ type: "number", minimum?, maximum?, multipleOf? }` |
+| 注意 | 高精度小数和超大整数应改用字符串或宿主专用组件 |
+
+### 邮箱 `email`
+
+使用原生邮箱输入能力，并由 Schema Profile 的 `email` 格式完成一致校验。
+
+<FieldDemo widget="email" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", format: "email" }` |
+| 移动端 | 浏览器可显示邮箱键盘 |
+
+### 密码 `password`
+
+只负责遮挡输入，不等于加密。不要把长期凭证写入表单文档、默认值、日志或截图。
+
+<FieldDemo widget="password" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", minLength?, maxLength? }` |
+| 安全边界 | 受控值仍会交给宿主；传输、存储和脱敏由宿主负责 |
+
+### 日期 `date`
+
+只表示日历日期，不带时区。
+
+<FieldDemo widget="date" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `YYYY-MM-DD` 字符串 |
+| Schema | `{ type: "string", format: "date" }` |
+| 注意 | 不要用它表示某个精确时刻 |
+
+### 网址 `url`
+
+适合回调地址、资料链接和服务端点。浏览器输入类型为 `url`，Schema 使用 `uri` 格式。
+
+<FieldDemo widget="url" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", format: "uri" }` |
+| UI 属性 | `placeholder` |
+
+```json
+{
+  "schema": { "type": "string", "format": "uri" },
+  "ui": { "widget": "url", "placeholder": "https://example.com" }
+}
+```
+
+### 电话 `tel`
+
+电话格式因国家和业务场景不同，组件不擅自改写号码。需要固定格式时，在 Schema 中加入 `pattern`。
+
+<FieldDemo widget="tel" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string` |
+| Schema | `{ type: "string", pattern? }` |
+| 移动端 | 浏览器可显示电话键盘 |
+| 注意 | 国际区号、分机号和格式化策略由产品决定 |
+
+## 时间
+
+### 日期时间 `date-time`
+
+控件明确显示 UTC。带偏移量的受控值会先换算到 UTC，用户修改后写回带 `Z` 后缀的值。
+
+<FieldDemo widget="date-time" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | 例如 `2026-08-09T09:30:00Z` |
+| Schema | `{ type: "string", format: "date-time" }` |
+| 输入 | 原生 `datetime-local`，秒级步长 |
+| 时区 | Renderer 只编辑 UTC；面向用户的本地时区转换应由宿主专用组件处理 |
+
+### 时间 `time`
+
+适合只关心一天中某个 UTC 时间点的配置，例如跨地区统一调度。带偏移量的值会换算到 UTC。
+
+<FieldDemo widget="time" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | 例如 `09:15:00Z` |
+| Schema | `{ type: "string", format: "time" }` |
+| 输入 | 原生 `time`，秒级步长 |
+| 注意 | “每天当地时间 9 点”需要同时保存 IANA 时区，不能只用本字段 |
+
+## 选择与集合
+
+### 下拉选择 `select`
+
+选项较多、用户只选一项时使用。静态 `options` 和 Schema `enum` 应保持一致；动态选项通过 `dataSource` 交给宿主加载。
+
+<FieldDemo widget="select" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string \| number \| boolean \| null` |
+| Schema | 与选项值类型一致，并声明 `enum` |
+| UI 属性 | `options` 或 `dataSource` |
+
+### 单选项 `radio`
+
+选项少且需要直接比较时使用。每项保留原生 radio 语义，方向键行为由浏览器提供。
+
+<FieldDemo widget="radio" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `JsonPrimitive` |
+| Schema | 与选项值类型一致，并声明 `enum` |
+| 键盘 | Tab 进入组，方向键切换，Space 选择 |
+
+### 复选框 `checkbox`
+
+用于确认一个独立布尔状态。
+
+<FieldDemo widget="checkbox" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| 语义 | 原生 checkbox；Space 切换 |
+
+### 开关 `switch`
+
+用于立即表达启用或关闭状态，语义为 `role="switch"`。如果切换会产生不可逆副作用，应改用明确的操作按钮和确认流程。
+
+<FieldDemo widget="switch" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| 语义 | `aria-checked` 与受控值同步 |
+
+### 多选 `multi-select`
+
+使用可扫描的复选选项面板，不依赖原生 `select[multiple]`。达到 `maxItems` 后，未选项会禁用；已选项仍可取消。
+
+<FieldDemo widget="multi-select" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `JsonPrimitive[]` |
+| Schema | 数组 `items.enum` 与选项值保持一致 |
+| UI 属性 | `options` 或 `dataSource` |
+| 限制 | `minItems`、`maxItems`、`uniqueItems` |
+
+```json
+{
+  "schema": {
+    "type": "array",
+    "items": { "type": "string", "enum": ["human", "agent", "reviewer"] },
+    "minItems": 1,
+    "maxItems": 2,
+    "uniqueItems": true
+  },
+  "ui": {
+    "widget": "multi-select",
+    "options": [
+      { "label": "人类成员", "value": "human" },
+      { "label": "Agent", "value": "agent" }
+    ]
+  }
+}
+```
+
+选项值通过严格相等比较，数字 `1` 与字符串 `"1"` 不会混为一项。
+
+### 标签 `tags`
+
+输入后按 Enter、逗号或“添加”提交。重复标签不会写入值；达到 `minItems` 时保留项的移除按钮会禁用。
+
+<FieldDemo widget="tags" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `string[]` |
+| Schema | `{ type: "array", items: { type: "string" }, uniqueItems: true }` |
+| 限制 | `minItems`、`maxItems` |
+| 去重 | 修剪首尾空白后区分大小写 |
+
+## 数值与业务展示
+
+### 金额 `currency`
+
+货币代码作为输入前缀展示，受控值仍是普通 `number`。它适合配置预算、阈值和报价，不替代财务系统的十进制定点数。
+
+<FieldDemo widget="currency" />
+
+```json
+{
+  "schema": { "type": "number", "minimum": 0, "maximum": 1000000 },
+  "ui": {
+    "widget": "currency",
+    "customProps": { "currency": "CNY", "step": 0.01 }
+  }
+}
+```
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `customProps.currency` | 三位字符串 | `CNY` | ISO 4217 货币代码；无效值回退到 `CNY` |
+| `customProps.step` | 正数 | `0.01` | 原生数字输入步长 |
+
+### 评分 `rating`
+
+默认从 1 分开始，最高分读取 Schema `maximum`，支持 1–10。组件使用原生 radio，因此键盘和读屏语义与普通单选组一致。
+
+<FieldDemo widget="rating" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `number`，或自定义 `options` 的基础类型 |
+| Schema | `{ type: "number", minimum: 1, maximum: 5 }` |
+| 自定义等级 | 设置 `options` 后按选项值回传 |
+
+### 滑块 `slider`
+
+适合有清晰上下界、允许近似选择的数值。需要精确录入时应使用 `number` 或 `currency`。
+
+<FieldDemo widget="slider" />
+
+| 属性 | 来源 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| 最小值 | `schema.minimum` | `0` | 轨道起点 |
+| 最大值 | `schema.maximum` | `100` | 轨道终点 |
+| 步长 | `customProps.step` | `1` | 键盘和拖动增量 |
+
+滑块显示当前值，并提供 `aria-valuetext`。方向键、Page Up、Page Down、Home 和 End 沿用浏览器原生行为。
+
+### 隐藏值 `hidden`
+
+隐藏字段保留在受控值和 DOM 的 `input[type="hidden"]` 中，但不渲染标题或可见字段外壳。适合宿主已经掌握、又需要随配置一起提交的稳定标识。
+
+<FieldDemo widget="hidden" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `JsonValue`；建议使用简单标量 |
+| Schema | 与实际值类型一致 |
+| 安全边界 | 隐藏不等于保密；用户仍可检查 DOM 和请求数据 |
+
+不要把密钥、访问令牌或权限判断放在隐藏字段中。
+
+### 计算结果 `calculated`
+
+以只读 `output` 展示宿主值或 `computed` 规则结果。数字按当前 locale 格式化，原始受控值不会改变。
+
+<FieldDemo widget="calculated" />
+
+| 项目 | 配置 |
+| --- | --- |
+| 值类型 | `JsonValue` |
+| 展示 | 只读 `output`，数字按当前 locale 格式化 |
+| 数据来源 | 受控值或目标为当前节点的 `computed` 规则 |
+| UI 属性 | `readOnly: true` |
+
+```json
+{
+  "ui": {
+    "id": "total",
+    "kind": "field",
+    "widget": "calculated",
+    "readOnly": true,
+    "schemaPath": "/properties/total"
+  },
+  "rule": {
+    "id": "calculate-total",
+    "target": "total",
+    "kind": "computed",
+    "expression": {
+      "op": "multiply",
+      "left": { "op": "field", "path": "quantity" },
+      "right": { "op": "field", "path": "unitPrice" }
+    }
+  }
+}
+```
+
+## A3S UI 组件契约
+
+Designer 画布和 Renderer 共用同一套字段实现。画布通过 `inert` 隔离示例控件：控件保留正常外观，但不会进入键盘焦点顺序，也不会修改表单值。只有只读字段和计算结果显示禁用状态。
+
+| 字段 | A3S UI 结构 |
+| --- | --- |
+| 文本、数字、日期与时间 | `.field` 配合 `.input`、`.textarea` 或 `.select` |
+| 金额与 UTC 时间 | `.input-group` 内放置原生输入和前后缀 |
+| 复选框与开关 | `.field[data-orientation="horizontal"]`，直接包含 `input.input` 和 `label` 或 `section` |
+| 单选与评分 | `[data-slot="radio-group"]`，每项保留原生 `input.input[type="radio"]` |
+| 多选 | `.fieldset` 与 `[data-slot="checkbox-group"]`，每项使用横向 `.field` |
+| 滑块 | `input.input[type="range"]`，`--slider-value` 与受控值同步 |
+| 矩阵与数据表格 | `.table-container > table.table` |
+| 组件操作 | `.btn` 的尺寸、样式和禁用状态属性 |
+| Designer 两侧面板 | `.task-pane.tabs`，属性、校验和组件目录使用同一面板密度 |
+| 低频设置 | `.accordion` 与原生 `details`，数据契约、布局和批处理按需展开 |
+| 选项与矩阵行列 | `.item-group > .item`，标题直接编辑，提交值和行 ID 按需展开 |
+
+独立页面和 A3S 产品使用完整样式入口：
+
+```ts
+import '@a3s-lab/ui/form/a3s-ui.css';
+```
+
+宿主已经加载 A3S UI，或需要严格隔离文档级样式时，改用 `@a3s-lab/ui/form/styles.css`。两种入口的组件结构和交互一致。
+
+## React 中使用
+
+字段组件不单独维护值。宿主编译一次文档，将完整表单值作为受控属性传入。
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { FormRenderer } from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const plan = assertCompiled(document);
+
+function NodeSettings() {
+  const [value, setValue] = useState({
+    endpoint: 'https://api.example.com',
+    roles: ['agent'],
+    budget: 1000,
+  });
+
+  return <FormRenderer plan={plan} value={value} onChange={setValue} />;
+}
+```
+
+Vue 使用 `v-model`，Web Component 监听 `value-change`。三种适配器都调用同一个 React Renderer，因此字段值、校验、locale、只读状态和宿主错误保持一致。
+
+## 校验与错误状态
+
+- `required` 来自父对象 Schema 的 `required` 数组，不在 UI 节点重复配置。
+- `minimum`、`maximum`、`multipleOf`、`minItems`、`maxItems` 等约束由 Schema 提供。
+- 宿主错误通过 `errors` 传入，并以稳定的字段路径绑定。
+- `readOnly` 表单会禁用所有可编辑控件；计算结果仍保持可读。
+- 空选项、数据源加载失败、重复标签和集合上限都有可见且可读屏的状态文案。
+
+矩阵字段的行列契约、交互示例和嵌入边界见[矩阵字段](/components/form-system/matrix-fields)。重复字段组、数据表格和多步向导分别见[重复字段组](/components/form-system/repeatable-field-groups)、[数据表格](/components/form-system/data-grids)和[多步向导](/components/form-system/wizards)。

@@ -129,4 +129,4 @@ The range comes from Schema `minimum` and `maximum`; `customProps.step` defaults
 
 React owns the built-in renderer. The Vue and Web Component adapters forward controlled values, host errors, locale catalogs, read-only state, data sources, widget registries, and node registries into that renderer. The same field contract therefore applies to all three adapters.
 
-The interactive Chinese references are built from MDX and the real `FormRenderer` at `apps/docs/docs/next/guide/fields.mdx` and `apps/docs/docs/next/guide/matrix-fields.mdx`.
+The interactive Chinese references are built from MDX and the real `FormRenderer` at `site/docs/next/zh/components/form-system/fields.mdx` and `site/docs/next/zh/components/form-system/matrix-fields.mdx` in the repository root.

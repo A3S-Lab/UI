@@ -105,7 +105,7 @@ function readSection(content: string, heading: string): string {
 describe('production node MDX coverage', () => {
   it('keeps a live example and property documentation for all 38 nodes', () => {
     expect(Object.keys(documentation)).toEqual(PRODUCTION_NODE_UX_PROFILE_IDS);
-    const guideRoot = join(process.cwd(), 'apps/docs/docs/next/guide');
+    const guideRoot = join(process.cwd(), '../../site/docs/next/zh/components/form-system');
     const cache = new Map<string, string>();
 
     for (const id of PRODUCTION_NODE_UX_PROFILE_IDS) {

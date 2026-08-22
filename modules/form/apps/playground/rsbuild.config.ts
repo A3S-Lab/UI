@@ -6,7 +6,7 @@ export default defineConfig({
     template: './index.html',
   },
   output: {
-    assetPrefix: process.env.A3S_FORM_BASE ?? '/UI/form/playground/',
+    assetPrefix: process.env.A3S_UI_FORM_PLAYGROUND_BASE ?? '/UI/playground/forms/',
     cleanDistPath: true,
     distPath: {
       root: '../../playground-dist',

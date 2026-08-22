@@ -1,0 +1,537 @@
+import { FieldDemo } from '../../../../../theme/mdx/form/FieldDemo';
+
+# Built-in field components
+
+A3S Form fields have two parts: JSON Schema defines value types and validation, while UI nodes define controls, copy, and presentation. The Renderer only returns controlled values. It does not store business data or perform network requests for the host.
+
+The interactive examples render the repository's real `FormRenderer` and display the JSON value returned after each field change.
+
+## Common properties
+
+Every field node uses `kind: "field"` and binds to its Schema through `schemaPath`. The Renderer, Designer, Vue adapter, and Web Component share these properties.
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | Stable identifier unique within the document |
+| `kind` | `"field"` | Yes | Fixed value for a field node |
+| `schemaPath` | JSON Pointer | Yes | Points to the field Schema, such as `/properties/name` |
+| `widget` | `string` | No | Built-in component name; defaults to `text` when omitted |
+| `label` | `string` | No | Visible title and accessible name; falls back to `id` |
+| `description` | `string` | No | Supporting guidance between the title and control |
+| `placeholder` | `string` | No | Hint for text controls; never replaces `label` |
+| `width` | `1–12` | No | Columns occupied in the 12-column layout; defaults to `12` |
+| `options` | `UiOption[]` | By component | Options for single choice, multiple choice, and selects; values must match the Schema |
+| `customProps` | `JsonObject` | By component | Component-specific settings for controls such as currency and slider |
+| `matrix` | `UiMatrixDefinition` | By component | Stable row and column configuration for single- and multiple-choice matrices |
+| `dataSource` | `string` | No | Binds a dynamic option source supplied by the host |
+| `readOnly` | `boolean` | No | Marks read-only intent; the host controls whole-form read-only state |
+
+`UiOption` has the shape `{ label, value, disabled? }`. `value` must be a JSON primitive and cannot contain a function or component instance.
+
+When the Designer marks an array field as required, it adds the field to the parent `required` array and ensures `minItems` is at least `1`. Turning it off restores `minItems` to `0`, preventing an empty array from passing validation while the interface marks it as required.
+
+## Designer configuration panel
+
+The Designer maintains a unified UX profile for 38 production nodes. When a node is selected, the panel header shows its component type, category, purpose, field binding, and current state. Content and common behavior remain visible, while component type, initial value, field contract, and canvas placement move into Advanced settings. Matrices, option collections, data grids, and host components automatically use a wider task pane.
+
+The configuration panel uses the semantic structure from `@a3s-lab/ui@0.3.0`; Form only adds node-level layout.
+
+| Interface area | A3S UI contract |
+| --- | --- |
+| Right-side panel | `task-pane`, `tabs` |
+| Node and data-source summaries | `item`, `badge`, `btn` |
+| Common and advanced settings | `field`, `input`, `textarea`, `select`, `accordion` |
+| Option and matrix editors | `item-group`, `item`, `btn` |
+
+When the Schema allows a default value, the properties panel presents a control that matches the value type. Password, file upload, signature, and matrix fields do not expose inappropriate default-value inputs. A radio default uses its stable submitted value, and a multi-select default is stored as an array of the same item type.
+
+Extension components should use the Inspector primitives supplied by Form. They apply A3S UI `field`, `input`, `textarea`, `select`, `accordion`, and switch contracts to native controls, so extensions do not need to copy panel styles.
+
+| Component | Main properties | Purpose |
+| --- | --- | --- |
+| `FormInspectorControl` | `label`, `hint`, one native control | Creates the label association and adds the A3S UI class to the input |
+| `FormInspectorSection` | `title`, `description`, `collapsible`, `summary` | Organizes a complete settings section; infrequent content can collapse |
+| `FormInspectorSettingGroup` | `title`, `collapsible`, `summary` | Groups related parameters inside a section |
+| `FormInspectorToggle` | `label`, `checked`, `onChange` | Edits a Boolean value with A3S UI switch semantics |
+
+```tsx
+import {
+  FormInspectorControl,
+  FormInspectorToggle,
+  type FormNodeInspectorProps,
+} from '@a3s-lab/ui/form/react';
+
+function Inspector({ node, onUpdateNode }: FormNodeInspectorProps) {
+  return (
+    <>
+      <FormInspectorControl label="Editor height">
+        <select
+          value={Number(node.customProps?.rows ?? 10)}
+          onChange={(event) =>
+            onUpdateNode({
+              customProps: { ...node.customProps, rows: Number(event.target.value) },
+            })
+          }
+        >
+          <option value="6">Compact</option>
+          <option value="10">Standard</option>
+          <option value="16">Expanded</option>
+        </select>
+      </FormInspectorControl>
+      <FormInspectorToggle
+        label="Show line numbers"
+        checked={node.customProps?.lineNumbers === true}
+        onChange={(lineNumbers) =>
+          onUpdateNode({ customProps: { ...node.customProps, lineNumbers } })
+        }
+      />
+    </>
+  );
+}
+```
+
+## Configuring options in the Designer
+
+`select`, `radio`, and `multi-select` use the structured option editor. Display labels can change independently while submitted values remain stable, so reordering or renaming an option does not change stored values.
+
+| Action | UI node change | Schema change |
+| --- | --- | --- |
+| Change a label | Updates only `label` | `enum` remains unchanged |
+| Reorder | Reorders `options` while preserving each `value` | Synchronizes `enum` to the same order |
+| Disable an option | Sets `disabled: true` and rejects new selections | Keeps the corresponding `enum` value so existing data remains valid |
+| Delete an option | Removes the complete option | Removes the corresponding `enum` value |
+| Add an option | Creates a new value with the same type as existing options | Adds the new value to `enum` |
+
+Bulk editing changes one label per line. Existing rows preserve submitted values by position, new rows receive new stable values, and removed rows delete both the option and Schema enum value. Disable an option instead of deleting it when historical data must remain valid.
+
+The component picker groups controls by value structure. Switching to a component with a different value structure rebuilds the field Schema, so review compilation results and existing controlled values before release.
+
+```ts
+const node = {
+  id: 'name',
+  kind: 'field',
+  label: 'Task name',
+  widget: 'text',
+  schemaPath: '/properties/name',
+  width: 6,
+};
+```
+
+## Component reference
+
+| `widget` | Controlled value | Recommended Schema | Specific properties |
+| --- | --- | --- | --- |
+| `text` | `string` | `type: "string"` | `placeholder` |
+| `textarea` | `string` | `type: "string"` | `placeholder` |
+| `number` | `number \| null` | `type: "number"` | `minimum`, `maximum`, `multipleOf` |
+| `email` | `string` | `type: "string", format: "email"` | `placeholder` |
+| `password` | `string` | `type: "string"` | `minLength`, `maxLength` |
+| `date` | `string` | `type: "string", format: "date"` | — |
+| `url` | `string` | `type: "string", format: "uri"` | `placeholder` |
+| `tel` | `string` | `type: "string"` | `pattern`, `placeholder` |
+| `date-time` | UTC `string` | `type: "string", format: "date-time"` | — |
+| `time` | UTC `string` | `type: "string", format: "time"` | — |
+| `select` | `JsonPrimitive` | `enum` aligned with `options` | `options`, `dataSource` |
+| `radio` | `JsonPrimitive` | `enum` aligned with `options` | `options` |
+| `checkbox` | `boolean` | `type: "boolean"` | — |
+| `switch` | `boolean` | `type: "boolean"` | — |
+| `multi-select` | `JsonPrimitive[]` | `type: "array"` | `options`, `minItems`, `maxItems` |
+| `matrix-single` | `Record<string, JsonPrimitive>` | Object with a per-row `enum` | `matrix.rows`, `matrix.columns` |
+| `matrix-multiple` | `Record<string, JsonPrimitive[]>` | Object with a per-row array Schema | `matrix.rows`, `matrix.columns` |
+| `tags` | `string[]` | String array | `minItems`, `maxItems` |
+| `currency` | `number \| null` | `type: "number"` | `customProps.currency`, `customProps.step` |
+| `rating` | `number` | `minimum: 1`, `maximum: 1..10` | `options` can replace the default scale |
+| `slider` | `number` | `minimum`, `maximum` | `customProps.step` |
+| `hidden` | `JsonValue` | Match the business value | No visible control |
+| `calculated` | `JsonValue` | Match the computed result | Usually paired with a `computed` rule |
+
+## Text input
+
+### Single-line text `text`
+
+Use for names, identifiers, and short titles. Put length, format, and pattern constraints in the Schema.
+
+<FieldDemo widget="text" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", minLength?, maxLength?, pattern? }` |
+| UI property | `placeholder` |
+| Keyboard | Native browser text-input behavior |
+
+### Multiline text `textarea`
+
+Use for notes and descriptions. Set a reasonable `maxLength` for long text instead of putting complete file contents into a form value.
+
+<FieldDemo widget="textarea" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", maxLength? }` |
+| UI property | `placeholder` |
+| Note | Line breaks remain unchanged in the controlled value |
+
+### Number `number`
+
+An empty input returns `null`; a populated input returns a JavaScript `number`. The Schema remains authoritative for range and step constraints.
+
+<FieldDemo widget="number" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `number \| null` |
+| Schema | `{ type: "number", minimum?, maximum?, multipleOf? }` |
+| Note | Use a string or host-specific component for high-precision decimals and very large integers |
+
+### Email `email`
+
+Uses native email-input behavior, with consistent validation through the Schema Profile `email` format.
+
+<FieldDemo widget="email" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", format: "email" }` |
+| Mobile | The browser can present an email keyboard |
+
+### Password `password`
+
+This control only masks input; it does not encrypt it. Never put long-lived credentials in a form document, default value, log, or screenshot.
+
+<FieldDemo widget="password" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", minLength?, maxLength? }` |
+| Security boundary | The controlled value still reaches the host; transport, storage, and redaction remain host responsibilities |
+
+### Date `date`
+
+Represents a calendar date without a time zone.
+
+<FieldDemo widget="date" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `YYYY-MM-DD` string |
+| Schema | `{ type: "string", format: "date" }` |
+| Note | Do not use it to represent an exact instant |
+
+### URL `url`
+
+Use for callback addresses, resource links, and service endpoints. The browser input type is `url`, while the Schema uses the `uri` format.
+
+<FieldDemo widget="url" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", format: "uri" }` |
+| UI property | `placeholder` |
+
+```json
+{
+  "schema": { "type": "string", "format": "uri" },
+  "ui": { "widget": "url", "placeholder": "https://example.com" }
+}
+```
+
+### Telephone `tel`
+
+Telephone formats vary by country and product context, so the component does not rewrite numbers. Add a Schema `pattern` when a fixed format is required.
+
+<FieldDemo widget="tel" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string` |
+| Schema | `{ type: "string", pattern? }` |
+| Mobile | The browser can present a telephone keyboard |
+| Note | The product defines country codes, extensions, and formatting policy |
+
+## Time
+
+### Date and time `date-time`
+
+The control explicitly displays UTC. A controlled value with an offset is converted to UTC before editing, and user changes are written back with a `Z` suffix.
+
+<FieldDemo widget="date-time" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | For example, `2026-08-09T09:30:00Z` |
+| Schema | `{ type: "string", format: "date-time" }` |
+| Input | Native `datetime-local` with one-second steps |
+| Time zone | The Renderer edits UTC only; use a host-specific component for user-facing local-time conversion |
+
+### Time `time`
+
+Use when only a UTC time of day matters, such as a schedule shared across regions. Values with offsets are converted to UTC.
+
+<FieldDemo widget="time" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | For example, `09:15:00Z` |
+| Schema | `{ type: "string", format: "time" }` |
+| Input | Native `time` with one-second steps |
+| Note | “9:00 AM local time every day” also requires an IANA time zone and cannot use this field alone |
+
+## Choice and collections
+
+### Select `select`
+
+Use when many options are available and the user chooses one. Static `options` and Schema `enum` should remain aligned; the host loads dynamic options through `dataSource`.
+
+<FieldDemo widget="select" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string \| number \| boolean \| null` |
+| Schema | Matches the option value type and declares `enum` |
+| UI property | `options` or `dataSource` |
+
+### Radio `radio`
+
+Use when there are few options and direct comparison is useful. Each option preserves native radio semantics, including browser-provided arrow-key behavior.
+
+<FieldDemo widget="radio" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `JsonPrimitive` |
+| Schema | Matches the option value type and declares `enum` |
+| Keyboard | Tab enters the group, arrow keys move, and Space selects |
+
+### Checkbox `checkbox`
+
+Use to confirm one independent Boolean state.
+
+<FieldDemo widget="checkbox" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| Semantics | Native checkbox; Space toggles |
+
+### Switch `switch`
+
+Use for an immediately enabled or disabled state, with `role="switch"` semantics. If toggling causes an irreversible side effect, use an explicit action button and confirmation flow instead.
+
+<FieldDemo widget="switch" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `boolean` |
+| Schema | `{ type: "boolean" }` |
+| Semantics | `aria-checked` stays synchronized with the controlled value |
+
+### Multi-select `multi-select`
+
+Uses a scannable checkbox panel instead of native `select[multiple]`. After reaching `maxItems`, unselected options become disabled while selected options can still be cleared.
+
+<FieldDemo widget="multi-select" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `JsonPrimitive[]` |
+| Schema | Array `items.enum` aligned with option values |
+| UI property | `options` or `dataSource` |
+| Limits | `minItems`, `maxItems`, `uniqueItems` |
+
+```json
+{
+  "schema": {
+    "type": "array",
+    "items": { "type": "string", "enum": ["human", "agent", "reviewer"] },
+    "minItems": 1,
+    "maxItems": 2,
+    "uniqueItems": true
+  },
+  "ui": {
+    "widget": "multi-select",
+    "options": [
+      { "label": "Human member", "value": "human" },
+      { "label": "Agent", "value": "agent" }
+    ]
+  }
+}
+```
+
+Option values use strict equality, so the number `1` and string `"1"` remain distinct options.
+
+### Tags `tags`
+
+Press Enter, comma, or Add to commit an entry. Duplicate tags are not written, and removal buttons become disabled for retained items after the value reaches `minItems`.
+
+<FieldDemo widget="tags" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `string[]` |
+| Schema | `{ type: "array", items: { type: "string" }, uniqueItems: true }` |
+| Limits | `minItems`, `maxItems` |
+| Deduplication | Trims surrounding whitespace and remains case-sensitive |
+
+## Numeric and business presentation
+
+### Currency `currency`
+
+The currency code appears as an input prefix, while the controlled value remains a plain `number`. Use it for budgets, thresholds, and quotes; it does not replace fixed-point decimal storage in a financial system.
+
+<FieldDemo widget="currency" />
+
+```json
+{
+  "schema": { "type": "number", "minimum": 0, "maximum": 1000000 },
+  "ui": {
+    "widget": "currency",
+    "customProps": { "currency": "CNY", "step": 0.01 }
+  }
+}
+```
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `customProps.currency` | Three-character string | `CNY` | ISO 4217 currency code; invalid values fall back to `CNY` |
+| `customProps.step` | Positive number | `0.01` | Native numeric-input step |
+
+### Rating `rating`
+
+The default scale starts at 1 and reads its maximum from the Schema, supporting 1–10. The component uses native radio inputs, so keyboard and screen-reader semantics match a standard radio group.
+
+<FieldDemo widget="rating" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `number`, or the primitive type supplied by custom `options` |
+| Schema | `{ type: "number", minimum: 1, maximum: 5 }` |
+| Custom scale | When `options` are set, returns their values |
+
+### Slider `slider`
+
+Use for a numeric value with clear bounds where approximate selection is acceptable. Use `number` or `currency` when precise entry is required.
+
+<FieldDemo widget="slider" />
+
+| Property | Source | Default | Description |
+| --- | --- | --- | --- |
+| Minimum | `schema.minimum` | `0` | Start of the track |
+| Maximum | `schema.maximum` | `100` | End of the track |
+| Step | `customProps.step` | `1` | Keyboard and drag increment |
+
+The slider displays its current value and exposes `aria-valuetext`. Arrow keys, Page Up, Page Down, Home, and End retain native browser behavior.
+
+### Hidden value `hidden`
+
+A hidden field remains in the controlled value and in an `input[type="hidden"]` DOM element, but has no visible label or field shell. Use it for a stable identifier already known to the host that must be submitted with the configuration.
+
+<FieldDemo widget="hidden" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `JsonValue`; prefer a simple scalar |
+| Schema | Matches the actual value type |
+| Security boundary | Hidden is not secret; users can still inspect DOM and request data |
+
+Never put a secret, access token, or authorization decision in a hidden field.
+
+### Calculated result `calculated`
+
+Displays a host value or `computed` rule result in a read-only `output`. Numbers use the current locale for formatting without changing the raw controlled value.
+
+<FieldDemo widget="calculated" />
+
+| Item | Configuration |
+| --- | --- |
+| Value type | `JsonValue` |
+| Presentation | Read-only `output`; numbers use the current locale |
+| Data source | Controlled value or a `computed` rule targeting this node |
+| UI property | `readOnly: true` |
+
+```json
+{
+  "ui": {
+    "id": "total",
+    "kind": "field",
+    "widget": "calculated",
+    "readOnly": true,
+    "schemaPath": "/properties/total"
+  },
+  "rule": {
+    "id": "calculate-total",
+    "target": "total",
+    "kind": "computed",
+    "expression": {
+      "op": "multiply",
+      "left": { "op": "field", "path": "quantity" },
+      "right": { "op": "field", "path": "unitPrice" }
+    }
+  }
+}
+```
+
+## A3S UI component contract
+
+The Designer canvas and Renderer share the same field implementations. The canvas uses `inert` to isolate example controls: they keep their normal appearance but leave the keyboard focus order and cannot change form values. Only read-only fields and calculated results use a disabled appearance.
+
+| Field | A3S UI structure |
+| --- | --- |
+| Text, number, date, and time | `.field` with `.input`, `.textarea`, or `.select` |
+| Currency and UTC time | Native input and prefix or suffix inside `.input-group` |
+| Checkbox and switch | `.field[data-orientation="horizontal"]` containing `input.input` and a `label` or `section` |
+| Radio and rating | `[data-slot="radio-group"]` with native `input.input[type="radio"]` for each item |
+| Multi-select | `.fieldset` and `[data-slot="checkbox-group"]`, with a horizontal `.field` for each item |
+| Slider | `input.input[type="range"]`, with `--slider-value` synchronized to the controlled value |
+| Matrix and data grid | `.table-container > table.table` |
+| Component actions | `.btn` size, variant, and disabled-state attributes |
+| Designer side panels | `.task-pane.tabs`; properties, validation, and component catalog share one density |
+| Infrequent settings | `.accordion` with native `details`; data contracts, layout, and bulk actions open on demand |
+| Options and matrix rows or columns | `.item-group > .item`; labels edit directly while submitted values and row IDs expand on demand |
+
+Standalone pages and A3S products use the complete style entry point:
+
+```ts
+import '@a3s-lab/ui/form/a3s-ui.css';
+```
+
+If the host already loads A3S UI or requires strict isolation from document-level styles, use `@a3s-lab/ui/form/styles.css` instead. Both entry points use the same component structure and interactions.
+
+## Using fields in React
+
+Field components do not own values independently. Compile the document once, then pass the complete form value as a controlled property.
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import { FormRenderer } from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const plan = assertCompiled(document);
+
+function NodeSettings() {
+  const [value, setValue] = useState({
+    endpoint: 'https://api.example.com',
+    roles: ['agent'],
+    budget: 1000,
+  });
+
+  return <FormRenderer plan={plan} value={value} onChange={setValue} />;
+}
+```
+
+Vue uses `v-model`, while the Web Component listens for `value-change`. All three adapters call the same React Renderer, so field values, validation, locale, read-only state, and host errors remain consistent.
+
+## Validation and error states
+
+- `required` comes from the parent object's Schema `required` array and is not duplicated in the UI node.
+- Constraints such as `minimum`, `maximum`, `multipleOf`, `minItems`, and `maxItems` come from the Schema.
+- Host errors enter through `errors` and bind to stable field paths.
+- A read-only form disables every editable control while keeping calculated results readable.
+- Empty options, data-source failures, duplicate tags, and collection limits all have visible, screen-reader-accessible messages.
+
+For matrix row and column contracts, interactive examples, and embedding boundaries, see [Matrix fields](/components/form-system/matrix-fields). See [Repeatable field groups](/components/form-system/repeatable-field-groups), [Data grids](/components/form-system/data-grids), and [Multi-step wizards](/components/form-system/wizards) for their respective collection and navigation contracts.

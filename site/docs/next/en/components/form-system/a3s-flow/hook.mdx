@@ -1,0 +1,81 @@
+import { A3SFlowNodeDemo } from '../../../../../../theme/mdx/form/A3SFlowNodeDemo';
+
+# Wait for Callback
+
+> [!IMPORTANT]
+> This page documents the eight-node A3S Flow `0.4.2` compatibility API for migration only. New editors should use the [Flow 1.0 DAG-node contract](/components/form-system/workflow-node-embedding) and `A3SFlowDagNodeConfigurationPanel`.
+
+`flow.hook` pauses the workflow until an approval, webhook, UI action, or host event submits callback data, or the callback is closed.
+
+<A3SFlowNodeDemo nodeType="flow.hook" />
+
+## Developer contract
+
+| Contract | Value |
+| --- | --- |
+| Category | Wait & callbacks |
+| Runtime binding | `create_hook` |
+| A3S Flow command | `CreateHook` |
+| Stable command ID | Immutable graph node ID |
+| A3S Flow version | `0.4.2` |
+
+## Use in MDX
+
+The example includes control and data ports plus token, callback route, and metadata settings.
+
+```mdx
+import { A3SFlowNodeDemo } from '../../../../../../theme/mdx/form/A3SFlowNodeDemo';
+
+<A3SFlowNodeDemo nodeType="flow.hook" />
+```
+
+## Configuration properties
+
+| Property | Value type | Required | Default | Notes |
+| --- | --- | --- | --- | --- |
+| `kind` | `human_approval \| webhook \| host_event` | Yes | `human_approval` | Callback type stored in audit metadata. |
+| `subject` | `string` | Yes | `Review workflow request` | Short label for callback queues and audit records. |
+| `token_expression` | Flow expression | Yes | Field `input.callbackToken` | Must reference a dynamic field; shared literals are invalid. |
+| `callback_method` | `POST \| PUT \| PATCH` | No | `POST` | Optional host route metadata. |
+| `callback_path` | `string` | No | `/callbacks/workflow` | The engine does not expose or serve this path. |
+| `metadata` | JSON object | No | `{ "labels": {}, "data": {} }` | Advanced. Persisted with hook creation. |
+
+## Ports
+
+| Direction | ID | Label | Kind | Types | Availability |
+| --- | --- | --- | --- | --- | --- |
+| Input | `in` | In | Control | `FlowControl` | Always |
+| Input | `token` | Token | Data | `String` | Always |
+| Input | `metadata` | Metadata | Data | `JsonValue` | Always |
+| Output | `received` | Received | Control | `FlowControl` | After callback delivery |
+| Output | `payload` | Payload | Data | `JsonValue` | After callback delivery |
+| Output | `disposed` | Disposed | Control | `FlowControl` | After hook disposal |
+
+## Configuration value
+
+```json
+{
+  "kind": "human_approval",
+  "subject": "Review record change",
+  "token_expression": {
+    "apiVersion": "a3s.dev/flow-expression/v1",
+    "expression": { "op": "field", "path": "input.callbackToken" }
+  },
+  "callback_method": "POST",
+  "callback_path": "/callbacks/workflow",
+  "metadata": {
+    "labels": { "queue": "record-review" },
+    "data": { "source": "workflow" }
+  }
+}
+```
+
+## Validation and runtime contract
+
+- Form validation checks types, required fields, and option values.
+- Node validation rejects literal token values and token expressions without field references.
+- Node-local validation cannot prove token uniqueness. A3S Flow atomically enforces uniqueness across active hooks in every non-terminal run.
+- The host restricts token field sources, binds the external route, and derives the stable command ID from the immutable graph node ID.
+- Reusing the same ID requires the token, kind, subject, and metadata to remain unchanged.
+
+Related nodes: [Wait Until](/components/form-system/a3s-flow/wait), [Complete](/components/form-system/a3s-flow/complete), and [Fail Workflow](/components/form-system/a3s-flow/fail).

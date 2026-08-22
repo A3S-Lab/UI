@@ -187,7 +187,7 @@ export function WorkspaceView(props: WorkspaceViewProps) {
       {sidebarOpen && (
         <aside
           className="playground-workspace-sidebar"
-          aria-label="A3S Form 导航"
+          aria-label="A3S UI Form Playground 导航"
           data-app-navigation
           inert={creating}
         >
@@ -221,7 +221,7 @@ export function WorkspaceView(props: WorkspaceViewProps) {
             </div>
           </section>
 
-          <nav className="playground-sidebar-nav" aria-label="产品页面">
+          <nav className="playground-sidebar-nav" aria-label="A3S UI Form Playground 页面">
             <span className="playground-sidebar-label">产品</span>
             <button
               type="button"
@@ -245,9 +245,13 @@ export function WorkspaceView(props: WorkspaceViewProps) {
               <span className="playground-sidebar-item-label">Flow DAG 节点</span>
               <em>{workflowCount}</em>
             </button>
-            <a href="https://a3s-lab.github.io/UI/form/" target="_blank" rel="noreferrer">
+            <a
+              href="https://a3s-lab.github.io/UI/components/form-system/"
+              target="_blank"
+              rel="noreferrer"
+            >
               <ProductIcon name="book" size={16} />
-              <span className="playground-sidebar-item-label">产品文档</span>
+              <span className="playground-sidebar-item-label">组件文档</span>
               <ProductIcon name="arrow-right" size={12} />
             </a>
           </nav>

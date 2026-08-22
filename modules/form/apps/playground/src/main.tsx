@@ -369,10 +369,10 @@ function App() {
           </div>
           <div className="playground-header-actions" data-workspace-actions>
             <a
-              aria-label="打开产品文档"
+              aria-label="打开 Form 组件文档"
               className="playground-secondary btn"
               data-variant="secondary"
-              href="https://a3s-lab.github.io/UI/form/"
+              href="https://a3s-lab.github.io/UI/components/form-system/"
               target="_blank"
               rel="noreferrer"
             >
