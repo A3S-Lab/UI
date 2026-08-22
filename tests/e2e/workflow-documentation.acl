@@ -40,9 +40,20 @@ suite "a3s-ui-workflow-documentation" {
         expect "condition-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-node-family='branch'][data-node-tone='cyan']") }
         expect "condition-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
         expect "condition-branch-actions" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']:has([data-port-id='matched'] .a3s-form-workflow-node-preview-next):has([data-port-id='otherwise'] .a3s-form-workflow-node-preview-next)") }
-        expect "condition-matched-action-reachable" { pointer_reachable = css("[data-port-id='matched'] .a3s-form-workflow-node-preview-next") }
-        expect "condition-otherwise-action-reachable" { pointer_reachable = css("[data-port-id='otherwise'] .a3s-form-workflow-node-preview-next") }
         screenshot "condition-node" { path = "workflow/nodes/flow-condition.png" }
+
+        focus "focus-matched-next" { target = css("[data-port-id='matched'] .a3s-form-workflow-node-preview-next") }
+        press "request-matched-next" { key = "Enter" }
+        wait "matched-request-opens-library" { visible = css(".a3s-doc-workflow-studio[data-panel-open='false'][data-palette-open='true']") }
+        wait "condition-again-visible" { visible = css(".a3s-doc-workflow-library__list button[data-node-type='flow.condition']") }
+        focus "focus-condition-again" { target = css(".a3s-doc-workflow-library__list button[data-node-type='flow.condition']") }
+        press "select-condition-again" { key = "Enter" }
+        wait "condition-panel-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        focus "focus-otherwise-next" { target = css("[data-port-id='otherwise'] .a3s-form-workflow-node-preview-next") }
+        press "request-otherwise-next" { key = "Enter" }
+        wait "otherwise-request-opens-library" { visible = css(".a3s-doc-workflow-studio[data-panel-open='false'][data-palette-open='true']") }
+        click "close-library-after-branch-checks" { target = css(".a3s-doc-workflow-studio__palette-close") }
+        wait "branch-checks-complete" { visible = css(".a3s-doc-workflow-studio[data-palette-open='false']") }
 
         click "open-library-for-complete" { target = css(".a3s-doc-workflow-studio__library-toggle") }
         fill "find-complete" { target = css("input[aria-label='搜索节点']") value = "flow.complete" }
