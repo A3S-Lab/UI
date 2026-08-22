@@ -52,14 +52,14 @@ suite "a3s-ui-product-composer-controls" {
 
         click "open-models" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
         expect "model-picker" { visible = css(".product-start [data-run-detail=model]") }
-        fill "find-default-model" { target = label("搜索模型") value = "当前默认" }
+        fill "find-default-model" { target = css(".product-start [data-run-detail=model] input[aria-label='搜索模型']") value = "当前默认" }
         click "choose-default-model" { target = css(".product-start [data-run-detail=model] [role=option]:first-child") }
         expect "model-selected" { visible = css(".product-start [data-composer-control=run] > button[aria-label*='当前默认模型']") }
 
         click "reopen-models" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
         click "configure-models" { target = role("button", "配置模型与提供方") }
         expect "model-settings-open" { visible = css(".product-settings[open] > aside button[aria-current=page]") }
-        expect "model-settings-heading" { text = "管理默认模型、Provider 连接、模型目录与运行参数" }
+        expect "model-settings-heading" { text = "管理默认模型、Provider 连接、模型目录与运行参数；凭据只显示产品交互，不写入文档站。" }
         click "close-model-settings" { target = role("button", "关闭设置") }
 
         click "open-execution-mode" { target = css(".product-start [data-composer-control=mode] > button") }
@@ -70,10 +70,10 @@ suite "a3s-ui-product-composer-controls" {
         click "choose-local-workspace" { target = css(".product-start [data-workspace-options] [role=option]:nth-child(2)") }
         expect "local-workspace-selected" { text = "本地工作区" }
 
-        click "remove-file" { target = role("button", "移除 agent-composer.css") }
-        click "remove-skill" { target = role("button", "移除 $a3s-office") }
-        click "remove-assistant" { target = role("button", "移除 产品交付负责人") }
-        click "remove-connector" { target = role("button", "移除 Git 仓库") }
+        click "remove-file" { target = css("[data-composer-resources] [data-resource-kind=file] [data-composer-action=remove-resource]") }
+        click "remove-skill" { target = css("[data-composer-resources] [data-resource-kind=skill] [data-composer-action=remove-resource]") }
+        click "remove-assistant" { target = css("[data-composer-resources] [data-resource-kind=assistant] [data-composer-action=remove-resource]") }
+        click "remove-connector" { target = css("[data-composer-resources] [data-resource-kind=connector] [data-composer-action=remove-resource]") }
         expect "composer-remains-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
 
         screenshot "desktop-evidence" { path = "product/composer-controls-desktop.png" }

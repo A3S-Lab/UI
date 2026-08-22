@@ -116,13 +116,13 @@ suite "a3s-ui-product-capability-navigation" {
         click "open-search" { target = css(".product-sidebar__window button[aria-label='搜索']") }
         expect "search-ready" { visible = css("dialog.product-search-dialog[open]") }
         expect "resource-group" { text = "资源" }
-        fill "find-model-settings" { target = label("搜索任务、文件和操作") value = "模型设置" }
+        fill "find-model-settings" { target = css("dialog.product-search-dialog input[aria-label='搜索任务、文件和操作']") value = "模型设置" }
         click "open-model-settings" { target = css("#product-search-option-model-settings") }
         expect "model-settings-ready" { visible = css("dialog[aria-label='设置'][open] .product-model-toolbar") }
         click "close-settings" { target = role("button", "关闭设置") }
 
         click "reopen-search" { target = css(".product-sidebar__window button[aria-label='搜索']") }
-        fill "find-documents" { target = label("搜索任务、文件和操作") value = "协作文档" }
+        fill "find-documents" { target = css("dialog.product-search-dialog input[aria-label='搜索任务、文件和操作']") value = "协作文档" }
         press "open-first-result" { key = "Enter" }
         wait "documents-url" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
         expect "documents-ready" { visible = css("[data-product-surface='resources'][data-resource='documents']") }
