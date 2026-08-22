@@ -2,7 +2,10 @@ import type {
   WorkflowNodeDefinition,
   WorkflowNodeFieldDefinition,
 } from '../integrations/workflow-node-manifest';
-import { DesignerIcon, type DesignerIconName } from './designer-icons';
+import { DesignerIcon } from './designer-icons';
+import { workflowNodeVisual } from './workflow-node-visual';
+
+export type WorkflowNodePreviewStatus = 'idle' | 'running' | 'success' | 'waiting' | 'error';
 
 export interface WorkflowNodePreviewProps {
   node: WorkflowNodeDefinition;
@@ -11,6 +14,8 @@ export interface WorkflowNodePreviewProps {
   ports?: WorkflowNodePreviewPorts;
   locale?: string;
   technical?: boolean;
+  status?: WorkflowNodePreviewStatus;
+  onSelect?: () => void;
 }
 
 export interface WorkflowNodePreviewPort {
@@ -29,18 +34,15 @@ function uniqueTypes(values: readonly string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
-function previewIcon(category: string): DesignerIconName {
-  const normalized = category.toLocaleLowerCase('en');
-  if (normalized.includes('agent') || normalized.includes('model') || normalized.includes('llm')) {
-    return 'sparkles';
-  }
-  if (normalized.includes('file') || normalized.includes('knowledge')) return 'file';
-  if (normalized.includes('data') || normalized.includes('cassandra')) return 'grid';
-  if (normalized.includes('flow') || normalized.includes('input')) return 'layout';
-  if (normalized.includes('tool') || normalized.includes('utilit')) return 'calculator';
-  if (normalized.includes('embedding') || normalized.includes('search')) return 'search';
-  if (normalized.includes('processing')) return 'settings';
-  return 'components';
+function previewShape(
+  inputs: readonly WorkflowNodePreviewPort[],
+  outputs: readonly WorkflowNodePreviewPort[],
+): 'entry' | 'terminal' | 'branch' | 'action' | 'isolated' {
+  if (inputs.length === 0 && outputs.length === 0) return 'isolated';
+  if (inputs.length === 0) return 'entry';
+  if (outputs.length === 0) return 'terminal';
+  if (outputs.length > 1) return 'branch';
+  return 'action';
 }
 
 function isVisibleInputPortField(
@@ -109,6 +111,8 @@ export function WorkflowNodePreview({
   selected = true,
   locale = 'en',
   technical = true,
+  status = 'idle',
+  onSelect,
 }: WorkflowNodePreviewProps) {
   const chinese = locale.toLocaleLowerCase().startsWith('zh');
   const inputs = ports?.inputs ?? inputPorts(node);
@@ -117,22 +121,49 @@ export function WorkflowNodePreview({
     'runtimeBinding' in node && typeof node.runtimeBinding === 'string'
       ? node.runtimeBinding
       : undefined;
+  const visual = workflowNodeVisual(node);
+  const shape = previewShape(inputs, outputs);
+  const interactive = typeof onSelect === 'function';
   return (
     <article
       className={['a3s-form-workflow-node-preview', className].filter(Boolean).join(' ')}
       data-node-type={node.type}
+      data-node-shape={shape}
+      data-node-tone={visual.tone}
       data-runtime-binding={runtimeBinding}
       data-selected={selected || undefined}
+      data-status={status}
+      data-technical={technical || undefined}
       aria-label={`${node.display_name}${chinese ? '节点预览' : ' workflow node preview'}`}
+      {...(interactive
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            'aria-pressed': selected,
+          }
+        : {})}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (!interactive || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        onSelect();
+      }}
     >
       <header>
         <span aria-hidden="true">
-          <DesignerIcon name={previewIcon(node.category)} size={17} />
+          <DesignerIcon name={visual.icon} size={17} />
         </span>
         <div>
           <strong>{node.display_name}</strong>
           <small>{node.categoryLabel}</small>
         </div>
+        {status !== 'idle' && (
+          <span
+            className="a3s-form-workflow-node-preview-status"
+            data-status={status}
+            aria-hidden="true"
+          />
+        )}
         {(node.beta || node.legacy) && <em>{node.beta ? 'Beta' : 'Legacy'}</em>}
       </header>
       <div className="a3s-form-workflow-node-preview-body">
@@ -142,6 +173,9 @@ export function WorkflowNodePreview({
           <p>{chinese ? '这个节点没有连接端口。' : 'This node has no typed ports.'}</p>
         )}
       </div>
+      {node.description && (
+        <p className="a3s-form-workflow-node-preview-description">{node.description}</p>
+      )}
       <footer>
         {technical ? (
           <>

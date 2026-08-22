@@ -9,127 +9,186 @@ import {
   localizeA3SFlowCoreNode,
   requireA3SFlowDagNodeManifest,
 } from '../../../../modules/form/src/a3s-flow';
-import { A3SFlowDagNodeConfigurationPanel, A3SFlowDagNodePreview } from '../../../../modules/form/src/react';
+import {
+  A3SFlowDagNodeConfigurationPanel,
+  A3SFlowDagNodePreview,
+  type WorkflowNodePreviewStatus,
+} from '../../../../modules/form/src/react';
+import { DesignerIcon } from '../../../../modules/form/src/react/designer-icons';
+import { workflowNodeVisual } from '../../../../modules/form/src/react/workflow-node-visual';
 import '../../../../modules/form/src/styles.css';
 import '../../../../modules/form/src/a3s-flow.css';
+import { WorkflowStudioFrame } from './WorkflowStudioFrame';
 
 const initialType = 'flow.step';
 const visibleManifests = a3sFlowDagNodeManifestCatalog.filter((manifest) => !manifest.internal);
-const manifestCategories = [
-  ...new Map(
-    visibleManifests.map((manifest) => [
-      manifest.category,
-      { id: manifest.category, label: manifest.categoryLabel },
-    ]),
-  ).values(),
-];
 
 function manifestLabel(manifest: A3SFlowDagNodeManifest, locale: string): string {
   const coreNode = getA3SFlowCoreNode(manifest.type);
   return coreNode ? localizeA3SFlowCoreNode(coreNode, locale).display_name : manifest.display_name;
 }
 
+function manifestCategoryLabel(manifest: A3SFlowDagNodeManifest, locale: string): string {
+  const coreNode = getA3SFlowCoreNode(manifest.type);
+  return coreNode ? localizeA3SFlowCoreNode(coreNode, locale).categoryLabel : manifest.categoryLabel;
+}
+
 export function A3SFlowDagDemo() {
   const isEnglish = useLang() === 'en';
   const locale = isEnglish ? 'en-US' : 'zh-CN';
-  const [category, setCategory] = useState('all');
+  const [query, setQuery] = useState('');
   const [dagNode, setDagNode] = useState(() =>
     createA3SFlowDagNode('docs-flow-step', requireA3SFlowDagNodeManifest(initialType)),
   );
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [nodeStatus, setNodeStatus] = useState<WorkflowNodePreviewStatus>('idle');
   const [status, setStatus] = useState(
     isEnglish ? 'Changes update the DAG node preview.' : '修改配置后，DAG 节点预览会同步更新。',
   );
   const manifest = requireA3SFlowDagNodeManifest(dagNode.data.type);
   const selectedLabel = manifestLabel(manifest, locale);
-  const categoryManifests = useMemo(
+  const filteredManifests = useMemo(
     () =>
-      category === 'all'
-        ? visibleManifests
-        : visibleManifests.filter((candidate) => candidate.category === category),
-    [category],
+      visibleManifests.filter((candidate) =>
+        `${manifestLabel(candidate, locale)} ${candidate.type}`
+          .toLocaleLowerCase(locale)
+          .includes(query.trim().toLocaleLowerCase(locale)),
+      ),
+    [locale, query],
+  );
+  const manifestCategories = useMemo(
+    () => [
+      ...new Map(
+        filteredManifests.map((candidate) => [
+          candidate.category,
+          {
+            id: candidate.category,
+            label: manifestCategoryLabel(candidate, locale),
+            items: filteredManifests.filter((item) => item.category === candidate.category),
+          },
+        ]),
+      ).values(),
+    ],
+    [filteredManifests, locale],
   );
 
   const selectNode = (nextType: string) => {
     const nextManifest = requireA3SFlowDagNodeManifest(nextType);
     const nextLabel = manifestLabel(nextManifest, locale);
     setDagNode(createA3SFlowDagNode(`docs-${nextType}`, nextManifest));
+    setPanelOpen(true);
+    setPaletteOpen(false);
+    setNodeStatus('idle');
     setStatus(isEnglish ? `${nextLabel} selected.` : `已选择「${nextLabel}」。`);
   };
 
-  const selectCategory = (nextCategory: string) => {
-    setCategory(nextCategory);
-    const nextManifest =
-      nextCategory === 'all'
-        ? visibleManifests[0]
-        : visibleManifests.find((candidate) => candidate.category === nextCategory);
-    if (nextManifest) selectNode(nextManifest.type);
+  const runNode = () => {
+    setNodeStatus('running');
+    setStatus(
+      isEnglish
+        ? `${selectedLabel} is running with the current configuration.`
+        : `正在使用当前配置运行「${selectedLabel}」。`,
+    );
+    window.setTimeout(() => {
+      setNodeStatus('success');
+      setStatus(
+        isEnglish ? `${selectedLabel} completed successfully.` : `「${selectedLabel}」运行成功。`,
+      );
+    }, 650);
   };
 
   return (
-    <section
-      className="a3s-doc-workflow-demo"
-      aria-label={isEnglish ? 'A3S Flow DAG-node demo' : 'A3S Flow DAG 节点示例'}
-    >
-      <header className="a3s-doc-workflow-demo-header">
-        <div>
-          <strong>A3S Flow {A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.engineVersion}</strong>
-          <span>
-            {isEnglish
-              ? `${visibleManifests.length} visible manifests · ${A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.runtimeCommands} runtime commands`
-              : `${visibleManifests.length} 个可见 manifest · ${A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.runtimeCommands} 个运行时命令`}
-          </span>
+    <WorkflowStudioFrame
+      locale={locale}
+      title={`A3S Flow ${A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.engineVersion}`}
+      panelOpen={panelOpen}
+      paletteOpen={paletteOpen}
+      onOpenPanel={() => setPanelOpen(true)}
+      onPaletteOpenChange={setPaletteOpen}
+      onRun={runNode}
+      status={status}
+      palette={
+        <div className="a3s-doc-workflow-library">
+          <header>
+            <DesignerIcon name="search" size={16} />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              aria-label={isEnglish ? 'Search nodes' : '搜索节点'}
+              placeholder={isEnglish ? 'Search nodes…' : '搜索节点…'}
+            />
+          </header>
+          <div className="a3s-doc-workflow-library__tabs" role="tablist">
+            <button type="button" role="tab" aria-selected="true">
+              {isEnglish ? 'Nodes' : '节点'}
+            </button>
+            <span>
+              {visibleManifests.length} · {A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.runtimeCommands}
+            </span>
+          </div>
+          <div className="a3s-doc-workflow-library__list">
+            {manifestCategories.length === 0 && (
+              <p>{isEnglish ? 'No matching nodes.' : '没有匹配的节点。'}</p>
+            )}
+            {manifestCategories.map((category) => (
+              <section key={category.id}>
+                <h3>{category.label}</h3>
+                {category.items.map((candidate) => {
+                  const visual = workflowNodeVisual(candidate);
+                  return (
+                    <button
+                      type="button"
+                      key={candidate.type}
+                      data-node-tone={visual.tone}
+                      data-selected={candidate.type === dagNode.data.type || undefined}
+                      onClick={() => selectNode(candidate.type)}
+                    >
+                      <span aria-hidden="true">
+                        <DesignerIcon name={visual.icon} size={15} />
+                      </span>
+                      <span>{manifestLabel(candidate, locale)}</span>
+                    </button>
+                  );
+                })}
+              </section>
+            ))}
+          </div>
         </div>
-      </header>
-
-      <div className="a3s-doc-workflow-demo-controls" data-control-count="two">
-        <label className="field">
-          <span>{isEnglish ? 'Category' : '分类'}</span>
-          <select
-            className="select"
-            value={category}
-            onChange={(event) => selectCategory(event.target.value)}
-          >
-            <option value="all">{isEnglish ? 'All DAG nodes' : '全部 DAG 节点'}</option>
-            {manifestCategories.map((candidate) => (
-              <option value={candidate.id} key={candidate.id}>
-                {candidate.label} (
-                {visibleManifests.filter((manifest) => manifest.category === candidate.id).length})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="field">
-          <span>{isEnglish ? 'Node' : '节点'}</span>
-          <select
-            className="select"
-            value={dagNode.data.type}
-            onChange={(event) => selectNode(event.target.value)}
-          >
-            {categoryManifests.map((candidate) => (
-              <option value={candidate.type} key={candidate.type}>
-                {manifestLabel(candidate, locale)}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <p
-        className="a3s-doc-workflow-demo-status"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {status}
-      </p>
-
-      <div className="a3s-doc-workflow-demo-panel a3s-doc-flow-demo-panel">
-        <A3SFlowDagNodePreview dagNode={dagNode} manifest={manifest} locale={locale} />
+      }
+      node={
+        <A3SFlowDagNodePreview
+          dagNode={dagNode}
+          manifest={manifest}
+          locale={locale}
+          status={nodeStatus}
+          selected={panelOpen}
+          onSelect={() => setPanelOpen(true)}
+        />
+      }
+      inspector={
         <A3SFlowDagNodeConfigurationPanel
           dagNode={dagNode}
           manifest={manifest}
           onChange={setDagNode}
           locale={locale}
+          onClose={() => setPanelOpen(false)}
+          onRun={runNode}
+          lastRun={
+            <div className="a3s-doc-workflow-run-result" data-status={nodeStatus}>
+              <strong>{isEnglish ? 'Latest result' : '最近结果'}</strong>
+              <p>
+                {nodeStatus === 'success'
+                  ? isEnglish
+                    ? 'The selected DAG node completed successfully.'
+                    : '当前 DAG 节点已成功完成。'
+                  : isEnglish
+                    ? 'Run the node to inspect its latest result.'
+                    : '运行节点后可在这里查看最近结果。'}
+              </p>
+            </div>
+          }
           onApply={() =>
             setStatus(
               isEnglish
@@ -152,8 +211,8 @@ export function A3SFlowDagDemo() {
             )
           }
         />
-      </div>
-    </section>
+      }
+    />
   );
 }
 

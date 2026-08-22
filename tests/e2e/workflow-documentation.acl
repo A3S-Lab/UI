@@ -1,0 +1,79 @@
+suite "a3s-ui-workflow-documentation" {
+    version = 1
+
+    scenario "workflow-editor-desktop" {
+        name = "Workflow documentation exposes the node library, canvas node, and inspector contract"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/workflow-node-embedding.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
+        expect "compact-selected-node" { visible = css(".a3s-form-workflow-node-preview[data-selected=true][data-node-tone=blue][role=button]") }
+        expect "inspector-settings-visible" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel [role=tab][aria-selected=true]") }
+
+        expect "node-library-closed" { visible = css(".a3s-doc-workflow-studio[data-palette-open=false]") }
+        focus "focus-open-library" { target = css(".a3s-doc-workflow-studio__add") }
+        press "open-library" { key = "Enter" }
+        expect "node-library-visible" { visible = css(".a3s-doc-workflow-studio[data-palette-open=true] .a3s-doc-workflow-studio__palette .a3s-doc-workflow-library") }
+
+        fill "find-condition" { target = css("input[aria-label='搜索节点']") value = "条件" }
+        expect "condition-result" { visible = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
+        focus "focus-condition" { target = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
+        press "select-condition" { key = "Enter" }
+        expect "condition-node-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-node-shape=branch][data-node-tone=cyan]") }
+        expect "condition-panel-matched" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'][data-node-tone=cyan]") }
+        expect "node-library-closed-after-selection" { visible = css(".a3s-doc-workflow-studio[data-palette-open=false]") }
+
+        focus "focus-close-inspector" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='关闭面板']") }
+        press "close-inspector" { key = "Enter" }
+        expect "inspector-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false] .a3s-doc-workflow-studio__workspace") }
+        focus "focus-reopen-node" { target = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']") }
+        press "reopen-from-node" { key = "Enter" }
+        expect "inspector-restored" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
+
+        focus "focus-run-node" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "run-complete" { text = "运行成功" }
+        focus "focus-latest-run" { target = css(".a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "latest-run" { key = "Enter" }
+        expect "latest-result-visible" { text = "当前 DAG 节点已成功完成。" }
+
+        screenshot "desktop-workflow" { path = "workflow/editor-desktop.png" }
+        focus "focus-dark-theme" { target = css(".rp-nav__others .rp-switch-appearance") }
+        press "enable-dark-theme" { key = "Enter" }
+        expect "dark-theme-applied" { visible = css("html.dark.rp-dark .a3s-doc-workflow-studio") }
+        screenshot "dark-workflow" { path = "workflow/editor-dark.png" }
+        accessibility "desktop-tree" { path = "workflow/editor-desktop-accessibility.json" interactive = true }
+        console "desktop-console" { path = "workflow/editor-desktop-console.json" clear = false }
+        page_errors "desktop-errors" { path = "workflow/editor-desktop-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-mobile" {
+        name = "Workflow node and inspector remain usable in the mobile documentation layout"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/start.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        expect "studio-visible" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
+        expect "entry-node-visible" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-node-shape=entry]") }
+        expect "stacked-inspector-visible" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
+        focus "focus-close-inspector" { target = css(".a3s-doc-workflow-studio__inspector button[aria-label='关闭面板']") }
+        press "close-inspector" { key = "Enter" }
+        expect "canvas-only" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false] .a3s-doc-workflow-studio__workspace") }
+        focus "focus-node" { target = css(".a3s-form-workflow-node-preview[data-node-type='flow.start']") }
+        press "open-node" { key = "Enter" }
+        expect "inspector-restored" { visible = css(".a3s-doc-workflow-studio__inspector .a3s-form-flow-node-panel") }
+
+        screenshot "mobile-workflow" { path = "workflow/node-mobile.png" }
+        console "mobile-console" { path = "workflow/node-mobile-console.json" clear = false }
+        page_errors "mobile-errors" { path = "workflow/node-mobile-errors.json" clear = false }
+    }
+}

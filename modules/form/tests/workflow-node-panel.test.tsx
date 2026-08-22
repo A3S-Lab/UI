@@ -332,6 +332,45 @@ describe('Workflow node configuration panel', () => {
     );
   });
 
+  it('supports the canvas inspector run, close, and latest-run interaction', async () => {
+    const node = workflowNodeFixture('panel');
+    let runs = 0;
+    let closes = 0;
+
+    function InspectorHarness() {
+      const [value, setValue] = useState<JsonObject>(() => createWorkflowNodeDefaultValue(node));
+      return (
+        <WorkflowNodeConfigurationPanel
+          node={node}
+          value={value}
+          onChange={setValue}
+          onRun={async () => {
+            runs += 1;
+          }}
+          onClose={() => {
+            closes += 1;
+          }}
+          lastRun={<p>Verified output</p>}
+          presentation="task"
+        />
+      );
+    }
+
+    render(<InspectorHarness />);
+
+    expect(screen.getByRole('tab', { name: 'Settings' }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Run node' }));
+    await waitFor(() => expect(runs).toBe(1));
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Last run' }));
+    expect(screen.getByText('Verified output')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close panel' }));
+    expect(closes).toBe(1);
+  });
+
   it('resolves every workflow category icon with host-provided field configuration', () => {
     const base = workflowNodeFixture('base');
     const categories = [

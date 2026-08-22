@@ -77,6 +77,8 @@ const requiredFiles = [
   "v0.1.0/en/installation.html",
   "components/index.html",
   "en/components/index.html",
+  "workflow/index.html",
+  "en/workflow/index.html",
   "harness/index.html",
   "en/harness/index.html",
   "harness/dock-workspace.html",
@@ -229,6 +231,7 @@ const homepageExpectations = [
       "npm install @a3s-lab/ui",
       "从一个控件，到整个工作台。",
       "结构化表单",
+      'href="/UI/workflow/index.html"',
       "公开组件组合",
       "data-a3s-customizer",
       'data-mobile-expanded="false"',
@@ -249,6 +252,7 @@ const homepageExpectations = [
       "npm install @a3s-lab/ui",
       "From one control to a complete workspace.",
       "Structured forms",
+      'href="/UI/en/workflow/index.html"',
       "PUBLIC COMPONENT COMPOSITION",
       "data-a3s-customizer",
       'aria-live="polite"',
@@ -495,6 +499,49 @@ const nextHarnessExpectations = [
       "data-device-simulator-height",
       "data-device-simulator-command",
       "a3s:device-preview-request",
+    ],
+  },
+];
+
+const nextWorkflowExpectations = [
+  {
+    file: "workflow/index.html",
+    markers: [
+      'lang="zh"',
+      ">Workflow<",
+      "工作流编辑器",
+      "核心节点",
+      'href="/UI/components/form-system/workflow-node-embedding.html"',
+    ],
+  },
+  {
+    file: "en/workflow/index.html",
+    markers: [
+      'lang="en"',
+      ">Workflow<",
+      "Workflow editor",
+      "Core nodes",
+      'href="/UI/en/components/form-system/workflow-node-embedding.html"',
+    ],
+  },
+  {
+    file: "components/form-system/workflow-node-embedding.html",
+    markers: [
+      "a3s-doc-workflow-studio",
+      "a3s-doc-workflow-library",
+      "a3s-form-workflow-node-tabs",
+      'data-node-tone="blue"',
+      'aria-label="搜索节点"',
+    ],
+  },
+  {
+    file: "en/components/form-system/workflow-node-embedding.html",
+    markers: [
+      "a3s-doc-workflow-studio",
+      "a3s-doc-workflow-library",
+      "a3s-form-workflow-node-tabs",
+      'data-node-tone="blue"',
+      'aria-label="Search nodes"',
     ],
   },
 ];
@@ -1347,6 +1394,7 @@ for (const { file, markers } of [
   ...homepageExpectations,
   ...componentExpectations,
   ...nextCatalogExpectations,
+  ...nextWorkflowExpectations,
   ...nextHarnessExpectations,
   ...nextTreeExpectations,
   ...nextCodeEditorExpectations,

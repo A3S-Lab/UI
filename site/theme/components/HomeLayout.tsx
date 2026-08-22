@@ -109,6 +109,16 @@ const componentFamilies: ComponentFamily[] = [
     title: { zh: "数据展示", en: "Data display" },
   },
   {
+    category: { zh: "流程编排", en: "Flow orchestration" },
+    count: "18",
+    description: {
+      zh: "节点目录、点阵画布、连接端口、配置检查器与运行状态。",
+      en: "Node catalog, dotted canvas, connection ports, configuration inspector, and run state.",
+    },
+    href: "/workflow/",
+    title: { zh: "Workflow", en: "Workflow" },
+  },
+  {
     category: { zh: "任务工作流", en: "Task workflows" },
     count: "30",
     description: {
@@ -169,12 +179,12 @@ const homeCopy = {
     specimenMeta: "可交互 A3S OFFICE 工作台",
     semanticHtml: "语义化 HTML",
     nativeBehavior: "浏览器原生行为",
-    applicationPatterns: "Harness 工作流",
+    applicationPatterns: "Workflow 与 Harness",
     bidirectionalLayout: "响应式 + RTL",
     serverTemplates: "服务端模板",
     catalogTitle: "从一个控件，到整个工作台。",
     catalogBody:
-      "通用组件按界面职责分组；结构化表单与 Harness 继续使用同一套组件导航、视觉语言和状态契约。每篇指南都提供可运行样例。",
+      "通用组件按界面职责分组；结构化表单、Workflow 与 Harness 继续使用同一套组件导航、视觉语言和状态契约。每篇指南都提供可运行样例。",
     guides: "个契约",
     browseCatalog: "查看全部组件契约",
     foundationsTitle: "一套语义契约，多种视觉基础。",
@@ -197,7 +207,7 @@ const homeCopy = {
     principlesTitle: "三条不能妥协的产品原则。",
     ctaTitle: "从一个真实界面开始。",
     ctaBody:
-      "安装 @a3s-lab/ui，选择视觉基础，然后从 App Shell、Harness 或任一组件契约复制可运行标记。",
+      "安装 @a3s-lab/ui，选择视觉基础，然后从 App Shell、Workflow、Harness 或任一组件契约复制可运行标记。",
     installation: "查看安装方式",
     explore: "浏览组件契约",
     workspace: "工作区 / 最近使用",
@@ -230,12 +240,12 @@ const homeCopy = {
     specimenMeta: "INTERACTIVE A3S OFFICE WORKBENCH",
     semanticHtml: "Semantic HTML",
     nativeBehavior: "Browser-native behavior",
-    applicationPatterns: "Harness workflows",
+    applicationPatterns: "Workflow and Harness",
     bidirectionalLayout: "Responsive + RTL",
     serverTemplates: "Server templates",
     catalogTitle: "From one control to a complete workspace.",
     catalogBody:
-      "General components are grouped by interface responsibility. Structured forms and Harness use the same component navigation, visual language, and state contracts. Every guide includes a live specimen.",
+      "General components are grouped by interface responsibility. Structured forms, Workflow, and Harness use the same component navigation, visual language, and state contracts. Every guide includes a live specimen.",
     guides: "CONTRACTS",
     browseCatalog: "View all component contracts",
     foundationsTitle: "One semantic contract. Multiple visual foundations.",
@@ -258,7 +268,7 @@ const homeCopy = {
     principlesTitle: "Three non-negotiables.",
     ctaTitle: "Start with a real interface.",
     ctaBody:
-      "Install @a3s-lab/ui, choose a visual foundation, then copy working markup from App Shell, Harness, or any component contract.",
+      "Install @a3s-lab/ui, choose a visual foundation, then copy working markup from App Shell, Workflow, Harness, or any component contract.",
     installation: "View installation",
     explore: "Browse component contracts",
     workspace: "WORKSPACE / RECENT",

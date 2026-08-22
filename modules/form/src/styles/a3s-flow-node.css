@@ -1,16 +1,74 @@
+.a3s-form-flow-node-panel {
+  width: min(400px, 100%);
+  max-height: 100%;
+  border-width: 0.5px;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 16px -4px rgb(20 27 43 / 18%),
+    0 2px 5px rgb(20 27 43 / 6%);
+}
+
 .a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
-  padding: 17px 18px 15px;
+  min-height: 72px;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px 9px 16px;
+  border-bottom: 0;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-identity {
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-icon {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-title-line h2 {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 680;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-identity p {
-  max-width: 62ch;
-  margin-top: 4px;
-  font-size: 12px;
-  line-height: 1.5;
+  display: -webkit-box;
+  max-width: 42ch;
+  margin-top: 2px;
+  overflow: hidden;
+  font-size: 10px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions {
+  gap: 1px;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions :is(button, a) {
-  min-height: 40px;
+  width: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  justify-content: center;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-tabs {
+  padding-inline: 16px;
+}
+
+.a3s-form-flow-node-panel .a3s-form-workflow-node-settings {
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
 
 .a3s-form-workflow-node-developer-details {
@@ -62,7 +120,7 @@
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-form {
-  padding: 18px 18px 21px;
+  padding: 16px 16px 19px;
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-layout.a3s-form-flow > header {
@@ -93,9 +151,9 @@
 }
 
 .a3s-form-flow-node-panel .a3s-form-workflow-node-form .a3s-form-actions {
-  bottom: -21px;
-  margin: 8px -18px -21px;
-  padding: 12px 18px;
+  bottom: -19px;
+  margin: 8px -16px -19px;
+  padding: 10px 16px;
 }
 
 .a3s-form-flow-expression {
@@ -502,6 +560,16 @@
   font-size: 11px;
 }
 
+.a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions :is(button, a) > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 @container a3s-form-workflow-panel (max-width: 560px) {
   .a3s-form-flow-expression-comparison,
   .a3s-form-flow-batch-primary-fields,
@@ -541,7 +609,25 @@
 
 @container a3s-form-workflow-panel (max-width: 420px) {
   .a3s-form-flow-node-panel .a3s-form-workflow-node-panel-header {
-    padding-inline: 14px;
+    min-height: 64px;
+    padding: 12px 10px 8px 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .a3s-form-flow-node-panel .a3s-form-workflow-node-identity {
+    min-width: 0;
+  }
+
+  .a3s-form-flow-node-panel .a3s-form-workflow-node-identity p {
+    display: none;
+  }
+
+  .a3s-form-flow-node-panel .a3s-form-workflow-node-header-actions {
+    width: auto;
+    margin-left: auto;
+    flex: 0 0 auto;
   }
 
   .a3s-form-flow-node-panel .a3s-form-workflow-node-form {
