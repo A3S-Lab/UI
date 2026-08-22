@@ -28,6 +28,7 @@
 
 ### Changed
 
+- Rebuilt the embedded A3S Flow workflow editor with 18 localized public nodes, semantic node families and port kinds, per-branch connection actions, loop and iteration containers, mutually exclusive node-library and inspector panels, and responsive light and dark layouts.
 - Completed the Playground collaborative-document connection lifecycle with explicit permission consent, browser persistence, bounded connection feedback, storage-failure recovery, task-context handoff, and a focus-restoring disconnect confirmation across desktop and mobile layouts.
 - Completed the Playground agent-mailbox path with browser-persisted activation, explicit permission disclosure, recoverable storage and clipboard feedback, a focus-restoring disconnect confirmation, and a truthful handoff that attaches the mailbox to a new task.
 - Rebuilt the Playground capability catalog around scenario-led assistant discovery, rotating skill recommendations, dense connector browsing, stable visual identities, focus-contained detail dialogs, reviewed setup lifecycles, and direct handoff into a new task across desktop, mobile, dark mode, and both locales.
@@ -53,6 +54,7 @@
 
 ### Fixed
 
+- Kept container nodes fully visible beside the inspector in narrow documentation embeds and made the editor run regression use stable semantic state instead of transient copy.
 - Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group, documentation catalog, and every Playground search field; added focused desktop and phone regression evidence for each surface.
 - Aligned documentation Preview and Playground action icons with their next operation: fluid width no longer masquerades as a desktop preset, appearance and direction controls expose their target state, secret visibility uses eye/eye-off, and graph expansion uses expand/contract semantics.
 - Replaced the decorative Color Swatches selection halo with a bounded selected surface and consolidated floating utility shadows onto the shared overlay depth token.

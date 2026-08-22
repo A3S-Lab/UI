@@ -68,6 +68,8 @@ function panelCopy(locale: string | undefined) {
         runtimeBinding: '运行绑定',
         compileTitle: '无法生成这个节点的配置界面。',
         compileHelp: '请检查节点定义或联系接入系统维护者。',
+        noSettingsTitle: '无需配置',
+        noSettingsHelp: '这个节点没有可编辑参数，可以直接连接或运行。',
       }
     : {
         reset: 'Reset',
@@ -90,6 +92,8 @@ function panelCopy(locale: string | undefined) {
         runtimeBinding: 'Runtime binding',
         compileTitle: 'This node configuration could not be compiled.',
         compileHelp: 'Check the node definition or contact the host maintainer.',
+        noSettingsTitle: 'No configuration required',
+        noSettingsHelp: 'This node has no editable parameters and is ready to connect or run.',
       };
 }
 
@@ -214,6 +218,7 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
     <section
       className={['a3s-form-workflow-node-panel', props.className].filter(Boolean).join(' ')}
       data-node-type={props.node.type}
+      data-node-family={nodeVisual.family}
       data-node-tone={nodeVisual.tone}
       data-read-only={props.readOnly || undefined}
     >
@@ -260,28 +265,30 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
               <DesignerIcon name="play" size={14} />
             </button>
           )}
-          <button
-            type="button"
-            className="btn"
-            data-size="sm"
-            data-variant="ghost"
-            aria-label={resetPending ? copy.confirmReset : copy.reset}
-            disabled={props.readOnly}
-            onBlur={() => setResetPending(false)}
-            onClick={() => {
-              if (taskPresentation && !resetPending) {
-                setResetPending(true);
-                return;
-              }
-              const next = structuredClone(defaults);
-              props.onChange(next);
-              props.onReset?.(next);
-              setResetPending(false);
-            }}
-          >
-            <DesignerIcon name="undo" size={14} />
-            <span>{resetPending ? copy.confirmReset : copy.reset}</span>
-          </button>
+          {visibleCount > 0 && (
+            <button
+              type="button"
+              className="btn"
+              data-size="sm"
+              data-variant="ghost"
+              aria-label={resetPending ? copy.confirmReset : copy.reset}
+              disabled={props.readOnly}
+              onBlur={() => setResetPending(false)}
+              onClick={() => {
+                if (taskPresentation && !resetPending) {
+                  setResetPending(true);
+                  return;
+                }
+                const next = structuredClone(defaults);
+                props.onChange(next);
+                props.onReset?.(next);
+                setResetPending(false);
+              }}
+            >
+              <DesignerIcon name="undo" size={14} />
+              <span>{resetPending ? copy.confirmReset : copy.reset}</span>
+            </button>
+          )}
           {props.node.documentation && (
             <a
               className="btn"
@@ -396,22 +403,32 @@ export function WorkflowNodeConfigurationPanel(props: WorkflowNodeConfigurationP
             : {})}
           className="a3s-form-workflow-node-settings"
         >
-          <div className="a3s-form-workflow-node-form">
-            <FormRenderer
-              plan={compilation.plan}
-              value={props.value}
-              onChange={props.onChange}
-              onAction={async (actionId, value) => {
-                if (actionId === 'apply') await props.onApply?.(value, compiledDocument);
-              }}
-              hostAdapter={props.hostAdapter}
-              locale={props.locale}
-              readOnly={props.readOnly}
-              nodeRegistry={props.nodeRegistry}
-              renderNodeAccessory={renderNodeAccessory}
-              widgetRegistry={widgets}
-            />
-          </div>
+          {visibleCount === 0 ? (
+            <div className="a3s-form-workflow-node-settings-empty">
+              <span aria-hidden="true">
+                <DesignerIcon name="check-square" size={18} />
+              </span>
+              <strong>{copy.noSettingsTitle}</strong>
+              <p>{copy.noSettingsHelp}</p>
+            </div>
+          ) : (
+            <div className="a3s-form-workflow-node-form">
+              <FormRenderer
+                plan={compilation.plan}
+                value={props.value}
+                onChange={props.onChange}
+                onAction={async (actionId, value) => {
+                  if (actionId === 'apply') await props.onApply?.(value, compiledDocument);
+                }}
+                hostAdapter={props.hostAdapter}
+                locale={props.locale}
+                readOnly={props.readOnly}
+                nodeRegistry={props.nodeRegistry}
+                renderNodeAccessory={renderNodeAccessory}
+                widgetRegistry={widgets}
+              />
+            </div>
+          )}
 
           {taskPresentation && (
             <details className="a3s-form-workflow-node-developer-details">

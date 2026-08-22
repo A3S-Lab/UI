@@ -5,8 +5,7 @@ import {
   type A3SFlowDagNodeManifest,
   a3sFlowDagNodeManifestCatalog,
   createA3SFlowDagNode,
-  getA3SFlowCoreNode,
-  localizeA3SFlowCoreNode,
+  localizeA3SFlowDagManifest,
   requireA3SFlowDagNodeManifest,
 } from '../../../../modules/form/src/a3s-flow';
 import {
@@ -24,13 +23,11 @@ const initialType = 'flow.step';
 const visibleManifests = a3sFlowDagNodeManifestCatalog.filter((manifest) => !manifest.internal);
 
 function manifestLabel(manifest: A3SFlowDagNodeManifest, locale: string): string {
-  const coreNode = getA3SFlowCoreNode(manifest.type);
-  return coreNode ? localizeA3SFlowCoreNode(coreNode, locale).display_name : manifest.display_name;
+  return localizeA3SFlowDagManifest(manifest, locale).display_name;
 }
 
 function manifestCategoryLabel(manifest: A3SFlowDagNodeManifest, locale: string): string {
-  const coreNode = getA3SFlowCoreNode(manifest.type);
-  return coreNode ? localizeA3SFlowCoreNode(coreNode, locale).categoryLabel : manifest.categoryLabel;
+  return localizeA3SFlowDagManifest(manifest, locale).categoryLabel;
 }
 
 export function A3SFlowDagDemo() {
@@ -104,8 +101,14 @@ export function A3SFlowDagDemo() {
       title={`A3S Flow ${A3S_FLOW_DAG_NODE_MANIFEST_PROVENANCE.engineVersion}`}
       panelOpen={panelOpen}
       paletteOpen={paletteOpen}
-      onOpenPanel={() => setPanelOpen(true)}
-      onPaletteOpenChange={setPaletteOpen}
+      onOpenPanel={() => {
+        setPaletteOpen(false);
+        setPanelOpen(true);
+      }}
+      onPaletteOpenChange={(open) => {
+        setPaletteOpen(open);
+        if (open) setPanelOpen(false);
+      }}
       onRun={runNode}
       status={status}
       palette={
@@ -137,10 +140,13 @@ export function A3SFlowDagDemo() {
                 <h3>{category.label}</h3>
                 {category.items.map((candidate) => {
                   const visual = workflowNodeVisual(candidate);
+                  const localizedCandidate = localizeA3SFlowDagManifest(candidate, locale);
                   return (
                     <button
                       type="button"
                       key={candidate.type}
+                      data-node-family={visual.family}
+                      data-node-type={candidate.type}
                       data-node-tone={visual.tone}
                       data-selected={candidate.type === dagNode.data.type || undefined}
                       onClick={() => selectNode(candidate.type)}
@@ -148,7 +154,10 @@ export function A3SFlowDagDemo() {
                       <span aria-hidden="true">
                         <DesignerIcon name={visual.icon} size={15} />
                       </span>
-                      <span>{manifestLabel(candidate, locale)}</span>
+                      <span>
+                        <strong>{localizedCandidate.display_name}</strong>
+                        <small>{localizedCandidate.description}</small>
+                      </span>
                     </button>
                   );
                 })}
@@ -164,11 +173,24 @@ export function A3SFlowDagDemo() {
           locale={locale}
           status={nodeStatus}
           selected={panelOpen}
-          onSelect={() => setPanelOpen(true)}
+          onSelect={() => {
+            setPaletteOpen(false);
+            setPanelOpen(true);
+          }}
+          onRequestNext={(port) => {
+            setPanelOpen(false);
+            setPaletteOpen(true);
+            setStatus(
+              isEnglish
+                ? `Choose the next node for ${port.label}.`
+                : `为「${port.label}」选择下一个节点。`,
+            );
+          }}
         />
       }
       inspector={
         <A3SFlowDagNodeConfigurationPanel
+          key={manifest.type}
           dagNode={dagNode}
           manifest={manifest}
           onChange={setDagNode}

@@ -43,9 +43,10 @@ export function WorkflowStudioFrame({
         draft: '草稿',
         saved: '已保存',
         run: '运行',
-        add: '添加下一个节点',
         library: '节点库',
         closeLibrary: '关闭节点库',
+        configure: '配置当前节点',
+        nodeActions: '当前节点操作',
         zoomOut: '缩小画布',
         zoomIn: '放大画布',
         fit: '适应画布',
@@ -55,13 +56,19 @@ export function WorkflowStudioFrame({
         draft: 'Draft',
         saved: 'Saved',
         run: 'Run',
-        add: 'Add next node',
         library: 'Node library',
         closeLibrary: 'Close node library',
+        configure: 'Configure current node',
+        nodeActions: 'Current node actions',
         zoomOut: 'Zoom out',
         zoomIn: 'Zoom in',
         fit: 'Fit canvas',
       };
+
+  const openPanel = () => {
+    setPaletteOpen(false);
+    onOpenPanel();
+  };
 
   return (
     <section
@@ -82,28 +89,42 @@ export function WorkflowStudioFrame({
             <DesignerIcon name="check-square" size={13} />
             {copy.saved}
           </span>
-          <button type="button" onClick={onRun}>
+          {palette && (
+            <button
+              type="button"
+              className="a3s-doc-workflow-studio__library-toggle"
+              data-variant="secondary"
+              aria-label={copy.library}
+              aria-expanded={paletteOpen}
+              onClick={() => setPaletteOpen(!paletteOpen)}
+            >
+              <DesignerIcon name="components" size={14} />
+              <span>{copy.library}</span>
+            </button>
+          )}
+          <button type="button" aria-label={copy.run} onClick={onRun}>
             <DesignerIcon name="play" size={14} />
-            {copy.run}
+            <span>{copy.run}</span>
           </button>
         </div>
       </header>
 
       <div className="a3s-doc-workflow-studio__workspace">
-        <div className="a3s-doc-workflow-studio__canvas" onDoubleClick={onOpenPanel}>
+        <div className="a3s-doc-workflow-studio__canvas" onDoubleClick={openPanel}>
           <div className="a3s-doc-workflow-studio__node" onDoubleClick={(event) => event.stopPropagation()}>
-            {node}
-            {palette && (
-              <button
-                type="button"
-                className="a3s-doc-workflow-studio__add"
-                aria-label={copy.add}
-                aria-expanded={paletteOpen}
-                onClick={() => setPaletteOpen(!paletteOpen)}
-              >
-                <span aria-hidden="true">+</span>
+            <div
+              className="a3s-doc-workflow-studio__node-actions"
+              role="toolbar"
+              aria-label={copy.nodeActions}
+            >
+              <button type="button" aria-label={copy.configure} onClick={openPanel}>
+                <DesignerIcon name="settings" size={14} />
               </button>
-            )}
+              <button type="button" aria-label={copy.run} onClick={onRun}>
+                <DesignerIcon name="play" size={14} />
+              </button>
+            </div>
+            {node}
           </div>
 
           {palette && (

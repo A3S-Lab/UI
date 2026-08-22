@@ -101,8 +101,22 @@
   background: color-mix(in srgb, var(--workflow-studio-blue) 88%, #0b347e);
 }
 
+.a3s-doc-workflow-studio__actions > .a3s-doc-workflow-studio__library-toggle {
+  border-color: var(--workflow-studio-line-strong);
+  background: var(--workflow-studio-paper);
+  box-shadow: none;
+  color: var(--workflow-studio-ink);
+}
+
+.a3s-doc-workflow-studio__actions
+  > .a3s-doc-workflow-studio__library-toggle:is(:hover, [aria-expanded="true"]) {
+  border-color: color-mix(in srgb, var(--workflow-studio-blue) 48%, var(--workflow-studio-line));
+  background: color-mix(in srgb, var(--workflow-studio-blue) 7%, var(--workflow-studio-paper));
+  color: var(--workflow-studio-blue);
+}
+
 .a3s-doc-workflow-studio__actions > button:focus-visible,
-.a3s-doc-workflow-studio__add:focus-visible,
+.a3s-doc-workflow-studio__node-actions button:focus-visible,
 .a3s-doc-workflow-studio__zoom button:focus-visible,
 .a3s-doc-workflow-studio__palette-close:focus-visible {
   outline: 2px solid var(--workflow-studio-blue);
@@ -132,54 +146,53 @@
 
 .a3s-doc-workflow-studio__node {
   position: absolute;
-  top: 184px;
-  left: max(46px, calc((100% - 416px) / 2 - 120px));
+  top: 176px;
+  left: calc((100% - 416px) / 2);
   z-index: 2;
+  transform: translateX(-50%);
 }
 
-.a3s-doc-workflow-studio__node::before,
-.a3s-doc-workflow-studio__node::after {
+.a3s-doc-workflow-studio:not([data-panel-open="true"]):not([data-palette-open="true"])
+  .a3s-doc-workflow-studio__node {
+  left: 50%;
+}
+
+.a3s-doc-workflow-studio[data-palette-open="true"] .a3s-doc-workflow-studio__node {
+  left: calc(50% + 164px);
+}
+
+.a3s-doc-workflow-studio__node-actions {
   position: absolute;
-  top: 16px;
-  z-index: -1;
-  height: 2px;
-  background: color-mix(in srgb, var(--workflow-studio-blue) 76%, var(--workflow-studio-line));
-  content: "";
-}
-
-.a3s-doc-workflow-studio__node::before {
-  right: 100%;
-  width: 74px;
-}
-
-.a3s-doc-workflow-studio__node::after {
-  left: 100%;
-  width: 82px;
-}
-
-.a3s-doc-workflow-studio__add {
-  position: absolute;
-  top: 6px;
-  left: calc(100% + 72px);
-  display: grid;
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 1px solid color-mix(in srgb, var(--workflow-studio-blue) 46%, var(--workflow-studio-line));
-  border-radius: 50%;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  display: flex;
+  min-height: 30px;
+  padding: 3px;
+  border: 0.5px solid var(--workflow-studio-line-strong);
+  border-radius: 9px;
   background: var(--workflow-studio-paper);
-  box-shadow: 0 1px 3px rgb(20 27 43 / 8%);
-  place-items: center;
-  color: var(--workflow-studio-blue);
-  cursor: pointer;
-  font: 650 15px/1 ui-sans-serif, sans-serif;
+  box-shadow: 0 4px 12px rgb(20 27 43 / 10%);
+  align-items: center;
+  gap: 2px;
+  transform: translateX(-50%);
 }
 
-.a3s-doc-workflow-studio__add:hover,
-.a3s-doc-workflow-studio__add[aria-expanded="true"] {
-  border-color: var(--workflow-studio-blue);
-  background: var(--workflow-studio-blue);
-  color: #fff;
+.a3s-doc-workflow-studio__node-actions button {
+  display: grid;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  place-items: center;
+  color: var(--workflow-studio-muted);
+  cursor: pointer;
+}
+
+.a3s-doc-workflow-studio__node-actions button:hover {
+  background: var(--workflow-studio-panel);
+  color: var(--workflow-studio-blue);
 }
 
 .a3s-doc-workflow-studio__inspector {
@@ -201,7 +214,7 @@
   top: 12px;
   bottom: 56px;
   left: 12px;
-  width: min(320px, calc(100% - 24px));
+  width: min(328px, calc(100% - 24px));
   overflow: hidden;
   border: 0.5px solid var(--workflow-studio-line-strong);
   border-radius: 12px;
@@ -342,9 +355,9 @@
 .a3s-doc-workflow-library__list section > button {
   display: flex;
   width: 100%;
-  min-height: 34px;
-  padding: 3px 8px;
-  border: 0;
+  min-height: 50px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
   align-items: center;
@@ -362,6 +375,10 @@
   color: var(--workflow-studio-ink);
 }
 
+.a3s-doc-workflow-library__list section > button[data-selected="true"] {
+  border-color: color-mix(in srgb, var(--workflow-studio-blue) 18%, transparent);
+}
+
 .a3s-doc-workflow-library__list section > button:focus-visible {
   outline: 2px solid var(--workflow-studio-blue);
   outline-offset: -2px;
@@ -369,8 +386,8 @@
 
 .a3s-doc-workflow-library__list section > button > span:first-child {
   display: grid;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   flex: 0 0 auto;
   border-radius: 6px;
   background: color-mix(in srgb, var(--workflow-studio-blue) 10%, var(--workflow-studio-paper));
@@ -404,9 +421,28 @@
 }
 
 .a3s-doc-workflow-library__list section > button > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.a3s-doc-workflow-library__list section > button > span:last-child > strong,
+.a3s-doc-workflow-library__list section > button > span:last-child > small {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.a3s-doc-workflow-library__list section > button > span:last-child > strong {
+  color: var(--workflow-studio-ink);
+  font-size: 11px;
+  font-weight: 640;
+}
+
+.a3s-doc-workflow-library__list section > button > span:last-child > small {
+  color: var(--workflow-studio-muted);
+  font-size: 9px;
+  line-height: 1.35;
 }
 
 .a3s-doc-workflow-run-result {
@@ -526,24 +562,18 @@
 }
 
 @container a3s-doc-workflow-studio (max-width: 840px) {
-  .a3s-doc-workflow-studio__node {
-    left: 18px;
+  .a3s-doc-workflow-studio[data-palette-open="true"] .a3s-doc-workflow-studio__node {
+    left: 50%;
   }
 
-  .a3s-doc-workflow-studio__node::before {
-    display: none;
+  .a3s-doc-workflow-studio__node
+    .a3s-form-workflow-node-preview[data-node-family="container"] {
+    width: clamp(248px, calc(100cqw - 416px), 280px);
+    min-width: min(248px, 100%);
   }
 
-  .a3s-doc-workflow-studio__node::after {
-    top: 100%;
-    left: calc(50% - 1px);
-    width: 2px;
-    height: 46px;
-  }
-
-  .a3s-doc-workflow-studio__add {
-    top: calc(100% + 35px);
-    left: calc(50% - 11px);
+  .a3s-doc-workflow-studio[data-palette-open="true"] .a3s-doc-workflow-studio__node {
+    visibility: hidden;
   }
 }
 
@@ -557,8 +587,8 @@
   }
 
   .a3s-doc-workflow-studio__node {
-    top: 118px;
-    left: max(36px, calc(50% - 120px));
+    top: 104px;
+    left: 50%;
   }
 
   .a3s-doc-workflow-studio__inspector {
@@ -602,6 +632,10 @@
     justify-content: center;
   }
 
+  .a3s-doc-workflow-studio__actions > button > span {
+    display: none;
+  }
+
   .a3s-doc-workflow-studio__workspace {
     min-height: 1120px;
   }
@@ -612,6 +646,12 @@
     bottom: 8px;
     left: 8px;
     width: auto;
+  }
+
+  .a3s-doc-workflow-studio__node
+    .a3s-form-workflow-node-preview[data-node-family="container"] {
+    width: 292px;
+    min-width: 292px;
   }
 }
 

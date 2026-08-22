@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
 import {
   type A3SFlowWorkflowDagNode,
+  a3sFlowDagNodeManifestCatalog,
   createA3SFlowDagNode,
   createA3SFlowDagNodeRegistry,
   createA3SFlowNodeDefaultValue,
@@ -132,6 +133,36 @@ describe('A3S Flow DAG node configuration panel', () => {
     expect(screen.getByText('acme.approval')).toBeTruthy();
   });
 
+  it('shows only control and data outputs available for the current DAG configuration', () => {
+    const manifest = requireA3SFlowDagNodeManifest('flow.step');
+    const defaultNode = createA3SFlowDagNode('step-default-ports', manifest);
+    const { rerender } = render(
+      <A3SFlowDagNodePreview
+        dagNode={defaultNode}
+        manifest={manifest}
+        onRequestNext={() => undefined}
+      />,
+    );
+
+    expect(screen.getByText('Success')).toBeTruthy();
+    expect(screen.queryByText('Recoverable failure')).toBeNull();
+    expect(screen.getAllByRole('button', { name: /Add next node from/u })).toHaveLength(1);
+
+    const recoverableNode = createA3SFlowDagNode('step-recoverable-ports', manifest, {
+      on_exhausted: 'continue_workflow',
+    });
+    rerender(
+      <A3SFlowDagNodePreview
+        dagNode={recoverableNode}
+        manifest={manifest}
+        onRequestNext={() => undefined}
+      />,
+    );
+    expect(screen.getByText('Recoverable failure')).toBeTruthy();
+    expect(screen.getByText('Recoverable error')).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /Add next node from/u })).toHaveLength(2);
+  });
+
   it('keeps the A3S expression widget and localized copy on the DAG main path', () => {
     const manifest = requireA3SFlowDagNodeManifest('flow.step');
     const dagNode = createA3SFlowDagNode('step-dag', manifest);
@@ -147,6 +178,56 @@ describe('A3S Flow DAG node configuration panel', () => {
     expect(screen.getByRole('heading', { name: '执行步骤' })).toBeTruthy();
     expect(screen.getByLabelText('工作流字段路径')).toBeTruthy();
     expect(screen.queryByDisplayValue('[object Object]')).toBeNull();
+  });
+
+  it('localizes the complete public and internal manifest catalog', () => {
+    const expectedTitles: Readonly<Record<string, string>> = {
+      'flow.start': '工作流开始',
+      'flow.condition': '条件分支',
+      'flow.complete': '完成工作流',
+      'flow.fail': '标记工作流失败',
+      'flow.step': '执行步骤',
+      'flow.batch': '批量执行步骤',
+      'flow.wait': '等待至',
+      'flow.hook': '等待外部回调',
+      'flow.cancel': '取消工作流',
+      'flow.timeout': '标记工作流超时',
+      'flow.continue-as-new': '作为新运行继续',
+      'flow.progress': '记录运行进度',
+      'flow.child-operation': '关联子操作',
+      'flow.child-workflow': '启动子工作流',
+      'flow.child-workflows': '批量启动子工作流',
+      'flow.signal': '等待信号',
+      iteration: '迭代',
+      'iteration-start': '迭代起点',
+      loop: '循环',
+      'loop-start': '循环起点',
+    };
+
+    expect(a3sFlowDagNodeManifestCatalog).toHaveLength(20);
+    for (const manifest of a3sFlowDagNodeManifestCatalog) {
+      const localized = localizeA3SFlowDagNodeManifest(manifest, undefined, 'zh-CN');
+      expect(localized.display_name).toBe(expectedTitles[manifest.type]);
+      expect(localized.categoryLabel).not.toBe(manifest.categoryLabel);
+      expect(localized).not.toBe(manifest);
+    }
+  });
+
+  it('shows a compact ready state when a node has no editable parameters', () => {
+    const manifest = requireA3SFlowDagNodeManifest('flow.cancel');
+    const dagNode = createA3SFlowDagNode('cancel-ready', manifest);
+    render(
+      <A3SFlowDagNodeConfigurationPanel
+        dagNode={dagNode}
+        manifest={manifest}
+        locale="zh-CN"
+        onChange={() => undefined}
+      />,
+    );
+
+    expect(screen.getByText('无需配置')).toBeTruthy();
+    expect(screen.getByText('这个节点没有可编辑参数，可以直接连接或运行。')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '恢复默认值' })).toBeNull();
   });
 
   it('merges manifest field overrides and returns a whole node on guarded reset', () => {

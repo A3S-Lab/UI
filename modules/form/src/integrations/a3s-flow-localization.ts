@@ -1,4 +1,5 @@
 import type { A3SFlowCoreNodeDefinition } from './a3s-flow-core';
+import type { A3SFlowDagNodeManifest } from './a3s-flow-node-manifest';
 import type { WorkflowNodeFieldDefinition, WorkflowNodeTableColumn } from './workflow-node-form';
 
 interface LocalizedFieldCopy {
@@ -252,6 +253,229 @@ const CHINESE_NODE_COPY: Readonly<Record<string, LocalizedNodeCopy>> = {
     },
     ports: { in: '标记失败', error: '失败原因' },
   },
+  'flow.cancel': {
+    title: '取消工作流',
+    description: '结束当前运行，并执行接入系统要求的取消清理。',
+    category: '运行结果',
+    fields: {},
+    ports: { in: '取消' },
+  },
+  'flow.timeout': {
+    title: '标记工作流超时',
+    description: '结束当前运行，并记录 UTC 截止时间和超时原因。',
+    category: '运行结果',
+    fields: {
+      deadline: {
+        label: '截止时间（UTC）',
+        help: '导致当前运行超时的 UTC 截止时间。',
+        group: '超时详情',
+      },
+      reason: {
+        label: '超时原因',
+        help: '补充说明这次超时决定的上下文。',
+        group: '超时详情',
+      },
+    },
+    ports: { in: '标记超时', deadline: '截止时间' },
+  },
+  'flow.continue-as-new': {
+    title: '作为新运行继续',
+    description: '结束当前历史段，并使用同一工作流定义启动后续运行。',
+    category: '运行控制',
+    fields: {
+      input: {
+        label: '后续运行输入',
+        help: '作为后续运行初始输入的 JSON 数据。',
+        group: '后续运行',
+      },
+    },
+    ports: { in: '继续', successor: '后续运行' },
+  },
+  'flow.progress': {
+    title: '记录运行进度',
+    description: '保存可观察的执行进度，然后继续工作流重放。',
+    category: '运行控制',
+    fields: {
+      progress_id: {
+        label: '进度 ID',
+        help: '重放时保持稳定的进度标识，建议使用当前图节点 ID。',
+        group: '进度标识',
+      },
+      completed: {
+        label: '已完成数量',
+        help: '使用固定值或工作流字段表示已完成的单位数。',
+        group: '进度数值',
+      },
+      total: {
+        label: '总数量',
+        help: '可选的总单位数。',
+        group: '进度数值',
+      },
+      message: {
+        label: '进度说明',
+        help: '向运行观察者展示的可选说明。',
+        group: '进度详情',
+      },
+      details: {
+        label: '进度详情',
+        help: '由运行检查接口公开的可选 JSON 数据。',
+        group: '进度详情',
+      },
+    },
+    ports: { in: '记录进度', recorded: '已记录' },
+  },
+  'flow.child-operation': {
+    title: '关联子操作',
+    description: '保存由外部系统管理的子操作稳定引用。',
+    category: '子任务',
+    fields: {
+      reference_id: {
+        label: '引用 ID',
+        help: '不会随重放变化的引用标识。',
+        group: '子操作标识',
+      },
+      kind: {
+        label: '操作类型',
+        help: '由接入系统定义的操作分类。',
+        group: '子操作标识',
+      },
+      operation_id: {
+        label: '操作 ID',
+        help: '外部系统分配的操作标识。',
+        group: '子操作标识',
+      },
+      flow_run_id: {
+        label: 'Flow 运行 ID',
+        help: '可选的关联 Flow 运行。',
+        group: '关联信息',
+      },
+      metadata: {
+        label: '附加元数据',
+        help: '由接入系统维护的可选 JSON 元数据。',
+        group: '关联信息',
+      },
+    },
+    ports: { in: '关联', linked: '已关联', child: '子操作' },
+  },
+  'flow.child-workflow': {
+    title: '启动子工作流',
+    description: '使用父运行内稳定的标识启动或等待一个子工作流。',
+    category: '子任务',
+    fields: {
+      child_id: {
+        label: '子工作流 ID',
+        help: '父运行内保持稳定的标识，建议使用当前图节点 ID。',
+        group: '子工作流',
+      },
+      spec: {
+        label: '工作流定义',
+        help: '固定的工作流名称、版本、运行时和可选构建路由。',
+        group: '子工作流',
+      },
+      input: {
+        label: '子工作流输入',
+        help: '作为子工作流初始输入的 JSON 数据。',
+        group: '子工作流',
+      },
+      cancellation_policy: {
+        label: '取消策略',
+        help: '随父运行请求取消子工作流，或让子工作流继续运行。',
+        group: '高级设置',
+        options: {
+          request_cancellation: '请求取消子工作流',
+          abandon: '保留子工作流运行',
+        },
+      },
+    },
+    ports: { in: '启动', completed: '已完成', outcome: '运行结果' },
+  },
+  'flow.child-workflows': {
+    title: '批量启动子工作流',
+    description: '按确定顺序启动一组有数量上限的子工作流。',
+    category: '子任务',
+    fields: {
+      children: {
+        label: '子工作流列表',
+        help: '按当前顺序启动的子工作流定义，单个批次最多包含 64 个成员。',
+        group: '子工作流批次',
+      },
+    },
+    ports: { in: '启动批次', completed: '批次完成', outcomes: '运行结果' },
+  },
+  'flow.signal': {
+    title: '等待信号',
+    description: '暂停工作流，直到收到下一条名称匹配的已声明信号。',
+    category: '等待与回调',
+    fields: {
+      wait_id: {
+        label: '等待 ID',
+        help: '重放时保持稳定的等待标识，建议使用当前图节点 ID。',
+        group: '等待信号',
+      },
+      signal_name: {
+        label: '信号名称',
+        help: '这个等待节点接受的已声明信号契约。',
+        group: '等待信号',
+        placeholder: 'order.approved',
+      },
+    },
+    ports: { in: '开始等待', received: '已收到', payload: '信号数据' },
+  },
+  iteration: {
+    title: '迭代',
+    description: '对确定集合中的每个成员执行一次容器作用域。',
+    category: '容器',
+    fields: {
+      start_node_id: {
+        label: '起始节点 ID',
+        help: '容器作用域内迭代起始节点的稳定标识。',
+        group: '容器结构',
+      },
+      items: {
+        label: '迭代集合',
+        help: '进入迭代作用域前求值的集合。',
+        group: '迭代输入',
+      },
+    },
+    ports: { in: '进入迭代', done: '迭代完成', results: '迭代结果', item: '当前成员' },
+  },
+  'iteration-start': {
+    title: '迭代起点',
+    description: '迭代容器作用域内部使用的起始节点。',
+    category: '容器',
+    fields: {},
+    ports: { next: '继续', item: '当前成员' },
+  },
+  loop: {
+    title: '循环',
+    description: '在确定条件保持成立时重复执行容器作用域。',
+    category: '容器',
+    fields: {
+      start_node_id: {
+        label: '起始节点 ID',
+        help: '容器作用域内循环起始节点的稳定标识。',
+        group: '容器结构',
+      },
+      condition: {
+        label: '继续条件',
+        help: '进入下一次循环作用域前检查的条件。',
+        group: '循环条件',
+      },
+      max_iterations: {
+        label: '最大循环次数',
+        help: '由接入系统设置的循环编译安全上限。',
+        group: '循环条件',
+      },
+    },
+    ports: { in: '进入循环', done: '循环完成', result: '循环结果' },
+  },
+  'loop-start': {
+    title: '循环起点',
+    description: '循环容器作用域内部使用的起始节点。',
+    category: '容器',
+    fields: {},
+    ports: { next: '继续' },
+  },
 };
 
 export function isA3SFlowChineseLocale(locale: string | undefined): boolean {
@@ -308,6 +532,20 @@ export function localizeA3SFlowCoreNode(
   definition: A3SFlowCoreNodeDefinition,
   locale?: string,
 ): A3SFlowCoreNodeDefinition {
+  return localizeNodeCopy(definition, locale);
+}
+
+export function localizeA3SFlowDagManifest(
+  manifest: A3SFlowDagNodeManifest,
+  locale?: string,
+): A3SFlowDagNodeManifest {
+  return localizeNodeCopy(manifest, locale);
+}
+
+function localizeNodeCopy<T extends A3SFlowCoreNodeDefinition | A3SFlowDagNodeManifest>(
+  definition: T,
+  locale?: string,
+): T {
   if (!isA3SFlowChineseLocale(locale)) return definition;
   const copy = CHINESE_NODE_COPY[definition.type];
   if (!copy) return definition;
@@ -331,5 +569,5 @@ export function localizeA3SFlowCoreNode(
         label: copy.ports[port.id] ?? port.label,
       })),
     },
-  };
+  } as T;
 }

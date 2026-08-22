@@ -12,6 +12,7 @@ import {
   mergeA3SFlowDagNodeConfiguration,
   selectA3SFlowDagNodeConfiguration,
 } from '../integrations/a3s-flow-node-manifest';
+import { isA3SFlowCorePortAvailable } from '../integrations/a3s-flow-validation';
 import {
   createA3SFlowPanelHostAdapter,
   localizeA3SFlowDagNodeManifest,
@@ -84,14 +85,25 @@ export function A3SFlowDagNodePreview({
   ...props
 }: A3SFlowDagNodePreviewProps) {
   const manifest = suppliedManifest ?? registry.get(dagNode.data.type);
+  const coreDefinition = useMemo(
+    () => (manifest ? getA3SFlowCoreNode(manifest.type) : undefined),
+    [manifest],
+  );
   const localizedManifest = useMemo(() => {
     if (!manifest) return undefined;
-    return localizeA3SFlowDagNodeManifest(
-      manifest,
-      getA3SFlowCoreNode(manifest.type),
-      props.locale,
-    );
-  }, [manifest, props.locale]);
+    return localizeA3SFlowDagNodeManifest(manifest, coreDefinition, props.locale);
+  }, [coreDefinition, manifest, props.locale]);
+  const previewPorts = useMemo(() => {
+    if (!localizedManifest) return undefined;
+    if (!coreDefinition) return localizedManifest.ports;
+    return {
+      inputs: localizedManifest.ports.inputs,
+      outputs: localizedManifest.ports.outputs.filter((port) => {
+        const corePort = coreDefinition.ports.outputs.find((candidate) => candidate.id === port.id);
+        return !corePort || isA3SFlowCorePortAvailable(corePort, dagNode.data);
+      }),
+    };
+  }, [coreDefinition, dagNode.data, localizedManifest]);
   if (!localizedManifest) {
     return missingManifestAlert(
       dagNode.data.type,
@@ -105,7 +117,7 @@ export function A3SFlowDagNodePreview({
     ...props,
     className: ['a3s-form-flow-node-preview', className].filter(Boolean).join(' '),
     node: localizedManifest,
-    ports: localizedManifest.ports,
+    ports: previewPorts,
     technical,
   });
 }
