@@ -15,6 +15,7 @@ import {
   RatingWidget,
   SliderWidget,
   TagsWidget,
+  TimeWidget,
   timeFormValue,
   timeInputValue,
 } from '../src/react/extended-widgets';
@@ -180,6 +181,7 @@ describe('extended widget edge behavior', () => {
       node: fieldNode('tags', { label: '技能', placeholder: '添加一项技能' }),
       schema: { type: 'array', items: { type: 'string' }, minItems: 1 },
       value: [1, 'Rust'],
+      describedBy: 'skills-help',
       onBlur: undefined,
     });
     const limitedRender = render(<TagsWidget {...limited.props} />);
@@ -191,6 +193,9 @@ describe('extended widget edge behavior', () => {
     expect(
       limitedRender.container.querySelector('.a3s-form-tag')?.classList.contains('badge'),
     ).toBe(true);
+    expect(screen.getByRole('textbox', { name: '添加技能' }).getAttribute('aria-describedby')).toBe(
+      'skills-help limited-tags-tag-feedback',
+    );
     fireEvent.blur(screen.getByRole('textbox', { name: '添加技能' }), { relatedTarget: null });
   });
 
@@ -235,6 +240,25 @@ describe('extended widget edge behavior', () => {
     render(<CurrencyWidget {...valid.props} />);
     expect(screen.getByText('USD')).toBeTruthy();
     expect((screen.getByRole('spinbutton', { name: '价格' }) as HTMLInputElement).value).toBe('');
+  });
+
+  it('falls back from malformed currency codes and labels temporal controls by node id', () => {
+    const invalidCurrency = createWidgetProps({
+      id: 'currency-code',
+      node: fieldNode('currency', { customProps: { currency: 'yuan' } }),
+      value: 12,
+    });
+    const currency = render(<CurrencyWidget {...invalidCurrency.props} />);
+    expect(screen.getByText('CNY')).toBeTruthy();
+    currency.unmount();
+
+    const time = createWidgetProps({
+      id: 'time-control',
+      node: { id: 'scheduled-at', kind: 'field', widget: 'time' },
+      value: '09:30:00Z',
+    });
+    render(<TimeWidget {...time.props} />);
+    expect(screen.getByLabelText('scheduled-at')).toBeTruthy();
   });
 
   it('supports custom rating options, bounded defaults, and group focus behavior', () => {

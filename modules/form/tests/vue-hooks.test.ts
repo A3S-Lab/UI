@@ -142,6 +142,61 @@ describe('A3S UI Vue form composables', () => {
     scope.stop();
   });
 
+  it('supports empty defaults, passive bulk updates, implicit validation, and local keys', async () => {
+    const emptyScope = effectScope();
+    const form = emptyScope.run(() =>
+      useA3SForm<{ name: string; age: number; active: boolean; role: string }>({
+        plan: assertCompiled(createDocument()),
+        mode: 'onChange',
+      }),
+    );
+    if (!form) throw new Error('Vue effect scope did not return the empty form.');
+    expect(form.values.value).toEqual({});
+
+    form.setValues(
+      { name: 'Ada', age: 36, active: true, role: 'admin' },
+      { shouldDirty: false, shouldTouch: false },
+    );
+    await waitFor(() => expect(form.formState.value.isValidating).toBe(false));
+    expect(form.formState.value.dirtyFields).toEqual(new Set());
+    expect(form.formState.value.touchedFields).toEqual(new Set());
+    expect(form.errors.value).toEqual([]);
+    emptyScope.stop();
+
+    const cryptoObject = globalThis.crypto as Crypto & { randomUUID?: () => `${string}-${string}` };
+    const randomUuidDescriptor = Object.getOwnPropertyDescriptor(cryptoObject, 'randomUUID');
+    Object.defineProperty(cryptoObject, 'randomUUID', {
+      configurable: true,
+      value: undefined,
+    });
+    try {
+      const arrayScope = effectScope();
+      const result = arrayScope.run(() => {
+        const arrayForm = useA3SForm({
+          plan: assertCompiled(createObjectRepeaterDocument()),
+          initialValues: {
+            recipients: [{ rowId: 'row-local', name: 'Local', email: 'local@example.com' }],
+          },
+        });
+        return {
+          rows: useA3SFieldArray<JsonObject, JsonObject>({
+            form: arrayForm,
+            name: 'recipients',
+          }),
+        };
+      });
+      if (!result) throw new Error('Vue effect scope did not return the local-key array.');
+      expect(result.rows.fields.value[0]?.key).toMatch(/^a3s-field-\d+$/);
+      arrayScope.stop();
+    } finally {
+      if (randomUuidDescriptor) {
+        Object.defineProperty(cryptoObject, 'randomUUID', randomUuidDescriptor);
+      } else {
+        Reflect.deleteProperty(cryptoObject, 'randomUUID');
+      }
+    }
+  });
+
   it('cancels superseded validation and exposes field transforms and errors', async () => {
     const completions: Array<(value: { issues: [] }) => void> = [];
     const scope = effectScope();

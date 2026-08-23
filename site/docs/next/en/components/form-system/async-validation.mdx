@@ -5,14 +5,17 @@ The `next` runtime can call host validation after field blur, before wizard navi
 ```ts
 const hostAdapter = {
   async validateValue(request, signal) {
-    const response = await validateWorkflowNode(request.value, { signal });
-    return {
-      issues: response.issues.map(({ field, code, message }) => ({
-        path: field,
-        code,
-        message,
-      })),
-    };
+    const response = await fetch('/api/forms/validate', {
+      method: 'POST',
+      signal,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        formDigest: request.plan.sourceDigest,
+        scope: request.scope,
+        value: request.value,
+      }),
+    });
+    return response.json();
   },
 };
 ```
@@ -21,6 +24,6 @@ Synchronous validation runs first. Field requests use `{ kind: "field", nodeId, 
 
 An in-flight request is cancelled when the controlled value changes. A late response from an older request cannot replace current form state.
 
-Host error codes are normalized to `async.<code>`. Invalid response shapes, unavailable services, and illegal validation scopes close the current operation with stable errors without exposing upstream exception details. React, Vue, Web Component, the A3S Cloud adapter, and the reference workflow host use the same protocol.
+Host error codes are normalized to `async.<code>`. Invalid response shapes, unavailable services, and illegal validation scopes close the current operation with stable errors without exposing upstream exception details. React, Vue, Web Component, and the A3S Cloud adapter use the same protocol.
 
 See the [complete asynchronous-validation protocol](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/async-validation.md) for cancellation, headless validation, and server-side enforcement.

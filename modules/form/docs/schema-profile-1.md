@@ -28,7 +28,7 @@ Property names must be non-empty and cannot contain dots because runtime value p
 
 ## Supported formats
 
-Profile 1 asserts these formats during headless, browser, Worker, CLI, and workflow-node validation:
+Profile 1 asserts these formats during headless, browser, Worker, CLI, and embedded validation:
 
 ```text
 email
@@ -69,7 +69,7 @@ These capabilities can only enter a later profile with compiler, browser, server
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/workflow-node",
+  "$id": "https://example.com/schemas/routing-settings",
   "type": "object",
   "properties": {
     "endpoint": {

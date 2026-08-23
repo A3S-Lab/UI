@@ -189,6 +189,18 @@ describe('data grid spreadsheet operations', () => {
         error: expect.objectContaining({ code: 'invalid_number' }),
       }),
     );
+    expect(
+      parseDataGridPaste(
+        'Infinity',
+        [{ ...column('number'), id: 'integer', schema: { type: 'integer' } }],
+        createItem,
+      ),
+    ).toEqual(
+      expect.objectContaining({
+        ok: false,
+        error: expect.objectContaining({ code: 'invalid_integer' }),
+      }),
+    );
     expect(parseDataGridPaste('[]', [column('object')], createItem)).toEqual(
       expect.objectContaining({
         ok: false,
@@ -210,6 +222,10 @@ describe('data grid spreadsheet operations', () => {
     expect(parseDataGridPaste('Widget', [], createItem)).toEqual({
       ok: false,
       error: { code: 'no_columns' },
+    });
+    expect(parseDataGridPaste('""', [columns[0]], createItem)).toEqual({
+      ok: false,
+      error: { code: 'empty' },
     });
     expect(parseDataGridPaste('Widget', [columns[0]], () => 'row')).toEqual({
       ok: false,

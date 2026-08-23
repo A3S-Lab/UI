@@ -178,4 +178,4 @@ Existing primitive repeaters require no change. To replace an object-array JSON 
 5. Omit `itemKey` unless the existing item schema already has a required string identifier. Use `identifyRepeaterItem` when the host can derive a stable business key.
 6. Recompile every stored document. Fix `node.dynamic_scope`, `repeater.items_type`, or `repeater.item_key` diagnostics before publishing.
 
-The documented Router workflow-node example follows this migration: `routes` remains the same metadata-free workflow configuration array, but each condition is edited through a repeatable row with row-level validation and a host-owned branch data source.
+The documented routing example follows this migration: `routes` remains the same metadata-free configuration array, but each condition is edited through a repeatable row with row-level validation and a host-owned branch data source.

@@ -33,6 +33,7 @@ describe('A3S UI React form hooks', () => {
         { path: 'profile.name', code: 'minLength', message: 'Name is too short.' },
         { path: 'items.0.email', code: 'format.email', message: 'Email is invalid.' },
         { path: '', code: 'form.invalid', message: 'Form is invalid.' },
+        { path: '', code: 'form.blocked', message: 'Form is blocked.' },
       ],
       'all',
     );
@@ -233,6 +234,32 @@ describe('A3S UI React form hooks', () => {
         expect.objectContaining({ path: 'name', code: 'minLength' }),
       ),
     );
+  });
+
+  it('accepts renderer changes without change-mode validation and starts with empty values', async () => {
+    const plan = assertCompiled(createDocument());
+    const empty = renderHook(() => useA3SForm({ plan }));
+    expect(empty.result.current.rendererProps.value).toEqual({});
+    empty.unmount();
+
+    const initialValue: PersonValues = {
+      name: 'Ada',
+      age: 36,
+      active: true,
+      role: 'admin',
+    };
+    const { result } = renderHook(() =>
+      useA3SForm({
+        plan,
+        defaultValues: initialValue,
+      }),
+    );
+
+    act(() => {
+      result.current.rendererProps.onChange({ ...initialValue, name: 'Grace' });
+    });
+    await waitFor(() => expect(result.current.getValues('name')).toBe('Grace'));
+    expect(result.current.rendererProps.errors).toEqual([]);
   });
 
   it('keeps React Hook Form field-array identities while validating with A3S Core', () => {

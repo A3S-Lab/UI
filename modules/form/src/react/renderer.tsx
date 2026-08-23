@@ -57,6 +57,7 @@ import {
 import { useWizardPageValidation } from './wizard-validation';
 
 export type { FormWidget, FormWidgetProps, FormWidgetRegistry } from './native-widget';
+export { NativeWidget } from './native-widget';
 
 export interface FormRendererProps {
   plan: FormPlan;

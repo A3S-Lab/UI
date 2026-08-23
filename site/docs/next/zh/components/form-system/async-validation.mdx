@@ -5,14 +5,17 @@
 ```ts
 const hostAdapter = {
   async validateValue(request, signal) {
-    const response = await validateWorkflowNode(request.value, { signal });
-    return {
-      issues: response.issues.map(({ field, code, message }) => ({
-        path: field,
-        code,
-        message,
-      })),
-    };
+    const response = await fetch('/api/forms/validate', {
+      method: 'POST',
+      signal,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        formDigest: request.plan.sourceDigest,
+        scope: request.scope,
+        value: request.value,
+      }),
+    });
+    return response.json();
   },
 };
 ```
@@ -21,6 +24,6 @@ const hostAdapter = {
 
 受控值变化时，正在进行的校验会被取消。即使旧请求稍后返回，也不能覆盖当前表单状态。
 
-宿主错误码统一映射为 `async.<code>`。响应结构错误、服务不可用或校验范围不合法时，运行时使用稳定错误码关闭当前操作，不把上游异常细节暴露给填写者。React、Vue、Web Component、A3S Cloud 适配器和参考工作流宿主使用同一份协议。
+宿主错误码统一映射为 `async.<code>`。响应结构错误、服务不可用或校验范围不合法时，运行时使用稳定错误码关闭当前操作，不把上游异常细节暴露给填写者。React、Vue、Web Component 和 A3S Cloud 适配器使用同一份协议。
 
 取消规则、无头校验和服务端强制校验见[完整异步校验协议](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/async-validation.md)。

@@ -12,7 +12,7 @@ import {
   inspectInteractionRequest,
   inspectInteractionSubmission,
   validateInteractionSubmission,
-} from '../src/workflow';
+} from '../src/integrations/interaction';
 import interactionConformanceJson from './conformance/interaction-contract-v1.json';
 import { createDocument } from './fixtures';
 

@@ -1,7 +1,6 @@
 import {
   assertCompiled,
   compileForm,
-  createFormRef,
   evaluateComputedRules,
   evaluateFormValue,
   type FormDocument,
@@ -11,10 +10,6 @@ import {
   type JsonObject,
   validateFormValue,
 } from '../src/core';
-import {
-  createWorkflowNodeConfiguration,
-  validateWorkflowNodeConfiguration,
-} from '../src/workflow';
 import { createDocument } from './fixtures';
 
 function field(path: string): FormExpression {
@@ -324,7 +319,7 @@ describe('computed form rules', () => {
     expect(() => evaluator.evaluate(plan, { quantity: 1, unitPrice: 1 })).not.toThrow();
   });
 
-  it('uses computed values for validation and digest-pinned workflow commits', () => {
+  it('uses computed values for validation', () => {
     const compiled = compileForm(computedDocument());
     if (!compiled.document || !compiled.plan) throw new Error('Expected a compiled document.');
     const value = { quantity: 2, unitPrice: 50, taxRate: 0.1 };
@@ -332,22 +327,6 @@ describe('computed form rules', () => {
     expect(evaluation.errors).toEqual([]);
     expect(evaluation.value.total).toBe(110);
     expect(validateFormValue(compiled.plan, value)).toEqual([]);
-
-    const form = createFormRef(
-      compiled.document,
-      'a3s://forms/workflow/order-node',
-      'configuration',
-    );
-    const descriptor = createWorkflowNodeConfiguration({
-      nodeType: 'order',
-      nodeId: 'order-1',
-      form,
-      value,
-    });
-    const validation = validateWorkflowNodeConfiguration(compiled.document, descriptor);
-    expect(validation).toEqual(
-      expect.objectContaining({ ok: true, value: expect.objectContaining({ total: 110 }) }),
-    );
   });
 
   it('keeps computed targets read-only in runtime field state', () => {

@@ -9,7 +9,7 @@ import type { FormHostAdapter } from '@a3s-lab/ui/form/core';
 
 const hostAdapter: FormHostAdapter = {
   async validateValue(request, signal) {
-    const response = await fetch('/api/workflow/nodes/validate', {
+    const response = await fetch('/api/forms/validate', {
       method: 'POST',
       signal,
       headers: { 'content-type': 'application/json' },
@@ -89,4 +89,4 @@ if (result.status === 'valid') {
 
 `status` is `valid`, `invalid`, `cancelled`, or `unavailable`. `result.errors` contains synchronous and mapped asynchronous errors; `result.asyncErrors` contains only host-boundary results.
 
-Client-side success is never an authorization decision. A workflow host must repeat its protected business checks in the server-side commit transaction and keep the form revision and digest pinned there.
+Client-side success is never an authorization decision. The product host must repeat its protected business checks in the server-side commit transaction and keep the form revision and digest pinned there.

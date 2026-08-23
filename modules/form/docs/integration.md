@@ -45,7 +45,7 @@ const plan = assertCompiled(document);
 
 Both components are controlled. Persist the next document or value in the host; internal component state is not a business source of truth.
 
-Before accepting a workflow configuration or durable interaction, call the public `evaluateFormValue` path on the server or use the native `evaluate_form_value`/`evaluate_bytes` API. All of these enter the same Rust semantic core. See [Portable submitted-value evaluation](value-evaluation.md) for the versioned protocol and protected host sequence.
+Before accepting a submitted value or durable interaction, call the public `evaluateFormValue` path on the server or use the native `evaluate_form_value`/`evaluate_bytes` API. All of these enter the same Rust semantic core. See [Portable submitted-value evaluation](value-evaluation.md) for the versioned protocol and protected host sequence.
 
 ## A3S UI styles
 
@@ -55,42 +55,8 @@ Use `@a3s-lab/ui/form/styles.css` when the host already loads A3S UI or must not
 
 Use `--a3s-*` custom properties on a host container to theme an embedded form. Avoid overrides against internal class names.
 
-## Workflow node configuration
 
-The workflow host stores a controlled value and a configuration-mode `FormRef`. The form reference pins a published document by URI, revision, and digest.
-
-```ts
-import {
-  createWorkflowNodeConfiguration,
-  validateWorkflowNodeConfiguration,
-} from '@a3s-lab/ui/form/workflow';
-
-const configuration = createWorkflowNodeConfiguration({
-  nodeType: 'llm',
-  nodeId: 'llm-7',
-  form: configurationFormRef,
-  value: node.configuration,
-  locale: organization.locale,
-  readOnly: !permissions.canEditNode,
-});
-
-const result = validateWorkflowNodeConfiguration(publishedDocument, configuration, {
-  capabilities: { widgets: Object.keys(nodeRegistry) },
-});
-
-if (!result.ok) {
-  showNodeErrors(result.errors);
-} else {
-  await workflowHost.updateNode(configuration.nodeId, {
-    ...configuration,
-    value: result.value,
-  });
-}
-```
-
-The contract has no A3S Cloud, A3S Workflow service, or platform runtime dependency. See [Embedding A3S Form](embedding.md) and the tested [`WorkflowNodeSettingsHost`](../examples/workflow-node-settings-host.tsx).
-
-### Repeated node parameters
+## Repeatable parameters
 
 Use a `repeater` node with child fields for an object-array parameter. The host still stores the array as ordinary configuration and receives the entire next value through `onChange`. A3S Form keeps local row keys outside the value.
 
@@ -102,11 +68,11 @@ Set `layout: 'data-grid'` on that object repeater when users need to compare and
 
 See [Repeatable field groups](repeatable-field-groups.md) for the base contract and [Editable data grids](data-grids.md) for the table layout, responsive behavior, and current boundaries.
 
-### Multi-page node and interaction forms
+## Multi-page and interaction forms
 
 Use a `wizard` layout with direct `page` children when a form requires progress, previous/next navigation, per-page validation, branching, or a final review. Do not use tabs as a wizard substitute.
 
-Wizard navigation is separate from the controlled value. Persist `FormWizardCheckpoint` in the workflow run, draft, or host session and pass checkpoints back through `wizardCheckpoints`. Checkpoints are pinned to the plan digest and revision; `restoreFormWizardCheckpoint` rejects stale state before it can reopen another contract.
+Wizard navigation is separate from the controlled value. Persist `FormWizardCheckpoint` in the draft, interaction record, or host session and pass checkpoints back through `wizardCheckpoints`. Checkpoints are pinned to the plan digest and revision; `restoreFormWizardCheckpoint` rejects stale state before it can reopen another contract.
 
 The async validator receives `{ kind: 'page', nodeId }` when the user advances. Return only issues owned by that page. Final primary actions still run form-level validation and reopen an earlier page when it owns the first error.
 
@@ -266,11 +232,11 @@ The adapter binds context only. Authorization, tenant isolation, rate limits, st
 
 Declare only the value paths that affect a source in `dependencies`. The Renderer then avoids refetching after unrelated edits, cancels work after dependency changes, and deduplicates matching requests within the current embedded instance. Search, focus triggers, TTL caching, pagination, and failure states use the same contract in React, Vue, and Web Components.
 
-Repeated fields may declare templates such as `routes.*.provider`. Renderer requests include `scope.valuePath`, ordered `scope.rowIndices`, and `{ template, path }` dependency bindings. Use the concrete path to read the controlled value. The binding is request context, not data to persist in the workflow node.
+Repeated fields may declare templates such as `routes.*.provider`. Renderer requests include `scope.valuePath`, ordered `scope.rowIndices`, and `{ template, path }` dependency bindings. Use the concrete path to read the controlled value. The binding is request context, not data to persist in the submitted value.
 
 See [Host-owned data sources](data-sources.md) for the complete contract and security boundary.
 
-## Durable workflow interactions
+## Durable human interactions
 
 ```ts
 import {
@@ -278,7 +244,7 @@ import {
   createInteractionRequest,
   createInteractionSubmission,
   validateInteractionSubmission,
-} from '@a3s-lab/ui/form/workflow';
+} from '@a3s-lab/ui/form';
 
 const form = createFormReleaseRef(publishedDocument, {
   organizationId,

@@ -160,6 +160,16 @@ describe('headless form state', () => {
         tags: ['one', 2],
       }),
     ).toEqual([]);
+
+    const typedAdditionalProperties = structuredClone(plan);
+    typedAdditionalProperties.schema.additionalProperties = { type: 'string' };
+    expect(
+      validateReferenceFormValue(typedAdditionalProperties, {
+        profile: { city: '上海' },
+        tags: ['one', 'two'],
+        source: 42,
+      }),
+    ).toContainEqual(expect.objectContaining({ path: 'source', code: 'type' }));
   });
 
   it('accepts null and valid primitive values without false positives', () => {
@@ -248,6 +258,29 @@ describe('headless form state', () => {
     expect(validateFormValue(planFor(document), { payload: { nested: true }, items: [] })).toEqual(
       [],
     );
+    expect(
+      validateReferenceFormValue(planFor(document), { payload: { nested: true }, items: [] }),
+    ).toEqual([]);
+
+    const missingTargets = structuredClone(planFor(document));
+    missingTargets.rules = [
+      {
+        id: 'missing-row-target',
+        target: 'missing',
+        kind: 'validate',
+        scope: 'row',
+        expression: { op: 'literal', value: false },
+      },
+      {
+        id: 'empty-target',
+        target: '',
+        kind: 'validate',
+        expression: { op: 'literal', value: false },
+      },
+    ];
+    expect(
+      evaluateFormValueReference(missingTargets, { payload: { nested: true }, items: [] }).errors,
+    ).toEqual([]);
   });
 
   it('applies validation rules using the same expression engine', () => {

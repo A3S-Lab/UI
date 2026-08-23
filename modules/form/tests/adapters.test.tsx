@@ -201,6 +201,7 @@ describe('framework adapters', () => {
           nodeRegistry: nodeRegistry.value,
           readOnly: readOnly.value,
           widgetRegistry: widgetRegistry.value,
+          wizardCheckpoints: {},
           'onUpdate:document': (next: FormDocument) => {
             current.value = next;
           },

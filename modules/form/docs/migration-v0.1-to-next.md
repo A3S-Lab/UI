@@ -19,7 +19,7 @@ The `next` line tightens contracts that v0.1 treated permissively. Migrate and c
 
 ## Repeater identity changes
 
-Primitive repeaters remain compatible. Object repeaters use runtime-owned keys by default and do not add metadata to values. If an older custom renderer inserted `_id`, `rowId`, or a similar engine-only property, remove it from new workflow-node values unless it is a real business field.
+Primitive repeaters remain compatible. Object repeaters use runtime-owned keys by default and do not add metadata to values. If an older custom renderer inserted `_id`, `rowId`, or a similar engine-only property, remove it from new values unless it is a real business field.
 
 Use `identifyRepeaterItem` to derive stable identity during controlled external replacements. Declare `UiNode.itemKey` only when the item schema already owns a required string identifier and persistence of that identifier is intentional.
 
