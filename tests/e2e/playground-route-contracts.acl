@@ -1,0 +1,451 @@
+suite "a3s-ui-playground-route-contracts" {
+    version = 1
+
+    scenario "playground-route-start" {
+        name = "New Task route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=start]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=start] [data-product-surface=start]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-start-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=start]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=start] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=start] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-start-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=start]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-start-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-start-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-start-errors.json" clear = false }
+    }
+
+    scenario "playground-route-assistant" {
+        name = "Assistant route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/assistant.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=assistant]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=assistant] [data-product-surface=assistant]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-assistant-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=assistant]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=assistant] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=assistant] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-assistant-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=assistant]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-assistant-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-assistant-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-assistant-errors.json" clear = false }
+    }
+
+    scenario "playground-route-projects" {
+        name = "Projects route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=projects]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=projects] [data-product-surface=projects]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-projects-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=projects]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=projects] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=projects] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-projects-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=projects]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-projects-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-projects-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-projects-errors.json" clear = false }
+    }
+
+    scenario "playground-route-project" {
+        name = "Project Workspace route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=project]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=project] [data-product-surface=project]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-project-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=project]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=project] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=project] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-project-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=project]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-project-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-project-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-project-errors.json" clear = false }
+    }
+
+    scenario "playground-route-project-session" {
+        name = "Project Session route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience/sessions/release-readiness.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=project-session]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=project-session] [data-product-surface=project-session]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-project-session-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=project-session]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=project-session] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=project-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-project-session-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=project-session]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-project-session-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-project-session-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-project-session-errors.json" clear = false }
+    }
+
+    scenario "playground-route-capabilities" {
+        name = "Capabilities route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=catalog]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=catalog] [data-product-surface=catalog]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-capabilities-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=catalog]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=catalog] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=catalog] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-capabilities-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=catalog]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-capabilities-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-capabilities-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-capabilities-errors.json" clear = false }
+    }
+
+    scenario "playground-route-automations" {
+        name = "Automations route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/automations.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=automation]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=automation] [data-product-surface=automation]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-automations-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=automation]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=automation] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=automation] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-automations-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=automation]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-automations-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-automations-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-automations-errors.json" clear = false }
+    }
+
+    scenario "playground-route-memory" {
+        name = "Memory route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/memory.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=memory]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=memory] [data-product-surface=memory]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-memory-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=memory]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=memory] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=memory] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-memory-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=memory]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-memory-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-memory-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-memory-errors.json" clear = false }
+    }
+
+    scenario "playground-route-extensions" {
+        name = "Extensions route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/extensions.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=marketplace]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=marketplace] [data-product-surface=marketplace]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-extensions-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=marketplace]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=marketplace] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=marketplace] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-extensions-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=marketplace]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-extensions-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-extensions-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-extensions-errors.json" clear = false }
+    }
+
+    scenario "playground-route-files" {
+        name = "My Files route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=files]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-files-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-files-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-files-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-files-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-files-errors.json" clear = false }
+    }
+
+    scenario "playground-route-mail" {
+        name = "Mail route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=mail]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-mail-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-mail-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-mail-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-mail-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-mail-errors.json" clear = false }
+    }
+
+    scenario "playground-route-documents" {
+        name = "Documents route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=resources][data-resource=documents]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-documents-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-documents-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-documents-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-documents-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-documents-errors.json" clear = false }
+    }
+
+    scenario "playground-route-knowledge" {
+        name = "Knowledge route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/knowledge.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=knowledge]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-knowledge-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-knowledge-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-knowledge-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-knowledge-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-knowledge-errors.json" clear = false }
+    }
+
+    scenario "playground-route-inspiration" {
+        name = "Inspiration route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/inspiration.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=inspiration]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-inspiration-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-inspiration-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-inspiration-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-inspiration-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-inspiration-errors.json" clear = false }
+    }
+
+    scenario "playground-route-session" {
+        name = "Seeded Session route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=session]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=session] [data-product-surface=session]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-session-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=session]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=session] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-session-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=session]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-session-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-session-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-session-errors.json" clear = false }
+    }
+
+    scenario "playground-route-created-session" {
+        name = "Current Session route preserves its desktop and compact application contract"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/sessions/current.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "route-ready" { visible = css("[data-product-application][data-view=created-session]") }
+        expect "surface-ready" { visible = css("[data-product-application][data-view=created-session] [data-product-surface=session]") }
+        focus "focus-search" { target = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { visible = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        screenshot "capture-desktop" { path = "playground/routes/playground-created-session-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=created-session]:has(.product-sidebar[inert])") }
+        focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=created-session] .product-application__mobile-menu") }
+        press "open-mobile-navigation" { key = "Enter" }
+        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=created-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        screenshot "compact-open" { path = "playground/routes/playground-created-session-compact.png" }
+        focus "focus-mobile-close" { target = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='关闭应用导航']") }
+        press "close-mobile-navigation" { key = "Enter" }
+        wait "mobile-navigation-closed" { visible = css("[data-product-application][data-view=created-session]:has(.product-sidebar[inert])") }
+        accessibility "tree" { path = "playground/routes/playground-created-session-accessibility.json" interactive = true }
+        console "console" { path = "playground/routes/playground-created-session-console.json" clear = false }
+        page_errors "errors" { path = "playground/routes/playground-created-session-errors.json" clear = false }
+    }
+}

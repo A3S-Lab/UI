@@ -35,8 +35,17 @@
 
   const writeClipboard = async (value) => {
     if (navigator.clipboard?.writeText && window.isSecureContext) {
-      await navigator.clipboard.writeText(value);
-      return;
+      try {
+        await navigator.clipboard.writeText(value);
+        return;
+      } catch (clipboardError) {
+        try {
+          fallbackCopy(value);
+          return;
+        } catch (_) {
+          throw clipboardError;
+        }
+      }
     }
     fallbackCopy(value);
   };
@@ -112,7 +121,7 @@
         );
         const resetAfter = Math.max(
           0,
-          Number(options.resetAfter ?? root.dataset.copyReset) || 1600,
+          Number(options.resetAfter ?? root.dataset.copyReset) || 3000,
         );
         state.resetTimer = window.setTimeout(
           () => setState(root, state, "ready"),

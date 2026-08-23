@@ -43,6 +43,8 @@ suite "a3s-ui-feedback-and-data" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "empty-state-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty") }
         expect "empty-action-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
+        focus "focus-empty-recovery" { target = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
+        expect "empty-recovery-focused" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn:focus") }
     }
 
     scenario "progress" {
@@ -139,6 +141,8 @@ suite "a3s-ui-feedback-and-data" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "chart-visible" { visible = css(".a3s-preview[data-preview-component=chart] .a3s-chart-demo .chart canvas[aria-describedby]") }
+        hover "inspect-chart-point" { target = css(".a3s-preview[data-preview-component=chart] .a3s-chart-demo .chart canvas[aria-describedby]") }
+        expect "chart-remains-available" { visible = css(".a3s-preview[data-preview-component=chart] .a3s-chart-demo .chart canvas[aria-describedby]") }
     }
 
     scenario "item" {
@@ -151,6 +155,8 @@ suite "a3s-ui-feedback-and-data" {
         expect "item-visible" { visible = css(".a3s-preview[data-preview-component=item] .item[data-variant=outline]") }
         expect "item-action-visible" { visible = css(".a3s-preview[data-preview-component=item] .item .btn") }
         expect "button-item-visible" { visible = css(".a3s-preview[data-preview-component=item] button.item > [data-item-content] + [data-item-actions]") }
+        focus "focus-button-item" { target = css(".a3s-preview[data-preview-component=item] button.item") }
+        expect "button-item-focused" { visible = css(".a3s-preview[data-preview-component=item] button.item:focus") }
     }
 
     scenario "kbd" {
@@ -172,6 +178,8 @@ suite "a3s-ui-feedback-and-data" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
         expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table] table > caption") }
+        wheel "scroll-table-viewport" { target = css(".a3s-preview[data-preview-component=table] .table-container") delta_y = 120 }
+        expect "table-remains-readable" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
     }
 
     scenario "property-list" {
@@ -222,13 +230,14 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/log-viewer.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "log-region-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] .log-viewer [role=log][aria-live=polite][tabindex=0]") }
+        expect "log-surface-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] section.log-viewer[aria-label='Build output']") }
         expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-actions] button[aria-pressed=true]") }
         expect "stderr-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-record][data-stream=stderr]") }
         expect "compaction-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-gap]") }
         viewport "phone" { width = 390 height = 844 }
-        focus "focus-log-region" { target = css(".a3s-preview[data-preview-component=log-viewer] [role=log]") }
-        expect "log-region-focused" { visible = css(".a3s-preview[data-preview-component=log-viewer] [role=log]:focus") }
+        focus "focus-log-region" { target = css(".a3s-preview[data-preview-component=log-viewer] [role='log'][aria-live='polite'][tabindex='0']") }
+        expect "log-region-focused" { visible = css(".a3s-preview[data-preview-component=log-viewer] [role='log'][aria-label='Ordered build output']:focus") }
+        accessibility "log-region-tree" { path = "components/log-viewer-phone-accessibility.json" interactive = true }
         screenshot "log-viewer-phone" { path = "components/log-viewer-phone.png" }
     }
 

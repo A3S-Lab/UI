@@ -3,16 +3,26 @@
 呈现已经由可信渲染器处理的代码，并支持聚焦、横向滚动与局部标记。
 
 <Preview class="w-full">
-<pre class="highlighter" tabIndex="0"><code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code></pre>
+  <pre class="highlighter" tabIndex="0">
+    <code>
+      <span data-code-line>
+        <span data-code-token="keyword">const</span> status ={" "}
+        <mark><span data-code-token="string">"ready"</span></mark>;
+      </span>
+      <span data-code-line>render(status);</span>
+    </code>
+  </pre>
 </Preview>
 
 ## 用法
 
 ```html
 <pre class="highlighter" tabindex="0">
-  <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+  <code><span data-code-line><span data-code-token="keyword">const</span> status = <mark><span data-code-token="string">"ready"</span></mark>;</span><span data-code-line>render(status);</span></code>
 </pre>
 ```
+
+可信渲染器可以通过 `data-code-token` 标记 `keyword`、`string`、`type`、`comment`、`heading` 与 `punctuation`。高亮器只呈现这些语义类别，不解析也不执行源码。
 
 ## React
 
@@ -22,7 +32,12 @@ import { Highlighter } from "@a3s-lab/ui/react";
 export function Example() {
   return (
     <Highlighter tabIndex="0">
-      <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+      <code>
+        <span data-code-line>
+          const status = <mark>"ready"</mark>;
+        </span>
+        <span data-code-line>render(status);</span>
+      </code>
     </Highlighter>
   );
 }
@@ -35,12 +50,14 @@ export function Example() {
 ```vue
 <script setup>
 import { Highlighter } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
   <Highlighter tabindex="0">
-    <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+    <code
+      ><span data-code-line>const status = <mark>"ready"</mark>;</span
+      ><span data-code-line>render(status);</span></code
+    >
   </Highlighter>
 </template>
 ```
@@ -49,13 +66,14 @@ Vue 适配器不包装额外容器，也不改变原生属性。
 
 ## 契约
 
-| 接口 | 值 |
-| --- | --- |
-| 根选择器 | `.highlighter` |
-| 原生根元素 | `<pre>` |
-| 状态 | `ready`, `loading`, `error` |
-| 事件 | — |
-| 方法 | — |
+| 接口         | 值                          |
+| ------------ | --------------------------- | ------ | ---- | ------- | ------- | ------------- |
+| 根选择器     | `.highlighter`              |
+| 原生根元素   | `<pre>`                     |
+| 可选语法部件 | `data-code-token="keyword"`、`string`、`type`、`comment`、`heading` 或 `punctuation` |
+| 状态         | `ready`, `loading`, `error` |
+| 事件         | —                           |
+| 方法         | —                           |
 
 ## 产品边界
 

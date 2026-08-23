@@ -80,6 +80,8 @@ suite "a3s-ui-product-action-icon-semantics" {
         screenshot "menu" { path = "product/action-icons-composer-menu.png" }
 
         click "open-assistant-picker" { target = role("menuitem", "专家") }
+        expect "resource-picker-contract" { visible = css("[data-composer-resource-picker]") }
+        expect "playground-icon-contract" { visible = css("[data-composer-resource-picker=assistant] svg[data-icon]") }
         expect "assistant-picker-icon" { visible = css("[data-composer-resource-picker=assistant] > header > span > svg[data-icon=assistant]") }
         expect "assistant-search-focused" { visible = css("[data-composer-resource-picker=assistant] [data-resource-picker-search]:focus-within input:focus-visible") }
         expect "assistant-option-icon" { visible = css("[data-composer-resource-picker=assistant] [role=option] svg[data-icon=assistant]") }
@@ -218,7 +220,7 @@ suite "a3s-ui-product-action-icon-semantics" {
         wait "loaded" { load = "networkidle" }
         wait "session-ready" { visible = css("[data-product-surface=session]") }
         click "open-preview" { target = role("button", "设备预览") }
-        wait "preview-ready" { visible = css(".product-session-inspector .product-device-shell") }
+        wait "preview-ready" { visible = css(".product-session-inspector .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
         expect "expand-icon" { visible = css("button[aria-label='打开完整设备模拟器'][aria-pressed=false] svg[data-icon=expand]") }
         accessibility "compact-preview-accessibility" { path = "product/action-icons-device-compact-accessibility.json" interactive = true }
 
@@ -229,7 +231,7 @@ suite "a3s-ui-product-action-icon-semantics" {
         screenshot "expanded" { path = "product/action-icons-device-expanded.png" }
         focus "focus-collapse-simulator" { target = css(".product-inspector-preview .product-inspector-section-heading button[aria-pressed=true]") }
         press "collapse-simulator" { key = "Enter" }
-        expect "compact-state" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
+        expect "compact-state" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
         expect "expand-restored" { visible = css("button[aria-label='打开完整设备模拟器'][aria-pressed=false] svg[data-icon=expand]") }
 
         screenshot "result" { path = "product/action-icons-device-collapsed.png" }

@@ -102,7 +102,7 @@ export function ProductAutomationSurface({
     const selector = editorReturnFocus.current;
     editorReturnFocus.current = null;
     if (!selector) return;
-    window.requestAnimationFrame(() => {
+    window.queueMicrotask(() => {
       document.querySelector<HTMLButtonElement>(selector)?.focus();
     });
   };

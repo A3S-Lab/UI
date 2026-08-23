@@ -212,7 +212,16 @@
 
 .a3s-form-flow-expression-source:focus-within {
   border-color: var(--a3s-form-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-form-blue) 12%, transparent);
+  box-shadow: var(--a3s-form-field-ring);
+}
+
+.a3s-form-flow-expression-source:has(> input[aria-invalid="true"]) {
+  border-color: var(--a3s-form-red);
+}
+
+.a3s-form-flow-expression-source:has(> input[aria-invalid="true"]):focus-within {
+  border-color: var(--a3s-form-red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3s-form-red) 9%, transparent);
 }
 
 .a3s-form-flow-expression-source > span {

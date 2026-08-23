@@ -31,6 +31,7 @@ suite "a3s-ui-product-icon-semantics" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
         wait "loaded" { load = "networkidle" }
+        expect "capability-mark-contract" { visible = css("[data-capability-id] img, [data-capability-id] svg[data-icon]") }
         expect "repository-icon" { visible = css("[data-capability-id='skill:repository-inspection'] svg[data-icon=search]") }
         expect "test-icon" { visible = css("[data-capability-id='skill:test-execution'] svg[data-icon=checklist]") }
         expect "visual-icon" { visible = css("[data-capability-id='skill:visual-acceptance'] svg[data-icon=eye]") }

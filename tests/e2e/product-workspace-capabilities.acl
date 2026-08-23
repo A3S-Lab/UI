@@ -43,6 +43,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "select-code" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-code" { key = "Enter" }
         click "open-code" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
+        expect "typed-workbench-dispatch" { visible = css("[data-workbench-kind]") }
         expect "code-workbench" { visible = css(".product-file-workbench[data-workbench-kind=code] .product-code-workbench") }
         click "preview-markdown" { target = role("button", "预览文件") }
         expect "markdown-preview" { visible = css(".product-code-workbench [data-markdown-preview]") }
@@ -53,6 +54,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         press "quick-look-document" { key = "Enter" }
         click "open-document" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         wait "document-workbench" { visible = css(".product-file-workbench[data-workbench-kind=document] .work-document-editor") }
+        expect "office-integration-ready" { visible = css("[data-office-load-state=ready]") }
         click "document-review" { target = role("tab", "审阅") }
         expect "document-review-toolbar" { text = "修订" }
         click "back-from-document" { target = css("[data-file-workbench-back]") }
@@ -134,6 +136,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         press "quick-look-imported-file" { key = "Enter" }
         click "open-code-workbench" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
 
+        expect "file-workbench-boundary" { visible = css(".product-file-workbench") }
         wait "real-file-loaded" { visible = css(".product-code-workbench[data-code-load-state=ready]") }
         expect "clean-on-open" { visible = css(".product-code-workbench [data-code-tabs] button:not([data-dirty])") }
         click "preview-real-file" { target = role("button", "预览文件") }

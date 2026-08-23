@@ -35,13 +35,31 @@ export function useFormErrorFocus({
       const field = [
         ...(formRef.current?.querySelectorAll<HTMLElement>('[data-a3s-form-path]') ?? []),
       ].find((element) => element.getAttribute('data-a3s-form-path') === path);
-      let control = field?.matches(
-        'input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), [tabindex]',
-      )
+      const invalidControlSelector =
+        'input:not(:disabled)[aria-invalid="true"], select:not(:disabled)[aria-invalid="true"], textarea:not(:disabled)[aria-invalid="true"], button:not(:disabled)[aria-invalid="true"]';
+      const describedControlSelector =
+        'input:not(:disabled)[aria-describedby], select:not(:disabled)[aria-describedby], textarea:not(:disabled)[aria-describedby], button:not(:disabled)[aria-describedby]';
+      const nativeControlSelector =
+        'input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled)';
+      const tabbableSelector = '[tabindex]:not([tabindex="-1"])';
+      let control = field?.matches(invalidControlSelector)
         ? field
-        : field?.querySelector<HTMLElement>(
-            'input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), [tabindex]',
-          );
+        : field?.querySelector<HTMLElement>(invalidControlSelector);
+      if (!control) {
+        control = field?.matches(describedControlSelector)
+          ? field
+          : field?.querySelector<HTMLElement>(describedControlSelector);
+      }
+      if (!control) {
+        control = field?.matches(nativeControlSelector)
+          ? field
+          : field?.querySelector<HTMLElement>(nativeControlSelector);
+      }
+      if (!control) {
+        control = field?.matches(tabbableSelector)
+          ? field
+          : field?.querySelector<HTMLElement>(tabbableSelector);
+      }
       if (!control && field) {
         field.tabIndex = -1;
         control = field;

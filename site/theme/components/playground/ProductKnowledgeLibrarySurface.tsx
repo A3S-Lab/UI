@@ -319,6 +319,7 @@ export function ProductKnowledgeLibrarySurface({
       className="knowledge-library product-knowledge-library"
       data-layout="wide"
       data-knowledge-library-initialized="true"
+      data-product-surface="knowledge"
       data-state="ready"
     >
       <aside

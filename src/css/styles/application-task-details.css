@@ -14,6 +14,12 @@
     color: var(--card-foreground);
   }
 
+  .task-plan[data-variant="plain"] {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
   :is(
       .task-plan,
       .task-queue,
@@ -36,6 +42,14 @@
     )
     > :is(section, footer) {
     border-block-start: 1px solid var(--border);
+  }
+
+  .task-plan[data-variant="plain"] > :is(header, section, footer) {
+    padding-inline: 0;
+  }
+
+  .task-plan[data-variant="plain"] > :is(section, footer) {
+    border-block-start: 0;
   }
 
   :is(
@@ -91,6 +105,11 @@
 
   .task-plan > ol {
     padding: 0 0.875rem 0.75rem;
+  }
+
+  .task-plan[data-variant="plain"] > ol {
+    padding-inline: 0;
+    padding-block-end: 0;
   }
 
   .plan-step {

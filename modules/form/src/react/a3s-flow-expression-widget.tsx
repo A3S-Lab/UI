@@ -40,6 +40,86 @@ function isChinese(locale: string): boolean {
   return locale.toLocaleLowerCase().startsWith('zh');
 }
 
+function hasOnlyKeys(value: JsonObject, keys: readonly string[]): boolean {
+  return Object.keys(value).every((key) => keys.includes(key));
+}
+
+function isDraftFieldExpression(
+  value: JsonValue | undefined,
+): value is Extract<FormExpression, { op: 'field' }> {
+  return (
+    isObject(value) &&
+    value.op === 'field' &&
+    typeof value.path === 'string' &&
+    hasOnlyKeys(value, ['op', 'path'])
+  );
+}
+
+function isDraftLiteralExpression(
+  value: JsonValue | undefined,
+): value is Extract<FormExpression, { op: 'literal' }> {
+  return (
+    isObject(value) &&
+    value.op === 'literal' &&
+    Object.hasOwn(value, 'value') &&
+    hasOnlyKeys(value, ['op', 'value'])
+  );
+}
+
+function isComparisonOperator(value: JsonValue | undefined): value is ComparisonOperator {
+  return COMPARISON_OPERATORS.some((operator) => operator === value);
+}
+
+function isDraftComparisonExpression(
+  value: JsonValue | undefined,
+): value is ComparisonExpression {
+  return (
+    isObject(value) &&
+    isComparisonOperator(value.op) &&
+    isDraftFieldExpression(value.left) &&
+    isDraftLiteralExpression(value.right) &&
+    hasOnlyKeys(value, ['op', 'left', 'right'])
+  );
+}
+
+function isDraftTemplateExpression(
+  value: JsonValue | undefined,
+): value is Extract<FormExpression, { op: 'concat' }> {
+  return (
+    isObject(value) &&
+    value.op === 'concat' &&
+    Array.isArray(value.values) &&
+    value.values.every(
+      (part) =>
+        isDraftFieldExpression(part) ||
+        (isDraftLiteralExpression(part) && typeof part.value === 'string'),
+    ) &&
+    hasOnlyKeys(value, ['op', 'values'])
+  );
+}
+
+function editableExpressionFrom(
+  value: JsonValue | undefined,
+  purpose: ExpressionPurpose,
+): FormExpression | undefined {
+  if (
+    !isObject(value) ||
+    value.apiVersion !== A3S_FLOW_EXPRESSION_API_VERSION ||
+    Object.keys(value).some((key) => key !== 'apiVersion' && key !== 'expression')
+  ) {
+    return undefined;
+  }
+  const candidate = value.expression;
+  if (
+    !isDraftFieldExpression(candidate) &&
+    !isDraftLiteralExpression(candidate) &&
+    !isDraftComparisonExpression(candidate) &&
+    !isDraftTemplateExpression(candidate)
+  ) {
+    return undefined;
+  }
+  return expressionMode(candidate, purpose) === 'advanced' ? undefined : candidate;
+}
 function envelope(expression: FormExpression): JsonObject {
   return { apiVersion: A3S_FLOW_EXPRESSION_API_VERSION, expression };
 }
@@ -280,8 +360,9 @@ export function FlowExpressionEditor({
 }: FlowExpressionEditorProps) {
   const chinese = isChinese(locale);
   const purpose = purposeFrom(rawPurpose);
-  const draftSource = invalidExpressionDraftSource(value);
-  const expression = expressionFrom(value) ?? defaultExpression('advanced', purpose);
+  const structuredExpression = expressionFrom(value) ?? editableExpressionFrom(value, purpose);
+  const draftSource = structuredExpression ? undefined : invalidExpressionDraftSource(value);
+  const expression = structuredExpression ?? defaultExpression('advanced', purpose);
   const mode = draftSource === undefined ? expressionMode(expression, purpose) : 'advanced';
   const leftPath =
     isComparison(expression) && expression.left.op === 'field'
@@ -300,7 +381,7 @@ export function FlowExpressionEditor({
       tabIndex={-1}
       aria-labelledby={labelledBy}
       aria-describedby={describedBy}
-      aria-invalid={invalid || undefined}
+      aria-invalid={Boolean(invalid)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onBlur?.();
       }}

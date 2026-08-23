@@ -3,16 +3,47 @@
 以逐行、可滚动且可复制的方式呈现代码变更，让增加、删除和上下文在不依赖颜色的情况下可辨认。
 
 <Preview class="w-full">
-<figure class="code-diff"><figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre></figure>
+  <figure class="code-diff" data-line-numbers>
+    <figcaption>src/session.ts</figcaption>
+    <pre tabIndex="0">
+      <code>
+        <span data-diff-line="-">
+          <span aria-hidden="true" data-diff-old-line>
+            18
+          </span>
+          <span aria-hidden="true" data-diff-new-line></span>
+          <span aria-hidden="true" data-diff-marker>
+            −
+          </span>
+          <span data-diff-code>return reconnect()</span>
+        </span>
+        <span data-diff-line="+">
+          <span aria-hidden="true" data-diff-old-line></span>
+          <span aria-hidden="true" data-diff-new-line>
+            18
+          </span>
+          <span aria-hidden="true" data-diff-marker>
+            +
+          </span>
+          <span data-diff-code>return reconnect(&#123; retry: 3 &#125;)</span>
+        </span>
+      </code>
+    </pre>
+  </figure>
 </Preview>
 
 ## 用法
 
 ```html
 <figure class="code-diff">
-  <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+  <figcaption>src/session.ts</figcaption>
+  <pre
+    tabindex="0"
+  ><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
 </figure>
 ```
+
+审查需要旧、新行号槽时增加 `data-line-numbers`。每行再提供 `data-diff-old-line`、`data-diff-new-line`、`data-diff-marker` 与 `data-diff-code`；没有行号的槽位仍保留空元素，确保所有行严格对齐。
 
 ## React
 
@@ -22,7 +53,15 @@ import { CodeDiff } from "@a3s-lab/ui/react";
 export function Example() {
   return (
     <CodeDiff>
-      <figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+      <figcaption>src/session.ts</figcaption>
+      <pre tabIndex="0">
+        <code>
+          <span data-diff-line="-">return reconnect()</span>
+          <span data-diff-line="+">
+            return reconnect(&#123; retry: 3 &#125;)
+          </span>
+        </code>
+      </pre>
     </CodeDiff>
   );
 }
@@ -35,12 +74,14 @@ export function Example() {
 ```vue
 <script setup>
 import { CodeDiff } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
   <CodeDiff>
-    <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+    <figcaption>src/session.ts</figcaption>
+    <pre
+      tabindex="0"
+    ><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
   </CodeDiff>
 </template>
 ```
@@ -49,13 +90,15 @@ Vue 适配器不包装额外容器，也不改变原生属性。
 
 ## 契约
 
-| 接口 | 值 |
-| --- | --- |
-| 根选择器 | `.code-diff` |
-| 原生根元素 | `<figure>` |
-| 状态 | `ready`, `loading`, `empty`, `error` |
-| 事件 | — |
-| 方法 | — |
+| 接口         | 值                                                                               |
+| ------------ | -------------------------------------------------------------------------------- |
+| 根选择器     | `.code-diff`                                                                     |
+| 原生根元素   | `<figure>`                                                                       |
+| 可选变体     | `data-line-numbers`                                                              |
+| 行号模式部件 | `data-diff-old-line`, `data-diff-new-line`, `data-diff-marker`, `data-diff-code` |
+| 状态         | `ready`, `loading`, `empty`, `error`                                             |
+| 事件         | —                                                                                |
+| 方法         | —                                                                                |
 
 ## 产品边界
 

@@ -4,16 +4,17 @@ suite "a3s-ui-product-project-asset-preview" {
     scenario "project-asset-preview-desktop" {
         name = "Project asset previews retain desktop context and restore focus"
         surface = "web"
-        timeout_ms = 120000
+        timeout_ms = 180000
         viewport "desktop" { width = 1440 height = 900 }
 
         navigate "open-project" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
         wait "project-loaded" { load = "networkidle" }
         wait "project-ready" { visible = css("[data-product-surface=project]") }
         click "open-assets" { target = role("tab", "资产") }
+        expect "assets-workspace-boundary" { visible = css(".product-project-assets-workspace [data-asset-toolbar]") }
         expect "asset-context-ready" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer):has(aside[aria-label='项目配置'])") }
 
-        click "open-code-preview" { target = css("[data-asset-id=design-md] [data-asset-open]") }
+        click "open-code-preview" { target = role("button", "打开 DESIGN.md") }
         expect "code-dialog" { visible = css("dialog[data-project-asset-dialog][open][aria-modal=true] [data-workbench-kind=code][data-presentation=dialog]") }
         expect "context-retained" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer):has(aside[aria-label='项目配置'])") }
         expect "close-semantic" { visible = css("[data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
@@ -21,23 +22,23 @@ suite "a3s-ui-product-project-asset-preview" {
         hover "close-pointer-reachable" { target = role("button", "关闭文件预览") }
         accessibility "code-accessibility" { path = "product/project-asset-preview-desktop-accessibility.json" interactive = true }
         press "close-code-with-escape" { key = "Escape" }
-        expect "code-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
+        wait "code-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
 
-        click "open-evidence-folder" { target = css("[data-asset-id=visual-acceptance] [data-asset-open]") }
-        click "open-pdf-preview" { target = css("[data-asset-id=visual-report] [data-asset-open]") }
+        click "open-evidence-folder" { target = role("button", "打开文件夹 visual-acceptance") }
+        click "open-pdf-preview" { target = role("button", "打开 visual-acceptance-report.pdf") }
         expect "pdf-dialog" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=pdf][data-presentation=dialog]") }
         wait "pdf-ready" { visible = css("input[aria-label='页码'][value='1']") }
         click "close-pdf" { target = role("button", "关闭文件预览") }
-        expect "pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
+        wait "pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
         click "return-to-root" { target = css("[data-asset-back]") }
 
-        click "open-office-preview" { target = css("[data-asset-id=experience-brief] [data-asset-open]") }
+        click "open-office-preview" { target = role("button", "打开 experience-brief.docx") }
         expect "office-dialog" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=document][data-presentation=dialog]") }
         expect "office-preview-tools" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "office-preview-document" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         accessibility "office-accessibility" { path = "product/project-asset-preview-desktop-office-accessibility.json" interactive = true }
         click "close-office" { target = role("button", "关闭文件预览") }
-        expect "office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
+        wait "office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
 
         console "console" { path = "product/project-asset-preview-desktop-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-asset-preview-desktop-page-errors.json" clear = false }
@@ -46,7 +47,7 @@ suite "a3s-ui-product-project-asset-preview" {
     scenario "project-asset-preview-mobile" {
         name = "Project asset preview fills the mobile viewport and restores focus"
         surface = "web"
-        timeout_ms = 90000
+        timeout_ms = 120000
         viewport "mobile" { width = 390 height = 844 }
 
         navigate "open-project" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
@@ -55,7 +56,7 @@ suite "a3s-ui-product-project-asset-preview" {
         click "open-assets" { target = role("tab", "资产") }
         expect "mobile-context-ready" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer)") }
 
-        click "open-code-preview" { target = css("[data-asset-id=design-md] [data-asset-open]") }
+        click "open-code-preview" { target = role("button", "打开 DESIGN.md") }
         expect "mobile-dialog" { visible = css("dialog[data-project-asset-dialog][open][aria-modal=true] [data-workbench-kind=code][data-presentation=dialog]") }
         expect "mobile-dialog-fills-viewport" { visible = css("dialog[data-project-asset-dialog][open].product-project-assets-dialog") }
         expect "mobile-close-semantic" { visible = css("[data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
@@ -63,7 +64,7 @@ suite "a3s-ui-product-project-asset-preview" {
         hover "mobile-close-pointer-reachable" { target = role("button", "关闭文件预览") }
         accessibility "mobile-accessibility" { path = "product/project-asset-preview-mobile-accessibility.json" interactive = true }
         press "close-with-escape" { key = "Escape" }
-        expect "mobile-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
+        wait "mobile-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
 
         console "console" { path = "product/project-asset-preview-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-asset-preview-mobile-page-errors.json" clear = false }

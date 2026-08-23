@@ -125,7 +125,7 @@ A3S UI 弹出窗口相对于 `.popover` 包装器是内联定位的。这与 sha
       <dt><code>&lt;button type="button" aria-expanded="false" aria-controls="&#123; POPOVER_ID &#125;"&gt;</code></dt>
       <dd>Trigger button. The script toggles <code>aria-expanded</code> and opens or closes the content.</dd>
       <dt><code>&lt;div data-popover id="&#123; POPOVER_ID &#125;" aria-hidden="true"&gt;</code></dt>
-      <dd>Popover 内容。支持 <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> 与 <code>data-align="start|center|end"</code>。默认使用 8px 侧边偏移和 8px 视口碰撞留白；可通过 <code>data-side-offset</code> 与 <code>data-collision-padding</code> 覆盖，或设置 <code>data-collision="none"</code> 保留静态 CSS 定位。定位期间运行时会发布 <code>--available-height</code>、<code>data-resolved-side</code>、<code>data-resolved-align</code> 与 <code>data-a3s-positioned="true"</code>。</dd>
+      <dd>Popover 内容。支持 <code>data-side="top|right|bottom|left|inline-start|inline-end"</code> 与 <code>data-align="start|center|end"</code>。默认使用 8px 侧边偏移和 8px 视口碰撞留白；可通过 <code>data-side-offset</code> 与 <code>data-collision-padding</code> 覆盖，或设置 <code>data-collision="none"</code> 保留静态 CSS 定位。运行时同样会定位以 <code>aria-hidden="false"</code> 条件挂载的 Popover。定位期间会发布 <code>--available-height</code>、<code>data-resolved-side</code>、<code>data-resolved-align</code> 与 <code>data-a3s-positioned="true"</code>。</dd>
     </dl>
   </dd>
 </dl>

@@ -71,6 +71,12 @@ export function ProductSessionInspector({
     ProductPlaygroundIconName,
   ][];
 
+  const selectTab = (tab: ProductSessionInspectorTab) => {
+    if (tab !== "graph") setGraphExpanded(false);
+    if (tab !== "preview") setPreviewExpanded(false);
+    onTabChange(tab);
+  };
+
   return (
     <aside
       aria-label={
@@ -83,9 +89,10 @@ export function ProductSessionInspector({
             : "Task details"
       }
       aria-modal={overlay ? true : undefined}
-      className="product-session-inspector"
+      className="task-pane product-session-inspector"
       data-graph-expanded={graphExpanded ? "true" : undefined}
       data-preview-expanded={previewExpanded ? "true" : undefined}
+      data-task-inspector=""
       id={id}
       ref={panelRef}
       role={overlay ? "dialog" : undefined}
@@ -131,21 +138,58 @@ export function ProductSessionInspector({
       </header>
 
       <div
-        aria-label={zh ? "任务详情视图" : "Task detail views"}
+        aria-label={
+          project
+            ? zh
+              ? "项目详情视图"
+              : "Project detail views"
+            : zh
+              ? "任务详情视图"
+              : "Task detail views"
+        }
+        aria-orientation="horizontal"
         className="product-session-inspector__tabs"
         role="tablist"
       >
-        {tabs.map(([tab, label, icon]) => (
+        {tabs.map(([tab, label, icon], index) => (
           <button
             aria-controls={`${id}-${tab}`}
             aria-selected={activeTab === tab}
             key={tab}
-            onClick={() => {
-              if (tab !== "graph") setGraphExpanded(false);
-              if (tab !== "preview") setPreviewExpanded(false);
-              onTabChange(tab);
+            onClick={() => selectTab(tab)}
+            onKeyDown={(event) => {
+              const direction = getComputedStyle(event.currentTarget).direction;
+              const step =
+                event.key === "ArrowRight"
+                  ? direction === "rtl"
+                    ? -1
+                    : 1
+                  : event.key === "ArrowLeft"
+                    ? direction === "rtl"
+                      ? 1
+                      : -1
+                    : 0;
+              const nextIndex =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? tabs.length - 1
+                    : step
+                      ? (index + step + tabs.length) % tabs.length
+                      : -1;
+              if (nextIndex < 0) return;
+              event.preventDefault();
+              selectTab(tabs[nextIndex][0]);
+              const controls =
+                event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                  '[role="tab"]',
+                );
+              window.requestAnimationFrame(() =>
+                controls?.[nextIndex]?.focus(),
+              );
             }}
             role="tab"
+            tabIndex={activeTab === tab ? 0 : -1}
             title={label}
             type="button"
           >
@@ -155,7 +199,7 @@ export function ProductSessionInspector({
         ))}
       </div>
 
-      <div className="product-session-inspector__body">
+      <section className="product-session-inspector__body">
         {activeTab === "overview" ? (
           <ProductSessionOverviewPanel
             artifacts={artifacts}
@@ -196,7 +240,7 @@ export function ProductSessionInspector({
             onExpandedChange={setGraphExpanded}
           />
         ) : null}
-      </div>
+      </section>
     </aside>
   );
 }

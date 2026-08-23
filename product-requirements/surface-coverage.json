@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "surfaces": [
+    {
+      "group": "harness",
+      "name": "Dock Workspace",
+      "prd": "product-requirements/surfaces/harness/dock-workspace.md",
+      "route": "/harness/dock-workspace.html",
+      "scenario": "dock-workspace",
+      "selector": ".dockview-demo[data-mode=dock][data-ready=true]",
+      "suite": "tests/e2e/harness-workspaces.acl"
+    },
+    {
+      "group": "harness",
+      "name": "Grid View",
+      "prd": "product-requirements/surfaces/harness/grid-view.md",
+      "route": "/harness/grid-view.html",
+      "scenario": "grid-view",
+      "selector": ".dockview-demo[data-mode=grid][data-ready=true]",
+      "suite": "tests/e2e/harness-workspaces.acl"
+    },
+    {
+      "group": "harness",
+      "name": "Split View",
+      "prd": "product-requirements/surfaces/harness/split-view.md",
+      "route": "/harness/split-view.html",
+      "scenario": "split-view",
+      "selector": ".dockview-demo[data-mode=split][data-ready=true]",
+      "suite": "tests/e2e/harness-workspaces.acl"
+    },
+    {
+      "group": "harness",
+      "name": "Pane View",
+      "prd": "product-requirements/surfaces/harness/pane-view.md",
+      "route": "/harness/pane-view.html",
+      "scenario": "pane-view",
+      "selector": ".dockview-demo[data-mode=pane][data-ready=true]",
+      "suite": "tests/e2e/harness-workspaces.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Open the node library, filter and select Condition, edit and invalidate its expression, recover defaults without changing selection, then close, reopen, and run that same DAG node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=expression][data-invalid=true]:has(:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-dag-embedding-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression"
+      },
+      "group": "workflow",
+      "name": "Flow 1.0 DAG Node Configuration",
+      "prd": "product-requirements/surfaces/workflow/workflow-dag-embedding.md",
+      "route": "/components/form-system/workflow-node-embedding.html",
+      "scenario": "workflow-dag-embedding",
+      "selector": ".a3s-doc-workflow-studio[data-panel-open=true]",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the permanent workflow ID, reject an empty ID with focused textual validation, then recover the default without changing the selected start node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=workflow_name] input",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=workflow_name][data-invalid=true]:has(input[aria-invalid=true]:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-start-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=workflow_name] input[value='workflow.main']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=workflow_name] input"
+      },
+      "group": "workflow",
+      "name": "Workflow Start",
+      "prd": "product-requirements/surfaces/workflow/workflow-start.md",
+      "route": "/components/form-system/a3s-flow/start.html",
+      "scenario": "workflow-node-start",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.start']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the registered step handler, reject an empty handler with focused textual validation, then recover the safe default before running the node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=step_name] input",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=step_name][data-invalid=true]:has(input[aria-invalid=true]:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-step-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=step_name] input[value='task.run']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=step_name] input"
+      },
+      "group": "workflow",
+      "name": "Run Step",
+      "prd": "product-requirements/surfaces/workflow/workflow-step.md",
+      "route": "/components/form-system/a3s-flow/step.html",
+      "scenario": "workflow-node-step",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.step']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the first durable batch member ID, reject an empty member ID in-place, expand the invalid member, and recover the default ordered member without losing the batch node.",
+        "editSelector": "[data-a3s-form-path='steps.0.step_key']",
+        "invalidSelector": ".a3s-form-flow-batch-list > li[data-invalid=true]:has([data-a3s-form-path='steps.0.step_key'][aria-invalid=true]:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-batch-invalid.png",
+        "resetSelector": "[data-a3s-form-path='steps.0.step_key'][value='member-1']",
+        "validSelector": ".a3s-form-flow-batch"
+      },
+      "group": "workflow",
+      "name": "Run Step Batch",
+      "prd": "product-requirements/surfaces/workflow/workflow-batch.md",
+      "route": "/components/form-system/a3s-flow/batch.html",
+      "scenario": "workflow-node-batch",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.batch']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the condition field path, reject an empty expression path with focused analysis feedback, and restore the two-branch default while preserving the selected condition node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=expression][data-invalid=true]:has(:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-condition-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression"
+      },
+      "group": "workflow",
+      "name": "Condition",
+      "prd": "product-requirements/surfaces/workflow/workflow-condition.md",
+      "route": "/components/form-system/a3s-flow/condition.html",
+      "scenario": "workflow-node-condition",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.condition']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the durable resume-time field path, reject an empty expression path, then restore the default saved-state deadline before running the wait node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=resume_at][data-invalid=true]:has(:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-wait-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-flow-expression[data-mode=source] input[value='input.deadline']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-flow-expression"
+      },
+      "group": "workflow",
+      "name": "Wait Until",
+      "prd": "product-requirements/surfaces/workflow/workflow-wait.md",
+      "route": "/components/form-system/a3s-flow/wait.html",
+      "scenario": "workflow-node-wait",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.wait']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the audit-facing callback title, reject an empty request title, and recover the default title while retaining the callback node and token context.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=subject] input",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=subject][data-invalid=true]:has(input[aria-invalid=true]:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-hook-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=subject] input[value='Review workflow request']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=subject] input"
+      },
+      "group": "workflow",
+      "name": "Wait for Callback",
+      "prd": "product-requirements/surfaces/workflow/workflow-hook.md",
+      "route": "/components/form-system/a3s-flow/hook.html",
+      "scenario": "workflow-node-hook",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.hook']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Edit and apply the persisted success-result path, reject an empty output expression, and restore the default workflow input result before running the terminal node.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=output_expression][data-invalid=true]:has(:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-complete-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-flow-expression[data-mode=source] input[value='input']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-flow-expression"
+      },
+      "group": "workflow",
+      "name": "Complete",
+      "prd": "product-requirements/surfaces/workflow/workflow-complete.md",
+      "route": "/components/form-system/a3s-flow/complete.html",
+      "scenario": "workflow-node-complete",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.complete']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "acceptance": {
+        "behavior": "Switch the failure reason to a workflow field and apply it, reject an empty field path, then restore the explicit default failure template before running the terminal node fixture.",
+        "editSelector": ".a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']",
+        "invalidSelector": ".a3s-form-field[data-a3s-form-path=error_expression][data-invalid=true]:has(:focus)",
+        "invalidScreenshot": "workflow/contracts/workflow-fail-invalid.png",
+        "resetSelector": ".a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression[data-mode=template] textarea[aria-label='失败信息模板']",
+        "validSelector": ".a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression"
+      },
+      "group": "workflow",
+      "name": "Fail Workflow",
+      "prd": "product-requirements/surfaces/workflow/workflow-fail.md",
+      "route": "/components/form-system/a3s-flow/fail.html",
+      "scenario": "workflow-node-fail",
+      "selector": ".a3s-form-workflow-node-preview[data-node-type='flow.fail']",
+      "suite": "tests/e2e/workflow-surface-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "New Task",
+      "prd": "product-requirements/surfaces/playground/playground-start.md",
+      "route": "/playground.html",
+      "scenario": "playground-route-start",
+      "selector": "[data-product-application][data-view=start] [data-product-surface=start]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Assistant",
+      "prd": "product-requirements/surfaces/playground/playground-assistant.md",
+      "route": "/playground/assistant.html",
+      "scenario": "playground-route-assistant",
+      "selector": "[data-product-application][data-view=assistant] [data-product-surface=assistant]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Projects",
+      "prd": "product-requirements/surfaces/playground/playground-projects.md",
+      "route": "/playground/projects.html",
+      "scenario": "playground-route-projects",
+      "selector": "[data-product-application][data-view=projects] [data-product-surface=projects]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Project Workspace",
+      "prd": "product-requirements/surfaces/playground/playground-project.md",
+      "route": "/playground/projects/a3s-ui-experience.html",
+      "scenario": "playground-route-project",
+      "selector": "[data-product-application][data-view=project] [data-product-surface=project]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Project Session",
+      "prd": "product-requirements/surfaces/playground/playground-project-session.md",
+      "route": "/playground/projects/a3s-ui-experience/sessions/release-readiness.html",
+      "scenario": "playground-route-project-session",
+      "selector": "[data-product-application][data-view=project-session] [data-product-surface=project-session]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Capabilities",
+      "prd": "product-requirements/surfaces/playground/playground-capabilities.md",
+      "route": "/playground/capabilities.html",
+      "scenario": "playground-route-capabilities",
+      "selector": "[data-product-application][data-view=catalog] [data-product-surface=catalog]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Automations",
+      "prd": "product-requirements/surfaces/playground/playground-automations.md",
+      "route": "/playground/automations.html",
+      "scenario": "playground-route-automations",
+      "selector": "[data-product-application][data-view=automation] [data-product-surface=automation]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Memory",
+      "prd": "product-requirements/surfaces/playground/playground-memory.md",
+      "route": "/playground/memory.html",
+      "scenario": "playground-route-memory",
+      "selector": "[data-product-application][data-view=memory] [data-product-surface=memory]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Extensions",
+      "prd": "product-requirements/surfaces/playground/playground-extensions.md",
+      "route": "/playground/extensions.html",
+      "scenario": "playground-route-extensions",
+      "selector": "[data-product-application][data-view=marketplace] [data-product-surface=marketplace]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "My Files",
+      "prd": "product-requirements/surfaces/playground/playground-files.md",
+      "route": "/playground/resources/files.html",
+      "scenario": "playground-route-files",
+      "selector": "[data-product-application][data-view=resources] [data-product-surface=files]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Mail",
+      "prd": "product-requirements/surfaces/playground/playground-mail.md",
+      "route": "/playground/resources/mail.html",
+      "scenario": "playground-route-mail",
+      "selector": "[data-product-application][data-view=resources] [data-product-surface=mail]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Documents",
+      "prd": "product-requirements/surfaces/playground/playground-documents.md",
+      "route": "/playground/resources/documents.html",
+      "scenario": "playground-route-documents",
+      "selector": "[data-product-application][data-view=resources] [data-product-surface=resources][data-resource=documents]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Knowledge",
+      "prd": "product-requirements/surfaces/playground/playground-knowledge.md",
+      "route": "/playground/resources/knowledge.html",
+      "scenario": "playground-route-knowledge",
+      "selector": "[data-product-application][data-view=resources] [data-product-surface=knowledge]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Inspiration",
+      "prd": "product-requirements/surfaces/playground/playground-inspiration.md",
+      "route": "/playground/resources/inspiration.html",
+      "scenario": "playground-route-inspiration",
+      "selector": "[data-product-application][data-view=resources] [data-product-surface=inspiration]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Seeded Session",
+      "prd": "product-requirements/surfaces/playground/playground-session.md",
+      "route": "/playground/sessions/fix-session-recovery.html",
+      "scenario": "playground-route-session",
+      "selector": "[data-product-application][data-view=session] [data-product-surface=session]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    },
+    {
+      "group": "playground",
+      "name": "Current Session",
+      "prd": "product-requirements/surfaces/playground/playground-created-session.md",
+      "route": "/playground/sessions/current.html",
+      "scenario": "playground-route-created-session",
+      "selector": "[data-product-application][data-view=created-session] [data-product-surface=session]",
+      "suite": "tests/e2e/playground-route-contracts.acl"
+    }
+  ]
+}

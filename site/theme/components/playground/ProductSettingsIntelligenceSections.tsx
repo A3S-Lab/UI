@@ -233,12 +233,12 @@ export function AssistantSettings({
               zh ? "启用本地 WebView 集成" : "Enable local WebView integration"
             }
           />
-          <label>
+          <div className="product-settings__switch-row">
             <span>{zh ? "同步任务产物" : "Sync task artifacts"}</span>
             <SettingsSwitch
               label={zh ? "同步任务产物" : "Sync task artifacts"}
             />
-          </label>
+          </div>
           <div
             aria-hidden="true"
             className="product-settings__integration-mark"

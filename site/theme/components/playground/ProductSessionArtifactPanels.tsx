@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { ProductTaskArtifact } from "./product-task-session-state";
@@ -14,53 +14,76 @@ export function ProductSessionArtifactsPanel({
 }) {
   const zh = locale === "zh";
   const [activeArtifactId, setActiveArtifactId] = useState<string | null>(null);
-  const [copyStatus, setCopyStatus] = useState("");
   const activeArtifact = artifacts.find(
     (artifact) => artifact.id === activeArtifactId,
   );
 
-  const copyArtifact = async () => {
-    if (!activeArtifact) return;
-    try {
-      await navigator.clipboard.writeText(activeArtifact.content);
-      setCopyStatus(zh ? "内容已复制" : "Content copied");
-    } catch {
-      setCopyStatus(zh ? "无法复制内容" : "Unable to copy content");
-    }
-  };
+  useEffect(() => {
+    window.a3sUI?.start();
+    window.a3sUI?.initAll();
+  }, [activeArtifactId]);
 
   return (
     <section className="product-inspector-artifacts" id={id} role="tabpanel">
       {activeArtifact ? (
-        <div className="product-inspector-artifacts__preview">
+        <article
+          className="artifact-card product-inspector-artifacts__preview"
+          data-state="complete"
+          data-variant="inspector"
+        >
           <header>
             <button
               onClick={() => {
                 setActiveArtifactId(null);
-                setCopyStatus("");
               }}
               type="button"
             >
               <ProductPlaygroundIcon name="back" />
               {zh ? "返回" : "Back"}
             </button>
-            <button onClick={copyArtifact} type="button">
+            <button
+              className="btn copy-button"
+              data-copy-error={
+                zh ? "复制失败，请重试" : "Copy failed. Try again."
+              }
+              data-copy-success={zh ? "已复制" : "Copied"}
+              data-copy-text={activeArtifact.content}
+              data-size="sm"
+              data-variant="ghost"
+              type="button"
+            >
               <ProductPlaygroundIcon name="copy" />
-              {zh ? "复制" : "Copy"}
+              <span data-copy-label>{zh ? "复制" : "Copy"}</span>
+              <span aria-live="polite" data-copy-feedback />
             </button>
           </header>
-          <div className="product-inspector-artifacts__identity">
-            <span>
-              <ProductPlaygroundIcon name="document" />
+          <section>
+            <div className="product-inspector-artifacts__identity">
+              <span>
+                <ProductPlaygroundIcon name="document" />
+              </span>
+              <strong>{activeArtifact.name}</strong>
+              <small>{activeArtifact.summary[locale]}</small>
+            </div>
+            <pre
+              aria-label={
+                zh
+                  ? `${activeArtifact.name} 代码预览`
+                  : `${activeArtifact.name} code preview`
+              }
+              className="highlighter"
+              tabIndex={0}
+            >
+              <code>{renderArtifactLines(activeArtifact)}</code>
+            </pre>
+          </section>
+          <footer>
+            <span data-artifact-meta>
+              {activeArtifact.kind} ·{" "}
+              {countArtifactLines(activeArtifact.content)} {zh ? "行" : "lines"}
             </span>
-            <strong>{activeArtifact.name}</strong>
-            <small>{activeArtifact.summary[locale]}</small>
-          </div>
-          <pre>
-            <code>{activeArtifact.content}</code>
-          </pre>
-          <output aria-live="polite">{copyStatus}</output>
-        </div>
+          </footer>
+        </article>
       ) : (
         <>
           <header className="product-inspector-section-heading">
@@ -109,12 +132,47 @@ export function ProductSessionFilesPanel({
 }) {
   const zh = locale === "zh";
   const [selectedFileId, setSelectedFileId] = useState(artifacts[0]?.id ?? "");
+  const explorerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!artifacts.some((artifact) => artifact.id === selectedFileId)) {
       setSelectedFileId(artifacts[0]?.id ?? "");
     }
   }, [artifacts, selectedFileId]);
+
+  useEffect(() => {
+    const explorer = explorerRef.current;
+    if (!explorer) return;
+    const handleBeforeSelection = (event: Event) => {
+      const value = (event as CustomEvent<{ value?: string }>).detail?.value;
+      if (!value || !artifacts.some((artifact) => artifact.id === value)) {
+        event.preventDefault();
+      }
+    };
+    const handleSelection = (event: Event) => {
+      const value = (event as CustomEvent<{ value?: string }>).detail?.value;
+      if (value && artifacts.some((artifact) => artifact.id === value)) {
+        setSelectedFileId(value);
+      }
+    };
+    explorer.addEventListener(
+      "a3s:file-before-selection-change",
+      handleBeforeSelection,
+    );
+    explorer.addEventListener("a3s:file-selection-change", handleSelection);
+    window.a3sUI?.start();
+    window.a3sUI?.initAll();
+    return () => {
+      explorer.removeEventListener(
+        "a3s:file-before-selection-change",
+        handleBeforeSelection,
+      );
+      explorer.removeEventListener(
+        "a3s:file-selection-change",
+        handleSelection,
+      );
+    };
+  }, [artifacts]);
 
   const selectedFile =
     artifacts.find((artifact) => artifact.id === selectedFileId) ??
@@ -128,37 +186,77 @@ export function ProductSessionFilesPanel({
           <strong>{zh ? "工作区变更" : "Workspace changes"}</strong>
           <small>
             {zh
-              ? `${artifacts.length} 个文件 · 仅显示本任务范围`
-              : `${artifacts.length} files · Task scope only`}
+              ? `${artifacts.length} 个文件 · 确定性预览数据`
+              : `${artifacts.length} files · Deterministic preview data`}
           </small>
         </div>
         <span data-change>+42 −6</span>
       </header>
-      <nav
+      <section
         aria-label={zh ? "变更文件" : "Changed files"}
-        className="product-inspector-files__tree"
+        className="file-explorer product-inspector-files__explorer"
+        data-readonly="true"
+        data-state="ready"
+        ref={explorerRef}
       >
-        <div>
-          <ProductPlaygroundIcon name="folder" />
-          <strong>workspace</strong>
-          <small>{artifacts.length}</small>
-        </div>
-        {artifacts.map((artifact) => (
-          <button
-            aria-current={selectedFile?.id === artifact.id ? "true" : undefined}
-            key={artifact.id}
-            onClick={() => setSelectedFileId(artifact.id)}
-            type="button"
+        <div data-file-explorer-viewport>
+          <div
+            aria-label={zh ? "工作区变更文件树" : "Workspace change tree"}
+            className="tree"
+            role="tree"
           >
-            <ProductPlaygroundIcon name="document" />
-            <span>{artifact.name}</span>
-            <small>{artifact.id === "tests" ? "+24" : "+18 −6"}</small>
-          </button>
-        ))}
-      </nav>
+            <div
+              aria-expanded="true"
+              aria-selected="false"
+              data-value="workspace"
+              role="treeitem"
+            >
+              <div data-tree-row>
+                <ProductPlaygroundIcon name="folder" />
+                <span data-tree-label>workspace</span>
+                <span data-tree-meta>{artifacts.length}</span>
+              </div>
+              <div role="group">
+                {artifacts.map((artifact) => (
+                  <div
+                    aria-selected={selectedFile?.id === artifact.id}
+                    data-value={artifact.id}
+                    key={artifact.id}
+                    role="treeitem"
+                  >
+                    <div data-tree-row>
+                      <ProductPlaygroundIcon name="document" />
+                      <span data-tree-label>{artifact.name}</span>
+                      <span data-tree-meta>
+                        {artifact.id === "tests" ? "+24" : "+18 −6"}
+                      </span>
+                      <span
+                        aria-label={
+                          artifact.id === "tests"
+                            ? zh
+                              ? "新增"
+                              : "Added"
+                            : zh
+                              ? "已修改"
+                              : "Modified"
+                        }
+                        data-file-status={
+                          artifact.id === "tests" ? "added" : "modified"
+                        }
+                      >
+                        {artifact.id === "tests" ? "A" : "M"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       {selectedFile ? (
-        <section className="product-inspector-diff">
-          <header>
+        <figure className="code-diff product-inspector-diff" data-line-numbers>
+          <figcaption>
             <strong>{selectedFile.name}</strong>
             <span>
               <i>+{diffLines.filter((line) => line.kind === "added").length}</i>
@@ -166,39 +264,111 @@ export function ProductSessionFilesPanel({
                 −{diffLines.filter((line) => line.kind === "removed").length}
               </b>
             </span>
-          </header>
-          <div>
-            <table
-              aria-label={
-                zh
-                  ? `${selectedFile.name} 行级差异`
-                  : `${selectedFile.name} line diff`
-              }
-            >
-              <tbody>
-                {diffLines.map((line, index) => (
-                  <tr data-kind={line.kind} key={`${line.kind}-${index}`}>
-                    <td>{line.oldLine}</td>
-                    <td>{line.newLine}</td>
-                    <td aria-hidden="true">
-                      {line.kind === "added"
-                        ? "+"
-                        : line.kind === "removed"
-                          ? "−"
-                          : " "}
-                    </td>
-                    <td>
-                      <code>{line.text || " "}</code>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+          </figcaption>
+          <pre
+            aria-label={
+              zh
+                ? `${selectedFile.name} 行级差异`
+                : `${selectedFile.name} line diff`
+            }
+            tabIndex={0}
+          >
+            <code>
+              {diffLines.map((line, index) => {
+                const marker =
+                  line.kind === "added"
+                    ? "+"
+                    : line.kind === "removed"
+                      ? "−"
+                      : " ";
+                return (
+                  <span data-diff-line={marker} key={`${line.kind}-${index}`}>
+                    <span aria-hidden="true" data-diff-old-line>
+                      {line.oldLine ?? ""}
+                    </span>
+                    <span aria-hidden="true" data-diff-new-line>
+                      {line.newLine ?? ""}
+                    </span>
+                    <span aria-hidden="true" data-diff-marker>
+                      {marker}
+                    </span>
+                    <span data-diff-code>{line.text || " "}</span>
+                  </span>
+                );
+              })}
+            </code>
+          </pre>
+        </figure>
       ) : null}
     </section>
   );
+}
+
+function countArtifactLines(content: string) {
+  return content.replace(/\r\n?/gu, "\n").split("\n").length;
+}
+
+function renderArtifactLines(artifact: ProductTaskArtifact) {
+  return artifact.content
+    .replace(/\r\n?/gu, "\n")
+    .split("\n")
+    .map((line, index) => (
+      <span data-code-line key={`${artifact.id}-${index}`}>
+        {highlightArtifactLine(line, artifact.kind)}
+      </span>
+    ));
+}
+
+function highlightArtifactLine(line: string, kind: string): ReactNode[] {
+  if (kind.toLocaleLowerCase() === "markdown") {
+    const heading = line.match(/^(#+)(\s.*)?$/u);
+    if (heading) {
+      return [
+        <span data-code-token="heading" key="heading-marker">
+          {heading[1]}
+        </span>,
+        heading[2] ?? "",
+      ];
+    }
+    const listItem = line.match(/^(\s*)([-*])(\s.*)$/u);
+    if (listItem) {
+      return [
+        listItem[1] ?? "",
+        <span data-code-token="punctuation" key="list-marker">
+          {listItem[2]}
+        </span>,
+        listItem[3] ?? "",
+      ];
+    }
+    return [line];
+  }
+
+  const tokens: ReactNode[] = [];
+  const pattern =
+    /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\/\/.*$|\b(?:async|await|const|export|function|return|test|expect|true|false|null|undefined)\b|\b(?:string|number|boolean|void)\b)/gu;
+  let cursor = 0;
+  let tokenIndex = 0;
+  for (const match of line.matchAll(pattern)) {
+    const start = match.index ?? 0;
+    if (start > cursor) tokens.push(line.slice(cursor, start));
+    const value = match[0];
+    const token = value.startsWith("//")
+      ? "comment"
+      : /^["'`]/u.test(value)
+        ? "string"
+        : /^(?:string|number|boolean|void)$/u.test(value)
+          ? "type"
+          : "keyword";
+    tokens.push(
+      <span data-code-token={token} key={`${token}-${tokenIndex}`}>
+        {value}
+      </span>,
+    );
+    cursor = start + value.length;
+    tokenIndex += 1;
+  }
+  if (cursor < line.length) tokens.push(line.slice(cursor));
+  return tokens.length ? tokens : [line];
 }
 
 type DiffLine = {

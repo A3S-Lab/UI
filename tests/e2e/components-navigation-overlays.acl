@@ -89,7 +89,7 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
-        expect "dialog-open" { visible = css("#demo-alert-dialog[open][role=alertdialog]") }
+        wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=alert-dialog] [data-a3s-components~='alert-dialog'][role='alertdialog'][open] > div") }
         expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
         screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
         click "cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
@@ -105,7 +105,7 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = role("button", "Open Dialog") }
-        expect "dialog-open" { visible = css("#demo-dialog-edit-profile[open]") }
+        wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=dialog] [data-a3s-components~='dialog'][open] > div") }
         fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
         screenshot "dialog-phone" { path = "components/dialog-phone.png" }
         press "close-dialog" { key = "Escape" }

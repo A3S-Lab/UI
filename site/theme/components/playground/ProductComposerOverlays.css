@@ -16,7 +16,7 @@
   width: min(24rem, calc(100vw - 2rem));
   height: auto;
   max-height: min(28rem, calc(100dvh - 10rem));
-  grid-template-rows: auto auto minmax(0, auto) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
@@ -748,19 +748,32 @@
 
 @media (max-width: 40rem) {
   .product-composer-control-panel {
-    position: fixed;
-    inset-inline: 1rem;
-    inset-block: auto calc(env(safe-area-inset-bottom, 0px) + 1rem);
-    width: auto;
-    max-height: min(76dvh, 36rem);
+    position: fixed !important;
+    inset-inline: 1rem !important;
+    inset-block: auto calc(env(safe-area-inset-bottom, 0px) + 1rem) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: min(76dvh, 36rem) !important;
+    margin: 0 !important;
+    translate: none !important;
   }
 
   .product-composer-suggestions {
-    position: fixed;
-    inset-inline: 1rem;
-    inset-block: auto calc(env(safe-area-inset-bottom, 0px) + 1rem);
-    height: min(24rem, 62dvh);
-    max-height: min(24rem, 62dvh);
+    position: fixed !important;
+    inset-inline: 1rem !important;
+    inset-block: auto calc(env(safe-area-inset-bottom, 0px) + 1rem) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2rem) !important;
+    height: auto !important;
+    max-height: min(24rem, 62dvh) !important;
+    margin: 0 !important;
+    translate: none !important;
+  }
+
+  .product-composer-suggestions[data-suggestion-kind="file"] {
+    height: min(24rem, 62dvh) !important;
   }
 
   .product-composer-suggestions [data-suggestion-close] {

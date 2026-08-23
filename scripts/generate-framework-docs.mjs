@@ -14,6 +14,12 @@ const docsVersions = ["next", "v0.3.0", "v0.2.0", "v0.1.0"];
 const placeholderPattern =
   /(?:Component content|Component summary|组件内容|组件摘要|>\s*(?:\.{3}|…)\s*<)/u;
 const structuralCommentPattern = /(?:\{\/\*[^*]+\*\/\}|<!--[^>]+-->)/u;
+const componentFrameworkFragments = Object.freeze({
+  "agent-composer": {
+    React: ["useAgentComposerEditor", "@tiptap/react"],
+    Vue: ["useAgentComposerEditor", "@tiptap/vue-3"],
+  },
+});
 const voidElements = new Set([
   "area",
   "base",
@@ -992,6 +998,7 @@ function isUnavailableGuide(source) {
 
 const missing = [];
 const invalidHtmlExamples = [];
+const invalidFrameworkContracts = [];
 const placeholderGuides = [];
 const componentsBySlug = new Map(
   components.map((component) => [component.slug, component]),
@@ -1056,6 +1063,38 @@ for (const version of docsVersions) {
         invalidHtmlExamples.push(guideKey);
       }
 
+      if (useAdapters && currentReact && currentVue) {
+        const componentHook = `use${pascal(component.slug)}`;
+        const hasController =
+          component.events.length > 0 || component.methods.length > 0;
+        const frameworkContracts = {
+          React: [
+            "@a3s-lab/ui/react",
+            ...(hasController ? [componentHook] : []),
+            ...(componentFrameworkFragments[component.slug]?.React ?? []),
+          ],
+          Vue: [
+            "@a3s-lab/ui/vue",
+            ...(hasController ? [componentHook] : []),
+            ...(componentFrameworkFragments[component.slug]?.Vue ?? []),
+          ],
+        };
+
+        for (const [framework, code] of [
+          ["React", currentReact],
+          ["Vue", currentVue],
+        ]) {
+          const missingFragments = frameworkContracts[framework].filter(
+            (fragment) => !code.includes(fragment),
+          );
+          if (missingFragments.length > 0) {
+            invalidFrameworkContracts.push(
+              `${guideKey} ${framework} (${missingFragments.join(", ")})`,
+            );
+          }
+        }
+      }
+
       if (!hasHtml || !hasReact || !hasVue) {
         missing.push(
           `${guideKey} (${[
@@ -1106,6 +1145,7 @@ if (
   checkOnly &&
   (missing.length > 0 ||
     invalidHtmlExamples.length > 0 ||
+    invalidFrameworkContracts.length > 0 ||
     placeholderGuides.length > 0)
 ) {
   const problems = [
@@ -1117,6 +1157,9 @@ if (
       : "",
     invalidHtmlExamples.length > 0
       ? `Missing concrete HTML examples: ${invalidHtmlExamples.join(", ")}`
+      : "",
+    invalidFrameworkContracts.length > 0
+      ? `Incomplete framework contracts: ${invalidFrameworkContracts.join(", ")}`
       : "",
   ].filter(Boolean);
   throw new Error(problems.join("\n"));

@@ -1,0 +1,245 @@
+suite "a3s-ui-playground-component-boundaries" {
+    version = 1
+
+    scenario "playground-legacy-device-preview-panel" {
+        name = "Device Preview Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/device-preview-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/device-preview-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/device-preview-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/device-preview-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/device-preview-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-empty-workspace-panel" {
+        name = "Empty Workspace Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/empty-workspace-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/empty-workspace-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/empty-workspace-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/empty-workspace-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/empty-workspace-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-explorer-panel" {
+        name = "Explorer Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/explorer-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/explorer-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/explorer-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/explorer-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/explorer-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-inspector-panel" {
+        name = "Inspector Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/inspector-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/inspector-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/inspector-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/inspector-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/inspector-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-playground-icon" {
+        name = "Playground Icon remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/playground-icon-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/playground-icon-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/playground-icon-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/playground-icon-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/playground-icon-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-scene-state" {
+        name = "Scene State remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/scene-state-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/scene-state-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/scene-state-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/scene-state-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/scene-state-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-task-panel" {
+        name = "Task Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/task-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/task-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/task-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/task-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/task-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-terminal-panel" {
+        name = "Terminal Panel remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/terminal-panel-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/terminal-panel-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/terminal-panel-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/terminal-panel-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/terminal-panel-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-workspace-playground" {
+        name = "Workspace Playground remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/workspace-playground-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/workspace-playground-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/workspace-playground-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/workspace-playground-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/workspace-playground-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-workspace-provider" {
+        name = "Workspace Provider remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/workspace-provider-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/workspace-provider-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/workspace-provider-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/workspace-provider-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/workspace-provider-errors.json" clear = false }
+    }
+
+    scenario "playground-legacy-workspace-scene-surface" {
+        name = "Workspace Scene Surface remains outside the current task-first Playground"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "current-application" { visible = css("[data-product-application][data-view=start]") }
+        expect "current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        expect "legacy-workspace-absent" { visible = css("[data-product-application]:not(:has(.a3s-workspace-playground))") }
+        screenshot "capture-desktop" { path = "playground/boundaries/workspace-scene-surface-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-current-application" { visible = css("[data-product-application][data-view=start]:not(:has(.a3s-workspace-playground))") }
+        expect "compact-current-composer" { visible = css("[data-product-surface=start] .product-composer") }
+        screenshot "capture-compact" { path = "playground/boundaries/workspace-scene-surface-compact.png" }
+        accessibility "tree" { path = "playground/boundaries/workspace-scene-surface-accessibility.json" interactive = true }
+        console "console" { path = "playground/boundaries/workspace-scene-surface-console.json" clear = false }
+        page_errors "errors" { path = "playground/boundaries/workspace-scene-surface-errors.json" clear = false }
+    }
+}

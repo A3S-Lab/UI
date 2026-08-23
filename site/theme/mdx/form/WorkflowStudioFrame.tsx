@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DesignerIcon } from '../../../../modules/form/src/react/designer-icons';
 import './WorkflowStudioFrame.css';
 
@@ -41,6 +41,8 @@ export function WorkflowStudioFrame({
   const chinese = locale.toLocaleLowerCase().startsWith('zh');
   const [uncontrolledPaletteOpen, setUncontrolledPaletteOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const previousPanelOpen = useRef(panelOpen);
   const paletteOpen = controlledPaletteOpen ?? uncontrolledPaletteOpen;
   const setPaletteOpen = (open: boolean) => {
     if (controlledPaletteOpen === undefined) setUncontrolledPaletteOpen(open);
@@ -80,6 +82,18 @@ export function WorkflowStudioFrame({
     setPaletteOpen(false);
     onOpenPanel();
   };
+
+  useEffect(() => {
+    const panelJustClosed = previousPanelOpen.current && !panelOpen;
+    previousPanelOpen.current = panelOpen;
+    if (!panelJustClosed || paletteOpen) return;
+
+    queueMicrotask(() => {
+      nodeRef.current
+        ?.querySelector<HTMLButtonElement>('.a3s-form-workflow-node-preview-select')
+        ?.focus();
+    });
+  }, [paletteOpen, panelOpen]);
 
   return (
     <section
@@ -127,6 +141,7 @@ export function WorkflowStudioFrame({
             className="a3s-doc-workflow-studio__node"
             style={{ '--workflow-studio-zoom': zoom } as CSSProperties}
             onDoubleClick={(event) => event.stopPropagation()}
+            ref={nodeRef}
           >
             <div
               className="a3s-doc-workflow-studio__node-actions"
@@ -194,9 +209,17 @@ export function WorkflowStudioFrame({
           </div>
         </div>
 
-        {panelOpen && <aside className="a3s-doc-workflow-studio__inspector">{inspector}</aside>}
+        {panelOpen && (
+          <aside className="a3s-doc-workflow-studio__inspector">
+            {inspector}
+          </aside>
+        )}
 
-        <p className="a3s-doc-workflow-studio__status" role="status" aria-live="polite">
+        <p
+          className="a3s-doc-workflow-studio__status"
+          role="status"
+          aria-live="polite"
+        >
           {status}
         </p>
       </div>

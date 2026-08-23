@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   removeBase,
   useLang,
@@ -101,6 +101,7 @@ export function ProductApplication() {
     "memory" | "saved"
   >("saved");
   const [taskDraft, setTaskDraft] = useState<ProductTaskDraft | null>(null);
+  const accountTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const storedSession = readProductTaskSession();
@@ -291,6 +292,7 @@ export function ProductApplication() {
         />
       ) : null}
       <ProductNavigationSidebar
+        accountTriggerRef={accountTriggerRef}
         capabilityHref={(tab) =>
           withBase(getProductCapabilityRoutePath(tab, locale))
         }
@@ -476,6 +478,7 @@ export function ProductApplication() {
           navigateToView("start");
         }}
         open={exitOpen}
+        returnFocusRef={accountTriggerRef}
       />
     </section>
   );

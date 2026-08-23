@@ -250,7 +250,7 @@
 .product-project-workspace__assets [data-asset-table-scroll] {
   width: 100%;
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: clip;
   overscroll-behavior-inline: contain;
 }
 
@@ -266,6 +266,9 @@
 }
 
 .product-project-workspace__assets thead th {
+  position: sticky;
+  z-index: 2;
+  inset-block-start: 0;
   height: 2.375rem;
   padding: 0 0.5rem;
   background: var(--ui-paper);
@@ -391,6 +394,33 @@
 .product-project-workspace__assets [data-asset-icon][data-kind="folder"] {
   background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-paper));
   color: var(--ui-blue);
+}
+
+.product-project-workspace__assets [data-asset-icon][data-workbench="code"] {
+  background: color-mix(in srgb, var(--ui-green) 9%, var(--ui-paper));
+  color: var(--ui-green);
+}
+
+.product-project-workspace__assets [data-asset-icon][data-workbench="document"] {
+  background: color-mix(in srgb, var(--ui-purple) 9%, var(--ui-paper));
+  color: var(--ui-purple);
+}
+
+.product-project-workspace__assets [data-asset-icon][data-workbench="pdf"] {
+  background: color-mix(in srgb, var(--ui-red) 9%, var(--ui-paper));
+  color: var(--ui-red);
+}
+
+.product-project-workspace__assets
+  [data-asset-icon][data-workbench="presentation"] {
+  background: color-mix(in srgb, var(--ui-amber) 10%, var(--ui-paper));
+  color: var(--ui-amber);
+}
+
+.product-project-workspace__assets
+  [data-asset-icon][data-workbench="spreadsheet"] {
+  background: color-mix(in srgb, var(--ui-green) 9%, var(--ui-paper));
+  color: var(--ui-green);
 }
 
 .product-project-workspace__assets [data-asset-icon] svg {
@@ -709,26 +739,6 @@
     max-width: none;
     margin: 0.75rem;
   }
-
-  .product-project-assets-workspace [data-asset-toolbar] {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.625rem;
-  }
-
-  .product-project-assets-workspace
-    :is([data-asset-primary-actions], [data-asset-filter-actions]) {
-    width: 100%;
-    flex: none;
-  }
-
-  .product-project-assets-workspace [data-asset-filter-actions] {
-    justify-content: space-between;
-  }
-
-  .product-project-assets-workspace [data-asset-filter-actions] [data-search] {
-    width: min(20rem, 100%);
-  }
 }
 
 @media (max-width: 48rem) {
@@ -768,6 +778,13 @@
     flex: 1;
   }
 
+  .product-project-assets-workspace
+    :is([data-asset-type-filter], [data-asset-filter-actions] [data-search])
+    :is(select, input) {
+    min-height: 2.75rem;
+    height: 2.75rem;
+  }
+
   .product-project-assets-workspace .product-project-workspace__panel {
     padding: 0 0.75rem 2rem;
   }
@@ -789,19 +806,54 @@
     opacity: 1;
   }
 
+  .product-project-workspace__assets [data-asset-checkbox-hit],
+  .product-project-workspace__assets [data-asset-task] {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .product-project-workspace__assets [data-asset-empty] button,
+  .product-project-workspace__assets
+    [data-asset-create-row]
+    :is(input, button) {
+    min-height: 2.75rem;
+  }
+
   .product-project-workspace__assets [data-asset-copy] small {
     display: block;
   }
 
   .product-project-assets-workspace
     > .product-project-workspace__context-actions {
-    padding-inline: 0.75rem;
+    position: static;
+    z-index: auto;
+    inset: auto;
+    padding: 0.5rem 0.75rem max(0.75rem, env(safe-area-inset-bottom));
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--ui-paper) 0%, transparent),
+      var(--ui-paper) 0.75rem
+    );
+    pointer-events: auto;
+  }
+
+  .product-project-workspace__workbench:has([data-asset-action-bar])
+    > .product-project-workspace__composer {
+    display: none;
   }
 
   .product-project-assets-workspace [data-asset-action-bar] {
     min-height: 3.75rem;
     align-items: center;
     flex-direction: row;
+  }
+
+  .product-project-assets-workspace [data-asset-action-bar] button {
+    min-height: 2.75rem;
+  }
+
+  .product-project-assets-workspace [data-asset-action-bar] button[data-clear] {
+    width: 2.75rem;
   }
 
   .product-project-assets-workspace [data-asset-action-bar] > div:first-child {

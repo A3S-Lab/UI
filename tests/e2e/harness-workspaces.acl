@@ -1,0 +1,147 @@
+suite "a3s-ui-harness-workspaces" {
+    version = 1
+
+    scenario "dock-workspace" {
+        name = "Dock workspace supports keyboard layout actions and responsive composition"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/harness/dock-workspace.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "workspace-ready" { visible = css(".dockview-demo[data-mode=dock][data-ready=true]") }
+
+        expect "task-panel" { visible = css("[data-demo-panel=task]") }
+        expect "editor-panel" { visible = css("[data-demo-panel=editor]") }
+        expect "preview-tab" { visible = role("tab", "预览") }
+        expect "terminal-panel" { visible = css("[data-demo-panel=terminal]") }
+
+        focus "focus-float" { target = css(".dockview-demo[data-mode=dock] .dockview-demo__toolbar nav button:first-child") }
+        press "float-preview" { key = "Enter" }
+        expect "preview-floating" { visible = css(".dockview-demo[data-mode=dock][data-preview-location=floating] [data-demo-panel=preview]") }
+
+        focus "focus-reset" { target = css(".dockview-demo[data-mode=dock] .dockview-demo__toolbar nav button:last-child") }
+        press "reset-layout" { key = "Enter" }
+        expect "preview-redocked" { visible = css(".dockview-demo[data-mode=dock][data-preview-location=docked]") }
+        expect "preview-tab-restored" { visible = role("tab", "预览") }
+
+        focus "focus-maximize" { target = css(".dockview-demo[data-mode=dock] .dockview-demo__toolbar nav button:nth-child(2)") }
+        press "maximize-active" { key = "Enter" }
+        expect "active-maximized" { visible = css(".dockview-demo[data-mode=dock][data-active-maximized=true]") }
+        press "restore-active" { key = "Enter" }
+        expect "active-restored" { visible = css(".dockview-demo[data-mode=dock][data-active-maximized=false]") }
+
+        screenshot "capture-desktop" { path = "harness/dock-workspace-desktop.png" }
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-workspace" { visible = css(".dockview-demo[data-mode=dock][data-ready=true][data-layout-density=compact]") }
+        expect "compact-task-tab" { visible = role("tab", "任务") }
+        expect "compact-editor-tab" { visible = role("tab", "编辑器") }
+        expect "compact-preview-tab" { visible = role("tab", "预览") }
+        expect "compact-terminal-tab" { visible = role("tab", "终端") }
+        expect "compact-resources-tab" { visible = role("tab", "资源") }
+        screenshot "capture-compact" { path = "harness/dock-workspace-compact.png" }
+        accessibility "tree" { path = "harness/dock-workspace-accessibility.json" interactive = true }
+        console "console" { path = "harness/dock-workspace-console.json" clear = false }
+        page_errors "errors" { path = "harness/dock-workspace-errors.json" clear = false }
+    }
+
+    scenario "grid-view" {
+        name = "Grid view exposes keyboard presets for a pointer-resizable layout"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/harness/grid-view.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "grid-ready" { visible = css(".dockview-demo[data-mode=grid][data-ready=true][data-layout-preset=balanced]") }
+
+        expect "context-panel" { visible = css("[data-demo-panel=grid-context]") }
+        expect "canvas-panel" { visible = css("[data-demo-panel=grid-canvas]") }
+        expect "output-panel" { visible = css("[data-demo-panel=grid-output]") }
+        expect "preview-panel" { visible = css("[data-demo-panel=grid-preview]") }
+        focus "focus-canvas-preset" { target = css(".dockview-demo[data-mode=grid] .dockview-demo__toolbar nav button:last-child") }
+        press "apply-canvas-preset" { key = "Enter" }
+        expect "canvas-preset-applied" { visible = css(".dockview-demo[data-mode=grid][data-layout-preset=focus-canvas] [data-demo-panel=grid-canvas]") }
+
+        screenshot "capture-desktop" { path = "harness/grid-view-desktop.png" }
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-grid" { visible = css(".dockview-demo[data-mode=grid][data-layout-preset=focus-canvas]") }
+        screenshot "capture-compact" { path = "harness/grid-view-compact.png" }
+
+        focus "focus-balanced-preset" { target = css(".dockview-demo[data-mode=grid] .dockview-demo__toolbar nav button:first-child") }
+        press "restore-balanced" { key = "Enter" }
+        expect "balanced-restored" { visible = css(".dockview-demo[data-mode=grid][data-layout-preset=balanced]") }
+        accessibility "tree" { path = "harness/grid-view-accessibility.json" interactive = true }
+        console "console" { path = "harness/grid-view-console.json" clear = false }
+        page_errors "errors" { path = "harness/grid-view-errors.json" clear = false }
+    }
+
+    scenario "split-view" {
+        name = "Split view exposes keyboard presets for a pointer-resizable layout"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/harness/split-view.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "split-ready" { visible = css(".dockview-demo[data-mode=split][data-ready=true][data-layout-preset=balanced]") }
+
+        expect "context-panel" { visible = css("[data-demo-panel=split-context]") }
+        expect "canvas-panel" { visible = css("[data-demo-panel=split-canvas]") }
+        expect "preview-panel" { visible = css("[data-demo-panel=split-preview]") }
+        focus "focus-canvas-preset" { target = css(".dockview-demo[data-mode=split] .dockview-demo__toolbar nav button:last-child") }
+        press "apply-canvas-preset" { key = "Enter" }
+        expect "canvas-preset-applied" { visible = css(".dockview-demo[data-mode=split][data-layout-preset=focus-canvas] [data-demo-panel=split-canvas]") }
+
+        screenshot "capture-desktop" { path = "harness/split-view-desktop.png" }
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-split" { visible = css(".dockview-demo[data-mode=split][data-layout-preset=focus-canvas]") }
+        screenshot "capture-compact" { path = "harness/split-view-compact.png" }
+
+        focus "focus-balanced-preset" { target = css(".dockview-demo[data-mode=split] .dockview-demo__toolbar nav button:first-child") }
+        press "restore-balanced" { key = "Enter" }
+        expect "balanced-restored" { visible = css(".dockview-demo[data-mode=split][data-layout-preset=balanced]") }
+        accessibility "tree" { path = "harness/split-view-accessibility.json" interactive = true }
+        console "console" { path = "harness/split-view-console.json" clear = false }
+        page_errors "errors" { path = "harness/split-view-errors.json" clear = false }
+    }
+
+    scenario "pane-view" {
+        name = "Pane view provides semantic expansion controls and responsive composition"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/harness/pane-view.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "pane-ready" { visible = css(".dockview-demo[data-mode=pane][data-ready=true][data-pane-expansion=mixed]") }
+
+        focus "focus-collapse-all" { target = css(".dockview-demo[data-mode=pane] .dockview-demo__toolbar nav button:last-child") }
+        press "collapse-all" { key = "Enter" }
+        expect "all-collapsed" { visible = css(".dockview-demo[data-mode=pane][data-pane-expansion=collapsed]") }
+        expect "files-collapsed" { visible = css("button[data-pane-header=pane-files][aria-expanded=false]") }
+        expect "symbols-collapsed" { visible = css("button[data-pane-header=pane-symbols][aria-expanded=false]") }
+        expect "history-collapsed" { visible = css("button[data-pane-header=pane-history][aria-expanded=false]") }
+
+        focus "focus-files-pane" { target = css("button[data-pane-header=pane-files]") }
+        press "expand-files" { key = "Enter" }
+        expect "files-expanded" { visible = css(".dockview-demo[data-mode=pane][data-pane-expansion=mixed] button[data-pane-header=pane-files][aria-expanded=true]") }
+
+        focus "focus-expand-all" { target = css(".dockview-demo[data-mode=pane] .dockview-demo__toolbar nav button:first-child") }
+        press "expand-all" { key = "Enter" }
+        expect "all-expanded" { visible = css(".dockview-demo[data-mode=pane][data-pane-expansion=expanded]") }
+        expect "history-expanded" { visible = css("button[data-pane-header=pane-history][aria-expanded=true]") }
+
+        screenshot "capture-desktop" { path = "harness/pane-view-desktop.png" }
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-pane" { visible = css(".dockview-demo[data-mode=pane][data-pane-expansion=expanded]") }
+        screenshot "capture-compact" { path = "harness/pane-view-compact.png" }
+        accessibility "tree" { path = "harness/pane-view-accessibility.json" interactive = true }
+        console "console" { path = "harness/pane-view-console.json" clear = false }
+        page_errors "errors" { path = "harness/pane-view-errors.json" clear = false }
+    }
+}

@@ -1,0 +1,113 @@
+suite "a3s-ui-product-global-and-settings-contracts" {
+    version = 1
+
+    scenario "assistant-surface-controls" {
+        name = "Assistant entry keeps its task composer, file context, and settings actions coherent"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-assistant" { url = "http://127.0.0.1:4178/UI/playground/assistant.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "assistant-ready" { visible = css("[data-product-surface=assistant] .product-assistant__composer .ProseMirror") }
+        expect "task-entry" { visible = css("[data-product-surface=assistant] [role=textbox][aria-label='任务指令']") }
+        expect "files-action" { visible = css("[data-product-surface=assistant] a[aria-label='打开文件']") }
+        expect "settings-action" { visible = css("[data-product-surface=assistant] button[aria-label='助理设置']") }
+
+        click "open-assistant-settings" { target = role("button", "助理设置") }
+        expect "assistant-settings" { visible = css(".product-settings[open] .product-settings__group") }
+        expect "assistant-settings-selected" { visible = css(".product-settings[open] > aside button:nth-child(7)[aria-current=page]") }
+        press "close-settings" { key = "Escape" }
+        expect "assistant-restored" { visible = css("[data-product-surface=assistant] .product-assistant__composer") }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-assistant" { visible = css("[data-product-surface=assistant] .product-assistant__composer .ProseMirror") }
+        screenshot "compact" { path = "product/assistant-surface-compact.png" }
+        accessibility "tree" { path = "product/assistant-surface-accessibility.json" interactive = true }
+        console "console" { path = "product/assistant-surface-console.json" clear = false }
+        page_errors "errors" { path = "product/assistant-surface-errors.json" clear = false }
+    }
+
+    scenario "account-menu-and-exit" {
+        name = "Account actions expose update feedback and an explicit, cancellable exit boundary"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-start" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "navigation-ready" { visible = css(".product-sidebar__footer") }
+
+        click "open-account" { target = css(".product-sidebar__footer > button:first-child") }
+        expect "account-menu" { visible = css(".product-account-menu[role=menu]") }
+        click "request-update" { target = role("menuitem", "检查更新") }
+        expect "update-feedback" { text = "检查请求已发送" }
+        click "request-exit" { target = role("menuitem", "退出 A3S") }
+        expect "exit-confirmation" { visible = css("dialog.product-exit-dialog[open]") }
+        expect "destructive-action" { visible = css("dialog.product-exit-dialog[open] button[data-danger]") }
+        screenshot "confirmation" { path = "product/account-exit-confirmation.png" }
+        click "cancel-exit" { target = role("button", "取消") }
+        expect "dialog-closed" { visible = css("[data-product-application]:not(:has(dialog.product-exit-dialog[open]))") }
+        expect "account-trigger-restored" { visible = css(".product-sidebar__footer > button:first-child:focus") }
+
+        accessibility "tree" { path = "product/account-exit-accessibility.json" interactive = true }
+        console "console" { path = "product/account-exit-console.json" clear = false }
+        page_errors "errors" { path = "product/account-exit-errors.json" clear = false }
+    }
+
+    scenario "settings-all-sections" {
+        name = "Every settings section is reachable, semantically named, responsive, and backed by shared controls"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-start" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-settings" { target = role("button", "设置") }
+        wait "settings-ready" { visible = css(".product-settings[open]") }
+
+        expect "system-header" { visible = css(".product-settings[open] main .product-settings__content-header") }
+        expect "shared-row" { visible = css(".product-settings[open] main .product-settings__row") }
+        expect "shared-switch" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch])") }
+        click "toggle-lock-running-pointer" { target = css(".product-settings[open] main label.product-settings__switch:has(input[aria-label='锁屏继续运行'])") }
+        expect "lock-running-enabled" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:checked)") }
+        focus "focus-lock-running" { target = css(".product-settings__switch input[role=switch][aria-label='锁屏继续运行']") }
+        expect "lock-running-focused" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:focus)") }
+        press "toggle-lock-running-keyboard" { key = "Space" }
+        expect "lock-running-disabled" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:not(:checked))") }
+
+        click "account" { target = css(".product-settings[open] > aside button:nth-child(2)") }
+        expect "account-section" { visible = css(".product-settings[open] main .product-settings__profile") }
+        click "execution" { target = css(".product-settings[open] > aside button:nth-child(3)") }
+        expect "execution-section" { visible = css(".product-settings[open] main .product-settings__boundary") }
+        click "personalization" { target = css(".product-settings[open] > aside button:nth-child(4)") }
+        expect "personalization-section" { visible = css(".product-settings[open] main .product-settings__choice-group") }
+        click "memory" { target = css(".product-settings[open] > aside button:nth-child(5)") }
+        expect "memory-section" { visible = css(".product-settings[open] main .product-settings__boundary") }
+        click "models" { target = css(".product-settings[open] > aside button:nth-child(6)") }
+        expect "models-section" { visible = css(".product-settings[open] main .product-model-toolbar") }
+        click "assistant" { target = css(".product-settings[open] > aside button:nth-child(7)") }
+        expect "assistant-section" { visible = css(".product-settings[open] main .product-settings__group") }
+        click "integrations" { target = css(".product-settings[open] > aside button:nth-child(8)") }
+        expect "integrations-section" { visible = css(".product-settings[open] main .product-settings__connection-list") }
+        click "channels" { target = css(".product-settings[open] > aside button:nth-child(9)") }
+        expect "channels-section" { visible = css(".product-settings[open] main .product-settings__channels") }
+        click "data" { target = css(".product-settings[open] > aside button:nth-child(10)") }
+        expect "data-section" { visible = css(".product-settings[open] main .product-settings__storage--large") }
+        click "shortcuts" { target = css(".product-settings[open] > aside button:nth-child(11)") }
+        expect "shortcuts-section" { visible = css(".product-settings[open] main .product-settings__shortcut-list") }
+        click "security" { target = css(".product-settings[open] > aside button:nth-child(12)") }
+        expect "security-section" { visible = css(".product-settings[open] main .product-settings__security-summary") }
+        click "help" { target = css(".product-settings[open] > aside button:nth-child(13)") }
+        expect "help-section" { visible = css(".product-settings[open] main .product-settings__about") }
+        screenshot "capture-desktop" { path = "product/settings-all-sections-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        expect "compact-dialog" { visible = css(".product-settings[open]") }
+        expect "compact-help" { visible = css(".product-settings[open] main .product-settings__about") }
+        screenshot "compact" { path = "product/settings-all-sections-compact.png" }
+        accessibility "tree" { path = "product/settings-all-sections-accessibility.json" interactive = true }
+        console "console" { path = "product/settings-all-sections-console.json" clear = false }
+        page_errors "errors" { path = "product/settings-all-sections-errors.json" clear = false }
+    }
+}

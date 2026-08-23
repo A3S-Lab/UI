@@ -193,6 +193,22 @@ describe('A3S Flow core-node React surfaces', () => {
     });
   });
 
+  it('keeps an empty structured expression draft in place for focused validation', async () => {
+    render(<ControlledPanel type="flow.condition" />);
+
+    const field = screen.getByLabelText('Field to evaluate');
+    fireEvent.change(field, { target: { value: '' } });
+
+    expect(screen.getByLabelText('Field to evaluate')).toHaveProperty('value', '');
+    expect(screen.queryByLabelText('Advanced expression JSON')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+
+    await waitFor(() =>
+      expect(screen.getByLabelText('Field to evaluate').getAttribute('aria-invalid')).toBe('true'),
+    );
+    await waitFor(() => expect(document.activeElement).toBe(field));
+  });
+
   it('updates fixed UTC and template modes inside the expression envelope', () => {
     const { unmount } = render(<ControlledPanel type="flow.wait" />);
 
@@ -286,5 +302,18 @@ describe('A3S Flow core-node React surfaces', () => {
       apiVersion: A3S_FLOW_EXPRESSION_API_VERSION,
       expression: { op: 'field', path: 'input.items' },
     });
+  });
+
+  it('renders and focuses nested Batch member errors after Apply', async () => {
+    render(<ControlledPanel type="flow.batch" />);
+
+    const memberId = screen.getByLabelText(/^Member ID/);
+    fireEvent.change(memberId, { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+
+    await waitFor(() => expect(memberId.getAttribute('aria-invalid')).toBe('true'));
+    expect(memberId.closest('li')?.getAttribute('data-invalid')).toBe('true');
+    expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
+    await waitFor(() => expect(document.activeElement).toBe(memberId));
   });
 });

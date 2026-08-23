@@ -95,7 +95,7 @@ suite "a3s-ui-product-automation-and-preview" {
         }
 
         click "cancel" { target = role("button", "取消") }
-        expect "edit-focus-restored" {
+        wait "edit-focus-restored" {
             visible = css("button[aria-label='编辑 发布就绪巡检']:focus")
         }
 
@@ -187,7 +187,7 @@ suite "a3s-ui-product-automation-and-preview" {
             visible = css(".product-run-history[data-detail-open='true'] .product-run-history__detail")
         }
         click "back" { target = role("button", "返回运行记录") }
-        expect "run-focus-restored" {
+        wait "run-focus-restored" {
             visible = css("[data-run-id='regression-watch-0818']:focus")
         }
 
@@ -224,12 +224,13 @@ suite "a3s-ui-product-automation-and-preview" {
         wait "session-ready" { visible = css("[data-product-surface=session]") }
         click "open-details" { target = role("button", "打开任务详情") }
         click "preview-tab" { target = role("tab", "预览") }
-        expect "preset-picker" { visible = css(".product-inspector-preview__toolbar select") }
+        expect "device-simulator-surface-contract" { visible = css(".device-simulator[data-device-simulator-initialized=true]") }
+        expect "preset-picker" { visible = css(".device-simulator[data-variant=compact][data-device-simulator-initialized=true] [data-device-simulator-select]") }
         select "laptop" {
-            target = css(".product-inspector-preview__toolbar select")
+            target = css(".device-simulator[data-variant=compact] [data-device-simulator-select]")
             values = ["laptop"]
         }
-        expect "laptop-shell" { visible = css(".product-device-stage[data-preset=laptop]") }
+        expect "laptop-shell" { visible = css(".device-simulator[data-variant=compact][data-device=laptop][data-device-kind=desktop][data-width='1440'][data-height='900']") }
         expect "webview-status" { text = "a3s-webview" }
 
         click "more" { target = css(".product-sidebar__more > summary") }

@@ -76,6 +76,12 @@
   opacity: 0.5;
 }
 
+.dockview-demo__toolbar button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--ui-blue) 42%, var(--ui-line-strong));
+  background: color-mix(in srgb, var(--ui-blue) 8%, var(--ui-paper));
+  color: var(--ui-blue);
+}
+
 .dockview-demo__stage {
   width: 100%;
   height: clamp(300px, 46vw, 430px);
@@ -150,6 +156,50 @@
 .dockview-demo__panel[data-kind="output"] {
   background: var(--ui-code-surface, var(--ui-panel));
   font-family: var(--a3s-mono-font, ui-monospace, monospace);
+}
+
+.dockview-demo__pane-header {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ui-ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  text-align: start;
+}
+
+.dockview-demo__pane-header > span {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-block-end: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 140ms ease;
+}
+
+.dockview-demo__pane-header[aria-expanded="true"] > span {
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.dockview-demo__pane-header:hover {
+  background: var(--ui-panel-raised);
+}
+
+.dockview-demo__pane-header:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--ui-blue);
+  outline-offset: -2px;
 }
 
 .dockview-demo .dockview-theme-a3s {

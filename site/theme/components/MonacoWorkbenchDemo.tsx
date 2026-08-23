@@ -410,6 +410,7 @@ export function MonacoWorkbenchDemo({
     const dirty = dirtyPathsRef.current.has(file.path);
     return (
       <button
+        key={`${context}-${file.path}`}
         type="button"
         className="monaco-workbench__file"
         data-active={activePath === file.path || undefined}

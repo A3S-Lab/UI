@@ -10,6 +10,7 @@ suite "a3s-ui-product-resource-surfaces" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/mail.html" }
         wait "loaded" { load = "networkidle" }
         wait "mailbox-ready" { visible = css(".a3s-product-application[data-view=resources] .product-mail[data-resource=mail]") }
+        expect "mail-surface-boundary" { visible = css("[data-product-surface=mail]") }
 
         expect "mailbox-title" { text = "智能体邮箱" }
         expect "consent-required" { visible = css(".product-mail__consent button[data-primary]:disabled") }
@@ -63,6 +64,7 @@ suite "a3s-ui-product-resource-surfaces" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/documents.html" }
         wait "loaded" { load = "networkidle" }
+        expect "resources-surface-boundary" { visible = css("[data-product-surface=resources]") }
         wait "connection-ready" { visible = css(".product-connection[data-state=inactive]") }
         expect "consent-required" { visible = css(".product-connection__actions button[data-primary]:disabled") }
         check "accept-scope" { target = css(".product-connection__consent input[type=checkbox]") }
@@ -111,6 +113,7 @@ suite "a3s-ui-product-resource-surfaces" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
         wait "loaded" { load = "networkidle" }
+        expect "file-manager-surface-boundary" { visible = css("[data-product-surface=files]") }
         wait "artifacts-ready" { visible = css(".product-file-artifacts table") }
         expect "artifacts-default" { visible = css(".product-files[data-file-surface=artifacts]") }
         click "open-artifact-workbench" { target = role("button", "release-readiness.md") }
@@ -266,6 +269,7 @@ suite "a3s-ui-product-resource-surfaces" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/inspiration.html" }
         wait "loaded" { load = "networkidle" }
+        expect "inspiration-surface-boundary" { visible = css("[data-product-surface=inspiration]") }
         wait "gallery-ready" { visible = css(".product-inspiration__gallery article:nth-child(4)") }
         expect "all-category-selected" { visible = css(".product-inspiration__categories button[aria-pressed=true]") }
         expect "favorites-filter-idle" { visible = css(".product-inspiration > header button[aria-pressed=false]") }

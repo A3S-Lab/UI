@@ -37,6 +37,21 @@ export function ProductSessionOverviewPanel({
         [zh ? "修复恢复路径" : "Repair recovery path", "complete"],
         [zh ? "补充回归覆盖" : "Add regression coverage", "complete"],
       ];
+  const completedSteps = created ? 1 : steps.length;
+  const statusTitle = created
+    ? zh
+      ? "任务已就绪"
+      : "Task is ready"
+    : zh
+      ? "任务已可审阅"
+      : "Ready for review";
+  const statusDescription = created
+    ? zh
+      ? "上下文、权限和首个执行计划已经保留。"
+      : "Context, permissions, and the first execution plan are preserved."
+    : zh
+      ? "所有必需检查已通过，没有待处理审批。"
+      : "Every required check passed with no pending approvals.";
 
   return (
     <section className="product-inspector-overview" id={id} role="tabpanel">
@@ -44,40 +59,27 @@ export function ProductSessionOverviewPanel({
         className="product-inspector-overview__summary"
         data-state={created ? "ready" : "complete"}
       >
-        <span>
+        <span data-overview-status-icon aria-hidden="true">
           <ProductPlaygroundIcon name={created ? "workspace" : "check"} />
         </span>
         <div>
-          <small>
-            {created
-              ? zh
-                ? "当前状态"
-                : "Current state"
-              : zh
-                ? "交付状态"
-                : "Delivery status"}
-          </small>
-          <strong>
-            {created
-              ? zh
-                ? "任务已就绪"
-                : "Task is ready"
-              : zh
-                ? "任务已可审阅"
-                : "Ready for review"}
-          </strong>
-          <p>
-            {created
-              ? zh
-                ? "上下文、权限和首个执行计划已经保留。"
-                : "Context, permissions, and the first execution plan are preserved."
-              : zh
-                ? "所有必需检查已通过，没有待处理审批。"
-                : "Every required check passed with no pending approvals."}
-          </p>
+          <strong>{statusTitle}</strong>
+          <p>{statusDescription}</p>
         </div>
+        <span
+          className="status-badge"
+          data-indicator=""
+          data-size="sm"
+          data-state={created ? "active" : "success"}
+        >
+          {created ? (zh ? "已准备" : "Ready") : zh ? "已验证" : "Verified"}
+        </span>
       </article>
-      <dl className="product-inspector-overview__metrics">
+      <dl
+        className="property-list product-inspector-overview__metrics"
+        data-size="sm"
+        data-variant="plain"
+      >
         <div>
           <dt>{zh ? "变更" : "Changes"}</dt>
           <dd>{created ? "—" : "+42 −6"}</dd>
@@ -91,31 +93,52 @@ export function ProductSessionOverviewPanel({
           <dd>{artifacts.length}</dd>
         </div>
       </dl>
-      <section className="product-inspector-overview__plan">
+      <section
+        aria-labelledby={`${id}-plan-title`}
+        className="task-plan product-inspector-overview__plan"
+        data-state={created ? "active" : "complete"}
+        data-variant="plain"
+      >
         <header>
-          <strong>{zh ? "执行计划" : "Execution plan"}</strong>
-          <small>
+          <div>
+            <h2 id={`${id}-plan-title`}>
+              {zh ? "执行计划" : "Execution plan"}
+            </h2>
+            <p>
+              {zh
+                ? `${completedSteps} / ${steps.length} 个步骤已完成`
+                : `${completedSteps} of ${steps.length} steps complete`}
+            </p>
+          </div>
+          <span data-plan-status>
             {created
               ? zh
-                ? "1 / 3 进行中"
-                : "1 / 3 in progress"
+                ? "进行中"
+                : "In progress"
               : zh
-                ? "3 / 3 已完成"
-                : "3 / 3 complete"}
-          </small>
+                ? "已完成"
+                : "Complete"}
+          </span>
         </header>
         <ol>
-          {steps.map(([label, state]) => (
-            <li data-state={state} key={label}>
-              <span>
+          {steps.map(([label, state], index) => (
+            <li
+              aria-current={state === "active" ? "step" : undefined}
+              className="plan-step"
+              data-state={state}
+              key={label}
+            >
+              <span aria-hidden="true" data-plan-marker>
                 {state === "complete" ? (
                   <ProductPlaygroundIcon name="check" />
-                ) : state === "active" ? (
-                  <i />
-                ) : null}
+                ) : (
+                  index + 1
+                )}
               </span>
-              <strong>{label}</strong>
-              <small>
+              <div data-step-identity>
+                <strong>{label}</strong>
+              </div>
+              <span data-plan-step-status>
                 {state === "complete"
                   ? zh
                     ? "已完成"
@@ -127,16 +150,26 @@ export function ProductSessionOverviewPanel({
                     : zh
                       ? "待执行"
                       : "Pending"}
-              </small>
+              </span>
             </li>
           ))}
         </ol>
       </section>
-      <section className="product-inspector-overview__runtime">
+      <section
+        aria-labelledby={`${id}-runtime-title`}
+        className="product-inspector-overview__runtime"
+      >
         <header>
-          <strong>{zh ? "运行配置" : "Run configuration"}</strong>
+          <h2 id={`${id}-runtime-title`}>
+            {zh ? "运行配置" : "Run configuration"}
+          </h2>
         </header>
-        <dl>
+        <dl
+          className="property-list"
+          data-layout="rows"
+          data-size="sm"
+          data-variant="plain"
+        >
           <div>
             <dt>
               <ProductPlaygroundIcon name="folder" />

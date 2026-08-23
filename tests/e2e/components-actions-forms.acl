@@ -9,6 +9,8 @@ suite "a3s-ui-actions-and-forms" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "button-visible" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
+        focus "focus-outline-button" { target = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
+        expect "outline-button-focused" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]:focus") }
     }
 
     scenario "button-group" {

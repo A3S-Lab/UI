@@ -3,15 +3,78 @@
 任务计划用有限步骤展示可观察的工作顺序，不把内部推理直接暴露为界面文案。计划创建、步骤流转、持久化与取消由宿主应用负责。
 
 <Preview class="w-full max-w-3xl">
-  <section class="task-plan" data-state="active" aria-labelledby="release-plan-title-zh">
-    <header><div><h2 id="release-plan-title-zh">发布计划</h2><p>四个步骤已完成两个</p></div><div><span data-plan-status>进行中</span><div role="progressbar" aria-label="计划进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--plan-progress:50"><span></span></div></div></header>
+  <section
+    class="task-plan"
+    data-state="active"
+    aria-labelledby="release-plan-title-zh"
+  >
+    <header>
+      <div>
+        <h2 id="release-plan-title-zh">发布计划</h2>
+        <p>四个步骤已完成两个</p>
+      </div>
+      <div>
+        <span data-plan-status>进行中</span>
+        <div
+          role="progressbar"
+          aria-label="计划进度"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="50"
+          style="--plan-progress:50"
+        >
+          <span></span>
+        </div>
+      </div>
+    </header>
     <ol>
-      <li class="plan-step" data-state="complete"><span data-plan-marker aria-hidden="true">1</span><div data-step-identity><strong>检查包变更</strong><p data-step-description>审阅导出入口和发布元数据。</p></div><span data-plan-step-status>已完成</span></li>
-      <li class="plan-step" data-state="complete"><span data-plan-marker aria-hidden="true">2</span><div data-step-identity><strong>运行聚焦检查</strong><p data-step-description>验证包与文档契约。</p></div><span data-plan-step-status>已完成</span></li>
-      <li class="plan-step" data-state="active" aria-current="step"><span data-plan-marker aria-hidden="true">3</span><div data-step-identity><strong>审阅界面状态</strong><p data-step-description>检查窄屏、深色和键盘行为。</p></div><span data-plan-step-status>进行中</span></li>
-      <li class="plan-step" data-state="pending"><span data-plan-marker aria-hidden="true">4</span><div data-step-identity><strong>准备交付</strong><p data-step-description>汇总已验证结果与剩余风险。</p></div><span data-plan-step-status>待处理</span></li>
+      <li class="plan-step" data-state="complete">
+        <span data-plan-marker aria-hidden="true">
+          1
+        </span>
+        <div data-step-identity>
+          <strong>检查包变更</strong>
+          <p data-step-description>审阅导出入口和发布元数据。</p>
+        </div>
+        <span data-plan-step-status>已完成</span>
+      </li>
+      <li class="plan-step" data-state="complete">
+        <span data-plan-marker aria-hidden="true">
+          2
+        </span>
+        <div data-step-identity>
+          <strong>运行聚焦检查</strong>
+          <p data-step-description>验证包与文档契约。</p>
+        </div>
+        <span data-plan-step-status>已完成</span>
+      </li>
+      <li class="plan-step" data-state="active" aria-current="step">
+        <span data-plan-marker aria-hidden="true">
+          3
+        </span>
+        <div data-step-identity>
+          <strong>审阅界面状态</strong>
+          <p data-step-description>检查窄屏、深色和键盘行为。</p>
+        </div>
+        <span data-plan-step-status>进行中</span>
+      </li>
+      <li class="plan-step" data-state="pending">
+        <span data-plan-marker aria-hidden="true">
+          4
+        </span>
+        <div data-step-identity>
+          <strong>准备交付</strong>
+          <p data-step-description>汇总已验证结果与剩余风险。</p>
+        </div>
+        <span data-plan-step-status>待处理</span>
+      </li>
     </ol>
-    <footer><p>计划步骤只描述可观察的工作与结果。</p><button type="button" class="btn" data-size="sm" data-variant="outline">暂停计划</button></footer>
+    <footer>
+      <p>计划步骤只描述可观察的工作与结果。</p>
+      <button type="button" class="btn" data-size="sm" data-variant="outline">
+        暂停计划
+      </button>
+    </footer>
   </section>
 </Preview>
 
@@ -19,7 +82,10 @@
 
 ```html
 <section class="task-plan" data-state="active" aria-labelledby="plan-title">
-  <header><h2 id="plan-title">发布计划</h2>...</header>
+  <header>
+    <h2 id="plan-title">发布计划</h2>
+    ...
+  </header>
   <ol>
     <li class="plan-step" data-state="complete">...</li>
     <li class="plan-step" data-state="active" aria-current="step">...</li>
@@ -30,16 +96,29 @@
 
 ### 参数
 
-| API | 取值 | 用途 |
-| --- | --- | --- |
-| `data-state` | `draft`、`active`、`paused`、`complete`、`error` | 计划生命周期 |
-| 直接子 `<ol>` | 必须 | 有序计划步骤 |
-| `data-plan-status` | 推荐 | 可见生命周期文案 |
-| 原生进度条语义 | 可选 | 有界总进度 |
+| API                | 取值                                             | 用途                                         |
+| ------------------ | ------------------------------------------------ | -------------------------------------------- |
+| `data-state`       | `draft`、`active`、`paused`、`complete`、`error` | 计划生命周期                                 |
+| `data-variant`     | `plain`                                          | 移除计划自身表面，供检查器或会话分区直接承载 |
+| 直接子 `<ol>`      | 必须                                             | 有序计划步骤                                 |
+| `data-plan-status` | 推荐                                             | 可见生命周期文案                             |
+| 原生进度条语义     | 可选                                             | 有界总进度                                   |
 
 ## 状态与变体
 
-暂停执行时保留已完成步骤和当前步骤。单个步骤失败时优先在该计划步骤上标记，只有整个计划无法继续时才使用计划级错误。
+暂停执行时保留已完成步骤和当前步骤。单个步骤失败时优先在该计划步骤上标记，只有整个计划无法继续时才使用计划级错误。父级表面已经拥有边界时才使用 `data-variant="plain"`；它移除任务计划的边框和行内边距，但不改变步骤语义。
+
+```html
+<section class="task-plan" data-state="active" data-variant="plain">
+  <header>
+    <h2>执行计划</h2>
+    <span data-plan-status>进行中</span>
+  </header>
+  <ol>
+    <li class="plan-step" data-state="active" aria-current="step">...</li>
+  </ol>
+</section>
+```
 
 ## 无障碍
 

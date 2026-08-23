@@ -416,6 +416,13 @@
         .querySelectorAll(selector)
         .forEach((element) => initComponent(element, name));
     });
+
+    if (node.matches("[data-popover][aria-hidden='false']")) {
+      startPopoverPositioning(node);
+    }
+    node
+      .querySelectorAll("[data-popover][aria-hidden='false']")
+      .forEach(startPopoverPositioning);
   };
 
   const refreshComponent = (element) => {

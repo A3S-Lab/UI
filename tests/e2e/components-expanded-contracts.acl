@@ -22,6 +22,8 @@ suite "a3s-ui-expanded-contracts" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "addition-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='+']") }
         expect "removal-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='-']") }
+        focus "focus-diff-code" { target = css(".a3s-preview[data-preview-component=code-diff] .code-diff pre[tabindex]") }
+        expect "diff-code-focused" { visible = css(".a3s-preview[data-preview-component=code-diff] .code-diff pre[tabindex]:focus") }
     }
 
     scenario "collapsible" {
@@ -46,7 +48,7 @@ suite "a3s-ui-expanded-contracts" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-violet" { target = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label=Violet]") }
         press "choose-violet" { key = "Space" }
-        expect "violet-selected" { visible = css(".a3s-preview[data-preview-component=color-swatches] input[aria-label=Violet]:checked") }
+        expect "violet-selected" { visible = css(".a3s-preview[data-preview-component=color-swatches] label:has(input[aria-label=Violet]:checked) [data-swatch]") }
     }
 
     scenario "copy-button" {
@@ -185,8 +187,8 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image-select.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        check "choose-dark" { target = label("Dark surface") }
-        expect "dark-selected" { visible = css(".a3s-preview[data-preview-component=image-select] #cover-dark:checked") }
+        click "choose-dark" { target = css(".a3s-preview[data-preview-component=image-select] #cover-dark + label") }
+        expect "dark-selected" { visible = css(".a3s-preview[data-preview-component=image-select] [data-image-option]:has(#cover-dark:checked) label") }
     }
 
     scenario "image-viewer" {
@@ -211,6 +213,8 @@ suite "a3s-ui-expanded-contracts" {
         expect "heading-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface h2") }
         expect "code-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre code") }
         expect "callout-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface blockquote") }
+        focus "focus-markdown-code" { target = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre[tabindex]") }
+        expect "markdown-code-focused" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre[tabindex]:focus") }
     }
 
     scenario "snippet" {

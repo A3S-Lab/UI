@@ -17,6 +17,7 @@ suite "a3s-ui-product-session-detail" {
         expect "details-secondary" { visible = css(".product-session__actions button[aria-label='打开任务详情']") }
         expect "details-hidden-by-default" { visible = css("[data-product-surface=session]:not(:has(aside[aria-label='任务详情']))") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
+        expect "execution-boundary" { visible = css(".product-session-execution") }
         expect "completed-plan-collapsed" { visible = css("details.product-execution-plan[data-state=complete]:not([open])") }
         expect "response-actions-match-icons" { visible = css(".product-session__message-actions:has(button[aria-label='复制回复'] svg[data-icon=copy]):has(button[aria-label='回复有帮助'] svg[data-icon=thumb-up]):has(button[aria-label='回复没有帮助'] svg[data-icon=thumb-down]):has(button[aria-label='朗读回复'] svg[data-icon=volume]):has(summary[aria-label='更多回复操作'] svg[data-icon=more])") }
 
@@ -26,7 +27,7 @@ suite "a3s-ui-product-session-detail" {
         expect "completed-plan-collapsed-again" { visible = css(".product-execution-plan:not([open])") }
 
         click "open-primary-review-action" { target = role("button", "设备预览") }
-        wait "primary-review-opens-preview" { visible = css(".product-session-inspector .product-device-shell") }
+        wait "primary-review-opens-preview" { visible = css(".product-session-inspector .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
         click "close-primary-review" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
         expect "primary-review-focus-restored" { visible = css(".product-delivery-summary button[data-primary]:focus") }
 
@@ -38,29 +39,35 @@ suite "a3s-ui-product-session-detail" {
         expect "artifacts-stay-in-session" { visible = css(".a3s-product-application[data-view=session]:not(:has(.a3s-workspace-playground))") }
         click "reopen-details" { target = css("button[aria-label='打开任务详情']") }
         expect "details-visible-again" { visible = css("aside[aria-label='任务详情']") }
+        click "open-overview-tab" { target = role("tab", "概览") }
+        expect "overview-panel-boundary" { visible = css(".product-inspector-overview") }
         click "open-artifacts-tab" { target = role("tab", "产物") }
+        expect "artifacts-panel-boundary" { visible = css(".product-inspector-artifacts") }
         click "open-session-artifact" { target = css(".product-inspector-file-list button") }
-        expect "artifact-preview-visible" { visible = css(".product-inspector-artifacts__preview pre code") }
+        expect "artifact-public-contract" { visible = css(".artifact-card[data-variant=inspector] .highlighter [data-code-line]") }
+        expect "artifact-copy-public-contract" { visible = css(".artifact-card[data-variant=inspector] .copy-button[data-copy-button-initialized=true]") }
         click "close-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
         expect "details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
 
         click "open-full-diff" { target = role("button", "查看完整差异") }
-        wait "diff-inspector-visible" { visible = css(".product-session-inspector .product-inspector-diff") }
-        expect "diff-lines-visible" { visible = css(".product-inspector-diff tbody tr[data-kind=added]") }
+        wait "file-explorer-public-contract" { visible = css(".product-session-inspector .file-explorer[data-file-explorer-initialized=true]") }
+        expect "files-panel-boundary" { visible = css(".product-inspector-files") }
+        expect "diff-public-contract" { visible = css(".product-session-inspector .code-diff[data-line-numbers]") }
+        expect "diff-lines-visible" { visible = css(".code-diff[data-line-numbers] [data-diff-line='+']") }
         screenshot "diff-evidence" { path = "product/session-diff-desktop.png" }
         click "switch-diff-to-device-preview" { target = role("tab", "预览") }
-        wait "device-preview-visible" { visible = css(".product-session-inspector .product-device-shell") }
-        select "choose-desktop-preview" { target = css(".product-inspector-preview select[aria-label='预览设备尺寸']") values = ["desktop"] }
-        expect "desktop-shell-visible" { visible = css(".product-device-stage[data-device=desktop][data-preset=desktop] .product-device-shell") }
+        wait "device-preview-public-contract" { visible = css(".product-session-inspector .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
+        select "choose-desktop-preview" { target = css(".device-simulator[data-variant=compact] [data-device-simulator-select]") values = ["desktop"] }
+        expect "desktop-shell-visible" { visible = css(".device-simulator[data-variant=compact][data-device=desktop][data-device-kind=desktop][data-width='1920'][data-height='1080']") }
         click "open-full-device-simulator" { target = role("button", "打开完整设备模拟器") }
         expect "full-device-simulator-visible" { visible = css(".product-session-inspector[data-preview-expanded=true] .device-simulator[data-device-simulator-initialized=true]") }
         select "choose-desktop-device" { target = css(".product-session-device-simulator [data-device-simulator-select]") values = ["desktop"] }
         expect "desktop-device-ready" { visible = css(".product-session-device-simulator[data-device=desktop][data-device-kind=desktop][data-width='1920'][data-height='1080']") }
         expect "webview-command-visible" { visible = css(".product-session-device-simulator [data-device-simulator-command]") }
         click "collapse-device-simulator" { target = css(".product-inspector-preview .product-inspector-section-heading > button") }
-        wait "compact-device-preview-restored" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .product-device-shell") }
+        wait "compact-device-preview-restored" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
         click "open-code-graph" { target = role("tab", "图谱") }
-        expect "code-graph-visible" { visible = css(".product-session-inspector .product-session-code-graph [data-code-graph-canvas]") }
+        expect "code-graph-public-contract" { visible = css(".product-session-inspector .code-graph[data-code-graph-initialized=true] [data-code-graph-canvas]") }
         expect "expand-graph-icon" { visible = css(".product-inspector-graph button[aria-label='展开代码依赖图谱'][aria-expanded=false] svg[data-icon=expand]") }
         click "expand-code-graph" { target = role("button", "展开代码依赖图谱") }
         expect "expanded-graph-icon" { visible = css(".product-session-inspector[data-graph-expanded=true] .product-inspector-graph button[aria-label='收起代码依赖图谱'][aria-expanded=true] svg[data-icon=contract]") }

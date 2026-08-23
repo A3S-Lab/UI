@@ -85,6 +85,29 @@
     align-content: start;
   }
 
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item] {
+    display: grid;
+    grid-auto-rows: min-content;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item]
+    > :is([data-file-label], span) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item]
+    > span:nth-of-type(n + 2) {
+    display: none;
+  }
+
   .file-manager [data-file-manager-viewport][data-view="list"] {
     display: block;
   }

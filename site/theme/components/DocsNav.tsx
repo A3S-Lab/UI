@@ -590,7 +590,7 @@ export function Nav({
       if (event.target.closest(".rp-search-panel__modal")) return;
 
       const interactive = event.target.closest(
-        'a[href], button, input, select, textarea, [role="button"], [role="tab"], [contenteditable="true"]',
+        'a[href], button, input, select, textarea, summary, [contenteditable="true"], [tabindex]:not([tabindex="-1"])',
       );
       if (interactive) event.stopPropagation();
     };

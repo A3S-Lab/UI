@@ -915,6 +915,13 @@ export function FormRenderer(props: FormRendererProps) {
       value: props.value,
     };
     cancelAsyncValidations();
+    if (props.errors === undefined && submittedErrors.length > 0) {
+      const evaluation = evaluateFormValue(props.plan, props.value, {
+        locale,
+        localeCatalog: props.localeCatalog,
+      });
+      setSubmittedErrors(evaluation.errors);
+    }
   });
 
   useEffect(
@@ -1012,7 +1019,7 @@ export function FormRenderer(props: FormRendererProps) {
     const definition = props.plan.actions.find((item) => item.id === actionId);
     if (!definition) return;
     setActionError('');
-    let evaluation = evaluateFormValue(props.plan, runtimeValue, {
+    let evaluation = evaluateFormValue(props.plan, getValue(), {
       locale,
       localeCatalog: props.localeCatalog,
     });

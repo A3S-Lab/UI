@@ -7,12 +7,12 @@ import type {
   JsonValue,
   UiNode,
   UiOption,
-} from '../core/types';
+} from "../core/types";
 import type {
   WorkflowNodeDefinition,
   WorkflowNodeFieldDefinition,
   WorkflowNodeTableColumn,
-} from './workflow-node-manifest';
+} from "./workflow-node-manifest";
 
 export type {
   WorkflowNodeDefinition,
@@ -20,25 +20,25 @@ export type {
   WorkflowNodeOutputDefinition,
   WorkflowNodeRangeSpec,
   WorkflowNodeTableColumn,
-} from './workflow-node-manifest';
+} from "./workflow-node-manifest";
 
 export const WORKFLOW_CONFIGURATION_WIDGETS = Object.freeze({
-  actionPicker: 'a3s.workflow.action-picker',
-  code: 'a3s.workflow.code',
-  connection: 'a3s.workflow.connection',
-  dataDisplay: 'a3s.workflow.data-display',
-  duration: 'a3s.workflow.duration',
-  file: 'a3s.workflow.file',
-  flowBatch: 'a3s.flow.batch',
-  flowExpression: 'a3s.flow.expression',
-  flowSchema: 'a3s.flow.schema',
-  json: 'a3s.workflow.json',
-  mcp: 'a3s.workflow.mcp',
-  model: 'a3s.workflow.model',
-  parameter: 'a3s.workflow.parameter',
-  prompt: 'a3s.workflow.prompt',
-  sortableList: 'a3s.workflow.sortable-list',
-  tabs: 'a3s.workflow.tabs',
+  actionPicker: "a3s.workflow.action-picker",
+  code: "a3s.workflow.code",
+  connection: "a3s.workflow.connection",
+  dataDisplay: "a3s.workflow.data-display",
+  duration: "a3s.workflow.duration",
+  file: "a3s.workflow.file",
+  flowBatch: "a3s.flow.batch",
+  flowExpression: "a3s.flow.expression",
+  flowSchema: "a3s.flow.schema",
+  json: "a3s.workflow.json",
+  mcp: "a3s.workflow.mcp",
+  model: "a3s.workflow.model",
+  parameter: "a3s.workflow.parameter",
+  prompt: "a3s.workflow.prompt",
+  sortableList: "a3s.workflow.sortable-list",
+  tabs: "a3s.workflow.tabs",
 });
 
 export const WORKFLOW_CONFIGURATION_WIDGET_KEYS = Object.freeze(
@@ -46,19 +46,19 @@ export const WORKFLOW_CONFIGURATION_WIDGET_KEYS = Object.freeze(
 );
 
 export const WORKFLOW_NODE_FIELD_GROUPS = Object.freeze({
-  input: 'Input',
-  'provider-credentials': 'Provider & credentials',
-  behavior: 'Behavior',
-  runtime: 'Runtime',
-  output: 'Output',
-  'storage-retrieval': 'Storage & retrieval',
+  input: "Input",
+  "provider-credentials": "Provider & credentials",
+  behavior: "Behavior",
+  runtime: "Runtime",
+  output: "Output",
+  "storage-retrieval": "Storage & retrieval",
 } as const);
 
 export type WorkflowNodeFieldGroup = keyof typeof WORKFLOW_NODE_FIELD_GROUPS;
 
 export interface CreateWorkflowNodeFormOptions {
   locale?: string;
-  presentation?: 'catalog' | 'task';
+  presentation?: "catalog" | "task";
   fieldVisibility?: Readonly<Record<string, boolean>>;
   buildConfig?: Readonly<Record<string, WorkflowNodeFieldDefinition>>;
   actions?: readonly ActionDefinition[];
@@ -66,69 +66,80 @@ export interface CreateWorkflowNodeFormOptions {
 }
 
 function isChineseLocale(locale: string | undefined): boolean {
-  return locale?.toLocaleLowerCase().startsWith('zh') === true;
+  return locale?.toLocaleLowerCase().startsWith("zh") === true;
 }
 
-function defaultActions(locale: string | undefined): readonly ActionDefinition[] {
+function defaultActions(
+  locale: string | undefined,
+): readonly ActionDefinition[] {
   return [
     {
-      id: 'apply',
-      registryKey: 'host.workflow-node.apply.v1',
-      label: isChineseLocale(locale) ? '应用配置' : 'Apply changes',
-      tone: 'primary',
+      id: "apply",
+      registryKey: "host.workflow-node.apply.v1",
+      label: isChineseLocale(locale) ? "应用配置" : "Apply changes",
+      tone: "primary",
     },
   ];
 }
 
 function pointerToken(value: string): string {
-  return value.replaceAll('~', '~0').replaceAll('/', '~1');
+  return value.replaceAll("~", "~0").replaceAll("/", "~1");
 }
 
 function isPrimitive(value: unknown): value is JsonPrimitive {
   return (
     value === null ||
-    typeof value === 'string' ||
-    typeof value === 'boolean' ||
-    (typeof value === 'number' && Number.isFinite(value))
+    typeof value === "string" ||
+    typeof value === "boolean" ||
+    (typeof value === "number" && Number.isFinite(value))
   );
 }
 
 function isJsonValue(value: unknown): value is JsonValue {
   if (isPrimitive(value)) return true;
   if (Array.isArray(value)) return value.every(isJsonValue);
-  if (!value || typeof value !== 'object') return false;
+  if (!value || typeof value !== "object") return false;
   return Object.values(value).every(isJsonValue);
 }
 
-function fallbackValue(field: WorkflowNodeFieldDefinition, type: JsonSchema['type']): JsonValue {
-  if (type === 'array') return [];
-  if (type === 'object') return {};
-  if (type === 'boolean') return false;
-  if (type === 'integer' || type === 'number') return 0;
-  if (type === 'string') return '';
-  return field.type === 'other' ? null : '';
+function fallbackValue(
+  field: WorkflowNodeFieldDefinition,
+  type: JsonSchema["type"],
+): JsonValue {
+  if (type === "array") return [];
+  if (type === "object") return {};
+  if (type === "boolean") return false;
+  if (type === "integer" || type === "number") return 0;
+  if (type === "string") return "";
+  return field.type === "other" ? null : "";
 }
 
-function normalizedValue(value: unknown, type: JsonSchema['type'], fallback: JsonValue): JsonValue {
-  if (type === 'array') {
-    return Array.isArray(value) && isJsonValue(value) ? structuredClone(value) : [];
+function normalizedValue(
+  value: unknown,
+  type: JsonSchema["type"],
+  fallback: JsonValue,
+): JsonValue {
+  if (type === "array") {
+    return Array.isArray(value) && isJsonValue(value)
+      ? structuredClone(value)
+      : [];
   }
-  if (type === 'object') {
+  if (type === "object") {
     return value !== null &&
-      typeof value === 'object' &&
+      typeof value === "object" &&
       !Array.isArray(value) &&
       isJsonValue(value)
       ? structuredClone(value)
       : {};
   }
-  if (type === 'boolean') return typeof value === 'boolean' ? value : false;
-  if (type === 'integer') {
-    return typeof value === 'number' && Number.isInteger(value) ? value : 0;
+  if (type === "boolean") return typeof value === "boolean" ? value : false;
+  if (type === "integer") {
+    return typeof value === "number" && Number.isInteger(value) ? value : 0;
   }
-  if (type === 'number') {
-    return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+  if (type === "number") {
+    return typeof value === "number" && Number.isFinite(value) ? value : 0;
   }
-  if (type === 'string') return typeof value === 'string' ? value : '';
+  if (type === "string") return typeof value === "string" ? value : "";
   return isJsonValue(value) ? structuredClone(value) : fallback;
 }
 
@@ -138,7 +149,8 @@ function normalizedTableDefault(
 ): JsonValue[] {
   const columns = tableColumns(field);
   return value.map((row) => {
-    if (row === null || typeof row !== 'object' || Array.isArray(row)) return {};
+    if (row === null || typeof row !== "object" || Array.isArray(row))
+      return {};
     return Object.fromEntries(
       columns.flatMap((column) => {
         if (!Object.hasOwn(row, column.name)) return [];
@@ -154,12 +166,14 @@ function normalizedTableDefault(
   });
 }
 
-export function workflowNodeFieldDefault(field: WorkflowNodeFieldDefinition): JsonValue {
+export function workflowNodeFieldDefault(
+  field: WorkflowNodeFieldDefinition,
+): JsonValue {
   const presentation = semanticFieldPresentation(field, [field]);
   const fallback = fallbackValue(field, presentation.schemaType);
-  const source = field.value === '__UNDEFINED__' ? undefined : field.value;
+  const source = field.value === "__UNDEFINED__" ? undefined : field.value;
   const value = normalizedValue(source, presentation.schemaType, fallback);
-  if (field.type === 'table' && Array.isArray(value)) {
+  if (field.type === "table" && Array.isArray(value)) {
     return normalizedTableDefault(field, value);
   }
   if (Array.isArray(value) && presentation.arrayItemType) {
@@ -174,19 +188,21 @@ export function workflowNodeFieldDefault(field: WorkflowNodeFieldDefinition): Js
   return value;
 }
 
-function tableColumns(field: WorkflowNodeFieldDefinition): readonly WorkflowNodeTableColumn[] {
+function tableColumns(
+  field: WorkflowNodeFieldDefinition,
+): readonly WorkflowNodeTableColumn[] {
   const schema = field.table_schema;
   if (Array.isArray(schema)) return schema;
   return Array.isArray(schema?.columns) ? schema.columns : [];
 }
 
-function schemaTypeForColumn(type: string | undefined): JsonSchema['type'] {
-  if (type === 'boolean' || type === 'bool') return 'boolean';
-  if (type === 'int' || type === 'integer') return 'integer';
-  if (type === 'float' || type === 'number') return 'number';
-  if (type === 'dict' || type === 'object') return 'object';
-  if (type === 'list' || type === 'array') return 'array';
-  return 'string';
+function schemaTypeForColumn(type: string | undefined): JsonSchema["type"] {
+  if (type === "boolean" || type === "bool") return "boolean";
+  if (type === "int" || type === "integer") return "integer";
+  if (type === "float" || type === "number") return "number";
+  if (type === "dict" || type === "object") return "object";
+  if (type === "list" || type === "array") return "array";
+  return "string";
 }
 
 function tableSchema(field: WorkflowNodeFieldDefinition): JsonSchema {
@@ -199,25 +215,32 @@ function tableSchema(field: WorkflowNodeFieldDefinition): JsonSchema {
         title: column.display_name ?? column.name,
         description: column.description,
       };
+      if (type === "string" && column.required) schema.minLength = 1;
       if (column.default !== undefined) {
-        schema.default = normalizedValue(column.default, type, fallbackValue(field, type));
+        schema.default = normalizedValue(
+          column.default,
+          type,
+          fallbackValue(field, type),
+        );
       }
       if (Array.isArray(column.options) && column.options.every(isPrimitive)) {
         schema.enum = [...column.options];
       }
-      if (type === 'object') schema.additionalProperties = true;
-      if (type === 'array') schema.items = {};
+      if (type === "object") schema.additionalProperties = true;
+      if (type === "array") schema.items = {};
       return [column.name, schema];
     }),
   );
-  const required = columns.filter((column) => column.required).map((column) => column.name);
+  const required = columns
+    .filter((column) => column.required)
+    .map((column) => column.name);
   return {
-    type: 'array',
+    type: "array",
     title: field.display_name ?? field.name,
     description: field.info,
     default: workflowNodeFieldDefault(field),
     items: {
-      type: 'object',
+      type: "object",
       properties,
       required: required.length > 0 ? required : undefined,
       additionalProperties: false,
@@ -226,7 +249,7 @@ function tableSchema(field: WorkflowNodeFieldDefinition): JsonSchema {
 }
 
 function schemaForField(field: WorkflowNodeFieldDefinition): JsonSchema {
-  if (field.type === 'table') return tableSchema(field);
+  if (field.type === "table") return tableSchema(field);
   const presentation = semanticFieldPresentation(field, [field]);
   const type = presentation.schemaType;
 
@@ -238,21 +261,27 @@ function schemaForField(field: WorkflowNodeFieldDefinition): JsonSchema {
     description: field.info,
     default: workflowNodeFieldDefault(field),
   };
-  if (type === 'array') {
-    schema.items = presentation.arrayItemType ? { type: presentation.arrayItemType } : {};
-    if (presentation.arrayItemType === 'object') schema.items.additionalProperties = true;
-    if (options.length > 0 && schema.items.type === 'string') {
+  if (type === "array") {
+    schema.items = presentation.arrayItemType
+      ? { type: presentation.arrayItemType }
+      : {};
+    if (presentation.arrayItemType === "object")
+      schema.items.additionalProperties = true;
+    if (options.length > 0 && schema.items.type === "string") {
       schema.items.enum = options.map((option) => option.value);
     }
     if (field.required) schema.minItems = 1;
-    schema.uniqueItems = field.type !== 'actionPicker';
+    schema.uniqueItems = field.type !== "actionPicker";
   }
-  if (type === 'object') schema.additionalProperties = true;
-  if (type !== 'array' && options.length > 0) schema.enum = options.map((option) => option.value);
-  if ((type === 'integer' || type === 'number') && range) {
+  if (type === "object") schema.additionalProperties = true;
+  if (type === "string" && field.required) schema.minLength = 1;
+  if (type !== "array" && options.length > 0)
+    schema.enum = options.map((option) => option.value);
+  if ((type === "integer" || type === "number") && range) {
     if (Number.isFinite(range.min)) schema.minimum = range.min;
     if (Number.isFinite(range.max)) schema.maximum = range.max;
-    if (Number.isFinite(range.step) && Number(range.step) > 0) schema.multipleOf = range.step;
+    if (Number.isFinite(range.step) && Number(range.step) > 0)
+      schema.multipleOf = range.step;
   }
   return schema;
 }
@@ -260,153 +289,159 @@ function schemaForField(field: WorkflowNodeFieldDefinition): JsonSchema {
 function simpleOptions(field: WorkflowNodeFieldDefinition): UiOption[] {
   if (!Array.isArray(field.options)) return [];
   return field.options.flatMap((option) => {
-    if (isPrimitive(option)) return [{ label: String(option ?? ''), value: option }];
-    if (!option || typeof option !== 'object') return [];
+    if (isPrimitive(option))
+      return [{ label: String(option ?? ""), value: option }];
+    if (!option || typeof option !== "object") return [];
     const record = option as Record<string, unknown>;
     const value = record.value ?? record.name;
     if (!isPrimitive(value)) return [];
     const label = record.display_name ?? record.label ?? record.name ?? value;
-    return [{ label: String(label ?? ''), value }];
+    return [{ label: String(label ?? ""), value }];
   });
 }
 
 function isCollectionField(field: WorkflowNodeFieldDefinition): boolean {
   return (
-    field.type === 'table' ||
-    field.type === 'sortableList' ||
-    field.type === 'actionPicker' ||
+    field.type === "table" ||
+    field.type === "sortableList" ||
+    field.type === "actionPicker" ||
     field.list === true ||
     field.is_list === true ||
-    field._input_type === 'TableInput' ||
-    field._input_type === 'MultiselectInput'
+    field._input_type === "TableInput" ||
+    field._input_type === "MultiselectInput"
   );
 }
 
-function scalarSchemaTypeForField(field: WorkflowNodeFieldDefinition): JsonSchema['type'] {
+function scalarSchemaTypeForField(
+  field: WorkflowNodeFieldDefinition,
+): JsonSchema["type"] {
   const inputType = field._input_type;
-  if (field.type === 'bool' || inputType === 'BoolInput') return 'boolean';
-  if (field.type === 'int' || inputType === 'IntInput') return 'integer';
+  if (field.type === "bool" || inputType === "BoolInput") return "boolean";
+  if (field.type === "int" || inputType === "IntInput") return "integer";
   if (
-    field.type === 'float' ||
-    field.type === 'slider' ||
-    inputType === 'FloatInput' ||
-    inputType === 'SliderInput'
+    field.type === "float" ||
+    field.type === "slider" ||
+    inputType === "FloatInput" ||
+    inputType === "SliderInput"
   ) {
-    return 'number';
+    return "number";
   }
   if (
-    field.type === 'dict' ||
-    field.type === 'NestedDict' ||
-    field.type === 'mcp' ||
-    field.type === 'duration' ||
-    inputType === 'DictInput' ||
-    inputType === 'NestedDictInput' ||
-    inputType === 'JSONInput' ||
-    inputType === 'McpInput' ||
-    inputType === 'DurationInput'
+    field.type === "dict" ||
+    field.type === "NestedDict" ||
+    field.type === "mcp" ||
+    field.type === "duration" ||
+    inputType === "DictInput" ||
+    inputType === "NestedDictInput" ||
+    inputType === "JSONInput" ||
+    inputType === "McpInput" ||
+    inputType === "DurationInput"
   ) {
-    return 'object';
+    return "object";
   }
-  if (field.type === 'other' || field.type === 'data_display') return undefined;
-  return 'string';
+  if (field.type === "other" || field.type === "data_display") return undefined;
+  return "string";
 }
 
 function isConnectionField(field: WorkflowNodeFieldDefinition): boolean {
   const inputType = field._input_type;
   return (
-    field.type === 'other' ||
-    inputType?.endsWith('DataInput') === true ||
-    inputType === 'HandleInput'
+    field.type === "other" ||
+    inputType?.endsWith("DataInput") === true ||
+    inputType === "HandleInput"
   );
 }
 
 function workflowControlWidget(field: WorkflowNodeFieldDefinition): string {
   const inputType = field._input_type;
-  if (inputType === 'A3SFlowExpressionInput') {
+  if (inputType === "A3SFlowExpressionInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.flowExpression;
   }
-  if (inputType === 'A3SFlowSchemaInput') return WORKFLOW_CONFIGURATION_WIDGETS.flowSchema;
-  if (inputType === 'A3SFlowBatchInput') return WORKFLOW_CONFIGURATION_WIDGETS.flowBatch;
-  if (field.type === 'model' || inputType === 'ModelInput') {
+  if (inputType === "A3SFlowSchemaInput")
+    return WORKFLOW_CONFIGURATION_WIDGETS.flowSchema;
+  if (inputType === "A3SFlowBatchInput")
+    return WORKFLOW_CONFIGURATION_WIDGETS.flowBatch;
+  if (field.type === "model" || inputType === "ModelInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.model;
   }
-  if (field.type === 'file' || inputType === 'FileInput') {
+  if (field.type === "file" || inputType === "FileInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.file;
   }
-  if (field.type === 'code' || inputType === 'CodeInput') {
+  if (field.type === "code" || inputType === "CodeInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.code;
   }
   if (
-    field.type === 'prompt' ||
-    field.type === 'mustache' ||
-    field.type === 'query' ||
-    inputType === 'PromptInput' ||
-    inputType === 'QueryInput'
+    field.type === "prompt" ||
+    field.type === "mustache" ||
+    field.type === "query" ||
+    inputType === "PromptInput" ||
+    inputType === "QueryInput"
   ) {
     return WORKFLOW_CONFIGURATION_WIDGETS.prompt;
   }
   if (
-    field.type === 'dict' ||
-    field.type === 'NestedDict' ||
-    inputType === 'DictInput' ||
-    inputType === 'NestedDictInput' ||
-    inputType === 'JSONInput'
+    field.type === "dict" ||
+    field.type === "NestedDict" ||
+    inputType === "DictInput" ||
+    inputType === "NestedDictInput" ||
+    inputType === "JSONInput"
   ) {
     return WORKFLOW_CONFIGURATION_WIDGETS.json;
   }
-  if (field.type === 'tab' || inputType === 'TabInput') {
+  if (field.type === "tab" || inputType === "TabInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.tabs;
   }
-  if (field.type === 'sortableList' || inputType === 'SortableListInput') {
+  if (field.type === "sortableList" || inputType === "SortableListInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.sortableList;
   }
-  if (field.type === 'duration' || inputType === 'DurationInput') {
+  if (field.type === "duration" || inputType === "DurationInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.duration;
   }
-  if (field.type === 'actionPicker' || inputType === 'ActionPickerInput') {
+  if (field.type === "actionPicker" || inputType === "ActionPickerInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.actionPicker;
   }
-  if (field.type === 'mcp' || inputType === 'McpInput') {
+  if (field.type === "mcp" || inputType === "McpInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.mcp;
   }
-  if (field.type === 'data_display' || inputType === 'DataDisplayInput') {
+  if (field.type === "data_display" || inputType === "DataDisplayInput") {
     return WORKFLOW_CONFIGURATION_WIDGETS.dataDisplay;
   }
-  if (field.type === 'slider' || inputType === 'SliderInput') return 'slider';
-  if (field.type === 'bool' || inputType === 'BoolInput') return 'switch';
+  if (field.type === "slider" || inputType === "SliderInput") return "slider";
+  if (field.type === "bool" || inputType === "BoolInput") return "switch";
   if (
-    field.type === 'int' ||
-    field.type === 'float' ||
-    inputType === 'IntInput' ||
-    inputType === 'FloatInput'
+    field.type === "int" ||
+    field.type === "float" ||
+    inputType === "IntInput" ||
+    inputType === "FloatInput"
   ) {
-    return 'number';
+    return "number";
   }
-  if (inputType === 'SecretStrInput' || field.password) return 'password';
-  if (inputType === 'MultiselectInput') return 'multi-select';
-  if (inputType === 'DropdownInput') return 'select';
-  if (inputType === 'MultilineInput') return 'textarea';
-  if (inputType === 'StrInput') {
+  if (inputType === "SecretStrInput" || field.password) return "password";
+  if (inputType === "MultiselectInput") return "multi-select";
+  if (inputType === "DropdownInput") return "select";
+  if (inputType === "MultilineInput") return "textarea";
+  if (inputType === "StrInput") {
     if (field.list || field.is_list) {
-      return simpleOptions(field).length > 0 ? 'multi-select' : 'tags';
+      return simpleOptions(field).length > 0 ? "multi-select" : "tags";
     }
-    if (simpleOptions(field).length > 0) return 'select';
-    return field.multiline ? 'textarea' : 'text';
+    if (simpleOptions(field).length > 0) return "select";
+    return field.multiline ? "textarea" : "text";
   }
-  if (isConnectionField(field)) return WORKFLOW_CONFIGURATION_WIDGETS.connection;
-  if (field.list && simpleOptions(field).length > 0) return 'multi-select';
-  if (field.list || field.is_list) return 'tags';
-  if (simpleOptions(field).length > 0) return 'select';
-  if (field.multiline) return 'textarea';
-  return 'text';
+  if (isConnectionField(field))
+    return WORKFLOW_CONFIGURATION_WIDGETS.connection;
+  if (field.list && simpleOptions(field).length > 0) return "multi-select";
+  if (field.list || field.is_list) return "tags";
+  if (simpleOptions(field).length > 0) return "select";
+  if (field.multiline) return "textarea";
+  return "text";
 }
 
 function semanticName(field: WorkflowNodeFieldDefinition): string {
-  return `${field.name} ${field.display_name ?? ''}`
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+  return `${field.name} ${field.display_name ?? ""}`
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
     .toLocaleLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
 }
 
 function semanticGroupForField(
@@ -414,107 +449,133 @@ function semanticGroupForField(
   controlWidget: string,
 ): WorkflowNodeFieldGroup {
   const name = semanticName(field);
-  const terms = new Set(name.split('_'));
-  const hasAny = (...values: string[]) => values.some((value) => terms.has(value));
-  const booleanControl = field.type === 'bool' || controlWidget === 'switch';
+  const terms = new Set(name.split("_"));
+  const hasAny = (...values: string[]) =>
+    values.some((value) => terms.has(value));
+  const booleanControl = field.type === "bool" || controlWidget === "switch";
 
-  if (field.type === 'data_display' || field.readonly === true) return 'output';
-  if (controlWidget === WORKFLOW_CONFIGURATION_WIDGETS.connection) return 'input';
-  if (booleanControl) return 'behavior';
+  if (field.type === "data_display" || field.readonly === true) return "output";
+  if (controlWidget === WORKFLOW_CONFIGURATION_WIDGETS.connection)
+    return "input";
+  if (booleanControl) return "behavior";
   if (
     controlWidget === WORKFLOW_CONFIGURATION_WIDGETS.model ||
-    controlWidget === 'password' ||
+    controlWidget === "password" ||
     field.password === true ||
     hasAny(
-      'provider',
-      'credential',
-      'credentials',
-      'password',
-      'secret',
-      'endpoint',
-      'deployment',
+      "provider",
+      "credential",
+      "credentials",
+      "password",
+      "secret",
+      "endpoint",
+      "deployment",
     ) ||
-    hasAny('model') ||
-    (hasAny('key', 'token') && hasAny('api', 'access', 'auth', 'bearer', 'service'))
+    hasAny("model") ||
+    (hasAny("key", "token") &&
+      hasAny("api", "access", "auth", "bearer", "service"))
   ) {
-    return 'provider-credentials';
+    return "provider-credentials";
   }
   if (
-    field.type === 'duration' ||
+    field.type === "duration" ||
     hasAny(
-      'timeout',
-      'timeouts',
-      'retry',
-      'retries',
-      'concurrency',
-      'worker',
-      'workers',
-      'parallel',
-      'batch',
-      'delay',
-      'duration',
-      'interval',
-      'polling',
-      'ttl',
-      'limit',
-      'limits',
+      "timeout",
+      "timeouts",
+      "retry",
+      "retries",
+      "concurrency",
+      "worker",
+      "workers",
+      "parallel",
+      "batch",
+      "delay",
+      "duration",
+      "interval",
+      "polling",
+      "ttl",
+      "limit",
+      "limits",
     ) ||
-    ((field.type === 'int' || field.type === 'float' || field.type === 'slider') &&
-      hasAny('min', 'max', 'minimum', 'maximum'))
+    ((field.type === "int" ||
+      field.type === "float" ||
+      field.type === "slider") &&
+      hasAny("min", "max", "minimum", "maximum"))
   ) {
-    return 'runtime';
-  }
-  if (hasAny('output', 'outputs', 'result', 'results', 'response', 'destination', 'return')) {
-    return 'output';
+    return "runtime";
   }
   if (
     hasAny(
-      'storage',
-      'database',
-      'db',
-      'vectorstore',
-      'index',
-      'collection',
-      'namespace',
-      'bucket',
-      'directory',
-      'folder',
-      'cache',
-      'memory',
-      'retriever',
-      'retrieval',
-    ) ||
-    (hasAny('path') && !hasAny('select', 'selected'))
+      "output",
+      "outputs",
+      "result",
+      "results",
+      "response",
+      "destination",
+      "return",
+    )
   ) {
-    return 'storage-retrieval';
+    return "output";
   }
   if (
-    field.type === 'bool' ||
-    field.type === 'int' ||
-    field.type === 'float' ||
-    field.type === 'slider' ||
-    controlWidget === 'switch' ||
-    controlWidget === 'number' ||
-    controlWidget === 'slider' ||
-    controlWidget === 'select' ||
+    hasAny(
+      "storage",
+      "database",
+      "db",
+      "vectorstore",
+      "index",
+      "collection",
+      "namespace",
+      "bucket",
+      "directory",
+      "folder",
+      "cache",
+      "memory",
+      "retriever",
+      "retrieval",
+    ) ||
+    (hasAny("path") && !hasAny("select", "selected"))
+  ) {
+    return "storage-retrieval";
+  }
+  if (
+    field.type === "bool" ||
+    field.type === "int" ||
+    field.type === "float" ||
+    field.type === "slider" ||
+    controlWidget === "switch" ||
+    controlWidget === "number" ||
+    controlWidget === "slider" ||
+    controlWidget === "select" ||
     controlWidget === WORKFLOW_CONFIGURATION_WIDGETS.tabs ||
-    hasAny('mode', 'method', 'strategy', 'behavior', 'operation', 'format', 'config', 'settings')
+    hasAny(
+      "mode",
+      "method",
+      "strategy",
+      "behavior",
+      "operation",
+      "format",
+      "config",
+      "settings",
+    )
   ) {
-    return 'behavior';
+    return "behavior";
   }
-  return 'input';
+  return "input";
 }
 
-export function workflowNodeFieldGroup(field: WorkflowNodeFieldDefinition): WorkflowNodeFieldGroup {
+export function workflowNodeFieldGroup(
+  field: WorkflowNodeFieldDefinition,
+): WorkflowNodeFieldGroup {
   return semanticGroupForField(field, workflowControlWidget(field));
 }
 
 interface SemanticFieldPresentation {
-  schemaType: JsonSchema['type'];
-  arrayItemType: JsonSchema['type'];
+  schemaType: JsonSchema["type"];
+  arrayItemType: JsonSchema["type"];
   controlWidget: string;
   semanticGroup: WorkflowNodeFieldGroup;
-  width: UiNode['width'];
+  width: UiNode["width"];
 }
 
 function semanticFieldPresentation(
@@ -523,26 +584,27 @@ function semanticFieldPresentation(
 ): SemanticFieldPresentation {
   const collection = isCollectionField(field);
   const scalarType = scalarSchemaTypeForField(field);
-  const schemaType = collection ? 'array' : scalarType;
+  const schemaType = collection ? "array" : scalarType;
   const controlWidget = workflowControlWidget(field);
   const semanticGroup = semanticGroupForField(field, controlWidget);
-  let arrayItemType: JsonSchema['type'];
-  if (field.type === 'table' || field._input_type === 'TableInput') arrayItemType = 'object';
+  let arrayItemType: JsonSchema["type"];
+  if (field.type === "table" || field._input_type === "TableInput")
+    arrayItemType = "object";
   else if (
     collection &&
-    field.type !== 'sortableList' &&
-    field.type !== 'actionPicker' &&
-    field._input_type !== 'JSONInput' &&
+    field.type !== "sortableList" &&
+    field.type !== "actionPicker" &&
+    field._input_type !== "JSONInput" &&
     controlWidget !== WORKFLOW_CONFIGURATION_WIDGETS.connection
   ) {
     arrayItemType = scalarType;
   }
 
   const fullWidth =
-    field.type === 'table' ||
-    schemaType === 'array' ||
+    field.type === "table" ||
+    schemaType === "array" ||
     field.multiline === true ||
-    field._input_type === 'MultilineInput' ||
+    field._input_type === "MultilineInput" ||
     (
       [
         WORKFLOW_CONFIGURATION_WIDGETS.connection,
@@ -563,14 +625,14 @@ function semanticFieldPresentation(
       candidate.show !== false &&
       (candidate.advanced === true) === (field.advanced === true) &&
       !isCollectionField(candidate) &&
-      (type === 'integer' || type === 'number') &&
-      semanticGroupForField(candidate, control) === 'runtime'
+      (type === "integer" || type === "number") &&
+      semanticGroupForField(candidate, control) === "runtime"
     );
   });
   const compactRuntime =
     !fullWidth &&
-    (schemaType === 'integer' || schemaType === 'number') &&
-    semanticGroup === 'runtime' &&
+    (schemaType === "integer" || schemaType === "number") &&
+    semanticGroup === "runtime" &&
     runtimeNumericFields.length >= 3;
 
   return {
@@ -600,8 +662,8 @@ function fieldCustomProps(
   presentation: SemanticFieldPresentation,
 ): JsonObject {
   const props: JsonObject = {
-    inputType: field._input_type ?? '',
-    sourceType: field.type ?? '',
+    inputType: field._input_type ?? "",
+    sourceType: field.type ?? "",
     inputTypes: field.input_types ?? [],
     toolMode: field.tool_mode === true,
     dynamic: field.dynamic === true,
@@ -617,40 +679,45 @@ function fieldCustomProps(
     props.sourceOptions = structuredClone(field.options);
   }
   const metadata: ReadonlyArray<readonly [string, string]> = [
-    ['listAddLabel', 'list_add_label'],
-    ['externalOptions', 'external_options'],
-    ['optionsMetadata', 'options_metadata'],
-    ['dialogInputs', 'dialog_inputs'],
-    ['copyField', 'copy_field'],
-    ['triggerText', 'trigger_text'],
-    ['triggerIcon', 'trigger_icon'],
-    ['tableIcon', 'table_icon'],
-    ['filePath', 'file_path'],
-    ['tempFile', 'temp_file'],
-    ['limit', 'limit'],
-    ['sliderInput', 'slider_input'],
-    ['sliderButtons', 'slider_buttons'],
-    ['sliderButtonsOptions', 'slider_buttons_options'],
-    ['minLabel', 'min_label'],
-    ['minLabelIcon', 'min_label_icon'],
-    ['maxLabel', 'max_label'],
-    ['maxLabelIcon', 'max_label_icon'],
-    ['buttonText', 'button_text'],
-    ['buttonIcon', 'button_icon'],
-    ['searchCategory', 'search_category'],
+    ["listAddLabel", "list_add_label"],
+    ["externalOptions", "external_options"],
+    ["optionsMetadata", "options_metadata"],
+    ["dialogInputs", "dialog_inputs"],
+    ["copyField", "copy_field"],
+    ["triggerText", "trigger_text"],
+    ["triggerIcon", "trigger_icon"],
+    ["tableIcon", "table_icon"],
+    ["filePath", "file_path"],
+    ["tempFile", "temp_file"],
+    ["limit", "limit"],
+    ["sliderInput", "slider_input"],
+    ["sliderButtons", "slider_buttons"],
+    ["sliderButtonsOptions", "slider_buttons_options"],
+    ["minLabel", "min_label"],
+    ["minLabelIcon", "min_label_icon"],
+    ["maxLabel", "max_label"],
+    ["maxLabelIcon", "max_label_icon"],
+    ["buttonText", "button_text"],
+    ["buttonIcon", "button_icon"],
+    ["searchCategory", "search_category"],
   ];
   for (const [target, source] of metadata) {
     const value = field[source];
-    if (value !== undefined && isJsonValue(value)) props[target] = structuredClone(value);
+    if (value !== undefined && isJsonValue(value))
+      props[target] = structuredClone(value);
   }
   const range = field.range_spec ?? field.rangeSpec;
-  if (typeof range?.step === 'number' && Number.isFinite(range.step) && range.step > 0) {
+  if (
+    typeof range?.step === "number" &&
+    Number.isFinite(range.step) &&
+    range.step > 0
+  ) {
     props.step = range.step;
   }
   const fileTypes = field.fileTypes ?? field.file_types;
   if (Array.isArray(fileTypes)) props.fileTypes = [...fileTypes];
-  if (typeof field.model_type === 'string') props.modelType = field.model_type;
-  if (typeof field.expression_purpose === 'string') {
+  if (typeof field.model_type === "string") props.modelType = field.model_type;
+  if (typeof field.expression_purpose === "string") {
     props.expressionPurpose = field.expression_purpose;
   }
   return props;
@@ -658,9 +725,9 @@ function fieldCustomProps(
 
 function fieldId(type: string, name: string): string {
   return `${type}-${name}`
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .toLocaleLowerCase();
 }
 
@@ -672,24 +739,26 @@ function tableFieldNodes(
   const id = fieldId(node.type, field.name);
   const path = `/properties/${pointerToken(field.name)}`;
   const columns = tableColumns(field);
-  const children = columns.map((column) => `${id}-${fieldId('column', column.name)}`);
+  const children = columns.map(
+    (column) => `${id}-${fieldId("column", column.name)}`,
+  );
   const presentation = semanticFieldPresentation(field, fields);
   return [
     {
       id,
-      kind: 'repeater',
+      kind: "repeater",
       label: field.display_name ?? field.name,
       description: field.info,
       schemaPath: path,
       width: 12,
-      layout: 'data-grid',
+      layout: "data-grid",
       dataGrid: {
-        editMode: 'dialog',
-        selection: 'multiple',
-        sorting: 'single',
-        filtering: 'search',
-        paste: 'append',
-        fill: 'down',
+        editMode: "dialog",
+        selection: "multiple",
+        sorting: "single",
+        filtering: "search",
+        paste: "append",
+        fill: "down",
       },
       children,
       hidden: field.show === false,
@@ -697,26 +766,28 @@ function tableFieldNodes(
     },
     ...columns.map((column, index) => ({
       id: children[index],
-      kind: 'field' as const,
+      kind: "field" as const,
       label: column.display_name ?? column.name,
       description: column.description,
       schemaPath: `${path}/items/properties/${pointerToken(column.name)}`,
       widget:
-        schemaTypeForColumn(column.type) === 'boolean'
-          ? 'switch'
-          : schemaTypeForColumn(column.type) === 'number' ||
-              schemaTypeForColumn(column.type) === 'integer'
-            ? 'number'
+        schemaTypeForColumn(column.type) === "boolean"
+          ? "switch"
+          : schemaTypeForColumn(column.type) === "number" ||
+              schemaTypeForColumn(column.type) === "integer"
+            ? "number"
             : Array.isArray(column.options)
-              ? 'select'
-              : 'text',
+              ? "select"
+              : "text",
       options: Array.isArray(column.options)
-        ? column.options.filter(isPrimitive).map((value) => ({ label: String(value), value }))
+        ? column.options
+            .filter(isPrimitive)
+            .map((value) => ({ label: String(value), value }))
         : undefined,
       width: Math.max(
         3,
         Math.floor(12 / Math.max(1, Math.min(columns.length, 4))),
-      ) as UiNode['width'],
+      ) as UiNode["width"],
     })),
   ];
 }
@@ -744,7 +815,7 @@ interface SemanticFieldRun {
 function semanticFieldRuns(
   node: WorkflowNodeDefinition,
   fields: readonly WorkflowNodeFieldDefinition[],
-  scope: 'parameters' | 'advanced',
+  scope: "parameters" | "advanced",
   locale?: string,
 ): SemanticFieldRun[] {
   const runs: SemanticFieldRun[] = [];
@@ -752,7 +823,7 @@ function semanticFieldRuns(
   for (const field of fields) {
     const semanticGroup = workflowNodeFieldGroup(field);
     const configuredGroup =
-      typeof field.ui_group === 'string' && field.ui_group.length > 0
+      typeof field.ui_group === "string" && field.ui_group.length > 0
         ? field.ui_group
         : semanticGroup;
     const existing = runsByGroup.get(configuredGroup);
@@ -761,7 +832,8 @@ function semanticFieldRuns(
       continue;
     }
     const configuredLabel =
-      typeof field.ui_group_label === 'string' && field.ui_group_label.length > 0
+      typeof field.ui_group_label === "string" &&
+      field.ui_group_label.length > 0
         ? field.ui_group_label
         : undefined;
     const run = {
@@ -770,12 +842,12 @@ function semanticFieldRuns(
         configuredLabel ??
         (isChineseLocale(locale)
           ? {
-              input: '主要设置',
-              'provider-credentials': '服务与凭据',
-              behavior: '执行方式',
-              runtime: '失败与重试',
-              output: '输出设置',
-              'storage-retrieval': '存储与检索',
+              input: "主要设置",
+              "provider-credentials": "服务与凭据",
+              behavior: "执行方式",
+              runtime: "失败与重试",
+              output: "输出设置",
+              "storage-retrieval": "存储与检索",
             }[semanticGroup]
           : WORKFLOW_NODE_FIELD_GROUPS[semanticGroup]),
       semanticGroup,
@@ -787,12 +859,15 @@ function semanticFieldRuns(
   return runs;
 }
 
-function semanticGroupNode(node: WorkflowNodeDefinition, run: SemanticFieldRun): UiNode {
+function semanticGroupNode(
+  node: WorkflowNodeDefinition,
+  run: SemanticFieldRun,
+): UiNode {
   return {
     id: run.id,
-    kind: 'group',
+    kind: "group",
     label: run.label,
-    layout: 'flow',
+    layout: "flow",
     columns: 12,
     gap: 12,
     width: 12,
@@ -810,7 +885,10 @@ export function createWorkflowNodeDefaultValue(
   options: CreateWorkflowNodeFormOptions = {},
 ): JsonObject {
   return Object.fromEntries(
-    fieldsForNode(node, options).map((field) => [field.name, workflowNodeFieldDefault(field)]),
+    fieldsForNode(node, options).map((field) => [
+      field.name,
+      workflowNodeFieldDefault(field),
+    ]),
   );
 }
 
@@ -820,29 +898,43 @@ export function createWorkflowNodeForm(
 ): FormDocument {
   const fields = fieldsForNode(node, options);
   const defaultValue = createWorkflowNodeDefaultValue(node, options);
-  const properties = Object.fromEntries(fields.map((field) => [field.name, schemaForField(field)]));
+  const properties = Object.fromEntries(
+    fields.map((field) => [field.name, schemaForField(field)]),
+  );
   const required = fields
     .filter(
       (field) =>
         field.required === true &&
         field.show !== false &&
         field.readonly !== true &&
-        field.type !== 'other',
+        field.type !== "other",
     )
     .map((field) => field.name);
   const basicFields = fields.filter((field) => field.advanced !== true);
   const advancedFields = fields.filter((field) => field.advanced === true);
-  const basicRuns = semanticFieldRuns(node, basicFields, 'parameters', options.locale);
-  const advancedRuns = semanticFieldRuns(node, advancedFields, 'advanced', options.locale);
-  const basicSection = `${fieldId(node.type, 'node')}-parameters`;
-  const advancedSection = `${fieldId(node.type, 'node')}-advanced`;
+  const basicRuns = semanticFieldRuns(
+    node,
+    basicFields,
+    "parameters",
+    options.locale,
+  );
+  const advancedRuns = semanticFieldRuns(
+    node,
+    advancedFields,
+    "advanced",
+    options.locale,
+  );
+  const basicSection = `${fieldId(node.type, "node")}-parameters`;
+  const advancedSection = `${fieldId(node.type, "node")}-advanced`;
   const advancedPanel = `${advancedSection}-panel`;
-  const rootId = `${fieldId(node.type, 'node')}-root`;
-  const taskPresentation = options.presentation === 'task';
+  const rootId = `${fieldId(node.type, "node")}-root`;
+  const taskPresentation = options.presentation === "task";
   const firstBasicRun = basicRuns[0];
   const flattenedBasicField = firstBasicRun?.fields[0];
   const flattenBasicRun =
-    taskPresentation && firstBasicRun?.fields.length === 1 && flattenedBasicField !== undefined;
+    taskPresentation &&
+    firstBasicRun?.fields.length === 1 &&
+    flattenedBasicField !== undefined;
   const basicChildren = taskPresentation
     ? flattenBasicRun
       ? [fieldId(node.type, flattenedBasicField.name)]
@@ -851,47 +943,53 @@ export function createWorkflowNodeForm(
   const nodes: UiNode[] = [
     {
       id: rootId,
-      kind: 'root',
+      kind: "root",
       columns: 12,
       gap: 12,
-      children: [...basicChildren, ...(advancedFields.length > 0 ? [advancedSection] : [])],
+      children: [
+        ...basicChildren,
+        ...(advancedFields.length > 0 ? [advancedSection] : []),
+      ],
     },
   ];
   if (!taskPresentation) {
     nodes.push({
       id: basicSection,
-      kind: 'section',
+      kind: "section",
       label:
         basicFields.length > 0
           ? isChineseLocale(options.locale)
-            ? '节点设置'
-            : 'Parameters'
+            ? "节点设置"
+            : "Parameters"
           : isChineseLocale(options.locale)
-            ? '无需设置'
-            : 'No parameters',
+            ? "无需设置"
+            : "No parameters",
       description:
         basicFields.length > 0
           ? isChineseLocale(options.locale)
-            ? '填写这个节点执行时需要的信息。'
-            : 'Configure what this node needs to run.'
+            ? "填写这个节点执行时需要的信息。"
+            : "Configure what this node needs to run."
           : isChineseLocale(options.locale)
-            ? '这个节点没有需要填写的配置。'
-            : 'This node has no runtime parameters.',
-      layout: 'flow',
+            ? "这个节点没有需要填写的配置。"
+            : "This node has no runtime parameters.",
+      layout: "flow",
       columns: 12,
       gap: 12,
       width: 12,
       children: basicRuns.map((run) => run.id),
     });
   }
-  if (!flattenBasicRun) nodes.push(...basicRuns.map((run) => semanticGroupNode(node, run)));
+  if (!flattenBasicRun)
+    nodes.push(...basicRuns.map((run) => semanticGroupNode(node, run)));
   if (advancedFields.length > 0) {
-    const visibleAdvancedCount = advancedFields.filter((field) => field.show !== false).length;
+    const visibleAdvancedCount = advancedFields.filter(
+      (field) => field.show !== false,
+    ).length;
     nodes.push(
       {
         id: advancedSection,
-        kind: 'section',
-        layout: 'collapse',
+        kind: "section",
+        layout: "collapse",
         columns: 12,
         gap: 12,
         width: 12,
@@ -900,11 +998,11 @@ export function createWorkflowNodeForm(
       },
       {
         id: advancedPanel,
-        kind: 'group',
+        kind: "group",
         label: isChineseLocale(options.locale)
           ? `高级设置（${visibleAdvancedCount}）`
-          : `Advanced · ${visibleAdvancedCount} optional ${visibleAdvancedCount === 1 ? 'setting' : 'settings'}`,
-        layout: 'collapse-panel',
+          : `Advanced · ${visibleAdvancedCount} optional ${visibleAdvancedCount === 1 ? "setting" : "settings"}`,
+        layout: "collapse-panel",
         columns: 12,
         gap: 12,
         width: 12,
@@ -916,7 +1014,7 @@ export function createWorkflowNodeForm(
   for (const field of fields) {
     const presentation = semanticFieldPresentation(field, fields);
     if (
-      field.type === 'table' &&
+      field.type === "table" &&
       presentation.controlWidget !== WORKFLOW_CONFIGURATION_WIDGETS.flowBatch
     ) {
       nodes.push(...tableFieldNodes(node, field, fields));
@@ -924,7 +1022,7 @@ export function createWorkflowNodeForm(
     }
     nodes.push({
       id: fieldId(node.type, field.name),
-      kind: 'field',
+      kind: "field",
       label: field.display_name ?? field.name,
       description: field.info,
       schemaPath: `/properties/${pointerToken(field.name)}`,
@@ -939,22 +1037,22 @@ export function createWorkflowNodeForm(
   }
 
   return {
-    kind: 'a3s.form',
-    apiVersion: 'a3s.dev/form/v1alpha1',
+    kind: "a3s.form",
+    apiVersion: "a3s.dev/form/v1alpha1",
     metadata: {
       title: isChineseLocale(options.locale)
         ? `${node.display_name}配置`
         : `${node.display_name} configuration`,
       description: node.description,
-      locale: options.locale ?? 'en',
-      owner: 'A3S Form',
-      tags: ['Workflow node', node.categoryLabel, node.type],
-      compatibility: [...(options.compatibility ?? ['a3s-workflow/v1'])],
+      locale: options.locale ?? "en",
+      owner: "A3S Form",
+      tags: ["Workflow node", node.categoryLabel, node.type],
+      compatibility: [...(options.compatibility ?? ["a3s-workflow/v1"])],
     },
     revision: 1,
     schema: {
-      $schema: 'https://json-schema.org/draft/2020-12/schema',
-      type: 'object',
+      $schema: "https://json-schema.org/draft/2020-12/schema",
+      type: "object",
       title: isChineseLocale(options.locale)
         ? `${node.display_name}配置`
         : `${node.display_name} configuration`,

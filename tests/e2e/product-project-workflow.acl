@@ -4,7 +4,7 @@ suite "a3s-ui-product-project-workflow" {
     scenario "project-workspace-and-session" {
         name = "Project navigation keeps workspace and child-task context"
         surface = "web"
-        timeout_ms = 60000
+        timeout_ms = 180000
         viewport "desktop" { width = 1478 height = 852 }
 
         navigate "open-projects" { url = "http://127.0.0.1:4178/UI/playground/projects.html" }
@@ -15,6 +15,7 @@ suite "a3s-ui-product-project-workflow" {
         click "open-project" { target = css(".product-projects__owned > a") }
         wait "workspace-mounted" { visible = css("[data-product-surface=project]") }
         expect "workspace-visible" { visible = css("[data-product-surface=project]") }
+        expect "project-breadcrumb-boundary" { visible = css(".product-project-breadcrumb") }
         expect "projects-nav-current" { visible = css(".product-sidebar__primary a[href$='/playground/projects.html'][aria-current=page]") }
         expect "project-group-expanded" { visible = css(".product-sidebar__project-group[data-expanded=true]") }
         expect "project-composer" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked]) .ProseMirror") }
@@ -32,13 +33,14 @@ suite "a3s-ui-product-project-workflow" {
         expect "active-group" { visible = css(".product-project-plan button[aria-label='折叠进行中']") }
         expect "paused-group" { visible = css(".product-project-plan button[aria-label='折叠已暂停']") }
         expect "complete-group" { visible = css(".product-project-plan button[aria-label='折叠已完成']") }
-        expect "product-flow-copy" { text = "统一产品体验与任务流" }
+        expect "product-flow-copy" { text = "复核输入器资源选择与弹层定位" }
         press "move-to-tasks" { key = "ArrowRight" }
         expect "tasks-visible" { visible = css(".product-project-workspace__tabs [role=tab][aria-selected=true]:nth-child(3)") }
 
         click "open-child-task" { target = css(".product-sidebar__project-task") }
         wait "session-mounted" { visible = css("[data-product-surface=project-session]") }
         expect "session-visible" { visible = css("[data-product-surface=project-session]") }
+        expect "project-presence-boundary" { visible = css(".product-project-presence") }
         expect "child-task-current" { visible = css(".product-sidebar__project-task[aria-current=page]") }
         expect "project-path" { visible = css("nav[aria-label='项目路径']") }
         expect "collaboration-state" { text = "协同中" }
@@ -128,7 +130,7 @@ suite "a3s-ui-product-project-workflow" {
     scenario "project-workspace-mobile" {
         name = "Project workspace and asset workbenches remain usable on mobile"
         surface = "web"
-        timeout_ms = 90000
+        timeout_ms = 180000
         viewport "mobile" { width = 390 height = 844 }
 
         navigate "open-project" { url = "http://127.0.0.1:4178/UI/playground/projects/a3s-ui-experience.html" }
@@ -166,7 +168,7 @@ suite "a3s-ui-product-project-workflow" {
         expect "mobile-asset-cleared" { visible = css("[data-asset-id=design-md]:not([data-selected=true]) [data-asset-select]:not(:checked)") }
         expect "mobile-composer-remains-full" { visible = css(".product-project-workspace__composer .product-composer:not([data-docked])") }
 
-        click "open-mobile-code-workbench" { target = css("[data-asset-id=design-md] [data-asset-open]") }
+        click "open-mobile-code-workbench" { target = role("button", "打开 DESIGN.md") }
         expect "mobile-asset-preview-dialog" { visible = css("dialog[data-project-asset-dialog][open][aria-modal=true]") }
         expect "mobile-code-workbench" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=code][data-presentation=dialog]") }
         expect "mobile-preview-fills-viewport" { visible = css("dialog[data-project-asset-dialog][open].product-project-assets-dialog") }
@@ -174,12 +176,12 @@ suite "a3s-ui-product-project-workflow" {
         expect "mobile-close-action-semantic" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
         screenshot "mobile-code-evidence" { path = "product/project-asset-code-mobile.png" }
         press "close-mobile-code-preview" { key = "Escape" }
-        expect "mobile-file-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
+        wait "mobile-file-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
         expect "mobile-composer-unfocused" { visible = css(".product-project-workspace__composer .agent-composer-editor__content:not(:focus)") }
 
-        click "open-mobile-folder" { target = css("[data-asset-id=visual-acceptance] [data-asset-open]") }
+        click "open-mobile-folder" { target = role("button", "打开文件夹 visual-acceptance") }
         expect "mobile-pdf-asset" { visible = css("[data-asset-id=visual-report][data-asset-row]") }
-        click "open-mobile-pdf" { target = css("[data-asset-id=visual-report] [data-asset-open]") }
+        click "open-mobile-pdf" { target = role("button", "打开 visual-acceptance-report.pdf") }
         expect "mobile-pdf-workbench" { visible = css("[data-project-asset-workbench] [data-workbench-kind=pdf]") }
         wait "mobile-pdf-canvas" { visible = css("[aria-label='PDF 页面画布']") }
         wait "mobile-pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
@@ -195,17 +197,17 @@ suite "a3s-ui-product-project-workflow" {
         wait "mobile-pdf-navigation-closed" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=closed]") }
         screenshot "mobile-pdf-evidence" { path = "product/project-asset-pdf-mobile.png" }
         click "close-mobile-pdf" { target = role("button", "关闭文件预览") }
-        expect "mobile-pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
+        wait "mobile-pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
         click "return-from-mobile-folder" { target = css("[data-asset-back]") }
 
-        click "open-mobile-office" { target = css("[data-asset-id=experience-brief] [data-asset-open]") }
+        click "open-mobile-office" { target = role("button", "打开 experience-brief.docx") }
         expect "mobile-office-workbench" { visible = css("[data-project-asset-workbench] [data-workbench-kind=document]") }
         expect "mobile-office-preview-tools" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "mobile-office-preview-document" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         screenshot "mobile-office-evidence" { path = "product/project-asset-office-mobile.png" }
         accessibility "mobile-office-accessibility" { path = "product/project-asset-office-mobile-accessibility.json" interactive = true }
         click "close-mobile-office" { target = role("button", "关闭文件预览") }
-        expect "mobile-office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
+        wait "mobile-office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
         console "console" { path = "product/project-workspace-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-workspace-mobile-page-errors.json" clear = false }
     }

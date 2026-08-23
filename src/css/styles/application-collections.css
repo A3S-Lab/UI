@@ -608,7 +608,26 @@
     min-height: 6.5rem;
     align-content: center;
     justify-items: center;
+    gap: 0.25rem;
     text-align: center;
+  }
+
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item]
+    > :is([data-file-label], span) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-manager
+    [data-file-manager-viewport][data-view="grid"]
+    [data-file-item]
+    > span:first-of-type {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    line-height: 1.125rem;
   }
 
   .file-manager

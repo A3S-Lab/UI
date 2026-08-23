@@ -56,6 +56,7 @@ export type ProductPlaygroundIconName =
   | "play"
   | "pin"
   | "plus"
+  | "progress"
   | "presentation"
   | "product"
   | "project"
@@ -66,6 +67,7 @@ export type ProductPlaygroundIconName =
   | "send"
   | "share"
   | "sort"
+  | "sliders"
   | "settings"
   | "shield"
   | "stop"
@@ -319,6 +321,12 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
+  progress: (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none" />
+    </>
+  ),
   presentation: (
     <>
       <rect x="3" y="4" width="18" height="13" rx="2" />
@@ -377,6 +385,14 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     </>
   ),
   sort: <path d="M8 6h12M8 12h8M8 18h4M4 4v16m0 0-2-2m2 2 2-2" />,
+  sliders: (
+    <>
+      <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h7M15 18h5" />
+      <circle cx="15" cy="6" r="2" />
+      <circle cx="9" cy="12" r="2" />
+      <circle cx="13" cy="18" r="2" />
+    </>
+  ),
   settings: (
     <>
       <path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4A2 2 0 0 0 4 9.9l.2.1a2 2 0 0 1 1 1.7v.6a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.6a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2Z" />

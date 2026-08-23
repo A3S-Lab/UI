@@ -200,6 +200,7 @@ export function ProductStartSurface({
             locale={locale}
             onConfigureModels={onOpenModelSettings}
             onSubmit={onCreateTask}
+            showExecutionTarget
           />
         </div>
         <p className="product-start__assurance">

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useMemo, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
@@ -234,6 +234,87 @@ function PanelHarness({
 }
 
 describe('Workflow node configuration panel', () => {
+  it('validates the latest controlled value when edit and apply share one render batch', async () => {
+    const node: WorkflowNodeDefinition = {
+      ...baseWorkflowNode,
+      type: 'LatestValueFixture',
+      display_name: 'Latest value fixture',
+      fields: [
+        {
+          name: 'handler',
+          display_name: 'Handler',
+          type: 'str',
+          _input_type: 'StrInput',
+          value: 'records.sync',
+          required: true,
+        },
+      ],
+    };
+    const applied: JsonObject[] = [];
+    render(
+      <PanelHarness
+        node={node}
+        callbacks={{ onApply: (value) => applied.push(value) }}
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByRole('textbox', { name: 'Handler' }), {
+        target: { value: '' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('textbox', { name: 'Handler' }).getAttribute('aria-invalid'),
+      ).toBe('true'),
+    );
+    expect(applied).toEqual([]);
+  });
+
+  it('clears submitted validation when reset replaces the controlled value', async () => {
+    const node: WorkflowNodeDefinition = {
+      ...baseWorkflowNode,
+      type: 'ResetValidationFixture',
+      display_name: 'Reset validation fixture',
+      fields: [
+        {
+          name: 'handler',
+          display_name: 'Handler',
+          type: 'str',
+          _input_type: 'StrInput',
+          value: 'records.sync',
+          required: true,
+        },
+      ],
+    };
+    render(<PanelHarness node={node} />);
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'Handler' }), {
+      target: { value: '' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('textbox', { name: 'Handler' }).getAttribute('aria-invalid'),
+      ).toBe('true'),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('textbox', { name: 'Handler' }).getAttribute('aria-invalid'),
+      ).toBeNull(),
+    );
+    expect(screen.getByRole('textbox', { name: 'Handler' })).toHaveProperty(
+      'value',
+      'records.sync',
+    );
+    expect(document.querySelector('.a3s-form-error[role="alert"]')).toBeNull();
+  });
+
   it('renders source-order fields, typed ports, advanced settings, and host actions', async () => {
     const node = workflowNodeFixture('panel');
     const applied: JsonObject[] = [];

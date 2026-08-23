@@ -47,6 +47,7 @@ File Manager is not a code tree. Use [File Explorer](/components/file-explorer) 
 - Selection is local UI state; the host authorizes every mutation through a cancelable `before-*` event.
 - Delete means a host-defined recoverable trash operation unless the product explicitly presents permanent deletion.
 - Loading and failure states retain the current location and user search. A failed refresh does not erase a usable listing.
+- Grid view prioritizes file identity and type on separate lines. Owner and update metadata remain available in list view or Quick Look, where users can compare or inspect them without compressing grid cards.
 - Quick Look previews only trusted or sanitized content. Large, binary, or remote files use a host previewer or download action.
 
 ## Framework usage

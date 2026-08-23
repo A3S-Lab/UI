@@ -33,6 +33,21 @@ function ComposerControl({
   trigger: ReactNode;
 }) {
   const open = activeControl === control;
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      onActiveControlChange(null);
+      window.requestAnimationFrame(() => triggerRef.current?.focus());
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [onActiveControlChange, open]);
+
   return (
     <div data-composer-control={control} data-open={open ? "true" : undefined}>
       <button
@@ -41,21 +56,23 @@ function ComposerControl({
         aria-label={label}
         data-composer-setting
         onClick={() => onActiveControlChange(open ? null : control)}
+        ref={triggerRef}
         type="button"
       >
         {trigger}
       </button>
       {open ? (
         <section
+          aria-hidden="false"
           aria-label={panelLabel}
           className="product-composer-control-panel"
+          data-align="end"
+          data-collision-padding="12"
           data-control-panel={control}
           data-control-detail={panelDetail}
-          onKeyDown={(event) => {
-            if (event.key !== "Escape") return;
-            event.preventDefault();
-            onActiveControlChange(null);
-          }}
+          data-popover
+          data-side="top"
+          data-side-offset="8"
           role="dialog"
         >
           {children}
@@ -134,6 +151,13 @@ export function ProductComposerModeControl({
             </small>
           </span>
         </span>
+        <button
+          aria-label={zh ? "关闭权限边界" : "Close permission boundary"}
+          onClick={() => onActiveControlChange(null)}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
       </header>
       <div
         aria-label={zh ? "权限边界" : "Permission boundary"}
@@ -249,6 +273,13 @@ export function ProductComposerExecutionTargetControl({
             </small>
           </span>
         </span>
+        <button
+          aria-label={zh ? "关闭执行位置" : "Close execution target"}
+          onClick={() => onActiveControlChange(null)}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
       </header>
       <div
         aria-label={zh ? "执行位置" : "Execution target"}
@@ -361,6 +392,13 @@ export function ProductComposerWorkspaceControl({
             </small>
           </span>
         </span>
+        <button
+          aria-label={zh ? "关闭工作区" : "Close workspace"}
+          onClick={() => onActiveControlChange(null)}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
       </header>
       <label data-focus-owner="container" data-workspace-search>
         <ProductPlaygroundIcon name="search" />

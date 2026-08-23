@@ -237,10 +237,15 @@ export function ProductProjectAssetsWorkspace({
   const usedBytes = assets.reduce((total, asset) => total + asset.sizeBytes, 0);
 
   useEffect(() => {
+    void Promise.all([
+      preloadOfficeEditor("document"),
+      preloadOfficeEditor("pdf"),
+    ]).catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
     const dialog = workbenchDialogRef.current;
-    if (!dialog) return;
-    if (openedEntry && !dialog.open) dialog.showModal();
-    if (!openedEntry && dialog.open) dialog.close();
+    if (dialog && !dialog.open) dialog.showModal();
   }, [openedEntry]);
 
   useEffect(() => {
@@ -295,10 +300,10 @@ export function ProductProjectAssetsWorkspace({
     void preloadOfficeEditor(asset.workbench).catch(() => undefined);
   };
 
-  const restoreAssetFocus = () => {
+  const closeWorkbench = () => {
     const restoreId = lastOpenedAssetId.current;
     setOpenedEntry(null);
-    window.requestAnimationFrame(() => {
+    window.queueMicrotask(() => {
       if (!restoreId) return;
       document
         .querySelector<HTMLButtonElement>(
@@ -306,15 +311,6 @@ export function ProductProjectAssetsWorkspace({
         )
         ?.focus();
     });
-  };
-
-  const closeWorkbench = () => {
-    const dialog = workbenchDialogRef.current;
-    if (dialog?.open) {
-      dialog.close();
-      return;
-    }
-    restoreAssetFocus();
   };
 
   const toggleSelection = (assetId: string) => {
@@ -604,7 +600,11 @@ export function ProductProjectAssetsWorkspace({
                             onPointerEnter={() => preloadAsset(asset)}
                             type="button"
                           >
-                            <span data-asset-icon data-kind={asset.kind}>
+                            <span
+                              data-asset-icon
+                              data-kind={asset.kind}
+                              data-workbench={asset.workbench}
+                            >
                               <ProductPlaygroundIcon name={asset.kind} />
                             </span>
                             <span data-asset-copy>
@@ -681,28 +681,22 @@ export function ProductProjectAssetsWorkspace({
         />
       </div>
 
-      <dialog
-        aria-label={
-          openedEntry
-            ? zh
+      {openedEntry ? (
+        <dialog
+          aria-label={
+            zh
               ? `${openedEntry.name} 文件预览`
               : `${openedEntry.name} file preview`
-            : undefined
-        }
-        aria-modal="true"
-        className="product-project-assets-dialog"
-        data-project-asset-dialog
-        onCancel={(event) => {
-          event.preventDefault();
-          closeWorkbench();
-        }}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) closeWorkbench();
-        }}
-        onClose={restoreAssetFocus}
-        ref={workbenchDialogRef}
-      >
-        {openedEntry ? (
+          }
+          aria-modal="true"
+          className="product-project-assets-dialog"
+          data-project-asset-dialog
+          onClick={(event) => {
+            if (event.target === event.currentTarget) closeWorkbench();
+          }}
+          onClose={closeWorkbench}
+          ref={workbenchDialogRef}
+        >
           <div
             className="product-project-assets-workbench"
             data-project-asset-workbench
@@ -715,8 +709,8 @@ export function ProductProjectAssetsWorkspace({
               presentation="dialog"
             />
           </div>
-        ) : null}
-      </dialog>
+        </dialog>
+      ) : null}
     </div>
   );
 }

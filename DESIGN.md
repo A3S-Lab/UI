@@ -172,7 +172,7 @@ Product controls are 36px high by default and 28px when explicitly compact. Ever
 
 Documentation uses the A3S Test shell geometry: a maximum 1380px frame, a 320px sidebar, a content region capped at 920px, an optional 268px outline, and 80px desktop content padding. At intermediate widths content padding becomes 36px; phones use 24px page margins. Product applications use stable context at an edge, an open central task canvas, and an optional inspector. A pane must declare its scroll owner; document and transcript scrolling may not compete.
 
-At 900px, secondary inspectors become overlays or drawers. At 768px, persistent navigation becomes a dismissible sheet and is inert while closed. At 520px, headers keep only identity and essential actions, controls expand to touch targets, and safe-area padding protects bottom actions.
+Secondary inspectors become overlays or drawers before they make the primary task canvas unreasonably narrow; application-shell chrome must be included in that available-width calculation instead of treating the browser viewport as the canvas. A full-screen modal inspector visually suppresses shell controls outside its modal tree so no inert control remains visible as a false affordance. At 768px, persistent navigation becomes a dismissible sheet and is inert while closed. At 520px, headers keep only identity and essential actions, controls expand to touch targets, and safe-area padding protects bottom actions.
 
 ### 2.5 Shape, boundaries, and depth
 
@@ -312,7 +312,15 @@ The transcript is a chronological list, not a stack of generic cards. User conte
 
 ### Composer
 
-Composer combines a growing text area, context, attachments, tools, status, queue, and one send/stop action in a single 14px surface. It preserves drafts through loading, offline, rejection, and responsive transitions. Mobile uses safe-area padding and keeps the primary action reachable above the virtual keyboard.
+Composer combines a growing text area, context, attachments, tools, status, queue, and one send/stop action in a single 14px surface. It preserves drafts through loading, offline, rejection, and responsive transitions. Mobile uses safe-area padding and keeps the primary action reachable above the virtual keyboard. When a narrow collection enters selection mode, its contextual action bar temporarily owns the composer slot; composer controls must not remain keyboard-operable behind that replacement.
+
+### Project workspace
+
+Project Activity is an event stream, not a stack of summaries. Each row gives the actor, one action sentence, timestamp, and at most one concrete destination; supporting detail remains available to assistive technology without repeating the visible action. The composer owns the bottom task slot while the feed owns the only vertical scroll region.
+
+Project Plan uses one command row for scope, view creation, member filtering, search, display options, and task creation. Status groups expose a stable symbol, title, count, collapse control, one add action, and a continuous vertical guide. Fine-pointer layouts keep task rows dense enough to preserve the complete plan hierarchy above the composer; coarse-pointer layouts expand the same controls to touch targets. Empty groups remain actionable through a direct title entry and an explicit unassigned-person placeholder. Assignee, date, and density options are controlled presentation state. Creating a saved view emits a host request and never invents routing, persistence, or project mutation inside the fixture.
+
+Project configuration categories are stable navigation and may not disappear when their contents change. Their action requests configuration from the host; it does not implement routing, persistence, permissions, or domain mutation inside the composition fixture. Configured entries use compact title-and-metadata rows without nested card chrome. The inspector stays inline only while the task canvas remains usable, becomes a focus-contained drawer at intermediate widths, and covers inactive application chrome as a full-screen modal on phones.
 
 ### Code, Markdown, and preview content
 
@@ -384,6 +392,7 @@ Use `aria-live` only for bounded status changes. Do not make whole transcripts, 
 
 A component or composition is finished only when all applicable evidence exists:
 
+- One first-principles PRD covering the user problem, product boundary, states, interaction contract, responsive behavior, accessibility, failure cases, independently testable acceptance criteria, and an A3S Test mapping.
 - Authored CSS and optional controller source.
 - Package build inclusion and stable export.
 - Manifest definition with selector, parts, actions, states, methods, hooks, and events.
@@ -392,6 +401,8 @@ A component or composition is finished only when all applicable evidence exists:
 - Semantic, interaction, visual, dark, RTL, responsive, and accessibility tests.
 - Inclusion in the standalone Playground when it participates in an application composition.
 - No stale generated files edited by hand.
+
+Every public component, active or legacy Playground export, and registered Harness, Workflow, or Playground surface has exactly one coverage record and one PRD. Every active record resolves to a unique deterministic scenario; legacy records resolve to an explicit non-mounting boundary scenario. Coverage generators reject placeholder language, duplicated mappings, missing evidence, stale output, and acceptance sections with fewer than five independently testable criteria.
 
 Every reported defect class becomes a deterministic A3S Test regression for each
 affected route or component page. A route-level scenario must verify that the

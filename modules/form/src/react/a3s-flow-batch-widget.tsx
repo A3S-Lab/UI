@@ -127,7 +127,7 @@ export function A3SFlowBatchWidget(props: FormWidgetProps) {
       tabIndex={-1}
       aria-labelledby={props.labelledBy}
       aria-describedby={props.describedBy}
-      aria-invalid={props.invalid || undefined}
+      aria-invalid={Boolean(props.invalid)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) props.onBlur?.();
       }}

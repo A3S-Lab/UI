@@ -9,7 +9,6 @@
   --a3s-surface: #f3f3f3;
   --a3s-surface-raised: #eeeeee;
   --a3s-surface-active: #e8e8e8;
-  --a3s-hover: var(--a3s-surface);
   --a3s-code-surface: #f7f7f8;
   --a3s-selection: #eef4ff;
   --a3s-ink: #171717;
@@ -29,11 +28,9 @@
   --a3s-accent-hover: #0f46c7;
   --a3s-accent-ink: #ffffff;
   --a3s-brand-blue: #243a9a;
-  --a3s-blue: var(--a3s-accent);
   --a3s-purple: #5b57d9;
   --a3s-green: #16845b;
   --a3s-orange: #a86412;
-  --a3s-amber: var(--a3s-orange);
   --a3s-warning: #a86412;
   --a3s-warning-ink: #3b2508;
   --a3s-red: #c93d45;
@@ -49,6 +46,83 @@
   --a3s-terminal-accent: #80aaff;
   --a3s-terminal-danger: #ffb6c1;
   --a3s-terminal-warning: #ffd28a;
+
+  /* Shape */
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1rem;
+  --a3s-radius-xs: 0.375rem;
+  --a3s-radius-sm: 0.5rem;
+  --a3s-radius: 0.625rem;
+  --a3s-radius-md: 0.625rem;
+  --a3s-radius-lg: 0.875rem;
+  --a3s-overlay-radius: var(--a3s-radius-lg);
+
+  /* Depth and focus */
+  --a3s-shadow: 0 20px 48px -20px rgb(0 0 0 / 28%);
+  --a3s-shadow-soft:
+    0 14px 36px -14px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 5%);
+  --a3s-shadow-composer:
+    0 20px 48px -32px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 5%);
+  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 5%);
+  --a3s-outline-offset: 2px;
+  /* Retained as compatibility aliases; focus depth is expressed by outline. */
+  --a3s-shadow-focus: none;
+  --a3s-shadow-error: none;
+
+  /* Density */
+  --a3s-control-height: 2.25rem;
+  --a3s-control-height-sm: 1.75rem;
+  --a3s-control-height-xs: 1.5rem;
+  --a3s-control-height-lg: 2.5rem;
+  --a3s-icon-button-size: 2.125rem;
+  --a3s-touch-target: 2.75rem;
+  --a3s-task-navigation-size: 15.5rem;
+  --a3s-task-reading-size: 47.5rem;
+  --a3s-task-inspector-size: 21rem;
+  --a3s-activity-rail-size: 2.875rem;
+  --a3s-workspace-header-height: 3.5rem;
+  --a3s-toolbar-height: 2.6875rem;
+  --a3s-toolbar-control-height: 1.8125rem;
+  --a3s-ribbon-tabs-height: 2.25rem;
+  --a3s-ribbon-panel-height: 4.625rem;
+  --a3s-status-height: 1.75rem;
+  --a3s-font-size-ui: 0.875rem;
+  --a3s-font-size-annotation: 0.8125rem;
+  --a3s-font-size-compact: 0.8125rem;
+  --a3s-font-size-micro: 0.75rem;
+
+  /* Motion and typography */
+  --a3s-motion-fast: 120ms;
+  --a3s-motion-normal: 160ms;
+  --a3s-motion-overlay: 220ms;
+  --a3s-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --a3s-ui-font:
+    "Geist Sans", "HarmonyOS Sans SC", "PingFang SC", ui-sans-serif,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --a3s-mono-font:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", monospace;
+  --font-sans: var(--a3s-ui-font);
+  --font-mono: var(--a3s-mono-font);
+
+}
+
+/*
+ * Derived aliases must be declared on every theme boundary. If they live only
+ * on :root, a nested dark preview inherits already-resolved light values even
+ * after its primitive --a3s-* tokens change.
+ */
+:root,
+[data-a3s-theme="light"],
+.dark,
+[data-a3s-theme="dark"] {
+  --a3s-hover: var(--a3s-surface);
+  --a3s-blue: var(--a3s-accent);
+  --a3s-amber: var(--a3s-orange);
 
   /* Public semantic aliases */
   --background: var(--a3s-paper);
@@ -88,75 +162,60 @@
   --sidebar-border: var(--a3s-line);
   --sidebar-ring: var(--a3s-accent);
 
+  /*
+   * Tailwind emits these aliases on :root. Redeclare them at every nested
+   * theme boundary so utilities such as bg-popover and text-foreground do
+   * not inherit values that were already resolved against the page theme.
+   */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   /* Backward-compatible A3S aliases */
   --a3s-bg: var(--a3s-paper);
   --a3s-panel: var(--a3s-paper);
   --a3s-panel-soft: var(--a3s-surface);
   --a3s-panel-strong: var(--a3s-surface-raised);
-
-  /* Shape */
-  --radius: 0.625rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1rem;
-  --a3s-radius-xs: 0.375rem;
-  --a3s-radius-sm: 0.5rem;
-  --a3s-radius: 0.625rem;
-  --a3s-radius-md: 0.625rem;
-  --a3s-radius-lg: 0.875rem;
-  --a3s-overlay-radius: var(--a3s-radius-lg);
   --a3s-overlay-border: var(--a3s-line);
   --a3s-overlay-surface: var(--a3s-paper);
-
-  /* Depth and focus */
-  --a3s-shadow: 0 20px 48px -20px rgb(0 0 0 / 28%);
-  --a3s-shadow-soft:
-    0 14px 36px -14px rgb(0 0 0 / 22%), 0 2px 8px rgb(0 0 0 / 5%);
-  --a3s-shadow-composer:
-    0 20px 48px -32px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 5%);
-  --a3s-shadow-control: 0 1px 2px rgb(0 0 0 / 5%);
   --a3s-focus-ring: var(--a3s-accent);
   --a3s-error-ring: var(--a3s-red);
   --a3s-focus-outline: 2px solid var(--a3s-focus-ring);
   --a3s-error-outline: 2px solid var(--a3s-error-ring);
-  --a3s-outline-offset: 2px;
-  /* Persistent query fields progress through the neutral line scale. They
-   * remain visibly focused without competing with selection or action color. */
+
+  /* Persistent query fields use neutral focus progression. */
   --a3s-search-border: var(--a3s-line);
   --a3s-search-hover-border: var(--a3s-line-strong);
   --a3s-search-focus-border: var(--a3s-line-emphasis);
-  /* Retained as compatibility aliases; focus depth is expressed by outline. */
-  --a3s-shadow-focus: none;
-  --a3s-shadow-error: none;
 
-  /* Density */
-  --a3s-control-height: 2.25rem;
-  --a3s-control-height-sm: 1.75rem;
-  --a3s-control-height-xs: 1.5rem;
-  --a3s-control-height-lg: 2.5rem;
-  --a3s-icon-button-size: 2.125rem;
-  --a3s-touch-target: 2.75rem;
-  --a3s-task-navigation-size: 15.5rem;
-  --a3s-task-reading-size: 47.5rem;
-  --a3s-task-inspector-size: 21rem;
-  --a3s-activity-rail-size: 2.875rem;
-  --a3s-workspace-header-height: 3.5rem;
-  --a3s-toolbar-height: 2.6875rem;
-  --a3s-toolbar-control-height: 1.8125rem;
-  --a3s-ribbon-tabs-height: 2.25rem;
-  --a3s-ribbon-panel-height: 4.625rem;
-  --a3s-status-height: 1.75rem;
-  --a3s-font-size-ui: 0.875rem;
-  --a3s-font-size-annotation: 0.8125rem;
-  --a3s-font-size-compact: 0.8125rem;
-  --a3s-font-size-micro: 0.75rem;
-
-  /* Motion and typography */
-  --a3s-motion-fast: 120ms;
-  --a3s-motion-normal: 160ms;
-  --a3s-motion-overlay: 220ms;
-  --a3s-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --a3s-scrollbar-size: 0.625rem;
   --a3s-scrollbar-track: transparent;
   --a3s-scrollbar-thumb: color-mix(in srgb, var(--a3s-muted) 38%, transparent);
@@ -168,21 +227,8 @@
   --scrollbar-track: var(--a3s-scrollbar-track);
   --scrollbar-thumb: var(--a3s-scrollbar-thumb);
   --scrollbar-width: var(--a3s-scrollbar-size);
-  --a3s-ui-font:
-    "Geist Sans", "HarmonyOS Sans SC", "PingFang SC", ui-sans-serif,
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans GB",
-    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  --a3s-mono-font:
-    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", monospace;
-  --font-sans: var(--a3s-ui-font);
-  --font-mono: var(--a3s-mono-font);
 
-  /*
-   * Product-facing aliases are part of the same language as the package
-   * tokens. Playground, documentation, and consumers must not maintain a
-   * second color or depth system under the --ui-* namespace.
-   */
+  /* Product-facing aliases share the package token language. */
   --ui-canvas: var(--a3s-canvas);
   --ui-paper: var(--a3s-paper);
   --ui-panel: var(--a3s-surface);
@@ -224,7 +270,6 @@
   --a3s-surface: #202021;
   --a3s-surface-raised: #262627;
   --a3s-surface-active: #2b2b2d;
-  --a3s-hover: var(--a3s-surface);
   --a3s-code-surface: #131315;
   --a3s-selection: #17223b;
   --a3s-ink: #f2f2f3;
@@ -245,17 +290,11 @@
   --a3s-purple: #8378f0;
   --a3s-green: #57c795;
   --a3s-orange: #e7ad55;
-  --a3s-amber: var(--a3s-orange);
   --a3s-warning: #e7ad55;
   --a3s-warning-ink: #171718;
   --a3s-red: #ef7a82;
   --a3s-danger-ink: #171718;
   --a3s-overlay-scrim: rgb(0 0 0 / 58%);
-  --destructive-foreground: var(--a3s-danger-ink);
-  --success: var(--a3s-green);
-  --success-foreground: #111112;
-  --warning: var(--a3s-warning);
-  --warning-foreground: var(--a3s-warning-ink);
   --accent-foreground: #c8d7ff;
   --a3s-shadow: 0 24px 52px -18px rgb(0 0 0 / 66%);
   --a3s-shadow-soft:

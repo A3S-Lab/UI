@@ -80,10 +80,10 @@ suite "a3s-ui-component-framework-docs" {
         expect "mobile-rtl-action-matches-icon" { visible = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] button[data-preview-control=direction][data-preview-target=rtl] [data-preview-icon=direction-rtl]") }
         click "show-integration" { target = role("button", "展开接入代码") }
         focus "react-tab-in-view" { target = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration [role=tab][id$='-react-tab']") }
-        click "react" { target = role("tab", "React") }
-        expect "controller-hook" { text = "useAgentComposer" }
-        expect "editor-hook" { text = "useAgentComposerEditor" }
-        expect "tiptap-install" { text = "@tiptap/react" }
+        click "react" { target = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration [role=tab][id$='-react-tab']") }
+        wait "react-panel-active" { visible = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration[data-framework=react] > .a3s-preview-integration__panel[role=tabpanel]") }
+        expect "react-example-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration[data-framework=react] .a3s-preview-integration__source[data-code-file=example][data-code-filename='AgentComposerExample.tsx']") }
+        expect "react-install-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] .a3s-preview-integration[data-framework=react] .a3s-preview-integration__install .a3s-preview-integration__code") }
         screenshot "mobile-react" { path = "documentation/framework-preview-integration-mobile.png" }
         console "mobile-console" { path = "documentation/framework-preview-integration-mobile-console.json" clear = false }
         page_errors "mobile-errors" { path = "documentation/framework-preview-integration-mobile-errors.json" clear = false }

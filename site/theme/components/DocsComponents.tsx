@@ -16,6 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import { CodeBlockRuntime } from "@rspress/core/theme";
+import { getComponent } from "../../../dist/ai/manifest.js";
 import {
   ThemeContext,
   useLang,
@@ -35,6 +36,7 @@ import {
   type PreviewViewport,
 } from "./DocsPreviewRuntime";
 import { ComponentPreviewIntegration } from "./ComponentPreviewIntegration";
+import { ComponentStateMatrix } from "./ComponentStateMatrix";
 
 export { ChartDemo } from "./DocsChartDemo";
 
@@ -595,6 +597,9 @@ export function Preview({
     (/\/(?:components|harness)\/?$/.test(location.pathname)
       ? "index"
       : undefined);
+  const componentContract = componentName
+    ? getComponent(componentName)
+    : undefined;
   const resolvedLayout = resolvePreviewLayout(componentName, layout);
   const isChinese = language === "zh";
   const fallbackTitle = isChinese ? "实时预览" : "Live preview";
@@ -769,6 +774,42 @@ export function Preview({
       ? "light"
       : "dark"
     : "inherit";
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dialogs = Array.from(
+      canvas.querySelectorAll<HTMLDialogElement>("dialog"),
+    );
+    const originals = dialogs.map((dialog) => ({
+      dialog,
+      direction: dialog.getAttribute("dir"),
+      theme: dialog.getAttribute("data-a3s-theme"),
+    }));
+
+    for (const { dialog, direction, theme: originalTheme } of originals) {
+      if (previewScheme === "inherit") {
+        if (originalTheme === null) dialog.removeAttribute("data-a3s-theme");
+        else dialog.setAttribute("data-a3s-theme", originalTheme);
+      } else {
+        dialog.dataset.a3sTheme = previewScheme;
+      }
+
+      if (rtl) dialog.setAttribute("dir", "rtl");
+      else if (direction === null) dialog.removeAttribute("dir");
+      else dialog.setAttribute("dir", direction);
+    }
+
+    return () => {
+      for (const { dialog, direction, theme: originalTheme } of originals) {
+        if (originalTheme === null) dialog.removeAttribute("data-a3s-theme");
+        else dialog.setAttribute("data-a3s-theme", originalTheme);
+
+        if (direction === null) dialog.removeAttribute("dir");
+        else dialog.setAttribute("dir", direction);
+      }
+    };
+  }, [children, previewScheme, rtl]);
   const responsiveDocument = useMemo(
     () =>
       responsivePreviewDocument({
@@ -972,6 +1013,13 @@ export function Preview({
               {copyState === "idle" ? "" : copyLabel}
             </span>
           </button>
+          {frameworkSnippets && componentContract ? (
+            <ComponentStateMatrix
+              canvasRef={canvasRef}
+              contract={componentContract}
+              isChinese={isChinese}
+            />
+          ) : null}
         </div>
       </header>
       <div className="a3s-preview__stage">

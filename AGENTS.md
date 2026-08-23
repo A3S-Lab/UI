@@ -1,6 +1,7 @@
 # Agent Rules
 
 ## Communication
+
 - Keep answers concise, technical, and to the point.
 - Do not use filler or glazing openers.
 - Keep explanations MECE: separate facts, decisions, risks, and open questions.
@@ -8,12 +9,22 @@
 - Challenge incorrect assumptions with evidence from code, docs, or upstream sources.
 
 ## Project Intent
+
 - A3S UI is the framework-agnostic design system for A3S products, extracted from the interaction patterns refined in A3S Office.
 - It combines inherited Basecoat primitives with application-scale patterns such as App Shell, Activity Bar, Ribbon, Settings Layout, Resource Card, and Split Pane.
 - A3S UI maps shadcn/ui concepts onto simpler semantic markup; it is not a React, Radix, Base UI, `cn-*`, or `data-slot` DOM port.
 - Prefer the browser platform: native elements, semantic HTML, CSS state selectors, and small vanilla JS only when needed.
 
+## Cross-Repository Product Boundary
+
+- The A3S monorepo's `apps/desktop` application owns real product flows: routing, API and transport integration, persistence, permissions, domain state, sessions, projects, and automation orchestration.
+- This repository owns reusable design tokens, semantic component contracts, accessible controllers, framework adapters and hooks, documentation, and isolated composition fixtures.
+- Playground pages are integration harnesses, not a second product. Keep their data deterministic and in memory, expose host callbacks, and do not add product services, repositories, synchronization, or business navigation here.
+- Before adding a desktop-like surface, inspect `apps/desktop`. When the capability already exists there, improve the smallest shared `@a3s-lab/ui` interaction boundary and have the product consume it instead of copying the screen or workflow.
+- Do not modify `apps/desktop` as a side effect of A3S UI work. Cross-repository integration or dependency upgrades require an explicit user request.
+
 ## Source Boundaries
+
 - Do not hand-edit build outputs:
   - `dist/**`
   - `templates/**`
@@ -23,6 +34,7 @@
 - Generated source entrypoints such as `src/css/basecoat-vega.css` are committed, but must be regenerated through `scripts/generate-css-entrypoints.js` or build scripts, not manually maintained.
 
 ## Public API and Markup
+
 - Keep public component APIs small: usually one root class, semantic child elements, documented ARIA/data attributes only when needed, and minimal JS for behavior.
 - Avoid required child classes when meaningful markup can identify children: `input`, `textarea`, `select`, `button`, `a`, `label`, `fieldset`, `legend`, `header`, `section`, `footer`, `svg`, `kbd`, `hr`.
 - Add new child classes, wrappers, `data-*` attributes, macro arguments, or public selectors only as intentional API.
@@ -30,6 +42,7 @@
 - Prefer intentional divergence over awkward imitation when upstream markup does not map cleanly to Basecoat.
 
 ## Accessibility
+
 - Start with the native element that matches the control.
 - Use `<fieldset>` and `<legend>` for grouped form controls when appropriate.
 - Use native `<dialog>` where possible.
@@ -38,6 +51,7 @@
 - Use logical CSS utilities/properties for RTL; flip only icons whose meaning is directional.
 
 ## CSS
+
 - Component CSS in `src/css/components/*.css` owns structure, layout primitives, accessibility selectors, and behavior hooks.
 - Style-pack CSS in `src/css/styles/*.css` owns visual choices: color, radius, shadow/ring, typography, spacing, variants, and state visuals.
 - Each style bundle must stand alone. Do not load Vega/default and then undo it in another style.
@@ -47,6 +61,7 @@
 - Avoid `!important`; if unavoidable, keep the selector narrow and document why.
 
 ## JavaScript
+
 - JavaScript is behavior only; do not use JS to paper over CSS architecture issues.
 - Register JS components with `window.basecoat.register()` and make initialization idempotent with `data-*-initialized` flags.
 - Component init functions must return before attaching listeners or mutating DOM when the root already has its initialized flag.
@@ -56,6 +71,7 @@
 - Emit custom events only for meaningful integration points.
 
 ## Upstream Migration
+
 - Always check the upstream shadcn/ui repo before changing a migrated component: `https://github.com/shadcn-ui/ui`.
 - Use a local copy of the upstream repo for migration work.
 - Review these upstream repo paths:
@@ -73,6 +89,7 @@
 - Classify differences as `drift fixed`, `intentional`, or `deferred`.
 
 ## Docs
+
 - Docs are A3S UI API docs, not React docs.
 - The Rspress site defaults to Simplified Chinese and mirrors every public page under English and each supported version tree.
 - Keep `site/docs/next/zh` and `site/docs/next/en` aligned when public APIs change; stable version trees represent their published contracts.
@@ -89,12 +106,14 @@
 - Document intentional differences from upstream near the relevant example.
 
 ## Validation
+
 - Run `npm run build` after source/package changes.
 - Run `npm run docs:build` after docs or docs asset changes.
 - Use A3S Test locally for release interaction checks; do not add it to the GitHub Pages workflow.
 - Verify changed components across light/dark mode, localization, supported versions, responsive layouts, RTL when supported, and relevant interaction states.
 
 ## Change Management
+
 - Ask before removing intentional functionality or public API.
 - Preserve backward compatibility when the repo already depends on it, especially package exports and default `basecoat.css` behavior.
 - Keep generated outputs and docs consistent with source changes.

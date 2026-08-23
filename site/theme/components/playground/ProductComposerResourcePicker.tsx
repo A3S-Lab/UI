@@ -91,9 +91,15 @@ export function ProductComposerResourcePicker({
 
   return (
     <section
+      aria-hidden="false"
       aria-label={title}
       className="product-composer-resource-picker"
+      data-align="start"
+      data-collision-padding="12"
       data-composer-resource-picker={kind}
+      data-popover
+      data-side="top"
+      data-side-offset="8"
       role="dialog"
     >
       <header>

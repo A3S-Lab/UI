@@ -11,4 +11,45 @@
   .progress > span {
     @apply h-full transition-all;
   }
+
+  .progress:not([aria-valuenow]) > span {
+    width: 36%;
+    flex: none;
+    animation: a3s-progress-indeterminate 1.35s ease-in-out infinite;
+  }
+
+  .progress:dir(rtl):not([aria-valuenow]) > span {
+    animation-name: a3s-progress-indeterminate-rtl;
+  }
+
+  @keyframes a3s-progress-indeterminate {
+    from {
+      transform: translateX(-75%);
+    }
+
+    to {
+      transform: translateX(175%);
+    }
+  }
+
+  @keyframes a3s-progress-indeterminate-rtl {
+    from {
+      transform: translateX(75%);
+    }
+
+    to {
+      transform: translateX(-175%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress:not([aria-valuenow]) > span {
+      animation: none;
+      transform: translateX(88%);
+    }
+
+    .progress:dir(rtl):not([aria-valuenow]) > span {
+      transform: translateX(-88%);
+    }
+  }
 }

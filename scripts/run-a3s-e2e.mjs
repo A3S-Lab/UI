@@ -109,6 +109,18 @@ const browserExecutable =
   options.browserExecutable ?? process.env.A3S_TEST_BROWSER_EXECUTABLE;
 const maxParallel =
   options.maxParallel ?? process.env.A3S_TEST_MAX_PARALLEL ?? '1';
+await run(process.execPath, [
+  path.join('scripts', 'generate-component-contracts.mjs'),
+  '--check',
+]);
+await run(process.execPath, [
+  path.join('scripts', 'generate-surface-contracts.mjs'),
+  '--check',
+]);
+await run(process.execPath, [
+  path.join('scripts', 'generate-playground-component-contracts.mjs'),
+  '--check',
+]);
 const allSuites = (await readdir(suiteRoot))
   .filter((file) => file.endsWith('.acl'))
   .sort()

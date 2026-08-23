@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { withBase } from "@rspress/core/runtime";
 import { useWorkspace } from "./WorkspaceContext";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 export function DevicePreviewPanel() {
   const { locale } = useWorkspace();
@@ -12,15 +13,20 @@ export function DeviceSimulatorSurface({
   className = "",
   id,
   locale,
+  onExpand,
   role,
+  variant = "full",
 }: {
   className?: string;
   id?: string;
   locale: ProductPlaygroundLocale;
+  onExpand?: () => void;
   role?: "tabpanel";
+  variant?: "compact" | "full";
 }) {
   const root = useRef<HTMLElement>(null);
   const zh = locale === "zh";
+  const compact = variant === "compact";
   const previewUrl = withBase(`/device-preview.html?lang=${locale}`);
 
   useEffect(() => {
@@ -38,6 +44,7 @@ export function DeviceSimulatorSurface({
       data-device-title={zh ? "A3S 设备预览" : "A3S device preview"}
       data-orientation="portrait"
       data-state="ready"
+      data-variant={compact ? "compact" : undefined}
       id={id}
       role={role}
     >
@@ -114,7 +121,11 @@ export function DeviceSimulatorSurface({
               <option value="custom">{zh ? "自定义" : "Custom"}</option>
             </select>
           </label>
-          <div data-device-simulator-dimensions aria-label={zh ? "视口尺寸" : "Viewport size"}>
+          <div
+            aria-label={zh ? "视口尺寸" : "Viewport size"}
+            data-device-simulator-dimensions
+            hidden={compact}
+          >
             <label>
               <span>{zh ? "宽" : "W"}</span>
               <input
@@ -145,6 +156,7 @@ export function DeviceSimulatorSurface({
             role="group"
             aria-label={zh ? "屏幕方向" : "Screen orientation"}
             data-device-simulator-orientation
+            hidden={compact}
           >
             <button
               type="button"
@@ -167,43 +179,76 @@ export function DeviceSimulatorSurface({
               {zh ? "横屏" : "Landscape"}
             </button>
           </div>
-          <button
-            type="button"
-            className="btn"
-            data-size="sm"
-            data-variant="outline"
-            data-device-simulator-native
-          >
-            {zh ? "原生预览" : "Native preview"}
-          </button>
-        </div>
-        <form data-device-simulator-navigation>
-          <label>
-            <span className="sr-only">{zh ? "预览地址" : "Preview URL"}</span>
-            <input
-              className="input"
-              type="text"
-              inputMode="url"
-              defaultValue={previewUrl}
-              spellCheck="false"
-              data-device-simulator-url
-            />
-          </label>
-          <div data-device-simulator-actions>
-            <button type="submit" className="btn" data-size="sm">
-              {zh ? "打开" : "Open"}
-            </button>
+          {compact ? (
+            <div data-device-simulator-actions>
+              <button
+                aria-label={zh ? "刷新预览" : "Refresh preview"}
+                className="btn"
+                data-device-simulator-refresh
+                data-size="icon-sm"
+                data-variant="ghost"
+                type="button"
+              >
+                <ProductPlaygroundIcon name="refresh" />
+              </button>
+              {onExpand ? (
+                <button
+                  aria-label={
+                    zh ? "打开完整设备模拟器" : "Open full device simulator"
+                  }
+                  aria-pressed="false"
+                  className="btn"
+                  data-device-simulator-expand
+                  data-size="icon-sm"
+                  data-variant="ghost"
+                  onClick={onExpand}
+                  type="button"
+                >
+                  <ProductPlaygroundIcon name="expand" />
+                </button>
+              ) : null}
+            </div>
+          ) : (
             <button
               type="button"
               className="btn"
               data-size="sm"
-              data-variant="ghost"
-              data-device-simulator-refresh
+              data-variant="outline"
+              data-device-simulator-native
             >
-              {zh ? "刷新" : "Refresh"}
+              {zh ? "原生预览" : "Native preview"}
             </button>
-          </div>
-        </form>
+          )}
+        </div>
+        {compact ? null : (
+          <form data-device-simulator-navigation>
+            <label>
+              <span className="sr-only">{zh ? "预览地址" : "Preview URL"}</span>
+              <input
+                className="input"
+                type="text"
+                inputMode="url"
+                defaultValue={previewUrl}
+                spellCheck="false"
+                data-device-simulator-url
+              />
+            </label>
+            <div data-device-simulator-actions>
+              <button type="submit" className="btn" data-size="sm">
+                {zh ? "打开" : "Open"}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                data-size="sm"
+                data-variant="ghost"
+                data-device-simulator-refresh
+              >
+                {zh ? "刷新" : "Refresh"}
+              </button>
+            </div>
+          </form>
+        )}
       </header>
       <div data-device-simulator-workspace>
         <div data-device-simulator-canvas>
@@ -222,19 +267,29 @@ export function DeviceSimulatorSurface({
         </div>
       </div>
       <footer>
+        {compact ? (
+          <span data-device-simulator-bridge>
+            <i />
+            a3s-webview
+          </span>
+        ) : null}
         <output aria-live="polite" data-device-simulator-status>
           {zh ? "预览尺寸 393 × 852。" : "Preview ready at 393 × 852."}
         </output>
-        <code data-device-simulator-command>a3s-webview --url …</code>
-        <button
-          type="button"
-          className="btn"
-          data-size="sm"
-          data-variant="ghost"
-          data-device-simulator-copy-command
-        >
-          {zh ? "复制命令" : "Copy command"}
-        </button>
+        {compact ? null : (
+          <>
+            <code data-device-simulator-command>a3s-webview --url …</code>
+            <button
+              type="button"
+              className="btn"
+              data-size="sm"
+              data-variant="ghost"
+              data-device-simulator-copy-command
+            >
+              {zh ? "复制命令" : "Copy command"}
+            </button>
+          </>
+        )}
       </footer>
     </section>
   );

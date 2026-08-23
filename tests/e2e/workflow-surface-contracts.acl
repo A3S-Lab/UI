@@ -1,0 +1,628 @@
+suite "a3s-ui-workflow-surface-contracts" {
+    version = 1
+
+    scenario "workflow-dag-embedding" {
+        name = "Flow 1.0 DAG Node Configuration proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/workflow-node-embedding.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
+        expect "selected-node" { visible = css(".a3s-form-workflow-node-preview[data-selected=true]") }
+        expect "initial-step-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'][data-selected=true]") }
+        focus "focus-open-library" { target = css(".a3s-doc-workflow-studio__library-toggle") }
+        press "open-library" { key = "Enter" }
+        expect "node-library-open" { visible = css(".a3s-doc-workflow-studio[data-palette-open=true] .a3s-doc-workflow-library") }
+        type "filter-condition" { target = css(".a3s-doc-workflow-library input[aria-label='搜索节点']") value = "条件" }
+        expect "condition-result" { visible = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
+        focus "focus-condition-result" { target = css(".a3s-doc-workflow-library__list button[data-node-tone=cyan]") }
+        press "select-condition" { key = "Enter" }
+        wait "condition-selected" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-selected=true]") }
+        expect "condition-panel-matched" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "library-closed-after-selection" { visible = css(".a3s-doc-workflow-studio[data-palette-open=false]") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「条件分支」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression][data-invalid=true]:has(:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-dag-embedding-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression") }
+        expect "reset-announced" { text = "已恢复「条件分支」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-dag-embedding-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-doc-workflow-studio[data-panel-open=true]") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-dag-embedding-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-dag-embedding-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-dag-embedding-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-dag-embedding-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-start" {
+        name = "Workflow Start proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/start.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "records.audit" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "records.audit" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "records.audit" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「工作流开始」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name][data-invalid=true]:has(input[aria-invalid=true]:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-start-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input[value='workflow.main']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input") }
+        expect "reset-announced" { text = "已恢复「工作流开始」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-field[data-a3s-form-path=workflow_name] input[value='workflow.main']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-start-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.start']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.start'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-start-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-start-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-start-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-start-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-step" {
+        name = "Run Step proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/step.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "records.audit" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "records.audit" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "records.audit" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「执行步骤」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name][data-invalid=true]:has(input[aria-invalid=true]:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-step-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input[value='task.run']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input") }
+        expect "reset-announced" { text = "已恢复「执行步骤」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-field[data-a3s-form-path=step_name] input[value='task.run']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-step-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.step']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.step'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-step-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-step-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-step-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-step-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-batch" {
+        name = "Run Step Batch proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/batch.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "audit-record" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "audit-record" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "audit-record" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「批量执行步骤」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-flow-batch-list > li[data-invalid=true]:has([data-a3s-form-path='steps.0.step_key'][aria-invalid=true]:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-field[data-a3s-form-path=steps] .a3s-form-flow-widget-errors [role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-batch-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key'][value='member-1']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-flow-batch") }
+        expect "reset-announced" { text = "已恢复「批量执行步骤」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] [data-a3s-form-path='steps.0.step_key'][value='member-1']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-batch-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.batch']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.batch'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-batch-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-batch-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-batch-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-batch-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-condition" {
+        name = "Condition proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/condition.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "input.riskApproved" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「条件分支」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] input[aria-label='要判断的字段']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression][data-invalid=true]:has(:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-condition-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression") }
+        expect "reset-announced" { text = "已恢复「条件分支」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-field[data-a3s-form-path=expression] .a3s-form-flow-expression[data-mode=compare] input[aria-label='要判断的字段'][value='input.approved']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-condition-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.condition']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.condition'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-condition-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-condition-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-condition-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-condition-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-wait" {
+        name = "Wait Until proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/wait.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "input.releaseAt" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "input.releaseAt" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "input.releaseAt" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「等待至」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] input[aria-label='工作流字段路径']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at][data-invalid=true]:has(:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-wait-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-flow-expression[data-mode=source] input[value='input.deadline']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-flow-expression") }
+        expect "reset-announced" { text = "已恢复「等待至」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-field[data-a3s-form-path=resume_at] .a3s-form-flow-expression[data-mode=source] input[value='input.deadline']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-wait-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.wait']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.wait'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-wait-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-wait-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-wait-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-wait-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-hook" {
+        name = "Wait for Callback proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/hook.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "Approve audit release" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "Approve audit release" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "Approve audit release" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「等待外部回调」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject][data-invalid=true]:has(input[aria-invalid=true]:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-hook-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input[value='Review workflow request']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input") }
+        expect "reset-announced" { text = "已恢复「等待外部回调」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-field[data-a3s-form-path=subject] input[value='Review workflow request']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-hook-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.hook']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.hook'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-hook-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-hook-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-hook-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-hook-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-complete" {
+        name = "Complete proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/complete.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete']") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "input.output" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "input.output" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "input.output" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「完成工作流」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] input[aria-label='工作流字段路径']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression][data-invalid=true]:has(:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-complete-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-flow-expression[data-mode=source] input[value='input']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-flow-expression") }
+        expect "reset-announced" { text = "已恢复「完成工作流」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-field[data-a3s-form-path=output_expression] .a3s-form-flow-expression[data-mode=source] input[value='input']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-complete-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.complete']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.complete'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-complete-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-complete-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-complete-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-complete-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-fail" {
+        name = "Fail Workflow proves node-specific edit, rejection, recovery, disclosure, and run behavior"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/fail.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "surface-ready" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail']") }
+        expect "configuration-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail']") }
+        select "choose-edit-mode" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression-mode select") values = ["source"] }
+        expect "edit-mode-selected" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression-mode select:has(option[value=source]:checked)") }
+
+        fill "edit-node-field" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "input.failureReason" }
+        type "synchronize-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-edit-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") }
+        press "remove-edit-sentinel" { key = "Backspace" }
+        expect "edited-value-visible" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "input.failureReason" }
+        focus "focus-apply-edit" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-actions button[data-variant=primary]") }
+        expect "edited-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "input.failureReason" }
+        press "apply-valid-edit" { key = "Enter" }
+        expect "edit-applied" { text = "已应用「标记工作流失败」配置。" }
+
+        fill "enter-invalid-value" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "" }
+        type "synchronize-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "x" }
+        focus "focus-invalid-input" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") }
+        press "remove-invalid-sentinel" { key = "Backspace" }
+        focus "focus-apply-invalid" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-actions button[data-variant=primary]") }
+        expect "invalid-draft-preserved" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] input[aria-label='工作流字段路径']") value = "" }
+        press "reject-invalid-value" { key = "Enter" }
+        wait "invalid-state-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression][data-invalid=true]:has(:focus)") }
+        expect "invalid-message-visible" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-error[role=alert]") }
+        screenshot "capture-invalid" { path = "workflow/contracts/workflow-fail-invalid.png" }
+
+        focus "focus-reset" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-workflow-node-panel-header button[aria-label='恢复默认值']") }
+        press "request-reset" { key = "Enter" }
+        expect "reset-confirmation" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-workflow-node-panel-header button[aria-label='再次点击确认恢复']:focus") }
+        press "confirm-reset" { key = "Enter" }
+        wait "default-restored" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression[data-mode=template] textarea[aria-label='失败信息模板']") }
+        expect "validation-cleared" { valid = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression") }
+        expect "reset-announced" { text = "已恢复「标记工作流失败」默认配置。" }
+
+        focus "focus-close-panel" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-workflow-node-panel-header button[aria-label='关闭面板']") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css(".a3s-doc-workflow-studio[data-panel-open=false]") }
+        wait "node-focus-restored" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail'] > .a3s-form-workflow-node-preview-select:focus") }
+        press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail']") }
+        expect "recovered-context-preserved" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-field[data-a3s-form-path=error_expression] .a3s-form-flow-expression[data-mode=template] textarea[aria-label='失败信息模板']") }
+
+        focus "focus-run-node" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-workflow-node-panel-header button[aria-label='运行节点']") }
+        press "run-node" { key = "Enter" }
+        wait "running-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail'][data-status=running]") }
+        wait "successful-state" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail'][data-status=success]") }
+        focus "focus-last-run" { target = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-form-workflow-node-tabs > button:nth-child(2)") }
+        press "show-last-run" { key = "Enter" }
+        expect "successful-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-desktop" { path = "workflow/contracts/workflow-fail-desktop.png" }
+
+        viewport "compact" { width = 390 height = 844 }
+        expect "compact-surface" { visible = css(".a3s-form-workflow-node-preview[data-node-type='flow.fail']") }
+        expect "compact-panel" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail']") }
+        expect "compact-result" { visible = css(".a3s-form-flow-node-panel[data-node-type='flow.fail'] .a3s-doc-workflow-run-result[data-status=success]") }
+        screenshot "capture-compact" { path = "workflow/contracts/workflow-fail-compact.png" }
+        accessibility "tree" { path = "workflow/contracts/workflow-fail-accessibility.json" interactive = true }
+        console "console" { path = "workflow/contracts/workflow-fail-console.json" clear = false }
+        page_errors "errors" { path = "workflow/contracts/workflow-fail-errors.json" clear = false }
+    }
+}

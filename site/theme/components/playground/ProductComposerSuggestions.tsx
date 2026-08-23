@@ -257,11 +257,16 @@ export const ProductComposerSuggestions = forwardRef<
 
   return (
     <section
+      aria-hidden="false"
       aria-label={title}
       className="product-composer-suggestions"
+      data-align="start"
+      data-collision-padding="12"
       data-composer-suggestions
       data-suggestion-kind={kind}
       data-popover
+      data-side="top"
+      data-side-offset="8"
     >
       <header>
         <span>
@@ -394,8 +399,17 @@ export const ProductComposerSuggestions = forwardRef<
           <kbd>↑</kbd>
           <kbd>↓</kbd> {zh ? "选择" : "select"}
         </span>
-        <span>
-          <kbd>Enter</kbd> {zh ? "展开 / 添加" : "open / add"}
+        <span
+          data-suggestion-primary-action={kind === "file" ? "open-add" : "add"}
+        >
+          <kbd>Enter</kbd>{" "}
+          {kind === "file"
+            ? zh
+              ? "展开 / 添加"
+              : "open / add"
+            : zh
+              ? "添加"
+              : "add"}
         </span>
         <span>
           <kbd>Esc</kbd> {zh ? "关闭" : "close"}

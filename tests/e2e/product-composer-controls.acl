@@ -10,6 +10,7 @@ suite "a3s-ui-product-composer-controls" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
         wait "composer-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+        expect "execution-target-control-contract" { visible = css("[data-composer-control=target]") }
 
         click "open-context-for-file" { target = role("button", "添加任务上下文") }
         click "open-file-menu" { target = role("menuitem", "添加文件") }
@@ -81,6 +82,100 @@ suite "a3s-ui-product-composer-controls" {
         page_errors "page-errors" { path = "product/composer-controls-desktop-page-errors.json" clear = false }
     }
 
+    scenario "composer-overlays-short-desktop" {
+        name = "Tall composer overlays stay fully contained on a short desktop viewport"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "short-desktop" { width = 1024 height = 700 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "composer-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
+
+        click "open-context" { target = role("button", "添加任务上下文") }
+        click "open-file-menu" { target = role("menuitem", "添加文件") }
+        click "open-workspace-picker" { target = role("menuitem", "工作区文件 @") }
+        expect "workspace-picker-positioned" { visible = css(".product-start [data-composer-suggestions][data-a3s-positioned=true]") }
+        expect "workspace-picker-contained" {
+            target = css(".product-start [data-composer-suggestions]")
+            viewport_coverage_at_least = 100
+        }
+        expect "workspace-heading-contained" {
+            target = css(".product-start [data-composer-suggestions] > header")
+            viewport_coverage_at_least = 100
+        }
+        expect "workspace-footer-contained" {
+            target = css(".product-start [data-composer-suggestions] > footer")
+            viewport_coverage_at_least = 100
+        }
+        screenshot "short-workspace-evidence" { path = "product/composer-workspace-short-desktop.png" }
+        press "close-workspace-picker" { key = "Escape" }
+
+        click "open-context-for-assistant" { target = role("button", "添加任务上下文") }
+        click "open-assistant-picker" { target = role("menuitem", "专家") }
+        expect "assistant-picker-positioned" { visible = css(".product-start [data-composer-resource-picker=assistant][data-a3s-positioned=true]") }
+        expect "assistant-picker-contained" {
+            target = css(".product-start [data-composer-resource-picker=assistant]")
+            viewport_coverage_at_least = 100
+        }
+        expect "assistant-picker-header-contained" {
+            target = css(".product-start [data-composer-resource-picker=assistant] > header")
+            viewport_coverage_at_least = 100
+        }
+        expect "assistant-picker-footer-contained" {
+            target = css(".product-start [data-composer-resource-picker=assistant] > footer")
+            viewport_coverage_at_least = 100
+        }
+        expect "assistant-picker-close-reachable" { pointer_reachable = role("button", "关闭资源选择") }
+        press "close-assistant-picker" { key = "Escape" }
+        expect "attachment-trigger-restored-after-assistant" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+
+        click "open-context-for-connector" { target = role("button", "添加任务上下文") }
+        click "open-connector-picker" { target = role("menuitem", "连接器") }
+        expect "connector-picker-positioned" { visible = css(".product-start [data-composer-resource-picker=connector][data-a3s-positioned=true]") }
+        expect "connector-picker-contained" {
+            target = css(".product-start [data-composer-resource-picker=connector]")
+            viewport_coverage_at_least = 100
+        }
+        press "close-connector-picker" { key = "Escape" }
+        expect "attachment-trigger-restored-after-connector" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+
+        click "open-workspace-control" { target = css(".product-start [data-composer-control=workspace] > button") }
+        expect "workspace-control-contained" {
+            target = css(".product-start [data-control-panel=workspace]")
+            viewport_coverage_at_least = 100
+        }
+        expect "workspace-control-close-reachable" { pointer_reachable = role("button", "关闭工作区") }
+        press "close-workspace-control" { key = "Escape" }
+        expect "workspace-trigger-restored" { visible = css(".product-start [data-composer-control=workspace] > button:focus") }
+
+        click "open-permission-control" { target = css(".product-start [data-composer-control=mode] > button") }
+        expect "permission-control-contained" {
+            target = css(".product-start [data-control-panel=mode]")
+            viewport_coverage_at_least = 100
+        }
+        expect "permission-control-close-reachable" { pointer_reachable = role("button", "关闭权限边界") }
+        press "close-permission-control" { key = "Escape" }
+        expect "permission-trigger-restored" { visible = css(".product-start [data-composer-control=mode] > button:focus") }
+
+        click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
+        click "open-model-picker" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
+        expect "model-picker-positioned" { visible = css(".product-start [data-control-panel=run][data-control-detail=model][data-a3s-positioned=true]") }
+        expect "model-picker-contained" {
+            target = css(".product-start [data-control-panel=run][data-control-detail=model]")
+            viewport_coverage_at_least = 100
+        }
+        expect "model-heading-contained" {
+            target = css(".product-start [data-control-panel=run][data-control-detail=model] > header")
+            viewport_coverage_at_least = 100
+        }
+        expect "model-close-reachable" { pointer_reachable = role("button", "关闭模型选择") }
+
+        screenshot "short-desktop-evidence" { path = "product/composer-controls-short-desktop.png" }
+        console "console" { path = "product/composer-controls-short-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/composer-controls-short-desktop-page-errors.json" clear = false }
+    }
+
     scenario "composer-overlays-mobile" {
         name = "Composer overlays remain reachable and contained on a phone viewport"
         surface = "web"
@@ -93,8 +188,22 @@ suite "a3s-ui-product-composer-controls" {
 
         click "open-context" { target = role("button", "添加任务上下文") }
         expect "context-menu" { visible = css(".product-start [data-composer-attachment-menu][role=menu]") }
+        click "open-skill-picker" { target = role("menuitem", "技能 $") }
+        expect "skill-picker-contained" {
+            target = css(".product-start [data-composer-suggestions][data-suggestion-kind=skill]")
+            viewport_coverage_at_least = 100
+        }
+        expect "skill-picker-footer-copy" { visible = css(".product-start [data-composer-suggestions][data-suggestion-kind=skill] [data-suggestion-primary-action=add]") }
+        screenshot "skill-picker-mobile-evidence" { path = "product/composer-skill-picker-mobile.png" }
+        click "close-skill-picker" { target = role("button", "关闭选择技能") }
+
+        click "reopen-context" { target = role("button", "添加任务上下文") }
         click "open-connector-picker" { target = role("menuitem", "连接器") }
         expect "connector-picker" { visible = css(".product-start [data-composer-resource-picker=connector][role=dialog]") }
+        expect "connector-picker-contained" {
+            target = css(".product-start [data-composer-resource-picker=connector]")
+            viewport_coverage_at_least = 100
+        }
         press "close-picker" { key = "Escape" }
         expect "trigger-focus-restored" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
 

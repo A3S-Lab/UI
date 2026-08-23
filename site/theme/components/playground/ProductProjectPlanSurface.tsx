@@ -5,6 +5,7 @@ import {
   ProductPlaygroundIcon,
   type ProductPlaygroundIconName,
 } from "./ProductPlaygroundIcon";
+import type { ProductProjectPlanDisplayOptions } from "./ProductProjectPlanToolbar";
 
 export type ProductProjectPlanGroupId =
   "backlog" | "active" | "paused" | "complete";
@@ -32,7 +33,7 @@ function createInitialTasks(zh: boolean): ProductProjectPlanTask[] {
       id: "composer-resource-position",
       mine: true,
       status: "backlog",
-      time: zh ? "今天" : "Today",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "复核输入器资源选择与弹层定位"
         : "Review composer resource selection and overlay placement",
@@ -42,7 +43,7 @@ function createInitialTasks(zh: boolean): ProductProjectPlanTask[] {
       id: "session-hierarchy",
       mine: false,
       status: "backlog",
-      time: zh ? "明天" : "Tomorrow",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "校准会话详情的信息层级"
         : "Calibrate session-detail information hierarchy",
@@ -52,37 +53,37 @@ function createInitialTasks(zh: boolean): ProductProjectPlanTask[] {
       id: "mobile-acceptance",
       mine: false,
       status: "backlog",
-      time: zh ? "周五" : "Friday",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "完成移动端逐页视觉验收"
         : "Complete page-by-page mobile visual acceptance",
     },
     {
       assignee: "R",
-      id: "release-readiness",
+      id: "overlay-stacking",
       mine: true,
-      status: "active",
-      time: zh ? "今天" : "Today",
+      status: "backlog",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
-        ? "统一产品体验与任务流"
-        : "Unify product experience and task flow",
+        ? "核对弹层堆叠与键盘关闭路径"
+        : "Verify overlay stacking and keyboard dismissal",
     },
     {
-      assignee: "M",
-      id: "legacy-assets",
-      mine: false,
-      status: "paused",
-      time: zh ? "等待确认" : "Awaiting review",
+      assignee: "R",
+      id: "responsive-plan",
+      mine: true,
+      status: "backlog",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
-        ? "整理历史验收资产命名"
-        : "Normalize historical acceptance asset names",
+        ? "统一计划页面的响应式节奏"
+        : "Align responsive rhythm across the plan page",
     },
     {
       assignee: "R",
       id: "stable-routes",
       mine: true,
       status: "complete",
-      time: zh ? "昨天" : "Yesterday",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "稳定产品路由与首屏导航"
         : "Stabilize product routes and first-load navigation",
@@ -92,7 +93,7 @@ function createInitialTasks(zh: boolean): ProductProjectPlanTask[] {
       id: "acceptance-suite",
       mine: false,
       status: "complete",
-      time: zh ? "周一" : "Monday",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "建立关键流程回归验收"
         : "Establish critical-flow regression acceptance",
@@ -102,7 +103,7 @@ function createInitialTasks(zh: boolean): ProductProjectPlanTask[] {
       id: "design-contract",
       mine: true,
       status: "complete",
-      time: zh ? "上周" : "Last week",
+      time: zh ? "1 个月前" : "1 month ago",
       title: zh
         ? "建立统一界面规范"
         : "Establish the unified interface specification",
@@ -121,7 +122,7 @@ function getGroupCopy(
   if (group === "active") {
     return {
       add: zh ? "添加进行中的任务" : "Add an in-progress task",
-      icon: "update",
+      icon: "progress",
       title: zh ? "进行中" : "In progress",
     };
   }
@@ -148,12 +149,14 @@ function getGroupCopy(
 
 export function ProductProjectPlanSurface({
   createRequest,
+  displayOptions,
   locale,
   mineOnly,
   query,
   sessionHref,
 }: {
   createRequest: number;
+  displayOptions: ProductProjectPlanDisplayOptions;
   locale: ProductPlaygroundLocale;
   mineOnly: boolean;
   query: string;
@@ -170,6 +173,7 @@ export function ProductProjectPlanSurface({
     createInitialTasks(zh),
   );
   const inputRef = useRef<HTMLInputElement>(null);
+  const nextTaskIdRef = useRef(1);
   const handledCreateRequest = useRef(createRequest);
 
   useEffect(() => {
@@ -183,7 +187,7 @@ export function ProductProjectPlanSurface({
 
   useEffect(() => {
     if (!creatingGroup) return;
-    window.requestAnimationFrame(() => inputRef.current?.focus());
+    inputRef.current?.focus();
   }, [creatingGroup]);
 
   useEffect(() => {
@@ -218,7 +222,7 @@ export function ProductProjectPlanSurface({
       ...current,
       {
         assignee: "R",
-        id: `plan-task-${Date.now()}`,
+        id: `plan-task-${nextTaskIdRef.current++}`,
         mine: true,
         status: creatingGroup,
         time: zh ? "刚刚" : "Now",
@@ -247,6 +251,9 @@ export function ProductProjectPlanSurface({
     <div
       aria-label={zh ? "项目计划任务" : "Project plan tasks"}
       className="product-project-plan"
+      data-compact={displayOptions.compact ? "true" : undefined}
+      data-show-assignees={displayOptions.showAssignees ? "true" : "false"}
+      data-show-dates={displayOptions.showDates ? "true" : "false"}
     >
       {normalizedQuery && visibleTasks.length === 0 ? (
         <div className="product-project-plan__empty" role="status">
@@ -298,7 +305,7 @@ export function ProductProjectPlanSurface({
                 >
                   <ProductPlaygroundIcon name="chevron" />
                 </button>
-                <span data-plan-status>
+                <span data-plan-status data-status={group}>
                   <ProductPlaygroundIcon name={copy.icon} />
                 </span>
                 <strong>{copy.title}</strong>
@@ -335,17 +342,21 @@ export function ProductProjectPlanSurface({
                         ) : null}
                       </button>
                       <Link href={sessionHref}>{task.title}</Link>
-                      <span
-                        aria-label={
-                          zh
-                            ? `负责人 ${task.assignee}`
-                            : `Assignee ${task.assignee}`
-                        }
-                        data-plan-assignee
-                      >
-                        {task.assignee}
-                      </span>
-                      <time>{task.time}</time>
+                      {displayOptions.showAssignees ? (
+                        <span
+                          aria-label={
+                            zh
+                              ? `负责人 ${task.assignee}`
+                              : `Assignee ${task.assignee}`
+                          }
+                          data-plan-assignee
+                        >
+                          {task.assignee}
+                        </span>
+                      ) : null}
+                      {displayOptions.showDates ? (
+                        <time>{task.time}</time>
+                      ) : null}
                     </article>
                   ))}
                   {creatingGroup === group ? (
@@ -386,7 +397,11 @@ export function ProductProjectPlanSurface({
                       onClick={() => beginCreate(group)}
                       type="button"
                     >
-                      {zh ? "输入任务标题" : "Enter a task title"}
+                      <span aria-hidden="true" data-plan-empty-marker />
+                      <span>{zh ? "输入待办标题" : "Enter a task title"}</span>
+                      {displayOptions.showAssignees ? (
+                        <span aria-hidden="true" data-plan-empty-assignee />
+                      ) : null}
                     </button>
                   ) : null}
                 </div>

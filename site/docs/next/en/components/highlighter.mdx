@@ -3,16 +3,26 @@
 Presents code already processed by a trusted renderer with keyboard focus, horizontal scrolling, and bounded emphasis.
 
 <Preview class="w-full">
-<pre class="highlighter" tabIndex="0"><code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code></pre>
+  <pre class="highlighter" tabIndex="0">
+    <code>
+      <span data-code-line>
+        <span data-code-token="keyword">const</span> status ={" "}
+        <mark><span data-code-token="string">"ready"</span></mark>;
+      </span>
+      <span data-code-line>render(status);</span>
+    </code>
+  </pre>
 </Preview>
 
 ## Usage
 
 ```html
 <pre class="highlighter" tabindex="0">
-  <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+  <code><span data-code-line><span data-code-token="keyword">const</span> status = <mark><span data-code-token="string">"ready"</span></mark>;</span><span data-code-line>render(status);</span></code>
 </pre>
 ```
+
+Trusted renderers may mark `keyword`, `string`, `type`, `comment`, `heading`, and `punctuation` tokens with `data-code-token`. Highlighter styles those semantic categories but never parses or executes source text.
 
 ## React
 
@@ -22,7 +32,12 @@ import { Highlighter } from "@a3s-lab/ui/react";
 export function Example() {
   return (
     <Highlighter tabIndex="0">
-      <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+      <code>
+        <span data-code-line>
+          const status = <mark>"ready"</mark>;
+        </span>
+        <span data-code-line>render(status);</span>
+      </code>
     </Highlighter>
   );
 }
@@ -35,12 +50,14 @@ This component has no behavior controller; the React adapter only renders its se
 ```vue
 <script setup>
 import { Highlighter } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
   <Highlighter tabindex="0">
-    <code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>
+    <code
+      ><span data-code-line>const status = <mark>"ready"</mark>;</span
+      ><span data-code-line>render(status);</span></code
+    >
   </Highlighter>
 </template>
 ```
@@ -49,13 +66,14 @@ The Vue adapter adds no wrapper and does not alter native attributes.
 
 ## Contract
 
-| Surface | Value |
-| --- | --- |
-| Root selector | `.highlighter` |
-| Native root | `<pre>` |
-| States | `ready`, `loading`, `error` |
-| Events | — |
-| Methods | — |
+| Surface             | Value                       |
+| ------------------- | --------------------------- | ------ | ---- | ------- | ------- | ------------- |
+| Root selector       | `.highlighter`              |
+| Native root         | `<pre>`                     |
+| Optional token part | `data-code-token="keyword"`, `string`, `type`, `comment`, `heading`, or `punctuation` |
+| States              | `ready`, `loading`, `error` |
+| Events              | —                           |
+| Methods             | —                           |
 
 ## Product boundary
 

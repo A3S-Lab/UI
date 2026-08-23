@@ -16,7 +16,7 @@ suite "a3s-ui-application-and-utilities" {
         wait "compact-loaded" { load = "networkidle" }
         wait "compact-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
-        expect "compact-navigation-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation][inert][aria-hidden=true]") }
+        accessibility "compact-navigation-closed-tree" { path = "components/app-shell-compact-closed-accessibility.json" interactive = true }
         click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-main-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]") }
@@ -35,7 +35,8 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/task-workspace.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "inspector-inert" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace [data-task-inspector][inert][aria-hidden=true]") }
+        expect "inspector-closed" { visible = css(".a3s-preview[data-preview-component=task-workspace] [data-task-inspector-trigger][aria-expanded=false][aria-controls='task-workspace-changes-en']") }
+        accessibility "inspector-closed-tree" { path = "components/task-workspace-compact-closed-accessibility.json" interactive = true }
         click "open-inspector" { target = css(".a3s-preview[data-preview-component=task-workspace] [data-task-inspector-trigger]") }
         expect "inspector-open" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace[data-inspector=open] [data-task-inspector]:not([inert])") }
         press "close-inspector" { key = "Escape" }
@@ -146,6 +147,8 @@ suite "a3s-ui-application-and-utilities" {
         viewport "phone" { width = 390 height = 844 }
         expect "phone-title-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity] > h1") }
         expect "phone-primary-action-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
+        focus "focus-phone-primary-action" { target = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
+        expect "phone-primary-action-focused" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile]):focus") }
         screenshot "workspace-header-phone" { path = "components/workspace-header-phone.png" }
     }
 
@@ -191,6 +194,8 @@ suite "a3s-ui-application-and-utilities" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav") }
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout > main") }
+        focus "focus-settings-navigation" { target = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav a[aria-current=page]") }
+        expect "settings-navigation-focused" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav a[aria-current=page]:focus") }
     }
 
     scenario "resource-card" {
@@ -201,6 +206,8 @@ suite "a3s-ui-application-and-utilities" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "document-resource-visible" { visible = css(".a3s-preview[data-preview-component=resource-card] .resource-card[data-kind=document]") }
+        focus "focus-document-resource" { target = css(".a3s-preview[data-preview-component=resource-card] button.resource-card[data-kind=document]") }
+        expect "document-resource-focused" { visible = css(".a3s-preview[data-preview-component=resource-card] button.resource-card[data-kind=document]:focus") }
     }
 
     scenario "split-pane" {
@@ -521,11 +528,12 @@ suite "a3s-ui-application-and-utilities" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "timeline-attention-state" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-state=attention][aria-busy=true][data-tool-call-timeline-initialized=true]") }
         expect "actionable-call-visible" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-call-list] > li:not([data-tool-history]) .tool-call[data-state=awaiting]") }
-        expect "collapsed-history-hidden" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-history][hidden]") }
+        expect "expand-history-action-visible" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]:not([hidden])") }
         click "show-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]") }
         expect "history-expanded" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-history-expanded] [data-tool-history]:not([hidden])") }
         click "hide-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=collapse-history]") }
-        expect "history-collapsed" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline:not([data-history-expanded]) [data-tool-history][hidden]") }
+        expect "expand-history-action-restored" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline:not([data-history-expanded]) [data-tool-timeline-action=expand-history]:not([hidden])") }
+        accessibility "collapsed-timeline-tree" { path = "components/tool-call-timeline-collapsed-accessibility.json" interactive = true }
     }
 
     scenario "tool-result" {
@@ -706,6 +714,13 @@ suite "a3s-ui-application-and-utilities" {
         expect "grid-active" { visible = css("#file-manager-demo-en[data-view=grid] [data-file-manager-viewport][data-view=grid]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-manager-visible" { visible = css("#file-manager-demo-en.file-manager") }
+        expect "grid-type-below-filename" {
+            target = css("#file-manager-demo-en [data-file-value=design] > span:first-of-type")
+            relative_to = css("#file-manager-demo-en [data-file-value=design] > [data-file-label]")
+            layout = "below"
+            tolerance_px = 0
+        }
+        expect "grid-comparison-metadata-hidden" { hidden = css("#file-manager-demo-en [data-file-value=design] > span:nth-of-type(2)") }
         screenshot "file-manager-phone" { path = "components/file-manager-phone.png" }
     }
 

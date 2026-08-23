@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { withBase } from "@rspress/core/runtime";
 import { Link } from "@rspress/core/theme";
 import {
@@ -18,6 +18,7 @@ import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import type { SettingsSection } from "./ProductSettingsSections";
 
 export function ProductNavigationSidebar({
+  accountTriggerRef,
   capabilityHref,
   collapsed,
   compact,
@@ -35,6 +36,7 @@ export function ProductNavigationSidebar({
   view,
   viewHref,
 }: {
+  accountTriggerRef: RefObject<HTMLButtonElement | null>;
   capabilityHref: (tab: ProductCapabilityTab) => string;
   collapsed: boolean;
   compact: boolean;
@@ -53,7 +55,6 @@ export function ProductNavigationSidebar({
   viewHref: (view: ProductPlaygroundView) => string;
 }) {
   const zh = locale === "zh";
-  const accountTriggerRef = useRef<HTMLButtonElement>(null);
   const moreRef = useRef<HTMLDetailsElement>(null);
   const notificationPanelRef = useRef<HTMLElement>(null);
   const notificationTriggerRef = useRef<HTMLButtonElement>(null);

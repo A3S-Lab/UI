@@ -9,17 +9,14 @@ import {
 import { Link } from "@rspress/core/theme";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductComposer } from "./ProductComposer";
-import {
-  ProductPlaygroundIcon,
-  type ProductPlaygroundIconName,
-} from "./ProductPlaygroundIcon";
+import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import { ProductProjectAssetsWorkspace } from "./ProductProjectAssetsSurface";
-import {
-  ProductProjectBreadcrumb,
-  ProductProjectPresence,
-} from "./ProductProjectPrimitives";
+import { ProductProjectBreadcrumb } from "./ProductProjectPrimitives";
 import { ProductProjectPlanSurface } from "./ProductProjectPlanSurface";
-import { ProductProjectPlanToolbar } from "./ProductProjectPlanToolbar";
+import {
+  ProductProjectPlanToolbar,
+  type ProductProjectPlanDisplayOptions,
+} from "./ProductProjectPlanToolbar";
 
 type ProjectWorkspaceTab = "activity" | "assets" | "plan" | "tasks";
 
@@ -28,8 +25,8 @@ type ProjectActivityFilter = "mine" | "team";
 type ProjectActivityItem = {
   action: string;
   actor: string;
+  avatar: string;
   detail: string;
-  icon: ProductPlaygroundIconName;
   id: string;
   label?: string;
   scope: "both" | ProjectActivityFilter;
@@ -43,6 +40,17 @@ type ProjectTask = {
   source: "member" | "project";
   state: "active" | "draft";
   summary: string;
+  title: string;
+};
+
+type ProjectConfigurationSection = {
+  description: string;
+  detail?: {
+    meta?: string;
+    title: string;
+  };
+  id: string;
+  requestLabel: string;
   title: string;
 };
 
@@ -68,26 +76,28 @@ export function ProductProjectWorkspaceSurface({
   const [activityMessages, setActivityMessages] = useState<string[]>([]);
   const [configurationOpen, setConfigurationOpen] = useState(true);
   const [configurationOverlay, setConfigurationOverlay] = useState(false);
+  const [configurationStatus, setConfigurationStatus] = useState("");
   const [draftTask, setDraftTask] = useState("");
-  const [enabledConfiguration, setEnabledConfiguration] = useState([
-    "instructions",
-    "automation",
-  ]);
   const [inviteStatus, setInviteStatus] = useState("");
   const [planCreateRequest, setPlanCreateRequest] = useState(0);
+  const [planDisplayOptions, setPlanDisplayOptions] =
+    useState<ProductProjectPlanDisplayOptions>({
+      compact: false,
+      showAssignees: true,
+      showDates: true,
+    });
   const [planMineOnly, setPlanMineOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
   const configurationCloseRef = useRef<HTMLButtonElement>(null);
   const configurationRef = useRef<HTMLElement>(null);
+  const restoreConfigurationFocusRef = useRef(false);
   const configurationTriggerRef = useRef<HTMLButtonElement>(null);
 
   const closeConfiguration = useCallback(() => {
+    restoreConfigurationFocusRef.current = true;
     setConfigurationOpen(false);
-    window.requestAnimationFrame(() =>
-      configurationTriggerRef.current?.focus(),
-    );
   }, []);
 
   const selectWorkspaceTab = useCallback((tab: ProjectWorkspaceTab) => {
@@ -96,7 +106,7 @@ export function ProductProjectWorkspaceSurface({
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 72rem)");
+    const mediaQuery = window.matchMedia("(max-width: 86rem)");
     const update = () => {
       setConfigurationOverlay(mediaQuery.matches);
       setConfigurationOpen(!mediaQuery.matches);
@@ -108,11 +118,7 @@ export function ProductProjectWorkspaceSurface({
 
   useEffect(() => {
     if (!configurationOpen) return undefined;
-    const focusFrame = configurationOverlay
-      ? window.requestAnimationFrame(() =>
-          configurationCloseRef.current?.focus(),
-        )
-      : undefined;
+    if (configurationOverlay) configurationCloseRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && configurationOverlay) {
         event.preventDefault();
@@ -138,10 +144,15 @@ export function ProductProjectWorkspaceSurface({
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      if (focusFrame) window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeConfiguration, configurationOpen, configurationOverlay]);
+
+  useEffect(() => {
+    if (configurationOpen || !restoreConfigurationFocusRef.current) return;
+    restoreConfigurationFocusRef.current = false;
+    configurationTriggerRef.current?.focus();
+  }, [configurationOpen]);
 
   const tabs: Array<{
     id: ProjectWorkspaceTab;
@@ -196,10 +207,10 @@ export function ProductProjectWorkspaceSurface({
         ? "创建了任务并分配给你"
         : "created a task and assigned it to you",
       actor: "A3S",
+      avatar: "A",
       detail: zh
         ? "发布前核对路由、交互状态和视觉验收证据。"
         : "Review routes, interaction states, and visual evidence before release.",
-      icon: "task-add",
       id: "release-task",
       label: zh ? "发布就绪检查" : "Release readiness",
       scope: "both",
@@ -209,10 +220,10 @@ export function ProductProjectWorkspaceSurface({
     {
       action: zh ? "完成了自动化检查" : "completed an automated check",
       actor: zh ? "质量验收" : "Quality review",
+      avatar: zh ? "验" : "Q",
       detail: zh
         ? "桌面端、移动端和暗色模式均无阻断问题。"
         : "Desktop, mobile, and dark mode have no blocking issues.",
-      icon: "check",
       id: "visual-acceptance",
       label: zh ? "查看验收资产" : "Review acceptance assets",
       scope: "mine",
@@ -222,10 +233,10 @@ export function ProductProjectWorkspaceSurface({
     {
       action: zh ? "更新了项目计划" : "updated the project plan",
       actor: zh ? "产品审查" : "Product review",
+      avatar: zh ? "审" : "P",
       detail: zh
         ? "交互收敛阶段已完成 3 / 6 项，等待输入与文件流程复核。"
         : "Interaction convergence is 3 of 6 complete, pending composer and file-flow review.",
-      icon: "update",
       id: "plan-update",
       label: zh ? "查看发布计划" : "Open release plan",
       scope: "both",
@@ -234,10 +245,10 @@ export function ProductProjectWorkspaceSurface({
     {
       action: zh ? "上传了项目资料" : "uploaded a project asset",
       actor: "Mina",
+      avatar: "M",
       detail: zh
         ? "质量评分表已加入项目资产，可在任务中通过 @ 引用。"
         : "The quality scorecard is now available to cite with @ in project tasks.",
-      icon: "document",
       id: "scorecard-upload",
       label: "quality-scorecard.xlsx",
       scope: "team",
@@ -247,10 +258,10 @@ export function ProductProjectWorkspaceSurface({
     {
       action: zh ? "关联了设计规范" : "linked the interface specification",
       actor: "Rui",
+      avatar: "R",
       detail: zh
         ? "项目任务现在共享一致的布局、状态与交互约束。"
         : "Project tasks now share consistent layout, state, and interaction constraints.",
-      icon: "link",
       id: "design-linked",
       label: "DESIGN.md",
       scope: "both",
@@ -260,12 +271,12 @@ export function ProductProjectWorkspaceSurface({
     {
       action: zh ? "邀请成员加入项目" : "invited members to the project",
       actor: zh ? "本地用户" : "Local user",
+      avatar: zh ? "我" : "L",
       detail: zh
         ? "产品审查、界面实现和质量验收角色已共享项目上下文。"
         : "Product review, interface implementation, and quality acceptance now share project context.",
-      icon: "assistant",
       id: "members-joined",
-      scope: "team",
+      scope: "both",
       time: zh ? "周一" : "Monday",
     },
   ];
@@ -274,55 +285,52 @@ export function ProductProjectWorkspaceSurface({
     (item) => item.scope === "both" || item.scope === activityFilter,
   );
 
-  const configurationSections = [
+  const configurationSections: ProjectConfigurationSection[] = [
     {
       description: zh
-        ? "定义项目目标、边界与交付标准"
-        : "Define project goals, boundaries, and delivery standards",
-      detail: zh
-        ? "保持产品、文档与体验场路由独立；所有界面遵循统一设计规范。"
-        : "Keep product, documentation, and experience routes separate while following one interface specification.",
+        ? "欢迎来到项目空间。"
+        : "Welcome to the project workspace.",
+      detail: {
+        title: zh
+          ? "【你可以在这里探索】明确目标、约束与交付标准"
+          : "Explore goals, constraints, and delivery standards here",
+      },
       id: "instructions",
+      requestLabel: zh ? "配置指令" : "Configure instructions",
       title: zh ? "指令" : "Instructions",
     },
     {
       description: zh
-        ? "连接外部服务与项目数据"
-        : "Connect external services and project data",
-      detail: zh
-        ? "GitHub 与本地工作空间已准备，敏感操作需要确认。"
-        : "GitHub and the local workspace are ready; sensitive actions require confirmation.",
+        ? "连接外部服务，扩展项目能力"
+        : "Connect external services and extend project capabilities",
       id: "connectors",
+      requestLabel: zh ? "添加连接器" : "Add connector",
       title: zh ? "连接器" : "Connectors",
     },
     {
       description: zh
-        ? "为成员提供专门的工作角色"
-        : "Give members focused working roles",
-      detail: zh
-        ? "产品审查、界面实现与质量验收三个角色共享项目上下文。"
-        : "Product review, interface implementation, and quality acceptance share project context.",
+        ? "配置项目专家，为成员提供专业服务"
+        : "Configure project experts for specialized support",
       id: "assistants",
+      requestLabel: zh ? "添加专家" : "Add expert",
       title: zh ? "专家" : "Experts",
     },
     {
       description: zh
-        ? "复用稳定、可验证的执行流程"
-        : "Reuse stable and verifiable workflows",
-      detail: zh
-        ? "界面审查、浏览器验收与发布检查均可在任务中调用。"
-        : "Interface review, browser acceptance, and release checks are available to tasks.",
+        ? "配置项目技能，让任务精准执行"
+        : "Configure project skills for precise task execution",
       id: "skills",
+      requestLabel: zh ? "添加技能" : "Add skill",
       title: zh ? "技能" : "Skills",
     },
     {
-      description: zh
-        ? "按计划持续运行项目检查"
-        : "Run project checks on a schedule",
-      detail: zh
-        ? "每日 09:00 汇总回归结果；发布前执行完整视觉验收。"
-        : "Summarize regressions daily at 09:00 and run full visual acceptance before release.",
+      description: "",
+      detail: {
+        meta: zh ? "每天 09:00" : "Every day at 09:00",
+        title: zh ? "生成每日验收摘要" : "Generate a daily acceptance summary",
+      },
       id: "automation",
+      requestLabel: zh ? "添加自动化" : "Add automation",
       title: zh ? "自动化 · 1" : "Automation · 1",
     },
   ];
@@ -338,11 +346,14 @@ export function ProductProjectWorkspaceSurface({
     }
   };
 
-  const toggleConfigurationSection = (id: string) => {
-    setEnabledConfiguration((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
+  const requestConfiguration = (id: string, title: string) => {
+    window.dispatchEvent(
+      new CustomEvent("a3s:playground-project-configuration-request", {
+        detail: { id },
+      }),
+    );
+    setConfigurationStatus(
+      zh ? `已请求配置${title}` : `${title} configuration requested`,
     );
   };
 
@@ -368,7 +379,6 @@ export function ProductProjectWorkspaceSurface({
           projectsHref={projectsHref}
         />
         <div>
-          <ProductProjectPresence locale={locale} />
           <button data-invite onClick={copyInvite} type="button">
             {zh ? "邀请" : "Invite"}
           </button>
@@ -418,15 +428,20 @@ export function ProductProjectWorkspaceSurface({
                   const currentIndex = tabs.findIndex(
                     (item) => item.id === tab.id,
                   );
+                  const rtl =
+                    window.getComputedStyle(event.currentTarget).direction ===
+                    "rtl";
                   const nextIndex =
                     event.key === "Home"
                       ? 0
                       : event.key === "End"
                         ? tabs.length - 1
                         : event.key === "ArrowRight"
-                          ? (currentIndex + 1) % tabs.length
+                          ? (currentIndex + (rtl ? -1 : 1) + tabs.length) %
+                            tabs.length
                           : event.key === "ArrowLeft"
-                            ? (currentIndex - 1 + tabs.length) % tabs.length
+                            ? (currentIndex + (rtl ? 1 : -1) + tabs.length) %
+                              tabs.length
                             : -1;
                   if (nextIndex < 0) return;
                   event.preventDefault();
@@ -457,7 +472,10 @@ export function ProductProjectWorkspaceSurface({
           ) : null}
 
           {activeTab !== "assets" ? (
-            <div className="product-project-workspace__toolbar">
+            <div
+              className="product-project-workspace__toolbar"
+              data-project-toolbar={activeTab}
+            >
               {activeTab === "tasks" ? (
                 <>
                   <div>
@@ -511,7 +529,12 @@ export function ProductProjectWorkspaceSurface({
                       role="note"
                     >
                       <ProductPlaygroundIcon name="shield" />
-                      <span>
+                      <span data-task-privacy-wide>
+                        {zh
+                          ? "你的任务是私密的，除非你共享它们"
+                          : "Your tasks stay private until you share them"}
+                      </span>
+                      <span data-task-privacy-compact>
                         {zh ? "未分享，仅你可见" : "Private until shared"}
                       </span>
                     </span>
@@ -561,9 +584,18 @@ export function ProductProjectWorkspaceSurface({
                 </>
               ) : activeTab === "plan" ? (
                 <ProductProjectPlanToolbar
+                  displayOptions={planDisplayOptions}
                   locale={locale}
                   mineOnly={planMineOnly}
                   onAddTask={() => setPlanCreateRequest((value) => value + 1)}
+                  onCreateView={() =>
+                    window.dispatchEvent(
+                      new CustomEvent(
+                        "a3s:playground-plan-view-create-request",
+                      ),
+                    )
+                  }
+                  onDisplayOptionsChange={setPlanDisplayOptions}
                   onMineOnlyChange={setPlanMineOnly}
                   onQueryChange={setQuery}
                   query={query}
@@ -585,13 +617,26 @@ export function ProductProjectWorkspaceSurface({
                     {tasks.length ? (
                       tasks.map((task) =>
                         task.id === "release-readiness" ? (
-                          <Link href={sessionHref} key={task.id}>
+                          <Link
+                            data-state={task.state}
+                            data-task-row
+                            href={sessionHref}
+                            key={task.id}
+                          >
                             <span data-task-icon>
                               <ProductPlaygroundIcon name="task-add" />
                             </span>
                             <span data-task-copy>
-                              <strong>{task.title}</strong>
-                              <small>{task.summary}</small>
+                              <span data-task-heading>
+                                <strong>{task.title}</strong>
+                                <i
+                                  aria-label={
+                                    zh ? "任务进行中" : "Task in progress"
+                                  }
+                                  data-task-status
+                                />
+                              </span>
+                              <small className="sr-only">{task.summary}</small>
                             </span>
                             <span
                               data-collaborators
@@ -608,13 +653,20 @@ export function ProductProjectWorkspaceSurface({
                             />
                           </Link>
                         ) : (
-                          <article data-draft-task key={task.id}>
+                          <article
+                            data-draft-task
+                            data-state={task.state}
+                            data-task-row
+                            key={task.id}
+                          >
                             <span data-task-icon>
                               <ProductPlaygroundIcon name="document" />
                             </span>
                             <span data-task-copy>
-                              <strong>{task.title}</strong>
-                              <small>{task.summary}</small>
+                              <span data-task-heading>
+                                <strong>{task.title}</strong>
+                              </span>
+                              <small className="sr-only">{task.summary}</small>
                             </span>
                             <span data-task-state>
                               <i aria-hidden="true" />
@@ -699,8 +751,8 @@ export function ProductProjectWorkspaceSurface({
                     <ol className="product-project-workspace__activity">
                       {activityMessages.map((message, index) => (
                         <li data-posted key={`${message}-${index}`}>
-                          <span>
-                            <ProductPlaygroundIcon name="edit" />
+                          <span aria-hidden="true" data-activity-avatar>
+                            {zh ? "我" : "Y"}
                           </span>
                           <div>
                             <header>
@@ -715,24 +767,25 @@ export function ProductProjectWorkspaceSurface({
                         </li>
                       ))}
                       {visibleActivityItems.map((item) => (
-                        <li key={item.id}>
-                          <span>
-                            <ProductPlaygroundIcon name={item.icon} />
+                        <li data-activity-row key={item.id}>
+                          <span aria-hidden="true" data-activity-avatar>
+                            {item.avatar}
                           </span>
                           <div>
                             <header>
                               <strong>{item.actor}</strong>
                               <span>{item.action}</span>
                             </header>
-                            <p>{item.detail}</p>
+                            <p className="sr-only">{item.detail}</p>
                             {item.label ? (
                               item.target === "session" ? (
-                                <Link href={sessionHref}>
+                                <Link data-activity-target href={sessionHref}>
                                   <ProductPlaygroundIcon name="task-add" />
                                   {item.label}
                                 </Link>
                               ) : (
                                 <button
+                                  data-activity-target
                                   onClick={() =>
                                     selectWorkspaceTab(
                                       item.target === "assets"
@@ -767,6 +820,7 @@ export function ProductProjectWorkspaceSurface({
                 {activeTab === "plan" ? (
                   <ProductProjectPlanSurface
                     createRequest={planCreateRequest}
+                    displayOptions={planDisplayOptions}
                     locale={locale}
                     mineOnly={planMineOnly}
                     query={query}
@@ -831,36 +885,34 @@ export function ProductProjectWorkspaceSurface({
                 </button>
               </header>
               <div>
+                <output aria-live="polite" data-configuration-status>
+                  {configurationStatus}
+                </output>
                 {configurationSections.map((section) => {
-                  const enabled = enabledConfiguration.includes(section.id);
                   return (
-                    <section
-                      data-enabled={enabled ? "true" : undefined}
-                      key={section.id}
-                    >
+                    <section key={section.id}>
                       <header>
                         <h3>{section.title}</h3>
                         <button
-                          aria-pressed={enabled}
-                          aria-label={
-                            enabled
-                              ? zh
-                                ? `移除${section.title}`
-                                : `Remove ${section.title}`
-                              : zh
-                                ? `添加${section.title}`
-                                : `Add ${section.title}`
+                          aria-label={section.requestLabel}
+                          data-configuration-action={section.id}
+                          onClick={() =>
+                            requestConfiguration(section.id, section.title)
                           }
-                          onClick={() => toggleConfigurationSection(section.id)}
                           type="button"
                         >
-                          <ProductPlaygroundIcon
-                            name={enabled ? "close" : "plus"}
-                          />
+                          <ProductPlaygroundIcon name="plus" />
                         </button>
                       </header>
                       <p>{section.description}</p>
-                      {enabled ? <div>{section.detail}</div> : null}
+                      {section.detail ? (
+                        <div data-configuration-detail>
+                          <strong>{section.detail.title}</strong>
+                          {section.detail.meta ? (
+                            <small>{section.detail.meta}</small>
+                          ) : null}
+                        </div>
+                      ) : null}
                     </section>
                   );
                 })}

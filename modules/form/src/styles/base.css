@@ -42,7 +42,7 @@
     var(--a3s-form-ink) 28%,
     var(--a3s-form-line-strong)
   );
-  --a3s-form-field-ring: 0 0 0 3px color-mix(in srgb, var(--a3s-form-blue) 12%, transparent);
+  --a3s-form-field-ring: 0 0 0 2px color-mix(in srgb, var(--a3s-form-blue) 10%, transparent);
   color: var(--a3s-form-ink);
   font-family: var(
     --a3s-ui-font,
@@ -98,10 +98,15 @@
   color: inherit;
 }
 
-.a3s-form-designer :where(button, input, textarea, select):focus-visible,
-.a3s-form-renderer :where(button, input, textarea, select):focus-visible {
+.a3s-form-designer button:focus-visible,
+.a3s-form-renderer button:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--a3s-form-blue) 70%, white);
   outline-offset: 2px;
+}
+
+.a3s-form-designer :where(input, textarea, select):focus-visible,
+.a3s-form-renderer :where(input, textarea, select):focus-visible {
+  outline: 0;
 }
 
 .a3s-form-select-control {
@@ -3864,7 +3869,7 @@
   background: transparent;
 }
 
-.a3s-form-field.is-invalid :where(input, textarea, select) {
+.a3s-form-field.is-invalid :where(input, textarea, select)[aria-invalid="true"] {
   border-color: var(--a3s-form-red);
 }
 
@@ -3874,8 +3879,8 @@
 }
 
 .a3s-form-field.is-invalid
-  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select):focus {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-form-red) 11%, transparent);
+  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select)[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3s-form-red) 9%, transparent);
 }
 
 .a3s-form-error {

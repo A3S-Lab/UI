@@ -291,7 +291,7 @@ export function ProductAutomationRunHistory({
               className="product-run-history__back"
               onClick={() => {
                 setDetailOpen(false);
-                window.requestAnimationFrame(() =>
+                window.queueMicrotask(() =>
                   runRefs.current[selected.id]?.focus(),
                 );
               }}

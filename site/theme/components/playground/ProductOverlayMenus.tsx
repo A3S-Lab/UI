@@ -536,17 +536,20 @@ export function ProductExitDialog({
   onClose,
   onConfirm,
   open,
+  returnFocusRef,
 }: {
   locale: ProductPlaygroundLocale;
   onClose: () => void;
   onConfirm: () => void;
   open: boolean;
+  returnFocusRef: RefObject<HTMLButtonElement | null>;
 }) {
   const zh = locale === "zh";
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeDialog = () => {
     if (dialogRef.current?.open) dialogRef.current.close();
     onClose();
+    window.requestAnimationFrame(() => returnFocusRef.current?.focus());
   };
 
   useEffect(() => {

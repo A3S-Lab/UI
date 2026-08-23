@@ -279,11 +279,15 @@
 
 @media (max-width: 30rem) {
   .product-composer-resource-picker {
-    position: fixed;
-    inset-block: auto 0.75rem;
-    inset-inline: 0.75rem;
-    width: auto;
-    max-height: min(30rem, calc(100dvh - 5rem));
+    position: fixed !important;
+    inset-block: auto calc(env(safe-area-inset-bottom, 0px) + 0.75rem) !important;
+    inset-inline: 0.75rem !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    max-height: min(30rem, calc(100dvh - 5rem)) !important;
+    margin: 0 !important;
+    translate: none !important;
   }
 
   .product-composer-resource-picker [data-resource-picker-state] small {

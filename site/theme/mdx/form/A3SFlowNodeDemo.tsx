@@ -1,136 +1,159 @@
-import { useLang } from '@rspress/core/runtime';
-import { useMemo, useState } from 'react';
-import type { A3S_FLOW_CORE_NODE_TYPES } from '../../../../modules/form/src/a3s-flow';
+import { useLang } from "@rspress/core/runtime";
+import { useMemo, useState } from "react";
+import type { A3S_FLOW_CORE_NODE_TYPES } from "../../../../modules/form/src/a3s-flow";
 import {
   createA3SFlowExpression,
   createA3SFlowNodeDefaultValue,
   localizeA3SFlowCoreNode,
   requireA3SFlowCoreNode,
-} from '../../../../modules/form/src/a3s-flow';
-import type { JsonObject } from '../../../../modules/form/src/core';
+} from "../../../../modules/form/src/a3s-flow";
+import type { JsonObject } from "../../../../modules/form/src/core";
 import {
   A3SFlowNodeConfigurationPanel,
   A3SFlowNodePreview,
   type WorkflowNodePreviewStatus,
-} from '../../../../modules/form/src/react';
-import '../../../../modules/form/src/styles.css';
-import '../../../../modules/form/src/a3s-flow.css';
-import { WorkflowStudioFrame } from './WorkflowStudioFrame';
+} from "../../../../modules/form/src/react";
+import "../../../../modules/form/src/styles.css";
+import "../../../../modules/form/src/a3s-flow.css";
+import { WorkflowStudioFrame } from "./WorkflowStudioFrame";
 
-export type DocumentedA3SFlowNodeType = (typeof A3S_FLOW_CORE_NODE_TYPES)[number];
+export type DocumentedA3SFlowNodeType =
+  (typeof A3S_FLOW_CORE_NODE_TYPES)[number];
 
 interface A3SFlowNodeDemoProps {
   nodeType: DocumentedA3SFlowNodeType;
 }
 
 function createExampleValue(nodeType: DocumentedA3SFlowNodeType): JsonObject {
-  const defaults = createA3SFlowNodeDefaultValue(requireA3SFlowCoreNode(nodeType));
+  const defaults = createA3SFlowNodeDefaultValue(
+    requireA3SFlowCoreNode(nodeType),
+  );
 
   switch (nodeType) {
-    case 'flow.start':
+    case "flow.start":
       return {
         ...defaults,
-        workflow_name: 'records.review',
-        entrypoint: 'workflows/records-review.ts',
+        workflow_name: "records.review",
+        entrypoint: "workflows/records-review.ts",
         input_schema: {
-          type: 'object',
+          type: "object",
           properties: {
-            requestId: { type: 'string' },
-            recordId: { type: 'string' },
+            requestId: { type: "string" },
+            recordId: { type: "string" },
           },
-          required: ['requestId', 'recordId'],
+          required: ["requestId", "recordId"],
           additionalProperties: false,
         },
-        run_id_expression: createA3SFlowExpression({ op: 'field', path: 'input.requestId' }),
+        run_id_expression: createA3SFlowExpression({
+          op: "field",
+          path: "input.requestId",
+        }),
       };
-    case 'flow.step':
+    case "flow.step":
       return {
         ...defaults,
-        step_name: 'records.sync',
-        input: createA3SFlowExpression({ op: 'field', path: 'input.record' }),
+        step_name: "records.sync",
+        input: createA3SFlowExpression({ op: "field", path: "input.record" }),
         max_attempts: 4,
         retry_delay_ms: 1_500,
-        on_exhausted: 'continue_workflow',
+        on_exhausted: "continue_workflow",
       };
-    case 'flow.batch':
+    case "flow.batch":
       return {
         steps: [
           {
-            step_key: 'load-record',
-            step_name: 'records.load',
-            input_mapping: createA3SFlowExpression({ op: 'field', path: 'input.recordId' }),
+            step_key: "load-record",
+            step_name: "records.load",
+            input_mapping: createA3SFlowExpression({
+              op: "field",
+              path: "input.recordId",
+            }),
             max_attempts: 3,
             retry_delay_ms: 500,
-            on_exhausted: 'fail_run',
+            on_exhausted: "fail_run",
           },
           {
-            step_key: 'write-audit',
-            step_name: 'audit.write',
-            input_mapping: createA3SFlowExpression({ op: 'field', path: 'input.requestId' }),
+            step_key: "write-audit",
+            step_name: "audit.write",
+            input_mapping: createA3SFlowExpression({
+              op: "field",
+              path: "input.requestId",
+            }),
             max_attempts: 2,
             retry_delay_ms: 1_000,
-            on_exhausted: 'continue_workflow',
+            on_exhausted: "continue_workflow",
           },
         ],
       };
-    case 'flow.condition':
+    case "flow.condition":
       return {
         ...defaults,
         input: { approved: true },
-        matched_label: 'Approved',
-        otherwise_label: 'Needs review',
+        matched_label: "Approved",
+        otherwise_label: "Needs review",
       };
-    case 'flow.wait':
+    case "flow.wait":
       return {
-        resume_at: createA3SFlowExpression({ op: 'field', path: 'input.resumeAt' }),
+        resume_at: createA3SFlowExpression({
+          op: "field",
+          path: "input.resumeAt",
+        }),
       };
-    case 'flow.hook':
+    case "flow.hook":
       return {
         ...defaults,
-        subject: 'Review record change',
+        subject: "Review record change",
         metadata: {
-          labels: { queue: 'record-review' },
-          data: { source: 'workflow' },
+          labels: { queue: "record-review" },
+          data: { source: "workflow" },
         },
       };
-    case 'flow.complete':
+    case "flow.complete":
       return {
-        output_expression: createA3SFlowExpression({ op: 'field', path: 'input.result' }),
+        output_expression: createA3SFlowExpression({
+          op: "field",
+          path: "input.result",
+        }),
       };
-    case 'flow.fail':
+    case "flow.fail":
       return defaults;
   }
 }
 
 export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
-  const isEnglish = useLang() === 'en';
-  const locale = isEnglish ? 'en-US' : 'zh-CN';
+  const isEnglish = useLang() === "en";
+  const locale = isEnglish ? "en-US" : "zh-CN";
   const node = requireA3SFlowCoreNode(nodeType);
-  const localizedNode = useMemo(() => localizeA3SFlowCoreNode(node, locale), [locale, node]);
-  const [value, setValue] = useState<JsonObject>(() => createExampleValue(nodeType));
+  const localizedNode = useMemo(
+    () => localizeA3SFlowCoreNode(node, locale),
+    [locale, node],
+  );
+  const [value, setValue] = useState<JsonObject>(() =>
+    createExampleValue(nodeType),
+  );
   const [panelOpen, setPanelOpen] = useState(true);
-  const [nodeStatus, setNodeStatus] = useState<WorkflowNodePreviewStatus>('idle');
+  const [nodeStatus, setNodeStatus] =
+    useState<WorkflowNodePreviewStatus>("idle");
   const [status, setStatus] = useState(
     isEnglish
-      ? 'Changes update the preview and JSON below.'
-      : '修改配置后，节点预览和下方 JSON 会同步更新。',
+      ? "Changes update the preview and JSON below."
+      : "修改配置后，节点预览和下方 JSON 会同步更新。",
   );
 
-  const runNode = () => {
-    setNodeStatus('running');
+  const runNode = async () => {
+    setNodeStatus("running");
     setStatus(
       isEnglish
         ? `${localizedNode.display_name} is running with the current configuration.`
         : `正在使用当前配置运行「${localizedNode.display_name}」。`,
     );
-    window.setTimeout(() => {
-      setNodeStatus('success');
-      setStatus(
-        isEnglish
-          ? `${localizedNode.display_name} completed successfully.`
-          : `「${localizedNode.display_name}」运行成功。`,
-      );
-    }, 650);
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 900));
+    setNodeStatus("success");
+    setStatus(
+      isEnglish
+        ? `${localizedNode.display_name} completed successfully.`
+        : `「${localizedNode.display_name}」运行成功。`,
+    );
   };
 
   return (
@@ -161,16 +184,19 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
             onClose={() => setPanelOpen(false)}
             onRun={runNode}
             lastRun={
-              <div className="a3s-doc-workflow-run-result" data-status={nodeStatus}>
-                <strong>{isEnglish ? 'Latest result' : '最近结果'}</strong>
+              <div
+                className="a3s-doc-workflow-run-result"
+                data-status={nodeStatus}
+              >
+                <strong>{isEnglish ? "Latest result" : "最近结果"}</strong>
                 <p>
-                  {nodeStatus === 'success'
+                  {nodeStatus === "success"
                     ? isEnglish
-                      ? 'The node completed with the current controlled value.'
-                      : '节点已使用当前受控值成功完成。'
+                      ? "The node completed with the current controlled value."
+                      : "节点已使用当前受控值成功完成。"
                     : isEnglish
-                      ? 'Run the node to inspect its latest result.'
-                      : '运行节点后可在这里查看最近结果。'}
+                      ? "Run the node to inspect its latest result."
+                      : "运行节点后可在这里查看最近结果。"}
                 </p>
               </div>
             }
@@ -191,8 +217,8 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
             onRequestConnection={() =>
               setStatus(
                 isEnglish
-                  ? 'The host must provide a connection picker for this input.'
-                  : '这个输入需要由宿主提供连接选择器。',
+                  ? "The host must provide a connection picker for this input."
+                  : "这个输入需要由宿主提供连接选择器。",
               )
             }
           />
@@ -200,7 +226,9 @@ export function A3SFlowNodeDemo({ nodeType }: A3SFlowNodeDemoProps) {
       />
 
       <details className="a3s-doc-flow-node-demo__value">
-        <summary>{isEnglish ? 'Current configuration (JSON)' : '当前配置（JSON）'}</summary>
+        <summary>
+          {isEnglish ? "Current configuration (JSON)" : "当前配置（JSON）"}
+        </summary>
         <pre>
           <code>{JSON.stringify(value, null, 2)}</code>
         </pre>

@@ -26,6 +26,7 @@ suite "a3s-ui-product-task-creation" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
+        expect "start-surface-boundary" { visible = css("[data-product-surface=start]") }
         wait "composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
 
         click "open-workspaces" { target = css(".product-start [data-composer-control=workspace] > button") }

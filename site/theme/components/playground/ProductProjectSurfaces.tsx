@@ -137,7 +137,7 @@ export function ProductProjectSessionSurface({
     const returnFocus =
       inspectorReturnFocusRef.current ?? inspectorTriggerRef.current;
     setInspectorOpen(false);
-    window.requestAnimationFrame(() => returnFocus?.focus());
+    returnFocus?.focus();
   }, []);
 
   const openInspector = useCallback(
@@ -164,9 +164,7 @@ export function ProductProjectSessionSurface({
   useEffect(() => {
     if (!inspectorOpen) return undefined;
 
-    const focusFrame = inspectorOverlay
-      ? window.requestAnimationFrame(() => inspectorCloseRef.current?.focus())
-      : undefined;
+    if (inspectorOverlay) inspectorCloseRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -195,7 +193,6 @@ export function ProductProjectSessionSurface({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      if (focusFrame) window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeInspector, inspectorOpen, inspectorOverlay]);

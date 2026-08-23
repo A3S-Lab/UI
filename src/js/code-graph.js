@@ -290,15 +290,22 @@
         return;
       }
       const label = truncate(point.node.label, 30);
-      const x = point.x + point.radius + 5;
-      const width = context.measureText(label).width;
+      const labelWidth = context.measureText(label).width;
+      const right = point.x + point.radius + 5;
+      const left = point.x - point.radius - 5 - labelWidth;
+      const x = clamp(
+        right + labelWidth <= width - 6 ? right : left,
+        6,
+        Math.max(6, width - labelWidth - 6),
+      );
+      const y = clamp(point.y, 11, Math.max(11, height - 11));
       context.globalAlpha =
         activeId && !connected.has(point.node.id) ? 0.28 : 0.92;
       context.fillStyle = colors.background;
-      context.fillRect(x - 3, point.y - 9, width + 6, 18);
+      context.fillRect(x - 3, y - 9, labelWidth + 6, 18);
       context.fillStyle =
         point.node.id === activeId ? colors.label : colors.labelMuted;
-      context.fillText(label, x, point.y);
+      context.fillText(label, x, y);
     });
     context.globalAlpha = 1;
   };

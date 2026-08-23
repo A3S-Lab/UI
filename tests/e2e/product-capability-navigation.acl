@@ -13,6 +13,7 @@ suite "a3s-ui-product-capability-navigation" {
         click "open-capabilities" { target = css(".product-sidebar__capability-link") }
         wait "assistant-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
         expect "catalog-ready" { visible = css("[data-product-surface=catalog][data-catalog-tab=assistants]") }
+        expect "capability-browse-contract" { visible = css("[data-product-surface=catalog] [data-directory-layout]") }
         expect "sidebar-current" { visible = css(".product-sidebar__capability-link[aria-current=page]") }
         expect "assistant-tab-selected" { visible = css("[data-product-surface=catalog] [role=tab][aria-selected=true]:nth-child(1)") }
         expect "featured-scenarios" { visible = css(".product-catalog__featured--scenarios .product-catalog__scenario") }
@@ -65,6 +66,105 @@ suite "a3s-ui-product-capability-navigation" {
         page_errors "page-errors" { path = "product/capability-navigation-mobile-page-errors.json" clear = false }
     }
 
+    scenario "capability-overlays-short-desktop" {
+        name = "Capability detail and setup dialogs stay complete on a short desktop viewport"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "short-desktop" { width = 1024 height = 700 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=connectors" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog][data-catalog-tab=connectors]") }
+
+        click "open-attention-detail" { target = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main") }
+        expect "detail-contained" {
+            target = css("dialog.product-capability-detail-dialog[open]")
+            viewport_coverage_at_least = 100
+        }
+        expect "detail-close-reachable" { pointer_reachable = role("button", "关闭能力详情") }
+        expect "detail-footer-reachable" { pointer_reachable = role("button", "查看设置") }
+        screenshot "detail-short-desktop" { path = "product/capability-detail-short-desktop.png" }
+        press "close-detail" { key = "Escape" }
+        expect "detail-origin-restored" { visible = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main:focus") }
+
+        click "open-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
+        expect "setup-contained" {
+            target = css("dialog.product-capability-setup[open]")
+            viewport_coverage_at_least = 100
+        }
+        expect "setup-header-contained" {
+            target = css("dialog.product-capability-setup[open] > form > header")
+            viewport_coverage_at_least = 100
+        }
+        expect "setup-footer-contained" {
+            target = css("dialog.product-capability-setup[open] > form > footer")
+            viewport_coverage_at_least = 100
+        }
+        expect "setup-close-reachable" { pointer_reachable = role("button", "关闭配置") }
+        screenshot "setup-short-desktop" { path = "product/capability-setup-short-desktop.png" }
+        click "close-setup" { target = role("button", "关闭配置") }
+        expect "setup-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
+
+        console "console" { path = "product/capability-overlays-short-desktop-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-overlays-short-desktop-page-errors.json" clear = false }
+    }
+
+    scenario "capability-overlays-mobile" {
+        name = "Capability detail, destructive confirmation, and connection setup remain layered and reachable on phones"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "mobile" { width = 390 height = 844 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=connectors" }
+        wait "loaded" { load = "networkidle" }
+        wait "catalog-ready" { visible = css("[data-product-surface=catalog][data-catalog-tab=connectors]") }
+
+        click "open-ready-detail" { target = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main") }
+        expect "mobile-detail-contained" {
+            target = css("dialog.product-capability-detail-dialog[open]")
+            viewport_coverage_at_least = 100
+        }
+        expect "mobile-detail-primary-reachable" { pointer_reachable = role("button", "用于新任务") }
+        expect "mobile-detail-danger-reachable" { pointer_reachable = role("button", "断开连接") }
+        screenshot "detail-mobile" { path = "product/capability-detail-mobile.png" }
+
+        click "open-remove-confirmation" { target = css(".product-capability-detail > footer button[data-danger]") }
+        expect "remove-confirmation-contained" {
+            target = css("dialog.product-capability-remove[open]")
+            viewport_coverage_at_least = 100
+        }
+        expect "remove-cancel-reachable" { pointer_reachable = role("button", "取消") }
+        expect "remove-confirm-reachable" { pointer_reachable = css("dialog.product-capability-remove[open] button[data-danger]") }
+        screenshot "remove-mobile" { path = "product/capability-remove-mobile.png" }
+        click "cancel-remove" { target = css("dialog.product-capability-remove[open] footer button:first-child") }
+        expect "remove-origin-restored" { visible = css(".product-capability-detail > footer button[data-danger]:focus") }
+        click "close-detail" { target = role("button", "关闭能力详情") }
+        expect "detail-card-restored" { visible = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main:focus") }
+
+        click "open-connection-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
+        expect "mobile-setup-contained" {
+            target = css("dialog.product-capability-setup[open]")
+            viewport_coverage_at_least = 100
+        }
+        expect "mobile-setup-header-contained" {
+            target = css("dialog.product-capability-setup[open] > form > header")
+            viewport_coverage_at_least = 100
+        }
+        expect "mobile-setup-footer-contained" {
+            target = css("dialog.product-capability-setup[open] > form > footer")
+            viewport_coverage_at_least = 100
+        }
+        click "check-connection" { target = role("button", "检查连接") }
+        wait "connection-passed" { visible = css(".product-capability-setup__test[data-test-state=passed]") }
+        expect "save-connection-reachable" { pointer_reachable = role("button", "保存并连接") }
+        screenshot "setup-mobile" { path = "product/capability-setup-mobile.png" }
+        click "close-connection-setup" { target = role("button", "关闭配置") }
+        expect "connection-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
+
+        console "console" { path = "product/capability-overlays-mobile-console.json" clear = false }
+        page_errors "page-errors" { path = "product/capability-overlays-mobile-page-errors.json" clear = false }
+    }
+
     scenario "capability-navigation-english" {
         name = "Capability navigation preserves the English route and labels"
         surface = "web"
@@ -113,6 +213,7 @@ suite "a3s-ui-product-capability-navigation" {
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/playground.html" }
         wait "loaded" { load = "networkidle" }
+        expect "product-application-contract" { visible = css("[data-product-application]") }
         click "open-search" { target = css(".product-sidebar__window button[aria-label='搜索']") }
         expect "search-ready" { visible = css("dialog.product-search-dialog[open]") }
         expect "resource-group" { text = "资源" }

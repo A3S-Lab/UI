@@ -27,7 +27,7 @@ export function SettingsSwitch({
   onCheckedChange?: (checked: boolean) => void;
 }) {
   return (
-    <span className="product-settings__switch">
+    <label className="product-settings__switch">
       <input
         aria-label={label}
         checked={onCheckedChange ? checked : undefined}
@@ -38,7 +38,7 @@ export function SettingsSwitch({
         type="checkbox"
       />
       <span />
-    </span>
+    </label>
   );
 }
 

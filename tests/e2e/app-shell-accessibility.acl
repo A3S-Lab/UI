@@ -11,8 +11,12 @@ suite "a3s-ui-app-shell-accessibility" {
         wait "loaded" { load = "networkidle" }
         wait "ready" { visible = css("html:not([data-a3s-defer-init])") }
 
-        expect "closed-navigation-inert" {
-            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation][inert][aria-hidden=true]")
+        expect "closed-navigation-state" {
+            visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']")
+        }
+        accessibility "closed-navigation-tree" {
+            path = "components/app-shell-focus-closed-accessibility.json"
+            interactive = true
         }
         click "open-navigation" {
             target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]")

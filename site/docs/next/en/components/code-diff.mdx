@@ -3,16 +3,47 @@
 Presents code changes as readable, scrollable lines so additions, removals, and context remain distinguishable without relying on color alone.
 
 <Preview class="w-full">
-<figure class="code-diff"><figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre></figure>
+  <figure class="code-diff" data-line-numbers>
+    <figcaption>src/session.ts</figcaption>
+    <pre tabIndex="0">
+      <code>
+        <span data-diff-line="-">
+          <span aria-hidden="true" data-diff-old-line>
+            18
+          </span>
+          <span aria-hidden="true" data-diff-new-line></span>
+          <span aria-hidden="true" data-diff-marker>
+            −
+          </span>
+          <span data-diff-code>return reconnect()</span>
+        </span>
+        <span data-diff-line="+">
+          <span aria-hidden="true" data-diff-old-line></span>
+          <span aria-hidden="true" data-diff-new-line>
+            18
+          </span>
+          <span aria-hidden="true" data-diff-marker>
+            +
+          </span>
+          <span data-diff-code>return reconnect(&#123; retry: 3 &#125;)</span>
+        </span>
+      </code>
+    </pre>
+  </figure>
 </Preview>
 
 ## Usage
 
 ```html
 <figure class="code-diff">
-  <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+  <figcaption>src/session.ts</figcaption>
+  <pre
+    tabindex="0"
+  ><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
 </figure>
 ```
+
+Add `data-line-numbers` when review context needs old and new gutters. Each line then contains `data-diff-old-line`, `data-diff-new-line`, `data-diff-marker`, and `data-diff-code`; empty line-number cells remain present so every row stays aligned.
 
 ## React
 
@@ -22,7 +53,15 @@ import { CodeDiff } from "@a3s-lab/ui/react";
 export function Example() {
   return (
     <CodeDiff>
-      <figcaption>src/session.ts</figcaption><pre tabIndex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+      <figcaption>src/session.ts</figcaption>
+      <pre tabIndex="0">
+        <code>
+          <span data-diff-line="-">return reconnect()</span>
+          <span data-diff-line="+">
+            return reconnect(&#123; retry: 3 &#125;)
+          </span>
+        </code>
+      </pre>
     </CodeDiff>
   );
 }
@@ -35,12 +74,14 @@ This component has no behavior controller; the React adapter only renders its se
 ```vue
 <script setup>
 import { CodeDiff } from "@a3s-lab/ui/vue";
-
 </script>
 
 <template>
   <CodeDiff>
-    <figcaption>src/session.ts</figcaption><pre tabindex="0"><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
+    <figcaption>src/session.ts</figcaption>
+    <pre
+      tabindex="0"
+    ><code><span data-diff-line="-">return reconnect()</span><span data-diff-line="+">return reconnect(&#123; retry: 3 &#125;)</span></code></pre>
   </CodeDiff>
 </template>
 ```
@@ -49,13 +90,15 @@ The Vue adapter adds no wrapper and does not alter native attributes.
 
 ## Contract
 
-| Surface | Value |
-| --- | --- |
-| Root selector | `.code-diff` |
-| Native root | `<figure>` |
-| States | `ready`, `loading`, `empty`, `error` |
-| Events | — |
-| Methods | — |
+| Surface             | Value                                                                            |
+| ------------------- | -------------------------------------------------------------------------------- |
+| Root selector       | `.code-diff`                                                                     |
+| Native root         | `<figure>`                                                                       |
+| Optional variant    | `data-line-numbers`                                                              |
+| Numbered-line parts | `data-diff-old-line`, `data-diff-new-line`, `data-diff-marker`, `data-diff-code` |
+| States              | `ready`, `loading`, `empty`, `error`                                             |
+| Events              | —                                                                                |
+| Methods             | —                                                                                |
 
 ## Product boundary
 

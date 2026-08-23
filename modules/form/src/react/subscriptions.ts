@@ -8,6 +8,7 @@ import {
   jsonValuesEqual,
   resolveValuePathTemplate,
 } from '../core';
+import { NESTED_ERROR_FIELD_WIDGETS } from './widget-contract';
 
 export interface SubscribedNodeRenderProps {
   plan: FormPlan;
@@ -125,7 +126,8 @@ export function subscribedNodePropsEqual(
     if (
       node?.kind === 'repeater' ||
       node?.widget === 'matrix-single' ||
-      node?.widget === 'matrix-multiple'
+      node?.widget === 'matrix-multiple' ||
+      NESTED_ERROR_FIELD_WIDGETS.has(node?.widget ?? '')
     ) {
       if (!errorsWithinScopeEqual(left.errorMap, right.errorMap, valuePath)) return false;
       if (!validatingWithinScopeEqual(left.validatingPaths, right.validatingPaths, valuePath)) {

@@ -1,0 +1,283 @@
+.a3s-component-state-matrix {
+  width: min(1080px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(840px, calc(100dvh - 32px));
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 14px;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: 0 20px 20px -8px rgb(0 0 0 / 24%);
+}
+
+.a3s-component-state-matrix::backdrop {
+  background: rgb(10 14 24 / 46%);
+}
+
+.a3s-component-state-matrix__header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: grid;
+  min-width: 0;
+  padding: 18px 18px 16px 22px;
+  border-block-end: 1px solid var(--ui-line);
+  background: var(--ui-paper);
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 24px;
+}
+
+.a3s-component-state-matrix__header > div,
+.a3s-component-state-matrix__header h2,
+.a3s-component-state-matrix__header p {
+  min-width: 0;
+}
+
+.a3s-component-state-matrix__header h2 {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.a3s-component-state-matrix__header p {
+  max-width: 72ch;
+  margin: 5px 0 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.a3s-component-state-matrix__header > button {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  place-items: center;
+  color: var(--ui-muted);
+  cursor: pointer;
+}
+
+.a3s-component-state-matrix__header > button:hover {
+  background: var(--ui-panel-raised);
+  color: var(--ui-ink);
+}
+
+.a3s-component-state-matrix__header > button:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 2px;
+}
+
+.a3s-component-state-matrix__header > button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.a3s-component-state-matrix__grid {
+  display: grid;
+  max-height: calc(100dvh - 132px);
+  min-width: 0;
+  padding: 18px;
+  overflow: auto;
+  background: color-mix(in srgb, var(--ui-panel) 62%, var(--ui-paper));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+  overscroll-behavior: contain;
+}
+
+.a3s-component-state-matrix__grid > article {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ui-line);
+  border-radius: 10px;
+  background: var(--ui-paper);
+}
+
+.a3s-component-state-matrix__grid > article > header {
+  display: flex;
+  min-width: 0;
+  min-height: 48px;
+  padding: 9px 12px;
+  border-block-end: 1px solid var(--ui-line);
+  background: var(--ui-panel);
+  align-items: baseline;
+  gap: 10px;
+}
+
+.a3s-component-state-matrix__grid > article > header code {
+  flex: none;
+  padding: 2px 5px;
+  border: 1px solid var(--ui-line);
+  border-radius: 5px;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  font: 600 11px/1.35 var(--ui-mono);
+}
+
+.a3s-component-state-matrix__grid > article > header span {
+  min-width: 0;
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.a3s-component-state-matrix__specimen {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 112px;
+  max-height: 300px;
+  padding: 20px;
+  overflow: auto;
+  background: var(--ui-paper);
+  align-items: center;
+  justify-items: center;
+  overscroll-behavior: contain;
+}
+
+.a3s-component-state-matrix__specimen > [data-state-specimen-root] {
+  max-width: 100%;
+}
+
+/* Consumer dialogs are fixed to the viewport. Their acceptance clones need an
+   explicitly inline presentation so that the surface cannot escape its card. */
+.a3s-component-state-matrix__specimen
+  > dialog[data-state-specimen-presentation="inline-dialog"][open] {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  scale: 1 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+.a3s-component-state-matrix__specimen
+  > dialog[data-state-specimen-presentation="inline-dialog"][open]
+  > * {
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  position: relative !important;
+  inset: auto !important;
+  z-index: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+  scale: 1 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+.a3s-component-state-matrix__grid
+  > article:has(
+    > .a3s-component-state-matrix__specimen
+      > dialog[data-state-specimen-presentation="inline-dialog"]
+  )
+  > .a3s-component-state-matrix__specimen {
+  max-height: none;
+  align-items: start;
+  justify-items: stretch;
+}
+
+.a3s-component-state-matrix__specimen
+  > :is(
+    .app-shell,
+    .settings-layout,
+    .split-pane,
+    .task-workspace,
+    .task-pane
+  ) {
+  width: 100%;
+}
+
+.a3s-component-state-matrix__hidden-note {
+  color: var(--ui-faint);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.a3s-component-state-matrix__error {
+  margin: 18px 18px 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ui-red) 9%, var(--ui-paper));
+  color: var(--ui-ink);
+}
+
+.a3s-component-state-matrix__error strong {
+  font-size: 13px;
+}
+
+.a3s-component-state-matrix__error p {
+  margin: 4px 0 0;
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .a3s-component-state-matrix {
+    width: min(100vw - 16px, 560px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .a3s-component-state-matrix__header {
+    padding: 15px 12px 13px 16px;
+    gap: 14px;
+  }
+
+  .a3s-component-state-matrix__header p {
+    font-size: 12px;
+  }
+
+  .a3s-component-state-matrix__grid {
+    max-height: calc(100dvh - 118px);
+    padding: 10px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .a3s-component-state-matrix__specimen {
+    min-height: 104px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .a3s-component-state-matrix__trigger-label {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .a3s-component-state-matrix__header > button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3s-component-state-matrix,
+  .a3s-component-state-matrix::backdrop {
+    transition: none;
+  }
+}
