@@ -1,16 +1,18 @@
 # My Files Product Requirements
 
-| Field | Contract |
-| --- | --- |
-| Surface group | `playground` |
-| Route | `/playground/resources/files.html` |
-| Stable selector | `[data-product-application][data-view=resources] [data-product-surface=files]` |
-| A3S Test suite | `tests/e2e/playground-route-contracts.acl` |
-| A3S Test scenario | `playground-route-files` |
+| Field             | Contract                                                                       |
+| ----------------- | ------------------------------------------------------------------------------ |
+| Surface group     | `playground`                                                                   |
+| Route             | `/playground/resources/files.html`                                             |
+| Stable selector   | `[data-product-application][data-view=resources] [data-product-surface=files]` |
+| A3S Test suite    | `tests/e2e/playground-route-contracts.acl`                                     |
+| A3S Test scenario | `playground-route-files`                                                       |
 
 ## User problem
 
 People evaluating the composition need to navigate workspace files, select and preview resources, and express file-operation intent through a bounded manager.
+
+The collection must also be scannable before a filename is read. Folders use a familiar folder silhouette, while known file families use a stable file-page shape, a short extension label, and a restrained type tone. Action glyphs such as eye, chart, or report may not stand in for file identity because they describe operations or content, not the resource itself.
 
 ## Product boundary
 
@@ -24,9 +26,13 @@ The required state vocabulary is ready plus route-specific empty, loading, parti
 
 The stable acceptance root is `[data-product-application][data-view=resources] [data-product-surface=files]`. Pointer and keyboard users must reach the same primary actions. Keyboard focus enters through named controls, activation uses native Enter or Space behavior, Escape or a repeated toggle closes transient layers where applicable, and focus returns to the control that opened the layer. Resizing or dragging always has a keyboard-accessible preset or command.
 
+File identity remains consistent across grid, list, rename, navigation, selection, transfer, and Quick Look states. A favorite marker is subordinate to the type icon and never obscures its extension label. Unknown extensions fall back to a generic named file treatment instead of borrowing an unrelated action icon.
+
 ## Responsive behavior
 
 Desktop evidence uses 1440 × 1000 and compact evidence uses 390 × 844. The semantic reading order remains stable, the owning region controls scrolling, mobile navigation becomes inert while closed, and no primary value or recovery action is hidden behind clipping. The route must preserve one task-first information hierarchy, keep global navigation separate from the work canvas, expose truthful empty and failure states, and remain usable at 390px without imitating a second production backend.
+
+Grid view targets six compact columns in the available desktop manager canvas and two readable columns at 390px. Filenames may occupy two lines before truncation; type icons may scale between grid, list, navigation, and preview contexts without changing their visual family.
 
 ## Accessibility
 
@@ -46,6 +52,9 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, panel disclosure, focus return, running, and successful-result transitions are deterministic where this surface owns them.
 - Product-specific risk is covered: The route must preserve one task-first information hierarchy, keep global navigation separate from the work canvas, expose truthful empty and failure states, and remain usable at 390px without imitating a second production backend.
+- Folder, code, document, spreadsheet, presentation, PDF, image, archive, media, and generic file treatments remain visually distinct and expose a non-color extension cue where applicable.
+- The same entry keeps the same file-family identity in grid view, list view, selection, transfer, rename, and Quick Look.
+- The 390px grid renders two columns with readable two-line filenames; the 1440px layout preserves a compact scan without orphaned action glyphs masquerading as file types.
 
 ## A3S Test mapping
 

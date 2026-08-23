@@ -58,6 +58,7 @@
 
 ### Fixed
 
+- Replaced generic action glyphs in the Playground workspace file manager with a coherent folder and file-family icon system, readable extension labels, consistent grid/list/Quick Look identity, and compact six-column desktop and two-column mobile layouts.
 - Made all 18 public workflow nodes expose their defining current configuration on the canvas, restored readable inspector descriptions at the standard 400-pixel width, enlarged dense node and panel controls, and added complete arrow, Home, and End key navigation to inspector tabs.
 - Made workflow documentation canvas zoom controls functional, focused node-library search on open, returned inspector dismissal to the native node trigger, switched narrow article embeds to a container-sized stacked canvas and inspector layout so branch actions remain reachable, and captured deterministic evidence for every public node.
 - Kept container nodes fully visible beside the inspector in narrow documentation embeds and made the editor run regression use stable semantic state instead of transient copy.

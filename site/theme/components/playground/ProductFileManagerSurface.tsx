@@ -6,10 +6,10 @@ import { ProductFileWorkbench } from "./ProductFileWorkbench";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
   formatFileDate,
-  productFileEntryIcon,
   productFileOptionId,
   useProductFileManager,
 } from "./useProductFileManager";
+import { ProductFileTypeIcon } from "./ProductFileTypeIcon";
 
 export function ProductFileManagerSurface({
   locale,
@@ -279,7 +279,11 @@ function ProductWorkspaceFileManagerSurface({
                 onClick={() => navigate(entry.id)}
                 type="button"
               >
-                <ProductPlaygroundIcon name="folder" />
+                <ProductFileTypeIcon
+                  entry={entry}
+                  favorite={false}
+                  size="navigation"
+                />
                 {entry.name}
               </button>
             ))}
@@ -388,7 +392,10 @@ function ProductWorkspaceFileManagerSurface({
               }}
               type="button"
             >
-              <ProductPlaygroundIcon name="folder" />
+              <ProductFileTypeIcon
+                entry={{ kind: "folder", name: newFolderName, type: "Folder" }}
+                size={view === "grid" ? "grid" : "list"}
+              />
               {zh ? "新建文件夹" : "New folder"}
             </button>
             <label data-upload-action>
@@ -671,8 +678,10 @@ function ProductWorkspaceFileManagerSurface({
                     commitRename();
                   }}
                 >
-                  <ProductPlaygroundIcon
-                    name={entry.kind === "folder" ? "folder" : "document"}
+                  <ProductFileTypeIcon
+                    entry={entry}
+                    favorite={false}
+                    size={view === "grid" ? "grid" : "list"}
                   />
                   <input
                     autoFocus
@@ -701,12 +710,10 @@ function ProductWorkspaceFileManagerSurface({
                 </form>
               ) : (
                 <div data-file-entry-control>
-                  <span data-file-icon>
-                    <ProductPlaygroundIcon name={productFileEntryIcon(entry)} />
-                    {entry.favorite ? (
-                      <ProductPlaygroundIcon data-favorite name="heart" />
-                    ) : null}
-                  </span>
+                  <ProductFileTypeIcon
+                    entry={entry}
+                    size={view === "grid" ? "grid" : "list"}
+                  />
                   <strong title={entry.name}>{entry.name}</strong>
                   <span
                     data-file-kind
@@ -818,9 +825,7 @@ function ProductWorkspaceFileManagerSurface({
             </button>
           </header>
           <div data-quicklook-preview>
-            <span>
-              <ProductPlaygroundIcon name={productFileEntryIcon(quickLook)} />
-            </span>
+            <ProductFileTypeIcon entry={quickLook} size="preview" />
             <h2>{quickLook.name}</h2>
             <pre>
               {quickLook.preview?.[locale] ??

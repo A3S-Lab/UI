@@ -140,6 +140,51 @@ suite "a3s-ui-product-resource-surfaces" {
         page_errors "page-errors" { path = "product/files-mobile-page-errors.json" clear = false }
     }
 
+    scenario "files-icon-identity" {
+        name = "Workspace files preserve recognizable type identity across views, preview, theme, and viewport"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/resources/files.html" }
+        wait "loaded" { load = "networkidle" }
+        click "open-workspace" { target = role("tab", "工作区") }
+        wait "files-ready" { visible = css(".product-file-manager[data-file-manager-initialized=true]") }
+
+        expect "folder-identity" { visible = css("[data-file-manager-item][data-kind=folder] [data-file-icon-size=grid][data-file-type=folder]") }
+        expect "code-identity" { visible = css("[data-file-manager-item]:has(strong[title='release-readiness.md']) [data-file-type=code] [data-file-extension=MD]") }
+        expect "document-identity" { visible = css("[data-file-manager-item]:has(strong[title='experience-brief.docx']) [data-file-type=document] [data-file-extension=DOCX]") }
+        expect "spreadsheet-identity" { visible = css("[data-file-manager-item]:has(strong[title='quality-scorecard.xlsx']) [data-file-type=spreadsheet] [data-file-extension=XLSX]") }
+        expect "presentation-identity" { visible = css("[data-file-manager-item]:has(strong[title='release-review.pptx']) [data-file-type=presentation] [data-file-extension=PPTX]") }
+        expect "pdf-identity" { visible = css("[data-file-manager-item]:has(strong[title='visual-acceptance-report.pdf']) [data-file-type=pdf] [data-file-extension=PDF]") }
+        expect "image-identity" { visible = css("[data-file-manager-item]:has(strong[title='device-shell-review.png']) [data-file-type=image] [data-file-extension=PNG]") }
+        expect "favorite-is-contained" { visible = css("[data-file-manager-item]:has(strong[title='release-readiness.md']) [data-file-favorite] svg[data-favorite][data-icon=heart]") }
+        screenshot "desktop-grid" { path = "product/files-icon-identity-desktop.png" }
+
+        click "list-view" { target = role("button", "列表视图") }
+        expect "list-icon-scale" { visible = css("[data-file-manager-viewport][data-view=list] [data-file-icon-size=list][data-file-type=folder]") }
+        double_click "open-image-preview" { target = css("[data-file-manager-item]:has(strong[title='device-shell-review.png'])") }
+        expect "preview-keeps-image-identity" { visible = css("[data-file-manager-quicklook] [data-file-icon-size=preview][data-file-type=image] [data-file-extension=PNG]") }
+        screenshot "quick-look" { path = "product/files-icon-identity-quick-look.png" }
+        click "close-preview" { target = role("button", "关闭快速查看") }
+        click "grid-view" { target = role("button", "图标视图") }
+        click "clear-selection" { target = role("button", "清除选择") }
+
+        click "open-account-menu" { target = role("button", "本地用户") }
+        click "enable-dark-appearance" { target = role("menuitemcheckbox", "深色外观") }
+        expect "dark-manager" { visible = css("html.dark .product-file-manager") }
+        press "close-account-menu" { key = "Escape" }
+        expect "account-trigger-restored" { visible = css(".product-sidebar__footer > button[aria-expanded=false]:focus") }
+        screenshot "desktop-dark" { path = "product/files-icon-identity-dark.png" }
+
+        viewport "mobile" { width = 390 height = 844 }
+        expect "mobile-grid-identity" { visible = css("[data-file-manager-viewport][data-view=grid] [data-file-icon-size=grid][data-file-type=folder]") }
+        screenshot "mobile-dark" { path = "product/files-icon-identity-mobile-dark.png" }
+        accessibility "tree" { path = "product/files-icon-identity-accessibility.json" interactive = true }
+        console "console" { path = "product/files-icon-identity-console.json" clear = false }
+        page_errors "page-errors" { path = "product/files-icon-identity-page-errors.json" clear = false }
+    }
+
     scenario "knowledge-library-recovery" {
         name = "Knowledge library management exposes a failed update and its recovery without losing the usable version"
         surface = "web"

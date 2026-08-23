@@ -369,8 +369,7 @@ export function useProductFileManager(
     else {
       entries
         .filter(
-          (entry) =>
-            clipboard.ids.includes(entry.id) && entry.workspaceFileId,
+          (entry) => clipboard.ids.includes(entry.id) && entry.workspaceFileId,
         )
         .forEach((entry) =>
           moveProductWorkspaceFile(entry.workspaceFileId!, currentId),
@@ -696,14 +695,4 @@ export function formatFileDate(value: string, locale: ProductPlaygroundLocale) {
 
 export function productFileOptionId(value: string) {
   return `product-file-option-${value.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
-}
-
-export function productFileEntryIcon(entry: ProductFileEntry) {
-  if (entry.kind === "folder") return "folder" as const;
-  if (entry.type.includes("image")) return "eye" as const;
-  if (entry.workbench === "code") return "code" as const;
-  if (entry.workbench === "spreadsheet") return "chart" as const;
-  if (entry.workbench === "presentation") return "presentation" as const;
-  if (entry.workbench === "pdf") return "report" as const;
-  return "document" as const;
 }
