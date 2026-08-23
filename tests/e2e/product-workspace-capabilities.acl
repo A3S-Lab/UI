@@ -42,44 +42,58 @@ suite "a3s-ui-product-workspace-capabilities" {
         fill "find-code" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "release-readiness.md" }
         click "select-code" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-code" { key = "Enter" }
+        wait "quick-look-code-ready" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='release-readiness']") }
         click "open-code" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         expect "typed-workbench-dispatch" { visible = css("[data-workbench-kind]") }
         expect "code-workbench" { visible = css(".product-file-workbench[data-workbench-kind=code] .product-code-workbench") }
+        wait "code-editor-public-contract" { visible = css(".product-file-workbench[data-workbench-kind=code] .product-code-workbench.code-editor[data-code-editor-initialized=true] > section > [data-code-editor-gutter]") }
         click "preview-markdown" { target = role("button", "预览文件") }
         expect "markdown-preview" { visible = css(".product-code-workbench [data-markdown-preview]") }
         click "back-from-code" { target = css("[data-file-workbench-back]") }
+        wait "code-preview-restored" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='release-readiness']") }
+        click "close-code-preview" { target = role("button", "关闭文件预览") }
 
         fill "find-document" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "experience-brief.docx" }
         click "select-document" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-document" { key = "Enter" }
+        wait "quick-look-document-ready" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='experience-brief']") }
         click "open-document" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         wait "document-workbench" { visible = css(".product-file-workbench[data-workbench-kind=document] .work-document-editor") }
         expect "office-integration-ready" { visible = css("[data-office-load-state=ready]") }
         click "document-review" { target = role("tab", "审阅") }
         expect "document-review-toolbar" { text = "修订" }
         click "back-from-document" { target = css("[data-file-workbench-back]") }
+        wait "document-preview-restored" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='experience-brief']") }
+        click "close-document-preview" { target = role("button", "关闭文件预览") }
 
         fill "find-spreadsheet" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "quality-scorecard.xlsx" }
         click "select-spreadsheet" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-spreadsheet" { key = "Enter" }
+        wait "quick-look-spreadsheet-ready" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='quality-scorecard']") }
         click "open-spreadsheet" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         wait "spreadsheet-workbench" { visible = css(".product-file-workbench[data-workbench-kind=spreadsheet] .work-spreadsheet-editor") }
         click "spreadsheet-data" { target = role("tab", "数据") }
         expect "spreadsheet-data-toolbar" { text = "自动筛选" }
         click "back-from-spreadsheet" { target = css("[data-file-workbench-back]") }
+        wait "spreadsheet-preview-restored" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='quality-scorecard']") }
+        click "close-spreadsheet-preview" { target = role("button", "关闭文件预览") }
 
         fill "find-presentation" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "release-review.pptx" }
         click "select-presentation" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-presentation" { key = "Enter" }
+        wait "quick-look-presentation-ready" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='release-review']") }
         click "open-presentation" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         wait "presentation-workbench" { visible = css(".product-file-workbench[data-workbench-kind=presentation] .work-presentation-editor") }
         click "select-second-slide" { target = css(".work-presentation-editor [data-slide-thumbnail][data-slide-index='1']") }
         expect "second-slide" { text = "用一句可以独立成立的话，说明我们看到了什么。" }
         click "back-from-presentation" { target = css("[data-file-workbench-back]") }
+        wait "presentation-preview-restored" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='release-review']") }
+        click "close-presentation-preview" { target = role("button", "关闭文件预览") }
 
         fill "find-pdf" { target = css(".product-file-manager input[aria-label='搜索文件']") value = "visual-acceptance-report.pdf" }
         click "select-pdf" { target = css(".product-file-manager [data-file-manager-item]") }
         press "quick-look-pdf" { key = "Enter" }
+        wait "quick-look-pdf-ready" { visible = css("[data-file-manager-quicklook][data-file-preview-entry='visual-acceptance-report']") }
         click "open-pdf" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }
         wait "pdf-workbench" { visible = css(".product-file-workbench[data-workbench-kind=pdf] .work-pdf-viewer") }
         wait "pdf-navigation-ready" { visible = css(".work-pdf-viewer button[aria-label='下一页']:not(:disabled)") }
@@ -138,6 +152,8 @@ suite "a3s-ui-product-workspace-capabilities" {
 
         expect "file-workbench-boundary" { visible = css(".product-file-workbench") }
         wait "real-file-loaded" { visible = css(".product-code-workbench[data-code-load-state=ready]") }
+        wait "real-code-editor-public-contract" { visible = css(".product-code-workbench.code-editor[data-code-editor-initialized=true][data-a3s-components~='code-editor'] > section > textarea") }
+        expect "editor-status-contract" { visible = css(".product-code-workbench.code-editor > footer:has([data-code-editor-state]):has([data-code-editor-lines]):has([data-code-editor-position])") }
         expect "clean-on-open" { visible = css(".product-code-workbench [data-code-tabs] button:not([data-dirty])") }
         click "preview-real-file" { target = role("button", "预览文件") }
         expect "real-file-content" { text = "Workspace intake verification" }
@@ -148,7 +164,9 @@ suite "a3s-ui-product-workspace-capabilities" {
             value = "\n\nSaved content survives reopening."
         }
         expect "dirty-after-edit" { visible = css(".product-code-workbench [data-code-tabs] button[data-dirty=true]") }
-        click "save-real-file" { target = role("button", "保存文件") }
+        expect "public-editor-dirty" { visible = css(".product-code-workbench.code-editor[data-dirty=true] [data-code-editor-state]") }
+        press "save-real-file-with-editor-shortcut" { key = "Control+s" }
+        expect "public-editor-clean" { visible = css(".product-code-workbench.code-editor[data-dirty=false] [data-code-editor-state]") }
         expect "clean-after-save" { visible = css(".product-code-workbench [data-code-tabs] button:not([data-dirty])") }
         click "back-to-files" { target = css("[data-file-workbench-back]") }
         click "reopen-code-workbench" { target = css("[data-file-manager-quicklook] footer button[data-primary]") }

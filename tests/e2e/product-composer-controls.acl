@@ -69,6 +69,7 @@ suite "a3s-ui-product-composer-controls" {
 
         click "open-workspaces" { target = css(".product-start [data-composer-control=workspace] > button") }
         click "choose-local-workspace" { target = css(".product-start [data-workspace-options] [role=option]:nth-child(2)") }
+        expect "workspace-control-selected" { visible = css(".product-start [data-composer-control=workspace]:has(> button [data-workspace-copy] strong)") }
         expect "local-workspace-selected" { text = "本地工作区" }
 
         click "remove-file" { target = css("[data-composer-resources] [data-resource-kind=file] [data-composer-action=remove-resource]") }

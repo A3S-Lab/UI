@@ -88,8 +88,9 @@
 }
 
 .product-files__panel[data-file-view="workspace"] {
-  margin-inline: -1.5rem;
-  overflow: hidden;
+  height: 100%;
+  padding-block: 0.75rem 2rem;
+  overflow: clip;
 }
 
 .product-file-artifacts {
@@ -325,7 +326,7 @@
   padding: 0;
   border: 0;
   align-items: center;
-  grid-template-columns: 1.5rem minmax(0, 1fr) 1rem;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
   gap: 0.625rem;
   background: transparent;
   color: var(--ui-ink);
@@ -339,47 +340,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.product-file-artifacts [data-artifact-icon] {
-  display: grid;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 0.375rem;
-  background: color-mix(in srgb, var(--ui-blue) 9%, var(--ui-panel));
-  color: var(--ui-blue);
-  place-items: center;
-}
-
-.product-file-artifacts [data-artifact-icon][data-kind="document"] {
-  background: color-mix(in srgb, var(--ui-purple) 9%, var(--ui-panel));
-  color: var(--ui-purple);
-}
-
-.product-file-artifacts [data-artifact-icon][data-kind="spreadsheet"] {
-  background: color-mix(in srgb, var(--ui-green) 9%, var(--ui-panel));
-  color: var(--ui-green);
-}
-
-.product-file-artifacts [data-artifact-icon][data-kind="presentation"] {
-  background: color-mix(in srgb, var(--ui-amber) 10%, var(--ui-panel));
-  color: var(--ui-amber);
-}
-
-.product-file-artifacts [data-artifact-icon][data-kind="pdf"] {
-  background: color-mix(in srgb, var(--ui-red) 8%, var(--ui-panel));
-  color: var(--ui-red);
-}
-
-.product-file-artifacts [data-artifact-icon] svg {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.product-file-artifacts [data-favorite] {
-  width: 0.75rem;
-  height: 0.75rem;
-  color: var(--ui-faint);
 }
 
 .product-file-artifacts__empty {
@@ -437,7 +397,7 @@
   }
 
   .product-files__panel[data-file-view="workspace"] {
-    margin-inline: -1rem;
+    padding-block: 0.75rem 1rem;
   }
 
   .product-file-artifacts__filters {

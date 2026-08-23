@@ -1,6 +1,6 @@
 ---
 name: a3s-form
-description: Inspect, validate, compile, diff, and safely update A3S FormDocument JSON through the deterministic a3s-form CLI. Use when creating or changing A3S forms, reviewing AI-generated FormPatch operations, diagnosing compiler diagnostics, producing pinned FormRef metadata, or preparing forms for A3S Workflow and A3S Cloud.
+description: Inspect, validate, compile, diff, and safely update A3S FormDocument JSON through the deterministic a3s-form CLI. Use when creating or changing A3S forms, reviewing AI-generated FormPatch operations, diagnosing compiler diagnostics, producing pinned FormRef metadata, or preparing forms for A3S Cloud and other host applications.
 ---
 
 # A3S Form

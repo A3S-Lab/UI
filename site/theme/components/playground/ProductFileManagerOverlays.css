@@ -1,143 +1,186 @@
 .product-file-manager [data-file-manager-quicklook] {
-  display: grid;
-  width: 20rem;
-  min-width: 0;
-  min-height: 0;
-  border-inline-start: 1px solid var(--ui-line);
-  background: var(--ui-paper);
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-}
-
-.product-file-manager [data-file-manager-backdrop] {
+  position: fixed;
+  inset: 0;
   display: none;
+  width: min(52rem, calc(100vw - 2rem));
+  max-width: none;
+  height: min(43rem, calc(100dvh - 2rem));
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--ui-line-strong);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: 0 28px 72px -28px rgb(4 10 22 / 62%);
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-.product-file-manager [data-file-manager-quicklook] > header {
+.product-file-manager [data-file-manager-quicklook][open] {
+  display: grid;
+}
+
+.product-file-manager [data-file-manager-quicklook]::backdrop {
+  background: rgb(4 10 22 / 42%);
+}
+
+.product-file-manager
+  [data-file-manager-quicklook][data-positioned="true"][data-fullscreen="false"] {
+  inset: auto;
+  margin: 0;
+}
+
+.product-file-manager [data-file-manager-quicklook][data-fullscreen="true"] {
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.product-file-manager [data-preview-titlebar] {
   display: flex;
-  min-height: 3.75rem;
-  padding: 0 0.75rem;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.375rem 0.5rem 0.375rem 0.75rem;
   border-block-end: 1px solid var(--ui-line);
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
+  background: color-mix(in srgb, var(--ui-canvas) 72%, var(--ui-paper));
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
-.product-file-manager [data-file-manager-quicklook] > header > span {
-  display: inline-flex;
+.product-file-manager
+  [data-file-manager-quicklook][data-dragging="true"]
+  [data-preview-titlebar] {
+  cursor: grabbing;
+}
+
+.product-file-manager [data-preview-window-title] {
+  display: grid;
+  min-width: 0;
   align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 0.5rem;
 }
 
-.product-file-manager [data-file-manager-quicklook] > header strong {
-  font-size: 0.75rem;
+.product-file-manager [data-preview-window-title] > svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--ui-blue);
 }
 
-.product-file-manager [data-file-manager-quicklook] > header svg {
-  width: 0.9375rem;
-  height: 0.9375rem;
-}
-
-.product-file-manager [data-file-manager-quicklook] > header button {
+.product-file-manager [data-preview-window-title] > span {
   display: grid;
-  width: 1.875rem;
-  height: 1.875rem;
+  min-width: 0;
+  gap: 0.0625rem;
+}
+
+.product-file-manager [data-preview-window-title] strong,
+.product-file-manager [data-preview-window-title] small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-file-manager [data-preview-window-title] strong {
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.product-file-manager [data-preview-window-title] small {
+  color: var(--ui-faint);
+  font-size: 0.625rem;
+}
+
+.product-file-manager [data-preview-window-actions] {
+  display: flex;
+  flex: none;
+  gap: 0.125rem;
+}
+
+.product-file-manager [data-preview-window-actions] button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
   padding: 0;
   border: 0;
-  border-radius: 0.375rem;
+  border-radius: 0.4375rem;
   background: transparent;
   color: var(--ui-muted);
   cursor: pointer;
   place-items: center;
 }
 
-.product-file-manager [data-quicklook-preview] {
+.product-file-manager [data-preview-window-actions] button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
+.product-file-manager [data-preview-window-actions] svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.product-file-manager [data-file-preview-layout] {
+  display: grid;
+  min-width: 0;
   min-height: 0;
-  padding: 1.5rem 1rem;
+  grid-template-columns: minmax(0, 1fr) 13.5rem;
+}
+
+.product-file-manager [data-quicklook-preview] {
+  min-width: 0;
+  min-height: 0;
+  padding: 1.5rem;
   overflow: auto;
   text-align: center;
 }
 
 .product-file-manager [data-quicklook-preview] > [data-file-icon] {
-  display: grid;
-  width: 5.5rem;
-  height: 5.5rem;
   margin-inline: auto;
-  background: transparent;
-  place-items: center;
-}
-
-.product-file-manager
-  [data-quicklook-preview]
-  > [data-file-icon]
-  [data-file-folder] {
-  width: 5.25rem;
-  height: 4.25rem;
-}
-
-.product-file-manager
-  [data-quicklook-preview]
-  > [data-file-icon]
-  [data-file-sheet] {
-  width: 4.25rem;
-  height: 5.25rem;
-}
-
-.product-file-manager [data-quicklook-preview] [data-file-extension] {
-  inset-block-end: 0.25rem;
-  inset-inline-start: 50%;
-  min-width: 3.25rem;
-  height: 1.375rem;
-  padding-inline: 0.375rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  transform: translateX(-50%);
-}
-
-.product-file-manager [data-quicklook-preview] [data-file-favorite] {
-  inset-block-start: 0;
-  inset-inline-end: -0.125rem;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.product-file-manager [data-quicklook-preview] [data-file-favorite] svg {
-  width: 0.6875rem;
-  height: 0.6875rem;
 }
 
 .product-file-manager [data-quicklook-preview] h2 {
   margin: 0.75rem 0 1rem;
   overflow-wrap: anywhere;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .product-file-manager [data-quicklook-preview] pre {
-  min-height: 12rem;
+  min-height: 16rem;
   margin: 0;
-  padding: 0.875rem;
+  padding: 1rem;
   border: 1px solid var(--ui-line);
   border-radius: 0.625rem;
   overflow: auto;
   background: var(--ui-canvas);
   color: var(--ui-muted);
   font-family: var(--rp-font-family-mono);
-  font-size: 0.6875rem;
-  line-height: 1.55;
+  font-size: 0.75rem;
+  line-height: 1.6;
   text-align: start;
   white-space: pre-wrap;
 }
 
-.product-file-manager [data-file-manager-quicklook] > dl {
+.product-file-manager [data-file-preview-layout] > dl {
   display: grid;
   margin: 0;
-  padding: 0.75rem 1rem;
-  border-block-start: 1px solid var(--ui-line);
-  gap: 0.5rem;
+  padding: 1.25rem;
+  border-inline-start: 1px solid var(--ui-line);
+  align-content: start;
+  gap: 1rem;
+  background: color-mix(in srgb, var(--ui-canvas) 48%, var(--ui-paper));
 }
 
-.product-file-manager [data-file-manager-quicklook] > dl > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+.product-file-manager [data-file-preview-layout] > dl > div {
+  display: grid;
+  gap: 0.25rem;
   font-size: 0.6875rem;
 }
 
@@ -147,15 +190,19 @@
 
 .product-file-manager [data-file-manager-quicklook] dd {
   margin: 0;
+  overflow-wrap: anywhere;
   color: var(--ui-muted);
-  text-align: end;
 }
 
 .product-file-manager [data-file-manager-quicklook] > footer {
   display: flex;
-  padding: 0.625rem 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.5rem 0.75rem;
   border-block-start: 1px solid var(--ui-line);
+  align-items: center;
+  justify-content: flex-end;
   gap: 0.375rem;
+  background: var(--ui-paper);
 }
 
 .product-file-manager [data-file-manager-quicklook] > footer button {
@@ -172,6 +219,11 @@
   font-size: 0.6875rem;
 }
 
+.product-file-manager [data-file-manager-quicklook] > footer button:hover {
+  background: var(--ui-panel);
+  color: var(--ui-ink);
+}
+
 .product-file-manager
   [data-file-manager-quicklook]
   > footer
@@ -186,6 +238,7 @@
   > footer
   button[data-primary]:hover {
   background: var(--ui-action-hover, var(--ui-muted));
+  color: var(--ui-action-ink, var(--ui-paper));
 }
 
 .product-file-manager [data-file-manager-quicklook] > footer svg {
@@ -304,18 +357,44 @@
 
 @media (max-width: 44rem) {
   .product-file-manager [data-file-manager-quicklook] {
-    position: fixed;
-    z-index: 5000;
     inset: 0;
     width: 100vw;
     height: 100dvh;
+    margin: 0;
     border: 0;
+    border-radius: 0;
     box-shadow: none;
   }
 
-  .product-file-manager [data-file-manager-quicklook] > header {
-    min-height: 3.5rem;
-    padding-block-start: env(safe-area-inset-top);
+  .product-file-manager [data-preview-titlebar] {
+    min-height: calc(3.25rem + env(safe-area-inset-top));
+    padding-block-start: calc(0.375rem + env(safe-area-inset-top));
+    cursor: default;
+  }
+
+  .product-file-manager [data-preview-window-actions] button:not(:last-child) {
+    display: none;
+  }
+
+  .product-file-manager [data-file-preview-layout] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .product-file-manager [data-quicklook-preview] {
+    padding: 1rem;
+  }
+
+  .product-file-manager [data-quicklook-preview] pre {
+    min-height: 10rem;
+  }
+
+  .product-file-manager [data-file-preview-layout] > dl {
+    padding: 0.75rem 1rem;
+    border-block-start: 1px solid var(--ui-line);
+    border-inline-start: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .product-file-manager [data-file-manager-quicklook] > footer {
@@ -327,8 +406,16 @@
   .product-file-manager [data-file-manager-quicklook] > footer button {
     justify-content: center;
   }
+}
 
-  .product-file-manager [data-file-manager-backdrop] {
-    display: none;
+@media (pointer: coarse) {
+  .product-file-manager [data-preview-window-actions] button,
+  .product-file-manager [data-file-manager-quicklook] > footer button {
+    min-height: 2.75rem;
+  }
+
+  .product-file-manager [data-preview-window-actions] button {
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }

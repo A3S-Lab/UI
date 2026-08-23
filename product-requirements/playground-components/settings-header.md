@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-start` |
 | Behavioral suite | `tests/e2e/product-global-and-settings-contracts.acl` |
 | Behavioral scenario | `settings-all-sections` |
+| Behavior assertion | `system-header` |
 
 ## User problem
 
@@ -29,7 +30,7 @@ State changes preserve the user's last safe context. Visual styling never become
 
 ## Interaction contract
 
-The component is exercised at `.product-settings__content-header` by `tests/e2e/product-global-and-settings-contracts.acl#settings-all-sections`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
+The component is exercised at `.product-settings__content-header` by `tests/e2e/product-global-and-settings-contracts.acl#settings-all-sections`. The uniquely assigned `system-header` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
 
 Pointer and keyboard paths must reach the same decision. Focus enters through a named native control, movement follows the widget's documented orientation, Escape cancels a transient layer, and focus returns to the exact trigger. The component target is `.product-settings__content-header`; incidental descendants are not a supported automation API.
 
@@ -51,7 +52,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 
 - The export inventory contains exactly one `SettingsHeader` declaration in `site/theme/components/playground/ProductSettingsPrimitives.tsx` and exactly one matching PRD and coverage record.
 - The canonical route `/playground.html` loads directly and passes `playground-route-start` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
-- The real interaction path `settings-all-sections` explicitly targets `.product-settings__content-header` and proves a state-changing keyboard or pointer action in the same component-owned workflow.
+- The real interaction path `settings-all-sections` explicitly targets `.product-settings__content-header`; its unique `system-header` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
 - Empty, pending, invalid, denied, stale, failed, and recovery cases keep prior context and never fabricate host authority or success.
 - Desktop and compact layouts preserve the primary decision, visible focus, readable localized copy, bounded scrolling, and a reachable recovery action.
@@ -62,5 +63,5 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 ## A3S Test mapping
 
 - Direct route evidence: `tests/e2e/playground-route-contracts.acl#playground-route-start` at `http://127.0.0.1:4178/UI/playground.html`.
-- Behavior evidence: `tests/e2e/product-global-and-settings-contracts.acl#settings-all-sections`, with stable target `.product-settings__content-header`.
+- Behavior evidence: `tests/e2e/product-global-and-settings-contracts.acl#settings-all-sections`, assertion `system-header`, with stable target `.product-settings__content-header`.
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.

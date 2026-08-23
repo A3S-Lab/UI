@@ -56,16 +56,17 @@ export function ProductFollowUpQueue({
   return (
     <section
       aria-label={zh ? "后续指令队列" : "Follow-up instruction queue"}
-      className="product-follow-up-queue"
+      className="task-queue product-follow-up-queue"
       data-paused={paused ? "true" : undefined}
       data-running={running ? "true" : undefined}
+      data-state={paused ? "paused" : running ? "running" : "idle"}
     >
       <header>
         <span>
           <ProductPlaygroundIcon name="list" />
           <span>
             <strong>{zh ? "后续指令" : "Follow-up instructions"}</strong>
-            <small>
+            <small data-queue-status>
               {running
                 ? paused
                   ? zh
@@ -84,7 +85,7 @@ export function ProductFollowUpQueue({
             </small>
           </span>
         </span>
-        <div>
+        <div data-queue-actions>
           {running ? (
             <button onClick={paused ? onResume : onPause} type="button">
               <ProductPlaygroundIcon name={paused ? "play" : "pause"} />

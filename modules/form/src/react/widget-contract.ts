@@ -5,17 +5,12 @@ export const BOOLEAN_FIELD_WIDGETS = new Set(['checkbox', 'switch']);
 export const MATRIX_FIELD_WIDGETS = new Set(['matrix-single', 'matrix-multiple']);
 
 export const COMPOSITE_FIELD_WIDGETS = new Set([
-  'a3s.flow.batch',
-  'a3s.flow.expression',
-  'a3s.flow.schema',
   'multi-select',
   'radio',
   'rating',
   'tags',
   ...MATRIX_FIELD_WIDGETS,
 ]);
-
-export const NESTED_ERROR_FIELD_WIDGETS = new Set(['a3s.flow.batch', 'a3s.flow.schema']);
 
 export const OPTION_FIELD_WIDGETS = new Set(['select', 'radio', 'multi-select']);
 

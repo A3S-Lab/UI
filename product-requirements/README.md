@@ -7,10 +7,11 @@ This directory is the product-and-test source of truth for the reusable UI catal
 | Scope | PRDs | Machine index | Deterministic evidence |
 | --- | ---: | --- | --- |
 | Public components | 116 | `component-coverage.json` | Unique component interaction scenario plus `tests/e2e/component-contracts.acl` |
-| Playground exports | 93 | `playground-component-coverage.json` | Active behavior and route scenarios, or an explicit legacy non-mounting scenario |
-| Harness and Playground surfaces | Generated | `surface-coverage.json` | Unique surface scenario with desktop and compact evidence |
+| Playground exports | 94 | `playground-component-coverage.json` | Active behavior and route scenarios, or an explicit legacy non-mounting scenario |
+| Harness and Playground surfaces | 20 | `surface-coverage.json` | Unique surface scenario with desktop and compact evidence |
+| Removed Workflow boundary | 0 retained | — | 11 recoverable-not-found scenarios in `tests/e2e/workflow-removal-boundaries.acl` |
 
-The current ACL inventory contains 31 suites and 377 scenarios. Those scenarios declare 2,917 assertions, 672 screenshots, 188 accessibility captures, 246 console captures, and 246 page-error captures.
+The current ACL inventory contains 30 suites and 378 scenarios. Those scenarios declare 3,550 assertions, 787 screenshots, 191 accessibility captures, 247 console captures, and 247 page-error captures.
 
 ## Required PRD structure
 

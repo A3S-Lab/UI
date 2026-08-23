@@ -67,7 +67,7 @@ a3s-form-core evaluate < evaluate-request.json
 
 JavaScript hosts normally call `evaluateFormValue(plan, value, options)`. That function enters the package-embedded Rust/WASM core synchronously. `WasmFormCore.evaluateBytes` exposes the canonical byte protocol, while `WasmFormCore.evaluate` provides the typed object adapter.
 
-The TypeScript evaluator is retained only as a conformance reference. Incremental TypeScript computation may optimize controlled rendering, but every workflow configuration, action submission, asynchronous validation boundary, and durable interaction acceptance runs the native evaluator before the host accepts a value.
+The TypeScript evaluator is retained only as a conformance reference. Incremental TypeScript computation may optimize controlled rendering, but every action submission, asynchronous validation boundary, and durable interaction acceptance runs the native evaluator before the host accepts a value.
 
 ## Durable host acceptance
 

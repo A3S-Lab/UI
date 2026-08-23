@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>Define once, render everywhere. Every change remains reviewable.</strong><br>
-  An embeddable form designer for A3S Workflow, A3S Cloud, product teams, and coding agents.
+  An embeddable form designer for A3S Cloud, product teams, and host applications.
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
 </p>
 
 > [!NOTE]
-> A3S Form is maintained inside the A3S UI repository and ships from the single `@a3s-lab/ui` package. This module contains the visual Designer, controlled Renderer, deterministic Compiler, React/Vue/Web Component adapters, React Hook Form bindings, native Vue composables, Workflow and Cloud contracts, CLI, and the `$a3s-form` skill.
+> A3S Form is maintained inside the A3S UI repository and ships from the single `@a3s-lab/ui` package. This module contains the visual Designer, controlled Renderer, deterministic Compiler, React/Vue/Web Component adapters, React Hook Form bindings, native Vue composables, durable interaction contracts, a Cloud adapter, CLI, and the `$a3s-form` skill.
 
 <a id="quick-start"></a>
 
@@ -60,7 +60,6 @@ A basic schema renderer only draws inputs. A3S Form gives design, preview, runti
 | **Form Core** | Package-embedded native Rust/WASM compiler and submitted-value evaluator, exact compiler revisions, bounded byte protocols, Schema Profile 1 validation, form/row rule scopes, wildcard path binding, dependency indexes, cycle detection, capability checks, canonical SHA-256, immutable `FormPlan`, deterministic traces, and a cancellable compiler Worker |
 | **Agent Interface** | JSON CLI, revision-bound `FormPatch`, in-Designer JSON preflight and conflict feedback, `$a3s-form` skill, machine-readable diagnostics, and atomic changes |
 
-
 Core invariants:
 
 - `FormDocument` is the single source of truth for schema, UI, rules, references, revision, and digest.
@@ -70,7 +69,7 @@ Core invariants:
 - Components emit values and actions only. Persistence, identity, authorization, secrets, and side effects belong to the host.
 - Form Core has no platform dependency. React, Vue, and Web Component surfaces accept controlled host state and do not install global CSS resets.
 - Documents never execute arbitrary JavaScript. Widget, data-source, and action keys resolve only through host-approved registries.
-- Durable human submissions are request-bound: host identity, step attempt, task identity, exact Form release, assignment policy, claimant, task version, deadlines, allowed outcomes, output mapping, idempotency, and canonical value digest are validated together.
+- Durable human submissions are request-bound: WorkflowRun, Flow hook, step attempt, HumanTask, exact Form release, assignment policy, claimant, task version, deadlines, allowed outcomes, output mapping, idempotency, and canonical value digest are validated together.
 - Protected interaction acceptance recompiles the pinned release, evaluates the candidate through native Form Core, enforces the output bound, and persists only the evaluator-produced value.
 
 Authoring and runtime behavior:
@@ -85,7 +84,7 @@ Authoring and runtime behavior:
 - Draft actions receive the current controlled value without being blocked by required-field validation. Submit actions run synchronous and host-owned asynchronous validation, show a summary, and focus the first invalid field.
 
 > [!IMPORTANT]
-> The v0.1 contract is a foundation, not a claim of full JSON Schema or enterprise-form parity. The unreleased `next` baseline covers Schema Profile 1, computed rules, host-neutral embedding, async validation, dynamic data sources, field subscriptions, runtime locale catalogs, large-form budgets, nested repeatable field groups, per-row rule/data-source binding, controlled multi-page wizards, inline and dialog-edit data grids with sorting, filtering, bulk selection, bounded TSV append, visible-selection fill-down, measured row virtualization, single- and multiple-choice matrices, a 23-widget built-in field catalog, and host-owned file-upload and signature extensions. Draft/release collaboration remains planned work. See the [product roadmap](ROADMAP.md) for scope and release gates.
+> The v0.1 contract is a foundation, not a claim of full JSON Schema or enterprise-form parity. The unreleased `next` baseline now covers Schema Profile 1, computed rules, host-neutral embedding, async validation, dynamic data sources, field subscriptions, runtime locale catalogs, large-form budgets, nested repeatable field groups, per-row rule/data-source binding, controlled multi-page wizards, inline and dialog-edit data grids with sorting, filtering, bulk selection, bounded TSV append, visible-selection fill-down, measured row virtualization, single- and multiple-choice matrices, a 23-widget built-in field catalog, and host-owned file-upload and signature extensions. Draft/release collaboration remains planned work. See the [product roadmap](ROADMAP.md) for scope and release gates.
 
 Existing integrations should follow the [v0.1-to-next migration checklist](docs/migration-v0.1-to-next.md) before publishing a new form revision or digest.
 
@@ -167,7 +166,7 @@ function handleAction(event: { actionId: string }) {
 </template>
 ```
 
-`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.3.0 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` when an embedding host must remain fully isolated from document-level CSS. The scoped entry does not install a global preflight. Both entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
+`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.3.0 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` instead when an embedding host must remain fully isolated from document-level CSS. The scoped entries do not install a global preflight. All entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
 
 <a id="architecture"></a>
 
@@ -195,9 +194,8 @@ function handleAction(event: { actionId: string }) {
                 React          Vue 3       Web Component
                    └──────────────┼──────────────┘
                                   │ controlled value / action
-                   ┌──────────────┴──────────────────────────┐
-                   ▼                                         ▼
-        A3S Workflow (FormRef / durable run)      A3S Cloud (tenant / auth / data)
+                                  ▼
+                   Host application (identity / policy / data / actions)
 ```
 
 `FormDocument` contains:
@@ -217,17 +215,17 @@ See [Architecture](docs/architecture.md), [Portable submitted-value evaluation](
 
 The development compiler enforces [A3S Form Schema Profile 1](docs/schema-profile-1.md). Unsupported JSON Schema keywords fail with an exact path. Successful plans record `schemaProfile: "a3s.dev/form-schema-profile/1"`; `const`, `enum`, `uniqueItems`, `additionalProperties`, and the approved format set use the same semantics in headless and embedded runtimes.
 
-[Deterministic computed rules](docs/computed-rules.md) derive form values in a stable topological order. Arithmetic and branching stay inside the bounded expression language; explicit row scope binds nested repeater paths, isolates failures, and produces concrete traces.
+[Deterministic computed rules](docs/computed-rules.md) derive controlled form values in a stable topological order. Arithmetic and branching stay inside the bounded expression language; explicit row scope binds nested repeater paths, isolates failures, and produces concrete traces.
 
 [Host-owned asynchronous validation](docs/async-validation.md) runs on field blur and before primary submit. Controlled value changes cancel pending requests, late responses are ignored, and host issues map to stable `async.<code>` field errors without exposing upstream exceptions.
 
-[Host-owned data sources](docs/data-sources.md) load options through approved host registries. Declared static or row-template dependencies prevent unrelated refetches; concrete request scope, focus triggers, isolated TTL caches, request deduplication, search, pagination, cancellation, and accessible failure states share one React/Vue/Web Component contract.
+[Host-owned data sources](docs/data-sources.md) load dynamic options through approved host registries. Declared static or row-template dependencies prevent unrelated refetches; concrete request scope, focus triggers, isolated TTL caches, request deduplication, search, pagination, cancellation, and accessible failure states share one React/Vue/Web Component contract.
 
 [Runtime localization](docs/localization.md) uses one versioned catalog across core validation, React, Vue, Web Components, and Designer preview. Host overrides change product copy without changing or republishing a `FormDocument`.
 
 [Performance budgets](docs/performance.md) cover compilation, validation, incremental computed-rule updates, and server rendering at 100, 500, and 1,000 nodes. The same benchmark runs in CI.
 
-[Repeatable field groups](docs/repeatable-field-groups.md) bind object arrays to real row templates. Rows can be added, removed, reordered, calculated, validated, and conditionally rendered without serializing runtime keys into workflow configuration. A host may derive stable identity from business data through `identifyRepeaterItem`; declaring `itemKey` remains an explicit document choice.
+[Repeatable field groups](docs/repeatable-field-groups.md) bind object arrays to real row templates. Rows can be added, removed, reordered, calculated, validated, and conditionally rendered without serializing runtime keys into controlled values. A host may derive stable identity from business data through `identifyRepeaterItem`; declaring `itemKey` remains an explicit document choice.
 
 [Editable data grids](docs/data-grids.md) present an object repeater as a semantic table on desktop and labeled row cards in narrow embedded containers. Columns, row actions, validation, rules, host-owned data sources, bounded TSV append, and visible-selection fill-down keep the same metadata-free controlled value contract.
 
@@ -245,23 +243,23 @@ The development compiler enforces [A3S Form Schema Profile 1](docs/schema-profil
 
 <a id="embedding"></a>
 
-## Embedding Boundaries for A3S Cloud and Product Hosts
+## Embedding Boundaries
 
 | Integration | Contract |
 | --- | --- |
 | **A3S Cloud** | `createA3SCloudFormAdapter` injects organization/project/environment context, data sources, async validation, and actions. Cloud retains ownership of authorization, storage, secrets, and audit logs. |
-| **Durable human interaction** | A trusted host issues a digest-bound v1 request that pins its process identity, step attempt, task, exact `FormReleaseRef`, assignment, and task policy. A submission is accepted only with matching protected host context and Form validation. |
+| **Durable human interaction** | Cloud issues a digest-bound v1 request that pins the WorkflowRun, Flow hook, step attempt, HumanTask, exact `FormReleaseRef`, assignment and task policy. A submission is accepted only with matching protected Cloud context and Form validation; browsers never resume Flow directly. |
 | **A3S Code agentic nodes** | An agent may request governed form interaction but receives no open browser, production credentials, or unbounded action channel. |
 
-Form upgrades never mutate published requests silently. An in-flight interaction is always validated against its original request and Form release. The TypeScript and native Rust implementations share [`interaction-contract-v1.json`](tests/conformance/interaction-contract-v1.json) for byte-identical request and value digests. The core compiler has no database or network dependency, so it can scale independently as a stateless task in a Worker, local process, or isolated host runtime.
+Form upgrades never mutate published workflows silently. An in-flight run is always validated against its original request and Form release. The TypeScript and native Rust implementations share [`interaction-contract-v1.json`](tests/conformance/interaction-contract-v1.json) for byte-identical request and value digests. The core compiler has no database or network dependency, so it can scale independently as a stateless task in a Worker, local process, or isolated host runtime.
 
 Supported exports:
 
 | Export | Purpose |
 | --- | --- |
-| `@a3s-lab/ui/form` | Cloud adapter, Form Core, request-bound interaction builders, inspectors, digests, and protected submission validation |
 | `@a3s-lab/ui/form/core` | Documents, compilation, validation, locale catalogs, patches, templates, and headless state |
-| `@a3s-lab/ui/form/react` | React Designer, Renderer, custom-node registry, and extended fields |
+| `@a3s-lab/ui/form` | Durable interaction builders, inspectors, digests, and protected submission validation |
+| `@a3s-lab/ui/form/react` | React Designer, Renderer, file upload, signature, data-source, and inspector controls |
 | `@a3s-lab/ui/form/react-hooks` | React Hook Form-compatible state, resolver, subscriptions, field arrays, error mapping, and controlled Renderer binding |
 | `@a3s-lab/ui/form/vue` | Vue 3 `v-model` adapter |
 | `@a3s-lab/ui/form/vue-hooks` | Native Vue form, field, field-array, injection-context, state, validation, submission, and controlled Renderer composables |
@@ -271,13 +269,13 @@ Supported exports:
 | `@a3s-lab/ui/form/styles.css` | Scoped A3S UI-compatible tokens plus the base Form layout and interaction states; no host-global reset |
 | `@a3s-lab/ui/form/a3s-ui.css` | Published A3S UI bundle plus the base Form layout layer; recommended for A3S products and standalone surfaces |
 
-See the [Embedding Guide](docs/embedding.md) and the [Integration Guide](docs/integration.md).
+See the [Embedding Guide](docs/embedding.md) and [Integration Guide](docs/integration.md).
 
 <a id="agent"></a>
 
 ## Coding Agent CLI and Skill
 
-After building the project, every `a3s-form` command emits JSON and can be composed by local coding agents such as Codex:
+After building the project, every `a3s-form` command emits JSON and can be composed by local coding agents:
 
 ```bash
 node dist/form/cli.js sample --output form.json --pretty
@@ -353,7 +351,7 @@ site/docs/next/*/components/form-system/  unified bilingual component guides
 modules/form/src/core/         documents, compiler, patches, expressions, state, and WASM
 modules/form/src/react/        Designer, Renderer, control system, and custom node registry
 modules/form/src/adapters/     A3S Cloud host adapter
-modules/form/src/integrations/ A3S Workflow FormRef and interaction contracts
+modules/form/src/integrations/ durable interaction contracts
 modules/form/src/workers/      cancellable compiler Worker/client
 modules/form/skills/a3s-form/  coding agent skill
 modules/form/tests/            unit, integration, and local A3S Test coverage

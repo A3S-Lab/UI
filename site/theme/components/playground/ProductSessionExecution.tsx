@@ -266,20 +266,21 @@ export function ProductSessionExecution({
                 </em>
                 <ProductPlaygroundIcon name="chevron" />
               </summary>
-              <div className="product-command-preview">
+              <section
+                aria-label={zh ? "测试日志" : "Test log"}
+                className="log-viewer product-command-preview"
+                data-a3s-components="log-viewer"
+                data-a3s-state="ready success"
+              >
                 <header>
-                  <span>
-                    <i />
-                    <i />
-                    <i />
-                  </span>
-                  <strong>{zh ? "终端" : "Terminal"}</strong>
+                  <div>
+                    <h3>{zh ? "测试日志" : "Test log"}</h3>
+                    <p>npm test -- session</p>
+                  </div>
                   <button
-                    aria-label={zh ? "复制命令" : "Copy command"}
+                    aria-label={zh ? "复制完整测试日志" : "Copy full test log"}
                     onClick={async () => {
-                      await navigator.clipboard.writeText(
-                        "npm test -- session",
-                      );
+                      await navigator.clipboard.writeText(testLogText(locale));
                       setCopied(true);
                     }}
                     type="button"
@@ -287,17 +288,65 @@ export function ProductSessionExecution({
                     <ProductPlaygroundIcon name={copied ? "check" : "copy"} />
                   </button>
                 </header>
-                <pre>
-                  <code>
-                    <span>$ npm test -- session</span>
-                    {"\n"}
-                    <b>PASS</b> tests/session.test.ts{"\n"} ✓ restores focus
-                    after refresh failure{"\n"} ✓ preserves return route{"\n"} ✓
-                    announces recovery state{"\n\n"}
-                    <strong>Tests: 12 passed, 12 total</strong>
-                  </code>
-                </pre>
-              </div>
+                <div data-log-meta>
+                  <span>{zh ? "执行完成" : "Completed"}</span>
+                  <span>
+                    {zh ? "4 条记录 · 保留全部" : "4 records · All retained"}
+                  </span>
+                </div>
+                <div
+                  aria-label={
+                    zh ? "按时间排序的测试输出" : "Chronological test output"
+                  }
+                  role="log"
+                  tabIndex={0}
+                >
+                  <div data-log-record data-stream="stdout">
+                    <span data-log-sequence>#01</span>
+                    <time dateTime="2026-08-24T03:18:04.102Z">
+                      11:18:04.102
+                    </time>
+                    <span data-log-stream>stdout</span>
+                    <pre>$ npm test -- session</pre>
+                  </div>
+                  <div data-log-record data-stream="stdout">
+                    <span data-log-sequence>#02</span>
+                    <time dateTime="2026-08-24T03:18:06.441Z">
+                      11:18:06.441
+                    </time>
+                    <span data-log-stream>stdout</span>
+                    <pre>PASS tests/session.test.ts</pre>
+                  </div>
+                  <div data-log-record data-stream="stdout">
+                    <span data-log-sequence>#03</span>
+                    <time dateTime="2026-08-24T03:18:07.903Z">
+                      11:18:07.903
+                    </time>
+                    <span data-log-stream>stdout</span>
+                    <pre>
+                      {zh
+                        ? "恢复失败后回到原焦点 · 保留返回路径 · 公告恢复状态"
+                        : "Restores focus after failure · Preserves return route · Announces recovery state"}
+                    </pre>
+                  </div>
+                  <div data-log-record data-stream="stdout">
+                    <span data-log-sequence>#04</span>
+                    <time dateTime="2026-08-24T03:18:08.918Z">
+                      11:18:08.918
+                    </time>
+                    <span data-log-stream>stdout</span>
+                    <pre>
+                      {zh
+                        ? "测试：12 通过，0 失败"
+                        : "Tests: 12 passed, 0 failed"}
+                    </pre>
+                  </div>
+                </div>
+                <footer>
+                  <span>{zh ? "退出码 0" : "Exit code 0"}</span>
+                  <strong>{zh ? "12 / 12 通过" : "12 / 12 passed"}</strong>
+                </footer>
+              </section>
             </details>
           </li>
         </ol>
@@ -343,6 +392,12 @@ export function ProductSessionExecution({
       </section>
     </div>
   );
+}
+
+function testLogText(locale: ProductPlaygroundLocale) {
+  return locale === "zh"
+    ? "$ npm test -- session\nPASS tests/session.test.ts\n恢复失败后回到原焦点\n保留返回路径\n公告恢复状态\n测试：12 通过，0 失败"
+    : "$ npm test -- session\nPASS tests/session.test.ts\nRestores focus after failure\nPreserves return route\nAnnounces recovery state\nTests: 12 passed, 0 failed";
 }
 
 function DeliverySummary({
@@ -424,9 +479,7 @@ function DeliverySummary({
           </button>
           <button
             data-primary
-            onClick={(event) =>
-              onOpenInspector("preview", event.currentTarget)
-            }
+            onClick={(event) => onOpenInspector("preview", event.currentTarget)}
             type="button"
           >
             <ProductPlaygroundIcon name="eye" />

@@ -8,6 +8,7 @@ export type ProductPlaygroundIconName =
   | "brain"
   | "calendar"
   | "catalog"
+  | "center"
   | "chart"
   | "check"
   | "checklist"
@@ -111,6 +112,13 @@ const paths: Record<ProductPlaygroundIconName, ReactNode> = {
     <>
       <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" />
       <path d="M7.5 3v5M16.5 3v5M3.5 10h17" />
+    </>
+  ),
+  center: (
+    <>
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="1.5" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
     </>
   ),
   catalog: (

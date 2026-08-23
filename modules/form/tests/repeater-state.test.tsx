@@ -61,6 +61,20 @@ describe('stable repeater row state', () => {
     expect(result.current.rows.map((row) => row.key)).toEqual(keys);
   });
 
+  it('reuses a canonical-value key after an earlier reference consumes its position', () => {
+    const alpha = { provider: 'openai', model: 'gpt-5' };
+    const beta = { provider: 'anthropic', model: 'claude' };
+    const { result, rerender } = renderHook(
+      ({ items }: { items: JsonValue[] }) => useStableRepeaterRows(items),
+      { initialProps: { items: [alpha, beta] } },
+    );
+    const [alphaKey, betaKey] = result.current.rows.map((row) => row.key);
+
+    rerender({ items: [beta, structuredClone(alpha)] });
+
+    expect(result.current.rows.map((row) => row.key)).toEqual([betaKey, alphaKey]);
+  });
+
   it('removes a bounded set of rows without changing surviving keys', () => {
     const items: JsonValue[] = [{ id: 'alpha' }, { id: 'beta' }, { id: 'gamma' }];
     const { result, rerender } = renderHook(

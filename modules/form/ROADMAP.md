@@ -13,7 +13,7 @@ This roadmap describes product outcomes and release gates. It does not assign ca
 | **Studio** | Visual design, preview, rule and integration configuration, diagnostics, and change review | Organization-specific catalogs and publishing policy |
 | **Governance** | Draft/release contracts, diffs, provenance, approval hooks, and audit events | User directory, RBAC decisions, retention, and compliance storage |
 | **Agent interface** | Inspect, propose, patch, simulate, validate, test, and publish request contracts | Model access, credentials, approval decisions, and execution policy |
-| **Product services** | Stable integration contracts | Submissions, files, payments, email, webhooks, analytics, PDF generation, and connectors through trusted product hosts |
+| **Product services** | Stable integration contracts | Submissions, files, payments, email, webhooks, analytics, PDF generation, and connectors through A3S Cloud or another host platform |
 
 ## Product Principles
 
@@ -33,7 +33,7 @@ The current release proves the architecture and embedding model:
 - visual Designer with a component catalog, structure tree, nested layouts, drag and drop, preview, undo/redo, and custom-node registration;
 - controlled React Renderer with native fields, layouts, primitive repeaters, validation summaries, host-resolved option sources, and host actions;
 - React, React-backed Vue, and Web Component adapters;
-- A3S Cloud and host interaction contracts with revision and digest pinning;
+- an A3S Cloud adapter and durable interaction contracts with revision and digest pinning;
 - revision-bound `FormPatch`, JSON CLI, compiler Worker, and the `$a3s-form` coding-agent skill;
 - validated Designer import and export flow for embedding hosts.
 
@@ -53,10 +53,10 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 ### Current development baseline (unreleased)
 
 - The native Rust Form Core and package-embedded WASM build are now the single semantic authority for browser, Node, Worker, CLI, and native compilation and submitted-value evaluation. Every result identifies the exact compiler revision, while former TypeScript implementations remain test-only behind byte-exact conformance fixtures.
-- Host-neutral embedding, digest-pinned validation, controlled adapter parity, scoped CSS, and package budgets are implemented and covered by reference hosts.
+- Host-neutral embedding, controlled adapter parity, scoped CSS, and package budgets are implemented and covered by reference hosts.
 - A3S Form Schema Profile 1 is enforced recursively. Unsupported keywords fail compilation; `const`, structural `enum`, `uniqueItems`, `additionalProperties`, and nine approved formats have runtime coverage.
 - Computed fields use a stable topological order, bounded arithmetic and branching, stale-output removal, dependency failure propagation, and an opt-in value trace.
-- Host-owned field and form validation is cancellable, rejects stale responses, maps server issues to stable codes, and has React, Vue, Web Component, Cloud, and workflow-host coverage.
+- Host-owned field and form validation is cancellable, rejects stale responses, maps server issues to stable codes, and has React, Vue, Web Component, Cloud, and generic-host coverage.
 - React Hook Form bindings and native Vue form, field, field-array, context, validation, submission, and Renderer composables now expose the same deterministic A3S Form Core semantics through optional package subpaths.
 - Host-owned data sources now provide declared dependencies, mount/focus triggers, per-host TTL caching, in-flight deduplication, cancellation, debounced search, cursor pagination, strict response validation, and accessible loading/empty/error/retry states.
 - Compiled field subscriptions now limit React updates to a field's own value, targeted rule dependencies, and declared data-source dependencies. Computed rules reuse cached outputs until those dependencies change.
@@ -69,7 +69,6 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 ### Release-candidate capabilities
 
 - Stabilize and publish **A3S Form Schema Profile 1** with its explicit keyword allowlist, canonical semantics, conformance fixtures, and diagnostics for every unsupported keyword.
-- Publish host-neutral configuration forms with a configuration-mode `FormRef`, controlled values, locale/read-only context, and digest-pinned validation.
 - Remove host-global CSS resets, enforce stylesheet size budgets, and keep A3S UI-compatible tokens scoped to Designer and Renderer roots.
 - Align host-facing value, action, error, locale, read-only, adapter, widget, and node-registry capabilities across React, Vue, and Web Components.
 - Stabilize the complete `visible`, `enabled`, `computed`, and `validate` rule runtime for release, including deterministic dependency evaluation, cycle diagnostics, and an inspectable execution trace.
@@ -82,7 +81,7 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 ### Exit criteria
 
 - Every schema keyword accepted by the compiler has browser/server validation parity; every other keyword is rejected.
-- The tested reference host can render and commit a configuration form without importing product runtime services or global UI resets.
+- The tested reference host can render and commit a controlled form without importing A3S Cloud or installing global UI resets.
 - Package checks reject global selectors and fail when the embedding stylesheet exceeds its raw or gzip budget.
 - Computed-rule chains and rule failures have deterministic integration coverage.
 - Editing an unrelated field neither refetches an independent data source nor rerenders unaffected field components.
@@ -107,6 +106,8 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 - Data grids can opt into locale-aware single-column sorting and normalized cross-column filtering. Both remain local view state, preserve the controlled array order, keep inline rows stable during focused edits, expose a narrow-container sort control, and constrain select-all to visible rows.
 - Data grids can append bounded TSV rows with schema-directed type conversion, explicit column order, preview, and atomic whole-array validation. Fill-down copies one editable column from the first visible selected row to the remaining visible selected rows, excludes filtered-out selections, and rejects stale host snapshots.
 - Data grids can opt into measured row virtualization inside a bounded viewport. Server rendering emits a deterministic row window, desktop rows and narrow-container cards update from real measurements, complete view operations remain array-wide, and offscreen error navigation reveals the row before opening its dialog.
+- A committed A3S Test flow covers empty state, dialog add/edit/cancel, TSV append, fill-down, row-bound options, validation focus, reorder, multiple selection, confirmed deletion, semantic output, and desktop/390 px Chrome layouts for the reference grid.
+- The same browser suite appends 80 rows, verifies the complete ARIA row model, drives Home/End navigation across desktop rows and mobile cards, edits the final mounted row, filters the complete array, captures both layouts, and records clean accessibility, console, and page-error evidence.
 - Wizard and page layouts now provide visible-rule branches, progress, previous/next navigation, page-scoped synchronous and host validation, a localized review step, and earlier-page error recovery.
 - Navigation checkpoints are controlled, pinned to the plan digest and revision, and forwarded across React, Vue, Web Components, and Designer preview without adding engine metadata to form values.
 - The documented Organization onboarding form demonstrates a skipped branch, review flow, page validation, and host-controlled checkpoint updates.
@@ -168,7 +169,7 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 
 ## v1.0 — AI-Native Production Contract
 
-**Outcome:** A3S Form becomes the stable form contract shared by people, coding agents, A3S Cloud, and product hosts.
+**Outcome:** A3S Form becomes the stable form contract shared by people, coding agents, A3S Cloud, and A3S Workflow.
 
 ### Planned capabilities
 
@@ -177,7 +178,7 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 - Natural-language requests converted into bounded patches with a visual diff, rule explanation, risk report, generated fixtures, and regression tests.
 - Change provenance covering actor, agent, model, reason, source revision, policy result, reviewer, and release digest.
 - Reference A3S Cloud lifecycle integration for drafts, releases, permissions, audit, submissions, files, and analytics.
-- Reference host integration for durable human tasks, approvals, timeouts, retries, and digest-pinned resumptions.
+- Reference A3S Workflow integration for durable human tasks, approvals, timeouts, retries, and digest-pinned resumptions.
 - Published conformance suite for third-party renderers, registries, host adapters, and migration tools.
 
 ### Exit criteria
@@ -191,7 +192,7 @@ Known boundaries are intentional roadmap inputs, not completed capabilities:
 
 - A3S Form Core will not execute arbitrary JavaScript stored in a form document.
 - A3S Form Core will not become a second identity, authorization, secrets, payment, submission, or analytics platform.
-- A3S Form will not require A3S Cloud or another platform runtime in order to render or validate a form.
+- A3S Form will not require A3S Cloud, A3S Workflow, or another platform runtime in order to render or validate a form.
 - The package will not claim full JSON Schema compatibility while unsupported keywords are ignored.
 - Tabs will not be marketed as a replacement for a true multi-page or wizard runtime.
 - Browser `localStorage` will not be presented as enterprise persistence, collaboration, or offline synchronization.
@@ -204,6 +205,6 @@ Every milestone must include:
 - browser and server conformance fixtures for shared semantics;
 - A3S Test coverage for critical Designer-to-runtime workflows;
 - accessibility, keyboard, performance, and failure-state checks appropriate to the milestone;
-- an embedding conformance check covering controlled ownership, adapter parity, host CSS isolation, package budgets, and a neutral settings host;
+- an embedding conformance check covering controlled ownership, adapter parity, host CSS isolation, package budgets, and a neutral host application;
 - security-boundary review for every new registry, data source, action, file, or agent capability;
 - documentation, runnable examples, and migration notes before a capability is marked stable.

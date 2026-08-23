@@ -402,7 +402,7 @@ A component or composition is finished only when all applicable evidence exists:
 - Inclusion in the standalone Playground when it participates in an application composition.
 - No stale generated files edited by hand.
 
-Every public component, active or legacy Playground export, and registered Harness, Workflow, or Playground surface has exactly one coverage record and one PRD. Every active record resolves to a unique deterministic scenario; legacy records resolve to an explicit non-mounting boundary scenario. Coverage generators reject placeholder language, duplicated mappings, missing evidence, stale output, and acceptance sections with fewer than five independently testable criteria.
+Every public component, active or legacy Playground export, and registered Harness or Playground surface has exactly one coverage record and one PRD. Every active record resolves to a unique deterministic scenario; legacy records resolve to an explicit non-mounting boundary scenario. Coverage generators reject placeholder language, duplicated mappings, missing evidence, stale output, and acceptance sections with fewer than five independently testable criteria.
 
 Every reported defect class becomes a deterministic A3S Test regression for each
 affected route or component page. A route-level scenario must verify that the

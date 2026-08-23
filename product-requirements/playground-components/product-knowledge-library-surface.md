@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-knowledge` |
 | Behavioral suite | `tests/e2e/product-resource-surfaces.acl` |
 | Behavioral scenario | `knowledge-library-recovery` |
+| Behavior assertion | `library-ready` |
 
 ## User problem
 
@@ -29,7 +30,7 @@ State changes preserve the user's last safe context. Visual styling never become
 
 ## Interaction contract
 
-The component is exercised at `.product-knowledge-library[data-knowledge-library-initialized=true]` by `tests/e2e/product-resource-surfaces.acl#knowledge-library-recovery`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
+The component is exercised at `.product-knowledge-library[data-knowledge-library-initialized=true]` by `tests/e2e/product-resource-surfaces.acl#knowledge-library-recovery`. The uniquely assigned `library-ready` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
 
 Pointer and keyboard paths must reach the same decision. Focus enters through a named native control, movement follows the widget's documented orientation, Escape cancels a transient layer, and focus returns to the exact trigger. The component target is `.product-knowledge-library[data-knowledge-library-initialized=true]`; incidental descendants are not a supported automation API.
 
@@ -51,7 +52,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 
 - The export inventory contains exactly one `ProductKnowledgeLibrarySurface` declaration in `site/theme/components/playground/ProductKnowledgeLibrarySurface.tsx` and exactly one matching PRD and coverage record.
 - The canonical route `/playground/resources/knowledge.html` loads directly and passes `playground-route-knowledge` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
-- The real interaction path `knowledge-library-recovery` explicitly targets `.product-knowledge-library[data-knowledge-library-initialized=true]` and proves a state-changing keyboard or pointer action in the same component-owned workflow.
+- The real interaction path `knowledge-library-recovery` explicitly targets `.product-knowledge-library[data-knowledge-library-initialized=true]`; its unique `library-ready` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
 - Empty, pending, invalid, denied, stale, failed, and recovery cases keep prior context and never fabricate host authority or success.
 - Desktop and compact layouts preserve the primary decision, visible focus, readable localized copy, bounded scrolling, and a reachable recovery action.
@@ -62,5 +63,5 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 ## A3S Test mapping
 
 - Direct route evidence: `tests/e2e/playground-route-contracts.acl#playground-route-knowledge` at `http://127.0.0.1:4178/UI/playground/resources/knowledge.html`.
-- Behavior evidence: `tests/e2e/product-resource-surfaces.acl#knowledge-library-recovery`, with stable target `.product-knowledge-library[data-knowledge-library-initialized=true]`.
+- Behavior evidence: `tests/e2e/product-resource-surfaces.acl#knowledge-library-recovery`, assertion `library-ready`, with stable target `.product-knowledge-library[data-knowledge-library-initialized=true]`.
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.

@@ -1,0 +1,223 @@
+suite "a3s-ui-workflow-removal-boundaries" {
+    version = 1
+
+    scenario "workflow-chapter-removed" {
+        name = "The removed Workflow chapter resolves to a recoverable not-found surface"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/workflow/" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/workflow-chapter.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/workflow-chapter-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/workflow-chapter-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/workflow-chapter-errors.json" clear = false }
+    }
+
+    scenario "workflow-chapter-removed-en" {
+        name = "The removed English Workflow chapter resolves to the localized recovery surface"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/en/workflow/" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/workflow-chapter-en.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/workflow-chapter-en-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "Browse components") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/en/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/workflow-chapter-en-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/workflow-chapter-en-errors.json" clear = false }
+    }
+
+    scenario "workflow-batch-removed" {
+        name = "The removed Workflow Batch component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/batch.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/batch.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/batch-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/batch-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/batch-errors.json" clear = false }
+    }
+
+    scenario "workflow-complete-removed" {
+        name = "The removed Workflow Complete component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/complete.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/complete.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/complete-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/complete-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/complete-errors.json" clear = false }
+    }
+
+    scenario "workflow-condition-removed" {
+        name = "The removed Workflow Condition component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/condition.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/condition.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/condition-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/condition-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/condition-errors.json" clear = false }
+    }
+
+    scenario "workflow-fail-removed" {
+        name = "The removed Workflow Fail component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/fail.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/fail.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/fail-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/fail-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/fail-errors.json" clear = false }
+    }
+
+    scenario "workflow-hook-removed" {
+        name = "The removed Workflow Hook component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/hook.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/hook.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/hook-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/hook-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/hook-errors.json" clear = false }
+    }
+
+    scenario "workflow-start-removed" {
+        name = "The removed Workflow Start component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/start.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/start.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/start-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/start-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/start-errors.json" clear = false }
+    }
+
+    scenario "workflow-step-removed" {
+        name = "The removed Workflow Step component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/step.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/step.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/step-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/step-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/step-errors.json" clear = false }
+    }
+
+    scenario "workflow-wait-removed" {
+        name = "The removed Workflow Wait component route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/a3s-flow/wait.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/wait.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/wait-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/wait-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/wait-errors.json" clear = false }
+    }
+
+    scenario "workflow-node-embedding-removed" {
+        name = "The removed Workflow node embedding route cannot mount a component preview"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
+
+        navigate "open-retired-route" { url = "http://127.0.0.1:4178/UI/components/form-system/workflow-node-embedding.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "not-found-ready" { visible = css(".a3s-not-found:has(h1)") }
+        expect "workflow-preview-absent" { visible = css(".a3s-not-found:not(:has(.a3s-preview)):not(:has([data-a3s-components]))") }
+        expect "workflow-navigation-absent" { visible = css("body:not(:has(a[href*='/workflow']))") }
+        screenshot "not-found-evidence" { path = "workflow-removal/node-embedding.png" }
+        accessibility "not-found-accessibility" { path = "workflow-removal/node-embedding-accessibility.json" interactive = true }
+        click "recover-to-components" { target = role("link", "浏览组件") }
+        wait "component-catalog-url" { url = "http://127.0.0.1:4178/UI/components/index.html" }
+        wait "component-catalog-ready" { visible = css("[data-component-catalog]") }
+        console "console" { path = "workflow-removal/node-embedding-console.json" clear = false }
+        page_errors "errors" { path = "workflow-removal/node-embedding-errors.json" clear = false }
+    }
+}

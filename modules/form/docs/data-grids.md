@@ -1,6 +1,6 @@
 # Editable Data Grids
 
-Editable data grids present an array of objects as a compact table without changing the controlled value contract. They are intended for order lines, routing rules, inspection results, pricing inputs, and settings where each row has the same field set.
+Editable data grids present an array of objects as a compact table without changing the controlled value contract. They are intended for order lines, routing rules, inspection results, pricing inputs, and embedded settings where each row has the same field set.
 
 ## Document contract
 
@@ -124,7 +124,7 @@ The focused viewport handles `Home`, `End`, `Page Up`, and `Page Down` directly.
 
 Column `width` values are relative weights. They do not alter schema data. A grid with widths `6`, `2`, and `4` gives the first column half of the editable space while reserving fixed room for row numbers and actions.
 
-At narrow Form container widths, each table row becomes a labeled row card. This is driven by the embedded Form container rather than the browser viewport, so the grid also adapts inside a workflow side panel. Field labels remain available to assistive technology in both layouts.
+At narrow Form container widths, each table row becomes a labeled row card. This is driven by the embedded Form container rather than the browser viewport, so the grid also adapts inside compact host panels. Field labels remain available to assistive technology in both layouts.
 
 ## Identity and controlled ownership
 
@@ -137,10 +137,6 @@ Persistence, authorization, CSV file handling, export, and remote lookup stay ho
 The **Data grid** catalog preset creates three real columns—Name, Quantity, and Notes—plus their object-array schema. Authors can rename, reorder, duplicate, remove, or replace those columns with normal Designer operations. The row-display control switches an eligible object repeater between card rows and a data grid without changing its schema or value shape. Data-grid settings select inline or dialog editing and enable measured row virtualization, multiple selection, paste append, fill down, single-column sorting, and cross-column search. Enabling virtualization selects dialog editing and exposes the bounded viewport height; selecting inline editing removes virtualization.
 
 The Designer prevents switching to table layout until the repeater has at least one direct field. Compiler validation remains authoritative for imported documents and agent-authored patches.
-
-## Workflow-node embedding
-
-The documented routing example uses a virtualized data grid for `routes`. Its value remains the ordinary metadata-free `{ when, route }[]` configuration. Per-row validation and host-owned branch options keep their existing wildcard dependency paths and concrete request bindings. The sample also exercises typed TSV append and visible-selection fill-down without adding engine metadata to route objects.
 
 ## Current limits
 

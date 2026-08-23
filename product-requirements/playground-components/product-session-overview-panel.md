@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-session` |
 | Behavioral suite | `tests/e2e/product-session-detail.acl` |
 | Behavioral scenario | `session-detail-conversation` |
+| Behavior assertion | `overview-panel-boundary` |
 
 ## User problem
 
@@ -29,7 +30,7 @@ State changes preserve the user's last safe context. Visual styling never become
 
 ## Interaction contract
 
-The component is exercised at `.product-inspector-overview` by `tests/e2e/product-session-detail.acl#session-detail-conversation`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
+The component is exercised at `.product-inspector-overview` by `tests/e2e/product-session-detail.acl#session-detail-conversation`. The uniquely assigned `overview-panel-boundary` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
 
 Pointer and keyboard paths must reach the same decision. Focus enters through a named native control, movement follows the widget's documented orientation, Escape cancels a transient layer, and focus returns to the exact trigger. The component target is `.product-inspector-overview`; incidental descendants are not a supported automation API.
 
@@ -51,7 +52,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 
 - The export inventory contains exactly one `ProductSessionOverviewPanel` declaration in `site/theme/components/playground/ProductSessionOverviewPanel.tsx` and exactly one matching PRD and coverage record.
 - The canonical route `/playground/sessions/fix-session-recovery.html` loads directly and passes `playground-route-session` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
-- The real interaction path `session-detail-conversation` explicitly targets `.product-inspector-overview` and proves a state-changing keyboard or pointer action in the same component-owned workflow.
+- The real interaction path `session-detail-conversation` explicitly targets `.product-inspector-overview`; its unique `overview-panel-boundary` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
 - Empty, pending, invalid, denied, stale, failed, and recovery cases keep prior context and never fabricate host authority or success.
 - Desktop and compact layouts preserve the primary decision, visible focus, readable localized copy, bounded scrolling, and a reachable recovery action.
@@ -62,5 +63,5 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 ## A3S Test mapping
 
 - Direct route evidence: `tests/e2e/playground-route-contracts.acl#playground-route-session` at `http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html`.
-- Behavior evidence: `tests/e2e/product-session-detail.acl#session-detail-conversation`, with stable target `.product-inspector-overview`.
+- Behavior evidence: `tests/e2e/product-session-detail.acl#session-detail-conversation`, assertion `overview-panel-boundary`, with stable target `.product-inspector-overview`.
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.

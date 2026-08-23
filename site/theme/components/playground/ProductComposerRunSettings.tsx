@@ -49,11 +49,17 @@ function ComposerControl({
   }, [onActiveControlChange, open]);
 
   return (
-    <div data-composer-control={control} data-open={open ? "true" : undefined}>
+    <div
+      className="context-selector"
+      data-composer-control={control}
+      data-open={open ? "true" : undefined}
+      data-state="ready"
+    >
       <button
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-label={label}
+        data-context-label
         data-composer-setting
         onClick={() => onActiveControlChange(open ? null : control)}
         ref={triggerRef}
@@ -70,6 +76,7 @@ function ComposerControl({
           data-collision-padding="12"
           data-control-panel={control}
           data-control-detail={panelDetail}
+          data-context-description
           data-popover
           data-side="top"
           data-side-offset="8"

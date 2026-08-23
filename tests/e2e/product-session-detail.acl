@@ -15,7 +15,7 @@ suite "a3s-ui-product-session-detail" {
         expect "conversation-only" { visible = css("[data-product-surface=session]:not(:has(.a3s-workspace-playground))") }
         expect "search-action" { visible = css("button[aria-label='在会话中搜索']") }
         expect "details-secondary" { visible = css(".product-session__actions button[aria-label='打开任务详情']") }
-        expect "details-hidden-by-default" { visible = css("[data-product-surface=session]:not(:has(aside[aria-label='任务详情']))") }
+        expect "details-hidden-by-default" { visible = css("[data-product-surface=session][data-inspector=hidden]:has(aside[aria-label='任务详情'][hidden][inert])") }
         expect "empty-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
         expect "execution-boundary" { visible = css(".product-session-execution") }
         expect "completed-plan-collapsed" { visible = css("details.product-execution-plan[data-state=complete]:not([open])") }
@@ -25,6 +25,13 @@ suite "a3s-ui-product-session-detail" {
         expect "completed-plan-steps-visible" { visible = css(".product-execution-plan[open] ol") }
         click "collapse-completed-plan" { target = css(".product-execution-plan > summary") }
         expect "completed-plan-collapsed-again" { visible = css(".product-execution-plan:not([open])") }
+
+        click "open-test-log" { target = css(".product-tool-timeline > ol > li:nth-child(4) > details > summary") }
+        expect "log-viewer-public-contract" { visible = css(".product-session-execution .log-viewer[aria-label='测试日志'][data-a3s-components~='log-viewer'] [role=log][aria-label='按时间排序的测试输出']") }
+        expect "ordered-log-records" { visible = css(".product-session-execution .log-viewer [role=log]:has([data-log-record]:first-child [data-log-sequence]):has([data-log-record]:last-child [data-log-sequence])") }
+        click "copy-test-log" { target = role("button", "复制完整测试日志") }
+        expect "test-log-copy-feedback" { visible = css(".product-session-execution .log-viewer button[aria-label='复制完整测试日志'] svg[data-icon=check]") }
+        screenshot "test-log-evidence" { path = "product/session-test-log-desktop.png" }
 
         click "open-primary-review-action" { target = role("button", "设备预览") }
         wait "primary-review-opens-preview" { visible = css(".product-session-inspector .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
@@ -66,6 +73,7 @@ suite "a3s-ui-product-session-detail" {
         expect "webview-command-visible" { visible = css(".product-session-device-simulator [data-device-simulator-command]") }
         click "collapse-device-simulator" { target = css(".product-inspector-preview .product-inspector-section-heading > button") }
         wait "compact-device-preview-restored" { visible = css(".product-session-inspector:not([data-preview-expanded=true]) .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
+        expect "preview-panel-restored" { visible = css(".product-inspector-preview:has(.device-simulator[data-variant=compact])") }
         click "open-code-graph" { target = role("tab", "图谱") }
         expect "code-graph-public-contract" { visible = css(".product-session-inspector .code-graph[data-code-graph-initialized=true] [data-code-graph-canvas]") }
         expect "expand-graph-icon" { visible = css(".product-inspector-graph button[aria-label='展开代码依赖图谱'][aria-expanded=false] svg[data-icon=expand]") }
@@ -112,6 +120,11 @@ suite "a3s-ui-product-session-detail" {
         expect "mobile-send-disabled" { visible = css(".product-session__composer button[aria-label='发送任务']:disabled") }
         expect "mobile-tool-calls" { visible = css(".product-tool-timeline") }
 
+        click "open-mobile-test-log" { target = css(".product-tool-timeline > ol > li:nth-child(4) > details > summary") }
+        expect "mobile-log-viewer-public-contract" { visible = css(".product-session-execution .log-viewer[data-a3s-components~='log-viewer'] [role=log][aria-label='按时间排序的测试输出']") }
+        expect "mobile-log-records-contained" { visible = css(".product-session-execution .log-viewer [role=log]:has([data-log-record]:nth-child(4))") }
+        screenshot "mobile-test-log-evidence" { path = "product/session-test-log-mobile.png" }
+
         click "open-mobile-details" { target = css("button[aria-label='打开任务详情']") }
         expect "mobile-details" { visible = css("aside[aria-label='任务详情']") }
         expect "mobile-details-full-width" { visible = css(".product-session-inspector[role=dialog]") }
@@ -119,7 +132,7 @@ suite "a3s-ui-product-session-detail" {
         screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
         press "close-mobile-details" { key = "Escape" }
         expect "mobile-details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
-        expect "mobile-session-restored" { visible = css("[data-product-surface=session]:has(.product-session__viewport):has(.product-session__composer .ProseMirror):not(:has(aside[aria-label='任务详情']))") }
+        expect "mobile-session-restored" { visible = css("[data-product-surface=session][data-inspector=hidden]:has(.product-session__viewport):has(.product-session__composer .ProseMirror):has(aside[aria-label='任务详情'][hidden][inert])") }
         screenshot "mobile-restored-evidence" { path = "product/session-detail-mobile-restored.png" }
         console "console" { path = "product/session-detail-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/session-detail-mobile-page-errors.json" clear = false }

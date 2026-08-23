@@ -148,7 +148,11 @@ export function ProductStartSurface({
     }));
 
   return (
-    <section className="product-start" data-product-surface="start">
+    <section
+      className="task-start product-start"
+      data-product-surface="start"
+      data-state="ready"
+    >
       <div className="product-start__content">
         <h1>{zh ? "A3S，我帮你" : "A3S, here to help"}</h1>
         <div aria-label={zh ? "任务类型" : "Task type"} role="tablist">

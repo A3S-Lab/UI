@@ -4,7 +4,7 @@
 
 ### Added
 
-- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, CLI, Cloud adapter, and interaction contracts into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
+- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, durable interaction contracts, CLI, and Cloud adapter into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
@@ -25,11 +25,11 @@
 - Added a standalone bilingual `/playground` route for exercising eight complete workspace compositions across desktop, tablet, phone, recovery, inspector, dark-theme, and RTL states without placing it in the documentation hierarchy.
 - Added `useA3SLocale`, `useA3STheme`, and `useA3SMotion` to both framework packages, with shared root-DOM state, media-query observation, typed setters, lifecycle cleanup, and bilingual runtime-configuration guidance.
 - Added strict evidence validation for all 160 pinned reference mappings, including bilingual component guides, framework usage, applicable hooks, ownership boundaries, official identity, and the standalone Playground route.
-- Added substantive product requirements and deterministic A3S Test mappings for every public component, Playground export, Harness surface, and Playground surface.
+- Added one substantive product requirements document and deterministic A3S Test mapping for every public component, Playground export, and Harness or Playground surface: 230 PRDs backed by the checked ACL inventory.
 
 ### Changed
 
-- Moved the complete workflow editor, node configuration panels, node catalog, DSL adapters, examples, documentation, and release checks to the A3S Flow repository. A3S UI now retains only the general Form system and its React and Vue state integrations.
+- Composed the public Code Editor into the Playground file workbench and the public Log Viewer into session execution records, including real edit, find, format, preview, save, ordered-stream, and copy-feedback paths instead of detached showcase-only examples.
 - Established `apps/desktop` as the sole owner of product routing, persistence, permissions, domain state, and orchestration; A3S UI now limits Playground work to deterministic integration fixtures and reuses the public Artifact Card, Highlighter, Copy Button, File Explorer, Code Diff, Device Simulator, and Code Graph contracts instead of maintaining parallel implementations.
 - Rebuilt the Playground task-detail overview on the public Task Pane, Task Plan, Plan Step, Property List, and Status Badge contracts; replaced the mobile dashboard-card stack with a dense divider-led inspector and added the reusable plain Task Plan variant.
 - Refined the Playground project Plan into a dense status-grouped work surface with reference-aligned scope and view controls, actionable empty groups, controlled assignee/date/density options, deterministic task identifiers, one-row mobile actions, and host-owned saved-view requests.
@@ -55,6 +55,10 @@
 - Deepened Data Grid, Filter Bar, Context Menu, Bulk Action Bar, and File Explorer with cancelable precondition hooks, controlled snapshots, source-aware completion events, asynchronous recovery, read-only behavior, filtering, and reversible inline rename.
 - Aligned the bilingual foundation guides, Theme Customizer, actions, fields, choice controls, tabs, overlays, application chrome, and documentation previews with the Playground neutral surface system, 6/8/10/14-pixel radii, neutral primary commands, A3S OS blue interaction states, and 120/160/220-millisecond motion system; canonical component-family styles now remain authoritative over the earlier Office refinement layer.
 - Exposed Tabs, Alert Dialog, Dialog, Drawer, Dropdown Menu, and Popover controller methods through the manifest and generated React hooks and Vue composables.
+
+### Removed
+
+- Removed the standalone Workflow documentation group, its DAG editor and node catalog, the associated React APIs and styles, package entry points, examples, tests, PRDs, deterministic suites, and generated routes.
 
 ### Fixed
 

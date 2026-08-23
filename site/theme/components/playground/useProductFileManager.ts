@@ -57,7 +57,6 @@ export function useProductFileManager(
   const [newFolderName, setNewFolderName] = useState("");
   const [query, setQuery] = useState("");
   const [quickLookId, setQuickLookId] = useState<string>();
-  const [compactQuickLook, setCompactQuickLook] = useState(false);
   const [renameId, setRenameId] = useState<string>();
   const [renameValue, setRenameValue] = useState("");
   const [searchScope, setSearchScope] = useState<"current" | "workspace">(
@@ -67,12 +66,12 @@ export function useProductFileManager(
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<ProductFileSortField>("name");
   const [status, setStatus] = useState("");
-  const [view, setView] = useState<ProductFileView>("grid");
+  const [view, setView] = useState<ProductFileView>("list");
   const [workbenchId, setWorkbenchId] = useState<string | undefined>(
     initialWorkbenchId,
   );
   const fileViewportRef = useRef<HTMLElement>(null);
-  const quickLookCloseRef = useRef<HTMLButtonElement>(null);
+  const quickLookWasOpenRef = useRef(false);
 
   const current = entries.find((entry) => entry.id === currentId);
   const quickLook = entries.find((entry) => entry.id === quickLookId);
@@ -118,7 +117,7 @@ export function useProductFileManager(
   ]);
   const selectedEntries = entries.filter((entry) => selectedIds.has(entry.id));
   const breadcrumbs = buildBreadcrumbs(entries, currentId);
-  const quickLookModalOpen = compactQuickLook && Boolean(quickLook);
+  const quickLookModalOpen = Boolean(quickLook);
 
   useEffect(() => {
     const close = () => setContextMenu(null);
@@ -131,23 +130,20 @@ export function useProductFileManager(
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 58rem)");
-    const update = () => setCompactQuickLook(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (!quickLookModalOpen) return;
-    const frame = window.requestAnimationFrame(() => {
-      quickLookCloseRef.current?.focus();
-    });
+    if (quickLookModalOpen) {
+      quickLookWasOpenRef.current = true;
+      return;
+    }
+    if (!quickLookWasOpenRef.current) return;
+    quickLookWasOpenRef.current = false;
+    if (renameId) return;
+    const frame = window.requestAnimationFrame(() =>
+      fileViewportRef.current?.focus(),
+    );
     return () => {
       window.cancelAnimationFrame(frame);
-      fileViewportRef.current?.focus();
     };
-  }, [quickLookId, quickLookModalOpen]);
+  }, [quickLookModalOpen, renameId]);
 
   useEffect(() => {
     setEntries((currentEntries) => {
@@ -166,31 +162,6 @@ export function useProductFileManager(
       return [...persistentEntries, ...importedEntries];
     });
   }, [locale, workspaceFiles]);
-
-  const handleQuickLookKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (!quickLookModalOpen) return;
-    if (event.key === "Escape") {
-      event.stopPropagation();
-      setQuickLookId(undefined);
-      return;
-    }
-    if (event.key !== "Tab") return;
-    const focusable = Array.from(
-      event.currentTarget.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-      ),
-    ).filter((element) => element.getClientRects().length > 0);
-    const first = focusable[0];
-    const last = focusable.at(-1);
-    if (!first || !last) return;
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  };
 
   const navigate = (id: string, record = true) => {
     const target = entries.find((entry) => entry.id === id);
@@ -548,7 +519,6 @@ export function useProductFileManager(
     fileViewportRef,
     folderError,
     handleKeyboard,
-    handleQuickLookKeyDown,
     history,
     historyIndex,
     lastSelectedId,
@@ -560,8 +530,6 @@ export function useProductFileManager(
     openEntry,
     paste,
     quickLook,
-    quickLookCloseRef,
-    quickLookModalOpen,
     query,
     renameId,
     renameValue,

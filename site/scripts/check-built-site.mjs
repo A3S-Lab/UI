@@ -497,7 +497,6 @@ const nextHarnessExpectations = [
   },
 ];
 
-
 const nextTreeExpectations = [
   {
     file: "components/tree.html",
@@ -844,7 +843,7 @@ const playgroundExpectations = [
     markers: [
       'lang="zh"',
       'class="a3s-product-application-page"',
-      'class="a3s-product-application rp-not-doc"',
+      'class="agent-workbench a3s-product-application rp-not-doc"',
       "data-product-application",
       'data-direction-contract="user-pinned-operate-v5-3-3"',
       'data-view="start"',
@@ -864,7 +863,7 @@ const playgroundExpectations = [
     markers: [
       'lang="en"',
       'class="a3s-product-application-page"',
-      'class="a3s-product-application rp-not-doc"',
+      'class="agent-workbench a3s-product-application rp-not-doc"',
       "data-product-application",
       'data-direction-contract="user-pinned-operate-v5-3-3"',
       'data-view="start"',
@@ -1220,12 +1219,19 @@ const forbiddenFiles = [
   "en/workflow/index.html",
   "components/form-system/workflow-node-embedding.html",
   "en/components/form-system/workflow-node-embedding.html",
-  ...["start", "step", "batch", "condition", "wait", "hook", "complete", "fail"].flatMap(
-    (node) => [
-      `components/form-system/a3s-flow/${node}.html`,
-      `en/components/form-system/a3s-flow/${node}.html`,
-    ],
-  ),
+  ...[
+    "batch",
+    "complete",
+    "condition",
+    "fail",
+    "hook",
+    "start",
+    "step",
+    "wait",
+  ].flatMap((node) => [
+    `components/form-system/a3s-flow/${node}.html`,
+    `en/components/form-system/a3s-flow/${node}.html`,
+  ]),
 ];
 for (const file of forbiddenFiles) {
   try {

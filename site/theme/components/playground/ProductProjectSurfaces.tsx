@@ -520,6 +520,7 @@ export function ProductProjectSessionSurface({
             locale={locale}
             onClose={closeInspector}
             onTabChange={setInspectorTab}
+            open
             overlay={inspectorOverlay}
             panelRef={inspectorRef}
             project

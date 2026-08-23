@@ -128,4 +128,4 @@ Repeated rows have separate keys even when their dependency values are equal. Fo
 
 Custom React widgets and custom-node renderers receive `dataSource` alongside `options`. It exposes the current status, query, search setter, activation, retry, and pagination callbacks. Vue and Web Components use the same React runtime and therefore retain identical orchestration semantics.
 
-For a workflow node settings panel, create one stable resolver per mounted host boundary and keep the node value controlled by the workflow editor. Replace the resolver when tenant context changes. Never use a module-global cache for organization-scoped options.
+For an embedded settings panel, create one stable resolver per mounted host boundary and keep the form value controlled by the host. Replace the resolver when tenant context changes. Never use a module-global cache for organization-scoped options.

@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-automations` |
 | Behavioral suite | `tests/e2e/product-workspace-capabilities.acl` |
 | Behavioral scenario | `automation-run-recovery` |
+| Behavior assertion | `history-ready` |
 
 ## User problem
 
@@ -29,7 +30,7 @@ State changes preserve the user's last safe context. Visual styling never become
 
 ## Interaction contract
 
-The component is exercised at `.product-run-history` by `tests/e2e/product-workspace-capabilities.acl#automation-run-recovery`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
+The component is exercised at `.product-run-history` by `tests/e2e/product-workspace-capabilities.acl#automation-run-recovery`. The uniquely assigned `history-ready` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
 
 Pointer and keyboard paths must reach the same decision. Focus enters through a named native control, movement follows the widget's documented orientation, Escape cancels a transient layer, and focus returns to the exact trigger. The component target is `.product-run-history`; incidental descendants are not a supported automation API.
 
@@ -51,7 +52,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 
 - The export inventory contains exactly one `ProductAutomationRunHistory` declaration in `site/theme/components/playground/ProductAutomationRunHistory.tsx` and exactly one matching PRD and coverage record.
 - The canonical route `/playground/automations.html` loads directly and passes `playground-route-automations` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
-- The real interaction path `automation-run-recovery` explicitly targets `.product-run-history` and proves a state-changing keyboard or pointer action in the same component-owned workflow.
+- The real interaction path `automation-run-recovery` explicitly targets `.product-run-history`; its unique `history-ready` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
 - Empty, pending, invalid, denied, stale, failed, and recovery cases keep prior context and never fabricate host authority or success.
 - Desktop and compact layouts preserve the primary decision, visible focus, readable localized copy, bounded scrolling, and a reachable recovery action.
@@ -62,5 +63,5 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 ## A3S Test mapping
 
 - Direct route evidence: `tests/e2e/playground-route-contracts.acl#playground-route-automations` at `http://127.0.0.1:4178/UI/playground/automations.html`.
-- Behavior evidence: `tests/e2e/product-workspace-capabilities.acl#automation-run-recovery`, with stable target `.product-run-history`.
+- Behavior evidence: `tests/e2e/product-workspace-capabilities.acl#automation-run-recovery`, assertion `history-ready`, with stable target `.product-run-history`.
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.

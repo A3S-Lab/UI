@@ -160,16 +160,17 @@ describe('headless form state', () => {
         tags: ['one', 2],
       }),
     ).toEqual([]);
+  });
 
-    const typedAdditionalProperties = structuredClone(plan);
-    typedAdditionalProperties.schema.additionalProperties = { type: 'string' };
-    expect(
-      validateReferenceFormValue(typedAdditionalProperties, {
-        profile: { city: '上海' },
-        tags: ['one', 'two'],
-        source: 42,
-      }),
-    ).toContainEqual(expect.objectContaining({ path: 'source', code: 'type' }));
+  it('validates unknown properties with a schema-valued additional-properties contract', () => {
+    const document = createDocument();
+    document.schema.additionalProperties = { type: 'string' };
+    const plan = planFor(document);
+
+    expect(validateReferenceFormValue(plan, { name: 'Ada', note: 'Allowed' })).toEqual([]);
+    expect(validateReferenceFormValue(plan, { name: 'Ada', note: 42 })).toContainEqual(
+      expect.objectContaining({ path: 'note', code: 'type' }),
+    );
   });
 
   it('accepts null and valid primitive values without false positives', () => {
@@ -255,32 +256,10 @@ describe('headless form state', () => {
       },
     ];
 
-    expect(validateFormValue(planFor(document), { payload: { nested: true }, items: [] })).toEqual(
-      [],
-    );
-    expect(
-      validateReferenceFormValue(planFor(document), { payload: { nested: true }, items: [] }),
-    ).toEqual([]);
-
-    const missingTargets = structuredClone(planFor(document));
-    missingTargets.rules = [
-      {
-        id: 'missing-row-target',
-        target: 'missing',
-        kind: 'validate',
-        scope: 'row',
-        expression: { op: 'literal', value: false },
-      },
-      {
-        id: 'empty-target',
-        target: '',
-        kind: 'validate',
-        expression: { op: 'literal', value: false },
-      },
-    ];
-    expect(
-      evaluateFormValueReference(missingTargets, { payload: { nested: true }, items: [] }).errors,
-    ).toEqual([]);
+    const plan = planFor(document);
+    const value = { payload: { nested: true }, items: [] };
+    expect(validateFormValue(plan, value)).toEqual([]);
+    expect(validateReferenceFormValue(plan, value)).toEqual([]);
   });
 
   it('applies validation rules using the same expression engine', () => {

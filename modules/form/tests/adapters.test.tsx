@@ -321,9 +321,7 @@ describe('framework adapters', () => {
     const nodeRegistry: FormNodeRegistry = {};
     element.plan = assertCompiled(createDocument());
     element.value = { name: 'Embedded node' };
-    element.errors = [
-      { path: 'name', code: 'host.conflict', message: 'Reload the workflow node configuration.' },
-    ];
+    element.errors = [{ path: 'name', code: 'host.conflict', message: 'Reload the form value.' }];
     element.hostAdapter = {
       resolveDataSource: async (request) => {
         locales.push(request.locale);
@@ -355,7 +353,7 @@ describe('framework adapters', () => {
     await waitFor(() =>
       expect((element.querySelector('input[id*="name"]') as HTMLInputElement).disabled).toBe(true),
     );
-    expect(element.textContent).toContain('Reload the workflow node configuration.');
+    expect(element.textContent).toContain('Reload the form value.');
 
     element.locale = 'de-DE';
     element.errors = [];
@@ -364,7 +362,7 @@ describe('framework adapters', () => {
     await waitFor(() =>
       expect((element.querySelector('input[id*="name"]') as HTMLInputElement).disabled).toBe(false),
     );
-    expect(element.textContent).not.toContain('Reload the workflow node configuration.');
+    expect(element.textContent).not.toContain('Reload the form value.');
     element.remove();
   });
 

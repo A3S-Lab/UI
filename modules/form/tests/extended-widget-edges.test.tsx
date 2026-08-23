@@ -9,6 +9,7 @@ import {
 import {
   CalculatedWidget,
   CurrencyWidget,
+  DateTimeWidget,
   dateTimeFormValue,
   dateTimeInputValue,
   MultiSelectWidget,
@@ -143,8 +144,22 @@ describe('extended widget edge behavior', () => {
     );
     fireEvent.blur(numberOption, { relatedTarget: stringOption });
     expect(limited.events.blurs).toBe(0);
+    (stringOption as HTMLInputElement).disabled = false;
+    fireEvent.click(stringOption);
+    expect(limited.events.changes).toEqual([]);
     fireEvent.click(numberOption);
     expect(limited.events.changes).toEqual([[]]);
+  });
+
+  it('uses the node identifier as the temporal control label when no title is provided', () => {
+    const temporal = createWidgetProps({
+      node: fieldNode('date-time'),
+      value: '2026-08-09T10:30:00Z',
+    });
+
+    render(<DateTimeWidget {...temporal.props} />);
+
+    expect(screen.getByLabelText('date-time-field')).toBeTruthy();
   });
 
   it('handles empty drafts, mixed controlled values, focus boundaries, and tag limits', () => {
@@ -203,7 +218,7 @@ describe('extended widget edge behavior', () => {
     const invalid = createWidgetProps({
       id: 'budget',
       node: fieldNode('currency', {
-        customProps: { currency: 12, step: 'invalid' },
+        customProps: { currency: 'USDX', step: 'invalid' },
       }),
       schema: { type: 'number', minimum: -5, maximum: 5 },
       value: null,
@@ -381,5 +396,19 @@ describe('extended widget edge behavior', () => {
     expect(radio.events.changes).toEqual([2]);
     fireEvent.blur(second, { relatedTarget: group.parentElement });
     expect(radio.events.blurs).toBe(1);
+  });
+
+  it('renders optional checkbox help without a required-state class', () => {
+    const checkbox = createWidgetProps({
+      node: fieldNode('checkbox', {
+        label: 'Enable notifications',
+        description: 'Send a notification when processing completes.',
+      }),
+    });
+
+    render(<NativeWidget {...checkbox.props} />);
+
+    expect(screen.getByText('Enable notifications').classList.contains('is-required')).toBe(false);
+    expect(screen.getByText('Send a notification when processing completes.')).toBeTruthy();
   });
 });

@@ -52,7 +52,7 @@ const harness = [
     problem:
       "Ordered context, canvas, and preview regions need one-dimensional resizing when every region remains simultaneously meaningful and tabs would hide necessary context.",
     boundary:
-      "Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, process state, persistence, and any decision to add or remove regions.",
+      "Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, workflow state, persistence, and any decision to add or remove regions.",
     states: "initializing, ready, balanced, focus-canvas, wide, and compact",
     risk: "Separator and preset behavior must be keyboard reachable, DOM order must stay truthful, and the narrow topology must preserve all three regions without nested page scrolling.",
   },
@@ -71,7 +71,6 @@ const harness = [
     risk: "Headings must remain real buttons with synchronized aria-expanded state, expanded bodies must receive usable height, and compact screenshots must prove content rather than title-only panes.",
   },
 ];
-
 
 const playground = [
   [
@@ -268,7 +267,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Desktop and compact screenshots show complete, aligned content with no page-level horizontal overflow.
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
-- Component-specific edit, rejection, recovery, panel disclosure, focus return, running, and successful-result transitions are deterministic where this surface owns them.
+- Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
 - Product-specific risk is covered: ${surface.risk}
 
 ## A3S Test mapping
@@ -277,7 +276,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: \`${surface.scenario}\`.
 - Preview URL: \`http://127.0.0.1:4178/UI${surface.route}\`.
 - Stable target: \`${stableRoot}\`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness scenarios additionally prove their component-specific keyboard state transitions and focus recovery.
 `;
 }
 
@@ -312,7 +311,6 @@ function renderPlaygroundScenario(surface) {
         page_errors "errors" { path = "playground/routes/${surface.id}-errors.json" clear = false }
     }`;
 }
-
 
 async function writeOrCheck(filePath, expected) {
   if (checkOnly) {

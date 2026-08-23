@@ -44,7 +44,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Desktop and compact screenshots show complete, aligned content with no page-level horizontal overflow.
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
-- Component-specific edit, rejection, recovery, panel disclosure, focus return, running, and successful-result transitions are deterministic where this surface owns them.
+- Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
 - Product-specific risk is covered: Headings must remain real buttons with synchronized aria-expanded state, expanded bodies must receive usable height, and compact screenshots must prove content rather than title-only panes.
 
 ## A3S Test mapping
@@ -53,4 +53,4 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: `pane-view`.
 - Preview URL: `http://127.0.0.1:4178/UI/harness/pane-view.html`.
 - Stable target: `.dockview-demo[data-mode=pane][data-ready=true]`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness scenarios additionally prove their component-specific keyboard state transitions and focus recovery.

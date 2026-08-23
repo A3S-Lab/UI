@@ -1,14 +1,11 @@
 import { type RefObject, useCallback } from 'react';
 import { type FormPlan, matchValuePathTemplate } from '../core';
-import { NESTED_ERROR_FIELD_WIDGETS } from './widget-contract';
 
 export function nodeForValuePath(plan: FormPlan, path: string) {
   return Object.values(plan.nodeById).find((node) => {
     if (node.valuePath === path) return true;
     if (
-      (node.widget === 'matrix-single' ||
-        node.widget === 'matrix-multiple' ||
-        NESTED_ERROR_FIELD_WIDGETS.has(node.widget ?? '')) &&
+      (node.widget === 'matrix-single' || node.widget === 'matrix-multiple') &&
       node.valuePath &&
       path.startsWith(`${node.valuePath}.`)
     )

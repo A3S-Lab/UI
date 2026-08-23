@@ -171,6 +171,23 @@ describe('computed form rules', () => {
     );
   });
 
+  it('invalidates incremental cache entries when transported dependencies change shape', () => {
+    const plan = structuredClone(assertCompiled(computedDocument()));
+    const evaluator = new IncrementalComputedRuleEvaluator();
+    const value: JsonObject = { quantity: 2, unitPrice: 50, taxRate: 0.1 };
+    evaluator.evaluate(plan, value);
+    const dependencies = plan.ruleDependencies['derive-subtotal'] as string[];
+
+    dependencies.splice(1, 1);
+    expect(evaluator.evaluate(plan, value).evaluatedRuleIds).toContain('derive-subtotal');
+
+    dependencies.splice(0, 1, 'unitPrice');
+    expect(evaluator.evaluate(plan, value).evaluatedRuleIds).toContain('derive-subtotal');
+
+    const withoutDependency = evaluator.evaluate(plan, { quantity: 2, taxRate: 0.1 });
+    expect(withoutDependency.evaluatedRuleIds).toContain('derive-subtotal');
+  });
+
   it('removes stale outputs and skips dependent rules after an evaluation failure', () => {
     const plan = assertCompiled(computedDocument());
     const invalidValue = {
@@ -319,7 +336,31 @@ describe('computed form rules', () => {
     expect(() => evaluator.evaluate(plan, { quantity: 1, unitPrice: 1 })).not.toThrow();
   });
 
-  it('uses computed values for validation', () => {
+  it('ignores transported computed rules without a concrete target path', () => {
+    const plan = structuredClone(assertCompiled(computedDocument()));
+    plan.rules.push(
+      {
+        id: 'empty-target',
+        target: '',
+        kind: 'computed',
+        expression: literal(1),
+      },
+      {
+        id: 'orphan-row-target',
+        target: 'orphan-row',
+        kind: 'computed',
+        scope: 'row',
+        expression: literal(1),
+      },
+    );
+    plan.dependencyOrder.unshift('', 'orphan-row');
+
+    const result = evaluateComputedRules(plan, { quantity: 1, unitPrice: 1 });
+    expect(result.trace.some((entry) => entry.ruleId === 'empty-target')).toBe(false);
+    expect(result.trace.some((entry) => entry.ruleId === 'orphan-row-target')).toBe(false);
+  });
+
+  it('uses computed values for submitted-value validation', () => {
     const compiled = compileForm(computedDocument());
     if (!compiled.document || !compiled.plan) throw new Error('Expected a compiled document.');
     const value = { quantity: 2, unitPrice: 50, taxRate: 0.1 };
@@ -327,6 +368,7 @@ describe('computed form rules', () => {
     expect(evaluation.errors).toEqual([]);
     expect(evaluation.value.total).toBe(110);
     expect(validateFormValue(compiled.plan, value)).toEqual([]);
+    expect(evaluation.value).toEqual(expect.objectContaining({ total: 110 }));
   });
 
   it('keeps computed targets read-only in runtime field state', () => {

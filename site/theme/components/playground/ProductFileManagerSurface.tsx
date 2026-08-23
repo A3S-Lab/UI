@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import type { ProductTaskDraft } from "./product-composer-data";
 import { ProductFileArtifactsSurface } from "./ProductFileArtifactsSurface";
+import { ProductFilePreviewDialog } from "./ProductFilePreviewDialog";
 import { ProductFileWorkbench } from "./ProductFileWorkbench";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
@@ -142,7 +143,6 @@ function ProductWorkspaceFileManagerSurface({
     fileViewportRef,
     folderError,
     handleKeyboard,
-    handleQuickLookKeyDown,
     history,
     historyIndex,
     lastSelectedId,
@@ -154,8 +154,6 @@ function ProductWorkspaceFileManagerSurface({
     openEntry,
     paste,
     quickLook,
-    quickLookCloseRef,
-    quickLookModalOpen,
     query,
     renameId,
     renameValue,
@@ -238,13 +236,11 @@ function ProductWorkspaceFileManagerSurface({
       aria-label={zh ? "文件管理器" : "File manager"}
       className="file-manager product-file-manager"
       data-file-manager-initialized="true"
+      data-has-selection={selectedIds.size > 0 ? "true" : undefined}
       data-file-manager-view={view}
       data-state="ready"
     >
-      <aside
-        data-file-manager-sidebar
-        inert={quickLookModalOpen ? true : undefined}
-      >
+      <aside data-file-manager-sidebar>
         <header>
           <span>
             <ProductPlaygroundIcon name="files" />
@@ -297,7 +293,7 @@ function ProductWorkspaceFileManagerSurface({
         </footer>
       </aside>
 
-      <main inert={quickLookModalOpen ? true : undefined}>
+      <main>
         <header data-file-manager-header>
           <div data-file-navigation>
             <button
@@ -394,7 +390,7 @@ function ProductWorkspaceFileManagerSurface({
             >
               <ProductFileTypeIcon
                 entry={{ kind: "folder", name: newFolderName, type: "Folder" }}
-                size={view === "grid" ? "grid" : "list"}
+                size="navigation"
               />
               {zh ? "新建文件夹" : "New folder"}
             </button>
@@ -454,7 +450,11 @@ function ProductWorkspaceFileManagerSurface({
             >
               {sortDirection === "asc" ? "A–Z" : "Z–A"}
             </button>
-            <div aria-label={zh ? "文件视图" : "File view"} role="group">
+            <div
+              aria-label={zh ? "文件视图" : "File view"}
+              data-file-view-switcher
+              role="group"
+            >
               <button
                 aria-label={zh ? "图标视图" : "Grid view"}
                 aria-pressed={view === "grid"}
@@ -481,11 +481,17 @@ function ProductWorkspaceFileManagerSurface({
             data-file-manager-selection-toolbar
           >
             <strong>
-              {zh
-                ? `已选择 ${selectedIds.size} 项`
-                : `${selectedIds.size} selected`}
+              <span data-selection-count-full>
+                {zh
+                  ? `已选择 ${selectedIds.size} 项`
+                  : `${selectedIds.size} selected`}
+              </span>
+              <span aria-hidden="true" data-selection-count-compact>
+                {selectedIds.size}
+              </span>
             </strong>
             <button
+              aria-label={zh ? "用于任务" : "Use in task"}
               data-primary
               disabled={selectedEntries.some(
                 (entry) =>
@@ -495,12 +501,15 @@ function ProductWorkspaceFileManagerSurface({
               type="button"
             >
               <ProductPlaygroundIcon name="task-add" />
-              {zh ? "用于任务" : "Use in task"}
+              <span data-selection-action-label>
+                {zh ? "用于任务" : "Use in task"}
+              </span>
             </button>
             {selectedEntries.some(
               (entry) => entry.transferState === "error",
             ) ? (
               <button
+                aria-label={zh ? "重试导入" : "Retry import"}
                 onClick={() =>
                   selectedEntries
                     .filter((entry) => entry.transferState === "error")
@@ -509,41 +518,49 @@ function ProductWorkspaceFileManagerSurface({
                 type="button"
               >
                 <ProductPlaygroundIcon name="refresh" />
-                {zh ? "重试导入" : "Retry import"}
+                <span data-selection-action-label>
+                  {zh ? "重试导入" : "Retry import"}
+                </span>
               </button>
             ) : null}
             <button
+              aria-label={zh ? "复制" : "Copy"}
               onClick={() =>
                 setClipboard({ ids: [...selectedIds], mode: "copy" })
               }
               type="button"
             >
               <ProductPlaygroundIcon name="copy" />
-              {zh ? "复制" : "Copy"}
+              <span data-selection-action-label>{zh ? "复制" : "Copy"}</span>
             </button>
             <button
+              aria-label={zh ? "剪切" : "Cut"}
               onClick={() =>
                 setClipboard({ ids: [...selectedIds], mode: "cut" })
               }
               type="button"
             >
               <ProductPlaygroundIcon name="cut" />
-              {zh ? "剪切" : "Cut"}
+              <span data-selection-action-label>{zh ? "剪切" : "Cut"}</span>
             </button>
             <button
+              aria-label={zh ? "收藏" : "Favorite"}
               onClick={() => toggleFavorite([...selectedIds])}
               type="button"
             >
               <ProductPlaygroundIcon name="heart" />
-              {zh ? "收藏" : "Favorite"}
+              <span data-selection-action-label>
+                {zh ? "收藏" : "Favorite"}
+              </span>
             </button>
             <button
+              aria-label={zh ? "删除" : "Delete"}
               data-danger
               onClick={() => setDeletePending([...selectedIds])}
               type="button"
             >
               <ProductPlaygroundIcon name="trash" />
-              {zh ? "删除" : "Delete"}
+              <span data-selection-action-label>{zh ? "删除" : "Delete"}</span>
             </button>
             <button
               aria-label={zh ? "清除选择" : "Clear selection"}
@@ -593,11 +610,12 @@ function ProductWorkspaceFileManagerSurface({
         >
           {view === "list" ? (
             <header data-file-list-header>
-              <span>{zh ? "名称" : "Name"}</span>
-              <span>{zh ? "类型" : "Kind"}</span>
-              <span>{zh ? "所有者" : "Owner"}</span>
-              <span>{zh ? "修改时间" : "Modified"}</span>
-              <span>{zh ? "大小" : "Size"}</span>
+              <span aria-hidden="true" data-file-icon-column />
+              <span data-file-name>{zh ? "名称" : "Name"}</span>
+              <span data-file-kind>{zh ? "类型" : "Kind"}</span>
+              <span data-file-owner>{zh ? "所有者" : "Owner"}</span>
+              <span data-file-modified>{zh ? "修改时间" : "Modified"}</span>
+              <span data-file-size>{zh ? "大小" : "Size"}</span>
             </header>
           ) : null}
           {newFolderOpen ? (
@@ -714,7 +732,9 @@ function ProductWorkspaceFileManagerSurface({
                     entry={entry}
                     size={view === "grid" ? "grid" : "list"}
                   />
-                  <strong title={entry.name}>{entry.name}</strong>
+                  <strong data-file-name title={entry.name}>
+                    {entry.name}
+                  </strong>
                   <span
                     data-file-kind
                     data-file-transfer-state={
@@ -791,107 +811,31 @@ function ProductWorkspaceFileManagerSurface({
         </footer>
       </main>
 
-      {quickLookModalOpen ? (
-        <div
-          aria-hidden="true"
-          data-file-manager-backdrop
-          onClick={() => setQuickLookId(undefined)}
-        />
-      ) : null}
-
       {quickLook ? (
-        <aside
-          aria-label={
-            zh ? `快速查看 ${quickLook.name}` : `Quick Look ${quickLook.name}`
+        <ProductFilePreviewDialog
+          entry={quickLook}
+          locale={locale}
+          onClose={() => setQuickLookId(undefined)}
+          onDownload={() =>
+            setStatus(zh ? "下载已准备。" : "Download prepared.")
           }
-          aria-modal={quickLookModalOpen ? true : undefined}
-          data-file-manager-quicklook
-          data-modal={quickLookModalOpen ? "true" : undefined}
-          onKeyDown={handleQuickLookKeyDown}
-          role={quickLookModalOpen ? "dialog" : undefined}
-        >
-          <header>
-            <span>
-              <ProductPlaygroundIcon name="eye" />
-              <strong>{zh ? "快速查看" : "Quick Look"}</strong>
-            </span>
-            <button
-              aria-label={zh ? "关闭快速查看" : "Close Quick Look"}
-              onClick={() => setQuickLookId(undefined)}
-              ref={quickLookCloseRef}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="close" />
-            </button>
-          </header>
-          <div data-quicklook-preview>
-            <ProductFileTypeIcon entry={quickLook} size="preview" />
-            <h2>{quickLook.name}</h2>
-            <pre>
-              {quickLook.preview?.[locale] ??
-                (zh
-                  ? "此项目没有可用预览。"
-                  : "No preview is available for this item.")}
-            </pre>
-          </div>
-          <dl>
-            <div>
-              <dt>{zh ? "类型" : "Kind"}</dt>
-              <dd>{quickLook.type}</dd>
-            </div>
-            <div>
-              <dt>{zh ? "大小" : "Size"}</dt>
-              <dd>{quickLook.size}</dd>
-            </div>
-            <div>
-              <dt>{zh ? "修改" : "Modified"}</dt>
-              <dd>{formatFileDate(quickLook.modified, locale)}</dd>
-            </div>
-          </dl>
-          <footer>
-            <button
-              data-primary={!quickLook.workbench ? true : undefined}
-              onClick={() => startTaskWithEntries([quickLook])}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="task-add" />
-              {zh ? "用于新任务" : "Use in new task"}
-            </button>
-            {quickLook.workbench ? (
-              <button
-                data-primary
-                disabled={
-                  Boolean(quickLook.transferState) &&
-                  quickLook.transferState !== "ready"
-                }
-                onClick={() => setWorkbenchId(quickLook.id)}
-                type="button"
-              >
-                <ProductPlaygroundIcon name="arrow" />
-                {zh ? "打开" : "Open"}
-              </button>
-            ) : null}
-            {quickLook.transferState === "error" ? (
-              <button onClick={() => retryDroppedFile(quickLook)} type="button">
-                <ProductPlaygroundIcon name="refresh" />
-                {zh ? "重试导入" : "Retry import"}
-              </button>
-            ) : null}
-            <button onClick={() => startRename(quickLook)} type="button">
-              <ProductPlaygroundIcon name="edit" />
-              {zh ? "重命名" : "Rename"}
-            </button>
-            <button
-              onClick={() =>
-                setStatus(zh ? "下载已准备。" : "Download prepared.")
-              }
-              type="button"
-            >
-              <ProductPlaygroundIcon name="download" />
-              {zh ? "下载" : "Download"}
-            </button>
-          </footer>
-        </aside>
+          onOpen={
+            quickLook.workbench &&
+            (!quickLook.transferState || quickLook.transferState === "ready")
+              ? () => setWorkbenchId(quickLook.id)
+              : undefined
+          }
+          onRename={() => {
+            startRename(quickLook);
+            setQuickLookId(undefined);
+          }}
+          onRetry={
+            quickLook.transferState === "error"
+              ? () => retryDroppedFile(quickLook)
+              : undefined
+          }
+          onUseInTask={() => startTaskWithEntries([quickLook])}
+        />
       ) : null}
 
       {contextMenu ? (

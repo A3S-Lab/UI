@@ -167,6 +167,7 @@ export function ProductNavigationSidebar({
     <aside
       aria-label={zh ? "应用导航" : "Application navigation"}
       className="product-sidebar"
+      data-agent-context
       data-collapsed={collapsed ? "true" : undefined}
       data-mobile-open={mobileOpen ? "true" : undefined}
       inert={compact && !mobileOpen ? true : undefined}

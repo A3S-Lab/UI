@@ -55,29 +55,6 @@ Use `@a3s-lab/ui/form/styles.css` when the host already loads A3S UI or must not
 
 Use `--a3s-*` custom properties on a host container to theme an embedded form. Avoid overrides against internal class names.
 
-
-## Repeatable parameters
-
-Use a `repeater` node with child fields for an object-array parameter. The host still stores the array as ordinary configuration and receives the entire next value through `onChange`. A3S Form keeps local row keys outside the value.
-
-When a host recreates or reorders row objects from another state store, provide `hostAdapter.identifyRepeaterItem` and return a stable business identity. Do not add an A3S-only property to node configuration just to satisfy React keying. If the document already has a required string identifier, it may declare that property as `itemKey` instead.
-
-Use `scope: 'row'` for calculations, validation, visibility, or enablement that must run independently in each repeated node parameter. Expression paths keep `*` placeholders in the document; runtime errors, traces, and host validation continue to use concrete paths.
-
-Set `layout: 'data-grid'` on that object repeater when users need to compare and edit a compact set of repeated parameters in columns. Direct children must be fields. Desktop and narrow side-panel presentations keep the same metadata-free object-array value and host callback.
-
-See [Repeatable field groups](repeatable-field-groups.md) for the base contract and [Editable data grids](data-grids.md) for the table layout, responsive behavior, and current boundaries.
-
-## Multi-page and interaction forms
-
-Use a `wizard` layout with direct `page` children when a form requires progress, previous/next navigation, per-page validation, branching, or a final review. Do not use tabs as a wizard substitute.
-
-Wizard navigation is separate from the controlled value. Persist `FormWizardCheckpoint` in the draft, interaction record, or host session and pass checkpoints back through `wizardCheckpoints`. Checkpoints are pinned to the plan digest and revision; `restoreFormWizardCheckpoint` rejects stale state before it can reopen another contract.
-
-The async validator receives `{ kind: 'page', nodeId }` when the user advances. Return only issues owned by that page. Final primary actions still run form-level validation and reopen an earlier page when it owns the first error.
-
-See [Multi-page wizards](wizards.md) for the document structure, branching semantics, checkpoint helpers, review behavior, and adapter events.
-
 ## Custom nodes
 
 `FormNodeRegistry` keeps a business component's catalog entry, default schema, design view, inspector, and runtime view under one approved registry key. Documents store the key and JSON configuration; they never store executable JavaScript.
@@ -232,7 +209,7 @@ The adapter binds context only. Authorization, tenant isolation, rate limits, st
 
 Declare only the value paths that affect a source in `dependencies`. The Renderer then avoids refetching after unrelated edits, cancels work after dependency changes, and deduplicates matching requests within the current embedded instance. Search, focus triggers, TTL caching, pagination, and failure states use the same contract in React, Vue, and Web Components.
 
-Repeated fields may declare templates such as `routes.*.provider`. Renderer requests include `scope.valuePath`, ordered `scope.rowIndices`, and `{ template, path }` dependency bindings. Use the concrete path to read the controlled value. The binding is request context, not data to persist in the submitted value.
+Repeated fields may declare templates such as `routes.*.provider`. Renderer requests include `scope.valuePath`, ordered `scope.rowIndices`, and `{ template, path }` dependency bindings. Use the concrete path to read the controlled value. The binding is request context, not data to persist in the form value.
 
 See [Host-owned data sources](data-sources.md) for the complete contract and security boundary.
 

@@ -52,6 +52,7 @@ export function ProductSettingsDialog({
     <dialog
       aria-label={zh ? "设置" : "Settings"}
       className="product-settings"
+      data-agent-inspector
       onCancel={(event) => {
         event.preventDefault();
         closeDialog();

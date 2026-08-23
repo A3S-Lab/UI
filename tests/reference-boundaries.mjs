@@ -253,7 +253,6 @@ assert.deepEqual(harnessLayoutLinks, [
   "harness/split-view",
   "harness/pane-view",
 ]);
-
 for (const locale of locales) {
   for (const link of harnessLayoutLinks) {
     const relativePath = `site/docs/next/${locale}/${link}.mdx`;
@@ -307,7 +306,7 @@ for (const [locale, expectedLabel] of [
         entry.name === "workflow",
     ),
     false,
-    `${locale} root metadata must not expose a Workflow chapter.`,
+    `${locale} root metadata must not expose the removed Workflow chapter.`,
   );
   assert.equal(
     sidebarMetadata[locale].root.some(

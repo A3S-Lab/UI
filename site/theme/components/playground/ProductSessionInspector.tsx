@@ -37,6 +37,7 @@ type ProductSessionInspectorProps = {
   locale: ProductPlaygroundLocale;
   onClose: () => void;
   onTabChange: (tab: ProductSessionInspectorTab) => void;
+  open: boolean;
   overlay: boolean;
   panelRef: RefObject<HTMLElement | null>;
   project?: boolean;
@@ -52,6 +53,7 @@ export function ProductSessionInspector({
   locale,
   onClose,
   onTabChange,
+  open,
   overlay,
   panelRef,
   project = false,
@@ -88,14 +90,16 @@ export function ProductSessionInspector({
             ? "任务详情"
             : "Task details"
       }
-      aria-modal={overlay ? true : undefined}
+      aria-modal={open && overlay ? true : undefined}
       className="task-pane product-session-inspector"
       data-graph-expanded={graphExpanded ? "true" : undefined}
       data-preview-expanded={previewExpanded ? "true" : undefined}
       data-task-inspector=""
+      hidden={!open}
       id={id}
+      inert={!open ? true : undefined}
       ref={panelRef}
-      role={overlay ? "dialog" : undefined}
+      role={open && overlay ? "dialog" : undefined}
     >
       <header className="product-session-inspector__header">
         <div>

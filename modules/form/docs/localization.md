@@ -32,4 +32,4 @@ The same `localeCatalog` input is available on the Vue Renderer and Designer, an
 
 The catalog covers native control fallback text, repeater controls, data-source states, action progress, validation summaries, synchronous schema validation, and async-validation fallback errors. Labels, descriptions, authored options, action labels, and explicit rule messages remain document content and are not translated automatically.
 
-Treat the override as immutable host configuration. Replacing the object updates the embedded runtime. Do not serialize it into a workflow node value or `FormDocument`.
+Treat the override as immutable host configuration. Replacing the object updates the embedded runtime. Do not serialize it into a controlled form value or `FormDocument`.

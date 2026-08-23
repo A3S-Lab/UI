@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { useMemo, useState } from 'react';
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   assertCompiled,
+  DataSourceCoordinator,
   type DataSourceRequest,
   type DataSourceResponse,
   type FormDocument,
@@ -9,6 +10,7 @@ import {
   type JsonObject,
 } from '../src/core';
 import { FormRenderer } from '../src/react';
+import { useFormDataSource } from '../src/react/data-source';
 
 function createDataSourceDocument(): FormDocument {
   return {
@@ -91,6 +93,117 @@ function Harness({
 }
 
 describe('React data-source orchestration', () => {
+  it('treats array dependencies as ready only when populated and rejects unresolved templates', async () => {
+    const plan = structuredClone(assertCompiled(createDataSourceDocument()));
+    const definition = plan.dataSources[0];
+    definition.dependencies = ['tags'];
+    const coordinator = new DataSourceCoordinator();
+    let calls = 0;
+    const hostAdapter: FormHostAdapter = {
+      resolveDataSource: async () => {
+        calls += 1;
+        return [];
+      },
+    };
+    const source = renderHook(
+      ({ value }: { value: JsonObject }) => {
+        const getValue = useCallback(() => value, [value]);
+        return useFormDataSource({
+          coordinator,
+          getValue,
+          hostAdapter,
+          locale: 'en-US',
+          node: plan.nodeById.model,
+          plan,
+          value,
+          valuePath: 'model',
+          visible: true,
+        });
+      },
+      { initialProps: { value: { tags: [] } as JsonObject } },
+    );
+
+    expect(source.result.current.status).toBe('blocked');
+    expect(calls).toBe(0);
+    source.rerender({ value: { tags: ['models'] } });
+    await waitFor(() => expect(source.result.current.status).toBe('empty'));
+    expect(calls).toBe(1);
+    source.unmount();
+
+    const unresolvedPlan = structuredClone(assertCompiled(createDataSourceDocument()));
+    unresolvedPlan.dataSources[0].dependencies = ['rows.*.provider'];
+    const unresolvedCoordinator = new DataSourceCoordinator();
+    const unresolvedValue: JsonObject = {};
+    const getUnresolvedValue = () => unresolvedValue;
+    const unresolved = renderHook(() =>
+      useFormDataSource({
+        coordinator: unresolvedCoordinator,
+        getValue: getUnresolvedValue,
+        hostAdapter,
+        locale: 'en-US',
+        node: unresolvedPlan.nodeById.model,
+        plan: unresolvedPlan,
+        value: unresolvedValue,
+        valuePath: 'model',
+        visible: true,
+      }),
+    );
+
+    expect(unresolved.result.current.status).toBe('blocked');
+    expect(calls).toBe(1);
+  });
+
+  it('uses safe search and cache defaults and ignores premature pagination', async () => {
+    const plan = structuredClone(assertCompiled(createDataSourceDocument()));
+    const definition = plan.dataSources[0];
+    delete definition.dependencies;
+    delete definition.cacheTtlMs;
+    delete definition.debounceMs;
+    definition.searchable = true;
+    definition.pageSize = 1;
+    const requests: DataSourceRequest[] = [];
+    const value: JsonObject = {};
+    const getValue = () => value;
+    const coordinator = new DataSourceCoordinator();
+    const hostAdapter: FormHostAdapter = {
+      resolveDataSource: async (request) => {
+        requests.push(request);
+        return request.cursor
+          ? { options: [{ label: 'Second', value: 'second' }] }
+          : {
+              options: [{ label: 'First', value: 'first' }],
+              nextCursor: 'page-2',
+            };
+      },
+    };
+    const source = renderHook(() =>
+      useFormDataSource({
+        coordinator,
+        getValue,
+        hostAdapter,
+        locale: 'en-US',
+        node: plan.nodeById.model,
+        plan,
+        value,
+        valuePath: 'model',
+        visible: true,
+      }),
+    );
+
+    act(() => source.result.current.loadMore());
+    await waitFor(() => expect(source.result.current.status).toBe('ready'));
+    expect(source.result.current.options.map((option) => option.value)).toEqual(['first']);
+
+    act(() => source.result.current.loadMore());
+    await waitFor(() =>
+      expect(source.result.current.options.map((option) => option.value)).toEqual([
+        'first',
+        'second',
+      ]),
+    );
+    expect(requests.at(-1)).toEqual(expect.objectContaining({ cursor: 'page-2', limit: 1 }));
+  });
+
   it('reloads only for declared dependencies and cancels superseded work', async () => {
     const requests: Array<{
       request: DataSourceRequest;

@@ -2,7 +2,7 @@ import { createA3SCloudFormAdapter } from '../src/cloud';
 import { compileForm, type JsonObject } from '../src/core';
 import { createDocument } from './fixtures';
 
-describe('Cloud adapter seam', () => {
+describe('Cloud form adapter seam', () => {
   it('binds Cloud context to host-owned registries without serializing it', async () => {
     const context = {
       organizationId: 'org-1',
@@ -16,7 +16,7 @@ describe('Cloud adapter seam', () => {
       resolveDataSource: async (cloud, request) => {
         received = { organizationId: cloud.organizationId, source: request.definition.id };
         return {
-          options: [{ label: '研发', value: 'engineering' }],
+          options: [{ label: 'Engineering', value: 'engineering' }],
           nextCursor: 'next-page',
         };
       },
@@ -42,7 +42,7 @@ describe('Cloud adapter seam', () => {
     >;
     const signal = new AbortController().signal;
     const response = await adapter.resolveDataSource?.(
-      { definition: plan.dataSources[0], value: {}, locale: 'zh-CN' },
+      { definition: plan.dataSources[0], value: {}, locale: 'en-US' },
       signal,
     );
     const options = Array.isArray(response) ? response : response?.options;
@@ -87,7 +87,7 @@ describe('Cloud adapter seam', () => {
     });
     await expect(
       emptyAdapter.resolveDataSource?.(
-        { definition: plan.dataSources[0], value: {}, locale: 'zh-CN' },
+        { definition: plan.dataSources[0], value: {}, locale: 'en-US' },
         signal,
       ),
     ).resolves.toEqual([]);

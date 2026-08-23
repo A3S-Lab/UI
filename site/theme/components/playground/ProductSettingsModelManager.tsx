@@ -225,7 +225,6 @@ export function ProductModelSettings({
 
       <ProductModelProviderManager
         defaultModel={defaultModel}
-        key={selectedProvider?.id ?? "empty"}
         locale={locale}
         onAddModel={addModel}
         onAddProvider={addProvider}

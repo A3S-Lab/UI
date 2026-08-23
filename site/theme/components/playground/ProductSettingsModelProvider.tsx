@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import {
   createEmptyProductModelDraft,
@@ -44,9 +44,26 @@ export function ProductModelProviderManager({
   const [connectionState, setConnectionState] = useState<"idle" | "requested">(
     "idle",
   );
+  const [editorOpen, setEditorOpen] = useState(false);
   const [modelDraft, setModelDraft] = useState<ProductModelDraft | null>(null);
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const editorDialogRef = useRef<HTMLDialogElement>(null);
+  const editorTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    setConnectionState("idle");
+    setModelDraft(null);
+    setRemoveConfirmation(false);
+    setRevealed(false);
+  }, [selectedProvider?.id]);
+
+  useEffect(() => {
+    const dialog = editorDialogRef.current;
+    if (!dialog) return;
+    if (editorOpen && !dialog.open) dialog.showModal();
+    if (!editorOpen && dialog.open) dialog.close();
+  }, [editorOpen]);
 
   const updateModelDraftField = <Key extends keyof ProductModelDraft>(
     field: Key,
@@ -73,6 +90,21 @@ export function ProductModelProviderManager({
     );
   };
 
+  const closeEditor = () => {
+    if (editorDialogRef.current?.open) editorDialogRef.current.close();
+  };
+
+  const handleEditorClosed = () => {
+    setEditorOpen(false);
+    queueMicrotask(() => editorTriggerRef.current?.focus());
+  };
+
+  const openEditor = (providerId: string, trigger: HTMLButtonElement) => {
+    editorTriggerRef.current = trigger;
+    onSelectProvider(providerId);
+    setEditorOpen(true);
+  };
+
   return (
     <section className="product-model-manager">
       <header>
@@ -84,31 +116,54 @@ export function ProductModelProviderManager({
               : "Choose a provider, then configure its connection and models."}
           </small>
         </div>
-        <button onClick={onAddProvider} type="button">
+        <button
+          aria-haspopup="dialog"
+          onClick={(event) => {
+            editorTriggerRef.current = event.currentTarget;
+            onAddProvider();
+            setEditorOpen(true);
+          }}
+          type="button"
+        >
           <ProductPlaygroundIcon name="plus" />
           {zh ? "添加 Provider" : "Add provider"}
         </button>
       </header>
 
-      <div className="product-model-manager__workspace">
-        <aside aria-label={zh ? "Provider 列表" : "Provider list"}>
+      {providers.length > 0 ? (
+        <div
+          aria-label={zh ? "Provider 列表" : "Provider list"}
+          className="product-model-manager__list"
+          role="list"
+        >
           {providers.map((provider) => {
             const selected = provider.id === selectedProvider?.id;
             return (
-              <button
-                aria-pressed={selected}
+              <article
                 data-selected={selected ? "true" : undefined}
                 key={provider.id}
-                onClick={() => onSelectProvider(provider.id)}
-                type="button"
+                role="listitem"
               >
-                <span>
+                <span className="product-model-manager__provider-icon">
                   <ProductPlaygroundIcon
                     name={provider.readOnly ? "database" : "workspace"}
                   />
                 </span>
-                <span>
-                  <strong>{provider.name}</strong>
+                <div>
+                  <header>
+                    <strong>{provider.name}</strong>
+                    {provider.readOnly ? (
+                      <em>{zh ? "运行时" : "Runtime"}</em>
+                    ) : null}
+                  </header>
+                  <p>
+                    {provider.readOnly
+                      ? zh
+                        ? "由宿主运行时同步，只读"
+                        : "Synced from the host runtime; read only"
+                      : provider.baseUrl ||
+                        (zh ? "尚未设置 API 地址" : "API URL not set")}
+                  </p>
                   <small>
                     {provider.models.length > 0
                       ? zh
@@ -118,68 +173,107 @@ export function ProductModelProviderManager({
                         ? "尚未添加模型"
                         : "No models yet"}
                   </small>
-                </span>
-                <i
-                  aria-label={
-                    provider.readOnly
-                      ? zh
-                        ? "由运行时管理"
-                        : "Runtime managed"
-                      : provider.models.length > 0
-                        ? zh
-                          ? "已配置"
-                          : "Configured"
-                        : zh
-                          ? "需要配置"
-                          : "Setup required"
-                  }
+                </div>
+                <span
+                  className="product-model-manager__provider-status"
                   data-ready={
                     provider.readOnly || provider.models.length > 0
                       ? "true"
                       : undefined
                   }
-                  role="img"
-                />
-              </button>
-            );
-          })}
-        </aside>
-
-        {selectedProvider ? (
-          <section
-            aria-label={`${selectedProvider.name} ${zh ? "配置" : "configuration"}`}
-            className="product-model-provider"
-          >
-            <header>
-              <span>
-                <ProductPlaygroundIcon
-                  name={selectedProvider.readOnly ? "database" : "workspace"}
-                />
-              </span>
-              <div>
-                <strong>{selectedProvider.name}</strong>
-                <small>
-                  {selectedProvider.readOnly
+                >
+                  <i />
+                  {provider.readOnly
                     ? zh
-                      ? "由宿主运行时同步，只读"
-                      : "Synced from the host runtime; read only"
-                    : selectedProvider.baseUrl ||
-                      (zh ? "尚未设置 API 地址" : "API URL not set")}
-                </small>
-              </div>
-              {!selectedProvider.readOnly ? (
+                      ? "已同步"
+                      : "Synced"
+                    : provider.models.length > 0
+                      ? zh
+                        ? "已配置"
+                        : "Configured"
+                      : zh
+                        ? "需要配置"
+                        : "Setup required"}
+                </span>
                 <button
-                  aria-expanded={removeConfirmation}
-                  data-danger
-                  onClick={() => setRemoveConfirmation(true)}
+                  aria-haspopup="dialog"
+                  aria-label={`${zh ? "管理" : "Manage"} ${provider.name}`}
+                  onClick={(event) =>
+                    openEditor(provider.id, event.currentTarget)
+                  }
                   type="button"
                 >
-                  <ProductPlaygroundIcon name="trash" />
-                  {zh ? "移除" : "Remove"}
+                  {zh ? "管理" : "Manage"}
                 </button>
-              ) : null}
-            </header>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="product-model-manager__empty" role="status">
+          <ProductPlaygroundIcon name="workspace" />
+          <strong>{zh ? "添加第一个 Provider" : "Add the first provider"}</strong>
+          <button
+            aria-haspopup="dialog"
+            onClick={(event) => {
+              editorTriggerRef.current = event.currentTarget;
+              onAddProvider();
+              setEditorOpen(true);
+            }}
+            type="button"
+          >
+            {zh ? "添加 Provider" : "Add provider"}
+          </button>
+        </div>
+      )}
 
+      {selectedProvider ? (
+        <dialog
+          aria-labelledby="product-model-provider-dialog-title"
+          className="product-model-provider"
+          data-provider-editor
+          onCancel={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            closeEditor();
+          }}
+          onClose={(event) => {
+            event.stopPropagation();
+            handleEditorClosed();
+          }}
+          ref={editorDialogRef}
+        >
+          <header>
+            <span>
+              <ProductPlaygroundIcon
+                name={selectedProvider.readOnly ? "database" : "workspace"}
+              />
+            </span>
+            <div>
+              <strong id="product-model-provider-dialog-title">
+                {zh
+                  ? `管理 ${selectedProvider.name}`
+                  : `Manage ${selectedProvider.name}`}
+              </strong>
+              <small>
+                {selectedProvider.readOnly
+                  ? zh
+                    ? "由宿主运行时同步，只读"
+                    : "Synced from the host runtime; read only"
+                  : selectedProvider.baseUrl ||
+                    (zh ? "尚未设置 API 地址" : "API URL not set")}
+              </small>
+            </div>
+            <button
+              aria-label={zh ? "关闭 Provider 配置" : "Close provider settings"}
+              onClick={closeEditor}
+              type="button"
+            >
+              <ProductPlaygroundIcon name="close" />
+            </button>
+          </header>
+
+          <div className="product-model-provider__body">
             {removeConfirmation ? (
               <section
                 className="product-model-provider__confirmation"
@@ -204,7 +298,10 @@ export function ProductModelProviderManager({
                 </button>
                 <button
                   data-danger
-                  onClick={() => onRemoveProvider(selectedProvider.id)}
+                  onClick={() => {
+                    onRemoveProvider(selectedProvider.id);
+                    closeEditor();
+                  }}
                   type="button"
                 >
                   {zh ? "确认移除" : "Remove provider"}
@@ -244,19 +341,28 @@ export function ProductModelProviderManager({
               onSubmitModel={submitModel}
               provider={selectedProvider}
             />
-          </section>
-        ) : (
-          <div className="product-model-manager__empty" role="status">
-            <ProductPlaygroundIcon name="workspace" />
-            <strong>
-              {zh ? "添加第一个 Provider" : "Add the first provider"}
-            </strong>
-            <button onClick={onAddProvider} type="button">
-              {zh ? "添加 Provider" : "Add provider"}
-            </button>
           </div>
-        )}
-      </div>
+
+          <footer>
+            {!selectedProvider.readOnly ? (
+              <button
+                aria-expanded={removeConfirmation}
+                data-danger
+                onClick={() => setRemoveConfirmation(true)}
+                type="button"
+              >
+                <ProductPlaygroundIcon name="trash" />
+                {zh ? "移除 Provider" : "Remove provider"}
+              </button>
+            ) : (
+              <span />
+            )}
+            <button onClick={closeEditor} type="button">
+              {zh ? "完成" : "Done"}
+            </button>
+          </footer>
+        </dialog>
+      ) : null}
     </section>
   );
 }
@@ -374,6 +480,24 @@ function ProviderModelCatalog({
   provider: ProductProviderRecord;
 }) {
   const zh = locale === "zh";
+  const draftTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const draftWasOpenRef = useRef(false);
+
+  useEffect(() => {
+    if (draft) {
+      draftWasOpenRef.current = true;
+      return;
+    }
+    if (!draftWasOpenRef.current) return;
+    draftWasOpenRef.current = false;
+    queueMicrotask(() => draftTriggerRef.current?.focus());
+  }, [draft]);
+
+  const openDraft = (trigger: HTMLButtonElement) => {
+    draftTriggerRef.current = trigger;
+    onDraftChange(createEmptyProductModelDraft());
+  };
+
   return (
     <section className="product-model-catalog">
       <header>
@@ -392,7 +516,8 @@ function ProviderModelCatalog({
         {!provider.readOnly ? (
           <button
             aria-expanded={Boolean(draft)}
-            onClick={() => onDraftChange(createEmptyProductModelDraft())}
+            aria-haspopup="dialog"
+            onClick={(event) => openDraft(event.currentTarget)}
             type="button"
           >
             <ProductPlaygroundIcon name="plus" />
@@ -483,7 +608,7 @@ function ProviderModelCatalog({
             );
           })}
         </div>
-      ) : draft ? null : (
+      ) : (
         <div className="product-model-catalog__empty" role="status">
           <span>
             <ProductPlaygroundIcon name="workspace" />
@@ -494,15 +619,6 @@ function ProviderModelCatalog({
               ? "添加模型后，它会出现在默认模型和任务模型选择器中。"
               : "Added models appear in the default and task model pickers."}
           </p>
-          {!provider.readOnly ? (
-            <button
-              onClick={() => onDraftChange(createEmptyProductModelDraft())}
-              type="button"
-            >
-              <ProductPlaygroundIcon name="plus" />
-              {zh ? "添加第一个模型" : "Add the first model"}
-            </button>
-          ) : null}
         </div>
       )}
     </section>
@@ -526,79 +642,116 @@ function ModelDraftForm({
   onSubmit: () => void;
 }) {
   const zh = locale === "zh";
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) dialog.showModal();
+  }, []);
+
+  const close = () => {
+    if (dialogRef.current?.open) dialogRef.current.close();
+  };
+
   return (
-    <form
+    <dialog
+      aria-labelledby="product-model-draft-title"
       className="product-model-catalog__draft"
-      onSubmit={(event) => {
+      data-model-draft-dialog
+      onCancel={(event) => {
         event.preventDefault();
-        onSubmit();
+        event.stopPropagation();
+        close();
       }}
+      onClose={(event) => {
+        event.stopPropagation();
+        onCancel();
+      }}
+      ref={dialogRef}
     >
-      <header>
-        <strong>{zh ? "新模型" : "New model"}</strong>
-        <small>
-          {zh
-            ? "模型 ID 必填，名称可选。"
-            : "Model ID is required; display name is optional."}
-        </small>
-      </header>
-      <ModelDraftField
-        autoFocus
-        label={zh ? "模型 ID" : "Model ID"}
-        onChange={(value) => onFieldChange("id", value)}
-        placeholder={zh ? "由 Provider 提供" : "From the provider catalog"}
-        value={draft.id}
-      />
-      <ModelDraftField
-        label={zh ? "显示名称" : "Display name"}
-        onChange={(value) => onFieldChange("name", value)}
-        placeholder={zh ? "留空则使用模型 ID" : "Uses the model ID when empty"}
-        value={draft.name}
-      />
-      <ModelDraftField
-        inputMode="numeric"
-        label={zh ? "上下文上限" : "Context limit"}
-        onChange={(value) => onFieldChange("context", value)}
-        placeholder={zh ? "可选" : "Optional"}
-        value={draft.context}
-      />
-      <ModelDraftField
-        inputMode="numeric"
-        label={zh ? "输出上限" : "Output limit"}
-        onChange={(value) => onFieldChange("output", value)}
-        placeholder={zh ? "可选" : "Optional"}
-        value={draft.output}
-      />
-      <fieldset>
-        <legend>{zh ? "能力" : "Capabilities"}</legend>
-        {(
-          [
-            ["reasoning", zh ? "推理" : "Reasoning"],
-            ["tools", zh ? "工具调用" : "Tool use"],
-            ["attachment", zh ? "附件" : "Attachments"],
-          ] as const
-        ).map(([id, label]) => (
-          <label key={id}>
-            <input
-              checked={draft[id]}
-              onChange={(event) =>
-                onFieldChange(id, event.currentTarget.checked)
-              }
-              type="checkbox"
-            />
-            {label}
-          </label>
-        ))}
-      </fieldset>
-      <footer>
-        <button onClick={onCancel} type="button">
-          {zh ? "取消" : "Cancel"}
-        </button>
-        <button data-primary disabled={!draft.id.trim()} type="submit">
-          {zh ? "添加到目录" : "Add to catalog"}
-        </button>
-      </footer>
-    </form>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
+        <header>
+          <div>
+            <strong id="product-model-draft-title">
+              {zh ? "添加模型" : "Add model"}
+            </strong>
+            <small>
+              {zh
+                ? "模型 ID 必填，其他字段可按 Provider 能力补充。"
+                : "Model ID is required. Add the remaining fields when the provider supports them."}
+            </small>
+          </div>
+          <button
+            aria-label={zh ? "关闭添加模型" : "Close add model"}
+            onClick={close}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="close" />
+          </button>
+        </header>
+        <ModelDraftField
+          autoFocus
+          label={zh ? "模型 ID" : "Model ID"}
+          onChange={(value) => onFieldChange("id", value)}
+          placeholder={zh ? "由 Provider 提供" : "From the provider catalog"}
+          value={draft.id}
+        />
+        <ModelDraftField
+          label={zh ? "显示名称" : "Display name"}
+          onChange={(value) => onFieldChange("name", value)}
+          placeholder={zh ? "留空则使用模型 ID" : "Uses the model ID when empty"}
+          value={draft.name}
+        />
+        <ModelDraftField
+          inputMode="numeric"
+          label={zh ? "上下文上限" : "Context limit"}
+          onChange={(value) => onFieldChange("context", value)}
+          placeholder={zh ? "可选" : "Optional"}
+          value={draft.context}
+        />
+        <ModelDraftField
+          inputMode="numeric"
+          label={zh ? "输出上限" : "Output limit"}
+          onChange={(value) => onFieldChange("output", value)}
+          placeholder={zh ? "可选" : "Optional"}
+          value={draft.output}
+        />
+        <fieldset>
+          <legend>{zh ? "能力" : "Capabilities"}</legend>
+          {(
+            [
+              ["reasoning", zh ? "推理" : "Reasoning"],
+              ["tools", zh ? "工具调用" : "Tool use"],
+              ["attachment", zh ? "附件" : "Attachments"],
+            ] as const
+          ).map(([id, label]) => (
+            <label key={id}>
+              <input
+                checked={draft[id]}
+                onChange={(event) =>
+                  onFieldChange(id, event.currentTarget.checked)
+                }
+                type="checkbox"
+              />
+              {label}
+            </label>
+          ))}
+        </fieldset>
+        <footer>
+          <button onClick={close} type="button">
+            {zh ? "取消" : "Cancel"}
+          </button>
+          <button data-primary disabled={!draft.id.trim()} type="submit">
+            {zh ? "添加到目录" : "Add to catalog"}
+          </button>
+        </footer>
+      </form>
+    </dialog>
   );
 }
 

@@ -87,6 +87,25 @@ export function ProductSessionSurface({
   const [seededFollowUps, setSeededFollowUps] = useState<string[]>([]);
   const followUps = created ? (taskSession?.followUps ?? []) : seededFollowUps;
   const queuedFollowUps = created ? (taskSession?.queuedFollowUps ?? []) : [];
+  const messageAttachments = created
+    ? (taskSession?.context.resources ?? []).filter((resource) =>
+        ["file", "folder", "selection"].includes(resource.kind),
+      )
+    : [
+        {
+          id: "seeded-session-source",
+          kind: "file" as const,
+          label: "src/auth/session.ts",
+          meta: zh ? "TypeScript · 会话恢复" : "TypeScript · Session recovery",
+        },
+      ];
+  const suggestedFollowUps = zh
+    ? ["检查移动端焦点恢复", "说明剩余风险", "打开完整测试证据"]
+    : [
+        "Check mobile focus recovery",
+        "Explain the remaining risks",
+        "Open the complete test evidence",
+      ];
   const [running, setRunning] = useState(created);
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [inspectorOverlay, setInspectorOverlay] = useState(false);
@@ -204,9 +223,10 @@ export function ProductSessionSurface({
     return (
       <section
         aria-busy="true"
-        className="product-session"
+        className="task-workspace product-session"
         data-product-surface="session"
         data-session-state="loading"
+        data-state="waiting"
       >
         <header className="product-session__header">
           <h1>{zh ? "正在恢复任务" : "Restoring task"}</h1>
@@ -232,9 +252,10 @@ export function ProductSessionSurface({
   if (created && !taskSession) {
     return (
       <section
-        className="product-session"
+        className="task-workspace product-session"
         data-product-surface="session"
         data-session-state="missing"
+        data-state="error"
       >
         <header className="product-session__header">
           <h1>{zh ? "当前任务" : "Current task"}</h1>
@@ -259,11 +280,14 @@ export function ProductSessionSurface({
 
   return (
     <section
-      className="product-session"
+      className="task-workspace product-session"
+      data-inspector={inspectorOpen ? "open" : "hidden"}
       data-inspector-open={inspectorOpen ? "true" : undefined}
       data-product-surface="session"
       data-search-open={searchOpen ? "true" : undefined}
       data-session-state="ready"
+      data-state={created && running ? "streaming" : "complete"}
+      data-task-workspace-controlled="true"
       data-variant={variant}
     >
       <header className="product-session__header">
@@ -318,6 +342,7 @@ export function ProductSessionSurface({
                   : "Open task details"
             }
             data-active={inspectorOpen ? "true" : undefined}
+            data-task-inspector-trigger
             onClick={(event) =>
               inspectorOpen
                 ? closeInspector()
@@ -370,11 +395,57 @@ export function ProductSessionSurface({
         </form>
       ) : null}
 
-      <div className="product-session__viewport" ref={viewportRef}>
-        <ol aria-label={zh ? "会话记录" : "Conversation history"}>
+      <div
+        className="agent-transcript product-session__viewport"
+        data-state={created && running ? "streaming" : "complete"}
+        ref={viewportRef}
+      >
+        <ol
+          aria-label={zh ? "会话记录" : "Conversation history"}
+          data-transcript-viewport
+        >
           <li data-role="user">
             <article>
-              <p>{copy[0]}</p>
+              <div data-message-content>
+                <p>{copy[0]}</p>
+              </div>
+              {messageAttachments.length > 0 ? (
+                <div className="product-session__attachments">
+                  {messageAttachments.map((attachment) => (
+                    <article
+                      className="message-attachment"
+                      data-state="complete"
+                      key={attachment.id}
+                    >
+                      <figure aria-hidden="true">
+                        <ProductPlaygroundIcon
+                          name={attachment.kind === "folder" ? "folder" : "document"}
+                        />
+                      </figure>
+                      <span data-attachment-identity>
+                        <strong>{attachment.label}</strong>
+                        <small data-attachment-meta>
+                          {attachment.meta ??
+                            (zh ? "已加入任务上下文" : "Attached to task context")}
+                        </small>
+                      </span>
+                      <button
+                        aria-label={
+                          zh
+                            ? `在任务详情中查看 ${attachment.label}`
+                            : `View ${attachment.label} in task details`
+                        }
+                        onClick={(event) =>
+                          openInspector("files", event.currentTarget)
+                        }
+                        type="button"
+                      >
+                        <ProductPlaygroundIcon name="arrow" />
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
             </article>
           </li>
           <li data-role="assistant">
@@ -384,7 +455,24 @@ export function ProductSessionSurface({
                   <ProductPlaygroundIcon name="assistant" />
                   <strong>A3S</strong>
                 </span>
-                <small>{created ? (zh ? "刚刚" : "Now") : "2m 18s"}</small>
+                <output
+                  className="message-status"
+                  data-state={created && running ? "streaming" : "sent"}
+                >
+                  <i aria-hidden="true" data-message-status-indicator />
+                  <span data-message-status-label>
+                    {created && running
+                      ? zh
+                        ? "执行中"
+                        : "Running"
+                      : zh
+                        ? "已完成"
+                        : "Complete"}
+                  </span>
+                  <time data-message-status-meta>
+                    {created ? (zh ? "刚刚" : "Now") : "2m 18s"}
+                  </time>
+                </output>
               </header>
               <div className="product-session__response">
                 <p>{copy[1]}</p>
@@ -397,6 +485,70 @@ export function ProductSessionSurface({
                 <p data-conclusion>
                   {created ? `${copy[2]} ${copy[3]}` : copy[3]}
                 </p>
+                <nav
+                  aria-label={zh ? "回复来源" : "Response sources"}
+                  className="product-session__citations"
+                >
+                  <a
+                    className="message-citation"
+                    data-state="ready"
+                    href="#product-session-details-files"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openInspector("files", event.currentTarget);
+                    }}
+                  >
+                    <span data-citation-index>1</span>
+                    <span data-citation-title>src/auth/session.ts</span>
+                    <small data-citation-source>
+                      {zh ? "工作区变更" : "Workspace change"}
+                    </small>
+                  </a>
+                  <a
+                    className="message-citation"
+                    data-state="ready"
+                    href="#product-session-details-artifacts"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openInspector("artifacts", event.currentTarget);
+                    }}
+                  >
+                    <span data-citation-index>2</span>
+                    <span data-citation-title>tests/session.test.ts</span>
+                    <small data-citation-source>
+                      {zh ? "回归证据" : "Regression evidence"}
+                    </small>
+                  </a>
+                </nav>
+                <nav
+                  aria-label={zh ? "建议的后续操作" : "Suggested follow-up actions"}
+                  className="follow-up-suggestions product-session__suggestions"
+                  data-state="ready"
+                >
+                  <strong>{zh ? "继续处理" : "Continue"}</strong>
+                  <ul>
+                    {suggestedFollowUps.map((suggestion) => (
+                      <li key={suggestion}>
+                        <button
+                          onClick={() => {
+                            if (created && taskSession && onFollowUp) {
+                              onFollowUp(suggestion, taskSession.context);
+                            } else {
+                              setSeededFollowUps((current) => [
+                                ...current,
+                                suggestion,
+                              ]);
+                            }
+                          }}
+                          type="button"
+                        >
+                          {suggestion}
+                          <ProductPlaygroundIcon name="arrow" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               </div>
               <ProductSessionMessageActions
                 exportContent={[...copy, ...followUps]}
@@ -423,7 +575,13 @@ export function ProductSessionSurface({
                       <ProductPlaygroundIcon name="assistant" />
                       <strong>A3S</strong>
                     </span>
-                    <small>{zh ? "刚刚" : "Now"}</small>
+                    <output className="message-status" data-state="sent">
+                      <i aria-hidden="true" data-message-status-indicator />
+                      <span data-message-status-label>
+                        {zh ? "已发送" : "Sent"}
+                      </span>
+                      <time data-message-status-meta>{zh ? "刚刚" : "Now"}</time>
+                    </output>
                   </header>
                   <div className="product-session__response">
                     <p>{followUpReply}</p>
@@ -516,21 +674,22 @@ export function ProductSessionSurface({
             tabIndex={-1}
             type="button"
           />
-          <ProductSessionInspector
-            activeTab={inspectorTab}
-            artifacts={artifacts}
-            closeButtonRef={inspectorCloseRef}
-            contextDetails={contextDetails}
-            created={created}
-            id="product-session-details"
-            locale={locale}
-            onClose={closeInspector}
-            onTabChange={setInspectorTab}
-            overlay={inspectorOverlay}
-            panelRef={inspectorRef}
-          />
         </>
       ) : null}
+      <ProductSessionInspector
+        activeTab={inspectorTab}
+        artifacts={artifacts}
+        closeButtonRef={inspectorCloseRef}
+        contextDetails={contextDetails}
+        created={created}
+        id="product-session-details"
+        locale={locale}
+        onClose={closeInspector}
+        onTabChange={setInspectorTab}
+        open={inspectorOpen}
+        overlay={inspectorOverlay}
+        panelRef={inspectorRef}
+      />
     </section>
   );
 }

@@ -1,4 +1,3 @@
-import { canonicalize, compileForm, type FormDocument, type JsonObject } from '../src/core';
 import {
   createFormReleaseRef,
   createInteractionRequest,
@@ -12,7 +11,8 @@ import {
   inspectInteractionRequest,
   inspectInteractionSubmission,
   validateInteractionSubmission,
-} from '../src/integrations/interaction';
+} from '../src';
+import { canonicalize, compileForm, type FormDocument, type JsonObject } from '../src/core';
 import interactionConformanceJson from './conformance/interaction-contract-v1.json';
 import { createDocument } from './fixtures';
 

@@ -116,12 +116,12 @@ suite "a3s-ui-product-resource-surfaces" {
         expect "file-manager-surface-boundary" { visible = css("[data-product-surface=files]") }
         wait "artifacts-ready" { visible = css(".product-file-artifacts table") }
         expect "artifacts-default" { visible = css(".product-files[data-file-surface=artifacts]") }
-        click "open-artifact-workbench" { target = role("button", "release-readiness.md") }
+        click "open-artifact-workbench" { target = role("button", "打开 release-readiness.md") }
         wait "artifact-workbench-ready" { visible = css(".product-file-workbench[data-workbench-kind=code]") }
         expect "matching-workbench-file" { visible = css(".product-file-workbench input[aria-label='文件名'][value='release-readiness.md']") }
         click "back-to-workspace" { target = role("button", "返回文件") }
         expect "quick-look-after-workbench" { visible = css(".product-file-manager [data-file-manager-quicklook]") }
-        click "close-quick-look" { target = role("button", "关闭快速查看") }
+        click "close-quick-look" { target = role("button", "关闭文件预览") }
         click "open-workspace" { target = role("tab", "工作区") }
         wait "files-ready" { visible = css(".a3s-product-application[data-view=resources] .product-file-manager[data-file-manager-initialized=true]") }
 
@@ -151,7 +151,9 @@ suite "a3s-ui-product-resource-surfaces" {
         click "open-workspace" { target = role("tab", "工作区") }
         wait "files-ready" { visible = css(".product-file-manager[data-file-manager-initialized=true]") }
 
-        expect "folder-identity" { visible = css("[data-file-manager-item][data-kind=folder] [data-file-icon-size=grid][data-file-type=folder]") }
+        expect "file-icon-component-boundary" { visible = css("[data-file-manager-item] [data-file-icon]") }
+        expect "default-list-view" { visible = css("[data-file-manager-viewport][data-view=list] [data-file-icon-size=list]") }
+        expect "folder-identity" { visible = css("[data-file-manager-item][data-kind=folder] [data-file-icon-size=list][data-file-type=folder]") }
         expect "code-identity" { visible = css("[data-file-manager-item]:has(strong[title='release-readiness.md']) [data-file-type=code] [data-file-extension=MD]") }
         expect "document-identity" { visible = css("[data-file-manager-item]:has(strong[title='experience-brief.docx']) [data-file-type=document] [data-file-extension=DOCX]") }
         expect "spreadsheet-identity" { visible = css("[data-file-manager-item]:has(strong[title='quality-scorecard.xlsx']) [data-file-type=spreadsheet] [data-file-extension=XLSX]") }
@@ -159,15 +161,23 @@ suite "a3s-ui-product-resource-surfaces" {
         expect "pdf-identity" { visible = css("[data-file-manager-item]:has(strong[title='visual-acceptance-report.pdf']) [data-file-type=pdf] [data-file-extension=PDF]") }
         expect "image-identity" { visible = css("[data-file-manager-item]:has(strong[title='device-shell-review.png']) [data-file-type=image] [data-file-extension=PNG]") }
         expect "favorite-is-contained" { visible = css("[data-file-manager-item]:has(strong[title='release-readiness.md']) [data-file-favorite] svg[data-favorite][data-icon=heart]") }
-        screenshot "desktop-grid" { path = "product/files-icon-identity-desktop.png" }
+        screenshot "desktop-list" { path = "product/files-icon-identity-list.png" }
 
-        click "list-view" { target = role("button", "列表视图") }
-        expect "list-icon-scale" { visible = css("[data-file-manager-viewport][data-view=list] [data-file-icon-size=list][data-file-type=folder]") }
-        double_click "open-image-preview" { target = css("[data-file-manager-item]:has(strong[title='device-shell-review.png'])") }
-        expect "preview-keeps-image-identity" { visible = css("[data-file-manager-quicklook] [data-file-icon-size=preview][data-file-type=image] [data-file-extension=PNG]") }
-        screenshot "quick-look" { path = "product/files-icon-identity-quick-look.png" }
-        click "close-preview" { target = role("button", "关闭快速查看") }
         click "grid-view" { target = role("button", "图标视图") }
+        expect "grid-icon-scale" { visible = css("[data-file-manager-viewport][data-view=grid] [data-file-icon-size=grid][data-file-type=folder]") }
+        screenshot "desktop-grid" { path = "product/files-icon-identity-desktop.png" }
+        double_click "open-image-preview" { target = css("[data-file-manager-item]:has(strong[title='device-shell-review.png'])") }
+        expect "preview-dialog-boundary" { visible = css("dialog[data-file-preview-dialog][open]") }
+        expect "preview-keeps-image-identity" { visible = css("[data-file-manager-quicklook] [data-file-icon-size=preview][data-file-type=image] [data-file-extension=PNG]") }
+        click "enter-preview-fullscreen" { target = role("button", "全屏预览") }
+        expect "preview-fullscreen-state" { visible = css("dialog[data-file-preview-dialog][data-fullscreen=true] button[aria-label='退出全屏预览'][aria-pressed=true]") }
+        click "exit-preview-fullscreen" { target = role("button", "退出全屏预览") }
+        expect "preview-windowed-state" { visible = css("dialog[data-file-preview-dialog][data-fullscreen=false] button[aria-label='全屏预览'][aria-pressed=false]") }
+        screenshot "quick-look" { path = "product/files-icon-identity-quick-look.png" }
+        click "close-preview" { target = role("button", "关闭文件预览") }
+        click "list-view-after-preview" { target = role("button", "列表视图") }
+        expect "list-view-restored" { visible = css("[data-file-manager-viewport][data-view=list] [data-file-icon-size=list][data-file-type=folder]") }
+        click "grid-view-after-preview" { target = role("button", "图标视图") }
         click "clear-selection" { target = role("button", "清除选择") }
 
         click "open-account-menu" { target = role("button", "本地用户") }

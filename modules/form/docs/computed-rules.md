@@ -1,6 +1,6 @@
 # Deterministic computed rules
 
-Computed rules derive host-controlled form values without embedding JavaScript in a `FormDocument`. They use the same bounded expression engine in headless validation, React, Vue, Web Components, embedded configuration, and durable interaction validation.
+Computed rules derive host-controlled form values without embedding JavaScript in a `FormDocument`. They use the same bounded expression engine in headless validation, React, Vue, Web Components, host actions, and durable interaction validation.
 
 ## Define a computed field
 
@@ -89,10 +89,10 @@ For a row-scoped rule, failure and dependency propagation use concrete paths. A 
 
 `includeValues` defaults to `false`. Enable it only for an authorized, short-lived inspection surface because previous and derived values may contain tenant data.
 
-`evaluateFormValue(plan, value)` enters the package-embedded Rust/WASM evaluator, runs computed rules first, and then applies schema and `validate` rules to the derived value. `validateFormValue` returns the same error set. Workflow-node and interaction validation return the native evaluator-produced value after revision and digest verification. The TypeScript implementation is retained only for byte-exact conformance testing; see [Portable submitted-value evaluation](value-evaluation.md).
+`evaluateFormValue(plan, value)` enters the package-embedded Rust/WASM evaluator, runs computed rules first, and then applies schema and `validate` rules to the derived value. `validateFormValue` returns the same error set. Durable interaction validation returns the native evaluator-produced value after revision and digest verification. The TypeScript implementation is retained only for byte-exact conformance testing; see [Portable submitted-value evaluation](value-evaluation.md).
 
 ## Embedded runtime behavior
 
-The renderer derives a runtime value before field state, validation, and host actions run. A user edit emits the derived controlled value through the framework adapter. Initial host values are not persisted automatically; the host still decides when to save or commit the node configuration.
+The renderer derives a runtime value before field state, validation, and host actions run. A user edit emits the derived controlled value through the framework adapter. Initial host values are not persisted automatically; the host still decides when to save or commit the form value.
 
-This keeps React, Vue, and Web Components controlled while ensuring that a workflow node never submits an outdated calculation.
+This keeps React, Vue, and Web Components controlled while ensuring that a host never submits an outdated calculation.

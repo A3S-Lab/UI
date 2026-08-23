@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { withBase } from "@rspress/core/runtime";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
-import { ProductModelSettings } from "./ProductSettingsModelManager";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
   announceProductSetting,
@@ -174,10 +173,6 @@ export function MemorySettings({
       </section>
     </>
   );
-}
-
-export function ModelSettings({ locale }: { locale: ProductPlaygroundLocale }) {
-  return <ProductModelSettings locale={locale} />;
 }
 
 const integrations = [

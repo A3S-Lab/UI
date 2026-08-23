@@ -5,7 +5,7 @@ This directory contains one first-principles product requirements document for e
 - Active route components: 83
 - Legacy-only, unmounted components: 11
 - Total covered exports: 94
-- Machine-readable mapping: `product-requirements/playground-component-coverage.json`
+- Machine-readable mapping with one unique A3S Test assertion per export: `product-requirements/playground-component-coverage.json`
 - Active route evidence: `tests/e2e/playground-route-contracts.acl`
 - Legacy boundary evidence: `tests/e2e/playground-component-boundaries.acl`
 

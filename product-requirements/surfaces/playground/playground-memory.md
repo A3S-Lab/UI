@@ -44,7 +44,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Desktop and compact screenshots show complete, aligned content with no page-level horizontal overflow.
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
-- Component-specific edit, rejection, recovery, panel disclosure, focus return, running, and successful-result transitions are deterministic where this surface owns them.
+- Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
 - Product-specific risk is covered: The route must preserve one task-first information hierarchy, keep global navigation separate from the work canvas, expose truthful empty and failure states, and remain usable at 390px without imitating a second production backend.
 
 ## A3S Test mapping
@@ -53,4 +53,4 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: `playground-route-memory`.
 - Preview URL: `http://127.0.0.1:4178/UI/playground/memory.html`.
 - Stable target: `[data-product-application][data-view=memory] [data-product-surface=memory]`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness scenarios additionally prove their component-specific keyboard state transitions and focus recovery.

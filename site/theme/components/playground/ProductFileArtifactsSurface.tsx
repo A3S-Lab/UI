@@ -2,17 +2,14 @@ import { useMemo, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { productProjectName } from "./product-project-data";
 import type { ProductTaskDraft } from "./product-composer-data";
-import {
-  ProductPlaygroundIcon,
-  type ProductPlaygroundIconName,
-} from "./ProductPlaygroundIcon";
+import { ProductFileTypeIcon } from "./ProductFileTypeIcon";
+import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 type ArtifactKind =
   "code" | "document" | "pdf" | "presentation" | "spreadsheet";
 
 type ProductTaskArtifact = {
   favorite?: boolean;
-  icon: ProductPlaygroundIconName;
   kind: ArtifactKind;
   name: string;
   owner: string;
@@ -25,7 +22,6 @@ type ProductTaskArtifact = {
 const taskArtifacts: readonly ProductTaskArtifact[] = [
   {
     favorite: true,
-    icon: "code",
     kind: "code",
     name: "release-readiness.md",
     owner: "A3S",
@@ -35,7 +31,6 @@ const taskArtifacts: readonly ProductTaskArtifact[] = [
     workspaceId: "release-readiness",
   },
   {
-    icon: "document",
     kind: "document",
     name: "experience-brief.docx",
     owner: "RoyLin",
@@ -46,7 +41,6 @@ const taskArtifacts: readonly ProductTaskArtifact[] = [
   },
   {
     favorite: true,
-    icon: "chart",
     kind: "spreadsheet",
     name: "quality-scorecard.xlsx",
     owner: "A3S",
@@ -56,7 +50,6 @@ const taskArtifacts: readonly ProductTaskArtifact[] = [
     workspaceId: "quality-scorecard",
   },
   {
-    icon: "presentation",
     kind: "presentation",
     name: "release-review.pptx",
     owner: "A3S",
@@ -66,7 +59,6 @@ const taskArtifacts: readonly ProductTaskArtifact[] = [
     workspaceId: "release-review",
   },
   {
-    icon: "report",
     kind: "pdf",
     name: "visual-acceptance-report.pdf",
     owner: "RoyLin",
@@ -76,7 +68,6 @@ const taskArtifacts: readonly ProductTaskArtifact[] = [
     workspaceId: "visual-acceptance-report",
   },
   {
-    icon: "code",
     kind: "code",
     name: "device-shell-review.html",
     owner: "A3S",
@@ -203,16 +194,25 @@ export function ProductFileArtifactsSurface({
                   <tr key={artifact.name}>
                     <th scope="row">
                       <button
+                        aria-label={
+                          zh
+                            ? `打开 ${artifact.name}`
+                            : `Open ${artifact.name}`
+                        }
                         onClick={() => onOpenWorkspace(artifact.workspaceId)}
                         type="button"
                       >
-                        <span data-artifact-icon data-kind={artifact.kind}>
-                          <ProductPlaygroundIcon name={artifact.icon} />
-                        </span>
+                        <ProductFileTypeIcon
+                          entry={{
+                            favorite: artifact.favorite,
+                            kind: "file",
+                            name: artifact.name,
+                            type: artifact.type.en,
+                            workbench: artifact.kind,
+                          }}
+                          size="list"
+                        />
                         <span>{artifact.name}</span>
-                        {artifact.favorite ? (
-                          <ProductPlaygroundIcon data-favorite name="heart" />
-                        ) : null}
                       </button>
                     </th>
                     <td>{artifact.type[locale]}</td>

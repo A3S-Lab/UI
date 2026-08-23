@@ -66,7 +66,9 @@ suite "a3s-ui-product-global-and-settings-contracts" {
         click "open-settings" { target = role("button", "设置") }
         wait "settings-ready" { visible = css(".product-settings[open]") }
 
+        expect "settings-section-content" { visible = css(".product-settings[open] main:has(.product-settings__content-header)") }
         expect "system-header" { visible = css(".product-settings[open] main .product-settings__content-header") }
+        expect "system-section" { visible = css(".product-settings[open] main .product-settings__storage:not(.product-settings__storage--large)") }
         expect "shared-row" { visible = css(".product-settings[open] main .product-settings__row") }
         expect "shared-switch" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch])") }
         click "toggle-lock-running-pointer" { target = css(".product-settings[open] main label.product-settings__switch:has(input[aria-label='锁屏继续运行'])") }
@@ -75,6 +77,7 @@ suite "a3s-ui-product-global-and-settings-contracts" {
         expect "lock-running-focused" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:focus)") }
         press "toggle-lock-running-keyboard" { key = "Space" }
         expect "lock-running-disabled" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:not(:checked))") }
+        expect "settings-switch-keyboard-state" { visible = css(".product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:not(:checked))") }
 
         click "account" { target = css(".product-settings[open] > aside button:nth-child(2)") }
         expect "account-section" { visible = css(".product-settings[open] main .product-settings__profile") }

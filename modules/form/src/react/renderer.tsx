@@ -46,7 +46,6 @@ import {
   BOOLEAN_FIELD_WIDGETS,
   COMPOSITE_FIELD_WIDGETS,
   MATRIX_FIELD_WIDGETS,
-  NESTED_ERROR_FIELD_WIDGETS,
 } from './widget-contract';
 import {
   type FormWizardController,
@@ -471,12 +470,7 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
   const presentedWidget = presentedFieldWidget(node);
   const matrixField = MATRIX_FIELD_WIDGETS.has(presentedWidget);
   const dataGridField = node.kind === 'repeater' && node.layout === 'data-grid';
-  const nestedErrorField = NESTED_ERROR_FIELD_WIDGETS.has(presentedWidget);
-  const errors = errorsForValuePath(
-    errorMap,
-    valuePath,
-    matrixField || dataGridField || nestedErrorField,
-  );
+  const errors = errorsForValuePath(errorMap, valuePath, matrixField || dataGridField);
   const inputId = nodeInputId(prefix, node.id, props.rowKeys);
   const required = isRequiredField(plan, node);
   const describedBy = [
@@ -740,7 +734,6 @@ function NodeViewContent(props: NodeViewProps): ReactNode {
         state={dataSource}
       />
       {!matrixField &&
-        !nestedErrorField &&
         errors.map((error, index) => (
           <div
             className="a3s-form-error"

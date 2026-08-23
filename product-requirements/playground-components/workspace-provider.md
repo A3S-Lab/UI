@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-start` |
 | Boundary suite | `tests/e2e/playground-component-boundaries.acl` |
 | Boundary scenario | `playground-legacy-workspace-provider` |
+| Boundary assertion | `legacy-workspace-absent` |
 
 ## User problem
 

@@ -2,7 +2,7 @@ suite "a3s-ui-product-model-settings" {
     version = 1
 
     scenario "model-provider-workflow" {
-        name = "Model settings manage providers, catalog entries, defaults, and staged saves"
+        name = "Model settings manage provider cards, connection details, model catalogs, defaults, and staged saves"
         surface = "web"
         timeout_ms = 150000
         viewport "desktop" { width = 1478 height = 852 }
@@ -11,42 +11,65 @@ suite "a3s-ui-product-model-settings" {
         wait "loaded" { load = "networkidle" }
         click "open-settings" { target = role("button", "设置") }
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
-        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:nth-child(6)") }
-        press "open-models" { key = "Enter" }
-        expect "manager-visible" { visible = css(".product-model-manager") }
-        expect "runtime-read-only" { visible = css(".product-model-manager__workspace > aside > button:first-child [data-ready=true]") }
+        click "open-models" { target = role("button", "模型") }
 
-        click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
-        expect "local-empty-state" { visible = css(".product-model-catalog__empty") }
-        expect "show-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
+        expect "manager-visible" { visible = css(".product-model-manager") }
+        expect "provider-list-semantic" { visible = css(".product-model-manager__list[role=list]:has(article[role=listitem]:nth-child(2))") }
+        expect "runtime-card-selected-and-ready" { visible = css(".product-model-manager__list article:first-child[data-selected=true] .product-model-manager__provider-status[data-ready=true]") }
+        expect "local-card-needs-setup" { visible = css(".product-model-manager__list article:nth-child(2) .product-model-manager__provider-status:not([data-ready=true])") }
+
+        click "manage-runtime" { target = role("button", "管理 运行时目录") }
+        expect "runtime-read-only-dialog" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(fieldset.product-model-provider__connection[disabled])") }
+        expect "runtime-catalog-present" { visible = css("dialog.product-model-provider[open] .product-model-catalog__table[role=table]") }
+        press "close-runtime-editor" { key = "Escape" }
+        expect "runtime-trigger-restored" { visible = css(".product-model-manager__list article:first-child button[aria-label='管理 运行时目录']:focus") }
+
+        click "manage-local-provider" { target = role("button", "管理 本地端点") }
+        expect "local-provider-dialog" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(input[aria-label='API Key'])") }
+        expect "local-provider-dialog-contained" {
+            target = css("dialog.product-model-provider[open][data-provider-editor]")
+            viewport_coverage_at_least = 100
+        }
         fill "api-key" { target = label("API Key") value = "test-key" }
         click "show-api-key" { target = role("button", "显示 API Key") }
-        expect "hide-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
+        expect "hide-secret-icon" { visible = css("dialog.product-model-provider[open] [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
         click "hide-api-key" { target = role("button", "隐藏 API Key") }
-        expect "secret-hidden-again" { visible = css(".product-model-manager [data-secret] input[type=password] + button svg[data-icon=eye]") }
-        click "add-first-model" { target = role("button", "添加第一个模型") }
+        expect "secret-hidden-again" { visible = css("dialog.product-model-provider[open] [data-secret] input[type=password] + button svg[data-icon=eye]") }
+        click "check-connection" { target = role("button", "检查连接") }
+        expect "connection-request-pending" { text = "等待宿主响应" }
+
+        click "open-model-draft" { target = role("button", "添加模型") }
+        expect "model-draft-dialog" { visible = css("dialog.product-model-catalog__draft[open][data-model-draft-dialog]") }
         fill "model-id" { target = label("模型 ID") value = "host-synced" }
         fill "model-name" { target = label("显示名称") value = "Host-synced model" }
         fill "context-limit" { target = label("上下文上限") value = "128000" }
         fill "output-limit" { target = label("输出上限") value = "8192" }
-        focus "focus-add-to-catalog" { target = css(".product-model-catalog__draft button[data-primary]") }
-        press "add-to-catalog" { key = "Enter" }
-        expect "model-listed" { text = "Host-synced model" }
-        expect "dirty-save-enabled" { visible = css(".product-model-toolbar button[data-primary]:not(:disabled)") }
+        check "attachments-capability" { target = label("附件") }
+        expect "catalog-submit-enabled" { visible = css("dialog.product-model-catalog__draft[open] button[data-primary]:not(:disabled)") }
+        click "add-to-catalog" { target = role("button", "添加到目录") }
 
+        expect "model-listed-in-provider-dialog" { visible = css("dialog.product-model-provider[open] .product-model-catalog__table [role=row]:has(strong):has(code)") }
+        expect "model-label-visible" { text = "Host-synced model" }
         click "make-default" { target = role("button", "将 Host-synced model 设为默认模型") }
+        expect "default-control-selected" { visible = css("dialog.product-model-provider[open] button[aria-label='Host-synced model 是默认模型'][aria-pressed=true]") }
+        screenshot "provider-dialog-evidence" { path = "product/model-settings-provider-dialog-desktop.png" }
+        click "finish-provider" { target = role("button", "完成") }
+
+        expect "local-card-selected-and-ready" { visible = css(".product-model-manager__list article:nth-child(2)[data-selected=true] .product-model-manager__provider-status[data-ready=true]") }
         expect "default-selected" { visible = css(".product-model-toolbar select:has(option[value='local-endpoint/host-synced']:checked)") }
+        expect "dirty-save-enabled" { visible = css(".product-model-toolbar button[data-primary]:not(:disabled)") }
         click "save" { target = role("button", "保存更改") }
         expect "save-complete" { text = "配置已保存在当前产品预览中" }
         expect "save-disabled" { visible = css(".product-model-toolbar button[data-primary]:disabled") }
 
         screenshot "desktop-evidence" { path = "product/model-settings-desktop.png" }
+        accessibility "desktop-accessibility" { path = "product/model-settings-desktop-accessibility.json" interactive = true }
         console "console" { path = "product/model-settings-desktop-console.json" clear = false }
         page_errors "page-errors" { path = "product/model-settings-desktop-page-errors.json" clear = false }
     }
 
     scenario "model-provider-mobile" {
-        name = "Model provider settings remain operable in the mobile settings surface"
+        name = "Provider cards and nested model dialogs remain operable and recover focus on a phone viewport"
         surface = "web"
         timeout_ms = 150000
         viewport "mobile" { width = 390 height = 844 }
@@ -58,27 +81,47 @@ suite "a3s-ui-product-model-settings" {
         wait "settings-ready" { visible = css("dialog[aria-label='设置'][open]") }
         expect "mobile-shell-title" { visible = css(".product-settings__dialog-header .product-settings__dialog-title") }
         expect "mobile-close-icon" { visible = css(".product-settings__dialog-header button[aria-label='关闭设置'] svg[data-icon=close]") }
-        focus "focus-memory" { target = css("dialog.product-settings[open] > aside button:has(svg[data-icon=brain])") }
-        press "open-memory" { key = "Enter" }
-        expect "memory-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=brain]") }
-        focus "focus-models" { target = css("dialog.product-settings[open] > aside button:has(svg[data-icon=model])") }
-        press "open-models" { key = "Enter" }
+        click "open-models" { target = role("button", "模型") }
         expect "models-selected" { visible = css(".product-settings > aside button[aria-current=page] svg[data-icon=model]") }
         expect "mobile-manager" { visible = css(".product-model-manager") }
-        expect "provider-strip" { visible = css(".product-model-manager__workspace > aside") }
-        click "select-local-provider" { target = css(".product-model-manager__workspace > aside > button:nth-child(2)") }
+        expect "mobile-provider-cards" { visible = css(".product-model-manager__list[role=list]:has(article[role=listitem]:nth-child(2))") }
+        expect "mobile-provider-cards-contained" {
+            target = css(".product-model-manager__list")
+            viewport_coverage_at_least = 100
+        }
+
+        click "manage-local-provider" { target = role("button", "管理 本地端点") }
+        expect "mobile-provider-dialog" { visible = css("dialog.product-model-provider[open][data-provider-editor]") }
+        expect "mobile-provider-dialog-contained" {
+            target = css("dialog.product-model-provider[open][data-provider-editor]")
+            viewport_coverage_at_least = 100
+        }
         fill "api-key" { target = label("API Key") value = "mobile-test-key" }
         click "show-api-key" { target = role("button", "显示 API Key") }
-        expect "mobile-hide-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
+        expect "mobile-hide-secret-icon" { visible = css("dialog.product-model-provider[open] [data-secret] button[aria-label='隐藏 API Key'] svg[data-icon=eye-off]") }
         click "hide-api-key" { target = role("button", "隐藏 API Key") }
-        expect "mobile-show-secret-icon" { visible = css(".product-model-manager [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
-        click "add-first-model" { target = role("button", "添加第一个模型") }
-        expect "mobile-model-form" { visible = css(".product-model-catalog__draft") }
-        focus "model-id-focus" { target = css(".product-model-catalog__draft input:first-of-type") }
-        expect "focused-model-id" { visible = css(".product-model-catalog__draft input:first-of-type:focus-visible") }
-        accessibility "mobile-accessibility" { path = "product/model-settings-mobile-accessibility.json" interactive = true }
+        expect "mobile-show-secret-icon" { visible = css("dialog.product-model-provider[open] [data-secret] button[aria-label='显示 API Key'] svg[data-icon=eye]") }
+
+        click "open-model-draft" { target = role("button", "添加模型") }
+        expect "mobile-model-dialog" { visible = css("dialog.product-model-catalog__draft[open][data-model-draft-dialog]") }
+        expect "mobile-model-dialog-contained" {
+            target = css("dialog.product-model-catalog__draft[open]")
+            viewport_coverage_at_least = 100
+        }
+        focus "model-id-focus" { target = css("dialog.product-model-catalog__draft[open] input:first-of-type") }
+        expect "focused-model-id" { visible = css("dialog.product-model-catalog__draft[open] input:first-of-type:focus") }
+        fill "mobile-model-id" { target = label("模型 ID") value = "mobile-fixture" }
+        expect "mobile-submit-enabled" { visible = css("dialog.product-model-catalog__draft[open] button[data-primary]:not(:disabled)") }
+        screenshot "mobile-model-dialog-evidence" { path = "product/model-settings-model-dialog-mobile.png" }
+        press "close-model-dialog" { key = "Escape" }
+        expect "provider-dialog-restored" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(button[aria-label='显示 API Key'])") }
+        focus "focus-provider-complete" { target = css("dialog.product-model-provider[open] > footer button:last-child") }
+        press "close-provider-dialog" { key = "Enter" }
+        expect "provider-trigger-restored" { visible = css(".product-model-manager__list article:nth-child(2) button[aria-label='管理 本地端点']:focus") }
+        expect "local-card-selected" { visible = css(".product-model-manager__list article:nth-child(2)[data-selected=true]") }
 
         screenshot "mobile-evidence" { path = "product/model-settings-mobile.png" }
+        accessibility "mobile-accessibility" { path = "product/model-settings-mobile-accessibility.json" interactive = true }
         console "console" { path = "product/model-settings-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/model-settings-mobile-page-errors.json" clear = false }
     }

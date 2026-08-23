@@ -10,6 +10,7 @@
 | Route evidence | `tests/e2e/playground-route-contracts.acl#playground-route-session` |
 | Behavioral suite | `tests/e2e/product-session-detail.acl` |
 | Behavioral scenario | `session-detail-conversation` |
+| Behavior assertion | `execution-boundary` |
 
 ## User problem
 
@@ -17,7 +18,7 @@ People using the composed application need to understand reasoning, tool calls, 
 
 ## Product boundary
 
-Product Session Execution owns execution disclosure, tool timeline, diff and command previews, permission choices, plan states, delivery summary, and deterministic status transitions. It does not own product routing services, remote APIs, credentials, authorization, persistence, scheduling, or irreversible side effects.
+Product Session Execution owns execution disclosure, tool timeline, diff preview, public Log Viewer output, permission choices, plan states, delivery summary, and deterministic status transitions. It does not own product routing services, remote APIs, credentials, authorization, persistence, scheduling, or irreversible side effects.
 
 The UI repository owns design tokens, accessible interaction contracts, framework adapters, documentation, and deterministic composition fixtures. A host product owns real services, domain routing, data authority, user permissions, storage, synchronization, and external effects. Fixture callbacks can demonstrate intent, but they cannot turn this component into a second product implementation.
 
@@ -29,7 +30,7 @@ State changes preserve the user's last safe context. Visual styling never become
 
 ## Interaction contract
 
-The component is exercised at `.product-session-execution` by `tests/e2e/product-session-detail.acl#session-detail-conversation`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
+The component is exercised at `.product-session-execution` by `tests/e2e/product-session-detail.acl#session-detail-conversation`. The uniquely assigned `execution-boundary` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.
 
 Pointer and keyboard paths must reach the same decision. Focus enters through a named native control, movement follows the widget's documented orientation, Escape cancels a transient layer, and focus returns to the exact trigger. The component target is `.product-session-execution`; incidental descendants are not a supported automation API.
 
@@ -37,7 +38,7 @@ Pointer and keyboard paths must reach the same decision. Focus enters through a 
 
 The canonical route is verified at 1440 × 1000 and 390 × 844. Reading order and focus order follow the semantic DOM, the owning region controls scrolling, and primary actions remain visible without page-level horizontal overflow. Compact disclosure must retain the current value and a recovery route; desktop width cannot be used to hide missing hierarchy.
 
-Component-specific adversarial requirement: Acceptance for Product Session Execution must prove failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, and streaming placeholders never fabricate completion; malformed, stale, denied, empty, and excessively long fixture data must remain contained without fabricating host success.
+Component-specific adversarial requirement: Acceptance for Product Session Execution must prove failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, ordered logs retain sequence and stream identity, and streaming placeholders never fabricate completion; malformed, stale, denied, empty, and excessively long fixture data must remain contained without fabricating host success.
 
 ## Accessibility
 
@@ -51,16 +52,16 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 
 - The export inventory contains exactly one `ProductSessionExecution` declaration in `site/theme/components/playground/ProductSessionExecution.tsx` and exactly one matching PRD and coverage record.
 - The canonical route `/playground/sessions/fix-session-recovery.html` loads directly and passes `playground-route-session` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
-- The real interaction path `session-detail-conversation` explicitly targets `.product-session-execution` and proves a state-changing keyboard or pointer action in the same component-owned workflow.
+- The real interaction path `session-detail-conversation` explicitly targets `.product-session-execution`; its unique `execution-boundary` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
 - Empty, pending, invalid, denied, stale, failed, and recovery cases keep prior context and never fabricate host authority or success.
 - Desktop and compact layouts preserve the primary decision, visible focus, readable localized copy, bounded scrolling, and a reachable recovery action.
-- The component-specific product boundary remains enforced: Product Session Execution owns execution disclosure, tool timeline, diff and command previews, permission choices, plan states, delivery summary, and deterministic status transitions. It does not own product routing services, remote APIs, credentials, authorization, persistence, scheduling, or irreversible side effects.
-- The adversarial release condition passes without weakening selectors or assertions: Acceptance for Product Session Execution must prove failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, and streaming placeholders never fabricate completion; malformed, stale, denied, empty, and excessively long fixture data must remain contained without fabricating host success.
+- The component-specific product boundary remains enforced: Product Session Execution owns execution disclosure, tool timeline, diff preview, public Log Viewer output, permission choices, plan states, delivery summary, and deterministic status transitions. It does not own product routing services, remote APIs, credentials, authorization, persistence, scheduling, or irreversible side effects.
+- The adversarial release condition passes without weakening selectors or assertions: Acceptance for Product Session Execution must prove failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, ordered logs retain sequence and stream identity, and streaming placeholders never fabricate completion; malformed, stale, denied, empty, and excessively long fixture data must remain contained without fabricating host success.
 - Console and page-error evidence contain no unexpected runtime failures on the deterministic acceptance path.
 
 ## A3S Test mapping
 
 - Direct route evidence: `tests/e2e/playground-route-contracts.acl#playground-route-session` at `http://127.0.0.1:4178/UI/playground/sessions/fix-session-recovery.html`.
-- Behavior evidence: `tests/e2e/product-session-detail.acl#session-detail-conversation`, with stable target `.product-session-execution`.
+- Behavior evidence: `tests/e2e/product-session-detail.acl#session-detail-conversation`, assertion `execution-boundary`, with stable target `.product-session-execution`.
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.

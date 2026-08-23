@@ -8,8 +8,8 @@ import {
   AssistantSettings,
   ExecutionSettings,
   MemorySettings,
-  ModelSettings,
 } from "./ProductSettingsIntelligenceSections";
+import { ProductModelSettings } from "./ProductSettingsModelManager";
 import type { ProductPlaygroundIconName } from "./ProductPlaygroundIcon";
 import {
   DataSettings,
@@ -98,7 +98,7 @@ export function ProductSettingsSectionContent({
   if (section === "personalization")
     return <PersonalizationSettings locale={locale} />;
   if (section === "memory") return <MemorySettings locale={locale} />;
-  if (section === "models") return <ModelSettings locale={locale} />;
+  if (section === "models") return <ProductModelSettings locale={locale} />;
   if (section === "assistant") return <AssistantSettings locale={locale} />;
   if (section === "integrations")
     return <IntegrationSettings locale={locale} />;

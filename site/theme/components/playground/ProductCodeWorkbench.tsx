@@ -5,7 +5,6 @@ import {
   useState,
   type KeyboardEvent,
   type ReactNode,
-  type UIEvent,
 } from "react";
 import type { ProductFileSurfaceProps } from "./ProductFileWorkbenchSurfaces";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
@@ -16,6 +15,11 @@ import {
 
 type CodeLoadState = "error" | "loading" | "ready";
 
+type CodeEditorElement = HTMLElement & {
+  markClean?: () => void;
+  refresh?: () => void;
+};
+
 const savedStaticDrafts = new Map<string, string>();
 
 export function ProductCodeWorkbench({
@@ -24,6 +28,7 @@ export function ProductCodeWorkbench({
   locale,
   mode,
   onChange,
+  onSaved,
   onStatus,
   saveRevision,
 }: ProductFileSurfaceProps) {
@@ -35,7 +40,6 @@ export function ProductCodeWorkbench({
     entry.preview?.[locale] ??
     codeFixture(entry.name, locale);
   const [activeMatch, setActiveMatch] = useState(0);
-  const [cursor, setCursor] = useState({ column: 1, line: 1 });
   const [draft, setDraft] = useState(() =>
     entry.workspaceFileId ? "" : staticSource,
   );
@@ -47,8 +51,8 @@ export function ProductCodeWorkbench({
   );
   const [retryRevision, setRetryRevision] = useState(0);
   const [wordWrap, setWordWrap] = useState(true);
+  const editorRef = useRef<CodeEditorElement>(null);
   const lastSavedRevisionRef = useRef(saveRevision);
-  const lineNumbersRef = useRef<HTMLOListElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const draftRef = useRef(draft);
   draftRef.current = draft;
@@ -137,6 +141,7 @@ export function ProductCodeWorkbench({
       } else {
         savedStaticDrafts.set(staticDraftKey, draftRef.current);
       }
+      editorRef.current?.markClean?.();
     } catch {
       onChange(
         zh ? "保存失败，文件仍有本地更改" : "Save failed; local changes remain",
@@ -151,7 +156,34 @@ export function ProductCodeWorkbench({
     zh,
   ]);
 
+  useEffect(() => {
+    if (loadState !== "ready" || mode !== "edit") return;
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleSave = () => {
+      onSaved(zh ? "已通过快捷键保存" : "Saved with keyboard shortcut");
+    };
+
+    editor.addEventListener("a3s:code-save", handleSave);
+    window.a3sUI?.start();
+    window.a3sUI?.initAll();
+    const frame = window.requestAnimationFrame(() => editor.refresh?.());
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      editor.removeEventListener("a3s:code-save", handleSave);
+    };
+  }, [entry.id, loadState, mode, onSaved, zh]);
+
   const lines = useMemo(() => draft.split("\n"), [draft]);
+  const characters = useMemo(
+    () =>
+      Array.from(draft).filter(
+        (character) => character !== "\n" && character !== "\r",
+      ).length,
+    [draft],
+  );
   const matchOffsets = useMemo(
     () => findOccurrences(draft, findQuery),
     [draft, findQuery],
@@ -164,15 +196,6 @@ export function ProductCodeWorkbench({
   useEffect(() => {
     if (activeMatch >= matchOffsets.length) setActiveMatch(0);
   }, [activeMatch, matchOffsets.length]);
-
-  const updateCursor = () => {
-    const position = textareaRef.current?.selectionStart ?? 0;
-    const beforeCursor = draft.slice(0, position).split("\n");
-    setCursor({
-      column: (beforeCursor.at(-1)?.length ?? 0) + 1,
-      line: beforeCursor.length,
-    });
-  };
 
   const commitDraft = (nextDraft: string, message: string) => {
     setDraft(nextDraft);
@@ -200,7 +223,7 @@ export function ProductCodeWorkbench({
     if (textarea && mode === "edit") {
       textarea.focus();
       textarea.setSelectionRange(start, start + findQuery.length);
-      updateCursorFromPosition(draft, start, setCursor);
+      editorRef.current?.refresh?.();
     }
     onStatus(
       zh
@@ -232,19 +255,7 @@ export function ProductCodeWorkbench({
     ) {
       event.preventDefault();
       setFindOpen(true);
-      return;
     }
-    if (event.key !== "Tab") return;
-    event.preventDefault();
-    const textarea = event.currentTarget;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const nextDraft = `${draft.slice(0, start)}  ${draft.slice(end)}`;
-    commitDraft(nextDraft, zh ? "代码已修改" : "Code changed");
-    window.requestAnimationFrame(() => {
-      textarea.setSelectionRange(start + 2, start + 2);
-      updateCursorFromPosition(nextDraft, start + 2, setCursor);
-    });
   };
 
   if (loadState === "error") {
@@ -296,16 +307,41 @@ export function ProductCodeWorkbench({
 
   return (
     <section
-      className="product-code-workbench"
+      aria-label={zh ? `${entry.name} 代码编辑器` : `${entry.name} code editor`}
+      className={`product-code-workbench${mode === "edit" ? " code-editor" : ""}`}
+      data-a3s-components={mode === "edit" ? "code-editor" : undefined}
       data-code-load-state="ready"
+      data-dirty={String(dirty)}
       data-file-surface
+      data-indent-size="2"
+      data-label-character={zh ? "个字符" : "character"}
+      data-label-characters={zh ? "个字符" : "characters"}
+      data-label-dirty={zh ? "有未保存更改" : "Unsaved changes"}
+      data-label-line={zh ? "行" : "line"}
+      data-label-lines={zh ? "行" : "lines"}
+      data-label-position={
+        zh ? "行 {line}，列 {column}" : "Ln {line}, Col {column}"
+      }
+      data-label-saved={zh ? "已保存" : "Saved"}
+      data-language={languageKey(entry.name, entry.type)}
+      data-line-numbers="true"
+      data-wrap={String(wordWrap)}
+      key={`${entry.id}:${mode}`}
+      ref={editorRef}
     >
       <header data-code-toolbar>
-        <span>
+        <div data-code-editor-file>
           <ProductPlaygroundIcon name="code" />
-          {languageLabel(entry.name, entry.type)}
-        </span>
-        <div>
+          <strong>{entry.name}</strong>
+          <span
+            aria-label={zh ? "文件状态" : "File status"}
+            data-code-editor-dirty-indicator
+          />
+        </div>
+        <div data-code-editor-actions>
+          <span data-code-editor-language>
+            {languageLabel(entry.name, entry.type)}
+          </span>
           <button
             aria-expanded={findOpen}
             onClick={() => setFindOpen((value) => !value)}
@@ -405,18 +441,14 @@ export function ProductCodeWorkbench({
           ) : null}
         </button>
       </nav>
-      <div
+      <section
         data-code-canvas
         data-code-wrap={wordWrap ? "true" : "false"}
         data-mode={mode}
       >
         {mode === "edit" ? (
           <>
-            <ol aria-hidden="true" data-code-lines ref={lineNumbersRef}>
-              {lines.map((_, index) => (
-                <li key={index}>{index + 1}</li>
-              ))}
-            </ol>
+            <div aria-hidden="true" data-code-editor-gutter data-code-lines />
             <textarea
               aria-label={zh ? `编辑 ${entry.name}` : `Edit ${entry.name}`}
               onChange={(event) =>
@@ -425,13 +457,7 @@ export function ProductCodeWorkbench({
                   zh ? "代码已修改" : "Code changed",
                 )
               }
-              onClick={updateCursor}
               onKeyDown={handleEditorKeyDown}
-              onKeyUp={updateCursor}
-              onScroll={(event) =>
-                syncLineNumberScroll(event, lineNumbersRef.current)
-              }
-              onSelect={updateCursor}
               ref={textareaRef}
               spellCheck={false}
               value={draft}
@@ -439,12 +465,12 @@ export function ProductCodeWorkbench({
             />
           </>
         ) : markdown ? (
-          <article data-markdown-preview>
+          <article data-code-editor-viewport data-markdown-preview>
             <span>{zh ? "Markdown 预览" : "Markdown preview"}</span>
             <div>{renderMarkdown(draft, zh)}</div>
           </article>
         ) : (
-          <pre data-code-preview>
+          <pre data-code-editor-viewport data-code-preview>
             <code>
               {lines.map((line, index) => (
                 <span key={index}>
@@ -455,21 +481,40 @@ export function ProductCodeWorkbench({
             </code>
           </pre>
         )}
-      </div>
+      </section>
       <footer data-code-status>
-        <span>
-          {lines.length} {zh ? "行" : "lines"}
-        </span>
-        {mode === "edit" ? (
-          <span>
-            {zh ? "行" : "Ln"} {cursor.line}, {zh ? "列" : "Col"}{" "}
-            {cursor.column}
+        <div data-code-editor-info>
+          <span aria-live="polite" data-code-editor-state>
+            {dirty
+              ? zh
+                ? "有未保存更改"
+                : "Unsaved changes"
+              : zh
+                ? "已保存"
+                : "Saved"}
           </span>
-        ) : (
-          <span>{zh ? "只读预览" : "Read-only preview"}</span>
-        )}
-        <span>UTF-8</span>
-        <span>LF</span>
+          <span data-code-editor-lines>
+            {lines.length} {zh ? "行" : lines.length === 1 ? "line" : "lines"}
+          </span>
+          <span data-code-editor-characters>
+            {characters}{" "}
+            {zh ? "个字符" : characters === 1 ? "character" : "characters"}
+          </span>
+        </div>
+        <div data-code-editor-meta>
+          {mode === "edit" ? (
+            <output
+              aria-label={zh ? "光标位置" : "Cursor position"}
+              data-code-editor-position
+            >
+              {zh ? "行 1，列 1" : "Ln 1, Col 1"}
+            </output>
+          ) : (
+            <span>{zh ? "只读预览" : "Read-only preview"}</span>
+          )}
+          <span>UTF-8</span>
+          <span>LF</span>
+        </div>
       </footer>
     </section>
   );
@@ -490,25 +535,6 @@ function findOccurrences(source: string, query: string) {
   return offsets;
 }
 
-function syncLineNumberScroll(
-  event: UIEvent<HTMLTextAreaElement>,
-  lineNumbers: HTMLOListElement | null,
-) {
-  if (lineNumbers) lineNumbers.scrollTop = event.currentTarget.scrollTop;
-}
-
-function updateCursorFromPosition(
-  source: string,
-  position: number,
-  update: (cursor: { column: number; line: number }) => void,
-) {
-  const beforeCursor = source.slice(0, position).split("\n");
-  update({
-    column: (beforeCursor.at(-1)?.length ?? 0) + 1,
-    line: beforeCursor.length,
-  });
-}
-
 function languageLabel(name: string, fallback: string) {
   const extension = name.split(".").pop()?.toLocaleLowerCase();
   const labels: Record<string, string> = {
@@ -527,6 +553,12 @@ function languageLabel(name: string, fallback: string) {
     vue: "Vue",
   };
   return extension ? (labels[extension] ?? fallback) : fallback;
+}
+
+function languageKey(name: string, fallback: string) {
+  return (
+    name.split(".").pop()?.toLocaleLowerCase() ?? fallback.toLocaleLowerCase()
+  );
 }
 
 function renderMarkdown(source: string, zh: boolean) {

@@ -25,7 +25,7 @@ A3S Form is an embeddable, AI-native form system. It unifies form definition, vi
                             v
   +------------------------------------------------------------------+
   |                         Host boundary                            |
-  | A3S Cloud / product host / standalone product                    |
+  | A3S Cloud / standalone product / service host                    |
   | identity, policy, persistence, tasks, providers, actions, audit  |
   +------------------------------------------------------------------+
 ```
@@ -40,7 +40,7 @@ The native Rust core is the semantic authority. The package-embedded WASM build 
 4. Agent changes are typed `FormPatch` values bound to an exact base revision. A conflict fails instead of overwriting newer work.
 5. Documents execute no arbitrary JavaScript. Widgets, data sources, actions, and output mappings use host-approved registry keys.
 6. A durable submission is validated against the original request, exact Form release, and current protected task context. A detached browser value is never sufficient.
-7. A3S Form does not persist durable task or submission state and never resumes external execution directly.
+7. A3S Form does not persist `HumanTask`, `FormSubmission`, or workflow state and never resumes a Flow hook directly.
 
 ## Compilation pipeline
 
@@ -69,7 +69,7 @@ portable plan and value inspection
   -> canonical normalized value, trace, and errors
 ```
 
-The versioned `evaluate-request/v1alpha1` and `evaluate-response/v1alpha1` byte protocol is implemented by the native library, CLI, and package-embedded WASM adapter. Public `evaluateFormValue` calls that adapter; durable host acceptance therefore cannot fall back to a browser-only TypeScript interpretation. See [Portable submitted-value evaluation](value-evaluation.md).
+The versioned `evaluate-request/v1alpha1` and `evaluate-response/v1alpha1` byte protocol is implemented by the native library, CLI, and package-embedded WASM adapter. Public `evaluateFormValue` calls that adapter; durable interaction acceptance therefore cannot fall back to a browser-only TypeScript interpretation. See [Portable submitted-value evaluation](value-evaluation.md).
 
 `compiler-client` may move compilation into a cancellable Web Worker. Request identities prevent late responses from replacing a newer document. The core has no database, network, Cloud, or UI dependency, so hosts may run it as a stateless library or isolated task.
 
@@ -127,7 +127,7 @@ Native Rust, direct WASM, the TypeScript conformance reference, and the public N
 | Controlled rendering, accessibility, locale, and host capability ports | A3S Form UI |
 | Form drafts, immutable releases, submissions, retention, and publication policy | Host or A3S Cloud Forms context |
 | WorkflowRun, HumanTask, assignment, authorization, decision, and task version | Host or A3S Cloud Workflow context |
-| Durable execution history, timers, retries, and active callbacks | Product host |
+| Durable execution history, timers, retries, and the active hook | A3S Flow |
 | Queue processing and task delivery | A3S Boot |
 | Relational access and migrations | A3S ORM / PostgreSQL |
 
@@ -142,6 +142,6 @@ The browser receives a Cloud task identity and renderable Form release, not an i
 | Designer | Local editing state plus a host-owned draft | Load on demand; save through the host |
 | Data-source/action registries | Host business state | Authorize and scale in Cloud or product services |
 | Form lifecycle and HumanTask | Durable host business state | Persist through the host's transactional repository boundary |
-| Callback and execution history | Durable process state | Persist and recover through the product host |
+| Flow hook and execution history | Durable orchestration state | Persist and recover through A3S Flow |
 
 This separation keeps Form portable while allowing compilation, provider calls, business persistence, task processing, and orchestration to scale and recover under their owning systems.

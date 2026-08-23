@@ -16,6 +16,7 @@
 
     const inspector = workspace.querySelector('[data-task-inspector]');
     if (!inspector) return;
+    const controlled = workspace.dataset.taskWorkspaceControlled === 'true';
 
     let focusFrame = 0;
     let restoreTarget = null;
@@ -151,8 +152,10 @@
       attributes: true,
     });
 
-    workspace.addEventListener('click', handleClick);
-    document.addEventListener('keydown', handleKeydown);
+    if (!controlled) {
+      workspace.addEventListener('click', handleClick);
+      document.addEventListener('keydown', handleKeydown);
+    }
     compactQuery.addEventListener('change', handleBreakpointChange);
 
     workspace.openInspector = () => openInspector(triggers()[0]);
@@ -165,8 +168,10 @@
     workspace._destroy = () => {
       cancelAnimationFrame(focusFrame);
       stateObserver.disconnect();
-      workspace.removeEventListener('click', handleClick);
-      document.removeEventListener('keydown', handleKeydown);
+      if (!controlled) {
+        workspace.removeEventListener('click', handleClick);
+        document.removeEventListener('keydown', handleKeydown);
+      }
       compactQuery.removeEventListener('change', handleBreakpointChange);
       delete workspace.openInspector;
       delete workspace.closeInspector;

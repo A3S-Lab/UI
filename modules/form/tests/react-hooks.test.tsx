@@ -51,7 +51,15 @@ describe('A3S UI React form hooks', () => {
           }),
         },
         items: { 0: { email: expect.objectContaining({ type: 'format.email' }) } },
-        root: { a3s: expect.objectContaining({ type: 'form.invalid' }) },
+        root: {
+          a3s: expect.objectContaining({
+            type: 'form.invalid',
+            types: {
+              'form.invalid': 'Form is invalid.',
+              'form.blocked': 'Form is blocked.',
+            },
+          }),
+        },
       }),
     );
   });

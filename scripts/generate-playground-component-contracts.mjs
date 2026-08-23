@@ -192,7 +192,7 @@ const contracts = [
   active("ProductCapabilitySetupDialog", "capabilities", "capability", "capability-overlays-short-desktop", "dialog.product-capability-setup[open]", "review requested access, enter setup values, test a connection, and confirm only a validated configuration", "setup fields, permission explanation, connection-test states, local validation, footer actions, Escape handling, and trigger focus restoration", "failed connection tests retain values and recovery, short screens keep validation and actions visible, and no fixture copy suggests credentials are persisted here"),
   active("ProductCatalogSurface", "capabilities", "capability", "capability-first-navigation-desktop", "[data-product-surface=catalog]", "move between capability families and manage one item without losing catalog context", "capability-tab synchronization, selected item state, lifecycle dialog orchestration, and task-context callback composition", "direct links select the correct tab on first load, dialog completion updates only deterministic state, and mobile navigation never covers the catalog after selection"),
   active("ProductCodeGraphPanel", "session", "session", "session-detail-conversation", ".product-session-code-graph", "trace relationships among files and symbols, filter the graph, and inspect a selected node without a separate editor surface", "graph and list modes, search, zoom, pan controls, selection, detail copy, and the public code-graph controller boundary", "large graphs remain bounded, no-result filters stay recoverable, keyboard selection matches pointer selection, and expansion does not clip the session inspector"),
-  active("ProductCodeWorkbench", "files", "workspace", "all-file-workbenches", ".product-code-workbench", "read, edit, preview, and save text or code files while retaining file-level context", "the text editing fixture, preview mode, dirty state callbacks, save acknowledgement, syntax presentation, and task-scoped proposal handoff", "long lines do not force page overflow, unsaved content is never labeled saved, preview cannot execute untrusted markup, and mobile tools remain reachable"),
+  active("ProductCodeWorkbench", "files", "workspace", "all-file-workbenches", ".product-code-workbench", "read, edit, preview, and save text or code files while retaining file-level context", "the public Code Editor root and controller, text editing fixture, preview mode, dirty state callbacks, keyboard and toolbar save acknowledgement, syntax presentation, and task-scoped proposal handoff", "long lines do not force page overflow, controller and React ownership never double-indent input, unsaved content is never labeled saved, preview cannot execute untrusted markup, and mobile tools remain reachable"),
   active("ProductComposer", "start", "composer", "composer-context-and-run-controls", ".product-composer", "express a task, attach bounded context, choose execution policy, and submit through one predictable input surface", "the rich-text task entry boundary, attachment and run-control orchestration, drag-and-drop intake intent, submission eligibility, and host callbacks", "focus uses a calm border instead of a double ring, empty or composing text cannot submit, dropped files remain explicit, and overlays never cover the active input"),
   active("ProductComposerResourcePicker", "start", "actionIcons", "composer-capability-actions", "[data-composer-resource-picker]", "search and attach one assistant or connector with enough identity and configuration state to choose safely", "popover search, option navigation, configured-state copy, selection callback, collision handling, Escape behavior, and trigger focus return", "empty searches explain recovery, long localized labels wrap, inactive connections are not presented as ready, and keyboard selection never drifts from the highlighted option"),
   active("ProductComposerExecutionTargetControl", "start", "composer", "composer-context-and-run-controls", "[data-composer-control=target]", "choose where a task may execute while understanding the security and availability consequences", "execution-target disclosure, selected option semantics, explanatory policy copy, local state change, and popover focus management", "unavailable targets remain disabled and explained, selection text updates atomically, and compact popovers stay within the viewport without obscuring the composer"),
@@ -206,7 +206,8 @@ const contracts = [
   active("ProductExtensionSources", "extensions", "workspace", "extension-source-management", "[role=table][aria-label='扩展来源']", "inspect trusted and pending extension sources, refresh safely, and add a source only after address validation", "source table semantics, refresh feedback, add-source dialog, HTTPS validation, trust state, and deterministic source insertion", "insecure remote addresses are rejected without clearing input, pending trust never loads executable content, and compact tables retain source identity and state"),
   active("ProductFileArtifactsSurface", "files", "resources", "files-mobile-hierarchy", ".product-file-artifacts", "scan task outputs by type, owner, recency, and favorite state before opening the right workspace", "artifact filters, search, grouped table disclosure, result count, open-workspace intent, and start-task intent over deterministic artifacts", "zero results keep filters editable, long names do not collapse metadata, keyboard table actions remain reachable, and the default view is not confused with the workspace filesystem"),
   active("ProductFileManagerSurface", "files", "resources", "files-mobile-hierarchy", "[data-product-surface=files]", "move between task artifacts and a Finder-style workspace while preserving the selected file workflow", "top-level file tabs, panel semantics, selected workbench handoff, return state, and composition of the public file-manager boundary", "switching tabs resets stale workbench selection, compact hierarchy remains navigable, and file operations never imply real filesystem authority in the fixture"),
-  active("ProductFileTypeIcon", "files", "resources", "files-icon-identity", "[data-file-icon-size=grid][data-file-type=folder]", "recognize folders and common file formats consistently across navigation, list, grid, and preview contexts", "deterministic file-kind classification, compact extension labels, favorite decoration, and size-specific visual output without replacing the adjacent accessible file name", "unknown or compound extensions fall back honestly, decorative icons stay hidden from assistive technology, favorite state remains secondary to the file name, and every supported size stays legible without shifting its row or tile"),
+  active("ProductFilePreviewDialog", "files", "resources", "files-icon-identity", "[data-file-preview-dialog]", "inspect one selected file in a movable or fullscreen preview before opening, renaming, downloading, or attaching it", "modal preview geometry, drag and fullscreen state, file metadata, task handoff actions, Escape cancellation, and exact trigger focus restoration", "the preview stays inside the viewport, fullscreen retains a visible close action, unsupported content remains inert text, and closing never loses the selected file"),
+  active("ProductFileTypeIcon", "files", "resources", "files-icon-identity", "[data-file-icon]", "recognize file and folder kinds consistently across list, grid, preview, theme, and viewport changes", "extension classification, visual-kind mapping, four optical sizes, favorite status, decorative icon output, and deterministic fallback identity", "unknown and compound extensions retain a neutral identity, favorite state does not obscure the extension, document kinds are not confused, and icons never replace accessible file names"),
   active("ProductFileWorkbench", "files", "workspace", "workspace-file-intake-and-code-roundtrip", ".product-file-workbench", "continue work on a selected file with identity, save state, preview, versions, and a file-scoped assistant in one bounded surface", "workbench header, file identity, dirty and saved feedback, mode controls, version disclosure, assistant proposal flow, and close or back focus restoration", "renaming to empty recovers the original name, unsaved state survives view changes, assistant proposals require confirmation, and dialogs or mobile panels never lose their close action"),
   active("ProductFileWorkbenchSurface", "files", "workspace", "all-file-workbenches", "[data-workbench-kind]", "dispatch each admitted file kind to the correct code, Office, PDF, spreadsheet, or presentation viewing contract", "typed workbench selection and normalized callbacks while delegating Office formats to the shared Office integration instead of duplicating renderers", "unsupported kinds fail explicitly, Office loading and errors remain truthful, dirty callbacks are kind-safe, and no format silently falls back to misleading plain text"),
   active("ProductFollowUpQueue", "session", "actionIcons", "follow-up-queue-actions", ".product-follow-up-queue", "queue, reorder, edit, pause, remove, and run follow-up instructions while the current task is busy", "ordered queue presentation, item editing, move controls, pause state, next-run intent, removal, and deterministic status feedback", "first and last move controls disable correctly, empty edits cannot save, paused queues cannot look active, and reordering preserves each instruction identity"),
@@ -233,7 +234,7 @@ const contracts = [
   active("ProductResourcesSurface", "documents", "resources", "document-connection-lifecycle", "[data-product-surface=resources]", "enter the correct mail, document, file, knowledge, or inspiration workflow through a resource-specific composition", "resource-to-surface dispatch and the shared start-task callback while keeping each resource's information architecture independent", "unknown resource state cannot render the wrong manager, connection surfaces remain honest, and switching routes does not carry incompatible selection or dialog state"),
   active("ProductSessionFilesPanel", "session", "session", "session-detail-conversation", ".product-inspector-files", "browse changed session files and inspect a compact diff while remaining inside the task detail context", "file explorer composition, selected file, diff presentation, line metadata, and panel semantics for the inspector's files tab", "large diffs scroll inside the panel, line spacing remains reviewable, selection and diff stay synchronized, and long paths do not push close controls away"),
   active("ProductSessionArtifactsPanel", "session", "session", "session-detail-conversation", ".product-inspector-artifacts", "review a produced artifact, inspect highlighted content, and copy it without leaving the session", "artifact list, selected preview, public artifact-card and highlighter composition, copy feedback, file identity, and inspector tab semantics", "empty artifacts explain absence, copy state is announced, long output remains contained, and selecting another artifact updates both identity and preview"),
-  active("ProductSessionExecution", "session", "session", "session-detail-conversation", ".product-session-execution", "understand reasoning, tool calls, permission decisions, runtime agents, plan progress, and delivery outcome in chronological context", "execution disclosure, tool timeline, diff and command previews, permission choices, plan states, delivery summary, and deterministic status transitions", "failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, and streaming placeholders never fabricate completion"),
+  active("ProductSessionExecution", "session", "session", "session-detail-conversation", ".product-session-execution", "understand reasoning, tool calls, permission decisions, runtime agents, plan progress, and delivery outcome in chronological context", "execution disclosure, tool timeline, diff preview, public Log Viewer output, permission choices, plan states, delivery summary, and deterministic status transitions", "failed tools preserve input and output evidence, permission requests cannot auto-approve, completed plans collapse without hiding status, ordered logs retain sequence and stream identity, and streaming placeholders never fabricate completion"),
   active("ProductSessionInspector", "session", "session", "session-detail-conversation", ".product-session-inspector", "open task details and move among overview, artifacts, files, device preview, and graph without losing the conversation", "responsive inspector shell, tab semantics, selected tab, expanded preview and graph state, close behavior, focus return, and composed panel context", "only one tab is active, mobile inspector receives initial focus without animation-frame timing, traps and restores focus correctly, expansion retains close controls, and absent task data cannot produce misleading metrics"),
   active("ProductSessionMessageActions", "session", "session", "session-detail-conversation", ".product-session__message-actions", "copy, rate, read, save, or report an assistant response through controls whose icons and labels agree", "response action state, copy feedback, helpfulness toggles, speech intent, overflow menu, save-to-memory feedback, and host reporting intent", "repeated clicks do not create contradictory ratings, unavailable speech stays explicit, menus return focus, and icon-only buttons always retain durable names"),
   active("ProductSessionOverviewPanel", "session", "session", "session-detail-conversation", ".product-inspector-overview", "grasp task status, elapsed metrics, plan progress, execution policy, and context before opening deeper evidence", "summary status, metrics, plan-step list, runtime properties, context copy, and semantic overview tab panel composition", "metrics never imply live telemetry, incomplete steps remain distinct, long context wraps, and missing data produces an honest empty value rather than zeroed success"),
@@ -248,11 +249,10 @@ const contracts = [
   active("PersonalizationSettings", "start", "globalSettings", "settings-all-sections", ".product-settings__choice-group", "choose appearance, density, accent, and motion preferences with an immediate and accessible representation", "preference choice groups, selected state, accent options, reduced-motion respect, setting-change announcements, and deterministic preview state", "choices remain understandable without color, system appearance stays distinct from light or dark, and compact grids retain full labels and focus visibility"),
   active("MemorySettings", "start", "globalSettings", "settings-all-sections", ".product-settings__boundary", "set how future memories are created and scoped while keeping record review and deletion in the memory workspace", "memory enablement, default scope, policy explanation, shared rows and switches, and setting-change announcements", "disabling memory does not pretend to delete records, scope changes remain explicit, and policy copy prevents settings from becoming a parallel memory manager"),
   active("ExecutionSettings", "start", "globalSettings", "settings-all-sections", ".product-settings__boundary", "set default execution mode, approvals, isolation, and evidence retention before individual tasks tighten them", "default execution controls, security explanation, approval policy, workspace isolation, evidence preference, and setting-change announcements", "unsafe defaults cannot hide behind labels, disabled controls remain semantic, and changing defaults never mutates an already running task fixture"),
-  active("ModelSettings", "start", "model", "model-provider-workflow", ".product-model-toolbar", "enter the complete model configuration workflow from the settings section without duplicating provider state", "delegation from the settings router to the model manager while preserving section identity and modal containment", "loading or missing providers remain explicit, the section cannot render a stale parallel model list, and mobile navigation keeps save and cancel reachable"),
   active("AssistantSettings", "start", "globalSettings", "settings-all-sections", ".product-settings__group", "configure assistant-facing local integrations while seeing exactly which task context each integration may receive", "assistant integration grouping, deterministic enabled state, setup guide link, beta boundary copy, and shared switch controls", "enabling one integration does not imply host authorization, beta status stays visible, and unavailable integrations cannot look active after navigation"),
   active("ProductModelSettings", "start", "model", "model-provider-workflow", ".product-model-toolbar", "manage provider connections and model aliases from one coherent settings workspace", "provider list, selected provider, model catalog, add and edit model flow, deletion intent, status feedback, and model-manager layout", "duplicate model identifiers are rejected, provider failures retain edits, deletion cannot remove the active model silently, and compact master-detail navigation restores selection"),
   active("ProductModelProviderManager", "start", "model", "model-provider-workflow", ".product-model-manager", "inspect one provider, validate connection details, browse available models, and edit local model configuration safely", "provider connection editor, test states, model catalog, draft form, field validation, confirmation state, and controlled provider callbacks", "secret fields never enter committed evidence, connection failure preserves nonsecret input, invalid limits stay adjacent to fields, and unsaved drafts cannot appear connected"),
-  active("SettingsSwitch", "start", "globalSettings", "settings-all-sections", ".product-settings__switch input[role=switch]", "change a binary preference with native semantics, visible state, and a generous hit target", "the checkbox-backed switch state, disabled state, accessible label, controlled or initial value behavior, and the shared visual indicator", "checked state is never color-only, disabled switches cannot toggle, repeated keyboard activation stays synchronized, and labels remain the accessible name"),
+  active("SettingsSwitch", "start", "globalSettings", "settings-all-sections", ".product-settings__switch:has(input[role=switch])", "change a binary preference with native semantics, visible state, and a generous hit target", "the checkbox-backed switch state, disabled state, accessible label, controlled or initial value behavior, and the shared visual indicator", "checked state is never color-only, disabled switches cannot toggle, repeated keyboard activation stays synchronized, and labels remain the accessible name"),
   active("SettingsHeader", "start", "globalSettings", "settings-all-sections", ".product-settings__content-header", "identify the current settings domain and understand its scope before changing any values", "one semantic section heading and optional explanatory paragraph with stable spacing across every settings page", "long localized titles and descriptions wrap without displacing close controls, missing descriptions leave no empty gap, and heading hierarchy remains valid"),
   active("SettingsRow", "start", "globalSettings", "settings-all-sections", ".product-settings__row", "read a preference name and consequence beside the control that changes it", "row-level label copy, description, control alignment, responsive stacking, and a reusable semantic grouping boundary", "long descriptions do not detach from controls, compact rows preserve reading order, controls retain their own labels, and no row becomes clickable when only its control is interactive"),
   active("DataSettings", "start", "globalSettings", "settings-all-sections", ".product-settings__storage--large", "understand local data footprint, export scope, retention, and cache actions before requesting host operations", "storage summary, export intent, retention preference, cache intent, explanatory boundaries, and shared settings controls", "illustrative storage cannot look live, export never claims completion without a host result, cache clearing requires explicit action, and retention changes do not erase data immediately"),
@@ -276,11 +276,17 @@ const contracts = [
   legacy("WorkspaceSceneSurface", "It is the retired editor scene canvas and has no role in the current route-specific task, project, resource, or session compositions.", "no current route brings back scene selection, editor chrome, or generic preview state through this component"),
 ];
 
-function scenarioBlock(source, scenarioId) {
-  const marker = `scenario "${scenarioId}"`;
-  const start = source.indexOf(marker);
-  if (start < 0) return undefined;
-  const opening = source.indexOf("{", start + marker.length);
+const behaviorAssertionOverrides = {
+  DataSettings: "data-section",
+  ExecutionSettings: "execution-section",
+  MemorySettings: "memory-section",
+  ProductSettingsSectionContent: "settings-section-content",
+  SettingsHeader: "system-header",
+  SystemSettings: "system-section",
+};
+
+function bracedBlock(source, start, label) {
+  const opening = source.indexOf("{", start);
   if (opening < 0) return undefined;
   let depth = 0;
   let quoted = false;
@@ -300,7 +306,25 @@ function scenarioBlock(source, scenarioId) {
       if (depth === 0) return source.slice(start, index + 1);
     }
   }
-  throw new Error(`Unclosed scenario ${scenarioId}.`);
+  throw new Error(`Unclosed ${label}.`);
+}
+
+function scenarioBlock(source, scenarioId) {
+  const marker = `scenario "${scenarioId}"`;
+  const start = source.indexOf(marker);
+  if (start < 0) return undefined;
+  return bracedBlock(source, start, `scenario ${scenarioId}`);
+}
+
+function scenarioActions(source) {
+  const actions = [];
+  const pattern = /^\s{8}([a-z_]+)\s+"([^"]+)"\s*\{/gmu;
+  for (const match of source.matchAll(pattern)) {
+    const block = bracedBlock(source, match.index, `action ${match[2]}`);
+    if (!block) continue;
+    actions.push({ block, id: match[2], type: match[1] });
+  }
+  return actions;
 }
 
 async function exportedComponents() {
@@ -433,6 +457,26 @@ async function validateScenarioMapping() {
         );
       }
     }
+
+    const assertions = scenarioActions(behaviorBlock).filter(
+      (action) =>
+        (action.type === "expect" || action.type === "wait") &&
+        action.block.includes(contract.target),
+    );
+    if (assertions.length === 0) {
+      throw new Error(
+        `${contract.behaviorSuite}#${contract.behaviorScenario} has no direct wait or expectation for ${contract.exportName} at ${contract.target}.`,
+      );
+    }
+    const behaviorAssertion =
+      behaviorAssertionOverrides[contract.exportName] ?? assertions[0].id;
+    if (!assertions.some((assertion) => assertion.id === behaviorAssertion)) {
+      throw new Error(
+        `${contract.exportName} maps to missing behavior assertion ${behaviorAssertion} in ${contract.behaviorSuite}#${contract.behaviorScenario}.`,
+      );
+    }
+    contract.behaviorAssertion = behaviorAssertion;
+    contract.behaviorEvidenceKey = `${contract.behaviorSuite}#${contract.behaviorScenario}#${behaviorAssertion}`;
   }
 }
 
@@ -442,10 +486,10 @@ function renderPrd(contract) {
   const [route, surfaceSelector, routeScenario] = routes[contract.routeKey];
   const active = contract.status === "active";
   const behaviorMapping = active
-    ? `| Behavioral suite | \`${contract.behaviorSuite}\` |\n| Behavioral scenario | \`${contract.behaviorScenario}\` |`
-    : `| Boundary suite | \`tests/e2e/playground-component-boundaries.acl\` |\n| Boundary scenario | \`playground-legacy-${slug}\` |`;
+    ? `| Behavioral suite | \`${contract.behaviorSuite}\` |\n| Behavioral scenario | \`${contract.behaviorScenario}\` |\n| Behavior assertion | \`${contract.behaviorAssertion}\` |`
+    : `| Boundary suite | \`tests/e2e/playground-component-boundaries.acl\` |\n| Boundary scenario | \`playground-legacy-${slug}\` |\n| Boundary assertion | \`legacy-workspace-absent\` |`;
   const behaviorParagraph = active
-    ? `The component is exercised at \`${contract.target}\` by \`${contract.behaviorSuite}#${contract.behaviorScenario}\`. That scenario owns the state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.`
+    ? `The component is exercised at \`${contract.target}\` by \`${contract.behaviorSuite}#${contract.behaviorScenario}\`. The uniquely assigned \`${contract.behaviorAssertion}\` action directly verifies this component inside that state-changing path; the route scenario independently owns direct-load, responsive, accessibility, console, page-error, and screenshot evidence.`
     : `The export has no supported visible target. \`tests/e2e/playground-component-boundaries.acl#playground-legacy-${slug}\` proves the current application renders without \`.a3s-workspace-playground\` at desktop and phone widths, while the generator rejects any active import of this legacy export.`;
 
   return `# ${name} Product Requirements
@@ -510,7 +554,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 - The canonical route \`${route}\` loads directly and passes \`${routeScenario}\` with desktop and phone screenshots, accessibility evidence, console capture, and page-error capture.
 - ${
     active
-      ? `The real interaction path \`${contract.behaviorScenario}\` explicitly targets \`${contract.target}\` and proves a state-changing keyboard or pointer action in the same component-owned workflow.`
+      ? `The real interaction path \`${contract.behaviorScenario}\` explicitly targets \`${contract.target}\`; its unique \`${contract.behaviorAssertion}\` assertion verifies this component while the same workflow proves a state-changing keyboard or pointer action.`
       : `The generated boundary scenario \`playground-legacy-${slug}\` proves the current Product Application does not mount the retired workspace root.`
   }
 - Focus, selection, disclosure, disabled state, and cancellation remain semantically synchronized; transient layers restore focus to their exact trigger.
@@ -525,7 +569,7 @@ Loading preserves useful geometry and names the pending scope. Empty states dist
 - Direct route evidence: \`tests/e2e/playground-route-contracts.acl#${routeScenario}\` at \`http://127.0.0.1:4178/UI${route}\`.
 - ${
     active
-      ? `Behavior evidence: \`${contract.behaviorSuite}#${contract.behaviorScenario}\`, with stable target \`${contract.target}\`.`
+      ? `Behavior evidence: \`${contract.behaviorSuite}#${contract.behaviorScenario}\`, assertion \`${contract.behaviorAssertion}\`, with stable target \`${contract.target}\`.`
       : `Boundary evidence: \`tests/e2e/playground-component-boundaries.acl#playground-legacy-${slug}\`, plus the generator's active-import rejection.`
   }
 - Required evidence is desktop and phone visual capture, an interactive accessibility tree, console output, page errors, and at least one deterministic state-changing action for every active component.
@@ -583,6 +627,11 @@ assertUniqueValues(contracts, "exportName", "Playground component export");
 assertUniqueValues(contracts, "job", "Playground component user problem");
 assertUniqueValues(contracts, "ownership", "Playground component boundary");
 assertUniqueValues(contracts, "adversarial", "Playground adversarial condition");
+assertUniqueValues(
+  contracts.filter((record) => record.status === "active"),
+  "behaviorEvidenceKey",
+  "Playground component behavior evidence",
+);
 
 if (!checkOnly) {
   await rm(requirementsRoot, { recursive: true, force: true });
@@ -615,6 +664,10 @@ for (const contract of contracts.sort((left, right) =>
   await writeOrCheck(path.join(projectRoot, prd), prdSource);
   const [route, surfaceSelector, routeScenario] = routes[contract.routeKey];
   coverage.push({
+    behaviorAssertion:
+      contract.status === "active"
+        ? contract.behaviorAssertion
+        : "legacy-workspace-absent",
     behaviorScenario:
       contract.status === "active"
         ? contract.behaviorScenario
@@ -644,7 +697,7 @@ This directory contains one first-principles product requirements document for e
 - Active route components: ${activeCount}
 - Legacy-only, unmounted components: ${legacyCount}
 - Total covered exports: ${coverage.length}
-- Machine-readable mapping: \`product-requirements/playground-component-coverage.json\`
+- Machine-readable mapping with one unique A3S Test assertion per export: \`product-requirements/playground-component-coverage.json\`
 - Active route evidence: \`tests/e2e/playground-route-contracts.acl\`
 - Legacy boundary evidence: \`tests/e2e/playground-component-boundaries.acl\`
 

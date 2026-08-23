@@ -1,6 +1,6 @@
 # Migrating from v0.1 to the `next` Runtime
 
-The `next` line tightens contracts that v0.1 treated permissively. Migrate and compile documents in a test environment before pinning a new digest in workflow nodes or durable interactions.
+The `next` line tightens contracts that v0.1 treated permissively. Migrate and compile documents in a test environment before pinning a new digest in published forms or durable interactions.
 
 ## Migration checklist
 
@@ -19,13 +19,13 @@ The `next` line tightens contracts that v0.1 treated permissively. Migrate and c
 
 ## Repeater identity changes
 
-Primitive repeaters remain compatible. Object repeaters use runtime-owned keys by default and do not add metadata to values. If an older custom renderer inserted `_id`, `rowId`, or a similar engine-only property, remove it from new values unless it is a real business field.
+Primitive repeaters remain compatible. Object repeaters use runtime-owned keys by default and do not add metadata to values. If an older custom renderer inserted `_id`, `rowId`, or a similar engine-only property, remove it from new controlled values unless it is a real business field.
 
 Use `identifyRepeaterItem` to derive stable identity during controlled external replacements. Declare `UiNode.itemKey` only when the item schema already owns a required string identifier and persistence of that identifier is intentional.
 
 ## Compatibility and publication
 
-Document digests change after normalization or contract edits. Publish a new form revision and update configuration-mode `FormRef` values explicitly. Existing workflow nodes remain pinned to their original revision and digest; never rewrite those references in place.
+Document digests change after normalization or contract edits. Publish a new form revision and update pinned references explicitly. Existing requests remain pinned to their original revision and digest; never rewrite those references in place.
 
 Durable human interactions now use the request-bound `a3s.dev/form-interaction-request/v1` and `a3s.dev/form-interaction-submission/v1` protocols. Do not translate an in-flight legacy envelope in place. Create a new task generation and request that pins the exact `FormReleaseRef`, Workflow and Flow identities, assignment policy, task version, deadlines, allowed outcomes, output mapping, and value-size policy. Persist the request bytes and digest with the owning task so retries and recovery validate the same contract.
 

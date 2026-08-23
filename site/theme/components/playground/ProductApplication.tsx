@@ -250,7 +250,7 @@ export function ProductApplication() {
 
   return (
     <section
-      className="a3s-product-application rp-not-doc"
+      className="agent-workbench a3s-product-application rp-not-doc"
       data-direction-contract="user-pinned-operate-v5-3-3"
       data-product-application
       data-sidebar-collapsed={sidebarCollapsed ? "true" : undefined}
@@ -324,6 +324,7 @@ export function ProductApplication() {
       />
       <main
         className="product-application__main"
+        data-agent-canvas
         inert={compact && mobileOpen ? true : undefined}
       >
         {view === "start" ? (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
@@ -151,7 +151,11 @@ export function ChannelSettings({
 }) {
   const zh = locale === "zh";
   const [active, setActive] = useState("local");
+  const [approvalRequired, setApprovalRequired] = useState(true);
+  const [configurationOpen, setConfigurationOpen] = useState(false);
   const [enabled, setEnabled] = useState(new Set(["local"]));
+  const [notificationScope, setNotificationScope] = useState("bounded");
+  const configurationTriggerRef = useRef<HTMLButtonElement | null>(null);
   const channels = [
     {
       id: "local",
@@ -193,6 +197,20 @@ export function ChannelSettings({
   const selected =
     channels.find((channel) => channel.id === active) ?? channels[0];
 
+  const openConfiguration = (
+    channelId: string,
+    trigger: HTMLButtonElement,
+  ) => {
+    configurationTriggerRef.current = trigger;
+    setActive(channelId);
+    setConfigurationOpen(true);
+  };
+
+  const closeConfiguration = () => {
+    setConfigurationOpen(false);
+    queueMicrotask(() => configurationTriggerRef.current?.focus());
+  };
+
   const toggle = (id: string) => {
     setEnabled((current) => {
       const next = new Set(current);
@@ -213,21 +231,43 @@ export function ChannelSettings({
         }
         title={zh ? "渠道" : "Channels"}
       />
-      <section className="product-settings__channels">
-        <nav aria-label={zh ? "渠道列表" : "Channel list"}>
+      <section
+        aria-label={zh ? "渠道列表" : "Channel list"}
+        className="product-settings__channels"
+      >
+        <header>
+          <div>
+            <h3>{zh ? "连接渠道" : "Connected channels"}</h3>
+            <span>{zh ? "测试功能" : "Beta"}</span>
+          </div>
+          <p>
+            {zh
+              ? "远程渠道必须显式配置；本地应用始终保留为安全入口。"
+              : "Remote channels require explicit setup. The local application remains the safe entry point."}
+          </p>
+        </header>
+        <div>
           {channels.map((channel) => (
-            <button
-              aria-current={active === channel.id ? "page" : undefined}
+            <article
+              data-channel-id={channel.id}
+              data-enabled={enabled.has(channel.id) ? "true" : undefined}
               key={channel.id}
-              onClick={() => setActive(channel.id)}
-              type="button"
             >
-              <span>
+              <span className="product-settings__channel-icon">
                 <ProductPlaygroundIcon name={channel.icon} />
               </span>
-              <span>
-                <strong>{channel.name[locale]}</strong>
-                <small>
+              <div>
+                <header>
+                  <strong>{channel.name[locale]}</strong>
+                  {channel.id === "local" ? (
+                    <em>{zh ? "默认" : "Default"}</em>
+                  ) : null}
+                </header>
+                <p>{channel.description[locale]}</p>
+                <small
+                  data-ready={enabled.has(channel.id) ? "true" : undefined}
+                >
+                  <i />
                   {enabled.has(channel.id)
                     ? zh
                       ? "已启用"
@@ -236,90 +276,249 @@ export function ChannelSettings({
                       ? "未配置"
                       : "Not configured"}
                 </small>
-              </span>
-              {enabled.has(channel.id) ? <i /> : null}
-            </button>
+              </div>
+              {channel.id === "local" ? (
+                <SettingsSwitch
+                  checked
+                  label={zh ? "启用本地应用" : "Enable local application"}
+                  onCheckedChange={() => toggle(channel.id)}
+                />
+              ) : (
+                <button
+                  aria-haspopup="dialog"
+                  onClick={(event) =>
+                    openConfiguration(channel.id, event.currentTarget)
+                  }
+                  type="button"
+                >
+                  {enabled.has(channel.id)
+                    ? zh
+                      ? "管理"
+                      : "Manage"
+                    : zh
+                      ? "配置"
+                      : "Configure"}
+                </button>
+              )}
+              {channel.id === "local" ? (
+                <button
+                  aria-haspopup="dialog"
+                  className="product-settings__channel-manage"
+                  onClick={(event) =>
+                    openConfiguration(channel.id, event.currentTarget)
+                  }
+                  type="button"
+                >
+                  {zh ? "管理" : "Manage"}
+                </button>
+              ) : null}
+            </article>
           ))}
-        </nav>
-        <section>
-          <header>
-            <span>
-              <ProductPlaygroundIcon name={selected.icon} />
-            </span>
-            <div>
-              <strong>{selected.name[locale]}</strong>
-              <small>{selected.description[locale]}</small>
-            </div>
-            <SettingsSwitch
-              checked={enabled.has(selected.id)}
-              label={`${zh ? "启用" : "Enable"} ${selected.name[locale]}`}
-              onCheckedChange={() => toggle(selected.id)}
-            />
-          </header>
-          <div className="product-settings__channel-status">
-            <span data-ready={enabled.has(selected.id) ? "true" : undefined}>
-              <i />
-              {enabled.has(selected.id)
-                ? zh
-                  ? "连接正常"
-                  : "Connected"
-                : zh
-                  ? "等待配置"
-                  : "Awaiting setup"}
-            </span>
-            <code>
-              {selected.id === "local"
-                ? "local://this-device"
-                : `${selected.id}://unconfigured`}
-            </code>
-          </div>
-          <div className="product-settings__rows">
-            <SettingsRow
-              description={
-                zh
-                  ? "新请求先进入待确认列表，不会自动执行。"
-                  : "New requests enter the approval queue and never execute automatically."
-              }
-              title={zh ? "请求确认" : "Request approval"}
-            >
-              <SettingsSwitch
-                checked
-                label={zh ? "请求确认" : "Request approval"}
-              />
-            </SettingsRow>
-            <SettingsRow
-              description={
-                zh
-                  ? "只发送状态、问题与最终摘要。"
-                  : "Send only status, questions, and final summaries."
-              }
-              title={zh ? "通知范围" : "Notification scope"}
-            >
-              <select defaultValue="bounded">
-                <option value="bounded">
-                  {zh ? "受控更新" : "Bounded updates"}
-                </option>
-                <option value="summary">{zh ? "仅结果" : "Final only"}</option>
-              </select>
-            </SettingsRow>
-          </div>
-          <footer>
-            <button onClick={() => toggle(selected.id)} type="button">
-              {enabled.has(selected.id)
-                ? selected.id === "local"
-                  ? zh
-                    ? "检查连接"
-                    : "Check connection"
-                  : zh
-                    ? "断开渠道"
-                    : "Disconnect"
-                : zh
-                  ? "开始配置"
-                  : "Set up channel"}
-            </button>
-          </footer>
-        </section>
+        </div>
       </section>
+
+      <ChannelConfigurationDialog
+        approvalRequired={approvalRequired}
+        enabled={enabled.has(selected.id)}
+        locale={locale}
+        notificationScope={notificationScope}
+        onApprovalChange={(next) => {
+          setApprovalRequired(next);
+          announceProductSetting("channelApproval", {
+            channel: selected.id,
+            required: next,
+          });
+        }}
+        onClose={closeConfiguration}
+        onNotificationScopeChange={(next) => {
+          setNotificationScope(next);
+          announceProductSetting("channelNotificationScope", {
+            channel: selected.id,
+            scope: next,
+          });
+        }}
+        onToggle={() => toggle(selected.id)}
+        open={configurationOpen}
+        selected={selected}
+      />
     </>
+  );
+}
+
+function ChannelConfigurationDialog({
+  approvalRequired,
+  enabled,
+  locale,
+  notificationScope,
+  onApprovalChange,
+  onClose,
+  onNotificationScopeChange,
+  onToggle,
+  open,
+  selected,
+}: {
+  approvalRequired: boolean;
+  enabled: boolean;
+  locale: ProductPlaygroundLocale;
+  notificationScope: string;
+  onApprovalChange: (checked: boolean) => void;
+  onClose: () => void;
+  onNotificationScopeChange: (scope: string) => void;
+  onToggle: () => void;
+  open: boolean;
+  selected: {
+    description: { en: string; zh: string };
+    icon: "link" | "mail" | "send" | "workspace";
+    id: string;
+    name: { en: string; zh: string };
+  };
+}) {
+  const zh = locale === "zh";
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) dialog.showModal();
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  const close = () => {
+    if (dialogRef.current?.open) dialogRef.current.close();
+  };
+
+  return (
+    <dialog
+      aria-labelledby="product-channel-configuration-title"
+      className="product-channel-dialog"
+      data-channel-config-dialog
+      onCancel={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        close();
+      }}
+      onClose={(event) => {
+        event.stopPropagation();
+        onClose();
+      }}
+      ref={dialogRef}
+    >
+      <header>
+        <span>
+          <ProductPlaygroundIcon name={selected.icon} />
+        </span>
+        <div>
+          <h3 id="product-channel-configuration-title">
+            {zh ? `配置${selected.name.zh}` : `Configure ${selected.name.en}`}
+          </h3>
+          <p>{selected.description[locale]}</p>
+        </div>
+        <button
+          aria-label={zh ? "关闭渠道配置" : "Close channel configuration"}
+          onClick={close}
+          type="button"
+        >
+          <ProductPlaygroundIcon name="close" />
+        </button>
+      </header>
+
+      <div className="product-channel-dialog__body">
+        <div className="product-settings__channel-status">
+          <span data-ready={enabled ? "true" : undefined}>
+            <i />
+            {enabled
+              ? zh
+                ? "连接正常"
+                : "Connected"
+              : zh
+                ? "等待配置"
+                : "Awaiting setup"}
+          </span>
+          <code>
+            {selected.id === "local"
+              ? "local://this-device"
+              : `${selected.id}://unconfigured`}
+          </code>
+        </div>
+
+        <section aria-label={zh ? "渠道选项" : "Channel options"}>
+          <label>
+            <span>
+              <strong>{zh ? "启用渠道" : "Enable channel"}</strong>
+              <small>
+                {selected.id === "local"
+                  ? zh
+                    ? "本地应用是设备上的安全入口，始终保持可用。"
+                    : "The local application is the safe entry point and remains available."
+                  : zh
+                    ? "启用后才能接收已验证的远程请求。"
+                    : "Enable this channel before it can receive verified remote requests."}
+              </small>
+            </span>
+            <SettingsSwitch
+              checked={enabled}
+              label={`${zh ? "启用" : "Enable"} ${selected.name[locale]}`}
+              onCheckedChange={onToggle}
+            />
+          </label>
+          <label>
+            <span>
+              <strong>{zh ? "请求确认" : "Request approval"}</strong>
+              <small>
+                {zh
+                  ? "新请求先进入待确认列表，不会自动执行。"
+                  : "New requests enter the approval queue and never execute automatically."}
+              </small>
+            </span>
+            <SettingsSwitch
+              checked={approvalRequired}
+              label={zh ? "请求确认" : "Request approval"}
+              onCheckedChange={onApprovalChange}
+            />
+          </label>
+          <label>
+            <span>
+              <strong>{zh ? "通知范围" : "Notification scope"}</strong>
+              <small>
+                {zh
+                  ? "只发送状态、问题与最终摘要。"
+                  : "Send only status, questions, and final summaries."}
+              </small>
+            </span>
+            <select
+              aria-label={zh ? "通知范围" : "Notification scope"}
+              onChange={(event) =>
+                onNotificationScopeChange(event.currentTarget.value)
+              }
+              value={notificationScope}
+            >
+              <option value="bounded">
+                {zh ? "受控更新" : "Bounded updates"}
+              </option>
+              <option value="summary">{zh ? "仅结果" : "Final only"}</option>
+            </select>
+          </label>
+        </section>
+      </div>
+
+      <footer>
+        <button onClick={close} type="button">
+          {zh ? "完成" : "Done"}
+        </button>
+        <button data-primary onClick={onToggle} type="button">
+          {enabled
+            ? selected.id === "local"
+              ? zh
+                ? "检查连接"
+                : "Check connection"
+              : zh
+                ? "断开渠道"
+                : "Disconnect"
+            : zh
+              ? "启用渠道"
+              : "Enable channel"}
+        </button>
+      </footer>
+    </dialog>
   );
 }
