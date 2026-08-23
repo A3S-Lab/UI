@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { assertCompiled, type FormDocument, type JsonObject } from '../../../../modules/form/src/core';
 import { FormRenderer } from '../../../../modules/form/src/react';
 import '../../../../modules/form/src/styles.css';
-import '../../../../modules/form/src/a3s-flow.css';
 
 const document: FormDocument = {
   kind: 'a3s.form',

@@ -53,4 +53,4 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: `playground-route-inspiration`.
 - Preview URL: `http://127.0.0.1:4178/UI/playground/resources/inspiration.html`.
 - Stable target: `[data-product-application][data-view=resources] [data-product-surface=inspiration]`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness and Workflow interaction scenarios additionally prove their component-specific keyboard state transitions, invalid-state focus, reset recovery, disclosure focus return, and running-to-result transition.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.

@@ -8,7 +8,6 @@ import {
   FormRenderer,
 } from '../../../../modules/form/src/react';
 import '../../../../modules/form/src/styles.css';
-import '../../../../modules/form/src/a3s-flow.css';
 
 function abortableDelay(milliseconds: number, signal: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {

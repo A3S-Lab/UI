@@ -44,20 +44,16 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(3) > a[href='/UI/components/index.html']")
         }
 
-        expect "workflow-is-fourth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/workflow/index.html']")
+        expect "harness-is-fourth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/harness/index.html']")
         }
 
-        expect "harness-is-fifth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/harness/index.html']")
-        }
-
-        expect "playground-is-sixth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(6) > a[href='/UI/playground.html']")
+        expect "playground-is-fifth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/playground.html']")
         }
 
         expect "resources-are-last" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(7) > details > summary")
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(6) > details > summary")
         }
 
         click "open-resource-navigation" {
@@ -130,18 +126,6 @@ suite "a3s-ui-site-and-overlays" {
 
         press "open-harness-group" {
             key = "Enter"
-        }
-
-        focus "focus-workflow-group" {
-            target = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='Workflow'] > summary")
-        }
-
-        press "open-workflow-group" {
-            key = "Enter"
-        }
-
-        expect "workflow-node-link-visible" {
-            visible = css("details.a3s-docs-sidebar__group[data-sidebar-group-label='Workflow'][open] a[href='/UI/components/form-system/workflow-node-embedding.html']")
         }
 
         focus "focus-conversation-group" {
@@ -428,16 +412,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(3) > a[href='/UI/en/components/index.html']")
         }
 
-        expect "english-workflow-is-fourth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/en/workflow/index.html']")
+        expect "english-harness-is-fourth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(4) > a[href='/UI/en/harness/index.html']")
         }
 
-        expect "english-harness-is-fifth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/en/harness/index.html']")
-        }
-
-        expect "english-playground-is-sixth" {
-            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(6) > a[href='/UI/en/playground.html']")
+        expect "english-playground-is-fifth" {
+            visible = css(".a3s-responsive-navigation[open] nav > .a3s-responsive-navigation__list > li:nth-child(5) > a[href='/UI/en/playground.html']")
         }
 
         click "open-version-switcher" {
@@ -511,16 +491,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(3) > a[href='/UI/en/components/index.html']")
         }
 
-        expect "desktop-workflow-is-fourth" {
-            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(4) > a[href='/UI/en/workflow/index.html']")
+        expect "desktop-harness-is-fourth" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(4) > a[href='/UI/en/harness/index.html']")
         }
 
-        expect "desktop-harness-is-fifth" {
-            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(5) > a[href='/UI/en/harness/index.html']")
-        }
-
-        expect "desktop-playground-is-sixth" {
-            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(6) > a[href='/UI/en/playground.html']")
+        expect "desktop-playground-is-fifth" {
+            visible = css(".rp-nav__left > .rp-nav-menu--left > li:nth-child(5) > a[href='/UI/en/playground.html']")
         }
 
         expect "visible-site-theme-control" {

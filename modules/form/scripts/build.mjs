@@ -33,7 +33,6 @@ const shared = {
 await build({
   ...shared,
   entryPoints: [
-    resolve(sourceRoot, 'a3s-flow.ts'),
     resolve(sourceRoot, 'cloud.ts'),
     resolve(sourceRoot, 'core.ts'),
     resolve(sourceRoot, 'index.ts'),
@@ -42,7 +41,6 @@ await build({
     resolve(sourceRoot, 'vue.ts'),
     resolve(sourceRoot, 'vue-hooks.ts'),
     resolve(sourceRoot, 'web-component.tsx'),
-    resolve(sourceRoot, 'workflow.ts'),
     resolve(sourceRoot, 'workers/compiler.worker.ts'),
   ],
   entryNames: '[dir]/[name]',
@@ -57,11 +55,7 @@ await build({
 
 await build({
   ...shared,
-  entryPoints: [
-    resolve(sourceRoot, 'styles.css'),
-    resolve(sourceRoot, 'a3s-flow.css'),
-    resolve(sourceRoot, 'a3s-ui.css'),
-  ],
+  entryPoints: [resolve(sourceRoot, 'styles.css'), resolve(sourceRoot, 'a3s-ui.css')],
   entryNames: '[dir]/[name]',
   minify: true,
   outbase: sourceRoot,

@@ -83,7 +83,7 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 
 The optional Dockview integration sits beside the semantic manifest and adds Dock Workspace, Grid View, Split View, and Pane View without changing the 116-component count. It re-exports the complete Dockview 8.1 MIT surface for native TypeScript, React, and Vue, then adds A3S theme tokens, versioned layout persistence, and an Edge Group-safe layout reset.
 
-The integrated [Form system](https://a3s-lab.github.io/UI/components/form-system/) adds a deterministic Form Core, visual Designer, controlled Renderer, A3S Flow node configuration, Cloud and Workflow contracts, CLI, Web Components, React Hook Form integration, and native Vue composables. Its guides and interactive examples live directly in the A3S UI component catalog.
+The integrated [Form system](https://a3s-lab.github.io/UI/components/form-system/) adds a deterministic Form Core, visual Designer, controlled Renderer, Cloud adapter, CLI, Web Components, React Hook Form integration, native Vue composables, and request-bound interaction contracts. Its guides and interactive examples live directly in the A3S UI component catalog.
 
 Every component guide includes a live preview, minimal usage, public parameters, states and variants, and accessibility notes. Preview stages derive the correct control, content, overlay, or workspace layout, while phone and tablet modes run in isolated CSS viewports so responsive media queries use the selected width. Browse the [complete component catalog](https://a3s-lab.github.io/UI/components/).
 
@@ -172,14 +172,13 @@ Language and version switches preserve the current page whenever that route exis
 | `@a3s-lab/ui/dockview/css`          | Dockview base CSS and A3S light/dark theme variables                                                                         |
 | `@a3s-lab/ui/form`                  | Form document, compiler, Designer, Renderer, adapters, and integration contracts                                             |
 | `@a3s-lab/ui/form/core`             | Framework-independent compilation, rules, validation, patches, locale catalogs, and headless state                           |
-| `@a3s-lab/ui/form/react`            | React Designer, Renderer, A3S Flow panels, and workflow configuration widgets                                                |
+| `@a3s-lab/ui/form/react`            | React Designer, Renderer, custom-node registry, and extended fields                                                          |
 | `@a3s-lab/ui/form/react-hooks`      | React Hook Form-compatible `useA3SForm`, resolver, field arrays, subscriptions, and Renderer binding                         |
 | `@a3s-lab/ui/form/vue`              | Vue 3 Designer and Renderer adapters                                                                                         |
 | `@a3s-lab/ui/form/vue-hooks`        | Native Vue `useA3SForm`, field, field-array, context, validation, and Renderer composables                                   |
 | `@a3s-lab/ui/form/web-component`    | Framework-neutral `<a3s-form-designer>` and `<a3s-form-renderer>` custom elements                                            |
-| `@a3s-lab/ui/form/workflow`         | Workflow configuration, request-bound interaction, digest, and protected-submission contracts                                |
 | `@a3s-lab/ui/form/cloud`            | Typed A3S Cloud host adapter                                                                                                 |
-| `@a3s-lab/ui/form/a3s-ui.css`       | A3S UI plus Form and A3S Flow styles for product surfaces                                                                    |
+| `@a3s-lab/ui/form/a3s-ui.css`       | A3S UI plus Form styles for product surfaces                                                                                 |
 | `@a3s-lab/ui/templates/*`           | Nunjucks and Jinja templates for server-rendered applications                                                                |
 
 The public runtime namespace is `window.a3sUI`. Legacy runtime aliases remain available for compatibility.
@@ -210,7 +209,7 @@ Run the documentation site locally with `npm run docs:dev`. The static build is 
 
 Run the component- and route-specific browser suites with `npm run test:e2e:a3s`. Reported defect classes are retained as page-level A3S Test regressions with action-state assertions, screenshots, console output, and page-error evidence. Scenarios run serially by default so stateful previews stay deterministic; set `A3S_TEST_MAX_PARALLEL` only when the browser adapter has enough isolated capacity. The command expects `a3s-test` on `PATH`; use `A3S_TEST_BIN`, `A3S_TEST_BROWSER_DRIVER`, and `A3S_TEST_BROWSER_EXECUTABLE` when a local adapter needs explicit paths.
 
-The release contract currently maps 116 public components, 93 Playground exports, and 29 Harness, Workflow, or Playground surfaces to 238 substantive PRDs. The 31 checked ACL suites contain 377 deterministic scenarios, 2,917 assertions, 672 visual captures, 188 accessibility captures, and 246 console plus 246 page-error captures. `npm run test:e2e:a3s:check` rejects missing, duplicate, shallow, stale, or invalid mappings before a browser run; the machine-readable indexes live under `product-requirements/`.
+The release contract maps every public component, Playground export, Harness surface, and Playground surface to substantive product requirements and deterministic A3S Test coverage. `npm run test:e2e:a3s:check` rejects missing, duplicate, shallow, stale, or invalid mappings before a browser run; the machine-readable indexes live under `product-requirements/`.
 
 Visual checks use Playwright with platform-specific desktop and compact baselines. Every public component route also has a component-root geometry and state contract plus browser diagnostic coverage. Set `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` to reuse a system Chromium installation and `A3S_UI_VISUAL_PORT` when the default local port is occupied; these checks are intentionally not part of CI.
 

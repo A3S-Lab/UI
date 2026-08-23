@@ -3879,7 +3879,11 @@
 }
 
 .a3s-form-field.is-invalid
-  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select)[aria-invalid="true"]:focus {
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select
+  )[aria-invalid="true"]:focus {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3s-form-red) 9%, transparent);
 }
 

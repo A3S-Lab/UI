@@ -1,6 +1,6 @@
 # Editable Data Grids
 
-Editable data grids present an array of objects as a compact table without changing the controlled value contract. They are intended for order lines, routing rules, inspection results, pricing inputs, and workflow-node settings where each row has the same field set.
+Editable data grids present an array of objects as a compact table without changing the controlled value contract. They are intended for order lines, routing rules, inspection results, pricing inputs, and settings where each row has the same field set.
 
 ## Document contract
 
@@ -140,7 +140,7 @@ The Designer prevents switching to table layout until the repeater has at least 
 
 ## Workflow-node embedding
 
-The documented Router workflow-node example uses a virtualized data grid for `routes`. Its value remains the ordinary metadata-free `{ when, route }[]` node configuration. Per-row validation and host-owned branch options keep their existing wildcard dependency paths and concrete request bindings. The sample also exercises typed TSV append and visible-selection fill-down without adding engine metadata to route objects.
+The documented routing example uses a virtualized data grid for `routes`. Its value remains the ordinary metadata-free `{ when, route }[]` configuration. Per-row validation and host-owned branch options keep their existing wildcard dependency paths and concrete request bindings. The sample also exercises typed TSV append and visible-selection fill-down without adding engine metadata to route objects.
 
 ## Current limits
 

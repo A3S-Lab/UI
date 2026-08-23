@@ -14,7 +14,7 @@ Ordered context, canvas, and preview regions need one-dimensional resizing when 
 
 ## Product boundary
 
-Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, workflow state, persistence, and any decision to add or remove regions.
+Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, process state, persistence, and any decision to add or remove regions.
 
 ## States
 
@@ -53,4 +53,4 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: `split-view`.
 - Preview URL: `http://127.0.0.1:4178/UI/harness/split-view.html`.
 - Stable target: `.dockview-demo[data-mode=split][data-ready=true]`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness and Workflow interaction scenarios additionally prove their component-specific keyboard state transitions, invalid-state focus, reset recovery, disclosure focus return, and running-to-result transition.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.

@@ -4,7 +4,7 @@
 
 ### Added
 
-- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, A3S Flow configuration, CLI, Cloud and Workflow contracts into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
+- Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, CLI, Cloud adapter, and interaction contracts into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
@@ -25,11 +25,11 @@
 - Added a standalone bilingual `/playground` route for exercising eight complete workspace compositions across desktop, tablet, phone, recovery, inspector, dark-theme, and RTL states without placing it in the documentation hierarchy.
 - Added `useA3SLocale`, `useA3STheme`, and `useA3SMotion` to both framework packages, with shared root-DOM state, media-query observation, typed setters, lifecycle cleanup, and bilingual runtime-configuration guidance.
 - Added strict evidence validation for all 160 pinned reference mappings, including bilingual component guides, framework usage, applicable hooks, ownership boundaries, official identity, and the standalone Playground route.
-- Added one substantive product requirements document and deterministic A3S Test mapping for every public component, Playground export, and Harness, Workflow, or Playground surface: 238 PRDs backed by 31 ACL suites and 377 scenarios.
+- Added substantive product requirements and deterministic A3S Test mappings for every public component, Playground export, Harness surface, and Playground surface.
 
 ### Changed
 
-- Rebuilt the embedded A3S Flow workflow editor with 18 localized public nodes, semantic node families and port kinds, per-branch connection actions, loop and iteration containers, mutually exclusive node-library and inspector panels, and responsive light and dark layouts.
+- Moved the complete workflow editor, node configuration panels, node catalog, DSL adapters, examples, documentation, and release checks to the A3S Flow repository. A3S UI now retains only the general Form system and its React and Vue state integrations.
 - Established `apps/desktop` as the sole owner of product routing, persistence, permissions, domain state, and orchestration; A3S UI now limits Playground work to deterministic integration fixtures and reuses the public Artifact Card, Highlighter, Copy Button, File Explorer, Code Diff, Device Simulator, and Code Graph contracts instead of maintaining parallel implementations.
 - Rebuilt the Playground task-detail overview on the public Task Pane, Task Plan, Plan Step, Property List, and Status Badge contracts; replaced the mobile dashboard-card stack with a dense divider-led inspector and added the reusable plain Task Plan variant.
 - Refined the Playground project Plan into a dense status-grouped work surface with reference-aligned scope and view controls, actionable empty groups, controlled assignee/date/density options, deterministic task identifiers, one-row mobile actions, and host-owned saved-view requests.
@@ -59,9 +59,6 @@
 ### Fixed
 
 - Replaced generic action glyphs in the Playground workspace file manager with a coherent folder and file-family icon system, readable extension labels, consistent grid/list/Quick Look identity, and compact six-column desktop and two-column mobile layouts.
-- Made all 18 public workflow nodes expose their defining current configuration on the canvas, restored readable inspector descriptions at the standard 400-pixel width, enlarged dense node and panel controls, and added complete arrow, Home, and End key navigation to inspector tabs.
-- Made workflow documentation canvas zoom controls functional, focused node-library search on open, returned inspector dismissal to the native node trigger, switched narrow article embeds to a container-sized stacked canvas and inspector layout so branch actions remain reachable, and captured deterministic evidence for every public node.
-- Kept container nodes fully visible beside the inspector in narrow documentation embeds and made the editor run regression use stable semantic state instead of transient copy.
 - Positioned conditionally mounted, already-open popovers through the shared collision runtime, keeping Composer file, model, assistant, and connector panels fully inside short desktop viewports while preserving mobile bottom sheets; compacted short mobile suggestion lists, corrected context-sensitive keyboard guidance, added explicit panel dismissal, and restored each control trigger after Escape.
 - Kept Code Graph labels inside the visible canvas when narrow inspectors or phone viewports leave insufficient room on a node's preferred side.
 - Compressed project Activity into actor-action-target rows, kept supporting detail assistive-only, replaced removable configuration categories with host-owned configuration requests, and made the phone configuration inspector cover inactive application chrome.

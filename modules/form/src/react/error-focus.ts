@@ -91,17 +91,17 @@ export function useFormErrorFocus({
             '[data-a3s-form-virtual-grid="true"]',
           ) ?? []),
         ]
-          .filter((element) => {
-            const gridPath = element.getAttribute('data-a3s-form-path');
-            return gridPath && path.startsWith(`${gridPath}.`);
-          })
-          .sort(
-            (left, right) =>
-              (right.getAttribute('data-a3s-form-path')?.length ?? 0) -
-              (left.getAttribute('data-a3s-form-path')?.length ?? 0),
-          )[0];
+          .map((element) => ({
+            element,
+            path: element.getAttribute('data-a3s-form-path'),
+          }))
+          .filter(
+            (candidate): candidate is { element: HTMLElement; path: string } =>
+              candidate.path !== null && path.startsWith(`${candidate.path}.`),
+          )
+          .sort((left, right) => right.path.length - left.path.length)[0];
         if (virtualGrid) {
-          const handled = !virtualGrid.dispatchEvent(
+          const handled = !virtualGrid.element.dispatchEvent(
             new CustomEvent('a3s-form-reveal-path', {
               cancelable: true,
               detail: { path },

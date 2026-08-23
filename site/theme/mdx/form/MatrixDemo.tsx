@@ -7,7 +7,6 @@ import {
 } from '../../../../modules/form/src/core';
 import { FormRenderer } from '../../../../modules/form/src/react';
 import '../../../../modules/form/src/styles.css';
-import '../../../../modules/form/src/a3s-flow.css';
 
 type MatrixMode = 'single' | 'multiple';
 

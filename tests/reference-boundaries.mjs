@@ -125,9 +125,6 @@ for (const locale of locales) {
     harness: JSON.parse(
       await read(`site/docs/next/${locale}/harness/_meta.json`),
     ),
-    workflow: JSON.parse(
-      await read(`site/docs/next/${locale}/workflow/_meta.json`),
-    ),
     root: JSON.parse(await read(`site/docs/next/${locale}/_meta.json`)),
   };
 }
@@ -142,12 +139,6 @@ const harnessGroupsByLocale = Object.fromEntries(
   locales.map((locale) => [
     locale,
     collectMetadataGroups(sidebarMetadata[locale].harness),
-  ]),
-);
-const workflowGroupsByLocale = Object.fromEntries(
-  locales.map((locale) => [
-    locale,
-    collectMetadataGroups(sidebarMetadata[locale].workflow),
   ]),
 );
 assert.deepEqual(
@@ -203,14 +194,6 @@ assert.deepEqual(
   ],
 );
 assert.deepEqual(
-  workflowGroupsByLocale.zh.map((group) => group.label),
-  ["工作流编辑器", "核心节点"],
-);
-assert.deepEqual(
-  workflowGroupsByLocale.en.map((group) => group.label),
-  ["Workflow editor", "Core nodes"],
-);
-assert.deepEqual(
   groupLinkOrder(componentGroupsByLocale.zh),
   groupLinkOrder(componentGroupsByLocale.en),
   "Chinese and English general-component group order must match.",
@@ -220,11 +203,6 @@ assert.deepEqual(
   groupLinkOrder(harnessGroupsByLocale.en),
   "Chinese and English Harness group order must match.",
 );
-assert.deepEqual(
-  groupLinkOrder(workflowGroupsByLocale.zh),
-  groupLinkOrder(workflowGroupsByLocale.en),
-  "Chinese and English Workflow group order must match.",
-);
 for (const locale of locales) {
   const allGroups = [
     ...componentGroupsByLocale[locale],
@@ -233,11 +211,6 @@ for (const locale of locales) {
   assert.ok(
     allGroups.every((group) => group.collapsed === true),
     `${locale} sidebar groups must default to collapsed.`,
-  );
-  assert.deepEqual(
-    workflowGroupsByLocale[locale].map((group) => group.collapsed),
-    [false, true],
-    `${locale} Workflow sidebar must expose the editor and collapse the node catalog.`,
   );
 }
 
@@ -258,9 +231,6 @@ const harnessComponentLinks = harnessLinks.filter((link) =>
 );
 const harnessLayoutLinks = harnessLinks.filter((link) =>
   link.startsWith("harness/"),
-);
-const workflowLinks = workflowGroupsByLocale.en.flatMap((group) =>
-  group.items.map((item) => item.link),
 );
 const semanticCatalogLinks = [
   ...generalComponentLinks,
@@ -283,11 +253,6 @@ assert.deepEqual(harnessLayoutLinks, [
   "harness/split-view",
   "harness/pane-view",
 ]);
-assert.equal(workflowLinks.length, 9);
-assert.ok(
-  workflowLinks.every((link) => link.startsWith("components/form-system/")),
-  "Workflow navigation must remain integrated with the structured form documentation.",
-);
 
 for (const locale of locales) {
   for (const link of harnessLayoutLinks) {
@@ -312,8 +277,8 @@ for (const locale of locales) {
 assert.equal(semanticCatalogLinks.length, 116);
 assertUniqueLinks(semanticCatalogLinks, "Semantic component navigation");
 assertUniqueLinks(
-  [...generalNavigationLinks, ...workflowLinks, ...harnessLinks],
-  "General-component, Workflow, and Harness navigation",
+  [...generalNavigationLinks, ...harnessLinks],
+  "General-component and Harness navigation",
 );
 assert.deepEqual(
   [...semanticCatalogLinks].sort(),
@@ -333,15 +298,17 @@ for (const [locale, expectedLabel] of [
       entry.name === "components",
   );
   assert.equal(componentDirectory?.label, expectedLabel);
-  const workflowDirectory = sidebarMetadata[locale].root.find(
-    (entry) =>
-      entry &&
-      typeof entry === "object" &&
-      entry.type === "dir" &&
-      entry.name === "workflow",
+  assert.equal(
+    sidebarMetadata[locale].root.some(
+      (entry) =>
+        entry &&
+        typeof entry === "object" &&
+        entry.type === "dir" &&
+        entry.name === "workflow",
+    ),
+    false,
+    `${locale} root metadata must not expose a Workflow chapter.`,
   );
-  assert.equal(workflowDirectory?.label, "Workflow");
-  assert.equal(workflowDirectory?.collapsed, true);
   assert.equal(
     sidebarMetadata[locale].root.some(
       (entry) =>

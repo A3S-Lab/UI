@@ -8,7 +8,7 @@ This directory is the product-and-test source of truth for the reusable UI catal
 | --- | ---: | --- | --- |
 | Public components | 116 | `component-coverage.json` | Unique component interaction scenario plus `tests/e2e/component-contracts.acl` |
 | Playground exports | 93 | `playground-component-coverage.json` | Active behavior and route scenarios, or an explicit legacy non-mounting scenario |
-| Harness, Workflow, and Playground surfaces | 29 | `surface-coverage.json` | Unique surface scenario with desktop and compact evidence |
+| Harness and Playground surfaces | Generated | `surface-coverage.json` | Unique surface scenario with desktop and compact evidence |
 
 The current ACL inventory contains 31 suites and 377 scenarios. Those scenarios declare 2,917 assertions, 672 screenshots, 188 accessibility captures, 246 console captures, and 246 page-error captures.
 

@@ -19,7 +19,7 @@
 
 `evaluateComputedRules` 返回不可变的派生值、稳定错误和执行轨迹。轨迹状态包括 `set`、`removed`、`unchanged`、`error` 和 `skipped`。某条规则失败时，它及其下游结果都会被移除，宿主不会提交上一次留下的旧值。
 
-React、Vue 和 Web Component 都把计算目标渲染为只读控件。工作流节点经过 revision 与 digest 校验后，派生值才会交给宿主。
+React、Vue 和 Web Component 都把计算目标渲染为只读控件。宿主完成 revision 与 digest 校验后，派生值才会进入提交路径。
 
 重复字段中的计算规则需要声明 `scope: "row"`，路径可写成 `orders.*.lines.*.quantity`。规则可以读取全局字段、外层行和当前行；跨到同级其他行或更深层级会编译失败。每个实际行都有独立的执行轨迹、错误传播和增量缓存。校验、可见性和启用规则也使用这套行作用域。
 

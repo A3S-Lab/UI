@@ -53,4 +53,4 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Scenario: `playground-route-created-session`.
 - Preview URL: `http://127.0.0.1:4178/UI/playground/sessions/current.html`.
 - Stable target: `[data-product-application][data-view=created-session] [data-product-surface=session]`.
-- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness and Workflow interaction scenarios additionally prove their component-specific keyboard state transitions, invalid-state focus, reset recovery, disclosure focus return, and running-to-result transition.
+- Evidence: desktop screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log. Harness interaction scenarios additionally prove their component-specific keyboard state transitions.

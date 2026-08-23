@@ -1,6 +1,6 @@
 # Deterministic computed rules
 
-Computed rules derive host-controlled form values without embedding JavaScript in a `FormDocument`. They use the same bounded expression engine in headless validation, React, Vue, Web Components, workflow-node configuration, and durable interaction validation.
+Computed rules derive host-controlled form values without embedding JavaScript in a `FormDocument`. They use the same bounded expression engine in headless validation, React, Vue, Web Components, embedded configuration, and durable interaction validation.
 
 ## Define a computed field
 

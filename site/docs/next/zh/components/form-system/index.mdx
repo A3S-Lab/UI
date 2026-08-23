@@ -1,18 +1,18 @@
 # Form 系统
 
-A3S UI 的结构化表单组件把 Schema、可视化设计、受控渲染、校验和工作流节点配置放在同一份确定性契约上。它与按钮、字段、数据网格和应用外壳使用同一套 A3S UI 视觉语言，示例直接嵌入组件文档，不发布独立产品站或表单演示路由。
+A3S UI 的结构化表单组件把 Schema、可视化设计、受控渲染和校验放在同一份确定性契约上。它与按钮、字段、数据网格和应用外壳使用同一套 A3S UI 视觉语言，示例直接嵌入组件文档，不发布独立产品站或表单演示路由。
 
 ## 选择接入层
 
 | 接入层 | 入口 | 适用场景 |
 | --- | --- | --- |
 | Form Core | `@a3s-lab/ui/form/core` | 编译、规则、校验、补丁、locale 与无界面状态 |
-| React 组件 | `@a3s-lab/ui/form/react` | Designer、Renderer、Flow 配置面板与扩展字段 |
+| React 组件 | `@a3s-lab/ui/form/react` | Designer、Renderer 与扩展字段 |
 | React Hooks | `@a3s-lab/ui/form/react-hooks` | React Hook Form resolver、订阅、字段数组和 Renderer 绑定 |
 | Vue 组件 | `@a3s-lab/ui/form/vue` | Vue 3 Designer 与 Renderer 适配器 |
 | Vue composables | `@a3s-lab/ui/form/vue-hooks` | 表单、字段、字段数组、上下文、校验和提交状态 |
 | Web Components | `@a3s-lab/ui/form/web-component` | 框架无关的 Designer 与 Renderer 自定义元素 |
-| Workflow | `@a3s-lab/ui/form/workflow` | 工作流配置、受保护提交与交互 digest |
+| 交互契约 | `@a3s-lab/ui/form` | 受保护提交与交互 digest |
 
 ```bash
 npm install @a3s-lab/ui
@@ -26,12 +26,11 @@ React 应用按需安装 `react`、`react-dom` 与 `react-hook-form`；Vue 应�
 - 网格、分栏、卡片、标签页、折叠内容和分支向导布局；
 - 确定性计算规则、异步宿主校验、动态数据源与本地化目录；
 - A3S Form Schema Profile 1 与原生 Rust/WASM 提交值求值；
-- 18 个可见 A3S Flow 1.0 DAG manifest、无损校验与语义 digest；
 - React、Vue 和 Web Component 受控适配器，共享只读、错误、locale 和宿主能力边界。
 
 ## 从这里开始
 
-[React 与 Vue Hooks](/components/form-system/framework-hooks)说明两套框架状态接口如何共享 Form Core。[A3S Flow DAG 节点配置](/components/form-system/workflow-node-embedding)记录 Flow 与宿主的所有权边界、manifest registry、DAG 校验和嵌入 API。
+[React 与 Vue Hooks](/components/form-system/framework-hooks)说明两套框架状态接口如何共享 Form Core。
 
 [内置字段](/components/form-system/fields)说明标量控件，[布局](/components/form-system/layouts)说明组合方式，[重复字段组](/components/form-system/repeatable-field-groups)与[数据表格](/components/form-system/data-grids)说明数组结构，[多步向导](/components/form-system/wizards)说明分步流程。发布新的 revision 或 digest 前应执行[迁移清单](/components/form-system/migration)。
 
