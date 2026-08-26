@@ -3,13 +3,18 @@
 原生选择器让用户从较短的固定选项中选择一个值，并保留操作系统熟悉的交互与无障碍能力。
 
 <Preview>
-<select class="select w-full" aria-label="Fruit">
-  <option value="">Select a fruit</option>
-  <option value="apple">Apple</option>
-  <option value="banana">Banana</option>
-  <option value="blueberry">Blueberry</option>
-  <option value="pineapple">Pineapple</option>
-</select>
+<div class="field w-full">
+  <label for="native-select-fruit-zh">水果</label>
+  <select id="native-select-fruit-zh" class="native-select w-full" aria-describedby="native-select-fruit-help-zh">
+    <option value="">选择水果</option>
+    <option value="apple">苹果</option>
+    <option value="banana">香蕉</option>
+    <option value="blueberry">蓝莓</option>
+    <option value="pineapple">菠萝</option>
+    <option value="long-label">来自当季国际生鲜专区的红心火龙果家庭分享装</option>
+  </select>
+  <p id="native-select-fruit-help-zh">为当前订单选择一种水果。</p>
+</div>
 </Preview>
 
 ## 用法
@@ -38,16 +43,20 @@
   </Step>
   <Step title="添加原生选择器 HTML">
 
-Add `class="select"` to a native `<select>`. Use standard `<option>` and `<optgroup>` elements.
+为原生 `<select>` 添加规范类 `class="native-select"`，并继续使用标准 `<option>` 与 `<optgroup>` 元素。旧的 `select` 类仅作为迁移期视觉别名保留；新代码与框架适配器统一使用 `native-select`，避免与自定义 Select 根节点混淆。
 
 ```html
-<select class="select" aria-label="Fruit">
-  <option value="">Select a fruit</option>
-  <option value="apple">Apple</option>
-  <option value="banana">Banana</option>
-  <option value="blueberry">Blueberry</option>
-  <option value="pineapple">Pineapple</option>
-</select>
+<div class="field">
+  <label for="native-select-fruit-html">水果</label>
+  <select id="native-select-fruit-html" class="native-select" aria-describedby="native-select-fruit-help-html">
+    <option value="">选择水果</option>
+    <option value="apple">苹果</option>
+    <option value="banana">香蕉</option>
+    <option value="blueberry">蓝莓</option>
+    <option value="pineapple">菠萝</option>
+  </select>
+  <p id="native-select-fruit-help-html">为当前订单选择一种水果。</p>
+</div>
 ```
 
   </Step>
@@ -60,59 +69,75 @@ Add `class="select"` to a native `<select>`. Use standard `<option>` and `<optgr
 ### 组
 
 <Preview>
-<select class="select w-full" aria-label="Food">
-  <option value="">Select food</option>
-  <optgroup label="Fruits">
-    <option value="apple">Apple</option>
-    <option value="banana">Banana</option>
-    <option value="blueberry">Blueberry</option>
-  </optgroup>
-  <optgroup label="Vegetables">
-    <option value="carrot">Carrot</option>
-    <option value="potato">Potato</option>
-    <option value="tomato">Tomato</option>
-  </optgroup>
-</select>
+<div class="field w-full">
+  <label for="native-select-food-zh">食物</label>
+  <select id="native-select-food-zh" class="native-select w-full">
+    <option value="">选择食物</option>
+    <optgroup label="水果">
+      <option value="apple">苹果</option>
+      <option value="banana">香蕉</option>
+      <option value="blueberry">蓝莓</option>
+    </optgroup>
+    <optgroup label="蔬菜">
+      <option value="carrot">胡萝卜</option>
+      <option value="potato">土豆</option>
+      <option value="tomato">番茄</option>
+    </optgroup>
+    <optgroup label="暂不可用" disabled>
+      <option value="mango">芒果——当前非产季</option>
+    </optgroup>
+  </select>
+</div>
 </Preview>
 
 ### 已禁用
 
 <Preview>
-<select class="select w-full" aria-label="Fruit" disabled>
-  <option value="">Select a fruit</option>
-  <option value="apple">Apple</option>
-  <option value="banana">Banana</option>
-</select>
+<div class="field w-full" data-disabled="true">
+  <label for="native-select-disabled-zh">水果</label>
+  <select id="native-select-disabled-zh" class="native-select w-full" value="apple" aria-describedby="native-select-disabled-reason-zh" disabled>
+    <option value="">选择水果</option>
+    <option value="apple">苹果</option>
+    <option value="banana">香蕉</option>
+  </select>
+  <p id="native-select-disabled-reason-zh">此选项由工作区策略统一管理。</p>
+</div>
 </Preview>
 
 ### 无效
 
 <Preview>
-<div role="group" class="field" data-invalid="true">
-  <label for="native-select-invalid">Fruit</label>
-  <select id="native-select-invalid" class="select w-full" aria-invalid="true" aria-describedby="native-select-invalid-error">
-    <option value="">Select a fruit</option>
-    <option value="apple">Apple</option>
-    <option value="banana">Banana</option>
+<div class="field" data-invalid="true">
+  <label for="native-select-invalid-zh">水果</label>
+  <select id="native-select-invalid-zh" class="native-select w-full" required aria-invalid="true" aria-describedby="native-select-invalid-error-zh">
+    <option value="">选择水果</option>
+    <option value="apple">苹果</option>
+    <option value="banana">香蕉</option>
   </select>
-  <p id="native-select-invalid-error" role="alert">Select a fruit to continue.</p>
+  <p id="native-select-invalid-error-zh" role="alert">请选择一种水果后继续。</p>
 </div>
 </Preview>
+
+`required` 让浏览器的有效性结果与手动声明的 `aria-invalid` 对同一个空值保持一致。
 
 ### 尺寸
 
 <Preview>
-<div class="flex flex-wrap items-center gap-3">
-  <select class="select w-42" aria-label="Default size">
-    <option>Default</option>
-    <option>Apple</option>
-    <option>Banana</option>
-  </select>
-  <select class="select w-42" data-size="sm" aria-label="Small size">
-    <option>Small</option>
-    <option>Apple</option>
-    <option>Banana</option>
-  </select>
+<div class="grid w-full gap-4 sm:grid-cols-2">
+  <div class="field">
+    <label for="native-select-size-default-zh">默认</label>
+    <select id="native-select-size-default-zh" class="native-select w-full">
+      <option value="apple">苹果</option>
+      <option value="banana">香蕉</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="native-select-size-small-zh">小尺寸</label>
+    <select id="native-select-size-small-zh" class="native-select w-full" data-size="sm">
+      <option value="apple">苹果</option>
+      <option value="banana">香蕉</option>
+    </select>
+  </div>
 </div>
 </Preview>
 
@@ -121,12 +146,15 @@ Add `class="select"` to a native `<select>`. Use standard `<option>` and `<optgr
 在选择元素或父元素上设置 `dir="rtl"`。
 
 <Preview>
-<select dir="rtl" class="select w-full" aria-label="الفاكهة">
-  <option value="">اختر فاكهة</option>
-  <option value="apple">تفاح</option>
-  <option value="banana">موز</option>
-  <option value="blueberry">توت</option>
-</select>
+<div class="field w-full" dir="rtl">
+  <label for="native-select-fruit-rtl-zh">الفاكهة</label>
+  <select id="native-select-fruit-rtl-zh" class="native-select w-full">
+    <option value="">اختر فاكهة</option>
+    <option value="apple">تفاح</option>
+    <option value="banana">موز</option>
+    <option value="blueberry">توت</option>
+  </select>
+</div>
 </Preview>
 
 ## React
@@ -137,7 +165,20 @@ import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useNativeSelect();
   return (
-    <NativeSelect ref={control.ref}><option value="ready">已就绪</option></NativeSelect>
+    <div className="field">
+      <label htmlFor="native-select-fruit-react">水果</label>
+      <NativeSelect
+        id="native-select-fruit-react"
+        ref={control.ref}
+        defaultValue=""
+        aria-describedby="native-select-fruit-help-react"
+      >
+        <option value="">选择水果</option>
+        <option value="apple">苹果</option>
+        <option value="banana">香蕉</option>
+      </NativeSelect>
+      <p id="native-select-fruit-help-react">为当前订单选择一种水果。</p>
+    </div>
   );
 }
 ```
@@ -155,7 +196,20 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <NativeSelect ref="componentRef"><option value="ready">已就绪</option></NativeSelect>
+  <div class="field">
+    <label for="native-select-fruit-vue">水果</label>
+    <NativeSelect
+      id="native-select-fruit-vue"
+      ref="componentRef"
+      value=""
+      aria-describedby="native-select-fruit-help-vue"
+    >
+      <option value="">选择水果</option>
+      <option value="apple">苹果</option>
+      <option value="banana">香蕉</option>
+    </NativeSelect>
+    <p id="native-select-fruit-help-vue">为当前订单选择一种水果。</p>
+  </div>
 </template>
 ```
 

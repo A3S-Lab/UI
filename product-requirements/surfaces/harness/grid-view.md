@@ -16,6 +16,11 @@ Analytical and monitoring surfaces need a stable two-dimensional grid whose regi
 
 Grid View owns fixed-region sizing, separators, minimum dimensions, balanced and focus presets, and responsive containment. It does not own dynamic panel creation, domain data, saved dashboards, or authorization.
 
+## Production fixture contract
+
+Workspace files, code editing, test output, and the 3D dependency graph reuse the exact Product Application components from the standalone Playground. Every balanced and focused preset must keep those production fixtures useful; skeleton panels and decorative placeholder content are forbidden.
+
+
 ## States
 
 The required state vocabulary is initializing, ready, balanced, focus-canvas, wide, and compact. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -45,6 +50,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- Harness content reuses the named Product Application components and the rendered root contains no skeleton or look-alike panel markup.
 - Product-specific risk is covered: Every region must retain a useful minimum size, keyboard presets must offer an alternative to pointer resizing, and compact layouts must not clip the focused canvas.
 
 ## A3S Test mapping

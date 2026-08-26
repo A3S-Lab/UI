@@ -147,16 +147,32 @@ suite "a3s-ui-expanded-contracts" {
     }
 
     scenario "hotkey-input" {
-        name = "Hotkey Input records a normalized chord without trapping Tab"
+        name = "Hotkey Input records, cancels, clears, and releases Tab without losing the committed chord"
         surface = "web"
         timeout_ms = 45000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/hotkey-input.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "start-recording" { target = css(".a3s-preview[data-preview-component=hotkey-input] .hotkey-input input") }
+        expect "visible-label" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] label[for=hotkey-input-en]") }
+        expect "persistent-guidance" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] #hotkey-feedback-en") }
+        focus "start-recording" { target = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input input") }
+        expect "recording-state" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-state=recording][aria-busy=true]") }
+        press "modifier-only" { key = "Control" }
+        expect "modifier-guidance" { text = "Add a non-modifier key." }
+        press "cancel-recording" { key = "Escape" }
+        expect "original-value-restored" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-state=ready][data-hotkey-value='Meta+K'] input:focus") }
+        press "retry-recording" { key = "Enter" }
         press "record-chord" { key = "Control+Shift+P" }
-        expect "chord-recorded" { visible = css(".a3s-preview[data-preview-component=hotkey-input] .hotkey-input[data-hotkey-value='Control+Shift+P']") }
+        expect "chord-recorded" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-hotkey-value='Control+Shift+P']") }
+        click "begin-empty-replacement" { target = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-hotkey-clear]") }
+        expect "empty-draft-visible" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-state=recording][data-hotkey-value='']") }
+        press "cancel-empty-replacement" { key = "Escape" }
+        expect "committed-value-restored" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-state=ready][data-hotkey-value='Control+Shift+P']") }
+        press "resume-recording" { key = "Enter" }
         press "leave-control" { key = "Tab" }
+        expect "tab-left-composite" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] .hotkey-input[data-state=ready] input:not(:focus)") }
+        expect "invalid-specimen" { visible = css(".hotkey-input[data-state=invalid]:has(#hotkey-invalid-en[aria-invalid=true])") }
+        expect "disabled-specimen" { visible = css(".hotkey-input[data-state=disabled]:has(#hotkey-disabled-en:disabled)") }
     }
 
     scenario "icon" {

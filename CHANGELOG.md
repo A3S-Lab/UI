@@ -29,6 +29,7 @@
 
 ### Changed
 
+- Narrowed Button Group to its first-principles responsibility of joining peer actions: React and Vue now emit the same named `div[role="group"]`, constrained text labels wrap without page overflow, split-menu triggers expose stable active-item semantics, and bilingual docs, PRD detail, state specimens, and Playwright/A3S Test coverage now share the same focus and ownership contract.
 - Composed the public Code Editor into the Playground file workbench and the public Log Viewer into session execution records, including real edit, find, format, preview, save, ordered-stream, and copy-feedback paths instead of detached showcase-only examples.
 - Established `apps/desktop` as the sole owner of product routing, persistence, permissions, domain state, and orchestration; A3S UI now limits Playground work to deterministic integration fixtures and reuses the public Artifact Card, Highlighter, Copy Button, File Explorer, Code Diff, Device Simulator, and Code Graph contracts instead of maintaining parallel implementations.
 - Rebuilt the Playground task-detail overview on the public Task Pane, Task Plan, Plan Step, Property List, and Status Badge contracts; replaced the mobile dashboard-card stack with a dense divider-led inspector and added the reusable plain Task Plan variant.
@@ -67,6 +68,7 @@
 - Kept Code Graph labels inside the visible canvas when narrow inspectors or phone viewports leave insufficient room on a node's preferred side.
 - Compressed project Activity into actor-action-target rows, kept supporting detail assistive-only, replaced removable configuration categories with host-owned configuration requests, and made the phone configuration inspector cover inactive application chrome.
 - Replaced saturated and double-layer search focus rings with one container-owned neutral boundary across the public Input Group, documentation catalog, and every Playground search field; added focused desktop and phone regression evidence for each surface.
+- Hardened Bulk Action Bar and Data Grid focus recovery so clear, pending completion, and rejected batch operations preserve the original selection snapshot, honor host redirects, and return to the explicit target or the Data Grid select-all control without leaving focus on hidden actions; added long-copy, 390/320px, dark RTL, and ACL regression evidence.
 - Aligned documentation Preview and Playground action icons with their next operation: fluid width no longer masquerades as a desktop preset, appearance and direction controls expose their target state, secret visibility uses eye/eye-off, and graph expansion uses expand/contract semantics.
 - Replaced the decorative Color Swatches selection halo with a bounded selected surface and consolidated floating utility shadows onto the shared overlay depth token.
 - Kept all canonical buttons, fields, choice controls, menus, tabs, and navigation rows at 44-pixel targets for coarse pointers by applying input-method guarantees after every visual family.

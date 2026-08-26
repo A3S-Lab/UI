@@ -72,10 +72,18 @@ suite "a3s-ui-product-composer-controls" {
         expect "workspace-control-selected" { visible = css(".product-start [data-composer-control=workspace]:has(> button [data-workspace-copy] strong)") }
         expect "local-workspace-selected" { text = "本地工作区" }
 
+        upload "upload-file-through-composer" {
+            target = css(".product-start .product-composer input[type=file]")
+            paths = ["tests/fixtures/workspace-drop-note.txt"]
+        }
+        expect "uploaded-file-attached" { visible = css(".product-start [data-composer-resources] [data-resource-id^='workspace:'][data-resource-kind=file]:has([data-resource-label])") }
+        expect "uploaded-file-name" { text = "workspace-drop-note.txt" }
+
         click "remove-file" { target = css("[data-composer-resources] [data-resource-kind=file] [data-composer-action=remove-resource]") }
         click "remove-skill" { target = css("[data-composer-resources] [data-resource-kind=skill] [data-composer-action=remove-resource]") }
         click "remove-assistant" { target = css("[data-composer-resources] [data-resource-kind=assistant] [data-composer-action=remove-resource]") }
         click "remove-connector" { target = css("[data-composer-resources] [data-resource-kind=connector] [data-composer-action=remove-resource]") }
+        click "remove-uploaded-file" { target = role("button", "移除 workspace-drop-note.txt") }
         expect "composer-remains-ready" { visible = css(".product-start .product-composer[data-state=ready]") }
 
         screenshot "desktop-evidence" { path = "product/composer-controls-desktop.png" }

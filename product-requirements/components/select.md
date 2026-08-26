@@ -13,7 +13,7 @@
 
 ## User problem
 
-Select provides a styled single-choice list when the product needs a consistent popup, search, or richer option content. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Select provides a styled single-choice list when the product needs a consistent popup or richer option content. Use Combobox when users need to search or create values. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 
@@ -50,6 +50,8 @@ Component-specific adversarial coverage: Typeahead, Home/End, disabled options, 
 
 The canonical root uses `<div>` semantics and exposes 4 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press`, `select` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
@@ -80,7 +82,7 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=ready]:has([data-a3s-components~='select'][data-a3s-state~='ready'])`
   - `disabled`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=disabled]:has([data-a3s-components~='select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded]:has([data-a3s-components~='select'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed]:has([data-a3s-components~='select'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded]:has([data-a3s-components~='select'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed]:has([data-a3s-components~='select'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))`
   - `invalid`: `.a3s-component-state-matrix[open][data-component=select] [data-state-specimen=invalid]:has([data-a3s-components~='select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

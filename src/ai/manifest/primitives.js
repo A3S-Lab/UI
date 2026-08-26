@@ -17,8 +17,13 @@ export const actionComponents = [
     name: "Button Group",
     category: "actions",
     selector: ".button-group",
+    tag: "div",
     className: "button-group",
-    parts: { action: ":scope > button, :scope > a, :scope > .btn" },
+    attributes: { role: "group" },
+    parts: {
+      action:
+        ":scope > button, :scope > a, :scope > .btn, :scope > :is(.dropdown-menu, .popover, .select) > button",
+    },
     actions: ["focus", "click"],
     states: ["ready", "disabled"],
   }),
@@ -53,6 +58,7 @@ export const actionComponents = [
       "a3s:bulk-action",
       "a3s:bulk-action-complete",
       "a3s:bulk-before-action",
+      "a3s:bulk-focus-restored",
       "a3s:bulk-selection-change",
       "basecoat:initialized",
     ],
@@ -68,12 +74,14 @@ export const formComponents = [
     selector: ".field",
     className: "field",
     parts: {
-      control: "input, textarea, select, [role=combobox]",
-      description: ":scope > p, [data-field-description]",
-      label: "label, legend",
-      message: "[data-field-message]",
+      control:
+        ":scope > input, :scope > textarea, :scope > select, :scope > [role=combobox]",
+      description:
+        ":scope > [data-field-description], :scope > section > [data-field-description], :scope > p:not([role=alert]):not([data-field-message]), :scope > section > p:not([role=alert]):not([data-field-message])",
+      label: ":scope > label, :scope > section > label",
+      message: ":scope > [data-field-message], :scope > [role=alert]",
     },
-    states: ["ready", "disabled", "invalid", "readonly"],
+    states: ["empty", "ready", "disabled", "invalid", "readonly"],
   }),
   defineComponent({
     slug: "filter-bar",
@@ -130,22 +138,31 @@ export const formComponents = [
     attributes: { type: "text" },
     actions: ["fill", "focus", "type"],
     events: ["change", "input"],
-    states: ["ready", "disabled", "invalid", "readonly"],
+    states: ["empty", "ready", "disabled", "invalid", "readonly"],
   }),
   defineComponent({
     slug: "input-group",
     name: "Input Group",
     category: "forms",
     selector: ".input-group",
+    tag: "div",
     className: "input-group",
     parts: {
-      action: "button, .btn",
-      control: "input, textarea, select",
-      prefix: "[data-align=start]",
-      suffix: "[data-align=end]",
+      action:
+        ":scope > button, :scope > [role=group] button, :scope > header button, :scope > footer button, :scope > .popover button, :scope > .dropdown-menu button",
+      addon: ":scope > [data-align]",
+      control:
+        ":scope > input, :scope > textarea, :scope > select, :scope > [data-control]",
+      prefix:
+        ":scope > :is([data-align=start], [data-align=inline-start], [data-align=block-start])",
+      status:
+        ":scope > :is([data-input-group-status], [role=status]), :scope > [data-align] [role=status]",
+      suffix:
+        ":scope > :is([data-align=end], [data-align=inline-end], [data-align=block-end])",
     },
     actions: ["fill", "focus", "type"],
-    states: ["ready", "disabled", "invalid", "loading"],
+    events: ["basecoat:initialized"],
+    states: ["empty", "ready", "invalid", "loading", "disabled", "readonly"],
   }),
   defineComponent({
     slug: "textarea",
@@ -156,7 +173,7 @@ export const formComponents = [
     className: "textarea",
     actions: ["fill", "focus", "type"],
     events: ["change", "input"],
-    states: ["ready", "disabled", "invalid", "readonly"],
+    states: ["empty", "ready", "disabled", "invalid", "readonly"],
   }),
   defineComponent({
     slug: "code-editor",
@@ -180,12 +197,12 @@ export const formComponents = [
     slug: "native-select",
     name: "Native Select",
     category: "forms",
-    selector: "select.select",
+    selector: "select.native-select",
     tag: "select",
-    className: "select",
+    className: "native-select",
     actions: ["focus", "select"],
     events: ["change", "input"],
-    states: ["ready", "disabled", "invalid"],
+    states: ["empty", "ready", "disabled", "invalid"],
   }),
   defineComponent({
     slug: "select",
@@ -219,13 +236,14 @@ export const formComponents = [
     slug: "radio-group",
     name: "Radio Group",
     category: "forms",
-    selector: "[role=radiogroup], [data-slot=radio-group]",
+    selector: ".radio-group, [role=radiogroup], [data-slot=radio-group]",
+    className: "radio-group",
     attributes: { role: "radiogroup" },
     parts: { option: "input[type=radio]", label: "label" },
     actions: ["check", "focus", "press"],
     actionParts: { focus: "option", press: "option" },
     events: ["change", "input"],
-    states: ["ready", "disabled"],
+    states: ["ready", "disabled", "invalid"],
   }),
   defineComponent({
     slug: "switch",

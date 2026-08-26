@@ -23,7 +23,7 @@
 
   /* Button */
   .btn {
-    @apply rounded-md border border-transparent bg-clip-padding text-sm font-medium shadow-none focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4;
+    @apply rounded-md border border-transparent bg-clip-padding text-sm font-medium shadow-none aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 active:not-aria-[haspopup]:translate-y-px [&_svg:not([class*='size-'])]:size-4;
   }
 
   .btn:focus-visible {
@@ -38,19 +38,19 @@
 
   .btn:not([data-size]),
   .btn[data-size="default"] {
-    @apply h-9 gap-1.5 px-2.5 has-[[data-icon='inline-end']]:pr-2 has-[[data-icon='inline-start']]:pl-2;
+    @apply min-h-9 gap-1.5 px-2.5 py-1.5 has-[[data-icon='inline-end']]:pr-2 has-[[data-icon='inline-start']]:pl-2;
   }
 
   .btn[data-size="xs"] {
-    @apply h-6 gap-1 px-2 text-xs rounded-[min(var(--radius-md),8px)] [&_svg:not([class*='size-'])]:size-3 has-[[data-icon='inline-end']]:pr-1.5 has-[[data-icon='inline-start']]:pl-1.5;
+    @apply min-h-6 gap-1 px-2 py-1 text-xs rounded-[min(var(--radius-md),8px)] [&_svg:not([class*='size-'])]:size-3 has-[[data-icon='inline-end']]:pr-1.5 has-[[data-icon='inline-start']]:pl-1.5;
   }
 
   .btn[data-size="sm"] {
-    @apply h-8 gap-1 px-2.5 rounded-[min(var(--radius-md),10px)] has-[[data-icon='inline-end']]:pr-1.5 has-[[data-icon='inline-start']]:pl-1.5;
+    @apply min-h-8 gap-1 px-2.5 py-1 rounded-[min(var(--radius-md),10px)] has-[[data-icon='inline-end']]:pr-1.5 has-[[data-icon='inline-start']]:pl-1.5;
   }
 
   .btn[data-size="lg"] {
-    @apply h-10 gap-1.5 px-2.5 has-[[data-icon='inline-end']]:pr-2 has-[[data-icon='inline-start']]:pl-2;
+    @apply min-h-10 gap-1.5 px-2.5 py-2 has-[[data-icon='inline-end']]:pr-2 has-[[data-icon='inline-start']]:pl-2;
   }
 
   .btn[data-size="icon"] {
@@ -92,6 +92,38 @@
 
   .btn[data-variant="destructive"] {
     @apply bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 focus-visible:border-destructive/40;
+  }
+
+  .btn[aria-pressed="true"] {
+    transform: translateY(1px);
+  }
+
+  .btn:not([data-variant])[aria-pressed="true"],
+  .btn[data-variant="primary"][aria-pressed="true"] {
+    @apply bg-[var(--a3s-action-hover)];
+  }
+
+  .btn[data-variant="secondary"][aria-pressed="true"],
+  .btn[data-variant="outline"][aria-pressed="true"],
+  .btn[data-variant="ghost"][aria-pressed="true"] {
+    @apply border-[var(--a3s-line-strong)] bg-[var(--a3s-surface-active)] text-foreground;
+  }
+
+  .btn[data-variant="link"][aria-pressed="true"] {
+    @apply text-[var(--a3s-accent-hover)] underline;
+  }
+
+  .btn[data-variant="destructive"][aria-pressed="true"] {
+    @apply bg-destructive/20;
+  }
+
+  .btn:disabled:not([aria-busy="true"]) {
+    @apply border-[var(--a3s-line)] bg-[var(--a3s-panel-soft)] text-[var(--a3s-muted)] shadow-none;
+  }
+
+  .btn[data-variant="ghost"]:disabled:not([aria-busy="true"]),
+  .btn[data-variant="link"]:disabled:not([aria-busy="true"]) {
+    @apply border-transparent bg-transparent text-[var(--a3s-muted)] no-underline;
   }
 
   /* Button Group */
@@ -204,7 +236,7 @@
   /* Textarea */
   .field > textarea,
   .textarea {
-    @apply border-input bg-background focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-md border px-3 py-2 text-base shadow-none transition-[color,border-color] md:text-sm;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:border-[var(--a3s-line)] disabled:bg-[var(--a3s-panel-soft)] disabled:text-[var(--a3s-muted)] read-only:border-[var(--a3s-line)] read-only:bg-[var(--a3s-panel-soft)] rounded-md border px-3 py-2 text-base shadow-none transition-[color,background-color,border-color,box-shadow] md:text-sm;
   }
   /* Input */
   .field
@@ -241,40 +273,45 @@
   .input[type="week"],
   .input[type="time"],
   .input:not([type]) {
-    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border px-3 py-1 text-base shadow-none transition-[color,border-color] file:h-7 file:text-sm file:font-medium md:text-sm;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:border-[var(--a3s-line)] disabled:bg-[var(--a3s-panel-soft)] disabled:text-[var(--a3s-muted)] h-9 rounded-md border px-3 py-1 text-base shadow-none transition-[color,border-color,background-color] file:h-7 file:text-sm file:font-medium md:text-sm;
   }
 
   /* Native Select */
   .field > select,
+  select.native-select,
   select.select {
-    @apply border-input bg-background placeholder:text-muted-foreground selection:bg-[var(--a3s-accent)] selection:text-[var(--a3s-accent-ink)] hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-md border py-1 ps-3 pe-8 text-sm shadow-none transition-[color,border-color] data-[size=sm]:h-8;
+    @apply border-input bg-background placeholder:text-muted-foreground selection:bg-[var(--a3s-accent)] selection:text-[var(--a3s-accent-ink)] hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 w-fit rounded-md border py-1 ps-2.5 pe-8 text-sm shadow-none transition-[color,border-color] data-[size=sm]:h-8;
     @apply bg-[image:var(--chevron-down-icon-50)] bg-no-repeat bg-position-[center_right_0.625rem] bg-size-[1rem];
   }
 
   :is(
-    .field > textarea,
-    .textarea,
-    .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    .field > select,
-    select.select
-  ):not(.input-group > *):focus-visible {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+      .field > textarea,
+      .textarea,
+      .field
+        > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .field > select,
+      select.native-select,
+      select.select
+    ):not(.input-group > *):focus-visible {
+    outline: 0;
+    box-shadow: var(--a3s-control-focus-shadow);
   }
 
   :is(
-    .field > textarea,
-    .textarea,
-    .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    .field > select,
-    select.select
-  ):not(.input-group > *)[aria-invalid="true"]:focus-visible {
-    outline-color: var(--a3s-red);
+      .field > textarea,
+      .textarea,
+      .field
+        > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      .field > select,
+      select.native-select,
+      select.select
+    ):not(.input-group > *)[aria-invalid="true"]:focus-visible {
+    box-shadow: var(--a3s-control-error-focus-shadow);
   }
 
-  :is(.field > select, select.select):dir(rtl) {
+  :is(.field > select, select.native-select, select.select):dir(rtl) {
     @apply bg-position-[center_left_0.625rem];
   }
 
@@ -424,12 +461,14 @@
   }
 
   .command > header {
-    @apply m-1 mb-0 h-10 gap-0 rounded-md border border-transparent bg-muted px-2.5 focus-within:border-ring;
+    @apply m-1 mb-0 h-10 gap-0 rounded-md border bg-muted px-2.5;
+    border-color: var(--a3s-search-border);
   }
 
   .command > header:focus-within {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    border-color: var(--a3s-search-focus-border);
+    outline: 0;
+    box-shadow: none;
   }
 
   .command > header svg {

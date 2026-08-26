@@ -48,6 +48,8 @@ Component-specific adversarial coverage: Add/remove/context, long line, binary/r
 
 The canonical root uses `<figure>` semantics and exposes 6 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `focus`, `wheel` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: `loading`. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.

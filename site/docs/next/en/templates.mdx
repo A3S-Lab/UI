@@ -59,6 +59,7 @@ Some macro files include internal recursive helpers such as `render_select_items
     {% from "a3s-ui/select.njk" import select %}
     {{ select(
       name="fruit",
+      label="Fruit",
       items=[
         { value: "apple", label: "Apple" },
         { value: "banana", label: "Banana" },
@@ -71,6 +72,7 @@ Some macro files include internal recursive helpers such as `render_select_items
     {% from "a3s-ui/select.html.jinja" import select %}
     {{ select(
       name="fruit",
+      label="Fruit",
       items=[
         { "value": "apple", "label": "Apple" },
         { "value": "banana", "label": "Banana" },
@@ -196,6 +198,7 @@ Some macro files include internal recursive helpers such as `render_select_items
 | `popover_attrs` | `object` | `{}` | Extra attributes for the popover element. |
 | `listbox_attrs` | `object` | `{}` | Extra attributes for the listbox. |
 | `input_attrs` | `object` | `{}` | Extra attributes for the hidden input. |
+| `label` | `string` | `None` / `none` | Stable accessible name for a standalone trigger. Omit when a connected external label names the trigger. |
 
 ### `sidebar()`
 

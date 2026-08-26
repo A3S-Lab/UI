@@ -19,8 +19,11 @@ if (!npmCliPath) throw new Error("npm_execpath is required.");
 
 const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), "a3s-ui-frameworks-"));
 const packRoot = path.join(fixtureRoot, "pack");
+const reportStage = (message) =>
+  process.stderr.write(`[framework-adapters] ${message}\n`);
 await mkdir(packRoot, { recursive: true });
 try {
+  reportStage("Packing the local package.");
   const { stdout: packOutput } = await execFileAsync(
     process.execPath,
     [
@@ -38,6 +41,7 @@ try {
   );
   const [{ filename }] = JSON.parse(packOutput);
   const archive = path.join(packRoot, filename);
+  reportStage("Installing the packed package and framework fixtures.");
   await writeFile(
     path.join(fixtureRoot, "package.json"),
     JSON.stringify({
@@ -51,8 +55,16 @@ try {
     [
       npmCliPath,
       "install",
+      "--cache",
+      path.join(fixtureRoot, "npm-cache"),
       "--ignore-scripts",
+      "--fetch-retries=1",
+      "--fetch-retry-maxtimeout=10000",
+      "--no-audit",
+      "--no-fund",
       "--no-package-lock",
+      "--prefer-online",
+      "--registry=https://registry.npmjs.org/",
       archive,
       "react@19.2.8",
       "react-dom@19.2.8",
@@ -66,6 +78,7 @@ try {
     ],
     { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
   );
+  reportStage("Validating runtime exports and server-rendered roots.");
 
   const fixtureScript = `
 import assert from 'node:assert/strict';
@@ -329,6 +342,7 @@ console.log(JSON.stringify({ reactMarkup, vueMarkup, components: manifest.compon
   assert.equal(result.components, 116);
   assert.match(result.reactMarkup, /task-workspace/);
   assert.match(result.vueMarkup, /task-workspace/);
+  reportStage("Type-checking the packed React and Vue consumers.");
 
   const typeConsumer = `
 import React, { createRef } from 'react';
@@ -336,9 +350,12 @@ import {
   Button,
   Checkbox,
   Input,
+  InputGroup,
   MessageCitation,
   NativeSelect,
   Textarea,
+  useInputGroup,
+  useTextarea,
   useDialog,
   useDropdownMenu,
   usePopover,
@@ -359,10 +376,12 @@ import {
 } from '@a3s-lab/ui/react';
 import {
   TaskWorkspace as VueTaskWorkspace,
+  useInputGroup as useVueInputGroup,
   useDialog as useVueDialog,
   useDropdownMenu as useVueDropdownMenu,
   usePopover as useVuePopover,
   useTabs as useVueTabs,
+  useTextarea as useVueTextarea,
   useDataGrid as useVueDataGrid,
   useA3SLocale as useVueA3SLocale,
   useA3SMotion as useVueA3SMotion,
@@ -406,6 +425,7 @@ const shared: A3SComponentProps = { id: 'root', title: 'Root', 'aria-label': 'Ro
 const nodes = [
   React.createElement(Button, { ...shared, ref, type: 'submit', disabled: true, name: 'send' }),
   React.createElement(Input, { type: 'email', required: true, value: 'dev@example.com', onChange() {} }),
+  React.createElement(InputGroup, null, React.createElement('input', { type: 'search', name: 'projectQuery' })),
   React.createElement(Checkbox, { type: 'checkbox', checked: true, onChange() {} }),
   React.createElement(NativeSelect, { name: 'environment', multiple: true }),
   React.createElement(Textarea, { rows: 4, readOnly: true }),
@@ -414,7 +434,11 @@ const nodes = [
 void nodes;
 void VueTaskWorkspace;
 void [useDataGrid, useDialog, useDropdownMenu, usePopover, useTabs];
+void [useInputGroup({ events: { 'basecoat:initialized': event => void event.currentTarget } })];
+void [useTextarea({ events: { input: event => void (event.currentTarget as HTMLTextAreaElement).value } })];
 void [useVueDataGrid, useVueDialog, useVueDropdownMenu, useVuePopover, useVueTabs];
+void [useVueInputGroup({ events: { 'basecoat:initialized': event => void event.currentTarget } })];
+void [useVueTextarea({ events: { change: event => void (event.currentTarget as HTMLTextAreaElement).value } })];
 void [useA3SLocale, useA3SMotion, useA3STheme];
 void [useVueA3SLocale, useVueA3SMotion, useVueA3STheme];
 const direction: A3SDirection = 'rtl';
@@ -480,6 +504,7 @@ void (null as ViewApiHandle<unknown, unknown> | null);
     [path.join(fixtureRoot, "node_modules", "typescript", "bin", "tsc")],
     { cwd: fixtureRoot, maxBuffer: 20 * 1024 * 1024 },
   );
+  reportStage("Building the packed browser fixture.");
 
   const clientSource = `
 import React from 'react';
@@ -769,6 +794,7 @@ window.frameworkConfigure = (prefix, locale, theme) => {
     cwd: fixtureRoot,
     maxBuffer: 20 * 1024 * 1024,
   });
+  reportStage("Starting the packed browser fixture.");
 
   const previewPort = await new Promise((resolve, reject) => {
     const server = createServer();
@@ -826,6 +852,7 @@ window.frameworkConfigure = (prefix, locale, theme) => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
+    reportStage("Running packed React and Vue browser assertions.");
     browser = await chromium.launch({ headless: true });
     const page = await browser.newPage({
       viewport: { width: 390, height: 844 },
@@ -1037,8 +1064,12 @@ window.frameworkConfigure = (prefix, locale, theme) => {
   } finally {
     await browser?.close();
     if (preview.exitCode === null) {
+      reportStage("Stopping the packed browser fixture.");
+      const previewExited = new Promise((resolve) =>
+        preview.once("exit", resolve),
+      );
       preview.kill("SIGTERM");
-      await new Promise((resolve) => preview.once("exit", resolve));
+      await previewExited;
     }
   }
 
@@ -1057,6 +1088,7 @@ window.frameworkConfigure = (prefix, locale, theme) => {
     true,
   );
   assert.equal(sourceComponents.length, 116);
+  reportStage("Framework adapter validation completed.");
   console.log(
     "Validated all React and Vue exports, roots, selectors, types, client refs, readiness, and controllers from the packed package.",
   );

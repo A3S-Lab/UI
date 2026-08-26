@@ -13,7 +13,7 @@
 
 ## User problem
 
-Radio Group presents mutually exclusive options so users can choose the single value that best fits the current task. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Radio Group presents a short set of mutually exclusive options. Use it when every option can be understood without opening another surface and choosing one value is required to continue or configure the current task. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 
@@ -25,10 +25,11 @@ The host application continues to own domain data, authorization, transport, per
 
 - `ready` — Radio Group is stable, named, and ready for its primary reading or interaction job.
 - `disabled` — Radio Group remains understandable but cannot be changed; native disabled or read-only semantics must match the visual treatment.
+- `invalid` — Radio Group explains the unavailable or failed outcome without discarding prior context and exposes recovery only when recovery is valid.
 
 ## Interaction contract
 
-- Canonical root: `[role=radiogroup], [data-slot=radio-group]` on `<div>`.
+- Canonical root: `.radio-group, [role=radiogroup], [data-slot=radio-group]` on `<div>`.
 - Stable automation root: `[data-a3s-components~="radio-group"]`.
 - Named parts: `option` (`input[type=radio]`); `label` (`label`).
 - Supported interaction intents: `check`, `focus`, `press`. Each intent targets the documented root or named part and must remain scoped to one instance.
@@ -41,30 +42,32 @@ Keyboard operation must use the native element or the documented composite-widge
 
 The same user job must remain complete at 390 × 844 and 1440 × 1000 without page-level horizontal overflow. Reading order and focus order follow the semantic DOM; compact layouts may stack, scroll within the owning region, or disclose secondary actions, but may not hide the primary value or recovery path. Touch targets remain reachable, long localized content can wrap without collision, and direction-aware layout is verified in RTL.
 
-Component-specific adversarial coverage: No default, required validation, disabled option, arrow navigation, long labels, card presentation, RTL, form reset, and nested groups rejection.
+Component-specific adversarial coverage: No default, required validation, direct invalid-to-neutral reset, disabled option, arrow navigation, long labels, card presentation, RTL, and nested groups rejection.
 
 ## Accessibility
 
 The canonical root uses `<div>` semantics and exposes 2 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `check`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
 - Empty state: not a distinct component state. Absence must be explained by the component only when absence belongs to this contract.
-- Failure and unavailable states: represented by the host or a composed feedback component. Recoverable failures retain the prior value or selection and return focus to the recovery action; unrecoverable failures stay explicit and do not fabricate success.
+- Failure and unavailable states: `invalid`. Recoverable failures retain the prior value or selection and return focus to the recovery action; unrecoverable failures stay explicit and do not fabricate success.
 - Malformed, excessively long, stale, denied, or host-untrusted content must remain contained. The component never interprets trusted business meaning beyond its documented boundary.
 
 ## Acceptance criteria
 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
-- The public root matches `[role=radiogroup], [data-slot=radio-group]` and is annotated by the runtime as `[data-a3s-components~="radio-group"]`.
+- The public root matches `.radio-group, [role=radiogroup], [data-slot=radio-group]` and is annotated by the runtime as `[data-a3s-components~="radio-group"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
 - The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=radio-group]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
 - Light, dark, LTR, RTL, desktop, and compact layouts preserve reading order, visible focus, and recovery.
-- The adversarial cases are treated as release requirements: No default, required validation, disabled option, arrow navigation, long labels, card presentation, RTL, form reset, and nested groups rejection.
+- The adversarial cases are treated as release requirements: No default, required validation, direct invalid-to-neutral reset, disabled option, arrow navigation, long labels, card presentation, RTL, and nested groups rejection.
 - Console and page-error evidence are empty for the deterministic acceptance path.
 
 ## A3S Test mapping
@@ -75,6 +78,7 @@ The canonical root uses `<div>` semantics and exposes 2 named parts. State must 
 - Stable root target: `[data-a3s-components~="radio-group"]` inside `.a3s-preview[data-preview-component=radio-group][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/radio-group-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready]:has([data-a3s-components~='radio-group'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=disabled]:has([data-a3s-components~='radio-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `ready`: `.a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready] [data-a3s-components~='radio-group'][data-a3s-state~='ready']:has(input[type=radio][value=comfortable]:checked)`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=disabled] [data-a3s-components~='radio-group'][data-a3s-state~='disabled'][aria-disabled=true]:has(input[type=radio][value=comfortable]:checked:disabled)`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=invalid] [data-a3s-components~='radio-group'][data-a3s-state~='invalid'][aria-invalid=true][data-validation-state=invalid]:has(input[type=radio][required][aria-invalid=true]:invalid):has([data-state-specimen-feedback][role=alert])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

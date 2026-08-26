@@ -475,6 +475,40 @@
   }
 }
 
+@media (max-width: 360px) {
+  .a3s-preview__controls {
+    gap: 1px;
+    overflow-x: visible;
+  }
+
+  .a3s-preview__control-divider {
+    display: none;
+  }
+
+  .a3s-preview__controls button {
+    min-width: 28px;
+    padding-inline: 4px;
+  }
+
+  .a3s-preview__viewport-controls button {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 360px) and (pointer: coarse) {
+  .a3s-preview__controls {
+    overflow-x: visible;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .a3s-preview__controls > button:last-child {
+    margin-inline-start: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

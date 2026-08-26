@@ -1,264 +1,306 @@
 # Bulk Action Bar
 
-Bulk Action Bar appears only after selection and keeps selection scope, eligibility, commands, and clear selection in one temporary task region.
+Bulk Action Bar is a temporary command region for a collection with an active selection. It keeps the selected scope, eligibility, batch commands, and the way out of selection mode in one predictable place.
 
-<Preview class="w-full">
-<section class="bulk-action-bar" data-state="selected" role="region" aria-label="Selected resource actions">
-  <div data-bulk-selection><output data-selected-count>3</output> selected</div>
-  <span data-bulk-summary aria-live="polite">2 items can be archived</span>
-  <div data-bulk-actions>
-    <button type="button" class="btn" data-size="sm" data-variant="outline" data-bulk-action="move">Move</button>
-    <button type="button" class="btn" data-size="sm" data-variant="outline" data-bulk-action="archive">Archive 2</button>
-    <button type="button" class="btn" data-size="sm" data-variant="destructive" data-bulk-action="delete">Delete</button>
-    <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>Clear selection</button>
-  </div>
-</section>
-</Preview>
-
-## Usage
-
-Place the bar next to the collection it controls and drive it from that collection's selection state. Every command needs a stable `data-bulk-action` value, and its label must state the actual eligible count.
-
-```html
-<section class="bulk-action-bar" role="region" aria-label="Selected resource actions">
+<Preview
+  class="w-full max-w-3xl"
+  title="Environment actions"
+  hasController
+  frameworkHtmlInstall="npm install @a3s-lab/ui"
+  frameworkReactInstall="npm install @a3s-lab/ui react react-dom"
+  frameworkVueInstall="npm install @a3s-lab/ui vue"
+  frameworkHtml={`<section
+  class="bulk-action-bar"
+  data-state="selected"
+  data-bulk-focus-return="#bulk-action-bar-collection-en"
+  role="region"
+  aria-label="Selected environment actions"
+>
   <div data-bulk-selection>
     <output data-selected-count>3</output> selected
   </div>
-  <span data-bulk-summary aria-live="polite">2 items can be archived</span>
+  <span data-bulk-summary aria-live="polite">
+    2 items can be archived
+  </span>
   <div data-bulk-actions>
-    <button
-      type="button"
-      class="btn"
-      data-size="sm"
-      data-variant="outline"
-      data-bulk-action="archive"
-    >
+    <button type="button" class="btn" data-variant="outline" data-bulk-action="move">
+      Move
+    </button>
+    <button type="button" class="btn" data-variant="outline" data-bulk-action="archive">
       Archive 2
     </button>
-    <button
-      type="button"
-      class="btn"
-      data-size="sm"
-      data-variant="ghost"
-      data-bulk-action="clear"
-      data-bulk-clear
-    >
+    <button type="button" class="btn" data-variant="destructive" data-bulk-action="delete">
+      Delete
+    </button>
+    <button type="button" class="btn" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
       Clear selection
     </button>
   </div>
-</section>
-```
+</section>`}
+  frameworkReact={`import { useEffect, useRef } from "react";
+import { Button, BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/react";
+import "@a3s-lab/ui/a3s.css";
 
-For on-demand loading, import the shared runtime before the Bulk Action Bar controller.
-
-```js
-import "@a3s-lab/ui/runtime";
-import "@a3s-lab/ui/bulk-action-bar";
-
-const bar = document.querySelector(".bulk-action-bar");
-bar.setSelection(["alpha", "beta", "gamma"]);
-
-bar.addEventListener("a3s:bulk-action", async (event) => {
-  const { action, selection } = event.detail;
-  bar.setPending(action, { message: "Processing selected items…" });
-
-  try {
-    const processedCount = await performBulkAction(action, selection.values);
-    bar.complete({
-      action,
-      clearSelection: true,
-      processedCount,
-      status: "success",
-      message: `${processedCount} items processed`,
-    });
-  } catch (error) {
-    bar.complete({
-      action,
-      error,
-      status: "error",
-      message: "Processing failed. Check your permissions and try again.",
-    });
-  }
-});
-```
-
-### Parameters
-
-| API | Purpose |
-| --- | --- |
-| `data-bulk-selection` | Current selection count and scope |
-| `data-selected-count` | Count synchronized by the host or Data Grid controller |
-| `data-bulk-summary` | Eligibility, pending, or result message |
-| `data-bulk-actions` | Commands available for the current selection |
-| `data-bulk-action="command"` | Stable integration value for a command |
-| `data-bulk-clear` | Clears selection and synchronizes a parent Data Grid when composed there |
-| `data-position="sticky"` | Keeps the bar visible at the bottom of its scroll owner |
-
-### JavaScript API
-
-`getSelection()`, `setSelection()`, and `clear()` manage the controlled selection snapshot. `setSummary()` updates eligibility. `setPending()` disables conflicting commands while preserving original labels. `complete()` restores actions and publishes success or failure. `refresh()` recollects actions after the DOM changes.
-
-`a3s:bulk-before-action` can cancel a command. `a3s:bulk-action`, `a3s:bulk-selection-change`, and `a3s:bulk-action-complete` expose intent, selection changes, and final outcome. The controller never performs the network request.
-
-## States and variants
-
-The `empty` state hides the complete region rather than leaving a disabled toolbar. `selected` retains count and eligibility. `loading` preserves dimensions and command labels while disabling conflicts. Failure explains the problem and recovery in the same summary region.
-
-<Preview class="w-full">
-<section class="bulk-action-bar" data-state="selected" data-result="error" role="region" aria-label="Selected run actions">
-  <div data-bulk-selection><output data-selected-count>2</output> selected</div>
-  <span data-bulk-summary role="status">Archive failed: production permission is missing. Choose another item or retry after access is granted.</span>
-  <div data-bulk-actions>
-    <button type="button" class="btn" data-size="sm" data-variant="outline" data-bulk-action="archive">Retry archive for 2</button>
-    <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>Clear selection</button>
-  </div>
-</section>
-</Preview>
-
-When five items are selected but only three can retry, label the action “Retry 3.” Do not let the server silently skip two and explain the discrepancy afterward. Irreversible commands still require [Alert Dialog](/components/alert-dialog) confirmation with the affected count.
-
-## React
-
-```tsx
-import { useEffect } from "react";
-import {
-  Button,
-  BulkActionBar,
-  useBulkActionBar,
-} from "@a3s-lab/ui/react";
-
-export function SelectedResourceActions({
+export function EnvironmentActions({
   selectedIds,
   performBulkAction,
 }: {
   selectedIds: string[];
   performBulkAction: (action: string, ids: string[]) => Promise<number>;
 }) {
+  const controlRef = useRef<ReturnType<typeof useBulkActionBar> | null>(null);
+  const onAction = (event: Event) => {
+    const control = controlRef.current;
+    if (!control) return;
+    const detail = (event as CustomEvent).detail as {
+      action: string;
+      selection: { values: string[] };
+    };
+    if (detail.action === "clear") return;
+    control.call("setPending", detail.action, {
+      message: "Processing permitted environments…",
+    });
+    void performBulkAction(detail.action, detail.selection.values)
+      .then((processedCount) =>
+        control.call("complete", {
+          action: detail.action,
+          clearSelection: true,
+          processedCount,
+          status: "success",
+          message: \`\${processedCount} environments processed\`,
+        }),
+      )
+      .catch((error) =>
+        control.call("complete", {
+          action: detail.action,
+          error,
+          status: "error",
+          message: "The batch was rejected. Check permissions and retry.",
+        }),
+      );
+  };
   const control = useBulkActionBar({
-    events: {
-      "a3s:bulk-action"(event) {
-        void runAction((event as CustomEvent).detail);
-      },
-    },
+    events: { "a3s:bulk-action": onAction },
   });
+  controlRef.current = control;
 
   useEffect(() => {
     if (control.ready) control.call("setSelection", selectedIds);
   }, [control, control.ready, selectedIds]);
 
-  async function runAction(detail: { action: string; selection: { values: string[] } }) {
-    control.call("setPending", detail.action, { message: "Archiving…" });
-    try {
-      const processedCount = await performBulkAction(
-        detail.action,
-        detail.selection.values,
-      );
-      control.call("complete", {
-        clearSelection: true,
-        processedCount,
-        status: "success",
-        message: `${processedCount} archived`,
-      });
-    } catch (error) {
-      control.call("complete", {
-        error,
-        status: "error",
-        message: "Archive failed. Try again.",
-      });
-    }
-  }
-
   return (
-    <BulkActionBar ref={control.ref} role="region" aria-label="Selected resource actions">
+    <BulkActionBar
+      ref={control.ref}
+      role="region"
+      aria-label="Selected environment actions"
+      data-bulk-focus-return="#bulk-action-bar-collection-en"
+    >
       <div data-bulk-selection>
         <output data-selected-count>{selectedIds.length}</output> selected
       </div>
       <span data-bulk-summary aria-live="polite" />
       <div data-bulk-actions>
+        <Button type="button" data-bulk-action="move">Move</Button>
         <Button type="button" data-bulk-action="archive">Archive</Button>
+        <Button type="button" data-variant="destructive" data-bulk-action="delete">Delete</Button>
         <Button type="button" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
           Clear selection
         </Button>
       </div>
     </BulkActionBar>
   );
-}
-```
-
-`useBulkActionBar` calls the real controller methods and subscribes to its public lifecycle. Selection data and asynchronous commands remain React application state.
-
-## Vue
-
-```vue
-<script setup lang="ts">
+}`}
+  frameworkVue={`<script setup lang="ts">
 import { watchEffect } from "vue";
-import {
-  Button,
-  BulkActionBar,
-  useBulkActionBar,
-} from "@a3s-lab/ui/vue";
+import { Button, BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/vue";
+import "@a3s-lab/ui/a3s.css";
 
 const props = defineProps<{
   selectedIds: string[];
   performBulkAction: (action: string, ids: string[]) => Promise<number>;
 }>();
-
 const control = useBulkActionBar({
   events: {
-    "a3s:bulk-action"(event) {
-      void runAction((event as CustomEvent).detail);
+    "a3s:bulk-action": (event) => {
+      const detail = (event as CustomEvent).detail as {
+        action: string;
+        selection: { values: string[] };
+      };
+      if (detail.action === "clear") return;
+      control.call("setPending", detail.action, {
+        message: "Processing permitted environments…",
+      });
+      props.performBulkAction(detail.action, detail.selection.values)
+        .then((processedCount) =>
+          control.call("complete", {
+            action: detail.action,
+            clearSelection: true,
+            processedCount,
+            status: "success",
+            message: \`\${processedCount} environments processed\`,
+          }),
+        )
+        .catch((error) =>
+          control.call("complete", {
+            action: detail.action,
+            error,
+            status: "error",
+            message: "The batch was rejected. Check permissions and retry.",
+          }),
+        );
     },
   },
 });
 const componentRef = control.componentRef;
 
 watchEffect(() => {
-  if (control.ready.value) {
-    control.call("setSelection", props.selectedIds);
-  }
+  if (control.ready.value) control.call("setSelection", props.selectedIds);
 });
 
-async function runAction(detail: { action: string; selection: { values: string[] } }) {
-  control.call("setPending", detail.action, { message: "Archiving…" });
-  try {
-    const processedCount = await props.performBulkAction(
-      detail.action,
-      detail.selection.values,
-    );
-    control.call("complete", {
-      clearSelection: true,
-      processedCount,
-      status: "success",
-      message: `${processedCount} archived`,
-    });
-  } catch (error) {
-    control.call("complete", {
-      error,
-      status: "error",
-      message: "Archive failed. Try again.",
-    });
-  }
-}
 </script>
 
 <template>
-  <BulkActionBar ref="componentRef" role="region" aria-label="Selected resource actions">
+  <BulkActionBar
+    ref="componentRef"
+    role="region"
+    aria-label="Selected environment actions"
+    data-bulk-focus-return="#bulk-action-bar-collection-en"
+  >
     <div data-bulk-selection>
-      <output data-selected-count>{{ selectedIds.length }}</output> selected
+      <output data-selected-count>{{ props.selectedIds.length }}</output> selected
     </div>
     <span data-bulk-summary aria-live="polite" />
     <div data-bulk-actions>
+      <Button type="button" data-bulk-action="move">Move</Button>
       <Button type="button" data-bulk-action="archive">Archive</Button>
+      <Button type="button" data-variant="destructive" data-bulk-action="delete">Delete</Button>
       <Button type="button" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
         Clear selection
       </Button>
     </div>
   </BulkActionBar>
-</template>
+</template>`}
+>
+  <section id="bulk-action-bar-demo-en" class="grid w-full gap-4" data-bulk-demo="en">
+    <header class="grid gap-1">
+      <h3 id="bulk-action-bar-collection-en" tabindex="-1" class="text-base font-semibold">
+        Production environments
+      </h3>
+      <p class="m-0 text-sm text-muted-foreground">
+        Three environments are selected; only two have archive permission.
+      </p>
+    </header>
+    <section
+      class="bulk-action-bar"
+      data-state="selected"
+      data-bulk-focus-return="#bulk-action-bar-collection-en"
+      role="region"
+      aria-label="Selected environment actions"
+    >
+      <div data-bulk-selection>
+        <output data-selected-count>3</output> selected
+      </div>
+      <span data-bulk-summary aria-live="polite">2 items can be archived</span>
+      <div data-bulk-actions>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="outline"
+          data-bulk-action="move"
+        >
+          Move
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="outline"
+          data-bulk-action="archive"
+          onclick="const bar = event.currentTarget.closest('[data-bulk-demo]').querySelector('.bulk-action-bar'); bar.setPending('archive', true, { message: 'Processing 2 permitted environments…' }); setTimeout(() => bar.complete({ action: 'archive', status: 'error', message: 'Archive failed. Check permissions and retry.' }), 700)"
+        >
+          Archive 2
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="destructive"
+          data-bulk-action="delete"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="ghost"
+          data-bulk-action="clear"
+          data-bulk-clear
+        >
+          Clear selection
+        </button>
+      </div>
+    </section>
+  </section>
+</Preview>
+
+## Usage
+
+Keep the bar adjacent to the collection that owns the selection. Give the root a collection-specific accessible name, keep the exact selected count visible, and label each command with the number of eligible items when eligibility is partial. The host owns permission checks, confirmation, requests, optimistic updates, rollback, and retry.
+
+The controller can be loaded with the complete runtime or as a split entry:
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/bulk-action-bar.min.js" defer></script>
 ```
 
-The Vue composable uses the same events and methods and does not create a second selection model.
+The integrated preview above is the canonical HTML, React, and Vue example. Its source disclosure keeps the install command, setup entry, and example file in one workspace; switch the tabs in the preview toolbar to copy the active file.
 
-## Accessibility
+### Contract
 
-Name the root region for the collection it affects, such as “Selected resource actions,” but do not move focus when it appears. Express selection count, eligible count, and outcome in text rather than relying on disabled state or color. Preserve the triggering command and selection context during loading. After a failure, keep focus on the original action or a surviving collection position. If success clears selection, return focus to a stable collection title, filter, or next item—not to the toolbar that disappears. The host owns selection source, authorization, confirmation, requests, optimistic updates, and rollback; the component owns the temporary task region and command lifecycle.
+| Part or API | Purpose |
+| --- | --- |
+| `data-bulk-selection` / `data-selected-count` | Communicates the current count and scope. |
+| `data-bulk-summary` | Communicates eligibility, progress, or a bounded result with text. |
+| `data-bulk-actions` / `data-bulk-action` | Defines native commands and stable integration values. |
+| `data-bulk-clear` | Leaves selection mode and synchronizes a composed Data Grid. |
+| `data-bulk-focus-return` | Optional selector for the stable collection control that receives focus after the bar hides. |
+| `getSelection()` / `setSelection()` / `clear()` | Reads or updates the controlled selection snapshot. |
+| `setSummary()` | Updates the eligibility or result message without owning domain data. |
+| `setPending()` / `complete()` | Owns local pending geometry and publishes the host lifecycle. |
+| `refresh()` | Recollects action nodes after host-rendered DOM changes. |
+
+`setPending(action, true, { message, allowClear })` disables the pending command and every contradictory command while retaining the original disabled states. `allowClear` defaults to `true`; set it to `false` when leaving selection mode would conflict with a host request. Clearing during pending does not cancel the request and preserves the pending region until the host completes it.
+
+## States and recovery
+
+The live preview toolbar includes the state acceptance matrix. It verifies that `empty` hides the region, `selected` preserves the scope, `loading` disables contradictory commands, and `disabled` applies native disabled semantics to every command.
+
+<Preview class="w-full max-w-3xl" title="Recoverable batch result">
+  <section class="bulk-action-bar" data-state="selected" data-result="error" role="region" aria-label="Selected run actions">
+    <div data-bulk-selection>
+      <output data-selected-count>2</output> selected
+    </div>
+    <span data-bulk-summary role="status">
+      Archive failed: production permission is missing. Retry after access is granted or clear selection.
+    </span>
+    <div data-bulk-actions>
+      <button type="button" class="btn" data-size="sm" data-variant="outline" data-bulk-action="archive">
+        Retry archive for 2
+      </button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
+        Clear selection
+      </button>
+    </div>
+  </section>
+</Preview>
+
+When five items are selected but only three are eligible, label the command “Retry 3”, not “Retry 5” followed by a silent server-side skip. Destructive commands still require [Alert Dialog](/components/alert-dialog) confirmation with the affected count.
+
+## Accessibility and ownership
+
+The root region must be named for the collection it affects and must not move focus when it appears. Selection count, eligible count, progress, and outcome are expressed as text. The pending command keeps its label and exposes `aria-busy="true"` on the root; clear remains available only when `allowClear` permits it. After a rejected request, preserve the selection and focus context so the recovery command is still reachable. After a successful clear or completion, restore focus to the stable collection target instead of leaving focus on a hidden action.
+
+React and Vue use the same controller events and methods. They do not create a framework-specific selection store or perform network work inside the adapter.

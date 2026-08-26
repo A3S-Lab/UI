@@ -1,11 +1,41 @@
 /* Radio */
 @layer components {
-  .field > input[type='radio'],
-  .input[type='radio'] {
+  :is(.radio-group, [role="radiogroup"], [data-slot="radio-group"]) {
+    @apply grid gap-3;
+  }
+
+  .field > input[type="radio"],
+  .input[type="radio"] {
     @apply relative shrink-0 appearance-none border outline-none disabled:cursor-not-allowed disabled:opacity-50;
 
     &:checked:before {
       @apply absolute top-1/2 left-1/2 content-[''] -translate-x-1/2 -translate-y-1/2 rounded-full;
     }
+  }
+
+  /* A choice card remains valid HTML: the option label stays inside its
+     content section while its pseudo-element expands the label hit target to
+     the complete field. The native radio remains above that target. */
+  .field[data-variant="choice-card"] {
+    @apply relative min-w-0;
+  }
+
+  .field[data-variant="choice-card"] > section {
+    @apply min-w-0;
+  }
+
+  .field[data-variant="choice-card"] > section > label::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    content: "";
+  }
+
+  .field[data-variant="choice-card"] > input[type="radio"] {
+    z-index: 2;
+  }
+
+  .field[data-variant="choice-card"] :is(label, p) {
+    overflow-wrap: anywhere;
   }
 }

@@ -300,55 +300,107 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
   (versionPrefix) => [
     {
       file: `${versionPrefix}components/field.html`,
-      markers: [
-        'lang="zh"',
-        'data-slider-demo="field"',
-        "价格范围",
-        "最高预算：",
-        'aria-valuetext="US$800"',
-        "单选按钮",
-        "订阅方案",
-        "字段组",
-        "卡片式选项",
-        "交互式组件预览",
-        "实时预览",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="zh"',
+              'data-field-primary-demo="zh"',
+              'data-preview-component="field"',
+              'data-preview-integration="complete"',
+              'data-component-integration="field"',
+              "工作区显示名称",
+              "填写要求",
+              "禁用和只读",
+              "发布窗口",
+              'data-orientation="responsive"',
+              'dir="rtl"',
+            ]
+          : [
+              'lang="zh"',
+              'data-slider-demo="field"',
+              "价格范围",
+              "最高预算：",
+              'aria-valuetext="US$800"',
+              "单选按钮",
+              "订阅方案",
+              "字段组",
+              "卡片式选项",
+              "交互式组件预览",
+              "实时预览",
+            ],
     },
     {
       file: `${versionPrefix}en/components/field.html`,
-      markers: [
-        'lang="en"',
-        'data-slider-demo="field"',
-        "Price range",
-        "Maximum budget:",
-        'aria-valuetext="$800"',
-        "Interactive component preview",
-        "Live preview",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="en"',
+              'data-field-primary-demo="en"',
+              'data-preview-component="field"',
+              'data-preview-integration="complete"',
+              'data-component-integration="field"',
+              "Workspace display name",
+              "Requirement clarity",
+              "Disabled and read-only",
+              "Release window",
+              'data-orientation="responsive"',
+              'dir="rtl"',
+            ]
+          : [
+              'lang="en"',
+              'data-slider-demo="field"',
+              "Price range",
+              "Maximum budget:",
+              'aria-valuetext="$800"',
+              "Interactive component preview",
+              "Live preview",
+            ],
     },
     {
       file: `${versionPrefix}components/radio-group.html`,
-      markers: [
-        'lang="zh"',
-        "单选组",
-        'aria-label="视图密度"',
-        ">宽松<",
-        "卡片式选项",
-        "订阅方案",
-        "通知方式",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="zh"',
+              "单选组",
+              'aria-labelledby="density-label-zh"',
+              ">宽松<",
+              "卡片式选项",
+              "订阅方案",
+              "通知方式",
+            ]
+          : [
+              'lang="zh"',
+              "单选组",
+              'aria-label="视图密度"',
+              ">宽松<",
+              "卡片式选项",
+              "订阅方案",
+              "通知方式",
+            ],
     },
     {
       file: `${versionPrefix}en/components/radio-group.html`,
-      markers: [
-        'lang="en"',
-        "Radio Group",
-        'aria-label="View density"',
-        ">Comfortable<",
-        "Choice Card",
-        "Subscription Plan",
-        "Notification Preferences",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="en"',
+              "Radio Group",
+              'aria-labelledby="density-label-en"',
+              ">Comfortable<",
+              "Choice cards",
+              "Subscription plan",
+              "Notification preference",
+            ]
+          : [
+              'lang="en"',
+              "Radio Group",
+              'aria-label="View density"',
+              ">Comfortable<",
+              "Choice Card",
+              "Subscription Plan",
+              "Notification Preferences",
+            ],
     },
     {
       file: `${versionPrefix}components/button-group.html`,
@@ -356,9 +408,9 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
         versionPrefix === ""
           ? [
               'lang="zh"',
-              "按钮组把同一任务中相邻、同级的操作连接成一个视觉单元",
-              'aria-label="编辑操作"',
-              'aria-label="保存选项"',
+              "按钮组把作用于同一对象、层级相同的相邻操作连接起来",
+              'aria-label="消息操作"',
+              'aria-label="选择发布方式"',
               "拆分操作",
             ]
           : [
@@ -371,32 +423,65 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
     },
     {
       file: `${versionPrefix}en/components/button-group.html`,
-      markers: [
-        'lang="en"',
-        'aria-label="Search"',
-        'placeholder="Search..."',
-        "Split",
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="en"',
+              "Button Group joins adjacent actions that operate on the same object",
+              'aria-label="Message actions"',
+              'aria-label="Choose publishing method"',
+              "Split action",
+            ]
+          : [
+              'lang="en"',
+              'aria-label="Search"',
+              'placeholder="Search..."',
+              "Split",
+            ],
     },
     {
       file: `${versionPrefix}components/input-group.html`,
-      markers: [
-        'lang="zh"',
-        "12 条结果",
-        "行内起始",
-        "块级末端",
-        'placeholder="输入密码"',
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="zh"',
+              'data-preview-component="input-group"',
+              'data-preview-integration="complete"',
+              'data-component-integration="input-group"',
+              'id="input-group-project-search-zh"',
+              "校验与恢复",
+              "禁用与只读",
+              "有界多行输入",
+            ]
+          : [
+              'lang="zh"',
+              "12 条结果",
+              "行内起始",
+              "块级末端",
+              'placeholder="输入密码"',
+            ],
     },
     {
       file: `${versionPrefix}en/components/input-group.html`,
-      markers: [
-        'lang="en"',
-        "12 results",
-        "Inline start",
-        "Block end",
-        'placeholder="Enter password"',
-      ],
+      markers:
+        versionPrefix === ""
+          ? [
+              'lang="en"',
+              'data-preview-component="input-group"',
+              'data-preview-integration="complete"',
+              'data-component-integration="input-group"',
+              'id="input-group-project-search-en"',
+              "Validation and recovery",
+              "Disabled and read-only",
+              "Bounded multiline input",
+            ]
+          : [
+              'lang="en"',
+              "12 results",
+              "Inline start",
+              "Block end",
+              'placeholder="Enter password"',
+            ],
     },
     {
       file: `${versionPrefix}components/slider.html`,
@@ -1240,11 +1325,15 @@ for (const file of forbiddenFiles) {
     if (error?.code === "ENOENT") continue;
     throw error;
   }
-  throw new Error(`The built site still publishes removed Form surface: ${file}`);
+  throw new Error(
+    `The built site still publishes removed Form surface: ${file}`,
+  );
 }
 
 if ((await readdir(outputRoot)).includes("form")) {
-  throw new Error("The built site still publishes the removed standalone /UI/form/ site.");
+  throw new Error(
+    "The built site still publishes the removed standalone /UI/form/ site.",
+  );
 }
 
 const integratedFormExpectations = [
@@ -1280,7 +1369,9 @@ for (const expectation of integratedFormExpectations) {
   const html = await readFile(path.join(outputRoot, expectation.file), "utf8");
   for (const marker of expectation.markers) {
     if (!html.includes(marker)) {
-      throw new Error(`${expectation.file} is missing integrated Form marker: ${marker}`);
+      throw new Error(
+        `${expectation.file} is missing integrated Form marker: ${marker}`,
+      );
     }
   }
 }

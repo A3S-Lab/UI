@@ -343,7 +343,7 @@
   background: color-mix(in srgb, var(--ui-paper) 68%, transparent);
 }
 
-.product-catalog__scenario li img {
+.product-catalog__scenario li :is(img, [data-expert-avatar]) {
   display: block;
   width: 1.5rem;
   height: 1.5rem;
@@ -585,7 +585,9 @@
   height: 2.75rem;
 }
 
-.product-catalog__entry > [data-capability-mark] img {
+.product-catalog__entry
+  > [data-capability-mark]
+  :is(img, [data-expert-avatar]) {
   width: 100%;
   height: 100%;
   border-radius: 50%;

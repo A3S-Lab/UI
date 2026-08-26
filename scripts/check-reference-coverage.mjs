@@ -59,7 +59,7 @@ function hasFrameworkGuide(guide, framework) {
   const heading = new RegExp(`^## ${framework}$`, "mu");
   const tabProp = framework.toLowerCase();
   const frameworkTabs = new RegExp(
-    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    `<(?:FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=|Preview\\b[\\s\\S]*?\\bframework${framework}=)\\{`,
     "u",
   );
   return heading.test(guide) || frameworkTabs.test(guide);

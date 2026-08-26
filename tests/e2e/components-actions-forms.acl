@@ -2,84 +2,332 @@ suite "a3s-ui-actions-and-forms" {
     version = 1
 
     scenario "button" {
-        name = "Button preview exposes actionable button variants"
+        name = "Button preserves native activation, async geometry, duplicate protection, and four distinct states"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 120000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "button-visible" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
-        focus "focus-outline-button" { target = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]") }
-        expect "outline-button-focused" { visible = css(".a3s-preview[data-preview-component=button] .btn[data-variant=outline]:focus") }
+        expect "one-primary-decision-context" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-button-primary-demo=en][data-button-save-state=ready][data-button-submissions='0']:has([data-button-status][aria-live=polite]):has(button.btn[data-button-save][type=button]):has(button.btn[data-variant=outline])") }
+        expect "native-action-root" { visible = css("[data-button-primary-demo=en] button.btn[data-button-save][data-a3s-components~=button][type=button]:not([disabled]):not([aria-busy])") }
+
+        focus "focus-primary-action" { target = css("[data-button-primary-demo=en] [data-button-save]") }
+        press "activate-primary-with-enter" { key = "Enter" }
+        expect "loading-is-visible-and-native" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
+        press "repeat-while-disabled" { key = "Enter" }
+        expect "rapid-repeat-is-rejected" { visible = css("[data-button-primary-demo=en][data-button-submissions='1'] [data-button-save][disabled][aria-busy=true]") }
+        screenshot "button-loading" { path = "components/button-loading.png" }
+        wait "first-save-completes" { text = "Permission changes saved." }
+        expect "ready-state-restored" { visible = css("[data-button-primary-demo=en][data-button-save-state=saved][data-button-submissions='1']:has([data-button-status]) [data-button-save]:not([disabled]):not([aria-busy]) [data-button-idle]:not(.invisible)[aria-hidden=false]") }
+
+        focus "focus-primary-for-space" { target = css("[data-button-primary-demo=en] [data-button-save]") }
+        press "activate-primary-with-space" { key = "Space" }
+        expect "space-matches-enter" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='2'] [data-button-save][disabled][aria-busy=true]") }
+        wait "second-save-completes" { text = "Permission changes saved." }
+        focus "focus-supporting-action" { target = css("[data-button-primary-demo=en] .btn[data-variant=outline]") }
+        press "activate-supporting-action" { key = "Enter" }
+        expect "supporting-action-feedback" { text = "Reviewer access and deployment approval will change." }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=button]") }
+        wait "state-matrix-ready" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin") }
+        wait "ready-state-is-actionable" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=ready]:not([disabled]):not([aria-busy]):not([aria-pressed])") }
+        wait "disabled-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=disabled][disabled]:not([aria-busy])") }
+        wait "loading-state-has-label" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin + span") }
+        wait "pressed-state-is-visible-and-semantic" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=pressed][aria-pressed=true] > svg[aria-hidden=true] + span") }
+        screenshot "button-states" { path = "components/button-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/button.html" }
+        wait "chinese-phone-ready" { visible = css("[data-button-primary-demo=zh] [data-button-save]") }
+        focus "focus-chinese-phone-action" { target = css("[data-button-primary-demo=zh] [data-button-save]") }
+        expect "chinese-phone-focus-contained" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete]:has([data-button-primary-demo=zh] [data-button-save]:focus)") }
+        screenshot "button-chinese-phone" { path = "components/button-chinese-phone.png" }
+        accessibility "button-accessibility" { path = "components/button-accessibility.json" interactive = true }
+        console "button-console" { path = "components/button-console.json" clear = false }
+        page_errors "button-errors" { path = "components/button-errors.json" clear = false }
     }
 
     scenario "button-group" {
-        name = "Button Group keeps mixed controls aligned and restores menu focus"
+        name = "Button Group preserves named native actions, split-menu focus, and compact containment"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/button-group.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "group-visible" { visible = css(".a3s-preview[data-preview-component=button-group] .btn + .btn") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "named-native-action-cluster" { visible = css("[data-button-group-actions][data-a3s-components~=button-group][role=group][aria-label='Message actions']:has(> button[data-button-group-action=archive][type=button][data-a3s-parts~=action]):has(> button[data-button-group-action=snooze][type=button]):has(> button[data-button-group-action=mark-unread][type=button])") }
+
+        focus "focus-archive" { target = css("[data-button-group-primary-demo=en] [data-button-group-action=archive]") }
+        press "activate-archive" { key = "Enter" }
+        expect "archive-feedback" { text = "Message archived." }
+        focus "focus-mark-unread" { target = css("[data-button-group-primary-demo=en] [data-button-group-action=mark-unread]") }
+        press "activate-mark-unread" { key = "Space" }
+        expect "mark-unread-feedback" { text = "Message marked as unread." }
+
+        focus "focus-split-menu-trigger" { target = css("#button-group-publish-trigger-en") }
+        press "open-split-menu" { key = "Enter" }
+        expect "split-menu-open" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
+        expect "split-menu-trigger-retains-focus" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=true]") }
+        press "activate-first-split-item" { key = "ArrowDown" }
+        expect "first-split-item-active" { visible = css("#button-group-publish-trigger-en:focus[aria-activedescendant=button-group-publish-schedule-en] + #button-group-publish-popover-en #button-group-publish-schedule-en.active") }
+        screenshot "button-group-desktop-open" { path = "components/button-group-desktop-open.png" }
+        press "close-split-menu" { key = "Escape" }
+        expect "split-menu-focus-restored" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
+
         viewport "phone" { width = 390 height = 844 }
-        focus "group-menu-trigger-in-view" { target = css("#dropdown-menu-609880-trigger") }
-        press "open-group-menu" { key = "Enter" }
-        expect "group-menu-open" { visible = css("#dropdown-menu-609880-popover[aria-hidden=false]") }
+        expect "long-label-group-visible" { visible = css("[data-button-group-long-labels=en]:has(> button[disabled][aria-describedby=button-group-production-reason-en])") }
+        focus "group-menu-trigger-in-view" { target = css("#button-group-publish-trigger-en") }
+        press "open-group-menu-on-phone" { key = "Enter" }
+        expect "group-menu-open-on-phone" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
         screenshot "button-group-phone-open" { path = "components/button-group-phone-open.png" }
         press "close-group-menu" { key = "Escape" }
-        expect "group-menu-focus-restored" { visible = css("#dropdown-menu-609880-trigger:focus") }
+        expect "group-menu-focus-restored" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
+        accessibility "button-group-accessibility" { path = "components/button-group-accessibility.json" interactive = true }
+        console "button-group-console" { path = "components/button-group-console.json" clear = false }
+        page_errors "button-group-page-errors" { path = "components/button-group-page-errors.json" clear = false }
     }
 
     scenario "field" {
-        name = "Field preview accepts form input"
+        name = "Field preserves one named control, validation recovery, native availability, grouping, and five independent states"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/field.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "enter-card-number" {
-            target = css(".a3s-preview[data-preview-component=field] input[type=text]")
-            value = "4242 4242 4242 4242"
-        }
-        focus "focus-budget-slider" { target = css("[data-slider-demo=field] input[type=range]") }
-        press "increase-budget" { key = "ArrowRight" }
-        expect "budget-updated" { text = "$810" }
-        screenshot "field-budget-updated" { path = "components/field-budget-updated.png" }
-        expect "field-visible" { visible = css(".a3s-preview[data-preview-component=field] .fieldset") }
+
+        expect "canonical-field-has-one-control-contract" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] .field:not([role]):has(> label[for=field-workspace-name-en][data-a3s-parts~=label]):has(> input#field-workspace-name-en[data-a3s-parts~=control][required][minlength='2'][maxlength='40'][autocomplete=organization][aria-describedby=field-workspace-name-description-en]):has(> [data-field-description][data-a3s-parts~=description]):has(> [data-field-message][data-a3s-parts~=message][role=alert][hidden])") }
+        expect "message-is-not-misclassified-as-description" { visible = css("form[data-field-primary-demo=en]:has(#field-workspace-name-error-en[data-a3s-parts~=message]:not([data-a3s-parts~=description]))") }
+        expect "single-fields-have-no-false-group-role" { visible = css("main:not(:has(.field[role=group]))") }
+
+        fill "clear-workspace-name" { target = css("#field-workspace-name-en") value = "" }
+        expect "required-empty-field-stays-neutral" { visible = css("form[data-field-primary-demo=en] .field:not([data-invalid]):has(#field-workspace-name-en:not([aria-invalid])):has(#field-workspace-name-error-en[hidden])") }
+        focus "focus-save-empty-name" { target = css("form[data-field-primary-demo=en] button[type=submit]") }
+        press "submit-empty-name" { key = "Enter" }
+        expect "invalid-field-focuses-recovery" { visible = css("form[data-field-primary-demo=en] .field[data-invalid=true]:has(#field-workspace-name-en:focus[aria-invalid=true][aria-describedby='field-workspace-name-description-en field-workspace-name-error-en']):has(#field-workspace-name-error-en[role=alert]:not([hidden]))") }
+        fill "recover-valid-name" { target = css("#field-workspace-name-en") value = "Runtime Core" }
+        expect "valid-name-clears-stale-error" { visible = css("form[data-field-primary-demo=en] .field:not([data-invalid]):has(#field-workspace-name-en:not([aria-invalid])[aria-describedby=field-workspace-name-description-en]):has(#field-workspace-name-error-en[hidden])") }
+        fill "enter-short-name" { target = css("#field-workspace-name-en") value = "A" }
+        focus "focus-resubmit-short-name" { target = css("form[data-field-primary-demo=en] button[type=submit]") }
+        press "resubmit-short-name" { key = "Enter" }
+        expect "short-name-preserved-for-recovery" { visible = css("#field-workspace-name-en:focus[aria-invalid=true]:invalid") }
+        focus "focus-reset-field" { target = css("form[data-field-primary-demo=en] button[type=reset]") }
+        press "reset-field" { key = "Enter" }
+        expect "reset-restores-authored-value-and-neutral-state" { visible = css("form[data-field-primary-demo=en] .field:not([data-invalid]):has(#field-workspace-name-en:valid:not([aria-invalid])):has(#field-workspace-name-error-en[hidden])") }
+
+        expect "disabled-field-keeps-reason-and-native-state" { visible = css("form[data-field-availability=en] .field[data-disabled=true]:not([aria-disabled]):has(#field-disabled-slug-en[disabled][value='legacy-runtime'][aria-describedby=field-disabled-slug-reason-en]):has(#field-disabled-slug-reason-en[data-field-description])") }
+        expect "readonly-field-keeps-value-and-native-state" { visible = css("form[data-field-availability=en] .field[data-readonly=true]:not([aria-readonly]):has(#field-readonly-owner-en[readonly][value='owner@example.com'][aria-describedby=field-readonly-owner-reason-en]):has(#field-readonly-owner-reason-en[data-field-description])") }
+        expect "related-controls-use-one-native-fieldset" { visible = css("fieldset.fieldset:has(> legend):has(#field-release-date-en):has(#field-release-time-en):not(:has([role=group]))") }
+        screenshot "field-desktop-ltr" { path = "components/field-desktop-ltr.png" }
+
+        focus "focus-dark-field-preview" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=appearance]") }
+        press "use-dark-field-preview" { key = "Enter" }
+        wait "dark-field-preview-active" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete][data-preview-scheme=dark] .a3s-preview__canvas[data-a3s-theme=dark]") }
+        focus "focus-rtl-field-preview" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=direction]") }
+        press "use-rtl-field-preview" { key = "Enter" }
+        wait "rtl-field-preview-active" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete][data-preview-direction=rtl]") }
+        focus "focus-field-state-matrix" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-field-state-matrix" { key = "Enter" }
+        wait "field-state-matrix-ready" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid] [data-state-specimen-mount=invalid][dir=rtl][data-a3s-theme=dark]") }
+        expect "empty-state-neutral-and-explained" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty] .field[data-state~=empty]:not([data-invalid]):not([aria-invalid]):has(> input[value='']:not([aria-invalid])):has(> [data-field-description]):has(> [data-field-message][hidden])") }
+        expect "ready-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready] .field[data-state~=ready]:has(> input[value='Agent Runtime']):has(> [data-field-description])") }
+        expect "disabled-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled] .field[data-disabled=true]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description])") }
+        expect "invalid-state-has-local-recovery" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid] .field[data-invalid=true]:not([aria-invalid]):has(> input[aria-invalid=true][value='A'][aria-describedby]):has(> [data-field-description]):has(> [data-field-message][role=alert]:not([hidden]))") }
+        expect "readonly-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly] .field[data-readonly=true]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description])") }
+        screenshot "field-states-dark-rtl" { path = "components/field-states-dark-rtl.png" }
+        press "close-field-state-matrix" { key = "Escape" }
+        expect "field-state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "reset-field-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/field.html" }
+        wait "field-phone-ready" { visible = css("#field-workspace-name-en") }
+        focus "focus-field-on-phone" { target = css("#field-workspace-name-en") }
+        expect "field-phone-focus-contained" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] .field:has(#field-workspace-name-en:focus)") }
+        screenshot "field-focused-phone" { path = "components/field-focused-phone.png" }
+        accessibility "field-accessibility" { path = "components/field-accessibility.json" interactive = true }
+        console "field-console" { path = "components/field-console.json" clear = false }
+        page_errors "field-page-errors" { path = "components/field-page-errors.json" clear = false }
     }
 
     scenario "input" {
-        name = "Input preview accepts an email address"
+        name = "Input preserves labels, native events, validation recovery, availability semantics, and compact focus"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "enter-email" { target = placeholder("Email") value = "tester@example.test" }
-        expect "input-visible" { visible = css(".a3s-preview[data-preview-component=input] input[type=email]") }
+
+        expect "canonical-labeled-root" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] .field:has(label[for=input-notification-email-en]) > input#input-notification-email-en.input[type=email][name=notificationEmail][autocomplete=email][inputmode=email][enterkeyhint=next][aria-describedby=input-notification-email-help-en]") }
+        focus "focus-primary-input" { target = css("#input-notification-email-en") }
+        expect "primary-input-focused" { visible = css("#input-notification-email-en:focus") }
+        fill "enter-email" { target = label("Notification email") value = "tester@example.test" }
+        expect "native-input-feedback" { text = "Current value: tester@example.test" }
+
+        expect "validation-starts-neutral" { visible = css("form[data-input-validation-demo=en] .field:not([data-invalid]):has(#input-validation-email-en[required][aria-describedby=input-validation-email-hint-en]:not([aria-invalid])):has(#input-validation-email-error-en[role=alert][hidden])") }
+        click "submit-empty-address" { target = role("button", "Save address") }
+        expect "validation-explains-recovery" { visible = css("form[data-input-validation-demo=en] .field[data-invalid=true]:has(#input-validation-email-en:focus[required][aria-invalid=true][aria-describedby='input-validation-email-hint-en input-validation-email-error-en']:invalid):has(#input-validation-email-error-en[role=alert]:not([hidden]))") }
+        fill "recover-valid-address" { target = css("#input-validation-email-en") value = "owner@example.com" }
+        expect "valid-input-clears-stale-error" { visible = css("form[data-input-validation-demo=en] .field:not([data-invalid]):has(#input-validation-email-en:valid[aria-describedby=input-validation-email-hint-en]:not([aria-invalid])):has(#input-validation-email-error-en[hidden])") }
+        fill "enter-invalid-address" { target = css("#input-validation-email-en") value = "owner@" }
+        click "resubmit-invalid-address" { target = role("button", "Save address") }
+        expect "invalid-input-restores-error-and-focus" { visible = css("#input-validation-email-en:focus[aria-invalid=true]:invalid") }
+        click "reset-validation" { target = role("button", "Reset") }
+        expect "reset-clears-error-semantics" { visible = css("form[data-input-validation-demo=en] .field:not([data-invalid]):has(#input-validation-email-en[aria-describedby=input-validation-email-hint-en]:not([aria-invalid])):has(#input-validation-email-error-en[hidden])") }
+
+        expect "disabled-retains-value-and-reason" { visible = css("form[data-input-availability=en] .field:has(#input-disabled-en.input[disabled][value='policy-managed@example.com'][aria-describedby=input-disabled-reason-en]):has(#input-disabled-reason-en)") }
+        expect "readonly-retains-submitted-value-and-reason" { visible = css("form[data-input-availability=en] .field:has(#input-readonly-en.input[readonly][name=releaseOwner][value='release-owner@example.com'][aria-describedby=input-readonly-reason-en]):has(#input-readonly-reason-en)") }
+        screenshot "input-desktop-ltr" { path = "components/input-desktop-ltr.png" }
+
+        focus "focus-dark-preview-control" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=appearance]") }
+        press "use-dark-preview" { key = "Enter" }
+        wait "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete][data-preview-scheme=dark] .a3s-preview__canvas[data-preview-scheme=dark][data-a3s-theme=dark]") }
+        focus "focus-rtl-preview-control" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=direction]") }
+        press "use-rtl-preview" { key = "Enter" }
+        wait "dark-rtl-preview-active" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete][data-preview-scheme=dark][data-preview-direction=rtl]") }
+        click "open-state-acceptance" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=states]") }
+        wait "state-context-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid] [data-state-specimen-mount=invalid][dir=rtl][data-a3s-theme=dark]") }
+        expect "invalid-state-preserves-value-and-semantics" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid] .a3s-component-state-matrix__field-specimen:has(input.input[type=email][value='owner@'][aria-invalid=true])") }
+        screenshot "input-states-dark-rtl" { path = "components/input-states-dark-rtl.png" }
+        press "close-state-acceptance" { key = "Escape" }
+        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "reset-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/input.html" }
+        wait "phone-ready" { visible = css("#input-notification-email-en") }
+        focus "focus-primary-input-phone" { target = css("#input-notification-email-en") }
+        expect "phone-input-focused" { visible = css("#input-notification-email-en:focus") }
+        screenshot "input-focused-phone" { path = "components/input-focused-phone.png" }
+        accessibility "input-accessibility" { path = "components/input-accessibility.json" interactive = true }
+        console "input-console" { path = "components/input-console.json" clear = false }
+        page_errors "input-page-errors" { path = "components/input-page-errors.json" clear = false }
     }
 
     scenario "input-group" {
-        name = "Input Group preview accepts a search query"
+        name = "Input Group preserves one boundary, native recovery, six truthful states, and responsive input semantics"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "search" { target = placeholder("Search...") value = "agent runtime" }
-        expect "group-visible" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group") }
-        screenshot "focused-group" { path = "components/input-group-focused.png" }
+
+        expect "canonical-labeled-root" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] .field:has(label[for=input-group-project-search-en]):has(#input-group-project-search-help-en[data-field-description]) > .input-group[data-input-group-initialized=true]:has(> input#input-group-project-search-en[type=search][name=projectQuery][autocomplete=off][aria-describedby=input-group-project-search-help-en]):has(> [data-align=inline-start]):has(> #input-group-project-search-status-en[data-input-group-status][role=status])") }
+        click "focus-from-inert-prefix" { target = css("#input-group-project-search-en + [data-align=inline-start]") }
+        expect "inert-prefix-forwards-focus" { visible = css("#input-group-project-search-en:focus") }
+        fill "search-projects" { target = label("Search projects") value = "runtime" }
+        expect "search-status-updated" { text = "8 matching projects" }
+
+        click "activate-copy-action" { target = role("button", "Copy repository URL") }
+        expect "interactive-action-keeps-own-focus" { visible = css("button[aria-label='Copy repository URL']:focus") }
+        expect "copy-feedback-visible" { text = "Copy requested" }
+
+        expect "validation-starts-neutral" { visible = css("form[data-input-group-validation-demo=en] .field:not([data-invalid]):has(#input-group-validation-en[required][minlength='3'][maxlength='24'][aria-describedby=input-group-validation-help-en]:not([aria-invalid])):has(#input-group-validation-error-en[role=alert][hidden])") }
+        click "submit-empty-address" { target = role("button", "Save address") }
+        expect "invalid-address-preserves-value-and-focuses-recovery" { visible = css("form[data-input-group-validation-demo=en] .field[data-invalid=true]:has(#input-group-validation-en:focus[aria-invalid=true][aria-describedby='input-group-validation-help-en input-group-validation-error-en']:invalid):has(#input-group-validation-error-en[role=alert]:not([hidden]))") }
+        fill "recover-valid-address" { target = css("#input-group-validation-en") value = "runtime-lab" }
+        expect "valid-address-clears-stale-error" { visible = css("form[data-input-group-validation-demo=en] .field:not([data-invalid]):has(#input-group-validation-en:valid[aria-describedby=input-group-validation-help-en]:not([aria-invalid])):has(#input-group-validation-error-en[hidden])") }
+        fill "enter-invalid-address" { target = css("#input-group-validation-en") value = "Runtime Lab" }
+        click "resubmit-invalid-address" { target = role("button", "Save address") }
+        expect "invalid-address-restores-error" { visible = css("#input-group-validation-en:focus[aria-invalid=true]:invalid") }
+        click "reset-validation" { target = role("button", "Reset") }
+        expect "reset-clears-error" { visible = css("form[data-input-group-validation-demo=en] .field:not([data-invalid]):has(#input-group-validation-en[aria-describedby=input-group-validation-help-en]:not([aria-invalid])):has(#input-group-validation-error-en[hidden])") }
+
+        expect "disabled-retains-native-state-and-reason" { visible = css("form[data-input-group-availability=en] .field[data-disabled=true]:has(.input-group[data-input-group-disabled][data-disabled] > #input-group-disabled-en[disabled][name=archivedFilter][aria-describedby=input-group-disabled-help-en]):has(#input-group-disabled-help-en[data-field-description])") }
+        expect "readonly-retains-submission-and-reason" { visible = css("form[data-input-group-availability=en] .field[data-readonly=true]:has(.input-group[data-input-group-readonly][data-readonly] > #input-group-readonly-en[readonly][name=approvedFilter][aria-describedby=input-group-readonly-help-en]):has(#input-group-readonly-help-en[data-field-description])") }
+
+        focus "focus-state-acceptance" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-acceptance" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=input-group]") }
+        expect "six-state-specimens" { visible = css(".a3s-component-state-matrix[open][data-component=input-group]:has([data-state-specimen=empty]):has([data-state-specimen=ready]):has([data-state-specimen=invalid]):has([data-state-specimen=loading]):has([data-state-specimen=disabled]):has([data-state-specimen=readonly])") }
+        expect "invalid-state-is-native-and-recoverable" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid] .field[data-invalid]:has(.input-group > input[value='r'][required][minlength='3'][aria-invalid=true]:invalid):has([role=alert]:not([hidden]))") }
+        expect "loading-state-preserves-editability" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading] .input-group[aria-busy=true]:has(> input[value=runtime]:not([disabled])):has([role=status])") }
+        expect "disabled-state-uses-native-control" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled] .input-group[data-disabled]:not([aria-disabled]):has(> input[value=archived][disabled])") }
+        expect "readonly-state-uses-native-control" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly] .input-group[data-readonly]:not([aria-readonly]):has(> input[value=release][readonly]:not([disabled]))") }
+        screenshot "input-group-states" { path = "components/input-group-states.png" }
+        press "close-state-acceptance" { key = "Escape" }
+        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        click "dark-preview" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=appearance]") }
+        click "rtl-preview" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=direction]") }
+        expect "dark-rtl-preview-active" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete][data-preview-scheme=dark][data-preview-direction=rtl]") }
+        focus "focus-dark-rtl-search" { target = css("#input-group-project-search-en") }
+        screenshot "input-group-dark-rtl" { path = "components/input-group-dark-rtl.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "reset-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
+        wait "phone-ready" { visible = css("#input-group-project-search-en") }
+        fill "long-phone-query" { target = css("#input-group-project-search-en") value = "packages/a-very-long-project-name/runtime" }
+        expect "phone-group-contained" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] .input-group:focus-within") }
+        screenshot "input-group-phone" { path = "components/input-group-phone.png" }
+        accessibility "input-group-accessibility" { path = "components/input-group-accessibility.json" interactive = true }
+        console "input-group-console" { path = "components/input-group-console.json" clear = false }
+        page_errors "input-group-page-errors" { path = "components/input-group-page-errors.json" clear = false }
     }
 
     scenario "textarea" {
-        name = "Textarea preview accepts multiline content"
+        name = "Textarea preserves bounded multiline editing, recovery, availability semantics, and five independent states"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/textarea.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "enter-message" { target = placeholder("Type your message here") value = "A3S UI component review" }
-        expect "textarea-visible" { visible = css(".a3s-preview[data-preview-component=textarea] textarea") }
+
+        expect "canonical-labeled-root" { visible = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] .field:has(label[for=textarea-release-note-en]):has(output#textarea-release-note-count-en[aria-label='Character count'][aria-live=off]) > textarea#textarea-release-note-en.textarea[name=releaseNote][rows='5'][maxlength='320'][aria-describedby=textarea-release-note-help-en]") }
+        focus "focus-primary-textarea" { target = css("#textarea-release-note-en") }
+        expect "primary-textarea-focused" { visible = css("#textarea-release-note-en:focus") }
+        fill "enter-multiline-note" { target = label("Release note") value = "Verification passed.\nRollback to version 0.2.9." }
+        expect "multiline-count-updated" { text = "47 / 320 characters" }
+
+        expect "validation-starts-neutral" { visible = css("form[data-textarea-validation-demo=en] .field:not([data-invalid]):has(#textarea-validation-en[required][minlength='40'][maxlength='320'][aria-describedby=textarea-validation-help-en]:not([aria-invalid])):has(#textarea-validation-error-en[role=alert][hidden]):has(#textarea-validation-count-en[aria-label='Character count'][aria-live=off])") }
+        click "submit-empty-handoff" { target = role("button", "Save handoff") }
+        expect "validation-preserves-value-and-focuses-recovery" { visible = css("form[data-textarea-validation-demo=en] .field[data-invalid=true]:has(#textarea-validation-en:focus[aria-invalid=true][aria-describedby='textarea-validation-help-en textarea-validation-error-en']:invalid):has(#textarea-validation-error-en[role=alert]:not([hidden]))") }
+        fill "recover-valid-handoff" { target = css("#textarea-validation-en") value = "Verification passed. Restore version 0.2.9 if health checks fail." }
+        expect "valid-handoff-clears-stale-error" { visible = css("form[data-textarea-validation-demo=en] .field:not([data-invalid]):has(#textarea-validation-en:valid[aria-describedby=textarea-validation-help-en]:not([aria-invalid])):has(#textarea-validation-error-en[hidden])") }
+        fill "enter-short-handoff" { target = css("#textarea-validation-en") value = "Verification passed." }
+        click "resubmit-short-handoff" { target = role("button", "Save handoff") }
+        expect "short-handoff-restores-error" { visible = css("#textarea-validation-en:focus[aria-invalid=true]:invalid") }
+        click "reset-validation" { target = role("button", "Reset") }
+        expect "reset-clears-error-and-count" { visible = css("form[data-textarea-validation-demo=en] .field:not([data-invalid]):has(#textarea-validation-en[aria-describedby=textarea-validation-help-en]:not([aria-invalid])):has(#textarea-validation-error-en[hidden]):has(#textarea-validation-count-en[aria-label='Character count'][aria-live=off])") }
+        expect "reset-count-visible" { text = "0 / 320 characters" }
+
+        expect "disabled-retains-native-state-and-reason" { visible = css("form[data-textarea-availability=en] .field[data-disabled=true]:has(#textarea-disabled-en.textarea[disabled][name=archivedReleaseNote][aria-describedby=textarea-disabled-reason-en]):has(#textarea-disabled-reason-en[data-field-description])") }
+        expect "readonly-retains-submission-and-reason" { visible = css("form[data-textarea-availability=en] .field[data-readonly=true]:has(#textarea-readonly-en.textarea[readonly][name=approvedReleaseNote][aria-describedby=textarea-readonly-reason-en]):has(#textarea-readonly-reason-en[data-field-description])") }
+        screenshot "textarea-desktop-ltr" { path = "components/textarea-desktop-ltr.png" }
+
+        focus "focus-dark-preview-control" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=appearance]") }
+        press "use-dark-preview" { key = "Enter" }
+        wait "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete][data-preview-scheme=dark] .a3s-preview__canvas[data-a3s-theme=dark]") }
+        focus "focus-rtl-preview-control" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=direction]") }
+        press "use-rtl-preview" { key = "Enter" }
+        wait "dark-rtl-preview-active" { visible = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete][data-preview-scheme=dark][data-preview-direction=rtl]") }
+        click "open-state-acceptance" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=states]") }
+        wait "state-context-ready" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid] [data-state-specimen-mount=invalid][dir=rtl][data-a3s-theme=dark]") }
+        expect "empty-state-is-neutral" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty] .a3s-component-state-matrix__field-specimen:not([data-invalid]):has(textarea.textarea:not([aria-invalid]):not([disabled]):not([readonly])):has([data-state-specimen-feedback]:not([role=alert]))") }
+        expect "ready-state-is-editable" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready] .a3s-component-state-matrix__field-specimen:has(textarea.textarea:not([aria-invalid]):not([disabled]):not([readonly]))") }
+        expect "disabled-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled] .a3s-component-state-matrix__field-specimen[data-disabled]:has(textarea.textarea[disabled]):has([data-state-specimen-feedback])") }
+        expect "invalid-state-has-local-recovery" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid] .a3s-component-state-matrix__field-specimen[data-invalid]:has(textarea.textarea[required][aria-invalid=true]:invalid):has([data-state-specimen-feedback][role=alert][data-error])") }
+        expect "readonly-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly] .a3s-component-state-matrix__field-specimen[data-readonly]:has(textarea.textarea[readonly]):has([data-state-specimen-feedback])") }
+        screenshot "textarea-states-dark-rtl" { path = "components/textarea-states-dark-rtl.png" }
+        press "close-state-acceptance" { key = "Escape" }
+        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "reset-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/textarea.html" }
+        wait "phone-ready" { visible = css("#textarea-release-note-en") }
+        focus "focus-primary-textarea-phone" { target = css("#textarea-release-note-en") }
+        expect "phone-textarea-focused" { visible = css("#textarea-release-note-en:focus") }
+        screenshot "textarea-focused-phone" { path = "components/textarea-focused-phone.png" }
+        accessibility "textarea-accessibility" { path = "components/textarea-accessibility.json" interactive = true }
+        console "textarea-console" { path = "components/textarea-console.json" clear = false }
+        page_errors "textarea-page-errors" { path = "components/textarea-page-errors.json" clear = false }
     }
 
     scenario "code-editor" {
@@ -111,32 +359,65 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "native-select" {
-        name = "Native Select preview changes the selected option"
+        name = "Native Select preserves a labeled, truthful native form contract"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/native-select.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        expect "canonical-labeled-root" { visible = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] .field:has(label[for=native-select-fruit-en]) > select#native-select-fruit-en.native-select[aria-describedby=native-select-fruit-help-en]") }
+        focus "focus-native-select" { target = css("#native-select-fruit-en") }
+        expect "native-select-focused" { visible = css("#native-select-fruit-en:focus") }
         select "choose-banana" {
-            target = css(".a3s-preview[data-preview-component=native-select] select")
+            target = css("#native-select-fruit-en")
             values = ["banana"]
         }
-        expect "banana-selected" { visible = css(".a3s-preview[data-preview-component=native-select] select:has(option[value=banana]:checked)") }
+        expect "banana-selected" { visible = css("#native-select-fruit-en:has(option[value=banana]:checked)") }
+        expect "disabled-group-is-native" { visible = css("#native-select-food-en:has(optgroup[label=Unavailable][disabled])") }
+        expect "disabled-value-preserved" { visible = css("#native-select-disabled-en[disabled][aria-describedby=native-select-disabled-reason-en]:has(option[value=apple]:checked)") }
+        expect "disabled-reason-visible" { visible = css("#native-select-disabled-reason-en") }
+        expect "invalid-state-is-native" { visible = css(".field[data-invalid=true]:has(#native-select-invalid-en[required][aria-invalid=true]:invalid):has(#native-select-invalid-error-en[role=alert])") }
         screenshot "native-select-ltr" { path = "components/native-select-ltr.png" }
+        accessibility "native-select-accessibility" { path = "components/native-select-accessibility.json" interactive = true }
+        console "native-select-console" { path = "components/native-select-console.json" clear = false }
+        page_errors "native-select-page-errors" { path = "components/native-select-page-errors.json" clear = false }
     }
 
     scenario "select" {
-        name = "Select preview opens, selects, and restores its chosen option"
+        name = "Select exposes a named trigger and predictable keyboard and disabled-option behavior"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 75000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/select.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "open-list" { target = css("#select-demo-trigger") }
-        wait "list-visible" { visible = css("#select-demo [data-popover][aria-hidden=false]") }
-        click "choose-banana" { target = css("#select-demo [role=option][data-value=banana]") }
-        click "reopen-list" { target = css("#select-demo-trigger") }
-        expect "selection-visible" { visible = css("#select-demo [role=option][data-value=banana][aria-selected=true]") }
+        expect "trigger-is-named" { visible = css("#select-demo-trigger[aria-label='Fruit'][role=combobox]") }
+
+        focus "focus-trigger" { target = css("#select-demo-trigger") }
+        press "open-at-end" { key = "End" }
+        expect "last-option-active" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-5]") }
+        press "choose-last-option" { key = "Enter" }
+        expect "pineapple-selected" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus") }
+
+        press "typeahead-banana" { key = "b" }
+        expect "banana-active" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-2]") }
+        press "cancel-typeahead" { key = "Escape" }
+        expect "cancel-preserves-value-and-focus" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus:not([aria-activedescendant])") }
+
+        focus "focus-disabled-option-trigger" { target = css("#select-disabled-option-trigger") }
+        press "open-disabled-option-list" { key = "Enter" }
+        expect "disabled-option-trigger-expanded" { visible = css("#select-disabled-option-trigger[aria-expanded=true]") }
+        expect "disabled-option-list-visible" { visible = css("#select-disabled-option [data-popover][aria-hidden=false]") }
+        expect "disabled-option-is-semantic" { visible = css("#select-disabled-option:has(input[type=hidden][value='']) [role=option][data-value=grapes][aria-disabled=true]") }
+        focus "restore-disabled-option-trigger" { target = css("#select-disabled-option-trigger") }
+        press "move-home" { key = "Home" }
+        expect "first-enabled-option-active" { visible = css("#select-disabled-option-trigger[aria-activedescendant=select-disabled-option-option-1]") }
+        press "skip-disabled-option" { key = "ArrowDown" }
+        expect "last-enabled-option-active" { visible = css("#select-disabled-option-trigger[aria-activedescendant=select-disabled-option-option-3]") }
+        press "commit-enabled-option" { key = "Enter" }
+        expect "enabled-option-selected" { visible = css("#select-disabled-option:has([role=option][data-value=pineapple][aria-selected=true]) #select-disabled-option-trigger[aria-expanded=false]:focus") }
+        screenshot "select-keyboard-and-disabled-option" { path = "components/select-keyboard-and-disabled-option.png" }
     }
 
     scenario "checkbox" {
@@ -153,29 +434,72 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "radio-group" {
-        name = "Radio Group preview changes density in both directions"
+        name = "Radio Group preserves one named native choice contract across keyboard, disabled, invalid, and theme states"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/radio-group.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        check "choose-default" { target = css("#r1") }
-        expect "default-selected" { visible = css("#r1:checked") }
-        expect "comfortable-cleared" { visible = css("#r2:not(:checked)") }
-        check "choose-comfortable" { target = css("#r2") }
-        expect "comfortable-selected" { visible = css("#r2:checked") }
-        focus "focus-comfortable" { target = css("#r2") }
+        expect "group-has-one-visible-name" { visible = css(".radio-group[role=radiogroup][aria-labelledby=density-label-en]:has(#r1):has(#r2):has(#r3)") }
+        focus "focus-current-choice" { target = css("#r2") }
+        press "choose-next-choice" { key = "ArrowRight" }
+        expect "compact-selected" { visible = css("#r3:checked") }
+        press "wrap-to-first-choice" { key = "ArrowRight" }
+        expect "default-selected-after-wrap" { visible = css("#r1:checked") }
+        press "move-backward" { key = "ArrowLeft" }
+        expect "compact-selected-after-backward-move" { visible = css("#r3:checked:focus") }
         screenshot "radio-selected-focused" { path = "components/radio-selected-focused.png" }
+
+        focus "focus-enabled-choice-after-disabled" { target = css("#disabled-2") }
+        press "skip-disabled-choice" { key = "ArrowLeft" }
+        expect "disabled-choice-skipped" { visible = css("#disabled-1:disabled:not(:checked) + section, #disabled-1:disabled:not(:checked) + label") }
+        expect "wrapped-enabled-choice-selected" { visible = css("#disabled-3:checked:focus") }
+
+        expect "required-group-starts-neutral" { visible = css("form[data-radio-group-validation-demo=en]:has(fieldset:not([data-invalid])):has(#invalid-email:required:invalid:not(:checked):not([aria-invalid])):has(#invalid-sms:not(:checked):not([aria-invalid])):has(#invalid-both:not(:checked):not([aria-invalid])):has(#notification-preference-error-en[role=alert][hidden])") }
+        focus "focus-continue-without-selection" { target = css("#notification-preference-submit-en") }
+        press "continue-without-selection" { key = "Enter" }
+        expect "invalid-group-explains-recovery" { visible = css("fieldset[data-invalid]:has(#invalid-email:required:invalid:not(:checked)[aria-invalid=true][aria-describedby=notification-preference-error-en]):has(#invalid-sms:not(:checked)[aria-invalid=true]):has(#invalid-both:not(:checked)[aria-invalid=true]):has(#notification-preference-error-en[role=alert]:not([hidden]))") }
+        expect "invalid-group-focuses-first-option" { visible = css("#invalid-email:focus") }
+        focus "focus-reset-directly-from-invalid" { target = css("#notification-preference-reset-en") }
+        press "reset-directly-from-invalid" { key = "Enter" }
+        expect "direct-reset-clears-error-semantics" { visible = css("form[data-radio-group-validation-demo=en]:has(fieldset:not([data-invalid])):has(#invalid-email:not(:checked):not([aria-invalid])):has(#invalid-sms:not(:checked):not([aria-invalid])):has(#invalid-both:not(:checked):not([aria-invalid])):has(#notification-preference-error-en[role=alert][hidden])") }
+        focus "focus-continue-after-direct-reset" { target = css("#notification-preference-submit-en") }
+        press "continue-after-direct-reset" { key = "Enter" }
+        expect "invalid-group-restores-recovery" { visible = css("fieldset[data-invalid]:has(#invalid-email:required:invalid:not(:checked)[aria-invalid=true][aria-describedby=notification-preference-error-en]):has(#invalid-sms:not(:checked)[aria-invalid=true]):has(#invalid-both:not(:checked)[aria-invalid=true]):has(#notification-preference-error-en[role=alert]:not([hidden]))") }
+        expect "invalid-group-refocuses-first-option" { visible = css("#invalid-email:focus") }
+        check "recover-with-email" { target = css("#invalid-email") }
+        expect "valid-choice-clears-stale-error" { visible = css("form[data-radio-group-validation-demo=en]:has(fieldset:not([data-invalid])):has(#invalid-email:checked:not([aria-invalid])):has(#notification-preference-error-en[hidden])") }
+        focus "focus-reset-required-group" { target = css("#notification-preference-reset-en") }
+        press "reset-required-group" { key = "Enter" }
+        expect "reset-restores-neutral-empty-group" { visible = css("form[data-radio-group-validation-demo=en]:has(fieldset:not([data-invalid])):has(#invalid-email:not(:checked):not([aria-invalid])):has(#invalid-sms:not(:checked):not([aria-invalid])):has(#invalid-both:not(:checked):not([aria-invalid])):has(#notification-preference-error-en[hidden])") }
+
+        focus "focus-pro-card-choice" { target = css("#pro-plan") }
+        press "choose-pro-card" { key = "Space" }
+        expect "choice-card-selects-one-native-value" { visible = css(".field[data-variant=choice-card]:has(#pro-plan:checked):has(#pro-plan-description)") }
+        expect "previous-choice-card-clears" { visible = css("#plus-plan:not(:checked)") }
+        focus "focus-choice-card" { target = css("#pro-plan") }
+        expect "choice-card-owns-focus" { visible = css(".field[data-variant=choice-card]:has(#pro-plan:focus)") }
+        screenshot "radio-choice-card-focused" { path = "components/radio-choice-card-focused.png" }
+
+        focus "focus-dark-preview-control" { target = css(".a3s-preview[aria-label='Radio Group component preview'] [data-preview-control=appearance]") }
+        press "use-dark-preview" { key = "Enter" }
+        expect "dark-preview-active" { visible = css(".a3s-preview[aria-label='Radio Group component preview'][data-preview-scheme=dark]") }
+        focus "restore-focused-radio" { target = css("#r3") }
+        screenshot "radio-selected-focused-dark" { path = "components/radio-selected-focused-dark.png" }
+        accessibility "radio-group-accessibility" { path = "components/radio-group-accessibility.json" interactive = true }
+        console "radio-group-console" { path = "components/radio-group-console.json" clear = false }
+        page_errors "radio-group-page-errors" { path = "components/radio-group-page-errors.json" clear = false }
     }
 
     scenario "radio-group-zh" {
-        name = "Chinese Field preview uses component terminology and keeps Radio interactive"
+        name = "Chinese Radio Group fieldset keeps subscription choices interactive"
         surface = "web"
         timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/components/field.html" }
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/radio-group.html#字段组" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
         expect "monthly-selected" { visible = css("#plan-monthly:checked") }
         check "choose-yearly" { target = label("按年（$99.99/年）") }
         expect "yearly-selected" { visible = css("#plan-yearly:checked") }
@@ -184,36 +508,138 @@ suite "a3s-ui-actions-and-forms" {
         screenshot "field-radio-zh-phone" { path = "components/field-radio-zh-phone.png" }
     }
 
-    scenario "switch" {
-        name = "Switch thumb moves in both directions on a phone viewport"
+    scenario "radio-group-zh-compact" {
+        name = "Chinese Radio Group keeps localized validation and reset recovery usable at phone width"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/components/radio-group.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "localized-public-preview" { visible = css(".a3s-preview[aria-label='单选组组件预览'] .radio-group[role=radiogroup][aria-labelledby=density-label-zh]") }
+        focus "focus-continue" { target = css("#notification-preference-submit-zh") }
+        press "submit-empty-group" { key = "Enter" }
+        expect "localized-invalid-recovery" { visible = css("form[data-radio-group-validation-demo=zh]:has(fieldset[data-invalid]):has(#invalid-email:focus[aria-invalid=true]):has(#invalid-sms[aria-invalid=true]):has(#invalid-both[aria-invalid=true]):has(#notification-preference-error-zh[role=alert]:not([hidden]))") }
+        focus "focus-reset" { target = css("#notification-preference-reset-zh") }
+        press "reset-invalid-group" { key = "Enter" }
+        expect "localized-reset-neutral" { visible = css("form[data-radio-group-validation-demo=zh]:has(fieldset:not([data-invalid])):has(#invalid-email:not(:checked):not([aria-invalid])):has(#invalid-sms:not(:checked):not([aria-invalid])):has(#invalid-both:not(:checked):not([aria-invalid])):has(#notification-preference-error-zh[role=alert][hidden])") }
+        screenshot "radio-group-zh-phone" { path = "components/radio-group-zh-phone.png" }
+        console "radio-group-zh-console" { path = "components/radio-group-zh-console.json" clear = false }
+        page_errors "radio-group-zh-page-errors" { path = "components/radio-group-zh-page-errors.json" clear = false }
+    }
+
+    scenario "switch" {
+        name = "Switch preserves geometry, state, focus, themes, sizes, direction, and touch behavior"
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+
+        focus "focus-default-switch" { target = css("#airplane-mode") }
+        press "enable-default-with-keyboard" { key = "Space" }
+        expect "default-switch-checked" { visible = css("#airplane-mode:checked") }
+        screenshot "switch-keyboard-focus-desktop" { path = "components/switch-keyboard-focus-desktop.png" }
+
+        click "use-dark-preview" { target = css(".a3s-preview[data-preview-component=switch] button[aria-label='Preview in dark mode']") }
+        expect "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=switch][data-preview-scheme=dark]") }
+        focus "refocus-dark-switch" { target = css("#airplane-mode") }
+        press "disable-dark-switch" { key = "Space" }
+        press "restore-dark-switch" { key = "Space" }
+        expect "dark-switch-checked" { visible = css("#airplane-mode:checked") }
+        screenshot "switch-dark-checked-desktop" { path = "components/switch-dark-checked-desktop.png" }
+
+        navigate "disabled-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#disabled" }
+        wait "disabled-state-ready" { visible = css("#switch-disabled-unchecked:disabled") }
+        screenshot "switch-disabled-desktop" { path = "components/switch-disabled-desktop.png" }
+
+        navigate "invalid-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#invalid" }
+        wait "invalid-state-ready" { visible = css("#switch-invalid[aria-invalid=true]") }
+        focus "focus-invalid-switch" { target = css("#switch-invalid") }
+        press "exercise-invalid-switch" { key = "Space" }
+        press "restore-invalid-switch" { key = "Space" }
+        expect "invalid-switch-restored" { visible = css("#switch-invalid[aria-invalid=true]:not(:checked)") }
+        screenshot "switch-invalid-focus-desktop" { path = "components/switch-invalid-focus-desktop.png" }
+
+        navigate "size-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#size" }
+        wait "size-state-ready" { visible = css("#switch-size-sm[data-size=sm]") }
+        focus "focus-small-switch" { target = css("#switch-size-sm") }
+        press "enable-small-switch" { key = "Space" }
+        expect "small-switch-checked" { visible = css("#switch-size-sm:checked") }
+        screenshot "switch-small-focus-desktop" { path = "components/switch-small-focus-desktop.png" }
+
+        navigate "rtl-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#rtl" }
+        wait "rtl-state-ready" { visible = css("#switch-rtl:checked:dir(rtl)") }
+        focus "focus-rtl-switch" { target = css("#switch-rtl") }
+        press "disable-rtl-switch" { key = "Space" }
+        expect "rtl-switch-unchecked" { visible = css("#switch-rtl:not(:checked):dir(rtl)") }
+        screenshot "switch-rtl-unchecked-focus-desktop" { path = "components/switch-rtl-unchecked-focus-desktop.png" }
+        press "restore-rtl-switch" { key = "Space" }
+        expect "rtl-switch-restored" { visible = css("#switch-rtl:checked:dir(rtl)") }
+        screenshot "switch-rtl-checked-focus-desktop" { path = "components/switch-rtl-checked-focus-desktop.png" }
+
         viewport "phone" { width = 390 height = 844 }
+        navigate "phone-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
+        wait "phone-state-ready" { visible = css("#airplane-mode:not(:checked)") }
         check "enable-airplane-mode" { target = label("Airplane Mode") }
         expect "switch-checked" { visible = css("#airplane-mode:checked") }
         screenshot "switch-checked-phone" { path = "components/switch-checked-phone.png" }
         click "disable-airplane-mode" { target = label("Airplane Mode") }
         expect "switch-unchecked" { visible = css("#airplane-mode:not(:checked)") }
         screenshot "switch-unchecked-phone" { path = "components/switch-unchecked-phone.png" }
+        accessibility "switch-accessibility" { path = "components/switch-accessibility.json" interactive = true }
+        console "switch-console" { path = "components/switch-console.json" clear = false }
+        page_errors "switch-page-errors" { path = "components/switch-page-errors.json" clear = false }
     }
 
     scenario "slider" {
-        name = "Slider thumb reaches both keyboard endpoints"
+        name = "Slider preserves value, units, keyboard direction, disabled guidance, focus, themes, and responsive layouts"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
-        focus "focus-range" { target = css(".a3s-preview[data-preview-component=slider] input[type=range]") }
+        expect "primary-slider-is-named-and-unit-aware" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
+        focus "focus-primary-slider" { target = css("#slider-primary") }
         press "move-to-start" { key = "Home" }
-        screenshot "slider-start-phone" { path = "components/slider-start-phone.png" }
+        expect "start-value-is-visible" { text = "0 °C" }
+        expect "start-value-remains-focused" { visible = css("#slider-primary:focus") }
+        press "move-one-step" { key = "ArrowRight" }
+        expect "intermediate-value-is-visible" { text = "1 °C" }
         press "move-to-end" { key = "End" }
-        expect "slider-focused" { visible = css(".a3s-preview[data-preview-component=slider] input[type=range]:focus") }
-        screenshot "slider-end-phone" { path = "components/slider-end-phone.png" }
+        expect "end-value-is-visible" { text = "100 °C" }
+        expect "end-value-remains-focused" { visible = css("#slider-primary:focus") }
+        screenshot "slider-end-focused-desktop" { path = "components/slider-end-focused-desktop.png" }
+
+        click "use-dark-preview" { target = css(".a3s-preview:has(#slider-primary) [data-preview-control=appearance]") }
+        expect "dark-preview-active" { visible = css(".a3s-preview:has(#slider-primary)[data-preview-scheme=dark] .a3s-preview__canvas[data-preview-scheme=dark]") }
+        focus "refocus-dark-slider" { target = css("#slider-primary") }
+        screenshot "slider-end-focused-dark" { path = "components/slider-end-focused-dark.png" }
+
+        expect "disabled-value-remains-readable" { visible = css("#slider-disabled:disabled[aria-valuetext='50 degrees Celsius']") }
+        expect "disabled-state-explains-why" { text = "This limit is managed by the workspace policy." }
+
+        focus "focus-rtl-slider" { target = css("#slider-rtl") }
+        press "rtl-arrow-right-decreases" { key = "ArrowRight" }
+        expect "rtl-decreased-value" { visible = css("#slider-rtl:focus[aria-valuetext='49 بالمائة']") }
+        press "rtl-arrow-left-increases" { key = "ArrowLeft" }
+        expect "rtl-restored-value" { visible = css("#slider-rtl:focus[aria-valuetext='50 بالمائة']") }
+        screenshot "slider-rtl-focused-desktop" { path = "components/slider-rtl-focused-desktop.png" }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "reset-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
+        wait "phone-ready" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
+        focus "focus-slider-on-phone" { target = css("#slider-primary") }
+        screenshot "slider-focused-phone" { path = "components/slider-focused-phone.png" }
+
+        viewport "zoom-equivalent" { width = 640 height = 900 }
+        expect "slider-survives-zoom-equivalent-layout" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
+        screenshot "slider-zoom-equivalent" { path = "components/slider-zoom-equivalent.png" }
+        accessibility "slider-accessibility" { path = "components/slider-accessibility.json" interactive = true }
+        console "slider-console" { path = "components/slider-console.json" clear = false }
+        page_errors "slider-page-errors" { path = "components/slider-page-errors.json" clear = false }
     }
 
     scenario "label" {

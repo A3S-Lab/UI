@@ -1,1090 +1,379 @@
 # Input Group
 
-Input Group combines a text input with prefixes, suffixes, icons, or tightly related actions inside one input boundary.
+Input Group presents one editable value and the context needed to interpret or act on that value inside one continuous boundary. It does not replace Field, validation, suggestions, rich editing, or application state.
 
-<Preview class="w-full max-w-xs">
-  <div class="input-group">
-    <input type="search" aria-label="Search" placeholder="Search..." />
-    <span data-align="start" aria-hidden="true">
-      <svg
-        class="lucide lucide-search"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+<Preview class="w-full max-w-xl" title="Project search">
+  <div class="field w-full">
+    <label for="input-group-project-search-en" dir="auto">Search projects</label>
+    <div class="input-group">
+      <input
+        id="input-group-project-search-en"
+        type="search"
+        name="projectQuery"
+        dir="auto"
+        autocomplete="off"
+        aria-describedby="input-group-project-search-help-en"
+        placeholder="Project name or repository path"
+        oninput="if (event.isComposing) return; this.parentElement.querySelector('[data-input-group-status]').textContent = this.value ? '8 matching projects' : 'No query entered'"
+      />
+      <span data-align="inline-start" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5" /><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      </span>
+      <span
+        id="input-group-project-search-status-en"
+        data-align="inline-end"
+        data-input-group-status
+        role="status"
+        aria-live="polite"
+        dir="auto"
       >
-        <path d="m21 21-4.34-4.34" />
-        <circle cx="11" cy="11" r="8" />
-      </svg>
-    </span>
-    <span data-align="end">12 results</span>
+        No query entered
+      </span>
+    </div>
+    <p id="input-group-project-search-help-en" data-field-description dir="auto">
+      Search by project name or repository path.
+    </p>
   </div>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and one complete A3S UI style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Input Group component CSS, and one style pack.
+For component-level loading, import the base styles, Input Group structure, Field structure, one visual style, and the small behavior controller:
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/input-group.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/input-group";
+```
 
-  </Step>
-  <Step title="Add your input group HTML">
+Use one direct primary control. Keep its persistent label, ordinary guidance, and current error in the surrounding Field. The root has no default widget role because the native control already owns the name, value, keyboard behavior, and form semantics.
 
 ```html
-<div class="input-group">
-  <input type="search" aria-label="Search" placeholder="Search..." />
-  <span data-align="start" aria-hidden="true"> <!-- icon --></span>
-  <span data-align="end">12 results</span>
+<div class="field">
+  <label for="repository-filter">Repository filter</label>
+  <div class="input-group">
+    <input id="repository-filter" name="repositoryFilter" aria-describedby="repository-filter-help" />
+    <span data-align="inline-start" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none">...</svg></span>
+    <span data-align="inline-end">8 matches</span>
+  </div>
+  <p id="repository-filter-help" data-field-description>Search by repository name or path.</p>
 </div>
 ```
 
-  </Step>
-</Steps>
+Use a standalone Input or Textarea when no content needs the same boundary. Use Combobox for selectable suggestions, an editor for structured content, and Task Composer for mentions, attachments, tools, and submission state.
 
-Add `class="input-group"` to the root. Native controls stay semantic and become borderless children inside that shell.
+### Parameters
 
-<dl>
-  <dt>
-    <code>&lt;div class="input-group"&gt;</code>
-  </dt>
-  <dd>
-    The root shell. Add <code>role="group"</code> and an accessible label only
-    when the group itself needs to be named.
-    <dl>
-      <dt>
-        <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>,{" "}
-        <code>&lt;select&gt;</code>
-      </dt>
-      <dd>
-        The native control. Use <code>aria-invalid="true"</code> for invalid
-        state and <code>disabled</code> for disabled state.
-      </dd>
-      <dt>
-        <code>&lt;span&gt;</code>, <code>&lt;svg&gt;</code>,{" "}
-        <code>&lt;kbd&gt;</code>
-      </dt>
-      <dd>
-        Decorative or helper content. Use <code>aria-hidden="true"</code> for
-        decorative icons.
-      </dd>
-      <dt>
-        <code>&lt;button&gt;</code>, <code>&lt;div role="group"&gt;</code>
-      </dt>
-      <dd>
-        Interactive actions. Use <code>role="group"</code> with an accessible
-        label when multiple related actions share one side of the input.
-      </dd>
-      <dt>
-        <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>
-      </dt>
-      <dd>Header or footer addon rows for vertically oriented input groups.</dd>
-      <dt>
-        <code>data-align="start|end"</code>
-      </dt>
-      <dd>
-        Optional visual placement. Values use logical direction, so start/end
-        automatically flip in RTL. Use <code>data-orientation="vertical"</code>{" "}
-        on the root for header/footer layouts.
-      </dd>
-      <dt>
-        <code>[data-control]</code>
-      </dt>
-      <dd>
-        Escape hatch for custom controls that are not native <code>input</code>,{" "}
-        <code>textarea</code>, or <code>select</code>.
-      </dd>
-    </dl>
-  </dd>
-</dl>
+| Parameter | Purpose |
+| --- | --- |
+| `.input-group` | Provides the shared visual and pointer-focus boundary; it does not become a form control |
+| Direct `input`, `textarea`, `select`, or `[data-control]` | Supplies the one primary value, native semantics, focus, and submission behavior |
+| `data-align="inline-start|inline-end"` | Places a concise prefix, suffix, status, shortcut, or bounded action using logical direction |
+| `data-align="block-start|block-end"` | Moves a longer addon to a block row while preserving DOM and keyboard order |
+| `data-orientation="vertical"` | Retains compatibility for authored vertical groups; block alignment already produces the layout |
+| `aria-busy="true"` | Identifies in-progress host work without disabling the editable value |
+| `data-disabled`, `data-readonly` | Optional shell styling mirrors; native `disabled` or `readonly` remains the semantic source of truth |
+| `data-input-group-status` | Identifies bounded result or progress text; add `role="status"` only when changes should be announced |
 
-## Examples
+Legacy `start` and `end` remain aliases for `inline-start` and `inline-end`. New markup should use the explicit logical values.
 
-Use `data-align="start|end"` on addon wrappers to position them inline. Use `data-orientation="vertical"` with `header` or `footer` for block placement.
+## Framework usage
 
-### Inline start
-
-<Preview class="w-full max-w-sm">
-  <div class="field">
-    <label for="inline-start-input">Input</label>
-    <div class="input-group">
-      <input id="inline-start-input" type="text" placeholder="Search..." />
-      <span role="group" data-align="start" aria-hidden="true">
-        <svg
-          class="text-muted-foreground lucide lucide-search"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m21 21-4.34-4.34" />
-          <circle cx="11" cy="11" r="8" />
-        </svg>
-      </span>
-    </div>
-    <p>Icon positioned at the start.</p>
-  </div>
-</Preview>
-
-### Inline end
-
-<Preview class="w-full max-w-sm">
-  <div class="field">
-    <label for="inline-end-input">Input</label>
-    <div class="input-group">
-      <input
-        id="inline-end-input"
-        type="password"
-        placeholder="Enter password"
-      />
-      <span role="group" data-align="end" aria-hidden="true">
-        <svg
-          class="lucide lucide-eye-off"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
-          <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
-          <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
-          <path d="m2 2 20 20" />
-        </svg>
-      </span>
-    </div>
-    <p>Icon positioned at the end.</p>
-  </div>
-</Preview>
-
-### Block start
-
-<Preview class="w-full max-w-sm">
-  <div
-    role="group"
-    aria-label="Block start input group examples"
-    class="fieldset"
-  >
-    <div class="field">
-      <label for="block-start-input">Input</label>
-      <div class="input-group" data-orientation="vertical">
-        <input
-          id="block-start-input"
-          type="text"
-          placeholder="Enter your name"
-        />
-        <header data-align="start">
-          <span>Full Name</span>
-        </header>
-      </div>
-      <p>Header positioned above the input.</p>
-    </div>
-    <div class="field">
-      <label for="block-start-textarea">Textarea</label>
-      <div class="input-group" data-orientation="vertical">
-        <textarea
-          id="block-start-textarea"
-          class="font-mono text-sm"
-          placeholder="console.log('Hello, world!');"
-        ></textarea>
-        <header data-align="start">
-          <svg
-            class="text-muted-foreground lucide lucide-file-code"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
-            <path d="M14 2v5a1 1 0 0 0 1 1h5" />
-            <path d="M10 12.5 8 15l2 2.5" />
-            <path d="m14 12.5 2 2.5-2 2.5" />
-          </svg>
-          <span class="font-mono">script.js</span>
-          <button
-            type="button"
-            class="btn ml-auto size-6"
-            data-variant="ghost"
-            data-size="icon-sm"
-            aria-label="Copy"
-          >
-            <svg
-              class="lucide lucide-copy"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-            </svg>
-          </button>
-        </header>
-      </div>
-      <p>Header positioned above the textarea.</p>
-    </div>
-  </div>
-</Preview>
-
-### Block end
-
-<Preview class="w-full max-w-sm">
-  <div
-    role="group"
-    aria-label="Block end input group examples"
-    class="fieldset"
-  >
-    <div class="field">
-      <label for="block-end-input">Input</label>
-      <div class="input-group" data-orientation="vertical">
-        <input id="block-end-input" type="text" placeholder="Enter amount" />
-        <footer data-align="end">
-          <span>USD</span>
-        </footer>
-      </div>
-      <p>Footer positioned below the input.</p>
-    </div>
-    <div class="field">
-      <label for="block-end-textarea">Textarea</label>
-      <div class="input-group" data-orientation="vertical">
-        <textarea
-          id="block-end-textarea"
-          placeholder="Write a comment..."
-        ></textarea>
-        <footer data-align="end">
-          <span>0/280</span>
-          <button type="button" class="btn ml-auto" data-size="sm">
-            Post
-          </button>
-        </footer>
-      </div>
-      <p>Footer positioned below the textarea.</p>
-    </div>
-  </div>
-</Preview>
-
-### Icon
-
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-6">
-    <div class="input-group">
-      <input type="search" aria-label="Search" placeholder="Search..." />
-      <span data-align="start" aria-hidden="true">
-        <svg
-          class="lucide lucide-search"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m21 21-4.34-4.34" />
-          <circle cx="11" cy="11" r="8" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input
-        type="email"
-        aria-label="Email address"
-        placeholder="Enter your email"
-      />
-      <span data-align="start" aria-hidden="true">
-        <svg
-          class="lucide lucide-mail"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input type="text" aria-label="Card number" placeholder="Card number" />
-      <span data-align="start" aria-hidden="true">
-        <svg
-          class="lucide lucide-credit-card"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect width="20" height="14" x="2" y="5" rx="2" />
-          <line x1="2" x2="22" y1="10" y2="10" />
-        </svg>
-      </span>
-      <span data-align="end" aria-hidden="true">
-        <svg
-          class="lucide lucide-check"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input type="text" aria-label="Card number" placeholder="Card number" />
-      <span data-align="end" aria-hidden="true">
-        <svg
-          class="lucide lucide-star"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-        </svg>
-        <svg
-          class="lucide lucide-info"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 16v-4" />
-          <path d="M12 8h.01" />
-        </svg>
-      </span>
-    </div>
-  </div>
-</Preview>
-
-### Text
-
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-6">
-    <div class="input-group">
-      <input type="text" aria-label="Amount" placeholder="0.00" />
-      <span data-align="start">$</span>
-      <span data-align="end">USD</span>
-    </div>
-    <div class="input-group">
-      <input type="text" aria-label="Domain name" placeholder="example.com" />
-      <span data-align="start">https://</span>
-      <span data-align="end">.com</span>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Username"
-        placeholder="Enter your username"
-      />
-      <span data-align="end">@company.com</span>
-    </div>
-    <div class="input-group" data-orientation="vertical">
-      <textarea
-        aria-label="Message"
-        placeholder="Enter your message"
-      ></textarea>
-      <footer data-align="end">
-        <span class="text-xs text-muted-foreground">120 characters left</span>
-      </footer>
-    </div>
-  </div>
-</Preview>
-
-### Button
-
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-6">
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Profile URL"
-        readOnly
-        placeholder="https://x.com/shadcn"
-      />
-      <button
-        type="button"
-        class="btn"
-        data-variant="ghost"
-        data-size="icon-xs"
-        data-align="end"
-        aria-label="Copy"
-        title="Copy"
-      >
-        <svg
-          class="lucide lucide-copy"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-        </svg>
-      </button>
-    </div>
-    <div class="input-group [--radius:9999px]">
-      <button
-        type="button"
-        class="btn"
-        data-variant="secondary"
-        data-size="icon-xs"
-        data-align="start"
-        aria-label="Connection information"
-      >
-        <svg
-          class="lucide lucide-info"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 16v-4" />
-          <path d="M12 8h.01" />
-        </svg>
-      </button>
-      <span data-align="start" class="text-muted-foreground">
-        https://
-      </span>
-      <input type="text" id="input-secure-19" aria-label="Secure URL" />
-      <button
-        type="button"
-        class="btn"
-        data-variant="ghost"
-        data-size="icon-xs"
-        data-align="end"
-        aria-label="Favorite"
-      >
-        <svg
-          class="lucide lucide-star"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-        </svg>
-      </button>
-    </div>
-    <div class="input-group">
-      <input
-        type="search"
-        aria-label="Search"
-        placeholder="Type to search..."
-      />
-      <button
-        type="button"
-        class="btn"
-        data-size="xs"
-        data-variant="secondary"
-        data-align="end"
-      >
-        Search
-      </button>
-    </div>
-  </div>
-</Preview>
-
-### Kbd
-
-<Preview class="w-full max-w-sm">
+<FrameworkTabs
+  htmlInstall="npm install @a3s-lab/ui"
+  reactInstall="npm install @a3s-lab/ui react react-dom"
+  vueInstall="npm install @a3s-lab/ui vue"
+  html={`<div class="field">
+  <label for="input-group-project-search-html" dir="auto">Search projects</label>
   <div class="input-group">
-    <input type="search" aria-label="Search" placeholder="Search..." />
-    <span data-align="start" aria-hidden="true">
-      <svg
-        class="lucide lucide-search"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="m21 21-4.34-4.34" />
-        <circle cx="11" cy="11" r="8" />
-      </svg>
-    </span>
-    <span data-align="end">
-      <kbd class="kbd">⌘K</kbd>
-    </span>
+    <input id="input-group-project-search-html" type="search" name="projectQuery" autocomplete="off" dir="auto" aria-describedby="input-group-project-search-help-html">
+    <span data-align="inline-start" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5"></circle><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></span>
+    <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">No query entered</span>
   </div>
-</Preview>
+  <p id="input-group-project-search-help-html" data-field-description dir="auto">Search by project name or repository path.</p>
+</div>
+<script type="module">
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/input-group";
+const input = document.querySelector("#input-group-project-search-html");
+const status = input.parentElement.querySelector("[data-input-group-status]");
+input.addEventListener("input", event => {
+  if (event.isComposing) return;
+  status.textContent = event.currentTarget.value ? "8 matching projects" : "No query entered";
+});
+input.addEventListener("change", event => {
+  saveProjectQuery(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
+import { InputGroup, useInputGroup } from "@a3s-lab/ui/react";
 
-### Dropdown
+export function ProjectSearch() {
+  const [query, setQuery] = useState("");
+  const group = useInputGroup();
 
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-6">
-    <div class="input-group">
-      <input type="text" aria-label="File name" placeholder="Enter file name" />
-      <div id="dropdown-menu-601971" class="dropdown-menu" data-align="end">
-        <button
-          type="button"
-          id="dropdown-menu-601971-trigger"
-          aria-haspopup="menu"
-          aria-controls="dropdown-menu-601971-menu"
-          aria-expanded="false"
-          class="btn"
-          data-variant="ghost"
-          data-size="icon-xs"
-          aria-label="Open file actions"
-        >
-          <svg
-            class="lucide lucide-ellipsis"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="1" />
-            <circle cx="19" cy="12" r="1" />
-            <circle cx="5" cy="12" r="1" />
-          </svg>
-        </button>
-        <div
-          id="dropdown-menu-601971-popover"
-          data-popover
-          aria-hidden="true"
-          data-align="end"
-          class="min-w-32"
-        >
-          <div
-            role="menu"
-            id="dropdown-menu-601971-menu"
-            aria-labelledby="dropdown-menu-601971-trigger"
-          >
-            <div id="dropdown-menu-601971-items-1" role="menuitem">
-              Settings
-            </div>
-            <div id="dropdown-menu-601971-items-2" role="menuitem">
-              Copy path
-            </div>
-            <div id="dropdown-menu-601971-items-3" role="menuitem">
-              Open location
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="input-group [--radius:1rem]">
-      <input
-        type="text"
-        aria-label="Search query"
-        placeholder="Enter search query"
-      />
-      <div id="dropdown-menu-689868" class="dropdown-menu" data-align="end">
-        <button
-          type="button"
-          id="dropdown-menu-689868-trigger"
-          aria-haspopup="menu"
-          aria-controls="dropdown-menu-689868-menu"
-          aria-expanded="false"
-          class="btn pr-1.5! text-xs"
-          data-variant="ghost"
-          data-size="xs"
-        >
-          Search In...
-          <svg
-            class="size-3 lucide lucide-chevron-down"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </button>
-        <div
-          id="dropdown-menu-689868-popover"
-          data-popover
-          aria-hidden="true"
-          data-align="end"
-          class="min-w-32 [--radius:0.95rem]"
-        >
-          <div
-            role="menu"
-            id="dropdown-menu-689868-menu"
-            aria-labelledby="dropdown-menu-689868-trigger"
-          >
-            <div id="dropdown-menu-689868-items-1" role="menuitem">
-              Documentation
-            </div>
-            <div id="dropdown-menu-689868-items-2" role="menuitem">
-              Blog Posts
-            </div>
-            <div id="dropdown-menu-689868-items-3" role="menuitem">
-              Changelog
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</Preview>
-
-### Spinner
-
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-6">
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Search status"
-        placeholder="Searching..."
-      />
-      <span data-align="end">
-        <svg
-          aria-label="Loading"
-          role="status"
-          class="animate-spin lucide lucide-loader-circle"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Processing status"
-        placeholder="Processing..."
-      />
-      <span data-align="start">
-        <svg
-          aria-label="Loading"
-          role="status"
-          class="animate-spin lucide lucide-loader-circle"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Save status"
-        placeholder="Saving changes..."
-      />
-      <span data-align="end">
-        Saving...
-        <svg
-          aria-label="Loading"
-          role="status"
-          class="animate-spin lucide lucide-loader-circle"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="Refresh status"
-        placeholder="Refreshing data..."
-      />
-      <span data-align="start" aria-hidden="true">
-        <svg
-          class="animate-spin lucide lucide-loader"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 2v4" />
-          <path d="m16.2 7.8 2.9-2.9" />
-          <path d="M18 12h4" />
-          <path d="m16.2 16.2 2.9 2.9" />
-          <path d="M12 18v4" />
-          <path d="m4.9 19.1 2.9-2.9" />
-          <path d="M2 12h4" />
-          <path d="m4.9 4.9 2.9 2.9" />
-        </svg>
-      </span>
-      <span data-align="end" class="text-muted-foreground">
-        Please wait...
-      </span>
-    </div>
-  </div>
-</Preview>
-
-### Textarea
-
-<Preview class="w-full max-w-md">
-  <div class="input-group min-h-[200px]" data-orientation="vertical">
-    <textarea
-      aria-label="Code editor"
-      placeholder="console.log('Hello, world!');"
-    ></textarea>
-    <footer data-align="end" class="border-t">
-      <span>Line 1, Column 1</span>
-      <button type="button" class="btn ml-auto" data-size="sm">
-        Run
-        <svg
-          class="lucide lucide-corner-down-left"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M20 4v7a4 4 0 0 1-4 4H4" />
-          <path d="m9 10-5 5 5 5" />
-        </svg>
-      </button>
-    </footer>
-    <header data-align="start" class="border-b">
-      <svg
-        class="text-muted-foreground lucide lucide-file-code"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
-        <path d="M14 2v5a1 1 0 0 0 1 1h5" />
-        <path d="M10 12.5 8 15l2 2.5" />
-        <path d="m14 12.5 2 2.5-2 2.5" />
-      </svg>
-      <span>script.js</span>
-      <div role="group" aria-label="File actions" class="ml-auto flex gap-1">
-        <button
-          type="button"
-          class="btn"
-          data-variant="ghost"
-          data-size="icon-xs"
-          aria-label="Refresh file"
-        >
-          <svg
-            class="lucide lucide-refresh-ccw"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-            <path d="M3 3v5h5" />
-            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-            <path d="M16 16h5v5" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          class="btn"
-          data-variant="ghost"
-          data-size="icon-xs"
-          aria-label="Copy file"
-        >
-          <svg
-            class="lucide lucide-copy"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-          </svg>
-        </button>
-      </div>
-    </header>
-  </div>
-</Preview>
-
-### Custom input
-
-<Preview class="w-full max-w-sm">
-  <div class="input-group" data-orientation="vertical">
-    <textarea
-      data-control
-      aria-label="Message"
-      placeholder="Autoresize textarea..."
-      class="field-sizing-content min-h-16 resize-none"
-    ></textarea>
-    <footer data-align="end">
-      <button type="button" class="btn ml-auto" data-size="sm">
-        Submit
-      </button>
-    </footer>
-  </div>
-</Preview>
-
-### RTL
-
-<Preview class="w-full max-w-sm">
-  <div dir="rtl" class="grid gap-6">
-    <div class="input-group">
-      <input type="text" aria-label="بحث" placeholder="بحث..." />
-      <span role="group" data-align="start" aria-hidden="true">
-        <svg
-          class="lucide lucide-search"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m21 21-4.34-4.34" />
-          <circle cx="11" cy="11" r="8" />
-        </svg>
-      </span>
-      <span role="group" data-align="end">
-        ١٢ نتيجة
-      </span>
-    </div>
-    <div class="input-group">
-      <input type="text" aria-label="حالة البحث" placeholder="جاري البحث..." />
-      <span role="group" data-align="end">
-        <svg
-          aria-label="Loading"
-          role="status"
-          class="animate-spin lucide lucide-loader-circle"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        aria-label="حالة الحفظ"
-        placeholder="جاري حفظ التغييرات..."
-      />
-      <span role="group" data-align="end">
-        جاري الحفظ...
-        <svg
-          aria-label="Loading"
-          role="status"
-          class="animate-spin lucide lucide-loader-circle"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    </div>
-    <div class="field">
-      <label for="rtl-textarea">منطقة النص</label>
-      <div class="input-group" data-orientation="vertical">
-        <textarea id="rtl-textarea" placeholder="اكتب تعليقًا..."></textarea>
-        <footer data-align="end">
-          <span>٠/٢٨٠</span>
-          <button type="button" class="btn ms-auto" data-size="sm">
-            نشر
-          </button>
-        </footer>
-      </div>
-      <p>تذييل موضع أسفل منطقة النص.</p>
-    </div>
-  </div>
-</Preview>
-
-## React
-
-```tsx
-import { InputGroup } from "@a3s-lab/ui/react";
-
-export function Example() {
   return (
-    <InputGroup>
-      <input type="search" aria-label="Search" placeholder="Search..." />
-      <span data-align="start" aria-hidden="true">
-        <svg viewBox="0 0 16 16" width="16" height="16">
-          <circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" />
-          <path d="m10 10 3 3" stroke="currentColor" />
-        </svg>
-      </span>
-      <span data-align="end">12 results</span>
-    </InputGroup>
+    <div className="field">
+      <label htmlFor="input-group-project-search-react" dir="auto">Search projects</label>
+      <InputGroup ref={group.ref}>
+        <input
+          id="input-group-project-search-react"
+          type="search"
+          name="projectQuery"
+          autoComplete="off"
+          dir="auto"
+          aria-describedby="input-group-project-search-help-react"
+          value={query}
+          onChange={event => setQuery(event.currentTarget.value)}
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <SearchIcon />
+        </span>
+        <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">
+          {query ? "8 matching projects" : "No query entered"}
+        </span>
+      </InputGroup>
+      <p id="input-group-project-search-help-react" data-field-description dir="auto">
+        Search by project name or repository path.
+      </p>
+    </div>
   );
-}
-```
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { InputGroup, useInputGroup } from "@a3s-lab/ui/vue";
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
-
-## Vue
-
-```vue
-<script setup lang="ts">
-import { InputGroup } from "@a3s-lab/ui/vue";
+const query = ref("");
+const group = useInputGroup();
+const componentRef = group.componentRef;
 </script>
 
 <template>
-  <InputGroup>
-    <input type="search" aria-label="Search" placeholder="Search..." />
-    <span data-align="start" aria-hidden="true"
-      ><svg viewBox="0 0 16 16" width="16" height="16">
-        <circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" />
-        <path d="m10 10 3 3" stroke="currentColor" /></svg
-    ></span>
-    <span data-align="end">12 results</span>
-  </InputGroup>
-</template>
-```
+  <div class="field">
+    <label for="input-group-project-search-vue" dir="auto">Search projects</label>
+    <InputGroup ref="componentRef">
+      <input
+        id="input-group-project-search-vue"
+        v-model="query"
+        type="search"
+        name="projectQuery"
+        autocomplete="off"
+        dir="auto"
+        aria-describedby="input-group-project-search-help-vue"
+      >
+      <span data-align="inline-start" aria-hidden="true"><SearchIcon /></span>
+      <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">
+        {{ query ? "8 matching projects" : "No query entered" }}
+      </span>
+    </InputGroup>
+    <p id="input-group-project-search-help-vue" data-field-description dir="auto">
+      Search by project name or repository path.
+    </p>
+  </div>
+</template>`}
+/>
 
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+## States and variants
+
+Empty and ready are ordinary value states. Invalid begins after a validation attempt. Loading preserves the current value and editability. Disabled and read-only use different native behavior and must never be reduced to the same dimmed appearance.
+
+### Validation and recovery
+
+Input Group reflects validity but does not invent validation policy. Preserve the attempted value, focus the invalid control, name the exact correction outside the shell, and add the error ID to `aria-describedby`. Clear stale error semantics after a valid edit or reset. Do not validate while an IME composition is active.
+
+<Preview class="w-full max-w-xl" title="Workspace address">
+  <form
+    class="grid w-full gap-4"
+    data-input-group-validation-demo="en"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#input-group-validation-en'); const field = input.closest('.field'); const error = this.querySelector('#input-group-validation-error-en'); if (input.checkValidity()) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'input-group-validation-help-en input-group-validation-error-en'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#input-group-validation-en'); const field = input.closest('.field'); const error = this.querySelector('#input-group-validation-error-en'); field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'input-group-validation-help-en'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="input-group-validation-en">Workspace address</label>
+      <div class="input-group">
+        <input
+          id="input-group-validation-en"
+          type="text"
+          name="workspaceAddress"
+          required
+          minlength="3"
+          maxlength="24"
+          pattern="[a-z0-9\-]+"
+          autocomplete="off"
+          aria-describedby="input-group-validation-help-en"
+          placeholder="runtime-lab"
+          oninput="if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); const error = field.querySelector('[role=alert]'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'input-group-validation-help-en'); error.hidden = true"
+        />
+        <span data-align="inline-start" aria-hidden="true">a3s.dev/</span>
+      </div>
+      <p id="input-group-validation-help-en" data-field-description>
+        Use 3 to 24 lowercase letters, numbers, or hyphens.
+      </p>
+      <p id="input-group-validation-error-en" data-field-message role="alert" hidden>
+        Use 3 to 24 lowercase letters, numbers, or hyphens.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">Save address</button>
+      <button class="btn" type="reset" data-variant="outline">Reset</button>
+    </div>
+  </form>
+</Preview>
+
+Server validation, sanitization, authorization, and stale-response handling remain required. Client constraints only improve local recovery.
+
+### Bounded actions
+
+An action belongs inside the boundary only when it directly inspects, reveals, copies, clears, chooses a unit for, or submits the same value. Interactive descendants retain their own focus and activation; the shell controller never redirects their click.
+
+<Preview class="w-full max-w-xl" title="Repository URL">
+  <div class="field w-full">
+    <label for="input-group-repository-url-en">Repository URL</label>
+    <div class="input-group">
+      <input
+        id="input-group-repository-url-en"
+        type="url"
+        value="https://github.com/a3s-lab/ui"
+        readonly
+        aria-describedby="input-group-repository-url-help-en"
+      />
+      <span data-align="inline-start" aria-hidden="true">https://</span>
+      <button
+        class="btn"
+        type="button"
+        data-align="inline-end"
+        data-variant="ghost"
+        aria-label="Copy repository URL"
+        onclick="this.closest('.field').querySelector('#input-group-copy-status-en').textContent = 'Copy requested'"
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="6.5" y="6.5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" /><path d="M5 12.5H4.5A1.5 1.5 0 0 1 3 11V4.5A1.5 1.5 0 0 1 4.5 3H11a1.5 1.5 0 0 1 1.5 1.5V5" stroke="currentColor" stroke-width="1.4" /></svg>
+      </button>
+    </div>
+    <p id="input-group-repository-url-help-en" data-field-description>
+      Read-only values remain selectable and included in form submission.
+    </p>
+    <p id="input-group-copy-status-en" class="text-muted-foreground text-sm" aria-live="polite">
+      Ready to copy
+    </p>
+  </div>
+</Preview>
+
+### Disabled and read-only
+
+Disabled removes focus, editing, validation, and form submission. Read-only preserves focus, selection, copying, and submission. Keep both legible and explain why the value cannot be changed.
+
+<Preview class="w-full max-w-xl" title="Availability semantics">
+  <form class="grid w-full gap-5" data-input-group-availability="en">
+    <div class="field" data-disabled="true">
+      <label for="input-group-disabled-en">Archived project filter</label>
+      <div class="input-group" data-input-group-disabled data-disabled>
+        <input
+          id="input-group-disabled-en"
+          name="archivedFilter"
+          value="archived-runtime"
+          aria-describedby="input-group-disabled-help-en"
+          disabled
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 6.5h12v9H4zM3 3.5h14v3H3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+        </span>
+      </div>
+      <p id="input-group-disabled-help-en" data-field-description>
+        Archived projects keep their audit value but cannot change or submit it.
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="input-group-readonly-en">Approved release filter</label>
+      <div class="input-group" data-input-group-readonly data-readonly>
+        <input
+          id="input-group-readonly-en"
+          name="approvedFilter"
+          value="release-runtime"
+          aria-describedby="input-group-readonly-help-en"
+          readonly
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="8" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" /><path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" /></svg>
+        </span>
+      </div>
+      <p id="input-group-readonly-help-en" data-field-description>
+        Release policy locks editing; the value remains selectable and submitted.
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### Bounded multiline input
+
+A native Textarea may share the boundary with one compact count or directly related action. The editing viewport stays bounded, scrolls internally after large pastes, and supports vertical native resize. Use an editor or Task Composer when the task needs structure, syntax, mentions, attachments, or a toolbar.
+
+<Preview class="w-full max-w-xl" title="Release handoff">
+  <div class="field w-full">
+    <label for="input-group-handoff-en">Release handoff</label>
+    <div class="input-group" data-orientation="vertical">
+      <textarea
+        id="input-group-handoff-en"
+        name="releaseHandoff"
+        rows="5"
+        maxlength="6000"
+        aria-describedby="input-group-handoff-help-en"
+        placeholder="Describe verification evidence and the rollback path"
+        oninput="this.parentElement.querySelector('[data-input-group-status]').textContent = this.value.length + ' / 6000 characters'"
+      ></textarea>
+      <span data-align="block-end" data-input-group-status>0 / 6000 characters</span>
+    </div>
+    <p id="input-group-handoff-help-en" data-field-description>
+      Include the verification result and the exact recovery steps to use after failure.
+    </p>
+  </div>
+</Preview>
+
+### RTL and long content
+
+Logical alignment follows the surrounding writing direction. Technical values such as URLs or paths may set a local left-to-right direction. Inline addons truncate before they can widen the document; move meaningful long guidance outside the shell or to a block addon.
+
+<Preview class="w-full max-w-xl" title="RTL project search">
+  <div class="field w-full" dir="rtl">
+    <label for="input-group-rtl-en">البحث في المشاريع</label>
+    <div class="input-group">
+      <input
+        id="input-group-rtl-en"
+        type="search"
+        dir="auto"
+        aria-describedby="input-group-rtl-help-en"
+        placeholder="اسم المشروع أو مسار المستودع"
+      />
+      <span data-align="inline-start" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5" /><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      </span>
+      <span data-align="inline-end">8 مشاريع مطابقة</span>
+    </div>
+    <p id="input-group-rtl-help-en" data-field-description>
+      ابحث باسم المشروع أو مسار المستودع.
+    </p>
+  </div>
+</Preview>
+
+## Accessibility
+
+- Keep one persistent visible label and associate ordinary guidance through `aria-describedby`. Placeholder text never provides the only name.
+- Leave the root without a widget role unless the composition has a real group relationship that the control and Field cannot express.
+- Preserve native input, selection, paste, undo, search clearing, password-manager, autocomplete, and IME behavior.
+- Use exact accessible names for icon-only actions. On coarse pointers, editable text stays at least 16px and actions provide at least a 44 by 44 CSS-pixel target.
+- Invalid state needs the native constraint, `aria-invalid="true"`, a specific error, and a recovery path. Color alone is insufficient.
+- Loading keeps the value and focus stable, uses one bounded status message, and must not let a stale response overwrite newer input.
+- Forced-colors mode replaces inset focus styling with a system `Highlight` outline. Test real mobile keyboards, physical CJK input methods, 200% zoom, touch selection, Windows forced colors, and screen-reader/browser combinations before release.

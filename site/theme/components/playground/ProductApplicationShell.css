@@ -18,6 +18,14 @@
   min-width: 0;
   min-height: 0;
   grid-template-columns: var(--product-sidebar-width) minmax(0, 1fr);
+  /* ProductApplication intentionally composes the public agent-workbench
+   * primitive for semantics, but its generic flex defaults must not leak into
+   * this full-viewport grid. Without these resets the grid items align to
+   * their content height and inherit a 12px column gap, leaving the sidebar
+   * and every routed surface visibly shorter than the viewport. */
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 0;
   overflow: hidden;
   background: var(--ui-paper);
   color: var(--ui-ink);

@@ -233,9 +233,15 @@ suite "a3s-ui-product-workspace-capabilities" {
         focus "focus-timeline-tab" { target = css(".product-memory > nav button[aria-controls$='timeline-panel']") }
         press "next-tab" { key = "ArrowRight" }
         expect "graph-tab-focused" { visible = css(".product-memory > nav button[aria-controls$='graph-panel'][aria-selected=true]:focus") }
-        expect "graph-canvas" { visible = css(".product-memory__graph [data-memory-graph-viewport]") }
-        click "zoom-graph" { target = role("button", "放大") }
-        expect "graph-zoom-updated" { text = "120%" }
+        expect "graph-canvas" { visible = css(".product-memory__graph.code-graph[data-graph-domain=memory][data-code-graph-initialized=true] [data-code-graph-viewport]") }
+        click "show-graph-list" { target = role("button", "列表") }
+        expect "graph-list-visible" { visible = css(".product-memory__graph[data-view=list] [data-code-graph-list]") }
+        click "inspect-graph-node" { target = css(".product-memory__graph [data-memory-id=visual-evidence] > button") }
+        expect "graph-selection-opens-inspector" { visible = css(".product-memory__inspector[data-open=true]") }
+        click "close-graph-inspector" { target = role("button", "关闭记忆详情") }
+        expect "graph-focus-restored" { visible = css(".product-memory__graph [data-code-graph-viewport]:focus") }
+        click "return-to-3d-graph" { target = role("button", "3D") }
+        expect "graph-view-restored" { visible = css(".product-memory__graph[data-view=graph][data-code-graph-initialized=true]") }
         screenshot "graph-evidence" { path = "product/memory-graph-desktop.png" }
 
         click "open-evolution" { target = css(".product-memory > nav button[aria-controls$='evolution-panel']") }

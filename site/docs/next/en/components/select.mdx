@@ -1,10 +1,10 @@
 # Select
 
-Select provides a styled single-choice list when the product needs a consistent popup, search, or richer option content.
+Select provides a styled single-choice list when the product needs a consistent popup or richer option content. Use Combobox when users need to search or create values.
 
 <Preview>
 <div id="select-demo" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-demo-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-demo-listbox">
+  <button type="button" role="combobox" class="w-[180px]" id="select-demo-trigger" aria-label="Fruit" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-demo-listbox">
     <span class="truncate">Select a fruit</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
@@ -74,7 +74,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 
 ```html
 <div id="select-theme" class="select" data-placeholder="Theme">
-  <button type="button" class="w-[180px]" id="select-theme-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-theme-listbox">
+  <button type="button" role="combobox" class="w-[180px]" id="select-theme-trigger" aria-label="Theme" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-theme-listbox">
     <span class="truncate">Theme</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
@@ -100,7 +100,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
     Select root. Add <code>data-placeholder</code> to show placeholder text when no value is selected. Supports <code>data-close-on-select="true"</code> for multiple select and <code>data-format="object"</code> for serialized object values.
     <dl>
       <dt><code>&lt;button type="button"&gt;</code></dt>
-      <dd>Trigger button. Use <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code>, and <code>aria-controls</code>.</dd>
+      <dd>Select-only combobox trigger. Give it a stable accessible name with a connected <code>&lt;label&gt;</code>, <code>aria-label</code>, or <code>aria-labelledby</code>; placeholder text is a value hint, not a label. Use <code>role="combobox"</code>, <code>aria-haspopup="listbox"</code>, <code>aria-autocomplete="none"</code>, <code>aria-expanded</code>, and <code>aria-controls</code>. The controller supplies stable option IDs for <code>aria-activedescendant</code>.</dd>
       <dt><code>&lt;div data-popover aria-hidden="true"&gt;</code></dt>
       <dd>
         Popover content. Supports <code>data-side</code> and <code>data-align</code> through the shared Popover rules; the runtime flips and clamps the list to the visual viewport.
@@ -140,7 +140,7 @@ Using CDN or bundler imports? See the [Installation page](/installation).
 
 <Preview>
 <div id="select-groups" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-groups-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-groups-listbox">
+  <button type="button" role="combobox" class="w-[180px]" id="select-groups-trigger" aria-label="Fruit" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-groups-listbox">
     <span class="truncate">Select a fruit</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
@@ -171,7 +171,7 @@ A select with many items that scrolls.
 
 <Preview>
 <div id="select-scrollable" class="select" data-placeholder="Select a timezone">
-  <button type="button" class="w-[280px]" id="select-scrollable-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-scrollable-listbox">
+  <button type="button" role="combobox" class="w-[280px]" id="select-scrollable-trigger" aria-label="Timezone" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-scrollable-listbox">
     <span class="truncate">Select a timezone</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
@@ -225,11 +225,11 @@ A select with many items that scrolls.
 </div>
 </Preview>
 
-### Disabled
+### Disabled control
 
 <Preview>
 <div id="select-disabled" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-disabled-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-disabled-listbox" disabled>
+  <button type="button" role="combobox" class="w-[180px]" id="select-disabled-trigger" aria-label="Fruit" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-disabled-listbox" disabled>
     <span class="truncate">Select a fruit</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
@@ -246,13 +246,34 @@ A select with many items that scrolls.
 </div>
 </Preview>
 
+### Disabled option
+
+Disabled options stay visible for context but are skipped by pointer, arrow-key, Home, End, and typeahead navigation.
+
+<Preview>
+<div id="select-disabled-option" class="select" data-placeholder="Select a fruit">
+  <button type="button" role="combobox" class="w-[180px]" id="select-disabled-option-trigger" aria-label="Fruit" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-disabled-option-listbox">
+    <span class="truncate">Select a fruit</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
+  </button>
+  <div id="select-disabled-option-popover" data-popover aria-hidden="true">
+    <div role="listbox" id="select-disabled-option-listbox" aria-orientation="vertical" aria-labelledby="select-disabled-option-trigger">
+      <div role="option" data-value="apple">Apple</div>
+      <div role="option" data-value="grapes" aria-disabled="true">Grapes — unavailable</div>
+      <div role="option" data-value="pineapple">Pineapple</div>
+    </div>
+  </div>
+  <input type="hidden" name="select-disabled-option-value" value="" />
+</div>
+</Preview>
+
 ### Invalid
 
 <Preview>
 <div class="field" data-invalid="true">
   <label for="select-invalid-trigger">Fruit</label>
   <div id="select-invalid" class="select" data-placeholder="Select a fruit">
-    <button type="button" class="w-[180px]" id="select-invalid-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-invalid-listbox" aria-invalid="true">
+    <button type="button" role="combobox" class="w-[180px]" id="select-invalid-trigger" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-invalid-listbox" aria-invalid="true">
       <span class="truncate">Select a fruit</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
     </button>
@@ -276,7 +297,7 @@ A select with many items that scrolls.
 <Preview>
 <div dir="rtl">
   <div id="select-rtl" class="select" data-placeholder="اختر فاكهة">
-    <button type="button" class="w-[180px]" id="select-rtl-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-rtl-listbox">
+    <button type="button" role="combobox" class="w-[180px]" id="select-rtl-trigger" aria-label="الفاكهة" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-rtl-listbox">
       <span class="truncate">اختر فاكهة</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
     </button>
@@ -297,6 +318,10 @@ A select with many items that scrolls.
 </div>
 </Preview>
 
+## Accessibility
+
+Give every trigger a stable accessible name with a connected label, `aria-label`, or `aria-labelledby`; the placeholder and selected value do not replace the field label. Focus remains on the select-only combobox trigger while `aria-activedescendant` identifies the active option. Arrow keys move through enabled options, Home and End reach the first and last enabled option, printable text performs accent-insensitive typeahead, Enter or Space commits, and Escape closes without changing the value and restores trigger focus.
+
 ## React
 
 ```tsx
@@ -308,9 +333,12 @@ export function Example() {
     <Select ref={control.ref} id="select-theme" data-placeholder="Theme">
       <button
         type="button"
+        role="combobox"
         className="w-[180px]"
         id="select-theme-trigger"
+        aria-label="Theme"
         aria-haspopup="listbox"
+        aria-autocomplete="none"
         aria-expanded="false"
         aria-controls="select-theme-listbox"
       >
@@ -370,9 +398,12 @@ const componentRef = control.componentRef;
   <Select ref="componentRef" id="select-theme" data-placeholder="Theme">
     <button
       type="button"
+      role="combobox"
       class="w-[180px]"
       id="select-theme-trigger"
+      aria-label="Theme"
       aria-haspopup="listbox"
+      aria-autocomplete="none"
       aria-expanded="false"
       aria-controls="select-theme-listbox"
     >

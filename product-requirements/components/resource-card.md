@@ -50,6 +50,8 @@ Component-specific adversarial coverage: Missing preview, installed/unavailable/
 
 The canonical root uses `<article>` semantics and exposes 4 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: `loading`. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.

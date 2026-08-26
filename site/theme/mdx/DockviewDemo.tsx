@@ -28,6 +28,8 @@ import {
   themeA3S,
   useDockviewLayout,
 } from "../../../src/integrations/dockview/react.js";
+import { ProductPlaygroundIcon } from "../components/playground/ProductPlaygroundIcon";
+import { DockviewProductPanel } from "./DockviewProductPanels";
 import "./DockviewDemo.css";
 
 type DockviewDemoMode = "dock" | "grid" | "pane" | "split";
@@ -55,20 +57,21 @@ function PanePanel({ params }: IPaneviewPanelProps<DemoPanelParams>) {
 }
 
 function PanelSurface({ params }: { params: DemoPanelParams }) {
+  const language = useLang();
   return (
-    <section
-      className="dockview-demo__panel"
-      data-demo-panel={params.id}
-      data-kind={params.kind ?? "canvas"}
-    >
-      <strong>{params.title}</strong>
-      {params.description ? <p>{params.description}</p> : null}
-      <span aria-hidden="true" />
-    </section>
+    <DockviewProductPanel
+      id={params.id}
+      kind={params.kind ?? "canvas"}
+      locale={language === "zh" ? "zh" : "en"}
+    />
   );
 }
 
-function PaneHeader({ api, params, title }: IPaneviewPanelProps<DemoPanelParams>) {
+function PaneHeader({
+  api,
+  params,
+  title,
+}: IPaneviewPanelProps<DemoPanelParams>) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [expanded, setExpanded] = useState(api.isExpanded);
 
@@ -296,12 +299,17 @@ function DockWorkspaceDemo() {
         </div>
         <nav aria-label={zh ? "布局操作" : "Layout actions"}>
           <button type="button" disabled={!layout.api} onClick={toggleFloat}>
+            <ProductPlaygroundIcon name="expand" />
             {zh ? "浮动预览" : "Float preview"}
           </button>
           <button type="button" disabled={!layout.api} onClick={toggleMaximize}>
+            <ProductPlaygroundIcon
+              name={activeMaximized ? "contract" : "expand"}
+            />
             {zh ? "最大化" : "Maximize"}
           </button>
           <button type="button" disabled={!layout.api} onClick={reset}>
+            <ProductPlaygroundIcon name="refresh" />
             {zh ? "重置" : "Reset"}
           </button>
         </nav>
@@ -322,9 +330,7 @@ function GridDemo() {
   const language = useLang();
   const zh = language === "zh";
   const apiRef = useRef<GridviewApi | null>(null);
-  const [preset, setPreset] = useState<"balanced" | "focus-canvas">(
-    "balanced",
-  );
+  const [preset, setPreset] = useState<"balanced" | "focus-canvas">("balanced");
   const [ready, setReady] = useState(false);
 
   const applyPreset = useCallback((next: "balanced" | "focus-canvas") => {
@@ -406,8 +412,9 @@ function GridDemo() {
         position: { direction: "below", referencePanel: second.id },
       });
       setReady(true);
+      window.requestAnimationFrame(() => applyPreset("balanced"));
     },
-    [zh],
+    [applyPreset, zh],
   );
   return (
     <PrimitiveDemo
@@ -419,6 +426,7 @@ function GridDemo() {
             onClick={() => applyPreset("balanced")}
             type="button"
           >
+            <ProductPlaygroundIcon name="grid" />
             {zh ? "均衡" : "Balanced"}
           </button>
           <button
@@ -427,6 +435,7 @@ function GridDemo() {
             onClick={() => applyPreset("focus-canvas")}
             type="button"
           >
+            <ProductPlaygroundIcon name="center" />
             {zh ? "聚焦画布" : "Focus canvas"}
           </button>
         </>
@@ -449,9 +458,7 @@ function SplitDemo() {
   const language = useLang();
   const zh = language === "zh";
   const apiRef = useRef<SplitviewApi | null>(null);
-  const [preset, setPreset] = useState<"balanced" | "focus-canvas">(
-    "balanced",
-  );
+  const [preset, setPreset] = useState<"balanced" | "focus-canvas">("balanced");
   const [ready, setReady] = useState(false);
 
   const applyPreset = useCallback((next: "balanced" | "focus-canvas") => {
@@ -486,8 +493,9 @@ function SplitDemo() {
         });
       }
       setReady(true);
+      window.requestAnimationFrame(() => applyPreset("balanced"));
     },
-    [zh],
+    [applyPreset, zh],
   );
   return (
     <PrimitiveDemo
@@ -499,6 +507,7 @@ function SplitDemo() {
             onClick={() => applyPreset("balanced")}
             type="button"
           >
+            <ProductPlaygroundIcon name="collapse" />
             {zh ? "均衡" : "Balanced"}
           </button>
           <button
@@ -507,6 +516,7 @@ function SplitDemo() {
             onClick={() => applyPreset("focus-canvas")}
             type="button"
           >
+            <ProductPlaygroundIcon name="center" />
             {zh ? "聚焦画布" : "Focus canvas"}
           </button>
         </>
@@ -529,13 +539,15 @@ function PaneDemo() {
   const language = useLang();
   const zh = language === "zh";
   const apiRef = useRef<PaneviewApi | null>(null);
-  const [expansion, setExpansion] = useState<"collapsed" | "expanded" | "mixed">(
-    "mixed",
-  );
+  const [expansion, setExpansion] = useState<
+    "collapsed" | "expanded" | "mixed"
+  >("mixed");
   const [ready, setReady] = useState(false);
 
   const updateExpansion = useCallback((api: PaneviewApi) => {
-    const expandedCount = api.panels.filter((panel) => panel.api.isExpanded).length;
+    const expandedCount = api.panels.filter(
+      (panel) => panel.api.isExpanded,
+    ).length;
     setExpansion(
       expandedCount === 0
         ? "collapsed"
@@ -543,6 +555,16 @@ function PaneDemo() {
           ? "expanded"
           : "mixed",
     );
+  }, []);
+
+  const applyMixedPreset = useCallback((api: PaneviewApi) => {
+    const height = Math.max(api.height, 320);
+    api
+      .getPanel("pane-files")
+      ?.api.setSize({ size: Math.round(height * 0.42) });
+    api
+      .getPanel("pane-symbols")
+      ?.api.setSize({ size: Math.round(height * 0.5) });
   }, []);
 
   const setAllExpanded = useCallback(
@@ -583,23 +605,37 @@ function PaneDemo() {
       }
       updateExpansion(api);
       setReady(true);
+      window.requestAnimationFrame(() => applyMixedPreset(api));
     },
-    [updateExpansion, zh],
+    [applyMixedPreset, updateExpansion, zh],
   );
   return (
     <PrimitiveDemo
       actions={
         <>
-          <button disabled={!ready} onClick={() => setAllExpanded(true)} type="button">
+          <button
+            disabled={!ready}
+            onClick={() => setAllExpanded(true)}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="expand" />
             {zh ? "全部展开" : "Expand all"}
           </button>
-          <button disabled={!ready} onClick={() => setAllExpanded(false)} type="button">
+          <button
+            disabled={!ready}
+            onClick={() => setAllExpanded(false)}
+            type="button"
+          >
+            <ProductPlaygroundIcon name="contract" />
             {zh ? "全部折叠" : "Collapse all"}
           </button>
         </>
       }
       mode="pane"
-      stateAttributes={{ "data-pane-expansion": expansion, "data-ready": ready }}
+      stateAttributes={{
+        "data-pane-expansion": expansion,
+        "data-ready": ready,
+      }}
       title={zh ? "可折叠工具窗格" : "Collapsible tool panes"}
     >
       <PaneviewReact

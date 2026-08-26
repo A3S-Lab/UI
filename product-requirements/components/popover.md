@@ -48,6 +48,8 @@ Component-specific adversarial coverage: Four edges, collision/flip, long conten
 
 The canonical root uses `<div>` semantics and exposes 2 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
@@ -76,6 +78,6 @@ The canonical root uses `<div>` semantics and exposes 2 named parts. State must 
 - Stable root target: `[data-a3s-components~="popover"]` inside `.a3s-preview[data-preview-component=popover][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/popover-states.png`.
 - Per-state evidence selectors:
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed]:has([data-a3s-components~='popover'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true]))`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed]:has([data-a3s-components~='popover'][data-a3s-state~='collapsed']:has(button[aria-controls][aria-expanded=false]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

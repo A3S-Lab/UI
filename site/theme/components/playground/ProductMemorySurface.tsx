@@ -4,7 +4,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
   type KeyboardEvent,
 } from "react";
 import {
@@ -20,6 +19,11 @@ import {
 } from "./product-memory-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import type { ProductTaskDraft } from "./product-composer-data";
+import {
+  ProductCodeGraphPanel,
+  type ProductCodeGraphEdge,
+  type ProductCodeGraphNode,
+} from "./ProductCodeGraphPanel";
 import { ProductMemoryInspector } from "./ProductMemoryInspector";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
@@ -95,7 +99,14 @@ export function ProductMemorySurface({
         recordElement instanceof HTMLButtonElement
           ? recordElement
           : recordElement?.querySelector<HTMLButtonElement>("button");
-      (recordTriggerRefs.current[returnFocusId] ?? fallbackTrigger)?.focus({
+      const graphViewport = recordElement
+        ?.closest(".product-memory__graph")
+        ?.querySelector<HTMLElement>("[data-code-graph-viewport]");
+      const trigger = recordTriggerRefs.current[returnFocusId];
+      const visibleFallback = fallbackTrigger?.closest("[hidden]")
+        ? graphViewport
+        : fallbackTrigger;
+      (trigger ?? visibleFallback ?? graphViewport)?.focus({
         preventScroll: true,
       });
       inspectorReturnFocusIdRef.current = null;
@@ -416,9 +427,6 @@ export function ProductMemorySurface({
               <MemoryGraph
                 locale={locale}
                 memories={visibleMemories}
-                onRegisterTrigger={(id, element) => {
-                  recordTriggerRefs.current[id] = element;
-                }}
                 onSelect={selectMemory}
                 removalRequests={removalRequests}
                 selectedId={selectedId}
@@ -611,180 +619,75 @@ function MemoryTimeline({
 function MemoryGraph({
   locale,
   memories: visible,
-  onRegisterTrigger,
   onSelect,
   removalRequests,
   selectedId,
 }: {
   locale: ProductPlaygroundLocale;
   memories: readonly ProductMemoryRecord[];
-  onRegisterTrigger: (id: string, element: HTMLButtonElement | null) => void;
   onSelect: (id: string) => void;
   removalRequests: Record<string, boolean>;
   selectedId: string;
 }) {
-  const zh = locale === "zh";
-  const [zoom, setZoom] = useState(100);
   const nodeDefinitions = {
-    "design-contract": [25, 25, zh ? "设计契约" : "Design contract"],
-    language: [22, 72, zh ? "语言偏好" : "Language"],
-    testing: [78, 72, zh ? "回归测试" : "Regression"],
-    "visual-evidence": [52, 48, zh ? "视觉验收" : "Visual review"],
-    "workspace-boundary": [78, 28, "Rspress"],
+    "design-contract": [-104, -62, 36],
+    language: [-88, 76, -28],
+    testing: [104, 78, 44],
+    "visual-evidence": [0, 0, 108],
+    "workspace-boundary": [102, -68, -46],
   } as const;
-  const nodes = visible.flatMap((memory) => {
+  const edgeDefinitions = [
+    ["design-contract", "visual-evidence", 3, "source"],
+    ["visual-evidence", "workspace-boundary", 2, "scope"],
+    ["visual-evidence", "language", 2, "scope"],
+    ["visual-evidence", "testing", 3, "evidence"],
+    ["design-contract", "language", 1, "preference"],
+    ["workspace-boundary", "testing", 2, "evidence"],
+  ] as const satisfies readonly ProductCodeGraphEdge[];
+  const visibleIds = new Set(visible.map((memory) => memory.id));
+  const edges = edgeDefinitions.filter(
+    ([from, to]) => visibleIds.has(from) && visibleIds.has(to),
+  );
+  const degree = new Map<string, number>();
+  for (const [from, to] of edges) {
+    degree.set(from, (degree.get(from) ?? 0) + 1);
+    degree.set(to, (degree.get(to) ?? 0) + 1);
+  }
+  const nodes = visible.flatMap<ProductCodeGraphNode>((memory) => {
     const definition =
       nodeDefinitions[memory.id as keyof typeof nodeDefinitions];
     return definition
       ? [
           {
+            degree: degree.get(memory.id) ?? 0,
             id: memory.id,
-            label: definition[2],
-            scope: memory.scope,
+            kind: productMemoryKindCopy[memory.kind][locale],
+            label: memory.title[locale],
+            path: memory.sourceLocator,
+            pending: removalRequests[memory.id],
+            size: memory.id === "visual-evidence" ? 12 : 8,
+            tone: memory.scope === "personal" ? "test" : "component",
             x: definition[0],
             y: definition[1],
+            z: definition[2],
           },
         ]
       : [];
   });
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const edges = [
-    ["design-contract", "visual-evidence"],
-    ["visual-evidence", "workspace-boundary"],
-    ["visual-evidence", "language"],
-    ["visual-evidence", "testing"],
-    ["design-contract", "language"],
-    ["workspace-boundary", "testing"],
-  ] as const;
+
   return (
-    <section className="product-memory__graph">
-      <header>
-        <div>
-          <h2>{zh ? "关系图谱" : "Relationship graph"}</h2>
-          <p>
-            {zh
-              ? "关系表示来源引用和共同作用范围，不代表自动推断出的事实。"
-              : "Edges represent shared sources and scope, not automatically inferred facts."}
-          </p>
-        </div>
-        <div>
-          <button
-            aria-label={zh ? "缩小" : "Zoom out"}
-            disabled={zoom <= 80}
-            onClick={() => setZoom((value) => Math.max(80, value - 20))}
-            type="button"
-          >
-            <ProductPlaygroundIcon name="minus" />
-          </button>
-          <output aria-live="polite" data-memory-graph-zoom>
-            {zoom}%
-          </output>
-          <button
-            aria-label={zh ? "放大" : "Zoom in"}
-            disabled={zoom >= 140}
-            onClick={() => setZoom((value) => Math.min(140, value + 20))}
-            type="button"
-          >
-            <ProductPlaygroundIcon name="plus" />
-          </button>
-        </div>
-      </header>
-      <div data-memory-graph-canvas>
-        {nodes.length > 0 ? (
-          <div
-            data-memory-graph-viewport
-            style={
-              {
-                "--memory-graph-scale": zoom / 100,
-              } as CSSProperties
-            }
-          >
-            <svg
-              aria-hidden="true"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
-            >
-              {edges.map(([fromId, toId]) => {
-                const from = nodeById.get(fromId);
-                const to = nodeById.get(toId);
-                return from && to ? (
-                  <line
-                    key={`${fromId}-${toId}`}
-                    x1={from.x}
-                    x2={to.x}
-                    y1={from.y}
-                    y2={to.y}
-                  />
-                ) : null;
-              })}
-            </svg>
-            {nodes.map((node) => (
-              <button
-                aria-pressed={selectedId === node.id}
-                data-memory-id={node.id}
-                data-removal={removalRequests[node.id] ? "pending" : undefined}
-                key={node.id}
-                onClick={() => onSelect(node.id)}
-                ref={(element) => onRegisterTrigger(node.id, element)}
-                style={
-                  {
-                    "--memory-node-x": `${node.x}%`,
-                    "--memory-node-y": `${node.y}%`,
-                  } as CSSProperties
-                }
-                type="button"
-              >
-                <span data-tone={node.scope}>
-                  <ProductPlaygroundIcon
-                    name={node.id === "visual-evidence" ? "brain" : "knowledge"}
-                  />
-                </span>
-                <strong>{node.label}</strong>
-                <small>
-                  {removalRequests[node.id]
-                    ? zh
-                      ? "遗忘处理中"
-                      : "Removal pending"
-                    : node.id === "visual-evidence"
-                      ? zh
-                        ? "核心上下文"
-                        : "Core context"
-                      : zh
-                        ? "相关记忆"
-                        : "Related memory"}
-                </small>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="product-memory__empty" role="status">
-            <ProductPlaygroundIcon name="search" />
-            <strong>
-              {zh ? "没有匹配的图谱节点" : "No matching graph nodes"}
-            </strong>
-            <span>
-              {zh
-                ? "调整搜索、范围或类型筛选后重试。"
-                : "Change the search, scope, or type filter and try again."}
-            </span>
-          </div>
-        )}
-        <footer>
-          <span>
-            <i data-tone="workspace" />
-            {zh ? "工作区" : "Workspace"}
-          </span>
-          <span>
-            <i data-tone="personal" />
-            {zh ? "个人" : "Personal"}
-          </span>
-          <span>
-            <i data-tone="source" />
-            {zh ? "来源关系" : "Source link"}
-          </span>
-        </footer>
-      </div>
-    </section>
+    <ProductCodeGraphPanel
+      className="product-memory__graph"
+      edges={edges}
+      id="product-memory-relationship-graph"
+      locale={locale}
+      nodes={nodes}
+      onSelectNode={onSelect}
+      selectedNodeId={
+        nodes.some((node) => node.id === selectedId) ? selectedId : null
+      }
+      variant="memory"
+    />
   );
 }
 

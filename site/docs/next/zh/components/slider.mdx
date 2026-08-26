@@ -1,129 +1,210 @@
 # 滑块
 
-滑块让用户在连续或分段范围内快速调整数值，适合结果可即时感知、无需精确键入的设置。
+滑块用于在有明确边界的范围内调整近似值。适合用户能立即感知调整结果，并且相对位置比精确键入更重要的场景。
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo />
+  <SliderDemo id="slider-primary" variant="labeled" />
 </Preview>
 
 ## 用法
 
-<Steps>
-  <Step title="引入 CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 和完整的 A3S 样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者仅导入基本 CSS、重新组件 CSS 和一个样式包。
+使用带可见标签的原生范围输入控件。引入 Range 运行时，使轨道填充始终与原生值同步。
+
+```html
+<div class="field">
+  <div class="flex items-center justify-between gap-2">
+    <label for="temperature">温度</label>
+    <output for="temperature">20 °C</output>
+  </div>
+  <input
+    class="input w-full"
+    type="range"
+    id="temperature"
+    name="temperature"
+    min="10"
+    max="30"
+    step="1"
+    value="20"
+    aria-valuetext="20 摄氏度"
+  />
+</div>
+```
+
+如需按组件加载，请依次导入基础样式、Range 结构、A3S 视觉样式、运行时与 Range 控制器。CDN 等其他接入方式参见[安装](/installation)。
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/range.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
-
-滑块使用 Range 组件 CSS。
-
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
-  </Step>
-  <Step title="引入 JavaScript">
-
-复制或提供完整的 A3S UI JavaScript 包。
-
-```html
-<script src="/assets/js/all.min.js" defer></script>
-```
-
-或者复制或提供 A3S UI 运行时和脚本。
 
 ```html
 <script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/range.min.js" defer></script>
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
+### 参数
 
-  </Step>
-  <Step title="添加滑块 HTML">
+| 参数               | 值                     | 用途                                         |
+| ------------------ | ---------------------- | -------------------------------------------- |
+| 根元素             | `<input type="range">` | 保留原生指针、键盘、表单与无障碍行为         |
+| `class`            | `input`                | 应用 Range 结构和 Slider 视觉样式            |
+| `min` / `max`      | 数字                   | 定义完整可用范围与键盘端点行为               |
+| `step`             | 正数或 `any`           | 定义合法增量，应采用用户能从结果中理解的步长 |
+| `value`            | 数字                   | 设置声明范围内的当前值或初始值               |
+| `disabled`         | 布尔属性               | 阻止调整，同时保留当前值并解释无法修改的原因 |
+| `aria-valuetext`   | 本地化字符串           | 为原始数字补充单位或用户能理解的含义         |
+| `aria-describedby` | 元素 ID                | 关联约束、调整后果或禁用说明                 |
 
-Use a native `<input type="range" class="input">`. Include `range.js` so A3S UI can keep the filled track in sync with the input value.
+## 产品决策
 
-```html
-<input type="range" class="input w-full" aria-label="音量" min="0" max="100" value="50" />
-```
+只有同时满足以下条件时才选择滑块：
 
-  </Step>
-</Steps>
+- 范围具有明确且有意义的最小值和最大值。
+- 用户能在调整过程中看到或感知结果。
+- 可以接受近似选择，或步长小而且容易预测。
+- 当前值与单位能够在控件旁清楚呈现。
 
-### HTML 结构
+如果用户必须输入精确值、对比多个精确值，或范围没有明确边界，应使用数字字段。当快速调整与精确输入都很重要时，将滑块和数字字段组合在一起，并让两者共享同一个值模型。
 
-<dl>
-  <dt><code>&lt;input type="range" class="input"&gt;</code></dt>
-  <dd>Native range input styled as a slider. Width utilities such as <code>w-full</code> can be added directly.</dd>
-</dl>
+## 状态与变体
 
-A3S UI 有意采用原生范围输入控件。与 shadcn/ui 的 Base UI Slider 不同，它不支持多个滑块手柄或垂直方向。
+### 独立滑块
 
-## 示例
-
-### 默认
+独立滑块仍然需要无障碍名称。它适合所在界面已经用其他方式展示当前值的场景，例如媒体播放器。
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo />
+  <SliderDemo id="slider-standalone" />
 </Preview>
 
-### 标签
+### 标签与实时值
+
+标签位于同一行的起始端，实时值位于结束端。当原始数字含义不明确时，在可见输出和 `aria-valuetext` 中都加入单位。
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo variant="labeled" />
+  <SliderDemo id="slider-labeled" variant="labeled" />
+</Preview>
+
+### 表单字段
+
+滑块属于表单时，应说明调整后果或限制，并通过 `aria-describedby` 关联。原生值用于提交，格式化输出只负责呈现。
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo id="slider-field" variant="field" />
 </Preview>
 
 ### 已禁用
 
-<Preview class="w-full max-w-sm">
-  <SliderDemo disabled />
+禁用控件仍然显示当前值。把禁用原因放在字段旁边，不要让降低透明度成为唯一解释。
+
+<Preview title="托管限制" class="w-full max-w-sm">
+  <div class="field" data-disabled>
+    <SliderDemo id="slider-disabled" variant="labeled" disabled />
+    <p>此限制由工作区策略统一管理。</p>
+  </div>
 </Preview>
 
-### RTL
+## RTL
+
+在输入控件或祖先元素上设置 `dir="rtl"`。填充轨道从逻辑起始端增长，原生方向键跟随文档方向；最小值和最大值的数值含义不会改变。
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo direction="rtl" />
+  <SliderDemo id="slider-rtl" direction="rtl" />
 </Preview>
 
 ## React
 
+`Slider` 渲染清单声明的原生范围输入控件。`useSlider` 监听原生 `input` 与 `change` 事件，产品中其他位置展示的值仍由应用状态负责。
+
 ```tsx
+import { useState } from "react";
 import { Slider, useSlider } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useSlider();
+export function TemperatureSetting() {
+  const [value, setValue] = useState(20);
+  const slider = useSlider({
+    events: {
+      input(event) {
+        setValue((event.currentTarget as HTMLInputElement).valueAsNumber);
+      },
+    },
+  });
+
   return (
-    <Slider ref={control.ref} aria-label="名称" />
+    <div className="field">
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor="temperature">温度</label>
+        <output htmlFor="temperature">{value} °C</output>
+      </div>
+      <Slider
+        ref={slider.ref}
+        id="temperature"
+        name="temperature"
+        min="10"
+        max="30"
+        step="1"
+        defaultValue={value}
+        aria-valuetext={`${value} 摄氏度`}
+      />
+    </div>
   );
 }
 ```
 
-`useSlider` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
-
 ## Vue
 
+Vue 组合式函数订阅相同的原生事件。模板 ref 连接范围输入控件，响应式状态仍归应用所有。
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Slider, useSlider } from "@a3s-lab/ui/vue";
 
-const control = useSlider();
-const componentRef = control.componentRef;
+const value = ref(20);
+const slider = useSlider({
+  events: {
+    input(event) {
+      value.value = (event.currentTarget as HTMLInputElement).valueAsNumber;
+    },
+  },
+});
+const componentRef = slider.componentRef;
 </script>
 
 <template>
-  <Slider ref="componentRef" aria-label="名称" />
+  <div class="field">
+    <div class="flex items-center justify-between gap-2">
+      <label for="temperature">温度</label>
+      <output for="temperature">{{ value }} °C</output>
+    </div>
+    <Slider
+      ref="componentRef"
+      id="temperature"
+      name="temperature"
+      min="10"
+      max="30"
+      step="1"
+      :value="value"
+      :aria-valuetext="`${value} 摄氏度`"
+    />
+  </div>
 </template>
 ```
 
-`useSlider` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+## 无障碍
+
+- 尽量通过可见 `label` 为每个滑块提供无障碍名称。只有当周围界面已经清楚展示用途时才使用 `aria-label`。
+- 声明真实的 `min`、`max` 与 `step`。不要依赖刻度标记或空间位置传达隐藏的数值范围。
+- 在轨道旁显示当前值和单位。当原始数字需要单位、类别或其他可读含义时，加入本地化的 `aria-valuetext`。
+- 保留原生键盘行为。方向键调整一个步长，支持时 Page Up 与 Page Down 进行更大调整，Home 与 End 到达声明的端点。
+- 指针拖动不能加入缓动或延迟动画，滑块手柄与可见结果必须直接跟随输入。
+- 在粗指针设备上让完整点击目标至少达到 44px，视觉轨道和手柄仍保持紧凑。
+- 禁用滑块保留可读的值和相邻原因。不要只用降低透明度隐藏策略或权限限制。
+- RTL 使用逻辑方向处理填充与布局。必须测试实际键盘行为，不能只镜像视觉图形。

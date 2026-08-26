@@ -49,6 +49,8 @@ Component-specific adversarial coverage: Edge collision, nested submenu, disable
 
 The canonical root uses `<div>` semantics and exposes 3 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press`, `select` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
@@ -77,7 +79,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - Stable root target: `[data-a3s-components~="dropdown-menu"]` inside `.a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/dropdown-menu-states.png`.
 - Per-state evidence selectors:
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))`
   - `disabled`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

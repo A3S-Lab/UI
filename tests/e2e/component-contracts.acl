@@ -140,6 +140,9 @@ suite "a3s-ui-component-contracts" {
         expect "semantic-state-selected" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=selected]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='selected'][data-selected=true])") }
         expect "semantic-state-loading" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=loading]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='loading'][aria-busy=true])") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=disabled]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
+        expect "empty-state-hides-region" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=empty] .bulk-action-bar[data-state=empty][hidden]") }
+        expect "loading-state-disables-conflicts" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-action]:not([data-bulk-clear])[disabled]") }
+        expect "loading-state-keeps-clear-escape" { visible = css(".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-clear]:not([disabled]):not([aria-disabled=true])") }
         screenshot "state-matrix" { path = "components/contracts/bulk-action-bar-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -194,11 +197,17 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=field]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready]:has([data-a3s-components~='field'][data-a3s-state~='ready'])") }
-        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready]:has([data-a3s-components~='field'][data-a3s-state~='ready'])") }
-        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled]:has([data-a3s-components~='field'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid]:has([data-a3s-components~='field'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
-        expect "semantic-state-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly]:has([data-a3s-components~='field'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty]:has([data-a3s-components~='field'][data-a3s-state~='empty'][data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))") }
+        expect "semantic-state-empty" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty]:has([data-a3s-components~='field'][data-a3s-state~='empty'][data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))") }
+        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready]:has([data-a3s-components~='field'][data-a3s-state~='ready'][data-state~='ready']:not([data-invalid]):has(> input[value='Agent Runtime']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))") }
+        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled]:has([data-a3s-components~='field'][data-a3s-state~='disabled'][data-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description]))") }
+        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid]:has([data-a3s-components~='field'][data-a3s-state~='invalid'][data-state~='invalid'][data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A']):has(> [data-field-message][role=alert]:not([hidden])))") }
+        expect "semantic-state-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly]:has([data-a3s-components~='field'][data-a3s-state~='readonly'][data-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description]))") }
+        expect "empty-field-stays-neutral" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty] .field:not([data-invalid]):has(> input[value='']:not([aria-invalid])):has(> [data-field-description]):has(> [data-field-message][hidden])") }
+        expect "ready-field-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready] .field:has(> input[value='Agent Runtime']):has(> [data-field-description])") }
+        expect "disabled-field-uses-native-control-semantics" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled] .field[data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description])") }
+        expect "invalid-field-explains-recovery" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid] .field[data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A'][aria-describedby]):has(> [data-field-message][role=alert]:not([hidden]))") }
+        expect "readonly-field-preserves-native-semantics" { visible = css(".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly] .field[data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description])") }
         screenshot "state-matrix" { path = "components/contracts/field-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -313,11 +322,20 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=input]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=ready]:has([data-a3s-components~='input'][data-a3s-state~='ready'])") }
-        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=ready]:has([data-a3s-components~='input'][data-a3s-state~='ready'])") }
-        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=disabled]:has([data-a3s-components~='input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid]:has([data-a3s-components~='input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
-        expect "semantic-state-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=readonly]:has([data-a3s-components~='input'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=empty]:has([data-a3s-components~='input'][data-a3s-state~='empty'][value=''])") }
+        expect "semantic-state-empty" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=empty]:has([data-a3s-components~='input'][data-a3s-state~='empty'][value=''])") }
+        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=ready]:has([data-a3s-components~='input'][data-a3s-state~='ready'][value='alex@example.com'])") }
+        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=disabled]:has([data-a3s-components~='input'][data-a3s-state~='disabled'][disabled][value='archived@example.com'])") }
+        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid]:has([data-a3s-components~='input'][data-a3s-state~='invalid'][required][aria-invalid=true][value='owner@']:invalid)") }
+        expect "semantic-state-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=readonly]:has([data-a3s-components~='input'][data-a3s-state~='readonly'][readonly][value='account-owner@example.com'])") }
+        expect "empty-state-guidance-visible" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=empty] .field:has(label[for]):has(input.input[value='']):has([data-state-specimen-feedback])") }
+        expect "ready-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=ready] input.input[value='alex@example.com']") }
+        expect "disabled-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=disabled] input.input[disabled][value='archived@example.com']") }
+        expect "disabled-state-reason-visible" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=disabled] [data-state-specimen-feedback]") }
+        expect "invalid-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid] input.input[required][aria-invalid=true][value='owner@']:invalid") }
+        expect "invalid-state-error-visible" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid] [data-state-specimen-feedback][role=alert]") }
+        expect "readonly-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=readonly] input.input[readonly][value='account-owner@example.com']") }
+        expect "readonly-state-reason-visible" { visible = css(".a3s-component-state-matrix[open][data-component=input] [data-state-specimen=readonly] [data-state-specimen-feedback]") }
         screenshot "state-matrix" { path = "components/contracts/input-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -372,11 +390,19 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=input-group]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready'])") }
-        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready'])") }
-        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled]:has([data-a3s-components~='input-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid]:has([data-a3s-components~='input-group'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
-        expect "semantic-state-loading" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading]:has([data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true])") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))") }
+        expect "semantic-state-empty" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))") }
+        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready']:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly])))") }
+        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid]:has([data-a3s-components~='input-group'][data-a3s-state~='invalid']:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid))") }
+        expect "semantic-state-loading" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading]:has([data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status]))") }
+        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled]:has([data-a3s-components~='input-group'][data-a3s-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived']))") }
+        expect "semantic-state-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly]:has([data-a3s-components~='input-group'][data-a3s-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='release']))") }
+        expect "empty-group-stays-neutral" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty] .field:has(label[for]):has(.input-group:not([aria-busy]) > input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has([data-state-specimen-feedback])") }
+        expect "ready-group-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready] .input-group > input[value='runtime']") }
+        expect "invalid-group-preserves-native-recovery" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid] .field[data-invalid]:has(.input-group > input[required][minlength='3'][aria-invalid=true][value='r']:invalid):has([data-state-specimen-feedback][role=alert])") }
+        expect "loading-group-preserves-editable-value" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading] .input-group[aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status])") }
+        expect "disabled-group-preserves-value-and-reason" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled] .field[data-disabled]:has(.input-group[data-disabled] > input[disabled][value='archived']):has([data-state-specimen-feedback])") }
+        expect "readonly-group-preserves-submission-semantics" { visible = css(".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly] .field[data-readonly]:has(.input-group[data-readonly] > input[readonly][value='release']):has([data-state-specimen-feedback])") }
         screenshot "state-matrix" { path = "components/contracts/input-group-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -431,7 +457,8 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=textarea]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])") }
+        expect "semantic-state-empty" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled]:has([data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
         expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid]:has([data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
@@ -558,10 +585,18 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=native-select]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=ready]:has([data-a3s-components~='native-select'][data-a3s-state~='ready'])") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=empty]:has([data-a3s-components~='native-select'][data-a3s-state~='empty'])") }
+        expect "semantic-state-empty" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=empty]:has([data-a3s-components~='native-select'][data-a3s-state~='empty'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=ready]:has([data-a3s-components~='native-select'][data-a3s-state~='ready'])") }
-        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled]:has([data-a3s-components~='native-select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid]:has([data-a3s-components~='native-select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
+        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled]:has([data-a3s-components~='native-select'][data-a3s-state~='disabled'][disabled])") }
+        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid]:has([data-a3s-components~='native-select'][data-a3s-state~='invalid'][required][aria-invalid=true]:invalid)") }
+        expect "empty-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=empty] select.native-select:has(option[value='']:checked)") }
+        expect "empty-state-guidance-visible" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=empty] [data-state-specimen-feedback]") }
+        expect "ready-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=ready] select.native-select:has(option[value=apple]:checked)") }
+        expect "disabled-state-preserves-value" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled] select.native-select[disabled]:has(option[value=apple]:checked)") }
+        expect "disabled-state-reason-visible" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled] [data-state-specimen-feedback]") }
+        expect "invalid-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid] select.native-select[required][aria-invalid=true]:invalid") }
+        expect "invalid-state-error-visible" { visible = css(".a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid] [role=alert]") }
         screenshot "state-matrix" { path = "components/contracts/native-select-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -619,8 +654,8 @@ suite "a3s-ui-component-contracts" {
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=ready]:has([data-a3s-components~='select'][data-a3s-state~='ready'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=ready]:has([data-a3s-components~='select'][data-a3s-state~='ready'])") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=disabled]:has([data-a3s-components~='select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded]:has([data-a3s-components~='select'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed]:has([data-a3s-components~='select'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded]:has([data-a3s-components~='select'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed]:has([data-a3s-components~='select'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))") }
         expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=invalid]:has([data-a3s-components~='select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
         screenshot "state-matrix" { path = "components/contracts/select-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -735,12 +770,18 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready]:has([data-a3s-components~='radio-group'][data-a3s-state~='ready'])") }
-        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready]:has([data-a3s-components~='radio-group'][data-a3s-state~='ready'])") }
-        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=disabled]:has([data-a3s-components~='radio-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready] [data-a3s-components~='radio-group'][data-a3s-state~='ready']:has(input[type=radio][value=comfortable]:checked)") }
+        expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready] [data-a3s-components~='radio-group'][data-a3s-state~='ready']:has(input[type=radio][value=comfortable]:checked)") }
+        expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=disabled] [data-a3s-components~='radio-group'][data-a3s-state~='disabled'][aria-disabled=true]:has(input[type=radio][value=comfortable]:checked:disabled)") }
+        expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=invalid] [data-a3s-components~='radio-group'][data-a3s-state~='invalid'][aria-invalid=true][data-validation-state=invalid]:has(input[type=radio][required][aria-invalid=true]:invalid):has([data-state-specimen-feedback][role=alert])") }
+        expect "ready-state-preserves-one-value" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=ready] input[type=radio][value=comfortable]:checked") }
+        expect "disabled-state-preserves-one-value" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=disabled] input[type=radio][value=comfortable]:checked:disabled") }
+        expect "invalid-state-is-unselected-and-native" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=invalid] input[type=radio][required][aria-invalid=true]:invalid:not(:checked)") }
+        expect "invalid-state-error-visible" { visible = css(".a3s-component-state-matrix[open][data-component=radio-group] [data-state-specimen=invalid] [data-state-specimen-feedback][role=alert]") }
         screenshot "state-matrix" { path = "components/contracts/radio-group-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=states]:focus") }
+        expect "live-selection-survives-state-matrix" { visible = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] .radio-group input[type=radio][value=comfortable]:checked") }
 
         focus "focus-source" { target = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=source]") }
         press "open-source" { key = "Enter" }
@@ -967,8 +1008,8 @@ suite "a3s-ui-component-contracts" {
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=ready]:has([data-a3s-components~='combobox'][data-a3s-state~='ready'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=ready]:has([data-a3s-components~='combobox'][data-a3s-state~='ready'])") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled]:has([data-a3s-components~='combobox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded]:has([data-a3s-components~='combobox'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed]:has([data-a3s-components~='combobox'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded]:has([data-a3s-components~='combobox'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed]:has([data-a3s-components~='combobox'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))") }
         expect "semantic-state-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid]:has([data-a3s-components~='combobox'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))") }
         screenshot "state-matrix" { path = "components/contracts/combobox-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -1252,8 +1293,8 @@ suite "a3s-ui-component-contracts" {
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=ready]:has([data-a3s-components~='sidebar'][data-a3s-state~='ready'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=ready]:has([data-a3s-components~='sidebar'][data-a3s-state~='ready'])") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=false]))") }
         expect "semantic-state-hidden" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=hidden]:has([data-a3s-components~='sidebar'][data-a3s-state~='hidden'][hidden])") }
         screenshot "state-matrix" { path = "components/contracts/sidebar-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -1511,9 +1552,9 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
         screenshot "state-matrix" { path = "components/contracts/dropdown-menu-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -1569,9 +1610,9 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=popover]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed]:has([data-a3s-components~='popover'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed]:has([data-a3s-components~='popover'][data-a3s-state~='collapsed']:has(button[aria-controls][aria-expanded=false]))") }
         screenshot "state-matrix" { path = "components/contracts/popover-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=states]:focus") }
@@ -1686,9 +1727,9 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:has([data-context-trigger][aria-expanded=true]))") }
+        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:has([data-context-trigger][aria-expanded=true]))") }
+        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed']:has([data-context-trigger][aria-expanded=false]))") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=disabled]:has([data-a3s-components~='context-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
         screenshot "state-matrix" { path = "components/contracts/context-menu-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -2274,8 +2315,8 @@ suite "a3s-ui-component-contracts" {
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=accordion]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=ready]:has([data-a3s-components~='accordion'][data-a3s-state~='ready'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=ready]:has([data-a3s-components~='accordion'][data-a3s-state~='ready'])") }
-        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open]:has([data-a3s-components~='accordion'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed]:has([data-a3s-components~='accordion'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))") }
+        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open]:has([data-a3s-components~='accordion'][data-a3s-state~='open']:has(:scope > details > summary[aria-expanded=true]))") }
+        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed]:has([data-a3s-components~='accordion'][data-a3s-state~='closed']:has(:scope > details > summary[aria-expanded=false]))") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=disabled]:has([data-a3s-components~='accordion'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
         screenshot "state-matrix" { path = "components/contracts/accordion-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -3678,9 +3719,9 @@ suite "a3s-ui-component-contracts" {
         focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible]") }
-        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))") }
+        wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))") }
+        expect "semantic-state-open" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))") }
+        expect "semantic-state-closed" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:has(:scope > summary[aria-expanded=false]))") }
         expect "semantic-state-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled]:has([data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))") }
         screenshot "state-matrix" { path = "components/contracts/collapsible-states.png" }
         press "close-state-matrix" { key = "Escape" }
@@ -4330,10 +4371,10 @@ suite "a3s-ui-component-contracts" {
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=ready]:has([data-a3s-components~='app-shell'][data-a3s-state~='ready'])") }
         expect "semantic-state-ready" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=ready]:has([data-a3s-components~='app-shell'][data-a3s-state~='ready'])") }
-        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))") }
-        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))") }
+        expect "semantic-state-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded']:has([data-app-navigation-trigger][aria-expanded=true]))") }
+        expect "semantic-state-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed']:has([data-app-navigation-trigger][aria-expanded=false]))") }
         expect "semantic-state-hidden" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=hidden]:has([data-a3s-components~='app-shell'][data-a3s-state~='hidden'][hidden])") }
-        expect "semantic-state-mobile-open" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open']:is([open],[aria-expanded=true]))") }
+        expect "semantic-state-mobile-open" { visible = css(".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open']:has([data-app-navigation-trigger][aria-expanded=true]))") }
         screenshot "state-matrix" { path = "components/contracts/app-shell-states.png" }
         press "close-state-matrix" { key = "Escape" }
         expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-control=states]:focus") }

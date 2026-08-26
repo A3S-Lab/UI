@@ -151,6 +151,7 @@ async function build() {
     "floating-panel.js",
     "hotkey-input.js",
     "image-viewer.js",
+    "input-group.js",
     "knowledge-library.js",
     "popover.js",
     "range.js",

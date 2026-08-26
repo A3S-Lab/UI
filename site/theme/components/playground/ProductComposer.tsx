@@ -34,6 +34,7 @@ import {
   type ProductComposerResource,
   type ProductComposerWorkspace,
 } from "./product-composer-data";
+import { ProductExpertAvatar } from "./ProductExpertAvatar";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import {
@@ -445,19 +446,21 @@ export function ProductComposer({
               key={resource.id}
               title={resource.meta}
             >
-              <ProductPlaygroundIcon
-                name={
-                  resource.kind === "skill"
-                    ? "checklist"
-                    : resource.kind === "assistant"
-                      ? "assistant"
+              {resource.kind === "assistant" ? (
+                <ProductExpertAvatar expertId={resource.id} size={16} />
+              ) : (
+                <ProductPlaygroundIcon
+                  name={
+                    resource.kind === "skill"
+                      ? "checklist"
                       : resource.kind === "connector"
                         ? "link"
                         : resource.kind === "folder"
                           ? "folder"
                           : "document"
-                }
-              />
+                  }
+                />
+              )}
               <span data-resource-label>{resource.label}</span>
               {resource.meta ? <small>{resource.meta}</small> : null}
               <button

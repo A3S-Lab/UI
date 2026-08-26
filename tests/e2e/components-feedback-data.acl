@@ -295,6 +295,7 @@ suite "a3s-ui-feedback-and-data" {
         focus "focus-clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
         press "clear-selection" { key = "Enter" }
         expect "selection-cleared" { visible = css("#data-grid-demo-en[data-selection=none]") }
+        expect "selection-focus-returned" { visible = css("#data-grid-demo-en [data-grid-select-all]:focus") }
         viewport "phone" { width = 390 height = 844 }
         expect "stacked-row-visible" { visible = css("#data-grid-demo-en[data-responsive=stack] tbody tr:first-child td[data-label=Name]") }
     }
@@ -309,7 +310,14 @@ suite "a3s-ui-feedback-and-data" {
         expect "bulk-actions-visible" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-bulk-action-bar-initialized=true][data-state=selected]:not([hidden])") }
         focus "focus-archive-action" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]") }
         expect "archive-action-focused" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]:focus") }
+        click "start-archive" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]") }
+        expect "archive-loading" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-action=archive][data-pending=true]") }
+        expect "archive-disabled" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]:disabled") }
+        wait "archive-error" { text = "Archive failed. Check permissions and retry." }
+        expect "archive-recovered" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-state=selected][data-result=error]") }
+        focus "focus-clear-action" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
         click "clear-selection" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
         expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar]:has(.bulk-action-bar[data-state=empty][hidden])") }
+        expect "focus-returned" { visible = css("#bulk-action-bar-collection-en:focus") }
     }
 }

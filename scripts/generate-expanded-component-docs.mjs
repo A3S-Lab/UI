@@ -14,7 +14,6 @@ const controllerSlugs = new Set([
   "editable-text",
   "emoji-picker",
   "floating-panel",
-  "hotkey-input",
   "image-viewer",
   "sortable-list",
   "streaming-text",
@@ -227,24 +226,6 @@ const docs = {
     attrs: 'tabIndex="0"',
     children:
       '<code><span data-code-line>const status = <mark>"ready"</mark>;</span><span data-code-line>render(status);</span></code>',
-  },
-  "hotkey-input": {
-    zh: [
-      "快捷键输入",
-      "录制一个规范化键盘组合，并在提交前让用户看清当前组合、冲突和清除路径。",
-      "组件不注册全局快捷键、不解决冲突，也不绕过操作系统保留组合。实际绑定和权限判断由宿主负责。",
-      "Tab 始终可以离开控件，Escape 恢复录制前的值，删除键清空组合。可视按键与 aria-keyshortcuts 保持一致。",
-    ],
-    en: [
-      "Hotkey Input",
-      "Records one normalized keyboard chord and makes the current value, conflict state, and clear path visible before submission.",
-      "It does not register global shortcuts, resolve conflicts, or bypass operating-system reservations. Binding and authorization belong to the host.",
-      "Tab always leaves the control, Escape restores the pre-recording value, and Delete clears it. Visible keycaps stay aligned with aria-keyshortcuts.",
-    ],
-    attrs: 'data-hotkey-value="Meta+K"',
-    children:
-      '<input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>',
-    read: "getValue",
   },
   icon: {
     zh: [

@@ -1,22 +1,22 @@
 # 选择器
 
-选择器提供经过设计的单选列表，适合需要一致浮层、搜索或丰富选项内容的场景。
+选择器提供经过设计的单选列表，适合需要一致浮层或丰富选项内容的场景。需要搜索或创建值时应使用组合框。
 
 <Preview>
-<div id="select-demo" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-demo-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-demo-listbox">
-    <span class="truncate">Select a fruit</span>
+<div id="select-demo" class="select" data-placeholder="选择水果">
+  <button type="button" role="combobox" class="w-[180px]" id="select-demo-trigger" aria-label="水果" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-demo-listbox">
+    <span class="truncate">选择水果</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
   <div id="select-demo-popover" data-popover aria-hidden="true">
     <div role="listbox" id="select-demo-listbox" aria-orientation="vertical" aria-labelledby="select-demo-trigger">
       <div role="group" aria-labelledby="select-demo-fruits">
-        <span role="heading" id="select-demo-fruits">Fruits</span>
-        <div role="option" data-value="apple">Apple</div>
-        <div role="option" data-value="banana">Banana</div>
-        <div role="option" data-value="blueberry">Blueberry</div>
-        <div role="option" data-value="grapes">Grapes</div>
-        <div role="option" data-value="pineapple">Pineapple</div>
+        <span role="heading" id="select-demo-fruits">水果</span>
+        <div role="option" data-value="apple">苹果</div>
+        <div role="option" data-value="banana">香蕉</div>
+        <div role="option" data-value="blueberry">蓝莓</div>
+        <div role="option" data-value="grapes">葡萄</div>
+        <div role="option" data-value="pineapple">菠萝</div>
       </div>
     </div>
   </div>
@@ -73,16 +73,16 @@
   <Step title="添加选择器 HTML">
 
 ```html
-<div id="select-theme" class="select" data-placeholder="Theme">
-  <button type="button" class="w-[180px]" id="select-theme-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-theme-listbox">
-    <span class="truncate">Theme</span>
+<div id="select-theme" class="select" data-placeholder="主题">
+  <button type="button" role="combobox" class="w-[180px]" id="select-theme-trigger" aria-label="主题" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-theme-listbox">
+    <span class="truncate">主题</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
   <div id="select-theme-popover" data-popover aria-hidden="true">
     <div role="listbox" id="select-theme-listbox" aria-orientation="vertical" aria-labelledby="select-theme-trigger">
-      <div role="option" data-value="light">Light</div>
-      <div role="option" data-value="dark">Dark</div>
-      <div role="option" data-value="system">System</div>
+      <div role="option" data-value="light">浅色</div>
+      <div role="option" data-value="dark">深色</div>
+      <div role="option" data-value="system">跟随系统</div>
     </div>
   </div>
   <input type="hidden" name="theme" value="" />
@@ -97,32 +97,32 @@
 <dl>
   <dt><code>&lt;div class="select"&gt;</code></dt>
   <dd>
-    Select root. Add <code>data-placeholder</code> to show placeholder text when no value is selected. Supports <code>data-close-on-select="true"</code> for multiple select and <code>data-format="object"</code> for serialized object values.
+    选择器根节点。使用 <code>data-placeholder</code> 显示未选择时的提示文本；多选模式支持 <code>data-close-on-select="true"</code>，对象序列化支持 <code>data-format="object"</code>。
     <dl>
       <dt><code>&lt;button type="button"&gt;</code></dt>
-      <dd>Trigger button. Use <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code>, and <code>aria-controls</code>.</dd>
+      <dd>只读选择组合框的触发器。必须通过关联的 <code>&lt;label&gt;</code>、<code>aria-label</code> 或 <code>aria-labelledby</code> 提供稳定的无障碍名称；占位文本只是值提示，不能替代标签。使用 <code>role="combobox"</code>、<code>aria-haspopup="listbox"</code>、<code>aria-autocomplete="none"</code>、<code>aria-expanded</code> 和 <code>aria-controls</code>。控制器会为选项补充稳定 ID，并通过 <code>aria-activedescendant</code> 暴露当前选项。</dd>
       <dt><code>&lt;div data-popover aria-hidden="true"&gt;</code></dt>
       <dd>
-        Popover content. Supports <code>data-side</code> and <code>data-align</code> through the shared Popover rules; the runtime flips and clamps the list to the visual viewport.
+        浮层内容。通过共享 Popover 规则支持 <code>data-side</code> 和 <code>data-align</code>；运行时会根据可视视口翻转并限制列表位置。
         <dl>
           <dt><code>&lt;div role="listbox"&gt;</code></dt>
           <dd>
-            Options container. Add <code>aria-multiselectable="true"</code> for multiple selection.
+            选项容器。多选模式添加 <code>aria-multiselectable="true"</code>。
             <dl>
               <dt><code>&lt;div role="option" data-value="..." data-label="..."&gt;</code></dt>
-              <dd>Selectable option. <code>data-value</code> is submitted. <code>data-label</code> is optional and controls the selected display label and <code>data-format="object"</code> label; when omitted, A3S UI uses trimmed text content.</dd>
+              <dd>可选择的选项。提交值来自 <code>data-value</code>。可选的 <code>data-label</code> 控制已选显示文本和 <code>data-format="object"</code> 中的标签；省略时使用去除首尾空白后的文本内容。</dd>
               <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Separator between groups or options.</dd>
+              <dd>分隔选项组或相邻选项。</dd>
               <dt><code>&lt;div role="group"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Option group. Use <code>aria-labelledby</code> to connect it to its heading.</dd>
+              <dd>选项组。使用 <code>aria-labelledby</code> 关联组标题。</dd>
               <dt><code>&lt;span role="heading"&gt;</code> <span class="badge" data-variant="secondary">Optional</span></dt>
-              <dd>Group heading.</dd>
+              <dd>选项组标题。</dd>
             </dl>
           </dd>
         </dl>
       </dd>
       <dt><code>&lt;input type="hidden"&gt;</code></dt>
-      <dd>Submitted value. Empty value means no selection when the root has <code>data-placeholder</code>. Single select stores a string; multiple select stores a JSON array. With <code>data-format="object"</code>, values are serialized as <code>&#123; value, label &#125;</code> objects.</dd>
+      <dd>提交值。根节点存在 <code>data-placeholder</code> 时，空值表示尚未选择。单选保存字符串，多选保存 JSON 数组；设置 <code>data-format="object"</code> 后，值序列化为 <code>&#123; value, label &#125;</code> 对象。</dd>
     </dl>
   </dd>
 </dl>
@@ -139,25 +139,25 @@
 ### 组
 
 <Preview>
-<div id="select-groups" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-groups-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-groups-listbox">
-    <span class="truncate">Select a fruit</span>
+<div id="select-groups" class="select" data-placeholder="选择水果">
+  <button type="button" role="combobox" class="w-[180px]" id="select-groups-trigger" aria-label="水果" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-groups-listbox">
+    <span class="truncate">选择水果</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
   <div id="select-groups-popover" data-popover aria-hidden="true">
     <div role="listbox" id="select-groups-listbox" aria-orientation="vertical" aria-labelledby="select-groups-trigger">
       <div role="group" aria-labelledby="select-groups-fruits">
-        <span role="heading" id="select-groups-fruits">Fruits</span>
-        <div role="option" data-value="apple">Apple</div>
-        <div role="option" data-value="banana">Banana</div>
-        <div role="option" data-value="blueberry">Blueberry</div>
+        <span role="heading" id="select-groups-fruits">水果</span>
+        <div role="option" data-value="apple">苹果</div>
+        <div role="option" data-value="banana">香蕉</div>
+        <div role="option" data-value="blueberry">蓝莓</div>
       </div>
       <hr role="separator" />
       <div role="group" aria-labelledby="select-groups-vegetables">
-        <span role="heading" id="select-groups-vegetables">Vegetables</span>
-        <div role="option" data-value="carrot">Carrot</div>
-        <div role="option" data-value="broccoli">Broccoli</div>
-        <div role="option" data-value="spinach">Spinach</div>
+        <span role="heading" id="select-groups-vegetables">蔬菜</span>
+        <div role="option" data-value="carrot">胡萝卜</div>
+        <div role="option" data-value="broccoli">西兰花</div>
+        <div role="option" data-value="spinach">菠菜</div>
       </div>
     </div>
   </div>
@@ -170,15 +170,15 @@
 包含许多滚动项目的选择。
 
 <Preview>
-<div id="select-scrollable" class="select" data-placeholder="Select a timezone">
-  <button type="button" class="w-[280px]" id="select-scrollable-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-scrollable-listbox">
-    <span class="truncate">Select a timezone</span>
+<div id="select-scrollable" class="select" data-placeholder="选择时区">
+  <button type="button" role="combobox" class="w-[280px]" id="select-scrollable-trigger" aria-label="时区" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-scrollable-listbox">
+    <span class="truncate">选择时区</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
   <div id="select-scrollable-popover" data-popover aria-hidden="true">
     <div role="listbox" id="select-scrollable-listbox" class="scrollbar-sm max-h-70 overflow-y-auto" aria-orientation="vertical" aria-labelledby="select-scrollable-trigger">
       <div role="group" aria-labelledby="select-scrollable-north-america">
-        <span role="heading" id="select-scrollable-north-america">North America</span>
+        <span role="heading" id="select-scrollable-north-america">北美</span>
         <div role="option" data-value="est">Eastern Standard Time (EST)</div>
         <div role="option" data-value="cst">Central Standard Time (CST)</div>
         <div role="option" data-value="mst">Mountain Standard Time (MST)</div>
@@ -187,7 +187,7 @@
         <div role="option" data-value="hst">Hawaii Standard Time (HST)</div>
       </div>
       <div role="group" aria-labelledby="select-scrollable-europe-africa">
-        <span role="heading" id="select-scrollable-europe-africa">Europe &amp; Africa</span>
+        <span role="heading" id="select-scrollable-europe-africa">欧洲与非洲</span>
         <div role="option" data-value="gmt">Greenwich Mean Time (GMT)</div>
         <div role="option" data-value="cet">Central European Time (CET)</div>
         <div role="option" data-value="eet">Eastern European Time (EET)</div>
@@ -196,7 +196,7 @@
         <div role="option" data-value="eat">East Africa Time (EAT)</div>
       </div>
       <div role="group" aria-labelledby="select-scrollable-asia">
-        <span role="heading" id="select-scrollable-asia">Asia</span>
+        <span role="heading" id="select-scrollable-asia">亚洲</span>
         <div role="option" data-value="msk">Moscow Time (MSK)</div>
         <div role="option" data-value="ist">India Standard Time (IST)</div>
         <div role="option" data-value="cst_china">China Standard Time (CST)</div>
@@ -205,7 +205,7 @@
         <div role="option" data-value="ist_indonesia">Indonesia Central Standard Time (WITA)</div>
       </div>
       <div role="group" aria-labelledby="select-scrollable-australia-pacific">
-        <span role="heading" id="select-scrollable-australia-pacific">Australia &amp; Pacific</span>
+        <span role="heading" id="select-scrollable-australia-pacific">澳大利亚与太平洋地区</span>
         <div role="option" data-value="awst">Australian Western Standard Time (AWST)</div>
         <div role="option" data-value="acst">Australian Central Standard Time (ACST)</div>
         <div role="option" data-value="aest">Australian Eastern Standard Time (AEST)</div>
@@ -213,7 +213,7 @@
         <div role="option" data-value="fjt">Fiji Time (FJT)</div>
       </div>
       <div role="group" aria-labelledby="select-scrollable-south-america">
-        <span role="heading" id="select-scrollable-south-america">South America</span>
+        <span role="heading" id="select-scrollable-south-america">南美</span>
         <div role="option" data-value="art">Argentina Time (ART)</div>
         <div role="option" data-value="bot">Bolivia Time (BOT)</div>
         <div role="option" data-value="brt">Brasilia Time (BRT)</div>
@@ -225,24 +225,45 @@
 </div>
 </Preview>
 
-### 已禁用
+### 整体禁用
 
 <Preview>
-<div id="select-disabled" class="select" data-placeholder="Select a fruit">
-  <button type="button" class="w-[180px]" id="select-disabled-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-disabled-listbox" disabled>
-    <span class="truncate">Select a fruit</span>
+<div id="select-disabled" class="select" data-placeholder="选择水果">
+  <button type="button" role="combobox" class="w-[180px]" id="select-disabled-trigger" aria-label="水果" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-disabled-listbox" disabled>
+    <span class="truncate">选择水果</span>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
   </button>
   <div id="select-disabled-popover" data-popover aria-hidden="true">
     <div role="listbox" id="select-disabled-listbox" aria-orientation="vertical" aria-labelledby="select-disabled-trigger">
-      <div role="option" data-value="apple">Apple</div>
-      <div role="option" data-value="banana">Banana</div>
-      <div role="option" data-value="blueberry">Blueberry</div>
-      <div role="option" data-value="grapes" aria-disabled="true">Grapes</div>
-      <div role="option" data-value="pineapple">Pineapple</div>
+      <div role="option" data-value="apple">苹果</div>
+      <div role="option" data-value="banana">香蕉</div>
+      <div role="option" data-value="blueberry">蓝莓</div>
+      <div role="option" data-value="grapes" aria-disabled="true">葡萄</div>
+      <div role="option" data-value="pineapple">菠萝</div>
     </div>
   </div>
   <input type="hidden" name="select-disabled-value" value="" />
+</div>
+</Preview>
+
+### 禁用选项
+
+禁用选项仍保留在列表中提供上下文，但指针、方向键、Home、End 和键入匹配都会跳过它。
+
+<Preview>
+<div id="select-disabled-option" class="select" data-placeholder="选择水果">
+  <button type="button" role="combobox" class="w-[180px]" id="select-disabled-option-trigger" aria-label="水果" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-disabled-option-listbox">
+    <span class="truncate">选择水果</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
+  </button>
+  <div id="select-disabled-option-popover" data-popover aria-hidden="true">
+    <div role="listbox" id="select-disabled-option-listbox" aria-orientation="vertical" aria-labelledby="select-disabled-option-trigger">
+      <div role="option" data-value="apple">苹果</div>
+      <div role="option" data-value="grapes" aria-disabled="true">葡萄（暂不可用）</div>
+      <div role="option" data-value="pineapple">菠萝</div>
+    </div>
+  </div>
+  <input type="hidden" name="select-disabled-option-value" value="" />
 </div>
 </Preview>
 
@@ -250,24 +271,24 @@
 
 <Preview>
 <div class="field" data-invalid="true">
-  <label for="select-invalid-trigger">Fruit</label>
-  <div id="select-invalid" class="select" data-placeholder="Select a fruit">
-    <button type="button" class="w-[180px]" id="select-invalid-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-invalid-listbox" aria-invalid="true">
-      <span class="truncate">Select a fruit</span>
+  <label for="select-invalid-trigger">水果</label>
+  <div id="select-invalid" class="select" data-placeholder="选择水果">
+    <button type="button" role="combobox" class="w-[180px]" id="select-invalid-trigger" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-invalid-listbox" aria-invalid="true">
+      <span class="truncate">选择水果</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
     </button>
     <div id="select-invalid-popover" data-popover aria-hidden="true">
       <div role="listbox" id="select-invalid-listbox" aria-orientation="vertical" aria-labelledby="select-invalid-trigger">
-        <div role="option" data-value="apple">Apple</div>
-        <div role="option" data-value="banana">Banana</div>
-        <div role="option" data-value="blueberry">Blueberry</div>
-        <div role="option" data-value="grapes">Grapes</div>
-        <div role="option" data-value="pineapple">Pineapple</div>
+        <div role="option" data-value="apple">苹果</div>
+        <div role="option" data-value="banana">香蕉</div>
+        <div role="option" data-value="blueberry">蓝莓</div>
+        <div role="option" data-value="grapes">葡萄</div>
+        <div role="option" data-value="pineapple">菠萝</div>
       </div>
     </div>
     <input type="hidden" name="fruit" value="" />
   </div>
-  <p role="alert">Please select a valid fruit.</p>
+  <p role="alert">请选择有效的水果后继续。</p>
 </div>
 </Preview>
 
@@ -276,7 +297,7 @@
 <Preview>
 <div dir="rtl">
   <div id="select-rtl" class="select" data-placeholder="اختر فاكهة">
-    <button type="button" class="w-[180px]" id="select-rtl-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="select-rtl-listbox">
+    <button type="button" role="combobox" class="w-[180px]" id="select-rtl-trigger" aria-label="الفاكهة" aria-haspopup="listbox" aria-autocomplete="none" aria-expanded="false" aria-controls="select-rtl-listbox">
       <span class="truncate">اختر فاكهة</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down text-muted-foreground opacity-50 shrink-0"><path d="m6 9 6 6 6-6" /></svg>
     </button>
@@ -297,6 +318,10 @@
 </div>
 </Preview>
 
+## 无障碍
+
+每个触发器都必须通过关联标签、`aria-label` 或 `aria-labelledby` 获得稳定的无障碍名称；占位文本和当前值不能替代字段标签。焦点始终保留在只读选择组合框触发器上，当前选项由 `aria-activedescendant` 标识。方向键只在可用选项间移动，Home 和 End 到达首尾可用选项，可打印字符执行忽略重音符号的键入匹配，Enter 或空格提交，Escape 在不改变值的情况下关闭并把焦点还给触发器。
+
 ## React
 
 ```tsx
@@ -305,16 +330,19 @@ import { Select, useSelect } from "@a3s-lab/ui/react";
 export function Example() {
   const control = useSelect();
   return (
-    <Select ref={control.ref} id="select-theme" data-placeholder="Theme">
+    <Select ref={control.ref} id="select-theme" data-placeholder="主题">
       <button
         type="button"
+        role="combobox"
         className="w-[180px]"
         id="select-theme-trigger"
+        aria-label="主题"
         aria-haspopup="listbox"
+        aria-autocomplete="none"
         aria-expanded="false"
         aria-controls="select-theme-listbox"
       >
-        <span className="truncate">Theme</span>
+        <span className="truncate">主题</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -338,13 +366,13 @@ export function Example() {
           aria-labelledby="select-theme-trigger"
         >
           <div role="option" data-value="light">
-            Light
+            浅色
           </div>
           <div role="option" data-value="dark">
-            Dark
+            深色
           </div>
           <div role="option" data-value="system">
-            System
+            跟随系统
           </div>
         </div>
       </div>
@@ -367,16 +395,19 @@ const componentRef = control.componentRef;
 </script>
 
 <template>
-  <Select ref="componentRef" id="select-theme" data-placeholder="Theme">
+  <Select ref="componentRef" id="select-theme" data-placeholder="主题">
     <button
       type="button"
+      role="combobox"
       class="w-[180px]"
       id="select-theme-trigger"
+      aria-label="主题"
       aria-haspopup="listbox"
+      aria-autocomplete="none"
       aria-expanded="false"
       aria-controls="select-theme-listbox"
     >
-      <span class="truncate">Theme</span>
+      <span class="truncate">主题</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -399,9 +430,9 @@ const componentRef = control.componentRef;
         aria-orientation="vertical"
         aria-labelledby="select-theme-trigger"
       >
-        <div role="option" data-value="light">Light</div>
-        <div role="option" data-value="dark">Dark</div>
-        <div role="option" data-value="system">System</div>
+        <div role="option" data-value="light">浅色</div>
+        <div role="option" data-value="dark">深色</div>
+        <div role="option" data-value="system">跟随系统</div>
       </div>
     </div>
     <input type="hidden" name="theme" value="" />

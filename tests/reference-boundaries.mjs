@@ -69,7 +69,7 @@ async function listTextFiles(relativePath) {
 function documentsFramework(source, framework) {
   const tabProp = framework.toLowerCase();
   const frameworkTabs = new RegExp(
-    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    `<(?:FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=|Preview\\b[\\s\\S]*?\\bframework${framework}=)\\{`,
     "u",
   );
   if (framework === "HTML") {

@@ -23,13 +23,14 @@ The host application continues to own domain data, authorization, transport, per
 
 ## States
 
+- `empty` — Native Select states what is absent and why when known, then offers only a valid next action.
 - `ready` — Native Select is stable, named, and ready for its primary reading or interaction job.
 - `disabled` — Native Select remains understandable but cannot be changed; native disabled or read-only semantics must match the visual treatment.
 - `invalid` — Native Select explains the unavailable or failed outcome without discarding prior context and exposes recovery only when recovery is valid.
 
 ## Interaction contract
 
-- Canonical root: `select.select` on `<select>`.
+- Canonical root: `select.native-select` on `<select>`.
 - Stable automation root: `[data-a3s-components~="native-select"]`.
 - Named parts: none; consumers must not depend on incidental descendants.
 - Supported interaction intents: `focus`, `select`. Each intent targets the documented root or named part and must remain scoped to one instance.
@@ -48,17 +49,19 @@ Component-specific adversarial coverage: iOS/Android picker, long option, disabl
 
 The canonical root uses `<select>` semantics and exposes 0 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `focus`, `select` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
-- Empty state: not a distinct component state. Absence must be explained by the component only when absence belongs to this contract.
+- Empty state: `empty`. Absence must be explained by the component only when absence belongs to this contract.
 - Failure and unavailable states: `invalid`. Recoverable failures retain the prior value or selection and return focus to the recovery action; unrecoverable failures stay explicit and do not fabricate success.
 - Malformed, excessively long, stale, denied, or host-untrusted content must remain contained. The component never interprets trusted business meaning beyond its documented boundary.
 
 ## Acceptance criteria
 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
-- The public root matches `select.select` and is annotated by the runtime as `[data-a3s-components~="native-select"]`.
+- The public root matches `select.native-select` and is annotated by the runtime as `[data-a3s-components~="native-select"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
 - The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=native-select]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
@@ -76,7 +79,8 @@ The canonical root uses `<select>` semantics and exposes 0 named parts. State mu
 - Stable root target: `[data-a3s-components~="native-select"]` inside `.a3s-preview[data-preview-component=native-select][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/native-select-states.png`.
 - Per-state evidence selectors:
+  - `empty`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=empty]:has([data-a3s-components~='native-select'][data-a3s-state~='empty'])`
   - `ready`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=ready]:has([data-a3s-components~='native-select'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled]:has([data-a3s-components~='native-select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid]:has([data-a3s-components~='native-select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=disabled]:has([data-a3s-components~='native-select'][data-a3s-state~='disabled'][disabled])`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=native-select] [data-state-specimen=invalid]:has([data-a3s-components~='native-select'][data-a3s-state~='invalid'][required][aria-invalid=true]:invalid)`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

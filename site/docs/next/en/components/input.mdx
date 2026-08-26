@@ -1,311 +1,351 @@
 # Input
 
-Input captures a single line of text or a structured value and reduces mistakes through a persistent label, format guidance, and timely feedback.
+Input captures one native single-line value. It preserves browser editing, selection, validation, autofill, password-manager, input-method, and form behavior while A3S UI supplies a consistent visual contract.
 
-<Preview class="w-full max-w-xs">
-  <input class="input" type="email" aria-label="Email" placeholder="Email" />
+<Preview class="w-full max-w-md" title="Notification address">
+  <div class="field w-full">
+    <label for="input-notification-email-en">Notification email</label>
+    <input
+      id="input-notification-email-en"
+      class="input"
+      type="email"
+      name="notificationEmail"
+      autocomplete="email"
+      inputmode="email"
+      enterkeyhint="next"
+      aria-describedby="input-notification-email-help-en"
+      placeholder="name@example.com"
+      oninput="this.parentElement.querySelector('[data-input-current-value]').textContent = 'Current value: ' + (this.value || 'Not set')"
+    />
+    <p id="input-notification-email-help-en">
+      Used for release notices and account recovery.
+    </p>
+    <output data-input-current-value aria-live="polite">
+      Current value: Not set
+    </output>
+  </div>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and one complete A3S UI style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Input component CSS, and one style pack.
+For component-level loading, import the base styles, Input structure, Field structure, and one visual style in that order:
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/input.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
-
-  </Step>
-  <Step title="Add your input HTML">
-
-Add `class="input"` to supported `<input>` elements. Inputs inside a `class="field"` container also receive the same styling automatically for common text-like input types.
-
-Use native HTML attributes for behavior: `disabled` for disabled inputs, `required` for required fields, and `aria-invalid="true"` for invalid state styling.
+Use `class="input"` on a supported native `<input>`. In production forms, compose it with Field so a visible label and supporting copy remain available before, during, and after editing.
 
 ```html
-<input class="input" type="email" aria-label="Email" placeholder="Email" />
+<div class="field">
+  <label for="notification-email">Notification email</label>
+  <input
+    id="notification-email"
+    class="input"
+    type="email"
+    name="notificationEmail"
+    autocomplete="email"
+    aria-describedby="notification-email-help"
+  />
+  <p id="notification-email-help">
+    Used for release notices and account recovery.
+  </p>
+</div>
 ```
 
-  </Step>
-</Steps>
+Use Input for one native single-line value. Use [Input Group](/components/input-group) for prefixes, suffixes, icons, units, or inline actions; [File Upload](/components/form-system/file-upload) for file queues and progress; and [Task Composer](/components/agent-composer) for rich instructions, mentions, attachments, and queued submission.
 
-## Examples
+### Parameters
 
-### Basic
+| Parameter                                                             | Purpose                                                                         |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `id`                                                                  | Connects the native input to one persistent visible label                       |
+| `name`                                                                | Supplies the submitted field key; disabled inputs are excluded from `FormData`  |
+| `type`                                                                | Selects native editing, validation, keyboard, autofill, and browser affordances |
+| `autocomplete`                                                        | Lets browsers and password managers identify the real value purpose             |
+| `inputmode`                                                           | Refines the virtual keyboard when `type` alone does not express it              |
+| `enterkeyhint`                                                        | Labels the virtual keyboard action without changing native Enter behavior       |
+| `aria-describedby`                                                    | Associates ordinary guidance and, after validation, the current error           |
+| `required`, `min`, `max`, `step`, `minlength`, `maxlength`, `pattern` | Express native constraints only when they match the actual data contract        |
+| `aria-invalid="true"`                                                 | Exposes an authored failed-validation state after validation has run            |
+| `disabled`                                                            | Prevents focus, editing, validation, and form submission; pair it with a reason |
+| `readonly`                                                            | Preserves focus, selection, copying, and form submission while preventing edits |
 
-<Preview class="w-full max-w-xs">
-  <input class="input" type="email" aria-label="Email" placeholder="Email" />
-</Preview>
+## Framework usage
 
-### Field
-
-Use `field` with a label and description to create an accessible field.
-
-<Preview class="w-full max-w-xs">
-  <div role="group" class="field">
-    <label for="input-field">Email</label>
-    <input id="input-field" type="email" placeholder="m@example.com" />
-    <p>Enter your email address.</p>
-  </div>
-</Preview>
-
-### Field group
-
-<Preview class="w-full max-w-xs">
-  <div class="grid gap-4">
-    <div role="group" class="field">
-      <label for="input-first-name">First name</label>
-      <input id="input-first-name" type="text" placeholder="Jane" />
-    </div>
-    <div role="group" class="field">
-      <label for="input-last-name">Last name</label>
-      <input id="input-last-name" type="text" placeholder="Doe" />
-    </div>
-  </div>
-</Preview>
-
-### Disabled
-
-<Preview class="w-full max-w-xs">
-  <input
-    class="input"
-    type="email"
-    aria-label="Email"
-    placeholder="Email"
-    disabled
-  />
-</Preview>
-
-### Invalid
-
-<Preview class="w-full max-w-xs">
-  <input
-    class="input"
-    type="email"
-    aria-label="Email"
-    placeholder="Email"
-    aria-invalid="true"
-  />
-</Preview>
-
-### File
-
-<Preview class="w-full max-w-xs">
-  <input class="input" type="file" aria-label="Upload file" />
-</Preview>
-
-### Inline
-
-<Preview class="w-full max-w-xs">
-  <div class="flex items-center gap-2">
-    <input
-      class="input"
-      type="search"
-      aria-label="Search"
-      placeholder="Search..."
-    />
-    <button type="submit" class="btn">
-      Search
-    </button>
-  </div>
-</Preview>
-
-### Grid
-
-<Preview class="w-full max-w-sm">
-  <div class="grid gap-4 md:grid-cols-2">
-    <input
-      class="input"
-      type="text"
-      aria-label="First name"
-      placeholder="First name"
-    />
-    <input
-      class="input"
-      type="text"
-      aria-label="Last name"
-      placeholder="Last name"
-    />
-    <input
-      class="input md:col-span-2"
-      type="email"
-      aria-label="Email"
-      placeholder="Email"
-    />
-  </div>
-</Preview>
-
-### Required
-
-<Preview class="w-full max-w-xs">
-  <div role="group" class="field">
-    <label for="input-required">
-      Username <span class="text-destructive">*</span>
-    </label>
-    <input id="input-required" type="text" placeholder="hunvreus" required />
-  </div>
-</Preview>
-
-### Badge
-
-<Preview class="w-full max-w-xs">
-  <div role="group" class="field">
-    <label for="input-badge" class="flex w-full items-center gap-2">
-      Email
-      <span class="badge ml-auto" data-variant="secondary">
-        Recommended
-      </span>
-    </label>
-    <input id="input-badge" type="email" placeholder="m@example.com" />
-  </div>
-</Preview>
-
-### Input group
-
-Use the [Input Group](/components/input-group) patterns to add icons, text, or buttons inside an input.
-
-<Preview class="w-full max-w-xs">
-  <div class="input-group">
-    <input type="search" aria-label="Search" placeholder="Search..." />
-    <span data-align="start" aria-hidden="true">
-      <svg
-        class="lucide lucide-search"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="m21 21-4.34-4.34" />
-        <circle cx="11" cy="11" r="8" />
-      </svg>
-    </span>
-  </div>
-</Preview>
-
-### Button group
-
-Use [Button Group](/components/button-group) when an input should be grouped with adjacent buttons.
-
-<Preview class="w-full max-w-xs">
-  <div role="group" aria-label="Search" class="button-group">
-    <input
-      class="input"
-      type="search"
-      aria-label="Search"
-      placeholder="Search..."
-    />
-    <button
-      type="submit"
-      class="btn"
-      data-variant="outline"
-      data-size="icon"
-      aria-label="Search"
-    >
-      <svg
-        class="lucide lucide-search"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="m21 21-4.34-4.34" />
-        <circle cx="11" cy="11" r="8" />
-      </svg>
-    </button>
-  </div>
-</Preview>
-
-### Form
-
-<Preview class="w-full max-w-sm">
-  <form class="space-y-6">
-    <div role="group" class="field">
-      <label for="input-form-username">Username</label>
-      <input
-        id="input-form-username"
-        type="text"
-        placeholder="hunvreus"
-        required
-      />
-      <p>This is your public display name.</p>
-    </div>
-    <div role="group" class="field">
-      <label for="input-form-email">Email</label>
-      <input
-        id="input-form-email"
-        type="email"
-        placeholder="m@example.com"
-        required
-      />
-    </div>
-    <button type="submit" class="btn">
-      Submit
-    </button>
-  </form>
-</Preview>
-
-### RTL
-
-Inputs support right-to-left layouts through native browser direction handling. Add `dir="rtl"` to the input, field, or an ancestor.
-
-<Preview class="w-full max-w-xs">
-  <div role="group" class="field" dir="rtl">
-    <label for="input-rtl-api-key">مفتاح API</label>
-    <input id="input-rtl-api-key" type="password" placeholder="sk-..." />
-    <p>مفتاح API الخاص بك مشفر ومخزن بأمان.</p>
-  </div>
-</Preview>
-
-## React
-
-```tsx
+<FrameworkTabs
+  html={`<div class="field">
+  <label for="input-notification-email-en">Notification email</label>
+  <input id="input-notification-email-en" class="input" type="email" name="notificationEmail" autocomplete="email" inputmode="email" enterkeyhint="next" aria-describedby="input-notification-email-help-en" placeholder="name@example.com">
+  <p id="input-notification-email-help-en">Used for release notices and account recovery.</p>
+  <output data-input-current-value aria-live="polite">Current value: Not set</output>
+</div>
+<script type="module">
+const input = document.querySelector("#input-notification-email-en");
+const output = document.querySelector("[data-input-current-value]");
+input.addEventListener("input", event => {
+  output.textContent = "Current value: " + (event.currentTarget.value || "Not set");
+});
+input.addEventListener("change", event => {
+  persistDraft(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
 import { Input, useInput } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useInput();
-  return <Input ref={control.ref} aria-label="Name" />;
-}
-```
+export function NotificationEmail() {
+  const [value, setValue] = useState("");
+  const [committedValue, setCommittedValue] = useState("");
+  const control = useInput({
+    events: {
+      input: event => setValue((event.currentTarget as HTMLInputElement).value),
+      change: event => setCommittedValue((event.currentTarget as HTMLInputElement).value),
+    },
+  });
 
-`useInput` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
-## Vue
-
-```vue
-<script setup>
+return (
+<div className="field">
+<label htmlFor="input-notification-email-react">Notification email</label>
+<Input
+        id="input-notification-email-react"
+        ref={control.ref}
+        type="email"
+        name="notificationEmail"
+        autoComplete="email"
+        inputMode="email"
+        enterKeyHint="next"
+        aria-describedby="input-notification-email-help-react"
+        placeholder="name@example.com"
+      />
+<p id="input-notification-email-help-react">Used for release notices and account recovery.</p>
+<output aria-live="polite">Current value: {value || "Not set"}</output>
+<input type="hidden" name="committedNotificationEmail" value={committedValue} />
+</div>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
 import { Input, useInput } from "@a3s-lab/ui/vue";
 
-const control = useInput();
+const value = ref("");
+const committedValue = ref("");
+const control = useInput({
+events: {
+input: event => value.value = (event.currentTarget as HTMLInputElement).value,
+change: event => committedValue.value = (event.currentTarget as HTMLInputElement).value,
+},
+});
 const componentRef = control.componentRef;
+
 </script>
 
 <template>
-  <Input ref="componentRef" aria-label="Name" />
-</template>
-```
+  <div class="field">
+    <label for="input-notification-email-vue">Notification email</label>
+    <Input
+      id="input-notification-email-vue"
+      ref="componentRef"
+      type="email"
+      name="notificationEmail"
+      autocomplete="email"
+      inputmode="email"
+      enterkeyhint="next"
+      aria-describedby="input-notification-email-help-vue"
+      placeholder="name@example.com"
+    />
+    <p id="input-notification-email-help-vue">Used for release notices and account recovery.</p>
+    <output aria-live="polite">Current value: {{ value || "Not set" }}</output>
+    <input type="hidden" name="committedNotificationEmail" :value="committedValue">
+  </div>
+</template>`}
+/>
 
-`useInput` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## States and variants
+
+Empty and ready are ordinary value states. Invalid begins only after validation has run. Disabled and read-only are different native availability contracts and must not be presented as interchangeable styling variants.
+
+### Type semantics
+
+Choose a type from the data, keyboard, validation, and autofill behavior the user needs. Preserve the browser's own affordances instead of recreating them with decoration.
+
+<Preview class="w-full" title="Native input purposes">
+  <div class="grid w-full gap-4 sm:grid-cols-2">
+    <div class="field">
+      <label for="input-handle-en">Account handle</label>
+      <input
+        id="input-handle-en"
+        class="input"
+        type="text"
+        name="handle"
+        autocomplete="username"
+        placeholder="alex-chen"
+      />
+      <p>
+        Identifiers remain text when leading zeros or exact characters matter.
+      </p>
+    </div>
+    <div class="field">
+      <label for="input-work-email-en">Work email</label>
+      <input
+        id="input-work-email-en"
+        class="input"
+        type="email"
+        name="workEmail"
+        autocomplete="section-work email"
+        inputmode="email"
+        placeholder="alex@example.com"
+      />
+      <p>
+        The browser supplies email validation and an email-oriented keyboard.
+      </p>
+    </div>
+    <div class="field">
+      <label for="input-phone-en">Telephone</label>
+      <input
+        id="input-phone-en"
+        class="input"
+        type="tel"
+        name="telephone"
+        autocomplete="tel"
+        placeholder="+86 138 0000 0000"
+      />
+      <p>Regional formatting and validation remain application concerns.</p>
+    </div>
+    <div class="field">
+      <label for="input-url-en">Runbook URL</label>
+      <input
+        id="input-url-en"
+        class="input"
+        type="url"
+        name="runbookUrl"
+        inputmode="url"
+        placeholder="https://example.com/runbook"
+      />
+      <p>State whether a scheme is required before validation runs.</p>
+    </div>
+    <div class="field">
+      <label for="input-password-en">Current password</label>
+      <input
+        id="input-password-en"
+        class="input"
+        type="password"
+        name="currentPassword"
+        autocomplete="current-password"
+      />
+      <p>Do not block paste, autofill, or password managers.</p>
+    </div>
+    <div class="field">
+      <label for="input-date-en">Review date</label>
+      <input id="input-date-en" class="input" type="date" name="reviewDate" />
+      <p>Use the native picker only when a local date is the complete value.</p>
+    </div>
+  </div>
+</Preview>
+
+Use `type="number"` only when native stepping and numeric constraints match the job. Account numbers, postal codes, identifiers, leading-zero values, and high-precision decimals remain text. Native `type="file"` is a compatibility boundary; production drag, queue, progress, failure, and retry flows belong to File Upload.
+
+### Form validation and recovery
+
+Keep a required field neutral before the first validation attempt. On failure, retain the attempted value, name the problem, focus the field, and add the error to its description relationship. Clear stale error semantics as soon as the value becomes valid or the form resets.
+
+<Preview class="w-full max-w-lg" title="Required workspace address">
+  <form
+    class="grid w-full gap-4"
+    data-input-validation-demo="en"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#input-validation-email-en'); const field = input.closest('.field'); const error = this.querySelector('#input-validation-email-error-en'); if (input.checkValidity()) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'input-validation-email-hint-en input-validation-email-error-en'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#input-validation-email-en'); const field = input.closest('.field'); const error = this.querySelector('#input-validation-email-error-en'); field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'input-validation-email-hint-en'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="input-validation-email-en">Workspace owner email</label>
+      <input
+        id="input-validation-email-en"
+        class="input"
+        type="email"
+        name="workspaceOwnerEmail"
+        autocomplete="email"
+        inputmode="email"
+        aria-describedby="input-validation-email-hint-en"
+        required
+        oninput="if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'input-validation-email-hint-en'); field.querySelector('[role=alert]').hidden = true"
+      />
+      <p id="input-validation-email-hint-en">
+        Use an address that can receive workspace recovery messages.
+      </p>
+      <p id="input-validation-email-error-en" role="alert" hidden>
+        Enter a complete email address, such as owner@example.com.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        Save address
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        Reset
+      </button>
+    </div>
+  </form>
+</Preview>
+
+Client validation improves recovery but never replaces server validation, sanitization, authorization, or stale-response handling.
+
+### Disabled and read-only
+
+Disabled removes the value from focus, editing, constraint validation, and form submission. Read-only keeps the value focusable, selectable, copyable, and submitted. Both need a visible reason.
+
+<Preview class="w-full max-w-lg" title="Availability semantics">
+  <form class="grid w-full gap-5" data-input-availability="en">
+    <div class="field" data-disabled="true">
+      <label for="input-disabled-en">Policy-managed address</label>
+      <input
+        id="input-disabled-en"
+        class="input"
+        type="email"
+        name="policyManagedAddress"
+        value="policy-managed@example.com"
+        aria-describedby="input-disabled-reason-en"
+        disabled
+      />
+      <p id="input-disabled-reason-en">
+        Workspace policy manages this archived notification address.
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="input-readonly-en">Release owner</label>
+      <input
+        id="input-readonly-en"
+        class="input"
+        type="email"
+        name="releaseOwner"
+        value="release-owner@example.com"
+        aria-describedby="input-readonly-reason-en"
+        readOnly
+      />
+      <p id="input-readonly-reason-en">
+        Only organization owners can edit this value; it remains selectable and
+        is included in form submission.
+      </p>
+    </div>
+  </form>
+</Preview>
+
+## Accessibility
+
+- Keep one persistent visible label. Placeholder text may demonstrate format but never supplies the only name.
+- Associate ordinary guidance through `aria-describedby`. Add the current error ID only after validation and remove it after recovery.
+- Let native keyboard editing, selection, undo, paste, autofill, password managers, and search/date controls operate unchanged.
+- Do not transform, validate business rules, or submit while an IME composition is active; wait for `compositionend`.
+- Keep email, telephone, and URL values left-to-right inside RTL layouts so punctuation and prefixes retain their authored order; labels and supporting copy still follow the layout direction.
+- Use one continuous focus boundary. Forced-colors mode replaces the inset visual boundary with a system `Highlight` outline.
+- On coarse pointers, text-like inputs remain at least 44px high and 16px to avoid mobile focus zoom.
+- Test at 200% browser zoom, with long values, RTL text, CJK input, real mobile keyboards, autofill, password managers, and assistive technology before release.

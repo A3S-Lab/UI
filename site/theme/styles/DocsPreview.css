@@ -231,6 +231,7 @@
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr);
   align-content: center;
   align-items: center;
   justify-items: center;
@@ -245,6 +246,15 @@
 
 .a3s-preview__canvas[hidden] {
   display: none;
+}
+
+.a3s-preview__canvas [data-input-current-value] {
+  display: block;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .a3s-preview__viewport-shell {
@@ -386,7 +396,8 @@
 }
 
 @media (max-width: 520px) {
-  .a3s-preview__code-label {
+  .a3s-preview__code-label,
+  .a3s-preview__copy-label {
     display: none;
   }
 }

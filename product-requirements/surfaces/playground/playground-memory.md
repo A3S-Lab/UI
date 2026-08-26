@@ -16,6 +16,8 @@ People evaluating the composition need to review durable memories, approve candi
 
 This route is a deterministic, in-memory integration fixture for reusable UI contracts. It may demonstrate host callbacks and recovery states, but it does not own real routing services, APIs, persistence, permissions, filesystem authority, scheduling, or domain orchestration.
 
+
+
 ## States
 
 The required state vocabulary is ready plus route-specific empty, loading, partial, error, selected, open, compact-navigation, and recovery states. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -45,6 +47,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- Route composition uses only the declared reusable components and does not introduce a parallel application shell.
 - Product-specific risk is covered: The route must preserve one task-first information hierarchy, keep global navigation separate from the work canvas, expose truthful empty and failure states, and remain usable at 390px without imitating a second production backend.
 
 ## A3S Test mapping

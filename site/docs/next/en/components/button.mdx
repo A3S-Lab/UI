@@ -2,21 +2,76 @@
 
 Buttons trigger actions in the current interface. Use a link with `href`, styled as a button, when the outcome is navigation.
 
-<Preview title="Common actions">
-  <div class="flex flex-wrap items-center gap-2">
-    <button type="button" class="btn">
-      Save changes
-    </button>
-    <button type="button" class="btn" data-variant="outline">
-      Preview
-    </button>
-    <button type="button" class="btn" data-variant="secondary">
-      Do later
-    </button>
-    <button type="button" class="btn" data-variant="destructive">
-      Delete
-    </button>
-  </div>
+<Preview class="w-full max-w-xl" title="Save permission changes">
+  <section
+    class="grid w-full gap-4"
+    data-button-primary-demo="en"
+    data-button-save-state="ready"
+    data-button-submissions="0"
+    aria-labelledby="button-workspace-access-en"
+  >
+    <div class="grid gap-1">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <strong id="button-workspace-access-en">Workspace access</strong>
+        <span class="text-xs text-muted-foreground">2 pending changes</span>
+      </div>
+      <p class="text-sm text-muted-foreground">
+        Reviewer access and deployment approval are ready to update.
+      </p>
+    </div>
+    <div class="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <output
+        class="text-sm text-muted-foreground"
+        data-button-status
+        aria-live="polite"
+      >
+        Ready to save.
+      </output>
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="btn"
+          data-button-save
+          onclick="if (this.disabled) return; const region = this.closest('[data-button-primary-demo]'); const status = region.querySelector('[data-button-status]'); const idle = this.querySelector('[data-button-idle]'); const progress = this.querySelector('[data-button-progress]'); region.dataset.buttonSubmissions = String(Number(region.dataset.buttonSubmissions || '0') + 1); region.dataset.buttonSaveState = 'loading'; this.disabled = true; this.setAttribute('aria-busy', 'true'); idle.classList.add('invisible'); idle.setAttribute('aria-hidden', 'true'); progress.classList.remove('invisible'); progress.setAttribute('aria-hidden', 'false'); status.textContent = 'Saving permission changes…'; window.clearTimeout(this._a3sButtonTimer); this._a3sButtonTimer = window.setTimeout(() => { region.dataset.buttonSaveState = 'saved'; this.disabled = false; this.removeAttribute('aria-busy'); idle.classList.remove('invisible'); idle.setAttribute('aria-hidden', 'false'); progress.classList.add('invisible'); progress.setAttribute('aria-hidden', 'true'); status.textContent = 'Permission changes saved.'; }, 1200)"
+        >
+          <span class="grid">
+            <span class="col-start-1 row-start-1" data-button-idle>
+              Save changes
+            </span>
+            <span
+              class="invisible col-start-1 row-start-1 inline-flex items-center justify-center gap-1.5"
+              data-button-progress
+              aria-hidden="true"
+            >
+              <svg
+                data-icon="inline-start"
+                class="animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+              </svg>
+              Saving…
+            </span>
+          </span>
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-variant="outline"
+          onclick="this.closest('[data-button-primary-demo]').querySelector('[data-button-status]').textContent = 'Reviewer access and deployment approval will change.'"
+        >
+          Review changes
+        </button>
+      </div>
+    </div>
+  </section>
 </Preview>
 
 ## Usage
@@ -52,6 +107,149 @@ For component-level loading, import the base styles, Button structure, and A3S v
 | `data-size`    | `xs`, `sm`, `default`, `lg`, `icon-xs`, `icon-sm`, `icon`, `icon-lg` | Sets target size and visual density                  |
 | `data-icon`    | `inline-start` or `inline-end`                                       | Place on inline icons to correct text-button spacing |
 | Native state   | `disabled`, `aria-busy`, `aria-pressed`                              | Expresses unavailable, pending, and toggle states    |
+
+Button has no JavaScript controller or dedicated framework hook. HTML, React, and Vue use the same native activation and state attributes; application state owns the asynchronous operation and its duplicate-submission guard.
+
+## Framework usage
+
+<FrameworkTabs
+  html={`<section data-save-settings>
+  <p data-save-status aria-live="polite">Ready to save.</p>
+  <button type="button" class="btn" data-save-button>
+    <span class="grid">
+      <span class="col-start-1 row-start-1" data-idle-label>Save changes</span>
+      <span class="invisible col-start-1 row-start-1 inline-flex items-center gap-1.5" data-progress-label aria-hidden="true">
+        <svg data-icon="inline-start" class="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+        Saving…
+      </span>
+    </span>
+  </button>
+</section>
+<script type="module">
+  import { savePermissionChanges } from "./workspace.js";
+
+const region = document.querySelector("[data-save-settings]");
+const button = region.querySelector("[data-save-button]");
+const status = region.querySelector("[data-save-status]");
+const idle = button.querySelector("[data-idle-label]");
+const progress = button.querySelector("[data-progress-label]");
+let pending = false;
+
+function setPending(nextPending) {
+pending = nextPending;
+button.disabled = nextPending;
+button.toggleAttribute("aria-busy", nextPending);
+idle.classList.toggle("invisible", nextPending);
+idle.setAttribute("aria-hidden", String(nextPending));
+progress.classList.toggle("invisible", !nextPending);
+progress.setAttribute("aria-hidden", String(!nextPending));
+}
+
+button.addEventListener("click", async () => {
+if (pending) return;
+setPending(true);
+status.textContent = "Saving permission changes…";
+try {
+await savePermissionChanges();
+status.textContent = "Permission changes saved.";
+} catch {
+status.textContent = "Could not save changes. Check the connection and try again.";
+} finally {
+setPending(false);
+}
+});
+
+</script>`}
+  react={`import { useRef, useState } from "react";
+import { Button } from "@a3s-lab/ui/react";
+
+export function SavePermissionChanges({
+  saveChanges,
+}: {
+  saveChanges: () => Promise<void>;
+}) {
+  const pending = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState("Ready to save.");
+
+async function save() {
+if (pending.current) return;
+pending.current = true;
+setSaving(true);
+setStatus("Saving permission changes…");
+try {
+await saveChanges();
+setStatus("Permission changes saved.");
+} catch {
+setStatus("Could not save changes. Check the connection and try again.");
+} finally {
+pending.current = false;
+setSaving(false);
+}
+}
+
+return (
+<section>
+<p aria-live="polite">{status}</p>
+<Button type="button" disabled={saving} aria-busy={saving} onClick={save}>
+<span className="grid">
+<span
+className={"col-start-1 row-start-1" + (saving ? " invisible" : "")}
+aria-hidden={saving} >
+Save changes
+</span>
+<span
+className={"col-start-1 row-start-1 inline-flex items-center gap-1.5" + (saving ? "" : " invisible")}
+aria-hidden={!saving} >
+<svg data-icon="inline-start" className="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+Saving…
+</span>
+</span>
+</Button>
+</section>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Button } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{
+saveChanges: () => Promise<void>;
+}>();
+const saving = ref(false);
+const status = ref("Ready to save.");
+
+async function save() {
+if (saving.value) return;
+saving.value = true;
+status.value = "Saving permission changes…";
+try {
+await props.saveChanges();
+status.value = "Permission changes saved.";
+} catch {
+status.value = "Could not save changes. Check the connection and try again.";
+} finally {
+saving.value = false;
+}
+}
+
+</script>
+
+<template>
+  <section>
+    <p aria-live="polite">{{ status }}</p>
+    <Button type="button" :disabled="saving" :aria-busy="saving" @click="save">
+      <span class="grid">
+        <span class="col-start-1 row-start-1" :class="{ invisible: saving }" :aria-hidden="saving">Save changes</span>
+        <span class="col-start-1 row-start-1 inline-flex items-center gap-1.5" :class="{ invisible: !saving }" :aria-hidden="!saving">
+          <svg data-icon="inline-start" class="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+          Saving…
+        </span>
+      </span>
+    </Button>
+  </section>
+</template>`}
+/>
 
 ## States and variants
 
@@ -232,74 +430,11 @@ Set `data-icon` on an icon next to text. Icon-only buttons need a name through `
   </div>
 </Preview>
 
-## React
-
-```tsx
-import { useState } from "react";
-import { Button } from "@a3s-lab/ui/react";
-
-export function SaveButton({
-  saveChanges,
-}: {
-  saveChanges: () => Promise<void>;
-}) {
-  const [saving, setSaving] = useState(false);
-
-  async function save() {
-    setSaving(true);
-    try {
-      await saveChanges();
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <Button type="button" disabled={saving} aria-busy={saving} onClick={save}>
-      {saving ? "Saving…" : "Save changes"}
-    </Button>
-  );
-}
-```
-
-`Button` uses the native `<button>` root from the component manifest and can render a link through `as="a"`. Button has no private events or methods, so there is no `useButton`; use React events and state directly.
-
-## Vue
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Button } from "@a3s-lab/ui/vue";
-
-const props = defineProps<{
-  saveChanges: () => Promise<void>;
-}>();
-const saving = ref(false);
-
-async function save() {
-  saving.value = true;
-  try {
-    await props.saveChanges();
-  } finally {
-    saving.value = false;
-  }
-}
-</script>
-
-<template>
-  <Button type="button" :disabled="saving" :aria-busy="saving" @click="save">
-    {{ saving ? "Saving…" : "Save changes" }}
-  </Button>
-</template>
-```
-
-The Vue adapter also adds no wrapper. Button has no dedicated composable; use Vue events and reactive state for interaction.
-
 ## Accessibility
 
 - Use `<button>` for actions and `<a href>` for navigation. Do not imitate links with click handlers.
 - Every icon-only button needs an accessible name, usually through `aria-label`.
-- Keep action text visible during loading, and synchronize `disabled` with `aria-busy="true"`.
+- Keep a specific action label visible during loading, synchronize `disabled` with `aria-busy="true"`, and set the duplicate-submission guard before awaiting host work.
 - Application state owns `aria-pressed="true|false"` for toggles. Buttons that reveal overlays use `aria-expanded` and `aria-controls`.
 - A destructive button communicates intent. When confirmation is required, pair it with [Alert Dialog](/components/alert-dialog).
-- The A3S style pack provides a visible focus ring. Do not remove it in application styles.
+- The A3S style pack provides one visible offset focus outline without a box-shadow halo. Do not remove it in application styles.

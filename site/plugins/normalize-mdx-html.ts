@@ -18,6 +18,9 @@ const intrinsicAttributeAliases: Record<string, string> = {
   colspan: "colSpan",
   rowspan: "rowSpan",
   autocomplete: "autoComplete",
+  inputmode: "inputMode",
+  enterkeyhint: "enterKeyHint",
+  minlength: "minLength",
   maxlength: "maxLength",
   "stroke-width": "strokeWidth",
   "stroke-linecap": "strokeLinecap",
@@ -70,8 +73,7 @@ const phrasingContentElements = new Set([
 
 function normalizePhrasingContent(node: MdastNode) {
   if (
-    (node.type === "mdxJsxFlowElement" ||
-      node.type === "mdxJsxTextElement") &&
+    (node.type === "mdxJsxFlowElement" || node.type === "mdxJsxTextElement") &&
     node.name &&
     phrasingContentElements.has(node.name)
   ) {
@@ -85,8 +87,7 @@ function normalizePhrasingContent(node: MdastNode) {
 
 function normalizeIntrinsicAttributes(node: MdastNode) {
   if (
-    (node.type === "mdxJsxFlowElement" ||
-      node.type === "mdxJsxTextElement") &&
+    (node.type === "mdxJsxFlowElement" || node.type === "mdxJsxTextElement") &&
     node.name &&
     /^[a-z]/.test(node.name)
   ) {

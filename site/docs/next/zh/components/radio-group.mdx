@@ -1,259 +1,587 @@
 # 单选组
 
-单选组用于一组互斥选项，用户始终从中选择一个最符合当前任务的值。
+单选组用于呈现一小组互斥选项。适合所有选项都能在当前界面直接理解，并且用户需要选择一个值才能继续或完成当前设置的场景。
 
 <Preview>
-<div role="radiogroup" aria-label="视图密度" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r1" name="radio-demo" value="default" class="input" />
-    <label for="r1">默认</label>
+  <div
+    role="radiogroup"
+    aria-labelledby="density-label-zh"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-label-zh" class="label">
+      视图密度
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r1"
+        name="radio-demo"
+        value="default"
+        class="input"
+      />
+      <label for="r1">默认</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r2"
+        name="radio-demo"
+        value="comfortable"
+        class="input"
+        defaultChecked
+      />
+      <label for="r2">宽松</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r3"
+        name="radio-demo"
+        value="compact"
+        class="input"
+      />
+      <label for="r3">紧凑</label>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r2" name="radio-demo" value="comfortable" class="input" defaultChecked />
-    <label for="r2">宽松</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r3" name="radio-demo" value="compact" class="input" />
-    <label for="r3">紧凑</label>
-  </div>
-</div>
 </Preview>
 
 ## 用法
 
-<Steps>
-  <Step title="引入 CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 和完整的 A3S 样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者仅导入基础 CSS、单选组组件 CSS 和一个样式包。
+为相关的原生单选按钮设置相同的 `name`，为每个按钮关联可见标签，再通过 `fieldset` 与 `legend`，或 `role="radiogroup"` 与 `aria-labelledby`，为整组选择提供一个无障碍名称。
+
+```html
+<fieldset class="fieldset">
+  <legend data-variant="label">视图密度</legend>
+  <div class="grid gap-3">
+    <div class="field" data-orientation="horizontal">
+      <input
+        class="input"
+        type="radio"
+        id="density-default"
+        name="density"
+        value="default"
+      />
+      <label for="density-default">默认</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        class="input"
+        type="radio"
+        id="density-compact"
+        name="density"
+        value="compact"
+        checked
+      />
+      <label for="density-compact">紧凑</label>
+    </div>
+  </div>
+</fieldset>
+```
+
+如需按组件加载，请依次导入基础样式、Radio 结构、Field 结构与 A3S 视觉样式。CDN 等其他接入方式参见[安装](/installation)。
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
-@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/components/radio.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-单选组使用 Radio 样式，并在复杂示例中组合 Field 样式。
+### 参数
 
-使用 CDN 或打包工具导入？请参阅[安装页](/installation)。
+| 参数               | 值                                  | 用途                                         |
+| ------------------ | ----------------------------------- | -------------------------------------------- |
+| 分组               | `<fieldset>` 或 `role="radiogroup"` | 为相关选项建立一个有名称的语义边界           |
+| 根类名             | `radio-group`                       | 应用稳定的分组布局和框架适配器契约           |
+| 选项根元素         | `<input type="radio">`              | 保留原生表单、校验、键盘与无障碍行为         |
+| `class`            | `input`                             | 应用 Radio 结构和视觉样式                    |
+| `name`             | 相同字符串                          | 让选项互斥并只提交一个值                     |
+| `value`            | 稳定字符串                          | 提供提交给应用的值，不要根据显示文案临时生成 |
+| `checked`          | 布尔属性                            | 标记真实的初始选择；必须由用户选择时应省略   |
+| `disabled`         | 布尔属性                            | 阻止选择，并需要解释该项不可用的原因         |
+| `required`         | 布尔属性                            | 要求同名原生单选组在提交前至少选择一项       |
+| `aria-invalid`     | `true`                              | 在完成校验后公开失败状态                     |
+| `aria-describedby` | 元素 ID                             | 关联约束、选择后果或恢复说明                 |
 
-  </Step>
-  <Step title="添加单选组 HTML">
+## 状态与变体
 
-为单选按钮添加 `class="input"`。互斥选项共用同一个 `name` 属性，并使用语义化的 `<fieldset>` 或带有 `role="radiogroup"` 的元素包裹相关选项。
-
-```html
-<input type="radio" name="plan" class="input" />
-```
-
-  </Step>
-</Steps>
-
-## 示例
+未选中与已选中是正常交互状态。焦点进入原生单选组后，方向键在组选项间移动并同步选择；Tab 只把整组作为一个进出位置。只有当相邻内容解释约束或恢复方式时，禁用态和错误态才有意义。
 
 ### 带说明
 
-使用 Field 样式组合单选项及其说明。
+标签说明选项是什么，辅助文案解释选择后的影响。说明文字放在标签之外，并通过 `aria-describedby` 关联，避免辅助技术把长段说明反复读作选项名称。
 
-<Preview>
-<div role="radiogroup" aria-label="视图密度" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r1" name="radio-description" value="default" class="input" />
-    <section>
-      <label for="desc-r1">默认</label>
-      <p>适合大多数场景的标准间距。</p>
-    </section>
+<Preview title="密度与影响">
+  <div
+    role="radiogroup"
+    aria-labelledby="density-description-label-zh"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-description-label-zh" class="label">
+      视图密度
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r1"
+        name="radio-description"
+        value="default"
+        class="input"
+        aria-describedby="desc-r1-copy"
+      />
+      <section>
+        <label for="desc-r1">默认</label>
+        <p id="desc-r1-copy">适合日常工作的均衡间距。</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r2"
+        name="radio-description"
+        value="comfortable"
+        class="input"
+        aria-describedby="desc-r2-copy"
+        defaultChecked
+      />
+      <section>
+        <label for="desc-r2">宽松</label>
+        <p id="desc-r2-copy">扩大点击目标并增加行间分隔。</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r3"
+        name="radio-description"
+        value="compact"
+        class="input"
+        aria-describedby="desc-r3-copy"
+      />
+      <section>
+        <label for="desc-r3">紧凑</label>
+        <p id="desc-r3-copy">以更紧密的视觉间距显示更多行。</p>
+      </section>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r2" name="radio-description" value="comfortable" class="input" defaultChecked />
-    <section>
-      <label for="desc-r2">宽松</label>
-      <p>元素之间留出更多空间。</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r3" name="radio-description" value="compact" class="input" />
-    <section>
-      <label for="desc-r3">紧凑</label>
-      <p>以最小间距呈现高密度布局。</p>
-    </section>
-  </div>
-</div>
 </Preview>
 
 ### 卡片式选项
 
-使用原生 `<label>` 包裹整个 `.field`，让卡片任意位置都可点击。
+只有当每个选项都需要标题与后果说明时才使用卡片。`data-variant="choice-card"` 会把可见选项标签扩展到完整字段，让整张卡片仍然只是一个原生单选目标，同时避免无效的嵌套标记或第二层分组角色。关联的 `<label>` 提供无障碍名称，`aria-describedby` 只补充选择后果，避免辅助技术把说明重复读作名称。
 
-<Preview class="w-full max-w-sm">
-<div role="radiogroup" aria-label="方案" data-slot="radio-group" class="w-full max-w-md">
-  <label for="plus-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+<Preview title="工作区方案" class="w-full max-w-sm">
+  <div
+    role="radiogroup"
+    aria-labelledby="plan-label-zh"
+    data-slot="radio-group"
+    class="radio-group w-full max-w-md"
+  >
+    <span id="plan-label-zh" class="label">
+      工作区方案
+    </span>
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Plus</h3>
-        <p>适合个人和小型团队。</p>
+        <label for="plus-plan">Plus</label>
+        <p id="plus-plan-description">适合个人和小型团队。</p>
       </section>
-      <input type="radio" id="plus-plan" name="choice-plan" value="plus" class="input" defaultChecked />
+      <input
+        type="radio"
+        id="plus-plan"
+        name="choice-plan"
+        value="plus"
+        class="input"
+        aria-describedby="plus-plan-description"
+        defaultChecked
+      />
     </div>
-  </label>
-  <label for="pro-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Pro</h3>
-        <p>适合成长中的企业。</p>
+        <label for="pro-plan">Pro</label>
+        <p id="pro-plan-description">增加团队控制与共享审计记录。</p>
       </section>
-      <input type="radio" id="pro-plan" name="choice-plan" value="pro" class="input" />
+      <input
+        type="radio"
+        id="pro-plan"
+        name="choice-plan"
+        value="pro"
+        class="input"
+        aria-describedby="pro-plan-description"
+      />
     </div>
-  </label>
-  <label for="enterprise-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Enterprise</h3>
-        <p>适合大型团队和企业。</p>
+        <label for="enterprise-plan">Enterprise</label>
+        <p id="enterprise-plan-description">增加组织策略与托管访问控制。</p>
       </section>
-      <input type="radio" id="enterprise-plan" name="choice-plan" value="enterprise" class="input" />
+      <input
+        type="radio"
+        id="enterprise-plan"
+        name="choice-plan"
+        value="enterprise"
+        class="input"
+        aria-describedby="enterprise-plan-description"
+      />
     </div>
-  </label>
-</div>
+  </div>
 </Preview>
 
 ### 字段组
 
-使用原生 `<fieldset>` 和 `<legend>` 为一组单选项提供标题与说明。
+表单问题优先使用 `fieldset` 与 `legend`。图例已经提供分组名称，不要再嵌套一个名称相同的 radiogroup。
 
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">订阅方案</legend>
-  <p>按年和终身方案可享大幅优惠。</p>
-  <div role="radiogroup" aria-label="订阅方案" data-slot="radio-group">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-monthly" name="subscription-plan" value="monthly" class="input" defaultChecked />
-      <label for="plan-monthly" class="font-normal">按月（$9.99/月）</label>
+<Preview title="订阅方案">
+  <fieldset class="fieldset">
+    <legend data-variant="label">订阅方案</legend>
+    <p id="subscription-help-zh">按年付费可节省两个月的费用。</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-monthly"
+          name="subscription-plan"
+          value="monthly"
+          class="input"
+          aria-describedby="subscription-help-zh"
+          defaultChecked
+        />
+        <label for="plan-monthly">按月（$9.99/月）</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-yearly"
+          name="subscription-plan"
+          value="yearly"
+          class="input"
+          aria-describedby="subscription-help-zh"
+        />
+        <label for="plan-yearly">按年（$99.99/年）</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-lifetime"
+          name="subscription-plan"
+          value="lifetime"
+          class="input"
+          aria-describedby="subscription-help-zh"
+        />
+        <label for="plan-lifetime">终身（$299.99）</label>
+      </div>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-yearly" name="subscription-plan" value="yearly" class="input" />
-      <label for="plan-yearly" class="font-normal">按年（$99.99/年）</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-lifetime" name="subscription-plan" value="lifetime" class="input" />
-      <label for="plan-lifetime" class="font-normal">终身（$299.99）</label>
-    </div>
-  </div>
-</fieldset>
+  </fieldset>
 </Preview>
 
-### 已禁用
+### 禁用选项
 
-使用 `disabled` 属性禁用单个项目。
+只禁用当前不可用的选项，保留其他选择，并把不可用原因放在禁用控件旁边。
 
-<Preview>
-<div role="radiogroup" aria-label="禁用选项" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="radio" id="disabled-1" name="radio-disabled" value="option1" class="input" disabled />
-    <label for="disabled-1" class="font-normal">已禁用</label>
+<Preview title="可用性">
+  <div
+    role="radiogroup"
+    aria-labelledby="availability-label-zh"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="availability-label-zh" class="label">
+      执行环境
+    </span>
+    <div class="field" data-orientation="horizontal" data-disabled>
+      <input
+        type="radio"
+        id="disabled-1"
+        name="radio-disabled"
+        value="accelerated"
+        class="input"
+        aria-describedby="disabled-1-reason"
+        disabled
+      />
+      <section>
+        <label for="disabled-1">加速环境</label>
+        <p id="disabled-1-reason">当前未连接兼容设备。</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="disabled-2"
+        name="radio-disabled"
+        value="standard"
+        class="input"
+        defaultChecked
+      />
+      <label for="disabled-2">标准环境</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="disabled-3"
+        name="radio-disabled"
+        value="remote"
+        class="input"
+      />
+      <label for="disabled-3">远程环境</label>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="disabled-2" name="radio-disabled" value="option2" class="input" defaultChecked />
-    <label for="disabled-2" class="font-normal">选项 2</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="disabled-3" name="radio-disabled" value="option3" class="input" />
-    <label for="disabled-3" class="font-normal">选项 3</label>
-  </div>
-</div>
 </Preview>
 
 ### 无效
 
-在单选按钮上使用 `aria-invalid="true"`，并在字段上使用 `data-invalid` 来显示校验错误。
+不要把已经合法预选的值标记为错误。初始状态不显示错误，只在用户尝试继续后校验；如果仍未选择，应把焦点移到第一个选项，并在用户完成选择或重置表单后清除过期的错误语义。
 
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">通知方式</legend>
-  <p>选择你希望接收通知的方式。</p>
-  <div role="radiogroup" aria-label="通知方式" data-slot="radio-group">
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-email" name="notification-preference" value="email" class="input" aria-invalid="true" defaultChecked />
-      <label for="invalid-email" class="font-normal">仅邮件</label>
+<Preview title="必选项">
+  <form
+    class="grid gap-4"
+    data-radio-group-validation-demo="zh"
+    novalidate
+    onsubmit="event.preventDefault(); const group = this.querySelector('fieldset'); const options = [...group.querySelectorAll('input[type=radio]')]; if (options.some((option) => option.checked)) return; group.setAttribute('data-invalid', ''); options.forEach((option) => option.setAttribute('aria-invalid', 'true')); group.querySelector('[role=alert]').hidden = false; options[0].focus();"
+    onreset="const group = this.querySelector('fieldset'); group.removeAttribute('data-invalid'); group.querySelectorAll('[aria-invalid=true]').forEach((option) => option.removeAttribute('aria-invalid')); group.querySelector('[role=alert]').hidden = true;"
+  >
+    <fieldset
+      class="fieldset"
+      onchange="if (!event.target.matches('input[type=radio]')) return; this.removeAttribute('data-invalid'); this.querySelectorAll('[aria-invalid=true]').forEach((option) => option.removeAttribute('aria-invalid')); this.querySelector('[role=alert]').hidden = true;"
+    >
+      <legend data-variant="label">通知方式</legend>
+      <p
+        id="notification-preference-error-zh"
+        class="text-destructive"
+        role="alert"
+        hidden
+      >
+        请先选择一种接收方式，然后再继续。
+      </p>
+      <div class="grid gap-3">
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-email"
+            name="notification-preference"
+            value="email"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-zh"
+          />
+          <label for="invalid-email">仅邮件</label>
+        </div>
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-sms"
+            name="notification-preference"
+            value="sms"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-zh"
+          />
+          <label for="invalid-sms">仅短信</label>
+        </div>
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-both"
+            name="notification-preference"
+            value="both"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-zh"
+          />
+          <label for="invalid-both">邮件和短信</label>
+        </div>
+      </div>
+    </fieldset>
+    <div class="flex flex-wrap gap-2">
+      <button id="notification-preference-submit-zh" type="submit" class="btn">
+        继续
+      </button>
+      <button
+        id="notification-preference-reset-zh"
+        type="reset"
+        class="btn"
+        data-variant="outline"
+      >
+        重置
+      </button>
     </div>
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-sms" name="notification-preference" value="sms" class="input" aria-invalid="true" />
-      <label for="invalid-sms" class="font-normal">仅短信</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-both" name="notification-preference" value="both" class="input" aria-invalid="true" />
-      <label for="invalid-both" class="font-normal">邮件和短信</label>
-    </div>
-  </div>
-</fieldset>
+  </form>
 </Preview>
 
 ## RTL
 
-在单选组或祖先元素上设置 `dir="rtl"`。
+在单选组或祖先元素上设置 `dir="rtl"`。原生键盘方向会跟随文档方向，选项的实际含义顺序仍由 DOM 决定。
 
-<Preview>
-<div dir="rtl" role="radiogroup" aria-label="كثافة العرض" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r1-rtl" name="radio-rtl" value="default" class="input" />
-    <section>
-      <label for="r1-rtl">افتراضي</label>
-      <p>تباعد قياسي لمعظم حالات الاستخدام.</p>
-    </section>
+<Preview title="كثافة العرض">
+  <div
+    dir="rtl"
+    role="radiogroup"
+    aria-labelledby="density-label-rtl"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-label-rtl" class="label">
+      كثافة العرض
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r1-rtl"
+        name="radio-rtl"
+        value="default"
+        class="input"
+      />
+      <section>
+        <label for="r1-rtl">افتراضي</label>
+        <p>تباعد قياسي لمعظم حالات الاستخدام.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r2-rtl"
+        name="radio-rtl"
+        value="comfortable"
+        class="input"
+        defaultChecked
+      />
+      <section>
+        <label for="r2-rtl">مريح</label>
+        <p>مساحة أكبر بين العناصر.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r3-rtl"
+        name="radio-rtl"
+        value="compact"
+        class="input"
+      />
+      <section>
+        <label for="r3-rtl">مضغوط</label>
+        <p>تباعد أدنى للتخطيطات الكثيفة.</p>
+      </section>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r2-rtl" name="radio-rtl" value="comfortable" class="input" defaultChecked />
-    <section>
-      <label for="r2-rtl">مريح</label>
-      <p>مساحة أكبر بين العناصر.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r3-rtl" name="radio-rtl" value="compact" class="input" />
-    <section>
-      <label for="r3-rtl">مضغوط</label>
-      <p>تباعد أدنى للتخطيطات الكثيفة.</p>
-    </section>
-  </div>
-</div>
 </Preview>
 
 ## React
 
+`RadioGroup` 渲染清单声明的根元素。`useRadioGroup` 监听冒泡的原生 `change` 事件，选中值与表单提交仍由应用负责。
+
 ```tsx
+import { useState } from "react";
 import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useRadioGroup();
+export function DensitySetting() {
+  const [density, setDensity] = useState("comfortable");
+  const group = useRadioGroup({
+    events: {
+      change(event) {
+        const option = event.target as HTMLInputElement;
+        if (option.type === "radio" && option.checked) setDensity(option.value);
+      },
+    },
+  });
+
   return (
-    <RadioGroup ref={control.ref}><label><input type="radio" name="choice" /> 已就绪</label></RadioGroup>
+    <RadioGroup
+      ref={group.ref}
+      aria-labelledby="density-label"
+      className="w-fit"
+    >
+      <span id="density-label" className="label">
+        视图密度
+      </span>
+      {[
+        ["default", "默认"],
+        ["comfortable", "宽松"],
+        ["compact", "紧凑"],
+      ].map(([value, label]) => (
+        <div className="field" data-orientation="horizontal" key={value}>
+          <input
+            className="input"
+            type="radio"
+            id={`density-${value}`}
+            name="density"
+            value={value}
+            defaultChecked={value === density}
+          />
+          <label htmlFor={`density-${value}`}>{label}</label>
+        </div>
+      ))}
+      <output>当前密度：{density}</output>
+    </RadioGroup>
   );
 }
 ```
 
-`useRadioGroup` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
-
 ## Vue
 
+Vue 组合式函数订阅相同的原生事件。模板 ref 连接语义分组，响应式状态仍归应用所有。
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/vue";
 
-const control = useRadioGroup();
-const componentRef = control.componentRef;
+const density = ref("comfortable");
+const group = useRadioGroup({
+  events: {
+    change(event) {
+      const option = event.target as HTMLInputElement;
+      if (option.type === "radio" && option.checked)
+        density.value = option.value;
+    },
+  },
+});
+const componentRef = group.componentRef;
+const options = [
+  ["default", "默认"],
+  ["comfortable", "宽松"],
+  ["compact", "紧凑"],
+];
 </script>
 
 <template>
-  <RadioGroup ref="componentRef"><label><input type="radio" name="choice" /> 已就绪</label></RadioGroup>
+  <RadioGroup ref="componentRef" aria-labelledby="density-label" class="w-fit">
+    <span id="density-label" class="label">视图密度</span>
+    <div
+      v-for="[value, label] in options"
+      :key="value"
+      class="field"
+      data-orientation="horizontal"
+    >
+      <input
+        class="input"
+        type="radio"
+        :id="`density-${value}`"
+        name="density"
+        :value="value"
+        :checked="value === density"
+      />
+      <label :for="`density-${value}`">{{ label }}</label>
+    </div>
+    <output>当前密度：{{ density }}</output>
+  </RadioGroup>
 </template>
 ```
 
-`useRadioGroup` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+## 无障碍
+
+- 为整组选择提供一个简洁的无障碍名称。表单内优先使用 `fieldset` 与 `legend`；其他场景使用 `role="radiogroup"` 搭配 `aria-labelledby` 或 `aria-label`。
+- 每个单选按钮都需要可见 `label` 和稳定的提交 `value`。说明文字通过 `aria-describedby` 关联，不要把长段说明塞进无障碍名称。
+- 互斥选项必须使用同一个 `name`。不要通过彼此独立的按钮或只存在于应用状态中的逻辑模拟互斥。
+- 保留原生方向键行为。Tab 进入当前选项，方向键移动并选择，Tab 离开整组；不要让每个选项都成为独立 Tab 停靠点。
+- 不要给每个选项行添加 `role="group"`。radiogroup 或 fieldset 是唯一的分组边界。
+- 只给不可用选项设置 `disabled` 并保持原因可见。如果全部选项都不可用，应禁用所属表单操作并说明阻塞条件。
+- 完成校验后再显示错误。使用 `required`、`aria-invalid="true"` 与 `aria-describedby` 关联可恢复的错误说明，并在用户选择合法值或重置表单后清除过期的错误属性与文案。
+- 在粗指针设备上让完整点击目标至少达到 44px，视觉圆点仍保持紧凑。

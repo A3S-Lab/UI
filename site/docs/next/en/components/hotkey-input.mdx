@@ -1,83 +1,500 @@
 # Hotkey Input
 
-Records one normalized keyboard chord and makes the current value, conflict state, and clear path visible before submission.
+Hotkey Input records one keyboard chord for a command assignment. It keeps the committed shortcut visible, makes recording explicit, and preserves the prior value when replacement is cancelled or rejected.
 
 <Preview class="w-full">
-<div class="hotkey-input" data-hotkey-value="Meta+K"><input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button></div>
+  <div class="field w-full max-w-md">
+    <label for="hotkey-input-en">Open quick search</label>
+    <div
+      class="hotkey-input"
+      data-hotkey-value="Meta+K"
+      data-recording-placeholder="Press one key combination…"
+      data-recording-message="Press one complete key combination. Escape cancels."
+      data-modifier-message="Add a non-modifier key."
+      data-invalid-message="Enter one complete key combination at a time."
+      data-recording-announcement="Recording shortcut. Press a key combination, or Escape to cancel."
+      data-modifier-announcement="Modifier recorded. Add a non-modifier key."
+      data-recorded-announcement="Current shortcut"
+      data-empty-announcement="No shortcut assigned."
+      data-cancelled-announcement="Shortcut change cancelled."
+      data-cleared-announcement="Shortcut cleared."
+      data-rejected-announcement="That shortcut is unavailable. Choose another."
+    >
+      <input
+        id="hotkey-input-en"
+        name="quickSearchShortcut"
+        aria-describedby="hotkey-feedback-en"
+        placeholder="Press a shortcut"
+        readonly
+        autocomplete="off"
+        inputmode="none"
+        spellcheck="false"
+      />
+      <span data-hotkey-preview></span>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-sm"
+        data-variant="ghost"
+        data-hotkey-clear
+        tabindex="-1"
+        aria-label="Clear shortcut and record another"
+      >
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path
+            d="m6 6 8 8m0-8-8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+      <span
+        class="sr-only"
+        data-hotkey-status
+        aria-live="polite"
+        aria-atomic="true"
+      ></span>
+    </div>
+    <p id="hotkey-feedback-en" data-hotkey-feedback>
+      Activate the field, then press one complete key combination.
+    </p>
+  </div>
 </Preview>
 
 ## Usage
 
+Import Tailwind and the complete A3S style and runtime bundles:
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+Use a visible label and associate the input with adjacent guidance. The input remains the form value; the keycaps are presentation only.
+
 ```html
-<div class="hotkey-input" data-hotkey-value="Meta+K">
-  <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
+<div class="field">
+  <label for="quick-search-shortcut">Open quick search</label>
+  <div
+    class="hotkey-input"
+    data-hotkey-value="Meta+K"
+    data-recording-placeholder="Press one key combination…"
+    data-recording-message="Press one complete key combination. Escape cancels."
+    data-modifier-message="Add a non-modifier key."
+    data-invalid-message="Enter one complete key combination at a time."
+    data-recording-announcement="Recording shortcut. Press a key combination, or Escape to cancel."
+    data-modifier-announcement="Modifier recorded. Add a non-modifier key."
+    data-recorded-announcement="Current shortcut"
+    data-empty-announcement="No shortcut assigned."
+    data-cancelled-announcement="Shortcut change cancelled."
+    data-cleared-announcement="Shortcut cleared."
+    data-rejected-announcement="That shortcut is unavailable. Choose another."
+  >
+    <input
+      id="quick-search-shortcut"
+      name="quickSearchShortcut"
+      aria-describedby="quick-search-shortcut-feedback"
+      placeholder="Press a shortcut"
+      readonly
+      autocomplete="off"
+      inputmode="none"
+      spellcheck="false"
+    />
+    <span data-hotkey-preview></span>
+    <button
+      type="button"
+      class="btn"
+      data-size="icon-sm"
+      data-variant="ghost"
+      data-hotkey-clear
+      tabindex="-1"
+      aria-label="Clear shortcut and record another"
+    >
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+        <path
+          d="m6 6 8 8m0-8-8 8"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+    <span
+      class="sr-only"
+      data-hotkey-status
+      aria-live="polite"
+      aria-atomic="true"
+    ></span>
+  </div>
+  <p id="quick-search-shortcut-feedback" data-hotkey-feedback>
+    Activate the field, then press one complete key combination.
+  </p>
 </div>
 ```
 
-### Standalone controller
+For component-level loading, import Base, Button, Field, Hotkey Input, Kbd, the A3S visual style, the runtime, and the Hotkey Input controller. See [Installation](/installation) for CDN and other integrations.
 
-```js
-import "@a3s-lab/ui/runtime";
-import "@a3s-lab/ui/hotkey-input";
-
-const component = document.querySelector(".hotkey-input");
-component.getValue();
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/components/hotkey-input.css";
+@import "@a3s-lab/ui/components/kbd.css";
+@import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/hotkey-input.min.js" defer></script>
+```
+
+### Parameters
+
+| Parameter                                          | Value                        | Purpose                                                                                                                                |
+| -------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Root                                               | `<div class="hotkey-input">` | Owns recording state and the compound field boundary                                                                                   |
+| `data-hotkey-value`                                | Canonical chord              | Supplies the initial value and reflects the rendered value; while clearing is still a recording draft, this may be empty before commit |
+| Input                                              | Read-only text input         | Preserves focus, form submission, accessible value, and a single keyboard entry point                                                  |
+| `aria-describedby`                                 | Feedback element ID          | Associates persistent guidance and visible rejection reasons with the input                                                            |
+| `[data-hotkey-preview]`                            | Empty `<span>`               | Receives platform-aware, `aria-hidden` keycaps for the committed chord                                                                 |
+| `[data-hotkey-clear]`                              | Named button                 | Begins an empty replacement draft; the controller keeps it out of the default Tab sequence                                             |
+| `[data-hotkey-feedback]`                           | Described text element       | Shows idle guidance, modifier-only guidance, and host rejection reasons                                                                |
+| `[data-hotkey-status]`                             | Polite live region           | Announces recording, cancellation, clearing, rejection, and the committed value                                                        |
+| `data-recording-placeholder`                       | Localized string             | Names the capture action inside the empty recording field                                                                              |
+| `data-recording-message` / `data-modifier-message` | Localized strings            | Provide visible recording guidance and modifier-only recovery                                                                          |
+| `data-invalid-message`                             | Localized string             | Explains malformed programmatic values containing zero or several base keys                                                            |
+| `data-*-announcement`                              | Localized strings            | Localize bounded screen-reader status messages                                                                                         |
+
+### JavaScript API
+
+The controller exposes `getValue()`, `setValue(value, options)`, `clear(options)`, `start(options)`, `stop(options)`, and `refresh()`. `getValue()` always returns the committed chord, including while an empty replacement draft is visible.
+
+Canonical values contain zero or more modifiers in `Control`, `Alt`, `Shift`, `Meta` order and exactly one non-modifier key. Use `Plus` for the literal `+` key. Common API aliases such as `Ctrl` and `Command` are normalized; platform symbols never enter the stored value.
+
+Use `event.detail.reject(message)` to reject duplicate, reserved, or permission-controlled assignments. This preserves the old chord, exits recording, and exposes the reason through both visible feedback and `a3s:hotkey-rejected`.
+
+```js
+const input = document.querySelector(".hotkey-input");
+const assigned = new Map([["Control+Shift+X", "Command palette"]]);
+
+input.addEventListener("a3s:hotkey-before-change", (event) => {
+  const command = assigned.get(event.detail.value);
+  if (command) event.detail.reject(`Already assigned to ${command}.`);
+});
+
+input.addEventListener("a3s:hotkey-change", (event) => {
+  saveShortcut(event.detail.value);
+});
+```
+
+| Event                         | Detail                                                   | When it fires                                                 |
+| ----------------------------- | -------------------------------------------------------- | ------------------------------------------------------------- |
+| `a3s:hotkey-before-change`    | `value`, `previousValue`, `source`, `reject(message)`    | Before a chord or clear action commits; cancel or reject here |
+| `a3s:hotkey-change`           | `value`, `previousValue`, `source`                       | After an accepted committed value changes                     |
+| `a3s:hotkey-rejected`         | `value`, `previousValue`, `source`, `message`            | After validation or the host rejects a candidate              |
+| `a3s:hotkey-recording-change` | `recording`, `source`, optional `restored` or `rejected` | When capture starts or ends                                   |
+
+## Product decisions
+
+Use Hotkey Input only for assigning one chord to a named command. Use a regular text field for shortcut search, a keycap for display-only hints, and a command list for browsing several existing assignments. The host owns the command registry, duplicate detection, operating-system reservations, permissions, persistence, and global listener registration.
+
+Some operating-system or browser shortcuts never reach page JavaScript. Do not promise that every chord can be captured, and do not disable platform escape routes to force capture.
+
+## States and variants
+
+- **Ready, populated:** the committed chord appears as platform-aware keycaps, while the normalized input value remains available to forms and assistive technology.
+- **Empty:** the clear action is hidden and adjacent guidance explains how to create the first assignment.
+- **Recording:** focusing the input or pressing Enter starts one bounded capture transaction. Modifier-only input keeps recording and asks for a base key.
+- **Replacing:** the clear action opens an empty draft. Escape or lost window focus restores the committed value; Tab, pointer exit, or an accepted chord commits the draft.
+- **Rejected or invalid:** the old committed value remains visible, focus stays on the input, and the specific conflict or format reason appears next to it. Press Enter to retry.
+- **Disabled:** the value remains readable, native `disabled` prevents capture, and adjacent text explains the policy or permission constraint.
+
+<Preview title="Empty, invalid, and disabled" class="w-full">
+  <div class="grid w-full gap-6 md:grid-cols-2">
+    <div class="field">
+      <label for="hotkey-empty-en">Toggle inspector</label>
+      <div
+        class="hotkey-input"
+        data-recording-placeholder="Press one key combination…"
+        data-recording-message="Press one complete key combination. Escape cancels."
+        data-modifier-message="Add a non-modifier key."
+        data-recorded-announcement="Current shortcut"
+        data-empty-announcement="No shortcut assigned."
+      >
+        <input
+          id="hotkey-empty-en"
+          aria-describedby="hotkey-empty-feedback-en"
+          placeholder="Press a shortcut"
+          readonly
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="Clear shortcut and record another"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-empty-feedback-en" data-hotkey-feedback>
+        No shortcut is assigned. Activate the field to record one.
+      </p>
+    </div>
+    <div class="field">
+      <label for="hotkey-invalid-en">Open command history</label>
+      <div
+        class="hotkey-input"
+        data-hotkey-value="Control+H"
+        aria-invalid="true"
+        data-state="invalid"
+      >
+        <input
+          id="hotkey-invalid-en"
+          aria-describedby="hotkey-invalid-feedback-en"
+          aria-invalid="true"
+          placeholder="Press a shortcut"
+          readonly
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="Clear shortcut and record another"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-invalid-feedback-en" data-hotkey-feedback data-error>
+        Already assigned to browser history. Press Enter to choose another.
+      </p>
+    </div>
+    <div class="field">
+      <label for="hotkey-disabled-en">Open managed workspace</label>
+      <div
+        class="hotkey-input"
+        data-hotkey-value="Meta+W"
+        data-state="disabled"
+      >
+        <input
+          id="hotkey-disabled-en"
+          aria-describedby="hotkey-disabled-feedback-en"
+          placeholder="Press a shortcut"
+          readonly
+          disabled
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="Clear shortcut and record another"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-disabled-feedback-en" data-hotkey-feedback>
+        This shortcut is managed by workspace policy.
+      </p>
+    </div>
+  </div>
+</Preview>
 
 ## React
 
 ```tsx
 import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useHotkeyInput();
+export function QuickSearchShortcut({
+  onChange,
+}: {
+  onChange(value: string): void;
+}) {
+  const shortcut = useHotkeyInput({
+    events: {
+      "a3s:hotkey-change": (event) => {
+        onChange((event as CustomEvent<{ value: string }>).detail.value);
+      },
+    },
+  });
+
   return (
-    <HotkeyInput ref={control.ref} data-hotkey-value="Meta+K">
-      <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" className="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
-    </HotkeyInput>
+    <div className="field">
+      <label htmlFor="quick-search-shortcut">Open quick search</label>
+      <HotkeyInput
+        ref={shortcut.ref}
+        data-hotkey-value="Meta+K"
+        data-recording-placeholder="Press one key combination…"
+        data-recording-message="Press one complete key combination. Escape cancels."
+        data-modifier-message="Add a non-modifier key."
+        data-recorded-announcement="Current shortcut"
+        data-empty-announcement="No shortcut assigned."
+        data-cancelled-announcement="Shortcut change cancelled."
+        data-cleared-announcement="Shortcut cleared."
+      >
+        <input
+          id="quick-search-shortcut"
+          name="quickSearchShortcut"
+          aria-describedby="quick-search-feedback"
+          placeholder="Press a shortcut"
+          readOnly
+          autoComplete="off"
+          inputMode="none"
+          spellCheck={false}
+        />
+        <span data-hotkey-preview />
+        <button
+          type="button"
+          className="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabIndex={-1}
+          aria-label="Clear shortcut and record another"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+        <span
+          className="sr-only"
+          data-hotkey-status
+          aria-live="polite"
+          aria-atomic="true"
+        />
+      </HotkeyInput>
+      <p id="quick-search-feedback" data-hotkey-feedback>
+        Activate the field, then press one complete key combination.
+      </p>
+    </div>
   );
 }
 ```
 
-`useHotkeyInput` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
-
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/vue";
 
-const control = useHotkeyInput();
-const componentRef = control.componentRef;
+const emit = defineEmits<{ change: [value: string] }>();
+const shortcut = useHotkeyInput({
+  events: {
+    "a3s:hotkey-change": (event) => {
+      emit("change", (event as CustomEvent<{ value: string }>).detail.value);
+    },
+  },
+});
+const componentRef = shortcut.componentRef;
 </script>
 
 <template>
-  <HotkeyInput ref="componentRef" data-hotkey-value="Meta+K">
-    <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
-  </HotkeyInput>
+  <div class="field">
+    <label for="quick-search-shortcut">Open quick search</label>
+    <HotkeyInput
+      ref="componentRef"
+      data-hotkey-value="Meta+K"
+      data-recording-placeholder="Press one key combination…"
+      data-recording-message="Press one complete key combination. Escape cancels."
+      data-modifier-message="Add a non-modifier key."
+      data-recorded-announcement="Current shortcut"
+      data-empty-announcement="No shortcut assigned."
+      data-cancelled-announcement="Shortcut change cancelled."
+      data-cleared-announcement="Shortcut cleared."
+    >
+      <input
+        id="quick-search-shortcut"
+        name="quickSearchShortcut"
+        aria-describedby="quick-search-feedback"
+        placeholder="Press a shortcut"
+        readonly
+        autocomplete="off"
+        inputmode="none"
+        spellcheck="false"
+      />
+      <span data-hotkey-preview></span>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-sm"
+        data-variant="ghost"
+        data-hotkey-clear
+        tabindex="-1"
+        aria-label="Clear shortcut and record another"
+      >
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path
+            d="m6 6 8 8m0-8-8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+      <span
+        class="sr-only"
+        data-hotkey-status
+        aria-live="polite"
+        aria-atomic="true"
+      ></span>
+    </HotkeyInput>
+    <p id="quick-search-feedback" data-hotkey-feedback>
+      Activate the field, then press one complete key combination.
+    </p>
+  </div>
 </template>
 ```
 
-`useHotkeyInput` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
-
-## Contract
-
-| Surface | Value |
-| --- | --- |
-| Root selector | `.hotkey-input` |
-| Native root | `<div>` |
-| States | `ready`, `recording`, `disabled`, `invalid` |
-| Events | `a3s:hotkey-before-change`, `a3s:hotkey-change`, `a3s:hotkey-recording-change` |
-| Methods | `clear`, `getValue`, `setValue`, `start`, `stop` |
-
-## Product boundary
-
-It does not register global shortcuts, resolve conflicts, or bypass operating-system reservations. Binding and authorization belong to the host.
-
-The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
-
 ## Accessibility
 
-Tab always leaves the control, Escape restores the pre-recording value, and Delete clears it. Visible keycaps stay aligned with aria-keyshortcuts.
+- Prefer a visible `label`; a placeholder is capture guidance, not the control name.
+- The input is the only default Tab stop. Delete or Backspace starts an empty replacement, Enter retries after commit or rejection, Tab leaves the complete control, and Escape cancels the active recording without blurring the input.
+- Modifier-only, cancellation, clearing, rejection, and committed values are announced through the bounded polite status region. Visible feedback remains present for people who do not receive live announcements.
+- Keycaps are `aria-hidden` because the read-only input already exposes the canonical chord. `aria-keyshortcuts` is intentionally omitted: the saved chord activates the host command, not the recorder itself.
+- `KeyboardEvent.key` keeps capture layout-aware. Dead, composing, and unidentified keys do not commit a partial chord; the literal plus key is encoded as `Plus`.
+- Window blur and document hiding cancel the active recording so browser switching cannot silently overwrite an assignment. Normal Tab or pointer exit commits an intentional empty replacement draft.
+- Native `disabled` is required for an unavailable input. Keep the committed value and an adjacent reason readable instead of relying on opacity or color alone.

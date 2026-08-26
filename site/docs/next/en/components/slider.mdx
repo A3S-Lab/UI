@@ -1,129 +1,210 @@
 # Slider
 
-Slider lets users adjust a value quickly across a continuous or stepped range when the result is immediately perceptible and exact typing is unnecessary.
+Slider adjusts an approximate value within a bounded range. Use it when users can perceive the result immediately and relative position matters more than typing an exact number.
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo />
+  <SliderDemo id="slider-primary" variant="labeled" />
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and the complete A3S style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Slider component CSS, and one style pack.
+Use a native range input with a visible label. Include the Range runtime so the visual fill stays synchronized with the native value.
+
+```html
+<div class="field">
+  <div class="flex items-center justify-between gap-2">
+    <label for="temperature">Temperature</label>
+    <output for="temperature">20 °C</output>
+  </div>
+  <input
+    class="input w-full"
+    type="range"
+    id="temperature"
+    name="temperature"
+    min="10"
+    max="30"
+    step="1"
+    value="20"
+    aria-valuetext="20 degrees Celsius"
+  />
+</div>
+```
+
+For component-level loading, import base styles, Range structure, the A3S visual style, the runtime, and Range controller. See [Installation](/installation) for CDN and other integrations.
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/range.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
-
-Slider uses the Range component CSS.
-
-Using CDN or bundler imports? See the [Installation page](/installation).
-
-  </Step>
-  <Step title="Include JavaScript">
-
-Copy or serve the full A3S UI JavaScript bundle.
-
-```html
-<script src="/assets/js/all.min.js" defer></script>
-```
-
-Or copy or serve the A3S UI runtime and Slider script.
 
 ```html
 <script src="/assets/js/runtime.min.js" defer></script>
 <script src="/assets/js/range.min.js" defer></script>
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
+### Parameters
 
-  </Step>
-  <Step title="Add your slider HTML">
+| Parameter          | Value                    | Purpose                                                                              |
+| ------------------ | ------------------------ | ------------------------------------------------------------------------------------ |
+| Root               | `<input type="range">`   | Preserves native pointer, keyboard, form, and accessibility behavior                 |
+| `class`            | `input`                  | Applies Range structure and Slider visual styles                                     |
+| `min` / `max`      | Numbers                  | Define the complete available range and endpoint keyboard behavior                   |
+| `step`             | Positive number or `any` | Defines valid increments; use a step users can understand from the result            |
+| `value`            | Number                   | Sets the current or initial value within the declared range                          |
+| `disabled`         | Boolean attribute        | Prevents adjustment; keep the current value visible and explain why it cannot change |
+| `aria-valuetext`   | Localized string         | Adds units or a human-readable meaning that the raw number does not communicate      |
+| `aria-describedby` | Element ID               | Associates constraints, consequences, or disabled-state guidance                     |
 
-Use a native `<input type="range" class="input">`. Include `range.js` so A3S UI can keep the filled track in sync with the input value.
+## Product decisions
 
-```html
-<input type="range" class="input w-full" aria-label="Volume" min="0" max="100" value="50" />
-```
+Choose Slider only when all of these are true:
 
-  </Step>
-</Steps>
+- The range has meaningful minimum and maximum values.
+- Users can see or otherwise perceive the result while adjusting it.
+- Approximate selection or a small, predictable step is acceptable.
+- The current value and unit can be communicated next to the control.
 
-### HTML structure
+Use a numeric field instead when users must enter an exact value, compare several precise values, or work with an unbounded range. When both fast adjustment and exact entry matter, compose Slider with a synchronized numeric field and keep one shared value model.
 
-<dl>
-  <dt><code>&lt;input type="range" class="input"&gt;</code></dt>
-  <dd>Native range input styled as a slider. Width utilities such as <code>w-full</code> can be added directly.</dd>
-</dl>
+## States and variants
 
-A3S UI intentionally uses the native range input. Unlike shadcn/ui's Base UI slider, it does not support multiple thumbs or vertical orientation.
+### Standalone
 
-## Examples
-
-### Default
+A standalone slider still needs an accessible name. It is appropriate inside a surface that already exposes the current value visually, such as a media player.
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo />
+  <SliderDemo id="slider-standalone" />
 </Preview>
 
-### Label
+### Label and live value
+
+Keep the label at the start and the live value at the end of the same row. Include units in visible output and `aria-valuetext` when the raw number is ambiguous.
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo variant="labeled" />
+  <SliderDemo id="slider-labeled" variant="labeled" />
+</Preview>
+
+### Form field
+
+When Slider belongs to a form, explain the consequence or limit and associate it with `aria-describedby`. The native value remains the submitted value; formatted output is presentation.
+
+<Preview class="w-full max-w-sm">
+  <SliderDemo id="slider-field" variant="field" />
 </Preview>
 
 ### Disabled
 
-<Preview class="w-full max-w-sm">
-  <SliderDemo disabled />
+Disabled controls keep their value visible. Put the reason next to the field so the muted appearance is not the only explanation.
+
+<Preview title="Managed limit" class="w-full max-w-sm">
+  <div class="field" data-disabled>
+    <SliderDemo id="slider-disabled" variant="labeled" disabled />
+    <p>This limit is managed by the workspace policy.</p>
+  </div>
 </Preview>
 
-### RTL
+## RTL
+
+Set `dir="rtl"` on the input or an ancestor. The filled track grows from the logical start edge, and native directional keys follow the document direction. The numeric meaning of minimum and maximum does not change.
 
 <Preview class="w-full max-w-sm">
-  <SliderDemo direction="rtl" />
+  <SliderDemo id="slider-rtl" direction="rtl" />
 </Preview>
 
 ## React
 
+`Slider` renders the manifest-declared native range input. `useSlider` listens to native `input` and `change` events; application state owns the value shown elsewhere in the product.
+
 ```tsx
+import { useState } from "react";
 import { Slider, useSlider } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useSlider();
+export function TemperatureSetting() {
+  const [value, setValue] = useState(20);
+  const slider = useSlider({
+    events: {
+      input(event) {
+        setValue((event.currentTarget as HTMLInputElement).valueAsNumber);
+      },
+    },
+  });
+
   return (
-    <Slider ref={control.ref} aria-label="Name" />
+    <div className="field">
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor="temperature">Temperature</label>
+        <output htmlFor="temperature">{value} °C</output>
+      </div>
+      <Slider
+        ref={slider.ref}
+        id="temperature"
+        name="temperature"
+        min="10"
+        max="30"
+        step="1"
+        defaultValue={value}
+        aria-valuetext={`${value} degrees Celsius`}
+      />
+    </div>
   );
 }
 ```
 
-`useSlider` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
 ## Vue
 
+The Vue composable subscribes to the same native event. Its template ref connects the range input while reactive state remains application-owned.
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { Slider, useSlider } from "@a3s-lab/ui/vue";
 
-const control = useSlider();
-const componentRef = control.componentRef;
+const value = ref(20);
+const slider = useSlider({
+  events: {
+    input(event) {
+      value.value = (event.currentTarget as HTMLInputElement).valueAsNumber;
+    },
+  },
+});
+const componentRef = slider.componentRef;
 </script>
 
 <template>
-  <Slider ref="componentRef" aria-label="Name" />
+  <div class="field">
+    <div class="flex items-center justify-between gap-2">
+      <label for="temperature">Temperature</label>
+      <output for="temperature">{{ value }} °C</output>
+    </div>
+    <Slider
+      ref="componentRef"
+      id="temperature"
+      name="temperature"
+      min="10"
+      max="30"
+      step="1"
+      :value="value"
+      :aria-valuetext="`${value} degrees Celsius`"
+    />
+  </div>
 </template>
 ```
 
-`useSlider` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## Accessibility
+
+- Give every slider an accessible name through a visible `label` whenever possible. Use `aria-label` only when the surrounding interface already makes the purpose visible.
+- Declare truthful `min`, `max`, and `step` values. Do not rely on tick marks or spatial position to communicate a hidden scale.
+- Show the current value and unit near the track. Add localized `aria-valuetext` when the raw number needs units, categories, or another human-readable meaning.
+- Preserve native keyboard behavior: arrows change one step, Page Up and Page Down make larger changes where supported, and Home and End reach the declared endpoints.
+- Do not add easing or delayed animation to pointer dragging; the thumb and visible result must follow input directly.
+- Keep the full hit target at least 44px on coarse pointers while the visible track and thumb remain compact.
+- Disabled sliders retain a readable value and an adjacent reason. Do not hide a policy or permission constraint behind reduced opacity alone.
+- In RTL, use logical direction for visual fill and layout. Test the actual keyboard behavior instead of mirroring only the artwork.

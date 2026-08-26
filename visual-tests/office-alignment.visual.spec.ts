@@ -283,10 +283,10 @@ test("form errors and compact choices remain perceivable and operable", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   await openDocumentationPage(page, "en/components/field.html");
 
-  const invalidInput = page.locator("#invalid-email");
-  const error = page.locator("#invalid-email-error");
-  const choice = page.locator("#checkout-same-as-shipping");
-  const choiceLabel = page.locator('label[for="checkout-same-as-shipping"]');
+  const invalidInput = page.locator("#field-workspace-name-en");
+  const error = page.locator("#field-workspace-name-error-en");
+  await invalidInput.fill("A");
+  await page.getByRole("button", { name: "Save name" }).click();
   await invalidInput.scrollIntoViewIfNeeded();
   await invalidInput.focus();
   await page.keyboard.press("Tab");
@@ -294,8 +294,12 @@ test("form errors and compact choices remain perceivable and operable", async ({
   await expect(invalidInput).toBeFocused();
 
   const states = await page.evaluate(() => {
-    const input = document.querySelector<HTMLElement>("#invalid-email")!;
-    const error = document.querySelector<HTMLElement>("#invalid-email-error")!;
+    const input = document.querySelector<HTMLElement>(
+      "#field-workspace-name-en",
+    )!;
+    const error = document.querySelector<HTMLElement>(
+      "#field-workspace-name-error-en",
+    )!;
     const root = getComputedStyle(document.documentElement);
     const resolveColor = (value: string) => {
       const probe = document.createElement("span");
@@ -309,17 +313,34 @@ test("form errors and compact choices remain perceivable and operable", async ({
     return {
       errorColor: getComputedStyle(error).color,
       inputBorder: getComputedStyle(input).borderColor,
+      inputOutlineStyle: getComputedStyle(input).outlineStyle,
+      inputOutlineWidth: getComputedStyle(input).outlineWidth,
       inputShadow: getComputedStyle(input).boxShadow,
-      inputTransition: getComputedStyle(input).transition,
+      inputTransitionDuration: getComputedStyle(input).transitionDuration,
+      inputTransitionProperty: getComputedStyle(input).transitionProperty,
       red: resolveColor(root.getPropertyValue("--a3s-red")),
       reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
     };
   });
   expect(states.errorColor).toBe(states.red);
   expect(states.inputBorder).toBe(states.red);
+  expect(states.inputOutlineStyle).toBe("none");
+  expect(Number.parseFloat(states.inputOutlineWidth)).toBe(0);
   expect(states.inputShadow, JSON.stringify(states)).toContain(states.red);
+  expect(states.inputShadow).toContain("inset");
   expect(states.reducedMotion).toBe(true);
-  expect(states.inputTransition).toBe("none");
+  expect(states.inputTransitionProperty).toBe("none");
+  expect(
+    Math.max(
+      ...states.inputTransitionDuration
+        .split(",")
+        .map((duration) => Number.parseFloat(duration) || 0),
+    ),
+  ).toBeLessThanOrEqual(0.001);
+
+  await openDocumentationPage(page, "en/components/radio-group.html");
+  const choice = page.locator("#plan-monthly");
+  const choiceLabel = page.locator('label[for="plan-monthly"]');
 
   const [choiceBox, labelBox] = await Promise.all([
     choice.boundingBox(),
@@ -755,8 +776,7 @@ test("mobile documentation shell keeps closed panels out of the focus order", as
 
   await expect(navigationButton).toHaveAccessibleName("Open navigation");
   await expect(navigationButton).toHaveAttribute("aria-expanded", "false");
-  const navigationId =
-    await navigationButton.getAttribute("aria-controls");
+  const navigationId = await navigationButton.getAttribute("aria-controls");
   expect(navigationId).toBe("a3s-ui-mobile-navigation");
   const navigationButtonBox = await navigationButton.boundingBox();
   expect(navigationButtonBox).not.toBeNull();

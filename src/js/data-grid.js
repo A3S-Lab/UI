@@ -76,8 +76,15 @@
     root.querySelectorAll(".bulk-action-bar").forEach((bar) => {
       if (!ownsElement(root, bar)) return;
       if (typeof bar.setSelection === "function") {
+        const previousActiveElement = document.activeElement;
+        const restoreFocus =
+          selection.selectedCount === 0 &&
+          previousActiveElement instanceof Element &&
+          bar.contains(previousActiveElement);
         bar.setSelection(selection.values, {
           emit: false,
+          previousActiveElement,
+          restoreFocus,
           source: "data-grid",
         });
         return;

@@ -2,24 +2,62 @@
 @layer components {
   .input-group {
     @apply relative flex w-full min-w-0 items-center outline-none;
+    overflow: visible;
 
-    &[data-orientation='vertical'],
-    &:has(> [data-align='block-start']),
-    &:has(> [data-align='block-end']) {
+    &[data-orientation="vertical"],
+    &:has(> [data-align="block-start"]),
+    &:has(> [data-align="block-end"]) {
       @apply h-auto flex-col items-stretch;
     }
   }
 
   .input-group > :is(input, textarea, select, [data-control]) {
     @apply text-foreground placeholder:text-muted-foreground block min-w-0 flex-1 appearance-none rounded-none border-0 bg-transparent shadow-none outline-none ring-0 focus-visible:ring-0 aria-invalid:ring-0;
+    max-width: 100%;
   }
 
-  /* The group shell is the single visual focus owner. Keep this explicit so
-   * host-level native-control rules cannot add a second, square boundary. */
+  /* The shell owns the only visible boundary. Standalone control classes and
+   * host-level native-control rules must not add a square boundary inside it. */
   .input-group > :is(input, textarea, select, [data-control]):focus-visible {
+    border-color: transparent;
     outline: 0;
     outline-offset: 0;
     box-shadow: none;
+  }
+
+  /* A standalone control class may be present for progressive migration. The
+   * group still owns the only visual boundary in every interaction state. */
+  .input-group
+    > :is(
+      input.input,
+      textarea.textarea,
+      select.native-select,
+      select.select,
+      [data-control]
+    ),
+  .input-group
+    > :is(
+      input.input,
+      textarea.textarea,
+      select.native-select,
+      select.select,
+      [data-control]
+    ):is(
+      :hover,
+      :focus,
+      :focus-visible,
+      :active,
+      :disabled,
+      :read-only,
+      [aria-invalid="true"]
+    ) {
+    border-color: transparent;
+    border-width: 0;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+    outline: 0;
+    outline-offset: 0;
   }
 
   .input-group > :is(input, select, [data-control]) {
@@ -30,53 +68,80 @@
     @apply w-full;
   }
 
-  .input-group:is([data-orientation='vertical'], :has(> [data-align='block-start']), :has(> [data-align='block-end'])) > :is(input, select, [data-control]) {
+  .input-group:is(
+      [data-orientation="vertical"],
+      :has(> [data-align="block-start"]),
+      :has(> [data-align="block-end"])
+    )
+    > :is(input, select, [data-control]) {
     @apply h-auto flex-none;
   }
 
-  .input-group[data-orientation='vertical']:has(> footer[data-align='end']) > :is(input, select, [data-control]),
-  .input-group:has(> [data-align='block-end']) > :is(input, select, [data-control]) {
-    @apply pt-3;
-  }
-
-  .input-group[data-orientation='vertical']:has(> header[data-align='start']) > :is(input, select, [data-control]),
-  .input-group:has(> [data-align='block-start']) > :is(input, select, [data-control]) {
-    @apply pb-3;
-  }
-
   .input-group > textarea {
-    @apply field-sizing-content min-h-20 w-full resize-none;
+    @apply w-full resize-y overflow-y-auto;
+    field-sizing: fixed;
+    min-height: 6rem;
+    max-height: min(18rem, 50vh);
   }
 
-  .input-group > :is(span, kbd, svg, [role='group'], .popover, .dropdown-menu, button, footer, header, hr[role='separator']) {
+  .input-group > :is(span, kbd, svg, [role="group"], button, footer, header) {
     @apply shrink-0;
   }
 
-  .input-group > :is(span, [role='group'], footer, header) {
-    @apply inline-flex items-center;
+  .input-group > :is(span, [role="group"], footer, header) {
+    @apply inline-flex min-w-0 items-center;
   }
 
   .input-group > svg {
     @apply pointer-events-none size-4;
   }
 
-  .input-group > :is([data-align='start'], [data-align='inline-start'], [data-align='block-start']) {
+  .input-group > :is([data-align="start"], [data-align="inline-start"], [data-align="block-start"]) {
     @apply order-first;
   }
 
-  .input-group > :is([data-align='end'], [data-align='inline-end'], [data-align='block-end']) {
+  .input-group > :is([data-align="end"], [data-align="inline-end"], [data-align="block-end"]) {
     @apply order-last;
   }
 
-  .input-group > :is([data-align='block-start'], [data-align='block-end']) {
-    @apply w-full justify-start;
+  /* Inline text yields space to the editable value and truncates instead of
+   * widening the document. Interactive addons and overlays stay unclipped. */
+  .input-group
+    > :is(span, kbd, header, footer)[data-align]:not(
+      :has(:is(a, button, input, select, textarea, [data-popover], [popover]))
+    ) {
+    max-width: min(45%, 18rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .input-group > button:is([data-align='start'], [data-align='inline-start']) {
+  /* Flex containers clip anonymous text runs without painting the requested
+   * ellipsis. Plain-text addons use a block formatting context so truncation
+   * remains visibly intentional at narrow widths. */
+  .input-group
+    > :is(span, kbd, header, footer)[data-align]:not(:has(*)) {
+    display: block;
+  }
+
+  .input-group > :is([data-align="block-start"], [data-align="block-end"]) {
+    @apply w-full justify-start;
+    max-width: none;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .input-group > :is(.popover, .dropdown-menu, [data-popover], [popover]),
+  .input-group > [data-align]:has(:is(.popover, .dropdown-menu, [data-popover], [popover])) {
+    max-width: none;
+    overflow: visible;
+  }
+
+  .input-group > button:is([data-align="start"], [data-align="inline-start"]) {
     @apply ms-1;
   }
 
-  .input-group > button:is([data-align='end'], [data-align='inline-end']) {
+  .input-group > button:is([data-align="end"], [data-align="inline-end"]) {
     @apply me-1;
   }
 }

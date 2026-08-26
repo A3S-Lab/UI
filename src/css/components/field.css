@@ -10,7 +10,7 @@
   }
 
   .field {
-    @apply flex w-full flex-col data-invalid:text-destructive data-[invalid=true]:text-destructive [&>*]:w-full [&>.sr-only]:w-auto;
+    @apply flex w-full flex-col [&>*]:w-full [&>.sr-only]:w-auto;
 
     &[data-orientation='horizontal'] {
       @apply flex-row items-center [&>*]:w-auto [&>label]:flex-auto has-[>section]:items-start has-[>section]:[&>section]:flex-1 has-[>section]:[&>[type=checkbox],[type=radio]]:mt-px [&_p]:text-balance;
@@ -36,6 +36,21 @@
         @apply ms-4 flex list-disc flex-col gap-1;
       }
     }
+  }
+
+  .field > :is(label, section, p),
+  .field > section > :is(label, p),
+  .field > [data-field-description],
+  .field > [data-field-message] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .field > :is(label, p),
+  .field > section > :is(label, p),
+  .field > [data-field-description],
+  .field > [data-field-message] {
+    unicode-bidi: plaintext;
   }
 
   .field > label,

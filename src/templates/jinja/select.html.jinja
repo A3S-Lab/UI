@@ -13,6 +13,7 @@
   @param popover_attrs {object} [optional] - Additional HTML attributes for the popover content div.
   @param listbox_attrs {object} [optional] - Additional HTML attributes for the listbox div.
   @param input_attrs {object} [optional] - Additional HTML attributes for the hidden input.
+  @param label {string} [optional] - Stable accessible name for a standalone trigger. Omit when an external label names the trigger.
 #}
 {% macro select(
   id=None,
@@ -27,7 +28,8 @@
   trigger_attrs={},
   popover_attrs={},
   listbox_attrs={},
-  input_attrs={}
+  input_attrs={},
+  label=None
 ) %}
 {% set id = id or ("select-" + (range(100000, 999999) | random | string)) %}
 {% set main_attrs = main_attrs or {} %}
@@ -100,6 +102,7 @@
     type="button"
     class="{{ trigger_attrs.class | default('') }}"
     id="{{ id }}-trigger"
+    {% if label %}aria-label="{{ label }}"{% endif %}
     aria-haspopup="listbox"
     aria-expanded="false"
     aria-controls="{{ id }}-listbox"

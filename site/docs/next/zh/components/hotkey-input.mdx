@@ -1,83 +1,512 @@
 # 快捷键输入
 
-录制一个规范化键盘组合，并在提交前让用户看清当前组合、冲突和清除路径。
+快捷键输入用于为一个命令录制一组键盘组合。它会持续展示已经提交的快捷键、明确区分录制状态，并在替换被取消或拒绝时保留原值。
 
 <Preview class="w-full">
-<div class="hotkey-input" data-hotkey-value="Meta+K"><input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button></div>
+  <div class="field w-full max-w-md">
+    <label for="hotkey-input-zh">打开快速搜索</label>
+    <div
+      class="hotkey-input"
+      data-hotkey-value="Meta+K"
+      data-recording-placeholder="按下一组组合键…"
+      data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+      data-modifier-message="还需要按下一个非修饰键。"
+      data-invalid-message="每次只能输入一组完整组合键。"
+      data-recording-announcement="正在录制快捷键。请按下组合键，或按 Escape 取消。"
+      data-modifier-announcement="已按下修饰键，还需要一个非修饰键。"
+      data-recorded-announcement="当前快捷键"
+      data-empty-announcement="尚未设置快捷键。"
+      data-cancelled-announcement="已取消快捷键更改。"
+      data-cleared-announcement="已清除快捷键。"
+      data-rejected-announcement="该快捷键不可用，请选择其他组合。"
+    >
+      <input
+        id="hotkey-input-zh"
+        name="quickSearchShortcut"
+        aria-describedby="hotkey-feedback-zh"
+        placeholder="按下快捷键"
+        readonly
+        autocomplete="off"
+        inputmode="none"
+        spellcheck="false"
+      />
+      <span data-hotkey-preview></span>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-sm"
+        data-variant="ghost"
+        data-hotkey-clear
+        tabindex="-1"
+        aria-label="清除快捷键并录制新的组合"
+      >
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path
+            d="m6 6 8 8m0-8-8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+      <span
+        class="sr-only"
+        data-hotkey-status
+        aria-live="polite"
+        aria-atomic="true"
+      ></span>
+    </div>
+    <p id="hotkey-feedback-zh" data-hotkey-feedback>
+      激活字段后，按下一组完整组合键。
+    </p>
+  </div>
 </Preview>
 
 ## 用法
 
+导入 Tailwind、完整的 A3S 样式包和运行时：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+使用可见标签，并让输入控件关联相邻说明。输入控件保留表单值，键帽只负责视觉呈现。
+
 ```html
-<div class="hotkey-input" data-hotkey-value="Meta+K">
-  <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
+<div class="field">
+  <label for="quick-search-shortcut">打开快速搜索</label>
+  <div
+    class="hotkey-input"
+    data-hotkey-value="Meta+K"
+    data-recording-placeholder="按下一组组合键…"
+    data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+    data-modifier-message="还需要按下一个非修饰键。"
+    data-invalid-message="每次只能输入一组完整组合键。"
+    data-recording-announcement="正在录制快捷键。请按下组合键，或按 Escape 取消。"
+    data-modifier-announcement="已按下修饰键，还需要一个非修饰键。"
+    data-recorded-announcement="当前快捷键"
+    data-empty-announcement="尚未设置快捷键。"
+    data-cancelled-announcement="已取消快捷键更改。"
+    data-cleared-announcement="已清除快捷键。"
+    data-rejected-announcement="该快捷键不可用，请选择其他组合。"
+  >
+    <input
+      id="quick-search-shortcut"
+      name="quickSearchShortcut"
+      aria-describedby="quick-search-shortcut-feedback"
+      placeholder="按下快捷键"
+      readonly
+      autocomplete="off"
+      inputmode="none"
+      spellcheck="false"
+    />
+    <span data-hotkey-preview></span>
+    <button
+      type="button"
+      class="btn"
+      data-size="icon-sm"
+      data-variant="ghost"
+      data-hotkey-clear
+      tabindex="-1"
+      aria-label="清除快捷键并录制新的组合"
+    >
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+        <path
+          d="m6 6 8 8m0-8-8 8"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+    <span
+      class="sr-only"
+      data-hotkey-status
+      aria-live="polite"
+      aria-atomic="true"
+    ></span>
+  </div>
+  <p id="quick-search-shortcut-feedback" data-hotkey-feedback>
+    激活字段后，按下一组完整组合键。
+  </p>
 </div>
 ```
 
-### 独立控制器
+如需按组件加载，请依次导入 Base、Button、Field、Hotkey Input、Kbd、A3S 视觉样式、运行时和快捷键输入控制器。CDN 等其他接入方式参见[安装](/installation)。
 
-```js
-import "@a3s-lab/ui/runtime";
-import "@a3s-lab/ui/hotkey-input";
-
-const component = document.querySelector(".hotkey-input");
-component.getValue();
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/button.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/components/hotkey-input.css";
+@import "@a3s-lab/ui/components/kbd.css";
+@import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-控制器是幂等的；完整包可改为一次导入 `@a3s-lab/ui/all`。宿主通过可取消的 `before-*` 事件执行权限与业务校验。
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/hotkey-input.min.js" defer></script>
+```
+
+### 参数
+
+| 参数                                               | 值                           | 用途                                                                 |
+| -------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| 根元素                                             | `<div class="hotkey-input">` | 管理录制状态和复合字段的单一边界                                     |
+| `data-hotkey-value`                                | 规范化组合键                 | 提供初始值并反映当前呈现值；清除仍处于录制草稿时，提交前可以暂时为空 |
+| 输入控件                                           | 只读文本输入                 | 保留焦点、表单提交、无障碍值和唯一键盘入口                           |
+| `aria-describedby`                                 | 说明元素 ID                  | 把持续说明和可见拒绝原因关联到输入控件                               |
+| `[data-hotkey-preview]`                            | 空 `<span>`                  | 接收适配平台显示方式且对无障碍树隐藏的已提交键帽                     |
+| `[data-hotkey-clear]`                              | 具有名称的按钮               | 开始一个空的替换草稿；控制器会让它退出默认 Tab 顺序                  |
+| `[data-hotkey-feedback]`                           | 被关联的文本元素             | 显示待机说明、仅修饰键提示和宿主拒绝原因                             |
+| `[data-hotkey-status]`                             | 礼貌实时区域                 | 播报录制、取消、清除、拒绝和已提交值                                 |
+| `data-recording-placeholder`                       | 本地化字符串                 | 在空的录制字段中说明当前捕获动作                                     |
+| `data-recording-message` / `data-modifier-message` | 本地化字符串                 | 提供可见录制指引与仅修饰键的恢复提示                                 |
+| `data-invalid-message`                             | 本地化字符串                 | 解释包含零个或多个基础键的非法程序化值                               |
+| `data-*-announcement`                              | 本地化字符串                 | 本地化有边界的屏幕阅读器状态提示                                     |
+
+### JavaScript API
+
+控制器提供 `getValue()`、`setValue(value, options)`、`clear(options)`、`start(options)`、`stop(options)` 和 `refresh()`。即使界面正在显示空的替换草稿，`getValue()` 也始终返回已经提交的组合键。
+
+规范值由零个或多个修饰键和恰好一个非修饰键组成，修饰键顺序固定为 `Control`、`Alt`、`Shift`、`Meta`。字面量 `+` 使用 `Plus` 表示。API 会规范化 `Ctrl`、`Command` 等常见别名，平台显示符号不会进入存储值。
+
+使用 `event.detail.reject(message)` 拒绝重复、系统保留或受权限控制的组合。控制器会保留旧值、退出录制，并同时通过可见说明与 `a3s:hotkey-rejected` 暴露具体原因。
+
+```js
+const input = document.querySelector(".hotkey-input");
+const assigned = new Map([["Control+Shift+X", "命令面板"]]);
+
+input.addEventListener("a3s:hotkey-before-change", (event) => {
+  const command = assigned.get(event.detail.value);
+  if (command) event.detail.reject(`已分配给${command}。`);
+});
+
+input.addEventListener("a3s:hotkey-change", (event) => {
+  saveShortcut(event.detail.value);
+});
+```
+
+| 事件                          | 详情                                                  | 触发时机                               |
+| ----------------------------- | ----------------------------------------------------- | -------------------------------------- |
+| `a3s:hotkey-before-change`    | `value`、`previousValue`、`source`、`reject(message)` | 组合键或清除操作提交前；在此取消或拒绝 |
+| `a3s:hotkey-change`           | `value`、`previousValue`、`source`                    | 已接受的提交值发生变化后               |
+| `a3s:hotkey-rejected`         | `value`、`previousValue`、`source`、`message`         | 校验或宿主拒绝候选值后                 |
+| `a3s:hotkey-recording-change` | `recording`、`source`，可选 `restored` 或 `rejected`  | 开始或结束捕获时                       |
+
+## 产品决策
+
+只在“为一个已命名命令分配一组组合键”时使用快捷键输入。搜索快捷键应使用普通文本字段，只读提示应使用键帽，浏览多条已有分配应使用命令列表。命令注册表、重复检测、操作系统保留组合、权限、持久化和全局监听器都由宿主负责。
+
+部分操作系统或浏览器快捷键不会到达页面 JavaScript。界面不能承诺捕获所有组合，也不能为了强制捕获而禁用平台逃生路径。
+
+## 状态与变体
+
+- **就绪且有值：** 已提交组合以适配平台显示方式的键帽呈现，规范化输入值继续服务于表单和辅助技术。
+- **空值：** 隐藏清除操作，相邻说明解释如何创建第一条分配。
+- **录制中：** 聚焦输入控件或按 Enter 开始一次有边界的捕获事务。只按修饰键时继续录制，并提示补充基础键。
+- **替换中：** 清除操作打开一个空草稿。Escape 或窗口失焦恢复已提交值；Tab、指针离开或有效组合键会提交草稿。
+- **被拒绝或无效：** 保留并展示旧值，焦点留在输入控件，旁边显示具体冲突或格式原因。按 Enter 重试。
+- **已禁用：** 保留可读值，使用原生 `disabled` 阻止捕获，并在相邻位置解释策略或权限限制。
+
+<Preview title="空值、无效与禁用" class="w-full">
+  <div class="grid w-full gap-6 md:grid-cols-2">
+    <div class="field">
+      <label for="hotkey-empty-zh">切换检查器</label>
+      <div
+        class="hotkey-input"
+        data-recording-placeholder="按下一组组合键…"
+        data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+        data-modifier-message="还需要按下一个非修饰键。"
+        data-recorded-announcement="当前快捷键"
+        data-empty-announcement="尚未设置快捷键。"
+      >
+        <input
+          id="hotkey-empty-zh"
+          aria-describedby="hotkey-empty-feedback-zh"
+          placeholder="按下快捷键"
+          readonly
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="清除快捷键并录制新的组合"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-empty-feedback-zh" data-hotkey-feedback>
+        尚未设置快捷键。激活字段后即可录制。
+      </p>
+    </div>
+    <div class="field">
+      <label for="hotkey-invalid-zh">打开命令历史</label>
+      <div
+        class="hotkey-input"
+        data-hotkey-value="Control+H"
+        data-recording-placeholder="按下一组组合键…"
+        data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+        data-modifier-message="还需要按下一个非修饰键。"
+        data-recording-announcement="正在录制快捷键。请按下组合键，或按 Escape 取消。"
+        data-modifier-announcement="已按下修饰键，还需要一个非修饰键。"
+        data-recorded-announcement="当前快捷键"
+        data-empty-announcement="尚未设置快捷键。"
+        data-cancelled-announcement="已取消快捷键更改。"
+        data-cleared-announcement="已清除快捷键。"
+        data-rejected-announcement="该快捷键不可用，请选择其他组合。"
+        aria-invalid="true"
+        data-state="invalid"
+      >
+        <input
+          id="hotkey-invalid-zh"
+          aria-describedby="hotkey-invalid-feedback-zh"
+          aria-invalid="true"
+          placeholder="按下快捷键"
+          readonly
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="清除快捷键并录制新的组合"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-invalid-feedback-zh" data-hotkey-feedback data-error>
+        已分配给浏览器历史。按 Enter 选择其他组合。
+      </p>
+    </div>
+    <div class="field">
+      <label for="hotkey-disabled-zh">打开受管工作区</label>
+      <div
+        class="hotkey-input"
+        data-hotkey-value="Meta+W"
+        data-recorded-announcement="当前快捷键"
+        data-empty-announcement="尚未设置快捷键。"
+        data-state="disabled"
+      >
+        <input
+          id="hotkey-disabled-zh"
+          aria-describedby="hotkey-disabled-feedback-zh"
+          placeholder="按下快捷键"
+          readonly
+          disabled
+        />
+        <span data-hotkey-preview></span>
+        <button
+          type="button"
+          class="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabindex="-1"
+          aria-label="清除快捷键并录制新的组合"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="sr-only" data-hotkey-status aria-live="polite"></span>
+      </div>
+      <p id="hotkey-disabled-feedback-zh" data-hotkey-feedback>
+        此快捷键由工作区策略统一管理。
+      </p>
+    </div>
+  </div>
+</Preview>
 
 ## React
 
 ```tsx
 import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useHotkeyInput();
+export function QuickSearchShortcut({
+  onChange,
+}: {
+  onChange(value: string): void;
+}) {
+  const shortcut = useHotkeyInput({
+    events: {
+      "a3s:hotkey-change": (event) => {
+        onChange((event as CustomEvent<{ value: string }>).detail.value);
+      },
+    },
+  });
+
   return (
-    <HotkeyInput ref={control.ref} data-hotkey-value="Meta+K">
-      <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" className="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
-    </HotkeyInput>
+    <div className="field">
+      <label htmlFor="quick-search-shortcut">打开快速搜索</label>
+      <HotkeyInput
+        ref={shortcut.ref}
+        data-hotkey-value="Meta+K"
+        data-recording-placeholder="按下一组组合键…"
+        data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+        data-modifier-message="还需要按下一个非修饰键。"
+        data-recorded-announcement="当前快捷键"
+        data-empty-announcement="尚未设置快捷键。"
+        data-cancelled-announcement="已取消快捷键更改。"
+        data-cleared-announcement="已清除快捷键。"
+      >
+        <input
+          id="quick-search-shortcut"
+          name="quickSearchShortcut"
+          aria-describedby="quick-search-feedback"
+          placeholder="按下快捷键"
+          readOnly
+          autoComplete="off"
+          inputMode="none"
+          spellCheck={false}
+        />
+        <span data-hotkey-preview />
+        <button
+          type="button"
+          className="btn"
+          data-size="icon-sm"
+          data-variant="ghost"
+          data-hotkey-clear
+          tabIndex={-1}
+          aria-label="清除快捷键并录制新的组合"
+        >
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path
+              d="m6 6 8 8m0-8-8 8"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+        <span
+          className="sr-only"
+          data-hotkey-status
+          aria-live="polite"
+          aria-atomic="true"
+        />
+      </HotkeyInput>
+      <p id="quick-search-feedback" data-hotkey-feedback>
+        激活字段后，按下一组完整组合键。
+      </p>
+    </div>
   );
 }
 ```
 
-`useHotkeyInput` 返回同一 DOM 契约的 `ref`、就绪状态、事件订阅和受类型约束的方法调用；它不会创建框架专属状态。
-
 ## Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { HotkeyInput, useHotkeyInput } from "@a3s-lab/ui/vue";
 
-const control = useHotkeyInput();
-const componentRef = control.componentRef;
+const emit = defineEmits<{ change: [value: string] }>();
+const shortcut = useHotkeyInput({
+  events: {
+    "a3s:hotkey-change": (event) => {
+      emit("change", (event as CustomEvent<{ value: string }>).detail.value);
+    },
+  },
+});
+const componentRef = shortcut.componentRef;
 </script>
 
 <template>
-  <HotkeyInput ref="componentRef" data-hotkey-value="Meta+K">
-    <input aria-label="Keyboard shortcut" /><span data-hotkey-preview></span><button type="button" class="btn" data-size="icon-sm" data-variant="ghost" data-hotkey-clear aria-label="Clear shortcut">Clear</button>
-  </HotkeyInput>
+  <div class="field">
+    <label for="quick-search-shortcut">打开快速搜索</label>
+    <HotkeyInput
+      ref="componentRef"
+      data-hotkey-value="Meta+K"
+      data-recording-placeholder="按下一组组合键…"
+      data-recording-message="请按下一组完整组合键，按 Escape 取消。"
+      data-modifier-message="还需要按下一个非修饰键。"
+      data-recorded-announcement="当前快捷键"
+      data-empty-announcement="尚未设置快捷键。"
+      data-cancelled-announcement="已取消快捷键更改。"
+      data-cleared-announcement="已清除快捷键。"
+    >
+      <input
+        id="quick-search-shortcut"
+        name="quickSearchShortcut"
+        aria-describedby="quick-search-feedback"
+        placeholder="按下快捷键"
+        readonly
+        autocomplete="off"
+        inputmode="none"
+        spellcheck="false"
+      />
+      <span data-hotkey-preview></span>
+      <button
+        type="button"
+        class="btn"
+        data-size="icon-sm"
+        data-variant="ghost"
+        data-hotkey-clear
+        tabindex="-1"
+        aria-label="清除快捷键并录制新的组合"
+      >
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path
+            d="m6 6 8 8m0-8-8 8"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+      <span
+        class="sr-only"
+        data-hotkey-status
+        aria-live="polite"
+        aria-atomic="true"
+      ></span>
+    </HotkeyInput>
+    <p id="quick-search-feedback" data-hotkey-feedback>
+      激活字段后，按下一组完整组合键。
+    </p>
+  </div>
 </template>
 ```
 
-`useHotkeyInput` 与 React hook 暴露相同的事件和方法集合，模板仍输出同一个根类与原生属性。
+## 无障碍
 
-## 契约
-
-| 接口 | 值 |
-| --- | --- |
-| 根选择器 | `.hotkey-input` |
-| 原生根元素 | `<div>` |
-| 状态 | `ready`, `recording`, `disabled`, `invalid` |
-| 事件 | `a3s:hotkey-before-change`, `a3s:hotkey-change`, `a3s:hotkey-recording-change` |
-| 方法 | `clear`, `getValue`, `setValue`, `start`, `stop` |
-
-## 产品边界
-
-组件不注册全局快捷键、不解决冲突，也不绕过操作系统保留组合。实际绑定和权限判断由宿主负责。
-
-组件只发布可复用的交互边界。数据获取、持久化、权限、可信内容与业务实体继续由宿主产品拥有。
-
-## 可访问性
-
-Tab 始终可以离开控件，Escape 恢复录制前的值，删除键清空组合。可视按键与 aria-keyshortcuts 保持一致。
+- 优先使用可见 `label`。占位内容只说明捕获动作，不能替代控件名称。
+- 输入控件是唯一的默认 Tab 停靠点。Delete 或 Backspace 开始一个空的替换草稿，Enter 在提交或拒绝后重新开始，Tab 离开整个控件，Escape 取消当前录制但不让输入控件失焦。
+- 仅修饰键、取消、清除、拒绝和已提交值通过有边界的礼貌状态区域播报。没有接收到实时播报的用户仍能看到持续说明。
+- 键帽使用 `aria-hidden`，因为只读输入已经暴露规范组合。组件有意不使用 `aria-keyshortcuts`，因为保存的组合用于激活宿主命令，而不是录制器本身。
+- `KeyboardEvent.key` 让捕获结果跟随当前键盘布局。死键、输入法组合过程和无法识别的键不会提交半成品；字面量加号编码为 `Plus`。
+- 窗口失焦或文档被隐藏时取消当前录制，避免切换浏览器上下文时静默覆盖分配。正常 Tab 或指针离开会提交用户主动创建的空替换草稿。
+- 不可用输入必须使用原生 `disabled`。保留可读的已提交值和相邻原因，不能只依赖透明度或颜色表达限制。

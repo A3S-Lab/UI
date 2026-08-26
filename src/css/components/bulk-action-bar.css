@@ -1,11 +1,20 @@
 /* Bulk Action Bar */
 @layer components {
   .bulk-action-bar {
-    display: flex;
+    container: bulk-action-bar / inline-size;
+    display: grid;
     width: 100%;
     min-width: 0;
+    min-height: 3.25rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--card-foreground);
+    grid-template-columns: max-content minmax(8rem, 1fr) auto;
+    grid-template-areas: "selection summary actions";
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem 0.75rem;
   }
 
   .bulk-action-bar[hidden] {
@@ -14,13 +23,31 @@
 
   .bulk-action-bar [data-bulk-selection] {
     display: flex;
-    min-width: 0;
+    min-width: max-content;
     align-items: baseline;
     gap: 0.375rem;
+    grid-area: selection;
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  .bulk-action-bar [data-selected-count] {
+    color: var(--a3s-accent, var(--ring));
+    font-weight: 720;
+    font-variant-numeric: tabular-nums;
   }
 
   .bulk-action-bar [data-bulk-summary] {
+    display: block;
     min-width: 0;
+    grid-area: summary;
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 
   .bulk-action-bar [data-bulk-summary][hidden],
@@ -30,39 +57,151 @@
 
   .bulk-action-bar [data-bulk-status] {
     min-width: 0;
-    margin-inline-start: auto;
+    grid-area: status;
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 
   .bulk-action-bar [data-bulk-actions] {
     display: flex;
     min-width: 0;
-    margin-inline-start: auto;
-    flex-wrap: wrap;
+    grid-area: actions;
     align-items: center;
     justify-content: flex-end;
     gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  .bulk-action-bar [data-bulk-actions] > * {
+    max-width: 100%;
+  }
+
+  .bulk-action-bar [data-bulk-clear] {
+    flex: none;
+  }
+
+  .bulk-action-bar[data-selection-cleared] [data-bulk-selection] {
+    color: var(--muted-foreground);
+  }
+
+  .bulk-action-bar[data-state="loading"] {
+    cursor: progress;
+  }
+
+  .bulk-action-bar[data-state="loading"] [data-bulk-actions] {
+    cursor: default;
   }
 
   .bulk-action-bar [data-pending="true"] {
     position: relative;
   }
 
+  .bulk-action-bar [data-pending="true"]::before {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-inline-end: 0.375rem;
+    border: 1.5px solid color-mix(in srgb, currentColor 28%, transparent);
+    border-block-start-color: currentColor;
+    border-radius: 999px;
+    content: "";
+    vertical-align: -0.125rem;
+    animation: a3s-bulk-action-spin 700ms linear infinite;
+  }
+
   .bulk-action-bar[data-position="sticky"] {
     position: sticky;
     z-index: 10;
     inset-block-end: 0.75rem;
+    box-shadow: 0 -0.5rem 1.5rem color-mix(
+      in srgb,
+      var(--foreground) 8%,
+      transparent
+    );
   }
 
-  @media (max-width: 40rem) {
+  @keyframes a3s-bulk-action-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @container bulk-action-bar (max-width: 48rem) {
     .bulk-action-bar {
-      align-items: stretch;
-      flex-direction: column;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "selection actions"
+        "summary summary";
+    }
+
+    .bulk-action-bar [data-bulk-actions] {
+      justify-content: flex-end;
+    }
+  }
+
+  @container bulk-action-bar (max-width: 32rem) {
+    .bulk-action-bar {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "selection"
+        "summary"
+        "actions";
     }
 
     .bulk-action-bar [data-bulk-actions] {
       width: 100%;
-      margin-inline-start: 0;
       justify-content: flex-start;
+    }
+  }
+
+  /* Older browsers without container queries still get the same reading order. */
+  @media (max-width: 48rem) {
+    .bulk-action-bar {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "selection actions"
+        "summary summary";
+    }
+  }
+
+  @media (max-width: 32rem) {
+    .bulk-action-bar {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "selection"
+        "summary"
+        "actions";
+    }
+
+    .bulk-action-bar [data-bulk-actions] {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .bulk-action-bar [data-bulk-actions] > :is(button, a[href]) {
+      min-block-size: var(--a3s-touch-target, 2.75rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bulk-action-bar [data-pending="true"]::before {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .bulk-action-bar {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .bulk-action-bar [data-selected-count] {
+      color: LinkText;
     }
   }
 }

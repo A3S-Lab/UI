@@ -2,9 +2,9 @@
 
 This directory contains one first-principles product requirements document for every PascalCase React component exported from `site/theme/components/playground`. These are internal deterministic composition fixtures, not additional public package APIs or product services.
 
-- Active route components: 83
+- Active route components: 85
 - Legacy-only, unmounted components: 11
-- Total covered exports: 94
+- Total covered exports: 96
 - Machine-readable mapping with one unique A3S Test assertion per export: `product-requirements/playground-component-coverage.json`
 - Active route evidence: `tests/e2e/playground-route-contracts.acl`
 - Legacy boundary evidence: `tests/e2e/playground-component-boundaries.acl`

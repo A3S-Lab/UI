@@ -16,6 +16,11 @@ Tool inspectors need titled regions that can be expanded, collapsed, and resized
 
 Pane View owns pane headings, expansion state, size allocation, expand-all and collapse-all commands, and responsive stacking. The host owns the files, symbols, history data, and persistence of user preferences.
 
+## Production fixture contract
+
+Workspace files, the 3D dependency graph, and ordered test output reuse the exact Product Application components from the standalone Playground. Expanded panes must expose usable production content rather than a title, skeleton, or generic filler surface.
+
+
 ## States
 
 The required state vocabulary is initializing, mixed expansion, all collapsed, one expanded, all expanded, wide, and compact. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -45,6 +50,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- Harness content reuses the named Product Application components and the rendered root contains no skeleton or look-alike panel markup.
 - Product-specific risk is covered: Headings must remain real buttons with synchronized aria-expanded state, expanded bodies must receive usable height, and compact screenshots must prove content rather than title-only panes.
 
 ## A3S Test mapping

@@ -16,6 +16,11 @@ Ordered context, canvas, and preview regions need one-dimensional resizing when 
 
 Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, workflow state, persistence, and any decision to add or remove regions.
 
+## Production fixture contract
+
+Workspace files, code editing, and the hardware-framed device simulator reuse the exact Product Application components mounted by the standalone Playground. The Harness owns only their spatial composition and cannot substitute simplified demo markup for the production fixtures.
+
+
 ## States
 
 The required state vocabulary is initializing, ready, balanced, focus-canvas, wide, and compact. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -45,6 +50,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- Harness content reuses the named Product Application components and the rendered root contains no skeleton or look-alike panel markup.
 - Product-specific risk is covered: Separator and preset behavior must be keyboard reachable, DOM order must stay truthful, and the narrow topology must preserve all three regions without nested page scrolling.
 
 ## A3S Test mapping

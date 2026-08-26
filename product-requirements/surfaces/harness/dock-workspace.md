@@ -16,6 +16,11 @@ Professional work surfaces need task context, an editor, preview, output, and re
 
 The workspace owns panel composition, docking intent, tab focus, size constraints, maximize and restore, compact overflow, and a serializable view layout. The host owns panel data, permissions, business routing, popout security, and persistence policy.
 
+## Production fixture contract
+
+Task, workspace files, code editing, device preview, and test output reuse the same Product Application components mounted by the standalone Playground. The documentation fixture may supply deterministic data, but it may not replace those components with skeleton panels, generic cards, or look-alike markup.
+
+
 ## States
 
 The required state vocabulary is ready, docked, floating preview, maximized, restored, wide, and compact single-group. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -45,6 +50,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- Harness content reuses the named Product Application components and the rendered root contains no skeleton or look-alike panel markup.
 - Product-specific risk is covered: Dragging cannot be the only layout path; keyboard actions must float, maximize, restore, and reset, while compact mode keeps all five business tabs discoverable.
 
 ## A3S Test mapping

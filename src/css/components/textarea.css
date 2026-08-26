@@ -2,6 +2,68 @@
 @layer components {
   .field > textarea,
   .textarea {
-    @apply flex field-sizing-content min-h-16 w-full outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50;
+    @apply block min-h-24 w-full min-w-0 overflow-auto outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed;
+  }
+}
+
+/* Textarea is a bounded native editing viewport. Visual packs may tune its
+ * density and surface, but they cannot replace vertical resize with unbounded
+ * page growth or add a second focus boundary. */
+:where(.field > textarea, textarea.textarea) {
+  max-block-size: min(24rem, 60vh);
+  overflow-wrap: anywhere;
+  resize: vertical;
+}
+
+:where(.field > textarea, textarea.textarea):disabled {
+  opacity: 1;
+}
+
+:where(.field > textarea, textarea.textarea)[readonly]:not(:disabled) {
+  cursor: text;
+}
+
+:where(.field > textarea, textarea.textarea):not(
+    .input-group > *
+  ):focus-visible {
+  outline: 0;
+  box-shadow: var(--a3s-control-focus-shadow, inset 0 0 0 1px var(--ring));
+}
+
+:where(.field > textarea, textarea.textarea):not(
+    .input-group > *
+  )[aria-invalid="true"] {
+  box-shadow: none;
+}
+
+:where(.field > textarea, textarea.textarea):not(
+    .input-group > *
+  )[aria-invalid="true"]:focus-visible {
+  box-shadow: var(
+    --a3s-control-error-focus-shadow,
+    inset 0 0 0 1px var(--destructive)
+  );
+}
+
+@media (pointer: coarse) {
+  :where(.field > textarea, textarea.textarea) {
+    min-block-size: max(6rem, var(--a3s-touch-target, 2.75rem));
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.field > textarea, textarea.textarea) {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(.field > textarea, textarea.textarea):not(
+      .input-group > *
+    ):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+    box-shadow: none;
   }
 }

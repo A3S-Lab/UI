@@ -5,6 +5,7 @@ import {
   getProductCapabilityDefinitions,
   useProductCapabilityRegistry,
 } from "./product-capability-state";
+import { ProductExpertAvatar } from "./ProductExpertAvatar";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 export type ProductComposerResourcePickerKind = "assistant" | "connector";
@@ -182,9 +183,11 @@ export function ProductComposerResourcePicker({
               type="button"
             >
               <span data-resource-picker-mark>
-                <ProductPlaygroundIcon
-                  name={kind === "assistant" ? "assistant" : "link"}
-                />
+                {kind === "assistant" ? (
+                  <ProductExpertAvatar expertId={item.id} size={32} />
+                ) : (
+                  <ProductPlaygroundIcon name="link" />
+                )}
               </span>
               <span data-resource-picker-copy>
                 <strong>{item.label}</strong>

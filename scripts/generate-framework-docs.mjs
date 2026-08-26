@@ -19,6 +19,20 @@ const componentFrameworkFragments = Object.freeze({
     React: ["useAgentComposerEditor", "@tiptap/react"],
     Vue: ["useAgentComposerEditor", "@tiptap/vue-3"],
   },
+  "input-group": {
+    React: ["useState", "useInputGroup", "ref={group.ref}", "onChange", "htmlFor"],
+    Vue: ["ref", "useInputGroup", "componentRef", "v-model", "data-input-group-status"],
+  },
+  textarea: {
+    React: [
+      "useState",
+      "useTextarea",
+      "events",
+      "HTMLTextAreaElement",
+      "maxLength",
+    ],
+    Vue: ["ref", "useTextarea", "events", "HTMLTextAreaElement", "maxlength"],
+  },
 });
 const voidElements = new Set([
   "area",
@@ -505,7 +519,18 @@ function matchesComponentRoot(node, component, allowLegacy = false) {
         attributes.role !== "switch"
       );
     case "radio-group":
-      return attributes.role === "radiogroup";
+      return (
+        expectedClasses.every((className) => classes.includes(className)) ||
+        (allowLegacy &&
+          (attributes.role === "radiogroup" ||
+            attributes["data-slot"] === "radio-group"))
+      );
+    case "native-select":
+      return (
+        node.tagName === "select" &&
+        (expectedClasses.every((className) => classes.includes(className)) ||
+          (allowLegacy && classes.includes("select")))
+      );
     case "pagination":
       return allowLegacy
         ? expectedClasses.every((className) => classes.includes(className)) ||
@@ -572,6 +597,7 @@ function componentExampleNode(
       if (!option) continue;
       const radioGroup = {
         attrs: [
+          { name: "class", value: "radio-group" },
           { name: "role", value: "radiogroup" },
           {
             name: "aria-label",
@@ -806,17 +832,43 @@ function frameworkCode(source, framework) {
 }
 
 function frameworkTabsCode(source, framework) {
-  const tabsStart = source.indexOf("<FrameworkTabs");
-  const attributeStart = source.indexOf(
-    `${framework.toLowerCase()}={\``,
-    tabsStart,
-  );
-  if (tabsStart < 0 || attributeStart < 0) return undefined;
-  const codeStart = attributeStart + `${framework.toLowerCase()}={\``.length;
-  const nextFramework =
-    framework === "HTML" ? "react" : framework === "React" ? "vue" : undefined;
-  const endMarker = nextFramework ? `\`}\n  ${nextFramework}={\`` : "`}\n/>";
-  const codeEnd = source.indexOf(endMarker, codeStart);
+  const propertyNames = {
+    HTML: ["html", "frameworkHtml"],
+    React: ["react", "frameworkReact"],
+    Vue: ["vue", "frameworkVue"],
+  }[framework];
+  if (!propertyNames) return undefined;
+
+  const candidates = [];
+  for (const tagName of ["FrameworkTabs", "Preview"]) {
+    const tagStart = source.indexOf(`<${tagName}`);
+    if (tagStart < 0) continue;
+    for (const propertyName of propertyNames) {
+      const marker = `${propertyName}={\``;
+      const attributeStart = source.indexOf(marker, tagStart);
+      if (attributeStart >= 0) {
+        candidates.push({ attributeStart, marker });
+      }
+    }
+  }
+  const candidate = candidates.sort(
+    (left, right) => left.attributeStart - right.attributeStart,
+  )[0];
+  if (!candidate) return undefined;
+
+  const codeStart = candidate.attributeStart + candidate.marker.length;
+  let codeEnd = -1;
+  for (let index = codeStart; index < source.length; index += 1) {
+    if (source[index] !== "`" || source[index + 1] !== "}") continue;
+    let slashCount = 0;
+    for (let cursor = index - 1; cursor >= codeStart && source[cursor] === "\\"; cursor -= 1) {
+      slashCount += 1;
+    }
+    if (slashCount % 2 === 0) {
+      codeEnd = index;
+      break;
+    }
+  }
   return codeEnd >= 0
     ? source.slice(codeStart, codeEnd).replaceAll("\\`", "`")
     : undefined;
@@ -975,7 +1027,7 @@ ${explanation}
 function hasFrameworkGuide(source, framework) {
   const tabProp = framework.toLowerCase();
   const frameworkTabs = new RegExp(
-    `<FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=\\{`,
+    `<(?:FrameworkTabs\\b[\\s\\S]*?\\b${tabProp}=|Preview\\b[\\s\\S]*?\\bframework${framework}=)\\{`,
     "u",
   );
   if (framework === "HTML") {

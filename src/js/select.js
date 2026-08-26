@@ -1,5 +1,6 @@
 (() => {
   const states = new WeakMap();
+  let instanceSequence = 0;
 
   const getElements = (root) => {
     const trigger = root.querySelector(':scope > button');
@@ -15,6 +16,10 @@
   const getFormat = (root) => root.dataset.format === 'object' ? 'object' : 'value';
   const isDisabled = (option) => option.getAttribute('aria-disabled') === 'true';
   const toSelected = (option) => ({ value: getValue(option), label: getLabel(option) });
+  const normalizeTypeahead = (value) => String(value || '')
+    .normalize('NFKD')
+    .replace(/\p{Mark}/gu, '')
+    .toLocaleLowerCase();
 
   const getOptions = (listbox) => {
     const allOptions = Array.from(listbox.querySelectorAll('[role="option"]'));
@@ -22,6 +27,34 @@
       allOptions,
       options: allOptions.filter(option => !isDisabled(option)),
     };
+  };
+
+  const ensureSemanticIds = (root, state) => {
+    if (!state.instanceId) {
+      instanceSequence += 1;
+      state.instanceId = root.id || `a3s-select-${instanceSequence}`;
+    }
+
+    if (!state.trigger.id) state.trigger.id = `${state.instanceId}-trigger`;
+    if (!state.listbox.id) state.listbox.id = `${state.instanceId}-listbox`;
+
+    state.trigger.setAttribute('role', 'combobox');
+    state.trigger.setAttribute('aria-haspopup', 'listbox');
+    state.trigger.setAttribute('aria-autocomplete', 'none');
+    state.trigger.setAttribute('aria-controls', state.listbox.id);
+    if (!state.listbox.hasAttribute('aria-labelledby')) {
+      state.listbox.setAttribute('aria-labelledby', state.trigger.id);
+    }
+
+    state.allOptions.forEach((option, index) => {
+      if (!option.id) option.id = `${state.instanceId}-option-${index + 1}`;
+    });
+  };
+
+  const clearTypeahead = (state) => {
+    window.clearTimeout(state.typeaheadTimer);
+    state.typeahead = '';
+    state.typeaheadTimer = 0;
   };
 
   const parseStoredValues = (storedValue, { isMultiple, format }) => {
@@ -157,6 +190,7 @@
 
   const closePopover = (state, focusOnTrigger = true) => {
     if (state.popover.getAttribute('aria-hidden') === 'true') return;
+    clearTypeahead(state);
     if (focusOnTrigger) state.trigger.focus();
     state.popover.setAttribute('aria-hidden', 'true');
     state.trigger.setAttribute('aria-expanded', 'false');
@@ -181,6 +215,7 @@
 
     const previousValue = elements.input.value;
     Object.assign(state, elements, getOptions(elements.listbox));
+    ensureSemanticIds(root, state);
     state.visibleOptions = [...state.options];
     state.isMultiple = state.listbox.getAttribute('aria-multiselectable') === 'true';
     state.format = getFormat(root);
@@ -251,12 +286,77 @@
     const state = states.get(root);
     const isPopoverOpen = state.popover.getAttribute('aria-hidden') === 'false';
 
-    if (!['ArrowDown', 'ArrowUp', 'Enter', 'Home', 'End', 'Escape'].includes(event.key)) return;
+    if (
+      !event.isComposing &&
+      event.key.length === 1 &&
+      event.key !== ' ' &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.metaKey
+    ) {
+      event.preventDefault();
+      if (!isPopoverOpen) root.open();
+
+      window.clearTimeout(state.typeaheadTimer);
+      const typedCharacter = normalizeTypeahead(event.key);
+      if (!typedCharacter) return;
+      state.typeahead += typedCharacter;
+      state.typeaheadTimer = window.setTimeout(() => {
+        state.typeahead = '';
+        state.typeaheadTimer = 0;
+      }, 650);
+
+      const repeatedCharacter = Array.from(state.typeahead).every(
+        character => character === state.typeahead[0],
+      );
+      const query = repeatedCharacter ? state.typeahead[0] : state.typeahead;
+      const activeOption = state.options[state.activeIndex];
+      const activeVisibleIndex = activeOption
+        ? state.visibleOptions.indexOf(activeOption)
+        : -1;
+      const startIndex = repeatedCharacter
+        ? (activeVisibleIndex + 1) % Math.max(state.visibleOptions.length, 1)
+        : Math.max(activeVisibleIndex, 0);
+      const orderedOptions = [
+        ...state.visibleOptions.slice(startIndex),
+        ...state.visibleOptions.slice(0, startIndex),
+      ];
+      const match = orderedOptions.find(option =>
+        normalizeTypeahead(getLabel(option)).startsWith(query),
+      );
+      if (match) {
+        setActiveOption(state, state.options.indexOf(match));
+        scrollOptionIntoListbox(state, match);
+      }
+      return;
+    }
+
+    if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Home', 'End', 'Escape'].includes(event.key)) return;
 
     if (!isPopoverOpen) {
-      if (event.key !== 'Enter' && event.key !== 'Escape') {
-        event.preventDefault();
-        root.open();
+      if (event.key === 'Escape') return;
+      event.preventDefault();
+      root.open();
+      if (state.visibleOptions.length === 0) return;
+
+      const currentVisibleIndex = state.activeIndex > -1
+        ? state.visibleOptions.indexOf(state.options[state.activeIndex])
+        : -1;
+      let nextVisibleIndex = currentVisibleIndex;
+      if (event.key === 'ArrowDown') {
+        nextVisibleIndex = Math.min(currentVisibleIndex + 1, state.visibleOptions.length - 1);
+      }
+      if (event.key === 'ArrowUp') {
+        nextVisibleIndex = currentVisibleIndex > 0
+          ? currentVisibleIndex - 1
+          : state.visibleOptions.length - 1;
+      }
+      if (event.key === 'Home') nextVisibleIndex = 0;
+      if (event.key === 'End') nextVisibleIndex = state.visibleOptions.length - 1;
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        const option = state.visibleOptions[nextVisibleIndex];
+        setActiveOption(state, state.options.indexOf(option));
+        scrollOptionIntoListbox(state, option);
       }
       return;
     }
@@ -268,7 +368,7 @@
       return;
     }
 
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === ' ') {
       if (state.activeIndex > -1) {
         const option = state.options[state.activeIndex];
         if (state.isMultiple) {
@@ -306,7 +406,17 @@
   const initSelect = (root) => {
     if (root.dataset.selectInitialized) return;
 
-    const state = { activeIndex: -1, selectedOptions: null, options: [], allOptions: [], visibleOptions: [], format: 'value' };
+    const state = {
+      activeIndex: -1,
+      allOptions: [],
+      format: 'value',
+      instanceId: '',
+      options: [],
+      selectedOptions: null,
+      typeahead: '',
+      typeaheadTimer: 0,
+      visibleOptions: [],
+    };
     states.set(root, state);
     root.refresh = () => refreshSelect(root);
 
@@ -318,9 +428,17 @@
     }
 
     root.open = () => {
+      if (
+        state.trigger.disabled ||
+        state.trigger.getAttribute('aria-disabled') === 'true' ||
+        root.getAttribute('aria-disabled') === 'true'
+      ) {
+        return false;
+      }
       document.dispatchEvent(new CustomEvent('basecoat:popover', { detail: { source: root } }));
       root.refresh();
       state.popover.setAttribute('aria-hidden', 'false');
+      state.popover.hidden = false;
       state.trigger.setAttribute('aria-expanded', 'true');
 
       const selectedOption = state.listbox.querySelector('[role="option"][aria-selected="true"]');
@@ -328,6 +446,7 @@
         setActiveOption(state, state.options.indexOf(selectedOption));
         scrollOptionIntoListbox(state, selectedOption);
       }
+      return true;
     };
     root.close = (focusOnTrigger = true) => closePopover(state, focusOnTrigger);
     root.togglePopover = () => state.trigger.getAttribute('aria-expanded') === 'true' ? root.close() : root.open();
@@ -385,6 +504,7 @@
     document.addEventListener('basecoat:popover', handleDocumentPopover);
 
     root._destroy = () => {
+      clearTypeahead(state);
       state.trigger.removeEventListener('keydown', handleTriggerKeydown);
       state.trigger.removeEventListener('click', handleTriggerClick);
       state.listbox.removeEventListener('mousemove', handleListboxMousemove);
@@ -450,7 +570,9 @@
     }
 
     state.popover.setAttribute('aria-hidden', 'true');
+    state.popover.hidden = false;
     state.trigger.setAttribute('aria-expanded', 'false');
+    setActiveOption(state, -1);
     root.dataset.selectInitialized = 'true';
     root.dispatchEvent(new CustomEvent('basecoat:initialized'));
   };

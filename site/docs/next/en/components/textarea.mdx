@@ -1,150 +1,317 @@
 # Textarea
 
-Textarea captures longer, potentially multiline content and should keep length, formatting, or validation requirements visible.
+Textarea captures one plain-text value whose line breaks are meaningful. It preserves native multiline editing while keeping large pastes, validation, and availability states contained.
 
-<Preview class="w-full max-w-xs">
-<textarea class="textarea" aria-label="Message" placeholder="Type your message here"></textarea>
+<Preview class="w-full max-w-lg" title="Release note">
+  <div class="field w-full">
+    <label for="textarea-release-note-en">Release note</label>
+    <textarea
+      id="textarea-release-note-en"
+      class="textarea"
+      name="releaseNote"
+      rows="5"
+      maxlength="320"
+      aria-describedby="textarea-release-note-help-en"
+      placeholder="Describe the change, verification, and rollback path"
+      oninput="this.parentElement.querySelector('[data-textarea-count]').textContent = this.value.length + ' / 320 characters'"
+    ></textarea>
+    <p id="textarea-release-note-help-en" data-field-description>
+      Include the result, how it was verified, and what to do if verification
+      fails. Use no more than 320 characters.
+    </p>
+    <output
+      id="textarea-release-note-count-en"
+      class="text-muted-foreground text-sm"
+      data-textarea-count
+      for="textarea-release-note-en"
+      aria-label="Character count"
+      aria-live="off"
+    >
+      0 / 320 characters
+    </output>
+  </div>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and one complete A3S UI style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Textarea component CSS, and one style pack.
+For component-level loading, import the base styles, Textarea structure, Field structure, and one visual style in that order:
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/textarea.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
-
-  </Step>
-  <Step title="Add your textarea HTML">
-
-Add `class="textarea"` to a `<textarea>` element. Textareas inside a `class="field"` container also receive the same styling automatically.
-
-Use native HTML attributes for behavior: `disabled` for disabled textareas and `aria-invalid="true"` for invalid state styling.
+Use `class="textarea"` on a native `<textarea>`. In production forms, compose it with Field so a persistent label, ordinary guidance, length policy, and current error remain in one relationship.
 
 ```html
-<textarea class="textarea" aria-label="Message" placeholder="Type your message here"></textarea>
+<div class="field">
+  <label for="release-note">Release note</label>
+  <textarea
+    id="release-note"
+    class="textarea"
+    name="releaseNote"
+    rows="5"
+    maxlength="320"
+    aria-describedby="release-note-help"
+  ></textarea>
+  <p id="release-note-help" data-field-description>
+    Include verification evidence and a rollback path.
+  </p>
+</div>
 ```
 
-  </Step>
-</Steps>
+Use Textarea for native plain text. Use an editor when the value needs document structure, formatting, or syntax behavior; use [Task Composer](/components/agent-composer) when the task also needs mentions, attachments, tools, and submission state.
 
-Textareas support right-to-left layouts through native browser direction handling.
+### Parameters
 
-## Examples
+| Parameter                            | Purpose                                                                                |
+| ------------------------------------ | -------------------------------------------------------------------------------------- |
+| `id`                                 | Connects the native control to one persistent visible label                            |
+| `name`                               | Supplies the submitted field key; a disabled Textarea is excluded from `FormData`      |
+| `rows`                               | Sets the authored initial viewport without enabling automatic growth                   |
+| `minlength`, `maxlength`, `required` | Express native constraints only when they match the real plain-text contract           |
+| `wrap`, `spellcheck`, `autocomplete` | Preserve or refine native editing behavior instead of recreating it                    |
+| `aria-describedby`                   | Associates persistent guidance and the current error while each is relevant            |
+| `aria-invalid="true"`                | Exposes a failed validation attempt without discarding the attempted text              |
+| `disabled`                           | Removes focus, editing, validation, and form submission; pair it with a visible reason |
+| `readonly`                           | Keeps focus, selection, copying, scrolling, and submission while preventing mutation   |
 
-### Field
+## Framework usage
 
-Use `field` with a label and description to create an accessible textarea.
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field">
-  <label for="textarea-field">Message</label>
-  <textarea id="textarea-field" placeholder="Type your message here"></textarea>
-  <p>Write a short message.</p>
+<FrameworkTabs
+  htmlInstall="npm install @a3s-lab/ui"
+  reactInstall="npm install @a3s-lab/ui react react-dom"
+  vueInstall="npm install @a3s-lab/ui vue"
+  html={`<div class="field">
+  <label for="textarea-release-note-html">Release note</label>
+  <textarea id="textarea-release-note-html" class="textarea" name="releaseNote" rows="5" maxlength="320" aria-describedby="textarea-release-note-help-html"></textarea>
+  <p id="textarea-release-note-help-html" data-field-description>Include verification evidence and a rollback path. Use no more than 320 characters.</p>
+  <output id="textarea-release-note-count-html" for="textarea-release-note-html" aria-label="Character count" aria-live="off">0 / 320 characters</output>
 </div>
-</Preview>
-
-### Disabled
-
-<Preview class="w-full max-w-xs">
-<textarea class="textarea" aria-label="Message" placeholder="Type your message here" disabled></textarea>
-</Preview>
-
-### Invalid
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field w-full max-w-xs">
-  <label for="textarea-invalid">Message</label>
-  <textarea class="textarea" id="textarea-invalid" placeholder="Type your message here" aria-invalid="true"></textarea>
-  <p>Message is required.</p>
-</div>
-</Preview>
-
-### Button
-
-<Preview class="w-full max-w-xs">
-<div class="grid w-full max-w-xs gap-3">
-  <textarea class="textarea" aria-label="Message" placeholder="Type your message here"></textarea>
-  <button type="submit" class="btn">Submit</button>
-</div>
-</Preview>
-
-### Form
-
-<Preview class="w-full max-w-sm">
-<form class="w-full max-w-sm space-y-6">
-  <div role="group" class="field">
-    <label for="textarea-form">Bio</label>
-    <textarea id="textarea-form" placeholder="Tell us a bit about yourself"></textarea>
-    <p>You can @mention other users and organizations.</p>
-  </div>
-  <button type="submit" class="btn">Submit</button>
-</form>
-</Preview>
-
-### RTL
-
-Add `dir="rtl"` to the textarea, field, or an ancestor.
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field w-full max-w-xs" dir="rtl">
-  <label for="textarea-rtl">التعليقات</label>
-  <textarea id="textarea-rtl" placeholder="تعليقاتك تساعدنا على التحسين..." rows="4"></textarea>
-  <p>شاركنا أفكارك حول الخدمة.</p>
-</div>
-</Preview>
-
-## React
-
-```tsx
+<script type="module">
+const textarea = document.querySelector("#textarea-release-note-html");
+const count = document.querySelector("#textarea-release-note-count-html");
+textarea.addEventListener("input", event => {
+  count.textContent = event.currentTarget.value.length + " / 320 characters";
+});
+textarea.addEventListener("change", event => {
+  persistDraft(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
 import { Textarea, useTextarea } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useTextarea();
-  return (
-    <Textarea
-      ref={control.ref}
-      aria-label="Message"
-      placeholder="Type your message here"
-    />
-  );
-}
-```
+export function ReleaseNote() {
+  const [value, setValue] = useState("");
+  const [committedValue, setCommittedValue] = useState("");
+  const control = useTextarea({
+    events: {
+      input: event => setValue((event.currentTarget as HTMLTextAreaElement).value),
+      change: event => setCommittedValue((event.currentTarget as HTMLTextAreaElement).value),
+    },
+  });
 
-`useTextarea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+return (
 
-## Vue
-
-```vue
-<script setup lang="ts">
+<div className="field">
+<label htmlFor="textarea-release-note-react">Release note</label>
+<Textarea
+        id="textarea-release-note-react"
+        ref={control.ref}
+        name="releaseNote"
+        rows={5}
+        maxLength={320}
+        aria-describedby="textarea-release-note-help-react"
+      />
+<p id="textarea-release-note-help-react" data-field-description>
+Include verification evidence and a rollback path. Use no more than 320 characters.
+</p>
+<output id="textarea-release-note-count-react" htmlFor="textarea-release-note-react" aria-label="Character count" aria-live="off">
+{value.length} / 320 characters{committedValue ? " · Change observed" : ""}
+</output>
+</div>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
 import { Textarea, useTextarea } from "@a3s-lab/ui/vue";
 
-const control = useTextarea();
+const value = ref("");
+const committedValue = ref("");
+const control = useTextarea({
+events: {
+input: event => value.value = (event.currentTarget as HTMLTextAreaElement).value,
+change: event => committedValue.value = (event.currentTarget as HTMLTextAreaElement).value,
+},
+});
 const componentRef = control.componentRef;
+
 </script>
 
 <template>
-  <Textarea
-    ref="componentRef"
-    aria-label="Message"
-    placeholder="Type your message here"
-  />
-</template>
-```
+  <div class="field">
+    <label for="textarea-release-note-vue">Release note</label>
+    <Textarea
+      id="textarea-release-note-vue"
+      ref="componentRef"
+      name="releaseNote"
+      :rows="5"
+      :maxlength="320"
+      aria-describedby="textarea-release-note-help-vue"
+    />
+    <p id="textarea-release-note-help-vue" data-field-description>Include verification evidence and a rollback path. Use no more than 320 characters.</p>
+    <output id="textarea-release-note-count-vue" for="textarea-release-note-vue" aria-label="Character count" aria-live="off">
+      {{ value.length }} / 320 characters{{ committedValue ? " · Change observed" : "" }}
+    </output>
+  </div>
+</template>`}
+/>
 
-`useTextarea` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## States and variants
+
+Empty and ready are ordinary value states. Invalid begins only after validation has run. Disabled and read-only express different native availability contracts and must not be presented as interchangeable styling variants.
+
+### Bounded native editing
+
+The default Textarea is a stable editing viewport with internal overflow and vertical native resize. It does not use unbounded content sizing. A product that deliberately adds auto-growth must cap the height, retain an internal scroll fallback, and prove that paste, undo, IME composition, and responsive transitions do not move unrelated controls.
+
+`rows` chooses a useful initial viewport. Large pastes remain fully editable without increasing the page height indefinitely.
+
+### Validation and recovery
+
+Keep a required Textarea neutral before the first validation attempt. On failure, preserve every line, identify the missing requirement, focus the Textarea, and add the error to its description relationship. Clear stale error semantics as soon as the value is valid or the form resets.
+
+<Preview class="w-full max-w-xl" title="Release handoff">
+  <form
+    class="grid w-full gap-4"
+    data-textarea-validation-demo="en"
+    novalidate
+    onsubmit="event.preventDefault(); const textarea = this.querySelector('#textarea-validation-en'); const field = textarea.closest('.field'); const error = this.querySelector('#textarea-validation-error-en'); if (textarea.checkValidity()) return; field.dataset.invalid = 'true'; textarea.setAttribute('aria-invalid', 'true'); textarea.setAttribute('aria-describedby', 'textarea-validation-help-en textarea-validation-error-en'); error.hidden = false; textarea.focus()"
+    onreset="const textarea = this.querySelector('#textarea-validation-en'); const field = textarea.closest('.field'); const error = this.querySelector('#textarea-validation-error-en'); const count = this.querySelector('#textarea-validation-count-en'); field.removeAttribute('data-invalid'); textarea.removeAttribute('aria-invalid'); textarea.setAttribute('aria-describedby', 'textarea-validation-help-en'); error.hidden = true; count.textContent = '0 / 320 characters'"
+  >
+    <div class="field">
+      <label for="textarea-validation-en">Release handoff note</label>
+      <textarea
+        id="textarea-validation-en"
+        class="textarea"
+        name="releaseHandoff"
+        rows="5"
+        minlength="40"
+        maxlength="320"
+        required
+        aria-describedby="textarea-validation-help-en"
+        oninput="const count = this.parentElement.querySelector('[data-validation-count]'); count.textContent = this.value.length + ' / 320 characters'; if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'textarea-validation-help-en'); field.querySelector('[role=alert]').hidden = true"
+      ></textarea>
+      <p id="textarea-validation-help-en" data-field-description>
+        Use 40–320 characters to name the verification result and rollback path.
+      </p>
+      <output
+        id="textarea-validation-count-en"
+        class="text-muted-foreground text-sm"
+        data-validation-count
+        for="textarea-validation-en"
+        aria-label="Character count"
+        aria-live="off"
+      >
+        0 / 320 characters
+      </output>
+      <p
+        id="textarea-validation-error-en"
+        data-field-message
+        role="alert"
+        hidden
+      >
+        Add the verification result and the rollback steps to use if it fails.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        Save handoff
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        Reset
+      </button>
+    </div>
+  </form>
+</Preview>
+
+Client validation improves recovery but never replaces server validation, sanitization, authorization, or stale-response handling. Do not validate, transform, persist, or submit while an IME composition is active.
+
+### Disabled and read-only
+
+Disabled removes the value from focus, editing, constraint validation, and `FormData`. Read-only keeps the value focusable, selectable, copyable, scrollable, and submitted. Both keep full text opacity and a visible reason.
+
+<Preview class="w-full max-w-xl" title="Availability semantics">
+  <form class="grid w-full gap-5" data-textarea-availability="en">
+    <div class="field" data-disabled="true">
+      <label for="textarea-disabled-en">Archived release note</label>
+      <textarea
+        id="textarea-disabled-en"
+        class="textarea"
+        name="archivedReleaseNote"
+        rows="4"
+        aria-describedby="textarea-disabled-reason-en"
+        defaultValue="This note is retained for audit history after the workspace was archived."
+        disabled
+      />
+      <p id="textarea-disabled-reason-en" data-field-description>
+        Archived workspaces keep their history but cannot change this value.
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="textarea-readonly-en">Approved release note</label>
+      <textarea
+        id="textarea-readonly-en"
+        class="textarea"
+        name="approvedReleaseNote"
+        rows="4"
+        aria-describedby="textarea-readonly-reason-en"
+        defaultValue="Verification passed. Restore the previous package and rerun the smoke suite if health checks fail."
+        readonly
+      />
+      <p id="textarea-readonly-reason-en" data-field-description>
+        Only the release owner can edit it; the value remains selectable and is
+        included in form submission.
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### RTL and mixed text
+
+Use the document or Field direction for authored prose. A nested technical token may set its own direction when punctuation order must remain left-to-right.
+
+<Preview class="w-full max-w-lg" title="RTL release note">
+  <div class="field w-full" dir="rtl">
+    <label for="textarea-rtl-en">ملاحظات الإصدار</label>
+    <textarea
+      id="textarea-rtl-en"
+      class="textarea"
+      rows="5"
+      aria-describedby="textarea-rtl-help-en"
+      placeholder="اكتب نتيجة التحقق وخطوات التراجع"
+    ></textarea>
+    <p id="textarea-rtl-help-en" data-field-description>
+      اذكر ما تغيّر وكيف تم التحقق وما الذي يجب فعله عند الفشل.
+    </p>
+  </div>
+</Preview>
+
+## Accessibility
+
+- Keep one persistent visible label. Placeholder text may demonstrate content but never supplies the only accessible name.
+- Keep the stable length policy in persistent guidance and associate it through `aria-describedby`. Give a visible live count its own localized label, keep it out of the description relationship, and avoid announcing every keystroke. Add the current error ID only after validation, then remove it after recovery.
+- Preserve native newline editing, selection, undo, paste, spellcheck, dictation, drag-selection, and IME behavior.
+- Keep the viewport bounded and vertically resizable so long input does not move the page while users edit near the caret.
+- Use one continuous inset focus boundary. Forced-colors mode replaces it with a system `Highlight` outline.
+- On coarse pointers, editable text remains at least 16px to avoid mobile focus zoom.
+- Test real mobile keyboards, physical CJK input methods, 200% zoom, touch selection, Windows forced colors, and screen-reader/browser combinations before release.

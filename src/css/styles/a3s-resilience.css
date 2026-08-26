@@ -27,6 +27,12 @@
       min-width: var(--a3s-touch-target, 2.75rem);
     }
 
+    .input-group
+      > :is(button, [role="group"] > button, header > button, footer > button) {
+      min-width: var(--a3s-touch-target, 2.75rem);
+      min-height: var(--a3s-touch-target, 2.75rem);
+    }
+
     .tabs > [role="tablist"],
     .command > header {
       height: auto;
@@ -40,6 +46,7 @@
         > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
       .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
       .field > select,
+      select.native-select,
       select.select,
       .select:not(select) > button,
       .combobox > input[role="combobox"],
@@ -49,6 +56,14 @@
       .command > header input
     ) {
       min-height: var(--a3s-touch-target, 2.75rem);
+    }
+
+    :is(.field > select, select.native-select, select.select) {
+      font-size: 1rem;
+    }
+
+    .input-group > :is(input, textarea, select, [data-control]) {
+      font-size: 1rem;
     }
 
     :is(
@@ -75,5 +90,64 @@
       height: var(--a3s-touch-target, 2.75rem);
       min-height: var(--a3s-touch-target, 2.75rem);
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :is(
+      .field > select,
+      select.native-select,
+      select.select,
+      .input-group,
+      .input-group > :is(input, textarea, select, [data-control]),
+      .input-group [role="status"]
+    ) {
+      transition: none;
+    }
+
+    .input-group [role="status"] :is(.spinner, [data-spinner]) {
+      animation: none;
+    }
+  }
+}
+
+/* Forced-color focus is intentionally unlayered. It must outrank every
+   visual family's layered outline reset when box shadows are suppressed. */
+@media (forced-colors: active) {
+  .input-group:focus-within {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+  .input-group:has([aria-invalid="true"]) {
+    border-color: Mark;
+  }
+
+  :is(.field > select, select.native-select, select.select):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+
+  :is(.field > input[type="radio"], .input[type="radio"]):checked::before {
+    background: Highlight;
+  }
+
+  :is(.field > input[type="radio"], .input[type="radio"]):focus-visible::after {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .field[data-variant="choice-card"]:has(input[type="radio"]:focus-visible) {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .field[data-variant="choice-card"]
+    > input[type="radio"]:focus-visible::after {
+    outline: 0;
   }
 }

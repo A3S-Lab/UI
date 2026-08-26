@@ -10,6 +10,11 @@ const projectRoot = path.resolve(
   "..",
 );
 const prdRoot = path.join(projectRoot, "product-requirements", "components");
+const componentDetailsRoot = path.join(
+  projectRoot,
+  "product-requirements",
+  "component-details",
+);
 const componentSuitePath = path.join(
   projectRoot,
   "tests",
@@ -123,6 +128,19 @@ function guideIntroduction(source, fallback) {
     return paragraph.join(" ");
   }
   return fallback;
+}
+
+async function optionalComponentDetails(slug) {
+  const filePath = path.join(componentDetailsRoot, `${slug}.md`);
+  try {
+    return {
+      path: path.relative(projectRoot, filePath),
+      source: await readFile(filePath, "utf8"),
+    };
+  } catch (error) {
+    if (error?.code === "ENOENT") return undefined;
+    throw error;
+  }
 }
 
 function formatList(values) {
@@ -367,6 +385,73 @@ function stateMatrixRoot(component) {
 
 function qualifiedStateSelector(component, state, selector) {
   const root = aclSelector(selector);
+  if (component.slug === "field") {
+    if (state === "empty") {
+      return `${root}[data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden])`;
+    }
+    if (state === "ready") {
+      return `${root}[data-state~='ready']:not([data-invalid]):has(> input[value='Agent Runtime']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden])`;
+    }
+    if (state === "disabled") {
+      return `${root}[data-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description])`;
+    }
+    if (state === "invalid") {
+      return `${root}[data-state~='invalid'][data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A']):has(> [data-field-message][role=alert]:not([hidden]))`;
+    }
+    if (state === "readonly") {
+      return `${root}[data-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description])`;
+    }
+  }
+  if (component.slug === "input") {
+    if (state === "empty") return `${root}[value='']`;
+    if (state === "ready") return `${root}[value='alex@example.com']`;
+    if (state === "disabled") {
+      return `${root}[disabled][value='archived@example.com']`;
+    }
+    if (state === "invalid") {
+      return `${root}[required][aria-invalid=true][value='owner@']:invalid`;
+    }
+    if (state === "readonly") {
+      return `${root}[readonly][value='account-owner@example.com']`;
+    }
+  }
+  if (component.slug === "input-group") {
+    if (state === "empty") {
+      return `${root}:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly]))`;
+    }
+    if (state === "ready") {
+      return `${root}:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly]))`;
+    }
+    if (state === "invalid") {
+      return `${root}:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid)`;
+    }
+    if (state === "loading") {
+      return `${root}[aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status])`;
+    }
+    if (state === "disabled") {
+      return `${root}[data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived'])`;
+    }
+    if (state === "readonly") {
+      return `${root}[data-readonly]:not([aria-readonly]):has(> input[readonly][value='release'])`;
+    }
+  }
+  if (component.slug === "radio-group") {
+    if (state === "ready") {
+      return `${root}:has(input[type=radio][value=comfortable]:checked)`;
+    }
+    if (state === "disabled") {
+      return `${root}[aria-disabled=true]:has(input[type=radio][value=comfortable]:checked:disabled)`;
+    }
+    if (state === "invalid") {
+      return `${root}[aria-invalid=true][data-validation-state=invalid]:has(input[type=radio][required][aria-invalid=true]:invalid):has([data-state-specimen-feedback][role=alert])`;
+    }
+  }
+  if (component.slug === "native-select") {
+    if (state === "disabled") return `${root}[disabled]`;
+    if (state === "invalid") {
+      return `${root}[required][aria-invalid=true]:invalid`;
+    }
+  }
   if (component.slug === "code-editor") {
     if (state === "ready") return `${root}[data-dirty=false]`;
     if (state === "dirty") return `${root}[data-dirty=true]`;
@@ -425,9 +510,15 @@ function qualifiedStateSelector(component, state, selector) {
       "mobile-open",
     ].includes(state)
   ) {
+    if (component.parts.trigger) {
+      return `${root}:has(${aclSelector(component.parts.trigger)}[aria-expanded=true])`;
+    }
     return `${root}:is([open],[aria-expanded=true])`;
   }
   if (state === "collapsed" || state === "closed") {
+    if (component.parts.trigger) {
+      return `${root}:has(${aclSelector(component.parts.trigger)}[aria-expanded=false])`;
+    }
     return `${root}:is(:not([open]),[aria-expanded=false])`;
   }
   if (state === "hidden") return `${root}[hidden]`;
@@ -440,6 +531,7 @@ function stateSpecimenSelector(component, state, selector) {
   const qualified = qualifiedStateSelector(component, state, selector);
   if (
     component.slug === "progress" ||
+    component.slug === "radio-group" ||
     (component.slug === "code-editor" &&
       ["invalid", "readonly"].includes(state))
   ) {
@@ -470,16 +562,66 @@ function renderStateExpectations(component) {
         expect "dirty-state-announcement" { text = "Unsaved changes" }
         expect "invalid-state-announcement" { text = "Invalid content" }
         expect "readonly-state-announcement" { text = "Read only" }`
-      : component.slug === "dialog"
+      : component.slug === "input"
         ? `
+        expect "empty-state-guidance-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:has(label[for]):has(input.input[value='']):has([data-state-specimen-feedback])") }
+        expect "ready-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] input.input[value='alex@example.com']") }
+        expect "disabled-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] input.input[disabled][value='archived@example.com']") }
+        expect "disabled-state-reason-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] [data-state-specimen-feedback]") }
+        expect "invalid-state-is-native" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] input.input[required][aria-invalid=true][value='owner@']:invalid") }
+        expect "invalid-state-error-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] [data-state-specimen-feedback][role=alert]") }
+        expect "readonly-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] input.input[readonly][value='account-owner@example.com']") }
+        expect "readonly-state-reason-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] [data-state-specimen-feedback]") }`
+        : component.slug === "input-group"
+          ? `
+        expect "empty-group-stays-neutral" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:has(label[for]):has(.input-group:not([aria-busy]) > input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has([data-state-specimen-feedback])") }
+        expect "ready-group-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] .input-group > input[value='runtime']") }
+        expect "invalid-group-preserves-native-recovery" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] .field[data-invalid]:has(.input-group > input[required][minlength='3'][aria-invalid=true][value='r']:invalid):has([data-state-specimen-feedback][role=alert])") }
+        expect "loading-group-preserves-editable-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .input-group[aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status])") }
+        expect "disabled-group-preserves-value-and-reason" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] .field[data-disabled]:has(.input-group[data-disabled] > input[disabled][value='archived']):has([data-state-specimen-feedback])") }
+        expect "readonly-group-preserves-submission-semantics" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] .field[data-readonly]:has(.input-group[data-readonly] > input[readonly][value='release']):has([data-state-specimen-feedback])") }`
+        : component.slug === "field"
+          ? `
+        expect "empty-field-stays-neutral" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:not([data-invalid]):has(> input[value='']:not([aria-invalid])):has(> [data-field-description]):has(> [data-field-message][hidden])") }
+        expect "ready-field-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] .field:has(> input[value='Agent Runtime']):has(> [data-field-description])") }
+        expect "disabled-field-uses-native-control-semantics" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] .field[data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description])") }
+        expect "invalid-field-explains-recovery" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] .field[data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A'][aria-describedby]):has(> [data-field-message][role=alert]:not([hidden]))") }
+        expect "readonly-field-preserves-native-semantics" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] .field[data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description])") }`
+          : component.slug === "native-select"
+            ? `
+        expect "empty-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] select.native-select:has(option[value='']:checked)") }
+        expect "empty-state-guidance-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] [data-state-specimen-feedback]") }
+        expect "ready-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] select.native-select:has(option[value=apple]:checked)") }
+        expect "disabled-state-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] select.native-select[disabled]:has(option[value=apple]:checked)") }
+        expect "disabled-state-reason-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] [data-state-specimen-feedback]") }
+        expect "invalid-state-is-native" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] select.native-select[required][aria-invalid=true]:invalid") }
+        expect "invalid-state-error-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] [role=alert]") }`
+            : component.slug === "radio-group"
+              ? `
+        expect "ready-state-preserves-one-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] input[type=radio][value=comfortable]:checked") }
+        expect "disabled-state-preserves-one-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] input[type=radio][value=comfortable]:checked:disabled") }
+        expect "invalid-state-is-unselected-and-native" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] input[type=radio][required][aria-invalid=true]:invalid:not(:checked)") }
+        expect "invalid-state-error-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] [data-state-specimen-feedback][role=alert]") }`
+              : component.slug === "dialog"
+                ? `
         expect "open-state-content" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=open] dialog.dialog[open] > :is(div, article):has(header h2):has(section):has(footer button)") }`
-        : "";
+                : component.slug === "bulk-action-bar"
+                  ? `
+        expect "empty-state-hides-region" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .bulk-action-bar[data-state=empty][hidden]") }
+        expect "loading-state-disables-conflicts" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-action]:not([data-bulk-clear])[disabled]") }
+        expect "loading-state-keeps-clear-escape" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-clear]:not([disabled]):not([aria-disabled=true])") }`
+                : "";
   return `${semanticExpectations}${detailExpectations}`;
 }
 
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
+  const postCloseExpectation =
+    component.slug === "radio-group"
+      ? `
+        expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
+      : "";
   return `
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
@@ -488,7 +630,7 @@ function renderStateMatrixContract(component, publicPreview) {
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
         press "close-state-matrix" { key = "Escape" }
-        expect "state-trigger-restored" { visible = css("${publicPreview} [data-preview-control=states]:focus") }`;
+        expect "state-trigger-restored" { visible = css("${publicPreview} [data-preview-control=states]:focus") }${postCloseExpectation}`;
 }
 
 const transientComponentTriggers = new Map([
@@ -530,7 +672,13 @@ function renderActivatedContextExpectations(component, publicRoot, phase) {
         expect "dark-dialog-content-contract" { visible = css("${publicRoot}[open][data-a3s-theme=dark][dir=rtl] > :is(div, article):has(h2):has(input):has(footer button)") }`;
 }
 
-function renderPrd({ component, decision, interaction, introduction }) {
+function renderPrd({
+  component,
+  decision,
+  details,
+  interaction,
+  introduction,
+}) {
   const route = `/en/components/${component.slug}.html`;
   const visualScenario = `component-contract-${component.slug}`;
   const progress = asynchronousCase(
@@ -567,7 +715,7 @@ function renderPrd({ component, decision, interaction, introduction }) {
 | Public route | \`${route}\` |
 | Stable selector | \`${component.test.selector}\` |
 | Interaction scenario | \`${interaction.suite}#${component.slug}\` |
-| Evidence scenario | \`tests/e2e/component-contracts.acl#${visualScenario}\` |
+| Evidence scenario | \`tests/e2e/component-contracts.acl#${visualScenario}\` |${details ? `\n| Deep review source | \`${details.path}\` |` : ""}
 
 ## User problem
 
@@ -612,6 +760,8 @@ The canonical root ${
       ? `Keyboard users must be able to complete ${formatList(component.actions)} without a precise pointer.`
       : "Any interactive descendants retain their own native names and keyboard behavior; the root does not add a false role."
   } Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
+
+${details ? `${details.source.trim()}\n\n` : ""}
 
 ## Failure, empty, and loading cases
 
@@ -830,10 +980,12 @@ for (const component of components) {
   );
   const guide = await readFile(guidePath, "utf8");
   const introduction = guideIntroduction(guide, decision.productBoundary);
+  const details = await optionalComponentDetails(component.slug);
   const prdPath = path.join(prdRoot, `${component.slug}.md`);
   const prdSource = renderPrd({
     component,
     decision,
+    details,
     interaction,
     introduction,
   });

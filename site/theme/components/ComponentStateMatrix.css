@@ -94,6 +94,11 @@
   overscroll-behavior: contain;
 }
 
+.a3s-component-state-matrix__grid:focus-visible {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: -2px;
+}
+
 .a3s-component-state-matrix__grid > article {
   min-width: 0;
   overflow: hidden;
@@ -147,6 +152,49 @@
 
 .a3s-component-state-matrix__specimen > [data-state-specimen-root] {
   max-width: 100%;
+}
+
+.a3s-component-state-matrix__specimen
+  > .a3s-component-state-matrix__field-specimen {
+  width: min(100%, 28rem);
+  min-width: 0;
+  justify-self: stretch;
+}
+
+/* Overlay state specimens stay in document flow. The real component still
+   owns aria-expanded/aria-hidden; only viewport positioning is neutralized. */
+.a3s-component-state-matrix__specimen
+  [data-state-specimen-presentation="inline-popover"][aria-hidden="false"] {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  max-height: 12rem !important;
+  margin: 8px 0 0 !important;
+  opacity: 1 !important;
+  scale: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  visibility: visible !important;
+}
+
+.a3s-component-state-matrix__specimen
+  > .select[data-state-specimen-root]:has(
+    > [data-state-specimen-presentation="inline-popover"][aria-hidden="false"]
+  ) {
+  display: grid;
+  width: min(100%, 18rem);
+  align-self: start;
+}
+
+.a3s-component-state-matrix__specimen:has(
+    > .select[data-state-specimen-root]
+      > [data-state-specimen-presentation="inline-popover"][aria-hidden="false"]
+  ) {
+  max-height: none;
+  align-items: start;
 }
 
 /* Consumer dialogs are fixed to the viewport. Their acceptance clones need an

@@ -1,18 +1,165 @@
 # 按钮组
 
-按钮组把同一任务中相邻、同级的操作连接成一个视觉单元，同时保留每个按钮独立的名称、焦点和行为。
+按钮组把作用于同一对象、层级相同的相邻操作连接起来，同时保留每个操作独立的名称、焦点和原生行为。
 
-<Preview>
-<div role="group" aria-label="编辑操作" class="button-group">
-  <button type="button" class="btn" data-variant="outline">撤销</button>
-  <button type="button" class="btn" data-variant="outline">重做</button>
-  <button type="button" class="btn" data-variant="outline" data-size="icon" aria-label="更多编辑操作"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
-</div>
+<Preview class="w-full max-w-xl" title="消息操作">
+  <section
+    class="grid w-full gap-4"
+    data-button-group-primary-demo="zh"
+    aria-labelledby="button-group-message-title-zh"
+  >
+    <header class="flex flex-wrap items-baseline justify-between gap-2">
+      <span class="grid gap-1">
+        <strong id="button-group-message-title-zh">季度规划</strong>
+        <span class="text-sm text-muted-foreground">来自发布团队的消息</span>
+      </span>
+      <span class="text-xs text-muted-foreground">今天 09:42</span>
+    </header>
+    <div class="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <output
+        class="text-sm text-muted-foreground"
+        data-button-group-status
+        aria-live="polite"
+      >
+        尚未选择消息操作。
+      </output>
+      <div
+        role="group"
+        aria-label="消息操作"
+        class="button-group"
+        data-button-group-actions
+      >
+        <button
+          type="button"
+          class="btn"
+          data-variant="outline"
+          data-button-group-action="archive"
+          onclick="this.closest('[data-button-group-primary-demo]').querySelector('[data-button-group-status]').textContent = '消息已归档。'"
+        >
+          归档
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-variant="outline"
+          data-button-group-action="snooze"
+          onclick="this.closest('[data-button-group-primary-demo]').querySelector('[data-button-group-status]').textContent = '已请求稍后提醒选项。'"
+        >
+          稍后提醒
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-variant="outline"
+          data-button-group-action="mark-unread"
+          onclick="this.closest('[data-button-group-primary-demo]').querySelector('[data-button-group-status]').textContent = '消息已标记为未读。'"
+        >
+          标记未读
+        </button>
+      </div>
+    </div>
+  </section>
 </Preview>
+
+## 框架源码
+
+<FrameworkTabs
+  htmlInstall="npm install @a3s-lab/ui"
+  reactInstall="npm install @a3s-lab/ui react react-dom"
+  vueInstall="npm install @a3s-lab/ui vue"
+  html={`<style>
+  @import "@a3s-lab/ui/a3s.css";
+</style>
+
+<section data-message-actions>
+  <div role="group" aria-label="消息操作" class="button-group">
+    <button
+      type="button"
+      class="btn"
+      data-variant="outline"
+      data-message-action
+      data-message-action-status="消息已归档。"
+    >
+      归档
+    </button>
+    <button
+      type="button"
+      class="btn"
+      data-variant="outline"
+      data-message-action
+      data-message-action-status="已请求稍后提醒选项。"
+    >
+      稍后提醒
+    </button>
+    <button
+      type="button"
+      class="btn"
+      data-variant="outline"
+      data-message-action
+      data-message-action-status="消息已标记为未读。"
+    >
+      标记未读
+    </button>
+  </div>
+  <output data-message-action-status aria-live="polite">
+    尚未选择消息操作。
+  </output>
+</section>
+
+<script type="module">
+  const region = document.querySelector("[data-message-actions]");
+  const status = region.querySelector("[data-message-action-status]");
+
+  region.addEventListener("click", (event) => {
+    const action = event.target.closest("[data-message-action]");
+    if (!action) return;
+    status.textContent = action.dataset.messageActionStatus;
+  });
+</script>`}
+
+react={`import { useState } from "react";
+import { Button, ButtonGroup } from "@a3s-lab/ui/react";
+import "@a3s-lab/ui/a3s.css";
+
+export function MessageActions() {
+  const [status, setStatus] = useState("尚未选择消息操作。");
+
+return (
+
+<section>
+<ButtonGroup aria-label="消息操作">
+<Button type="button" data-variant="outline" onClick={() => setStatus("消息已归档。")}>归档</Button>
+<Button type="button" data-variant="outline" onClick={() => setStatus("已请求稍后提醒选项。")}>稍后提醒</Button>
+<Button type="button" data-variant="outline" onClick={() => setStatus("消息已标记为未读。")}>标记未读</Button>
+</ButtonGroup>
+<output aria-live="polite">{status}</output>
+</section>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Button, ButtonGroup } from "@a3s-lab/ui/vue";
+import "@a3s-lab/ui/a3s.css";
+
+const status = ref("尚未选择消息操作。");
+
+</script>
+
+<template>
+  <section>
+    <ButtonGroup aria-label="消息操作">
+      <Button type="button" data-variant="outline" @click="status = '消息已归档。'">归档</Button>
+      <Button type="button" data-variant="outline" @click="status = '已请求稍后提醒选项。'">稍后提醒</Button>
+      <Button type="button" data-variant="outline" @click="status = '消息已标记为未读。'">标记未读</Button>
+    </ButtonGroup>
+    <output aria-live="polite">{{ status }}</output>
+  </section>
+</template>`}
+/>
 
 ## 用法
 
-导入按钮组、按钮和一个完整视觉样式包。
+导入 Tailwind、按钮组结构、按钮结构和一个视觉样式包。完整的 `a3s.css` 已经包含这些组件文件。
 
 ```css
 @import "tailwindcss";
@@ -22,121 +169,191 @@
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-只有命令属于同一任务且视觉上需要连接时才分组。根元素使用 `role="group"` 和能说明共同目的的名称。
+只有当控件作用于同一对象、处于同一层级，并且确实需要连续边界时才进行分组。根元素必须提供能说明共同任务的可访问名称。
 
 ```html
-<div role="group" aria-label="编辑操作" class="button-group">
-  <button type="button" class="btn" data-variant="outline">撤销</button>
-  <button type="button" class="btn" data-variant="outline">重做</button>
+<div role="group" aria-label="消息操作" class="button-group">
+  <button type="button" class="btn" data-variant="outline">归档</button>
+  <button type="button" class="btn" data-variant="outline">稍后提醒</button>
+  <button type="button" class="btn" data-variant="outline">标记未读</button>
 </div>
 ```
 
 ### 参数
 
-| API | 取值 | 用途 |
-| --- | --- | --- |
-| `class="button-group"` | 必填 | 连接直接子控件的边界 |
-| `role="group"` | 推荐 | 声明相关操作集合 |
-| `aria-label` 或 `aria-labelledby` | 推荐 | 说明整组任务 |
-| `data-orientation` | `horizontal`、`vertical` | 省略时为水平方向 |
-| 直接子 `hr[role="separator"]` | 可选 | 为拆分操作提供视觉分隔 |
+| API                               | 取值                              | 用途                                                   |
+| --------------------------------- | --------------------------------- | ------------------------------------------------------ |
+| 根元素                            | `<div role="group">`              | 声明一组相关操作，不改变子控件行为                     |
+| `class="button-group"`            | 必填                              | 连接直接子控件的边界                                   |
+| `aria-label` 或 `aria-labelledby` | 没有可见组标题时必填              | 说明共同对象或任务                                     |
+| `data-orientation`                | `horizontal`、`vertical`          | 默认为水平；只有任务或可用空间确实要求时才使用垂直方向 |
+| 直接子 `hr[role="separator"]`     | 可选，并设置 `aria-hidden="true"` | 在主操作和菜单触发器之间添加视觉分隔                   |
+
+按钮组没有 JavaScript 控制器、方法、自定义事件、React Hook 或 Vue Composable。每个子控件负责自己的原生激活，宿主负责操作状态和结果。React 与 Vue 适配器输出同一个 `div`、`role="group"` 和 `button-group` 类，不增加包装层。
 
 ## 状态与变体
 
-### 水平与垂直
+### 方向
 
-水平组适合工具栏中的相邻命令；垂直组只适合空间或任务顺序本身要求纵向排列的场景。尺寸由每个子按钮统一设置，不能在同一组中混用高度。
+短小的同级操作默认水平排列。只有命令描述空间顺序，或所属区域有意保持狭窄时才使用垂直组。同一组中不能混用不同按钮高度。
 
-<Preview>
-<div class="flex flex-wrap items-start gap-6">
-  <div role="group" aria-label="缩放" class="button-group">
-    <button type="button" class="btn" data-size="sm" data-variant="outline">75%</button>
-    <button type="button" class="btn" data-size="sm" data-variant="outline">100%</button>
-    <button type="button" class="btn" data-size="sm" data-variant="outline">适合宽度</button>
+<Preview title="水平与垂直操作">
+  <div class="grid w-full max-w-lg gap-6 sm:grid-cols-2">
+    <section class="grid content-start gap-2">
+      <strong class="text-sm">修订历史</strong>
+      <div role="group" aria-label="修订历史操作" class="button-group">
+        <button type="button" class="btn" data-size="sm" data-variant="outline">
+          撤销
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">
+          重做
+        </button>
+      </div>
+    </section>
+    <section class="grid content-start gap-2">
+      <strong class="text-sm">对象顺序</strong>
+      <div
+        role="group"
+        aria-label="对象顺序操作"
+        class="button-group"
+        data-orientation="vertical"
+      >
+        <button type="button" class="btn" data-size="sm" data-variant="outline">
+          上移一层
+        </button>
+        <button type="button" class="btn" data-size="sm" data-variant="outline">
+          下移一层
+        </button>
+      </div>
+    </section>
   </div>
-  <div role="group" aria-label="对象顺序" class="button-group" data-orientation="vertical">
-    <button type="button" class="btn" data-size="sm" data-variant="outline">上移一层</button>
-    <button type="button" class="btn" data-size="sm" data-variant="outline">下移一层</button>
-  </div>
-</div>
 </Preview>
 
 ### 拆分操作
 
-拆分按钮由一个可直接执行的主命令和一个打开备选菜单的按钮组成。两者必须有不同名称；附加按钮使用 `aria-haspopup="menu"`，并组合[下拉菜单](/components/dropdown-menu)的控制器。
+拆分操作由一个可立即执行的命令和一个独立命名的菜单触发器组成。按钮组只负责连接两者的几何边界；[下拉菜单](/components/dropdown-menu)负责弹层焦点、键盘导航、碰撞处理和焦点恢复。
 
-<Preview>
-<div role="group" aria-label="保存选项" class="button-group">
-  <button type="button" class="btn">保存</button>
-  <hr role="separator" />
-  <button type="button" class="btn" data-size="icon" aria-label="选择保存方式" aria-haspopup="menu" aria-expanded="false"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
-</div>
+<Preview title="发布拆分操作">
+  <section class="grid gap-3" data-button-group-split-demo="zh">
+    <div role="group" aria-label="发布操作" class="button-group">
+      <button
+        type="button"
+        class="btn"
+        onclick="this.closest('[data-button-group-split-demo]').querySelector('[data-button-group-split-status]').textContent = '已请求发布。'"
+      >
+        发布
+      </button>
+      <hr role="separator" aria-hidden="true" />
+      <div id="button-group-publish-menu-zh" class="dropdown-menu">
+        <button
+          type="button"
+          id="button-group-publish-trigger-zh"
+          class="btn"
+          data-size="icon"
+          aria-label="选择发布方式"
+          aria-haspopup="menu"
+          aria-controls="button-group-publish-menu-list-zh"
+          aria-expanded="false"
+        >
+          <svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+        <div
+          id="button-group-publish-popover-zh"
+          data-popover
+          aria-hidden="true"
+          data-align="end"
+        >
+          <div
+            role="menu"
+            id="button-group-publish-menu-list-zh"
+            aria-labelledby="button-group-publish-trigger-zh"
+          >
+            <div
+              id="button-group-publish-schedule-zh"
+              role="menuitem"
+              onclick="this.closest('[data-button-group-split-demo]').querySelector('[data-button-group-split-status]').textContent = '已安排定时发布。'"
+            >
+              安排定时发布
+            </div>
+            <div
+              id="button-group-publish-draft-zh"
+              role="menuitem"
+              onclick="this.closest('[data-button-group-split-demo]').querySelector('[data-button-group-split-status]').textContent = '已保存草稿，尚未发布。'"
+            >
+              保存为草稿
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <output
+      class="text-sm text-muted-foreground"
+      data-button-group-split-status
+      aria-live="polite"
+    >
+      可以发布。
+    </output>
+  </section>
 </Preview>
 
-按钮组不管理选择状态，也不实现方向键漫游。互斥视图切换使用 Tabs 或分段控件；格式开关集合使用 Toggle Group；文本框与前后缀操作优先使用[输入组](/components/input-group)。不要把无关命令仅为了减少间距而塞进同一组。
+### 长标签与可用性
+
+不可用的子操作仍应清晰显示名称，并使用原生禁用状态。原因必须持续显示在附近；不要禁用根元素，也不要只依赖 Tooltip。窄屏下，文字操作可以同步收缩和换行，不能制造页面级横向滚动。
+
+<Preview class="w-full" title="受限的发布操作">
+  <section class="grid w-full max-w-sm gap-2">
+    <div
+      role="group"
+      aria-label="发布审阅操作"
+      class="button-group"
+      data-button-group-long-labels="zh"
+    >
+      <button type="button" class="btn" data-size="sm" data-variant="outline">
+        请求安全审阅
+      </button>
+      <button
+        type="button"
+        class="btn"
+        data-size="sm"
+        data-variant="outline"
+        disabled
+        aria-describedby="button-group-production-reason-zh"
+      >
+        部署到生产环境
+      </button>
+      <button type="button" class="btn" data-size="sm" data-variant="outline">
+        保存稍后处理
+      </button>
+    </div>
+    <p
+      id="button-group-production-reason-zh"
+      class="text-xs text-muted-foreground"
+      dir="auto"
+    >
+      安全审阅通过后才能部署到生产环境。
+    </p>
+  </section>
+</Preview>
 
 ### RTL
 
-按钮组遵循 DOM 的逻辑顺序，不主动倒置命令。返回、前进等方向图标由宿主在 RTL 中翻转；保存、删除、加号等对象图标保持不变。
+按钮组通过逻辑起始边和结束边遵循 DOM 顺序。无论书写方向如何，第一个操作都出现在行内起始位置。只翻转表达空间方向的图标；对象、状态、品牌、加号和删除图标保持原方向。
 
-## React
+## 可访问性与职责边界
 
-```tsx
-import { Button, ButtonGroup } from "@a3s-lab/ui/react";
+每个子控件保留独立的可访问名称、焦点指示、禁用状态和原生 Tab 停靠点。按钮组不会加入方向键漫游，也不会把多个操作转换成一个控件。互斥视图使用 Tabs 或分段选择组件，独立格式状态使用 Toggle Group，带前后缀操作的值使用输入组，页码导航使用 Pagination，多组命令共享一行时使用 Toolbar。
 
-export function EditActions() {
-  return (
-    <ButtonGroup role="group" aria-label="编辑操作">
-      <Button type="button" data-variant="outline">撤销</Button>
-      <Button type="button" data-variant="outline">重做</Button>
-      <Button
-        type="button"
-        data-variant="outline"
-        data-size="icon"
-        aria-label="更多编辑操作"
-      >
-        <svg aria-hidden="true" viewBox="0 0 24 24">
-          <circle cx="5" cy="12" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="19" cy="12" r="1.5" />
-        </svg>
-      </Button>
-    </ButtonGroup>
-  );
-}
-```
-
-`ButtonGroup` 只提供排列和边界连接，不维护命令状态，因此不提供组件 hook。事件仍由每个 `Button` 处理。
-
-## Vue
-
-```vue
-<script setup>
-import { Button, ButtonGroup } from "@a3s-lab/ui/vue";
-</script>
-
-<template>
-  <ButtonGroup role="group" aria-label="编辑操作">
-    <Button type="button" data-variant="outline">撤销</Button>
-    <Button type="button" data-variant="outline">重做</Button>
-    <Button
-      type="button"
-      data-variant="outline"
-      data-size="icon"
-      aria-label="更多编辑操作"
-    >
-      <svg aria-hidden="true" viewBox="0 0 24 24">
-        <circle cx="5" cy="12" r="1.5" />
-        <circle cx="12" cy="12" r="1.5" />
-        <circle cx="19" cy="12" r="1.5" />
-      </svg>
-    </Button>
-  </ButtonGroup>
-</template>
-```
-
-Vue 适配器输出相同的组语义与直接子按钮，不增加包装层。
-
-## 可访问性
-
-每个按钮都必须保留独立、明确的可访问名称，整组再用 `aria-label` 或 `aria-labelledby` 说明共同任务。按钮组不会把多个按钮变成一个 Tab 停靠点，用户仍按正常顺序访问每个可用控件。禁用状态应施加在具体按钮上；不要禁用根组来掩盖每个命令的真实可用性。仅图标按钮必须命名，视觉分隔符从可访问性树中移除，拆分按钮的菜单触发器同步 `aria-expanded`。触控设备上的每个子按钮仍需达到最小目标尺寸。
+在 200% 缩放和 320px 宽度下，按钮组必须保持在所属区域内，不能出现双重边框、标签裁切或页面横向滚动。粗指针设备上的每个子控件仍需满足按钮的触控目标约束。整组不可用时，应逐个禁用子控件，让辅助技术获得每条命令的真实可用性。

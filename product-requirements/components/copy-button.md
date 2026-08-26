@@ -51,6 +51,8 @@ Component-specific adversarial coverage: Missing Clipboard API, permission denia
 
 The canonical root uses `<button>` semantics and exposes 2 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: `copying`. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.

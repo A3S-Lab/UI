@@ -210,6 +210,11 @@
   --a3s-error-ring: var(--a3s-red);
   --a3s-focus-outline: 2px solid var(--a3s-focus-ring);
   --a3s-error-outline: 2px solid var(--a3s-error-ring);
+  /* Text fields keep their 1px border and add one contiguous inset pixel.
+   * This produces a stable 2px perimeter without a second halo or layout shift.
+   * General action focus remains the stronger, offset outline above. */
+  --a3s-control-focus-shadow: inset 0 0 0 1px var(--a3s-focus-ring);
+  --a3s-control-error-focus-shadow: inset 0 0 0 1px var(--a3s-error-ring);
 
   /* Persistent query fields use neutral focus progression. */
   --a3s-search-border: var(--a3s-line);

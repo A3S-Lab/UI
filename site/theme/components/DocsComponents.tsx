@@ -14,6 +14,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type ReactNode,
+  type SyntheticEvent,
 } from "react";
 import { CodeBlockRuntime } from "@rspress/core/theme";
 import { getComponent } from "../../../dist/ai/manifest.js";
@@ -59,7 +60,11 @@ const attributeAliases: Record<string, string> = {
   colspan: "colSpan",
   rowspan: "rowSpan",
   autocomplete: "autoComplete",
+  inputmode: "inputMode",
+  enterkeyhint: "enterKeyHint",
   maxlength: "maxLength",
+  novalidate: "noValidate",
+  readonly: "readOnly",
   "stroke-width": "strokeWidth",
   "stroke-linecap": "strokeLinecap",
   "stroke-linejoin": "strokeLinejoin",
@@ -70,11 +75,15 @@ const attributeAliases: Record<string, string> = {
 const eventAliases: Record<string, string> = {
   onclick: "onClick",
   onchange: "onChange",
+  oncompositionend: "onCompositionEnd",
+  oncompositionstart: "onCompositionStart",
+  oncompositionupdate: "onCompositionUpdate",
   oninput: "onInput",
   onkeydown: "onKeyDown",
   onkeyup: "onKeyUp",
   onpointerdown: "onPointerDown",
   onpointerup: "onPointerUp",
+  onreset: "onReset",
   onsubmit: "onSubmit",
 };
 
@@ -106,11 +115,20 @@ function createInlineHandler(source: string) {
     event: Event,
   ) => void;
 
-  return (event: {
-    currentTarget: EventTarget;
-    preventDefault: () => void;
-  }) => {
-    evaluate.call(event.currentTarget, event as unknown as Event);
+  return (event: SyntheticEvent) => {
+    const inlineEvent = Object.create(event) as SyntheticEvent & {
+      isComposing?: boolean;
+    };
+    const nativeEvent = event.nativeEvent as Event & {
+      isComposing?: boolean;
+    };
+    if (typeof nativeEvent.isComposing === "boolean") {
+      Object.defineProperty(inlineEvent, "isComposing", {
+        configurable: true,
+        value: nativeEvent.isComposing,
+      });
+    }
+    evaluate.call(event.currentTarget, inlineEvent as unknown as Event);
   };
 }
 
@@ -125,19 +143,22 @@ function normalizePreviewNode(node: ReactNode): ReactNode {
   const isMutableFormControl =
     typeof element.type === "string" &&
     ["input", "select", "textarea"].includes(element.type);
-  const hasValueHandler = ["onChange", "onInput", "onchange", "oninput"].some(
-    (name) => element.props[name] !== undefined,
-  );
+  const hasManagedValueHandler = [
+    "onChange",
+    "onInput",
+    "onchange",
+    "oninput",
+  ].some((name) => typeof element.props[name] === "function");
 
   for (const [name, value] of Object.entries(element.props)) {
     if (name === "children") continue;
 
-    if (isMutableFormControl && !hasValueHandler && name === "value") {
+    if (isMutableFormControl && !hasManagedValueHandler && name === "value") {
       normalizedProps.defaultValue = value;
       continue;
     }
 
-    if (isMutableFormControl && !hasValueHandler && name === "checked") {
+    if (isMutableFormControl && !hasManagedValueHandler && name === "checked") {
       normalizedProps.defaultChecked = value;
       continue;
     }
@@ -276,26 +297,44 @@ type PreviewProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const previewViewportDimensions = {
-  phone: { height: 592, label: "Phone", width: 390 },
-  tablet: { height: 672, label: "Tablet", width: 768 },
-} as const;
+  phone: {
+    heights: { center: 280, flow: 480, overlay: 520, workspace: 592 },
+    label: "Phone",
+    width: 390,
+  },
+  tablet: {
+    heights: { center: 320, flow: 520, overlay: 600, workspace: 672 },
+    label: "Tablet",
+    width: 768,
+  },
+} as const satisfies Record<
+  Exclude<PreviewViewport, "fluid">,
+  {
+    heights: Record<PreviewLayout, number>;
+    label: string;
+    width: number;
+  }
+>;
 
 function ResponsivePreviewFrame({
   documentSource,
   isChinese,
+  layout,
   resolvedTitle,
   viewport,
 }: {
   documentSource: string;
   isChinese: boolean;
+  layout: PreviewLayout;
   resolvedTitle: string;
   viewport: Exclude<PreviewViewport, "fluid">;
 }) {
   const shellRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const dimensions = previewViewportDimensions[viewport];
+  const frameHeight = dimensions.heights[layout];
   const frameOuterWidth = dimensions.width + 2;
-  const frameOuterHeight = dimensions.height + 2;
+  const frameOuterHeight = frameHeight + 2;
 
   useLayoutEffect(() => {
     const shell = shellRef.current;
@@ -327,7 +366,7 @@ function ResponsivePreviewFrame({
         className="a3s-preview__viewport-frame"
         data-preview-emulated-viewport={viewport}
         style={{
-          height: dimensions.height,
+          height: frameHeight,
           transform: `scale(${scale})`,
           width: dimensions.width,
         }}
@@ -1008,7 +1047,7 @@ export function Preview({
             data-state={copyState}
           >
             <PreviewCopyIcon copied={copyState === "copied"} />
-            <span>{copyVisibleLabel}</span>
+            <span className="a3s-preview__copy-label">{copyVisibleLabel}</span>
             <span className="a3s-preview__feedback" aria-live="polite">
               {copyState === "idle" ? "" : copyLabel}
             </span>
@@ -1048,6 +1087,7 @@ export function Preview({
           <ResponsivePreviewFrame
             documentSource={responsiveDocument}
             isChinese={isChinese}
+            layout={resolvedLayout}
             resolvedTitle={resolvedTitle}
             viewport={viewport}
           />

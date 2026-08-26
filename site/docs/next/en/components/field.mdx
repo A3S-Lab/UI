@@ -1,488 +1,526 @@
 # Field
 
-Field combines a label, control, guidance, and validation feedback into one input unit so state and errors stay next to their target.
+Field keeps one control's persistent label, requirement, description, and local error in one coherent input unit. It does not add a second interaction model or an unnecessary accessibility group.
 
-<Preview class="w-full max-w-md">
-<form>
-  <div role="group" aria-label="Checkout fields" class="fieldset">
-    <fieldset class="fieldset">
-      <legend>Payment Method</legend>
-      <p>All transactions are secure and encrypted</p>
-      <div role="group" aria-label="Payment method fields">
-        <div role="group" class="field">
-          <label for="checkout-card-name">Name on Card</label>
-          <input id="checkout-card-name" type="text" placeholder="Evil Rabbit" required />
-        </div>
-        <div role="group" class="field">
-          <label for="checkout-card-number">Card Number</label>
-          <input id="checkout-card-number" type="text" placeholder="1234 5678 9012 3456" aria-describedby="checkout-card-number-description" required />
-          <p id="checkout-card-number-description">Enter your 16-digit card number</p>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-          <div role="group" class="field">
-            <label for="checkout-exp-month">Month</label>
-            <select id="checkout-exp-month" class="select w-full">
-              <option value="">MM</option>
-              <option value="01">01</option>
-              <option value="02">02</option>
-              <option value="03">03</option>
-              <option value="04">04</option>
-              <option value="05">05</option>
-              <option value="06">06</option>
-              <option value="07">07</option>
-              <option value="08">08</option>
-              <option value="09">09</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-          <div role="group" class="field">
-            <label for="checkout-exp-year">Year</label>
-            <select id="checkout-exp-year" class="select w-full">
-              <option value="">YYYY</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-            </select>
-          </div>
-          <div role="group" class="field">
-            <label for="checkout-cvv">CVV</label>
-            <input id="checkout-cvv" type="text" placeholder="123" required />
-          </div>
-        </div>
-      </div>
-    </fieldset>
-    <div class="field-separator">
-      <hr role="separator" />
+<Preview class="w-full max-w-lg" title="Workspace display name">
+  <form
+    class="grid w-full gap-4"
+    data-field-primary-demo="en"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#field-workspace-name-en'); if (input.dataset.composing === 'true') { input.focus(); return; } const field = input.closest('.field'); const error = this.querySelector('#field-workspace-name-error-en'); const length = input.value.trim().length; if (length >= 2 && length <= 40) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'field-workspace-name-description-en field-workspace-name-error-en'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#field-workspace-name-en'); const field = input.closest('.field'); const error = this.querySelector('#field-workspace-name-error-en'); delete input.dataset.composing; field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'field-workspace-name-description-en'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="field-workspace-name-en">
+        Workspace display name
+        <span
+          class="ms-auto text-xs font-normal text-muted-foreground"
+          aria-hidden="true"
+        >
+          Required
+        </span>
+      </label>
+      <input
+        id="field-workspace-name-en"
+        name="workspaceName"
+        type="text"
+        value="Agent Runtime"
+        dir="auto"
+        minlength="2"
+        maxlength="40"
+        autocomplete="organization"
+        aria-describedby="field-workspace-name-description-en"
+        required
+        oncompositionstart="this.dataset.composing = 'true'"
+        oncompositionend="delete this.dataset.composing"
+        oninput="if (event.isComposing) return; const length = this.value.trim().length; if (length < 2 || length > 40) return; const field = this.closest('.field'); const error = field.querySelector('[data-field-message]'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'field-workspace-name-description-en'); error.hidden = true"
+      />
+      <p id="field-workspace-name-description-en" data-field-description>
+        Shown in navigation, invitations, and audit history. Use 2 to 40
+        characters.
+      </p>
+      <p
+        id="field-workspace-name-error-en"
+        data-field-message
+        role="alert"
+        hidden
+      >
+        Enter a workspace name between 2 and 40 characters.
+      </p>
     </div>
-    <fieldset class="fieldset">
-      <legend>Billing Address</legend>
-      <p>The billing address associated with your payment method</p>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="checkout-same-as-shipping" type="checkbox" defaultChecked />
-        <label for="checkout-same-as-shipping" class="font-normal">Same as shipping address</label>
-      </div>
-    </fieldset>
-    <fieldset class="fieldset">
-      <div role="group" class="field">
-        <label for="checkout-comments">Comments</label>
-        <textarea id="checkout-comments" placeholder="Add any additional comments" rows="3"></textarea>
-      </div>
-    </fieldset>
-    <div role="group" class="field" data-orientation="horizontal">
-      <button type="submit" class="btn">Submit</button>
-      <button type="button" class="btn" data-variant="outline">Cancel</button>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        Save name
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        Reset
+      </button>
     </div>
-  </div>
-</form>
+  </form>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and one complete A3S UI style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Field component CSS, and one style pack.
+For component-level loading, import the base styles, Field structure, the control structure you use, and one visual style in that order:
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/components/input.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Using CDN or bundler imports? See the [Installation page](/installation).
-
-  </Step>
-  <Step title="Add your field HTML">
-
-Use `class="field"` for one control and `class="fieldset"` for related controls. Use a native `<fieldset>` when the group needs a `<legend>`; otherwise use a labelled `role="group"`.
+Use one ordinary `<div class="field">` for one control. The native control keeps focus, editing, validation, and form behavior; Field owns only the relationships around it.
 
 ```html
-<fieldset class="fieldset">
-  <legend>Profile</legend>
-  <p>This appears on invoices and emails.</p>
-  <div role="group" aria-label="Profile fields">
-    <div role="group" class="field">
-      <label for="name">Full name</label>
-      <input id="name" autocomplete="off" placeholder="Evil Rabbit" />
-      <p>This appears on invoices and emails.</p>
-    </div>
-    <div role="group" class="field" data-invalid>
-      <label for="username">Username</label>
-      <input id="username" autocomplete="off" aria-invalid="true" aria-describedby="username-error" />
-      <p id="username-error" role="alert">Choose another username.</p>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="newsletter" type="checkbox" role="switch" />
-      <label for="newsletter">Subscribe to the newsletter</label>
-    </div>
-  </div>
-</fieldset>
+<div class="field">
+  <label for="workspace-name">Workspace display name</label>
+  <input
+    id="workspace-name"
+    name="workspaceName"
+    dir="auto"
+    aria-describedby="workspace-name-help"
+    required
+  />
+  <p id="workspace-name-help" data-field-description>
+    Shown in navigation and invitations.
+  </p>
+  <p id="workspace-name-error" data-field-message role="alert" hidden>
+    Enter a workspace name.
+  </p>
+</div>
 ```
 
-  </Step>
-</Steps>
+Do not add `role="group"` to a single Field. It does not improve the control's name or description and adds an unnamed group to the accessibility tree. When several controls form one question, use native `<fieldset>` and `<legend>`.
 
-### HTML structure
+### Parameters
 
-<dl>
-  <dt><code>&lt;fieldset class="fieldset"&gt;</code></dt>
-  <dd>Native group for related fields. Use <code>&lt;legend&gt;</code> for the label and a following <code>&lt;p&gt;</code> for description.</dd>
-  <dt><code>&lt;div role="group" class="fieldset"&gt;</code></dt>
-  <dd>Structural group when <code>&lt;fieldset&gt;</code> is not appropriate. Add <code>aria-label</code> or <code>aria-labelledby</code>.</dd>
-  <dt><code>&lt;div role="group" class="field"&gt;</code></dt>
-  <dd>Single field wrapper. Add <code>data-orientation</code> when needed.</dd>
-  <dt><code>&lt;label&gt;</code></dt>
-  <dd>Label for the control. Use <code>for</code> when the control has an <code>id</code>.</dd>
-  <dt><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code></dt>
-  <dd>Native form control. Put <code>aria-invalid="true"</code> on the invalid control, not only on the wrapper.</dd>
-  <dt><code>&lt;section&gt;</code></dt>
-  <dd>Optional content wrapper for label and description when the control sits beside text.</dd>
-  <dt><code>&lt;p&gt;</code></dt>
-  <dd>Helper text or error text. Use <code>role="alert"</code> for validation errors and connect it with <code>aria-describedby</code>.</dd>
-</dl>
+| Contract                            | Purpose                                                                          |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| `.field`                            | Structural root for exactly one control and its supporting relationships         |
+| `<label for>`                       | Persistent visible name; `for` must match the control `id`                       |
+| `required` or visible optional copy | Communicates whether omission is allowed; decoration alone is insufficient       |
+| `data-field-description`            | Persistent guidance associated through `aria-describedby`                        |
+| `data-field-message`                | Current local error; reveal only after validation and associate it while visible |
+| `data-invalid="true"`               | Visual state on Field after validation has failed                                |
+| `data-disabled="true"`              | Visual availability state paired with native `disabled` on the control           |
+| `data-readonly="true"`              | Visual availability state paired with native `readonly` on a supported control   |
+| `data-orientation="horizontal"`     | Aligns one control with its label content when the relationship remains readable |
+| `data-orientation="responsive"`     | Stacks first and changes to a horizontal arrangement in a wide Field container   |
 
-## Examples
+## Framework usage
 
-### Input
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <div role="group" aria-label="Account credentials">
-    <div role="group" class="field">
-      <label for="username">Username</label>
-      <input id="username" type="text" placeholder="Max Leiter" aria-describedby="username-description" />
-      <p id="username-description">Choose a unique username for your account.</p>
-    </div>
-    <div role="group" class="field">
-      <label for="password">Password</label>
-      <p id="password-description">Must be at least 8 characters long.</p>
-      <input id="password" type="password" placeholder="••••••••" aria-describedby="password-description" />
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### Textarea
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <div role="group" class="field">
-    <label for="feedback">Feedback</label>
-    <textarea id="feedback" placeholder="Your feedback helps us improve..." rows="4" aria-describedby="feedback-description"></textarea>
-    <p id="feedback-description">Share your thoughts about our service.</p>
-  </div>
-</fieldset>
-</Preview>
-
-### Select
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field">
-  <label for="department">Department</label>
-  <select id="department" class="select w-full" aria-describedby="department-description">
-    <option value="">Choose department</option>
-    <option value="engineering">Engineering</option>
-    <option value="design">Design</option>
-    <option value="marketing">Marketing</option>
-    <option value="sales">Sales</option>
-    <option value="support">Customer Support</option>
-    <option value="hr">Human Resources</option>
-    <option value="finance">Finance</option>
-    <option value="operations">Operations</option>
-  </select>
-  <p id="department-description">Select your department or area of work.</p>
-</div>
-</Preview>
-
-### Slider
-
-<Preview class="w-full max-w-xs">
-  <SliderDemo variant="field" />
-</Preview>
-
-### Fieldset
-
-<Preview class="w-full max-w-sm">
-<fieldset class="fieldset">
-  <legend>Address Information</legend>
-  <p>We need your address to deliver your order.</p>
-  <div role="group" aria-label="Address fields">
-    <div role="group" class="field">
-      <label for="street">Street Address</label>
-      <input id="street" type="text" placeholder="123 Main St" />
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div role="group" class="field">
-        <label for="city">City</label>
-        <input id="city" type="text" placeholder="New York" />
-      </div>
-      <div role="group" class="field">
-        <label for="zip">Postal Code</label>
-        <input id="zip" type="text" placeholder="90502" />
-      </div>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### Checkbox
-
-<Preview class="w-full max-w-xs">
-<div role="group" aria-label="Finder preferences" class="fieldset">
-  <fieldset class="fieldset">
-    <legend data-variant="label">Show these items on the desktop</legend>
-    <p>Select the items you want to show on the desktop.</p>
-    <div role="group" aria-label="Desktop items">
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-hard-disks" type="checkbox" />
-        <label for="finder-hard-disks" class="font-normal">Hard disks</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-external-disks" type="checkbox" />
-        <label for="finder-external-disks" class="font-normal">External disks</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-cds" type="checkbox" />
-        <label for="finder-cds" class="font-normal">CDs, DVDs, and iPods</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-connected-servers" type="checkbox" />
-        <label for="finder-connected-servers" class="font-normal">Connected servers</label>
-      </div>
-    </div>
-  </fieldset>
-  <div class="field-separator">
-    <hr role="separator" />
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input id="sync-folders" type="checkbox" defaultChecked />
-    <section>
-      <label for="sync-folders">Sync Desktop & Documents folders</label>
-      <p>Your Desktop & Documents folders are being synced with iCloud Drive. You can access them from other devices.</p>
-    </section>
-  </div>
-</div>
-</Preview>
-
-### Radio
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <legend data-variant="label">Subscription Plan</legend>
-  <p>Yearly and lifetime plans offer significant savings.</p>
-  <div role="radiogroup" aria-label="Subscription plan">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-monthly" type="radio" name="plan" value="monthly" defaultChecked />
-      <label for="plan-monthly" class="font-normal">Monthly ($9.99/month)</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-yearly" type="radio" name="plan" value="yearly" />
-      <label for="plan-yearly" class="font-normal">Yearly ($99.99/year)</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-lifetime" type="radio" name="plan" value="lifetime" />
-      <label for="plan-lifetime" class="font-normal">Lifetime ($299.99)</label>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### Switch
-
-<Preview class="w-full max-w-sm">
-<div role="group" class="field" data-orientation="horizontal">
-  <section>
-    <label for="multi-factor-authentication">Multi-factor authentication</label>
-    <p>Enable multi-factor authentication. If you do not have a two-factor device, you can use a one-time code sent to your email.</p>
-  </section>
-  <input id="multi-factor-authentication" type="checkbox" role="switch" />
-</div>
-</Preview>
-
-### Choice card
-
-Wrap a `.field` inside a `<label>` to create selectable field cards. This works with radio, checkbox, and switch controls.
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <legend data-variant="label">Compute Environment</legend>
-  <p>Select the compute environment for your cluster.</p>
-  <div role="radiogroup" aria-label="Compute environment">
-    <label for="compute-kubernetes">
-      <div role="group" class="field" data-orientation="horizontal">
-        <section>
-          <h3>Kubernetes</h3>
-          <p>Run GPU workloads on a K8s cluster.</p>
-        </section>
-        <input id="compute-kubernetes" type="radio" name="compute" value="kubernetes" defaultChecked />
-      </div>
+<FrameworkTabs
+  html={`<form data-workspace-name-form novalidate>
+  <div class="field">
+    <label for="workspace-name">
+      Workspace display name <span aria-hidden="true">Required</span>
     </label>
-    <label for="compute-vm">
-      <div role="group" class="field" data-orientation="horizontal">
-        <section>
-          <h3>Virtual Machine</h3>
-          <p>Access a cluster to run GPU workloads.</p>
-        </section>
-        <input id="compute-vm" type="radio" name="compute" value="vm" />
-      </div>
-    </label>
+    <input
+      id="workspace-name"
+      name="workspaceName"
+      type="text"
+      value="Agent Runtime"
+      dir="auto"
+      minlength="2"
+      maxlength="40"
+      autocomplete="organization"
+      aria-describedby="workspace-name-help"
+      required
+    >
+    <p id="workspace-name-help" data-field-description>Shown in navigation, invitations, and audit history. Use 2 to 40 characters.</p>
+    <p id="workspace-name-error" data-field-message role="alert" hidden>Enter a workspace name between 2 and 40 characters.</p>
   </div>
-</fieldset>
-</Preview>
-
-### Field group
-
-Stack fields inside a group and use `.field-separator` to divide sections.
-
-<Preview class="w-full max-w-xs">
-<div role="group" aria-label="Notification preferences" class="fieldset">
-  <fieldset class="fieldset">
-    <legend data-variant="label">Responses</legend>
-    <p>Get notified when ChatGPT responds to requests that take time, like research or image generation.</p>
-    <div role="group" aria-label="Response notifications">
-      <div role="group" class="field" data-orientation="horizontal" data-disabled="true">
-        <input id="push-responses" type="checkbox" defaultChecked disabled />
-        <label for="push-responses" class="font-normal">Push notifications</label>
-      </div>
-    </div>
-  </fieldset>
-  <div class="field-separator">
-    <hr role="separator" />
-  </div>
-  <fieldset class="fieldset">
-    <legend data-variant="label">Tasks</legend>
-    <p>Get notified when tasks you've created have updates. <a href="#">Manage tasks</a></p>
-    <div role="group" aria-label="Task notifications">
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="push-tasks" type="checkbox" />
-        <label for="push-tasks" class="font-normal">Push notifications</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="email-tasks" type="checkbox" />
-        <label for="email-tasks" class="font-normal">Email notifications</label>
-      </div>
-    </div>
-  </fieldset>
-</div>
-</Preview>
-
-### Responsive layout
-
-Use `data-orientation="responsive"` to stack by default and switch to horizontal in wider containers.
-
-<Preview class="w-full max-w-4xl">
-<form>
-  <fieldset class="fieldset">
-    <legend>Profile</legend>
-    <p>Fill in your profile information.</p>
-    <div class="field-separator">
-      <hr role="separator" />
-    </div>
-    <div role="group" aria-label="Profile fields">
-      <div role="group" class="field" data-orientation="responsive">
-        <section>
-          <label for="responsive-name">Name</label>
-          <p id="responsive-name-description">Provide your full name for identification</p>
-        </section>
-        <input id="responsive-name" placeholder="Evil Rabbit" aria-describedby="responsive-name-description" required />
-      </div>
-      <div class="field-separator">
-        <hr role="separator" />
-      </div>
-      <div role="group" class="field" data-orientation="responsive">
-        <section>
-          <label for="responsive-message">Message</label>
-          <p id="responsive-message-description">You can write your message here. Keep it short, preferably under 100 characters.</p>
-        </section>
-        <textarea id="responsive-message" placeholder="Hello, world!" rows="4" aria-describedby="responsive-message-description" required class="min-h-[100px] resize-none sm:min-w-[300px]"></textarea>
-      </div>
-      <div class="field-separator">
-        <hr role="separator" />
-      </div>
-      <div role="group" class="field" data-orientation="responsive">
-        <button type="submit" class="btn">Submit</button>
-        <button type="button" class="btn" data-variant="outline">Cancel</button>
-      </div>
-    </div>
-  </fieldset>
+  <button class="btn" type="submit">Save name</button>
 </form>
+<script type="module">
+  const form = document.querySelector("[data-workspace-name-form]");
+  const input = form.querySelector("#workspace-name");
+  const field = input.closest(".field");
+  const error = form.querySelector("#workspace-name-error");
+  let composing = false;
+
+  const setInvalid = (invalid) => {
+    if (invalid) {
+      field.dataset.invalid = "true";
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      field.removeAttribute("data-invalid");
+      input.removeAttribute("aria-invalid");
+    }
+
+    input.setAttribute(
+      "aria-describedby",
+      invalid
+        ? "workspace-name-help workspace-name-error"
+        : "workspace-name-help",
+    );
+    error.hidden = !invalid;
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (composing) {
+      input.focus();
+      return;
+    }
+
+    const length = input.value.trim().length;
+    const invalid = length < 2 || length > 40;
+    setInvalid(invalid);
+    if (invalid) input.focus();
+  });
+
+  input.addEventListener("compositionstart", () => {
+    composing = true;
+  });
+  input.addEventListener("compositionend", () => {
+    composing = false;
+  });
+  input.addEventListener("input", (event) => {
+    const length = input.value.trim().length;
+    if (!event.isComposing && length >= 2 && length <= 40) {
+      setInvalid(false);
+    }
+  });
+</script>`}
+  react={`import { useRef, useState } from "react";
+import { Field } from "@a3s-lab/ui/react";
+
+export function WorkspaceNameField() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const composingRef = useRef(false);
+  const [invalid, setInvalid] = useState(false);
+
+  const validate = () => {
+    const input = inputRef.current;
+    if (!input || composingRef.current) return;
+
+    const length = input.value.trim().length;
+    const failed = length < 2 || length > 40;
+    setInvalid(failed);
+    if (failed) input.focus();
+  };
+
+  return (
+    <form
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault();
+        validate();
+      }}
+    >
+      <Field data-invalid={invalid || undefined}>
+        <label htmlFor="workspace-name-react">
+          Workspace display name <span aria-hidden="true">Required</span>
+        </label>
+        <input
+          id="workspace-name-react"
+          ref={inputRef}
+          name="workspaceName"
+          defaultValue="Agent Runtime"
+          dir="auto"
+          minLength={2}
+          maxLength={40}
+          autoComplete="organization"
+          aria-describedby={
+            invalid
+              ? "workspace-name-help-react workspace-name-error-react"
+              : "workspace-name-help-react"
+          }
+          aria-invalid={invalid || undefined}
+          required
+          onCompositionStart={() => {
+            composingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            composingRef.current = false;
+          }}
+          onInput={(event) => {
+            const composing = (event.nativeEvent as InputEvent).isComposing;
+            const length = event.currentTarget.value.trim().length;
+            if (!composing && length >= 2 && length <= 40) {
+              setInvalid(false);
+            }
+          }}
+        />
+        <p id="workspace-name-help-react" data-field-description>
+          Shown in navigation, invitations, and audit history. Use 2 to 40
+          characters.
+        </p>
+        <p
+          id="workspace-name-error-react"
+          data-field-message
+          role="alert"
+          hidden={!invalid}
+        >
+          Enter a workspace name between 2 and 40 characters.
+        </p>
+      </Field>
+      <button className="btn" type="submit">Save name</button>
+    </form>
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Field } from "@a3s-lab/ui/vue";
+
+const input = ref<HTMLInputElement | null>(null);
+const composing = ref(false);
+const invalid = ref(false);
+
+function validate() {
+  if (composing.value || !input.value) return;
+
+  const length = input.value.value.trim().length;
+  invalid.value = length < 2 || length > 40;
+  if (invalid.value) input.value.focus();
+}
+
+function recover(event: Event) {
+  const nativeEvent = event as InputEvent;
+  const control = event.currentTarget as HTMLInputElement;
+  const length = control.value.trim().length;
+  if (!nativeEvent.isComposing && length >= 2 && length <= 40) {
+    invalid.value = false;
+  }
+}
+
+function startComposition() {
+  composing.value = true;
+}
+
+function endComposition() {
+  composing.value = false;
+}
+</script>
+
+<template>
+  <form novalidate @submit.prevent="validate">
+    <Field :data-invalid="invalid || undefined">
+      <label for="workspace-name-vue">
+        Workspace display name <span aria-hidden="true">Required</span>
+      </label>
+      <input
+        id="workspace-name-vue"
+        ref="input"
+        name="workspaceName"
+        value="Agent Runtime"
+        dir="auto"
+        minlength="2"
+        maxlength="40"
+        autocomplete="organization"
+        :aria-describedby="invalid ? 'workspace-name-help-vue workspace-name-error-vue' : 'workspace-name-help-vue'"
+        :aria-invalid="invalid || undefined"
+        required
+        @compositionstart="startComposition"
+        @compositionend="endComposition"
+        @input="recover"
+      >
+      <p id="workspace-name-help-vue" data-field-description>
+        Shown in navigation, invitations, and audit history. Use 2 to 40 characters.
+      </p>
+      <p
+        id="workspace-name-error-vue"
+        data-field-message
+        role="alert"
+        :hidden="!invalid"
+      >
+        Enter a workspace name between 2 and 40 characters.
+      </p>
+    </Field>
+    <button class="btn" type="submit">Save name</button>
+  </form>
+</template>`}
+/>
+
+Field has no JavaScript controller and therefore no framework-specific hook. React and Vue own their form state while the adapter renders the same `.field` root and native relationships.
+
+## States and variants
+
+Empty and populated are neutral value states. Invalid begins only after validation has run. Disabled and read-only are different availability contracts and must not be reduced to one faded visual treatment.
+
+### Required and optional
+
+State the requirement once, next to the label. Native `required` remains the machine-readable contract; visible copy helps users plan before submission.
+
+<Preview class="w-full max-w-lg" title="Requirement clarity">
+  <div class="grid w-full gap-5 sm:grid-cols-2">
+    <div class="field">
+      <label for="field-required-owner-en">
+        Workspace owner
+        <span
+          class="ms-auto text-xs font-normal text-muted-foreground"
+          aria-hidden="true"
+        >
+          Required
+        </span>
+      </label>
+      <input
+        id="field-required-owner-en"
+        type="email"
+        name="ownerEmail"
+        autocomplete="email"
+        aria-describedby="field-required-owner-help-en"
+        required
+      />
+      <p id="field-required-owner-help-en" data-field-description>
+        Receives recovery and billing notices.
+      </p>
+    </div>
+    <div class="field">
+      <label for="field-optional-reference-en">
+        Internal reference
+        <span class="ms-auto text-xs font-normal text-muted-foreground">
+          Optional
+        </span>
+      </label>
+      <input
+        id="field-optional-reference-en"
+        name="internalReference"
+        aria-describedby="field-optional-reference-help-en"
+      />
+      <p id="field-optional-reference-help-en" data-field-description>
+        Visible only to workspace administrators.
+      </p>
+    </div>
+  </div>
 </Preview>
 
-### Validation and errors
+### Disabled and read-only
 
-Add `data-invalid` to `.field` and `aria-invalid="true"` to the invalid control.
+Disabled removes a control from focus and form submission. Read-only preserves focus, selection, copying, and form submission. Both states retain their value and explain why editing is unavailable.
 
-<Preview class="w-full max-w-xs">
-<div role="group" class="field" data-invalid>
-  <label for="invalid-email">Email</label>
-  <input id="invalid-email" type="email" value="wrong-email" aria-invalid="true" aria-describedby="invalid-email-error" />
-  <p id="invalid-email-error" role="alert">Enter a valid email address.</p>
-</div>
+<Preview class="w-full max-w-lg" title="Availability semantics">
+  <form class="grid w-full gap-5" data-field-availability="en">
+    <div class="field" data-disabled="true">
+      <label for="field-disabled-slug-en">Archived workspace slug</label>
+      <input
+        id="field-disabled-slug-en"
+        name="archivedSlug"
+        value="legacy-runtime"
+        aria-describedby="field-disabled-slug-reason-en"
+        disabled
+      />
+      <p id="field-disabled-slug-reason-en" data-field-description>
+        Archived identifiers remain visible for audit history and cannot be
+        submitted.
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="field-readonly-owner-en">Organization owner</label>
+      <input
+        id="field-readonly-owner-en"
+        name="organizationOwner"
+        value="owner@example.com"
+        aria-describedby="field-readonly-owner-reason-en"
+        readonly
+      />
+      <p id="field-readonly-owner-reason-en" data-field-description>
+        This value remains selectable and submitted; only an organization
+        transfer can change it.
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### Related fields
+
+Use one native Fieldset when several controls answer one question. Each child remains an ordinary Field with one control; no unnamed `role="group"` wrappers are needed.
+
+<Preview class="w-full max-w-lg" title="Related controls">
+  <fieldset class="fieldset" aria-describedby="field-release-window-help-en">
+    <legend>Release window</legend>
+    <p id="field-release-window-help-en">
+      Used to schedule the production handoff.
+    </p>
+    <div class="grid w-full gap-5 sm:grid-cols-2">
+      <div class="field">
+        <label for="field-release-date-en">Date</label>
+        <input
+          id="field-release-date-en"
+          name="releaseDate"
+          type="date"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="field-release-time-en">Local time</label>
+        <input
+          id="field-release-time-en"
+          name="releaseTime"
+          type="time"
+          required
+        />
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+### Responsive orientation
+
+Use responsive orientation only when the label, explanation, and control remain one readable relationship. The semantic order never changes.
+
+<Preview class="w-full max-w-3xl" title="Responsive field">
+  <div class="fieldset">
+    <div class="field" data-orientation="responsive">
+      <section>
+        <label for="field-retention-en">Artifact retention</label>
+        <p id="field-retention-help-en" data-field-description>
+          Enter the number of days completed task artifacts remain available.
+        </p>
+      </section>
+      <input
+        id="field-retention-en"
+        name="retentionDays"
+        type="number"
+        min="1"
+        max="365"
+        value="30"
+        aria-describedby="field-retention-help-en"
+        required
+      />
+    </div>
+  </div>
 </Preview>
 
 ### RTL
 
-Add `dir="rtl"` to the field, fieldset, or an ancestor.
+Layout direction belongs on Field or an ancestor. Machine-oriented values such as email addresses and URLs keep their authored text direction.
 
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset" dir="rtl">
-  <legend>الملف الشخصي</legend>
-  <p>تظهر هذه المعلومات في حسابك.</p>
-  <div role="group" aria-label="حقول الملف الشخصي">
-    <div role="group" class="field">
-      <label for="field-rtl-name">الاسم الكامل</label>
-      <input id="field-rtl-name" type="text" placeholder="أرنب شرير" />
-      <p>اكتب اسمك الأول والأخير.</p>
-    </div>
+<Preview class="w-full max-w-md" title="RTL field">
+  <div class="field" dir="rtl">
+    <label for="field-owner-email-rtl">البريد الإلكتروني للمالك</label>
+    <input
+      id="field-owner-email-rtl"
+      name="ownerEmail"
+      type="email"
+      value="owner@example.com"
+      aria-describedby="field-owner-email-help-rtl"
+      dir="ltr"
+    />
+    <p id="field-owner-email-help-rtl" data-field-description>
+      يُستخدم لإشعارات الاسترداد وإدارة مساحة العمل.
+    </p>
   </div>
-</fieldset>
 </Preview>
 
-## React
+## Accessibility
 
-```tsx
-import { Field } from "@a3s-lab/ui/react";
+- Use one persistent visible label and connect it with `for` and `id`. Placeholder text is never the only name.
+- Keep ordinary guidance in `aria-describedby`. Append the visible error ID after failed validation and remove it after recovery or reset.
+- Keep an invalid Field's attempted value, focus the actionable control, name the problem, and give a concrete correction. Color alone is insufficient.
+- Do not put `role="group"` on a single Field. Use `<fieldset>` and `<legend>` only when multiple controls form one question.
+- Use `disabled` only when the value must leave focus and submission. Use `readonly` when users still need to inspect, select, copy, or submit the value.
+- Use `dir="auto"` for user-authored free text whose direction is not known ahead of time. Keep machine-oriented values in their authored direction.
+- Do not validate, trim, or submit while an IME composition is active. Wait until composition ends.
+- Verify long localized labels and errors, 390px layouts, 200% zoom, dark mode, RTL, forced colors, coarse pointers, and screen-reader/browser combinations before release.
 
-export function Example() {
-  return (
-    <Field role="group">
-      <label htmlFor="name">Full name</label>
-      <input id="name" autoComplete="off" placeholder="Evil Rabbit" />
-      <p>This appears on invoices and emails.</p>
-    </Field>
-  );
-}
-```
-
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
-
-## Vue
-
-```vue
-<script setup lang="ts">
-import { Field } from "@a3s-lab/ui/vue";
-</script>
-
-<template>
-  <Field role="group">
-    <label for="name">Full name</label>
-    <input id="name" autocomplete="off" placeholder="Evil Rabbit" />
-    <p>This appears on invoices and emails.</p>
-  </Field>
-</template>
-```
-
-The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+Field does not own domain validation, server responses, authorization, persistence, submission, or error-summary focus. Form and the host application coordinate those concerns while preserving Field's local relationships.

@@ -45,6 +45,8 @@ Component-specific adversarial coverage: Reduced motion with nearby status text,
 
 The canonical root uses `<span>` semantics and exposes 0 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Any interactive descendants retain their own native names and keyboard behavior; the root does not add a false role. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: `loading`. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.

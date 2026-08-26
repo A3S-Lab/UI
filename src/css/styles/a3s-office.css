@@ -282,7 +282,6 @@
   }
 
   .btn:focus-visible {
-    border-color: var(--a3s-blue);
     outline: var(--a3s-focus-outline);
     outline-offset: var(--a3s-outline-offset);
   }
@@ -351,11 +350,6 @@
     font-size: var(--a3s-font-size-compact);
   }
 
-  .field[data-invalid]:not([data-invalid="false"]) > label,
-  .field[data-invalid]:not([data-invalid="false"]) > section > label {
-    color: var(--a3s-red);
-  }
-
   .field[data-orientation="horizontal"] > label,
   .field[data-orientation="horizontal"] > section > label {
     display: flex;
@@ -368,6 +362,7 @@
   .field > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
   .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
   .field > select,
+  select.native-select,
   select.select,
   .select:not(select) > button {
     height: var(--a3s-control-height);
@@ -397,6 +392,7 @@
   }
 
   .field > select,
+  select.native-select,
   select.select {
     padding-inline: 0.625rem 2rem;
   }
@@ -417,6 +413,7 @@
       [type="range"]
     ):hover:not(:disabled),
   .field > select:hover:not(:disabled),
+  select.native-select:hover:not(:disabled),
   select.select:hover:not(:disabled),
   .select:not(select) > button:hover:not(:disabled),
   .select:not(select) > button[aria-expanded="true"] {
@@ -434,6 +431,7 @@
       [type="range"]
     ):focus-visible,
   .field > select:focus-visible,
+  select.native-select:focus-visible,
   select.select:focus-visible,
   .select:not(select) > button:focus-visible {
     border-color: var(--a3s-blue);
@@ -447,6 +445,7 @@
     .field > input,
     .input,
     .field > select,
+    select.native-select,
     select.select,
     .select:not(select) > button
   )[aria-invalid="true"] {
@@ -463,6 +462,7 @@
       [type="range"]
     )[aria-invalid="true"]:focus-visible,
   .field > select[aria-invalid="true"]:focus-visible,
+  select.native-select[aria-invalid="true"]:focus-visible,
   select.select[aria-invalid="true"]:focus-visible,
   .select:not(select) > button[aria-invalid="true"]:focus-visible {
     border-color: var(--a3s-red);
@@ -492,7 +492,7 @@
   .input-group:focus-within {
     border-color: var(--a3s-blue);
     outline: 0;
-    box-shadow: none;
+    box-shadow: var(--a3s-control-focus-shadow);
   }
 
   .input-group:has(> input[type="search"]):not(:has([aria-invalid="true"])) {
@@ -519,6 +519,33 @@
 
   .input-group:has([aria-invalid="true"]):focus-within {
     border-color: var(--a3s-red);
+    box-shadow: var(--a3s-control-error-focus-shadow);
+  }
+
+  .input-group:has(> :is(input, textarea, select, [data-control]):disabled),
+  .input-group[data-disabled] {
+    border-color: var(--a3s-line);
+    background: var(--a3s-panel-soft);
+    color: var(--a3s-muted);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  .input-group:has(> :is(input, textarea):read-only:not(:disabled)),
+  .input-group[data-readonly] {
+    border-color: var(--a3s-line);
+    background: color-mix(in srgb, var(--a3s-panel-soft) 72%, var(--a3s-panel));
+  }
+
+  .input-group[aria-busy="true"] {
+    cursor: progress;
+  }
+
+  .input-group > :is(input, textarea, select, [data-control]):disabled {
+    color: var(--a3s-muted);
+    cursor: not-allowed;
+    opacity: 1;
+    -webkit-text-fill-color: currentColor;
   }
 
   .input-group > :is(input, textarea, select, [data-control]) {
@@ -529,6 +556,7 @@
   .input-group
     > :is(
       .textarea,
+      select.native-select,
       select.select,
       .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
     ) {
@@ -542,10 +570,17 @@
   .input-group
     > :is(
       .textarea,
+      select.native-select,
       select.select,
       .input:not([type="checkbox"]):not([type="radio"]):not([type="range"])
     )[aria-invalid="true"]:focus-visible {
     box-shadow: none;
+  }
+
+  .input-group
+    > :is(button, [role="group"] > button, header > button, footer > button):focus-visible {
+    outline: 0;
+    box-shadow: inset 0 0 0 1px var(--a3s-focus-ring);
   }
 
   .combobox-chips > input[role="combobox"] {
@@ -642,12 +677,7 @@
     transform: translate(-50%, -50%);
   }
 
-  :is(
-    .field > input[type="checkbox"],
-    .input[type="checkbox"],
-    .field > input[type="radio"],
-    .input[type="radio"]
-  ):focus-visible {
+  :is(.field > input[type="checkbox"], .input[type="checkbox"]):focus-visible {
     border-color: var(--a3s-blue);
     outline: var(--a3s-focus-outline);
     outline-offset: var(--a3s-outline-offset);
@@ -655,317 +685,10 @@
 
   :is(
       .field > input[type="checkbox"],
-      .input[type="checkbox"],
-      .field > input[type="radio"],
-      .input[type="radio"]
+      .input[type="checkbox"]
     )[aria-invalid="true"]:focus-visible {
     border-color: var(--a3s-red);
     outline-color: var(--a3s-red);
-  }
-
-  .field > input[type="radio"],
-  .input[type="radio"] {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  :is(.field > input[type="radio"], .input[type="radio"])::after {
-    position: absolute;
-    z-index: 1;
-    inset: 50% auto auto 50%;
-    width: 0.9375rem;
-    height: 0.9375rem;
-    border: 1px solid var(--a3s-line-strong);
-    border-radius: 999px;
-    background: var(--a3s-panel);
-    content: "";
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  :is(.field > input[type="radio"], .input[type="radio"]):checked::after {
-    border-color: var(--a3s-blue);
-  }
-
-  :is(
-      .field > input[type="radio"],
-      .input[type="radio"]
-    )[aria-invalid="true"]::after {
-    border-color: var(--a3s-red);
-  }
-
-  .field > input[type="radio"]:checked::before,
-  .input[type="radio"]:checked::before {
-    z-index: 2;
-    width: 0.4375rem;
-    height: 0.4375rem;
-    background: var(--a3s-blue);
-  }
-
-  :is(.field > input[type="radio"], .input[type="radio"]):focus-visible {
-    border-color: transparent;
-    box-shadow: none;
-  }
-
-  :is(.field > input[type="radio"], .input[type="radio"]):focus-visible::after {
-    outline: 2px solid var(--a3s-blue);
-    outline-offset: 2px;
-  }
-
-  :is(
-      .field > input[type="radio"],
-      .input[type="radio"]
-    )[aria-invalid="true"]:focus-visible::after {
-    outline-color: var(--a3s-red);
-  }
-
-  .field[data-orientation="horizontal"]:has(
-      > input[type="checkbox"][role="switch"]
-    ) {
-    gap: 0.5rem;
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  ) {
-    --switch-track-height: 1.125rem;
-    --switch-track-width: 1.875rem;
-    --switch-thumb-size: 0.75rem;
-    --switch-thumb-inset: calc(
-      (100% - var(--switch-track-width)) / 2 +
-        (var(--switch-track-height) - var(--switch-thumb-size)) / 2
-    );
-    --switch-thumb-travel: calc(
-      var(--switch-track-width) - var(--switch-thumb-size) -
-        (var(--switch-track-height) - var(--switch-thumb-size))
-    );
-
-    position: relative;
-    flex: 0 0 auto;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    box-shadow: none;
-    cursor: pointer;
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  ):not([data-size="sm"]) {
-    width: 2.125rem;
-    height: 1.5rem;
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  )[data-size="sm"] {
-    --switch-track-height: 0.875rem;
-    --switch-track-width: 1.5rem;
-    --switch-thumb-size: 0.625rem;
-
-    width: 1.75rem;
-    height: 1.25rem;
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  )::after {
-    position: absolute;
-    z-index: 0;
-    inset: 50% auto auto 50%;
-    width: var(--switch-track-width);
-    height: var(--switch-track-height);
-    border: 1px solid var(--a3s-line-strong);
-    border-radius: 999px;
-    background: var(--a3s-panel-strong);
-    content: "";
-    transform: translate(-50%, -50%);
-    transition:
-      border-color var(--a3s-motion-normal) var(--a3s-ease-out),
-      background-color var(--a3s-motion-normal) var(--a3s-ease-out);
-    pointer-events: none;
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  )::before {
-    position: absolute;
-    z-index: 1;
-    inset-block-start: 50%;
-    inset-inline-start: var(--switch-thumb-inset);
-    width: var(--switch-thumb-size);
-    height: var(--switch-thumb-size);
-    border-radius: 999px;
-    background: white;
-    box-shadow: var(--a3s-shadow-control);
-    transform: translateY(-50%);
-    transition:
-      box-shadow var(--a3s-motion-normal) var(--a3s-ease-out),
-      transform var(--a3s-motion-normal) var(--a3s-ease-out);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):not([data-size="sm"])::before,
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    )[data-size="sm"]::before {
-    width: var(--switch-thumb-size);
-    height: var(--switch-thumb-size);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):hover:not(:disabled)::after {
-    border-color: color-mix(
-      in srgb,
-      var(--a3s-blue) 42%,
-      var(--a3s-line-strong)
-    );
-  }
-
-  :is(
-    .field > input[type="checkbox"][role="switch"],
-    .input[type="checkbox"][role="switch"]
-  ):focus-visible {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):checked::after {
-    border-color: var(--a3s-blue);
-    background: var(--a3s-blue);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    )[aria-invalid="true"]::after {
-    border-color: var(--a3s-red);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    )[aria-invalid="true"]:focus-visible {
-    outline-color: var(--a3s-red);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):not(:checked)::before {
-    transform: translateY(-50%);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):checked:not([data-size="sm"])::before,
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):checked[data-size="sm"]::before {
-    translate: none;
-    transform: translate(var(--switch-thumb-travel), -50%);
-  }
-
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):dir(rtl):checked:not([data-size="sm"])::before,
-  :is(
-      .field > input[type="checkbox"][role="switch"],
-      .input[type="checkbox"][role="switch"]
-    ):dir(rtl):checked[data-size="sm"]::before {
-    translate: none;
-    transform: translate(calc(-1 * var(--switch-thumb-travel)), -50%);
-  }
-
-  :is(.field > input[type="range"], .input[type="range"]) {
-    --slider-track-height: 0.25rem;
-    --slider-thumb-size: 0.875rem;
-
-    height: 1.5rem;
-    cursor: pointer;
-  }
-
-  :is(
-    .field > input[type="range"],
-    .input[type="range"]
-  )::-webkit-slider-runnable-track,
-  :is(.field > input[type="range"], .input[type="range"])::-moz-range-track {
-    height: var(--slider-track-height);
-    border-radius: 999px;
-    background: linear-gradient(
-      to right,
-      var(--a3s-blue) var(--slider-fill-position),
-      var(--a3s-line-strong) var(--slider-fill-position)
-    );
-  }
-
-  :is(.field > input[type="range"], .input[type="range"]):dir(
-      rtl
-    )::-webkit-slider-runnable-track,
-  :is(.field > input[type="range"], .input[type="range"]):dir(
-      rtl
-    )::-moz-range-track {
-    background: linear-gradient(
-      to left,
-      var(--a3s-blue) var(--slider-fill-position),
-      var(--a3s-line-strong) var(--slider-fill-position)
-    );
-  }
-
-  :is(.field > input[type="range"], .input[type="range"])::-webkit-slider-thumb,
-  :is(.field > input[type="range"], .input[type="range"])::-moz-range-thumb {
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
-    border: 2px solid var(--a3s-blue);
-    border-radius: 999px;
-    background: white;
-    box-shadow: 0 1px 3px rgb(20 24 40 / 20%);
-  }
-
-  :is(
-    .field > input[type="range"],
-    .input[type="range"]
-  )::-webkit-slider-thumb {
-    margin-block-start: calc(
-      (var(--slider-track-height) - var(--slider-thumb-size)) / 2
-    );
-  }
-
-  :is(
-      .field > input[type="range"],
-      .input[type="range"]
-    ):focus-visible::-webkit-slider-thumb,
-  :is(
-      .field > input[type="range"],
-      .input[type="range"]
-    ):focus-visible::-moz-range-thumb {
-    box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--a3s-blue) 20%, transparent),
-      0 1px 2px rgb(20 24 40 / 16%);
-  }
-
-  :is(.field > input[type="range"], .input[type="range"]):disabled {
-    cursor: not-allowed;
   }
 
   /* Navigation */
@@ -1699,6 +1422,7 @@
       > input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
     .input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
     .field > select,
+    select.native-select,
     select.select,
     .select:not(select) > button,
     .input-group,

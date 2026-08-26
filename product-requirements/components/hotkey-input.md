@@ -13,7 +13,7 @@
 
 ## User problem
 
-Records one normalized keyboard chord and makes the current value, conflict state, and clear path visible before submission. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Hotkey Input records one keyboard chord for a command assignment. It keeps the committed shortcut visible, makes recording explicit, and preserves the prior value when replacement is cancelled or rejected. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 
@@ -32,9 +32,9 @@ The host application continues to own domain data, authorization, transport, per
 
 - Canonical root: `.hotkey-input` on `<div>`.
 - Stable automation root: `[data-a3s-components~="hotkey-input"]`.
-- Named parts: `clear` (`[data-hotkey-clear]`); `input` (`input`); `preview` (`[data-hotkey-preview]`).
+- Named parts: `clear` (`[data-hotkey-clear]`); `input` (`input`); `preview` (`[data-hotkey-preview]`); `status` (`[data-hotkey-status]`).
 - Supported interaction intents: `click`, `focus`, `press`. Each intent targets the documented root or named part and must remain scoped to one instance.
-- Public events: `a3s:hotkey-before-change`, `a3s:hotkey-change`, `a3s:hotkey-recording-change`, `basecoat:initialized`.
+- Public events: `a3s:hotkey-before-change`, `a3s:hotkey-change`, `a3s:hotkey-rejected`, `a3s:hotkey-recording-change`, `basecoat:initialized`.
 - Public methods: `clear`, `getValue`, `setValue`, `start`, `stop`.
 - Required root attributes: none beyond the documented native semantics and states.
 
@@ -48,7 +48,9 @@ Component-specific adversarial coverage: Modifier-only input, reserved OS shortc
 
 ## Accessibility
 
-The canonical root uses `<div>` semantics and exposes 3 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
+The canonical root uses `<div>` semantics and exposes 4 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
+
+
 
 ## Failure, empty, and loading cases
 

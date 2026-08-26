@@ -1,259 +1,595 @@
 # Radio Group
 
-Radio Group presents mutually exclusive options so users can choose the single value that best fits the current task.
+Radio Group presents a short set of mutually exclusive options. Use it when every option can be understood without opening another surface and choosing one value is required to continue or configure the current task.
 
 <Preview>
-<div role="radiogroup" aria-label="View density" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r1" name="radio-demo" value="default" class="input" />
-    <label for="r1">Default</label>
+  <div
+    role="radiogroup"
+    aria-labelledby="density-label-en"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-label-en" class="label">
+      View density
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r1"
+        name="radio-demo"
+        value="default"
+        class="input"
+      />
+      <label for="r1">Default</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r2"
+        name="radio-demo"
+        value="comfortable"
+        class="input"
+        defaultChecked
+      />
+      <label for="r2">Comfortable</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r3"
+        name="radio-demo"
+        value="compact"
+        class="input"
+      />
+      <label for="r3">Compact</label>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r2" name="radio-demo" value="comfortable" class="input" defaultChecked />
-    <label for="r2">Comfortable</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r3" name="radio-demo" value="compact" class="input" />
-    <label for="r3">Compact</label>
-  </div>
-</div>
 </Preview>
 
 ## Usage
 
-<Steps>
-  <Step title="Include CSS">
-
-Import Tailwind and one full A3S UI style bundle.
+Import Tailwind and the complete A3S style bundle:
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-Or import only the base CSS, Radio Group component CSS, and one style pack.
+Give related native radio inputs the same `name`. Associate every input with a visible label, then give the complete group one accessible name through `fieldset` and `legend` or `role="radiogroup"` and `aria-labelledby`.
+
+```html
+<fieldset class="fieldset">
+  <legend data-variant="label">View density</legend>
+  <div class="grid gap-3">
+    <div class="field" data-orientation="horizontal">
+      <input
+        class="input"
+        type="radio"
+        id="density-default"
+        name="density"
+        value="default"
+      />
+      <label for="density-default">Default</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        class="input"
+        type="radio"
+        id="density-compact"
+        name="density"
+        value="compact"
+        checked
+      />
+      <label for="density-compact">Compact</label>
+    </div>
+  </div>
+</fieldset>
+```
+
+For component-level loading, import the base styles, Radio structure, Field structure, and the A3S visual style in that order. See [Installation](/installation) for CDN and other integrations.
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
-@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/components/radio.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-Radio Group uses Radio styles and composes Field styles in the richer examples.
+### Parameters
 
-Using CDN or bundler imports? See the [Installation page](/installation).
+| Parameter          | Value                               | Purpose                                                                      |
+| ------------------ | ----------------------------------- | ---------------------------------------------------------------------------- |
+| Group              | `<fieldset>` or `role="radiogroup"` | Gives the related choices one semantic boundary and name                     |
+| Root class         | `radio-group`                       | Applies the stable group layout and framework-adapter contract               |
+| Root option        | `<input type="radio">`              | Preserves native form, validation, keyboard, and accessibility behavior      |
+| `class`            | `input`                             | Applies Radio structure and visual styles                                    |
+| `name`             | Shared string                       | Makes the options mutually exclusive and submits one value                   |
+| `value`            | Stable string                       | Provides the submitted application value; do not derive it from visible copy |
+| `checked`          | Boolean attribute                   | Marks the actual initial selection; omit it when the user must make a choice |
+| `disabled`         | Boolean attribute                   | Prevents selection; explain why the option is unavailable                    |
+| `required`         | Boolean attribute                   | Requires one option in the named native group before form submission         |
+| `aria-invalid`     | `true`                              | Exposes a failed validation state after validation has run                   |
+| `aria-describedby` | Element ID                          | Associates constraints, consequences, or recovery guidance                   |
 
-  </Step>
-  <Step title="Add your radio group HTML">
+## States and variants
 
-Add `class="input"` to radio inputs. Use a shared `name` attribute for mutually exclusive options, and wrap related options in a semantic `<fieldset>` or an element with `role="radiogroup"`.
+Unchecked and checked are the normal interactive states. Arrow keys move selection inside the focused native group; Tab enters and leaves the group as a single stop. Disabled and invalid appearances are meaningful only when the surrounding content explains the constraint or recovery.
 
-```html
-<input type="radio" name="plan" class="input" />
-```
+### With descriptions
 
-  </Step>
-</Steps>
+The label names the option. Supporting copy explains the effect of choosing it and remains outside the label so assistive technology does not repeat a long description as the option name.
 
-## Examples
-
-### Description
-
-Radio group items with a description using the `Field` component.
-
-<Preview>
-<div role="radiogroup" aria-label="View density" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r1" name="radio-description" value="default" class="input" />
-    <section>
-      <label for="desc-r1">Default</label>
-      <p>Standard spacing for most use cases.</p>
-    </section>
+<Preview title="Density with consequences">
+  <div
+    role="radiogroup"
+    aria-labelledby="density-description-label-en"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-description-label-en" class="label">
+      View density
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r1"
+        name="radio-description"
+        value="default"
+        class="input"
+        aria-describedby="desc-r1-copy"
+      />
+      <section>
+        <label for="desc-r1">Default</label>
+        <p id="desc-r1-copy">Balanced spacing for everyday work.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r2"
+        name="radio-description"
+        value="comfortable"
+        class="input"
+        aria-describedby="desc-r2-copy"
+        defaultChecked
+      />
+      <section>
+        <label for="desc-r2">Comfortable</label>
+        <p id="desc-r2-copy">
+          Larger targets and more separation between rows.
+        </p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="desc-r3"
+        name="radio-description"
+        value="compact"
+        class="input"
+        aria-describedby="desc-r3-copy"
+      />
+      <section>
+        <label for="desc-r3">Compact</label>
+        <p id="desc-r3-copy">
+          More rows on screen with tighter visual spacing.
+        </p>
+      </section>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r2" name="radio-description" value="comfortable" class="input" defaultChecked />
-    <section>
-      <label for="desc-r2">Comfortable</label>
-      <p>More space between elements.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="desc-r3" name="radio-description" value="compact" class="input" />
-    <section>
-      <label for="desc-r3">Compact</label>
-      <p>Minimal spacing for dense layouts.</p>
-    </section>
-  </div>
-</div>
 </Preview>
 
-### Choice Card
+### Choice cards
 
-Use a native `<label>` to wrap the entire `.field` for a clickable card-style selection.
+Use choice cards only when each option needs a title and consequence. `data-variant="choice-card"` expands the visible option label across the complete field, so the whole card remains one native radio target without invalid nested markup or a second group role. The associated `<label>` supplies the accessible name; `aria-describedby` adds the consequence without repeating it as part of that name.
 
-<Preview class="w-full max-w-sm">
-<div role="radiogroup" aria-label="Plans" data-slot="radio-group" class="w-full max-w-md">
-  <label for="plus-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+<Preview title="Workspace plan" class="w-full max-w-sm">
+  <div
+    role="radiogroup"
+    aria-labelledby="plan-label-en"
+    data-slot="radio-group"
+    class="radio-group w-full max-w-md"
+  >
+    <span id="plan-label-en" class="label">
+      Workspace plan
+    </span>
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Plus</h3>
-        <p>For individuals and small teams.</p>
+        <label for="plus-plan">Plus</label>
+        <p id="plus-plan-description">For individuals and small teams.</p>
       </section>
-      <input type="radio" id="plus-plan" name="choice-plan" value="plus" class="input" defaultChecked />
+      <input
+        type="radio"
+        id="plus-plan"
+        name="choice-plan"
+        value="plus"
+        class="input"
+        aria-describedby="plus-plan-description"
+        defaultChecked
+      />
     </div>
-  </label>
-  <label for="pro-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Pro</h3>
-        <p>For growing businesses.</p>
+        <label for="pro-plan">Pro</label>
+        <p id="pro-plan-description">
+          Adds team controls and a shared audit history.
+        </p>
       </section>
-      <input type="radio" id="pro-plan" name="choice-plan" value="pro" class="input" />
+      <input
+        type="radio"
+        id="pro-plan"
+        name="choice-plan"
+        value="pro"
+        class="input"
+        aria-describedby="pro-plan-description"
+      />
     </div>
-  </label>
-  <label for="enterprise-plan">
-    <div role="group" class="field" data-orientation="horizontal">
+    <div class="field" data-orientation="horizontal" data-variant="choice-card">
       <section>
-        <h3>Enterprise</h3>
-        <p>For large teams and enterprises.</p>
+        <label for="enterprise-plan">Enterprise</label>
+        <p id="enterprise-plan-description">
+          Adds organization policy and managed access.
+        </p>
       </section>
-      <input type="radio" id="enterprise-plan" name="choice-plan" value="enterprise" class="input" />
+      <input
+        type="radio"
+        id="enterprise-plan"
+        name="choice-plan"
+        value="enterprise"
+        class="input"
+        aria-describedby="enterprise-plan-description"
+      />
     </div>
-  </label>
-</div>
+  </div>
 </Preview>
 
 ### Fieldset
 
-Use a native `<fieldset>` and `<legend>` to group radio items with a label and description.
+Prefer `fieldset` and `legend` for form questions. The legend supplies the group name, so do not add a nested radiogroup with the same label.
 
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">Subscription Plan</legend>
-  <p>Yearly and lifetime plans offer significant savings.</p>
-  <div role="radiogroup" aria-label="Subscription plan" data-slot="radio-group">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-monthly" name="subscription-plan" value="monthly" class="input" defaultChecked />
-      <label for="plan-monthly" class="font-normal">Monthly ($9.99/month)</label>
+<Preview title="Subscription plan">
+  <fieldset class="fieldset">
+    <legend data-variant="label">Subscription plan</legend>
+    <p id="subscription-help-en">Yearly billing saves two monthly payments.</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-monthly"
+          name="subscription-plan"
+          value="monthly"
+          class="input"
+          aria-describedby="subscription-help-en"
+          defaultChecked
+        />
+        <label for="plan-monthly">Monthly ($9.99/month)</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-yearly"
+          name="subscription-plan"
+          value="yearly"
+          class="input"
+          aria-describedby="subscription-help-en"
+        />
+        <label for="plan-yearly">Yearly ($99.99/year)</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input
+          type="radio"
+          id="plan-lifetime"
+          name="subscription-plan"
+          value="lifetime"
+          class="input"
+          aria-describedby="subscription-help-en"
+        />
+        <label for="plan-lifetime">Lifetime ($299.99)</label>
+      </div>
     </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-yearly" name="subscription-plan" value="yearly" class="input" />
-      <label for="plan-yearly" class="font-normal">Yearly ($99.99/year)</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input type="radio" id="plan-lifetime" name="subscription-plan" value="lifetime" class="input" />
-      <label for="plan-lifetime" class="font-normal">Lifetime ($299.99)</label>
-    </div>
-  </div>
-</fieldset>
+  </fieldset>
 </Preview>
 
-### Disabled
+### Disabled option
 
-Use the `disabled` attribute to disable individual items.
+Disable only the unavailable option, preserve the other choices, and put the reason next to the disabled control.
 
-<Preview>
-<div role="radiogroup" aria-label="Disabled options" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal" data-disabled>
-    <input type="radio" id="disabled-1" name="radio-disabled" value="option1" class="input" disabled />
-    <label for="disabled-1" class="font-normal">Disabled</label>
+<Preview title="Availability">
+  <div
+    role="radiogroup"
+    aria-labelledby="availability-label-en"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="availability-label-en" class="label">
+      Execution environment
+    </span>
+    <div class="field" data-orientation="horizontal" data-disabled>
+      <input
+        type="radio"
+        id="disabled-1"
+        name="radio-disabled"
+        value="accelerated"
+        class="input"
+        aria-describedby="disabled-1-reason"
+        disabled
+      />
+      <section>
+        <label for="disabled-1">Accelerated</label>
+        <p id="disabled-1-reason">No compatible device is connected.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="disabled-2"
+        name="radio-disabled"
+        value="standard"
+        class="input"
+        defaultChecked
+      />
+      <label for="disabled-2">Standard</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="disabled-3"
+        name="radio-disabled"
+        value="remote"
+        class="input"
+      />
+      <label for="disabled-3">Remote</label>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="disabled-2" name="radio-disabled" value="option2" class="input" defaultChecked />
-    <label for="disabled-2" class="font-normal">Option 2</label>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="disabled-3" name="radio-disabled" value="option3" class="input" />
-    <label for="disabled-3" class="font-normal">Option 3</label>
-  </div>
-</div>
 </Preview>
 
 ### Invalid
 
-Use `aria-invalid="true"` on radio inputs and `data-invalid` on fields to show validation errors.
+Do not mark a valid preselected value as an error. Start without an error, validate only after an attempted continuation, focus the first option when the group is still empty, and clear stale error semantics as soon as the user recovers or resets the form.
 
-<Preview>
-<fieldset class="fieldset">
-  <legend data-variant="label">Notification Preferences</legend>
-  <p>Choose how you want to receive notifications.</p>
-  <div role="radiogroup" aria-label="Notification preferences" data-slot="radio-group">
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-email" name="notification-preference" value="email" class="input" aria-invalid="true" defaultChecked />
-      <label for="invalid-email" class="font-normal">Email only</label>
+<Preview title="Required selection">
+  <form
+    class="grid gap-4"
+    data-radio-group-validation-demo="en"
+    novalidate
+    onsubmit="event.preventDefault(); const group = this.querySelector('fieldset'); const options = [...group.querySelectorAll('input[type=radio]')]; if (options.some((option) => option.checked)) return; group.setAttribute('data-invalid', ''); options.forEach((option) => option.setAttribute('aria-invalid', 'true')); group.querySelector('[role=alert]').hidden = false; options[0].focus();"
+    onreset="const group = this.querySelector('fieldset'); group.removeAttribute('data-invalid'); group.querySelectorAll('[aria-invalid=true]').forEach((option) => option.removeAttribute('aria-invalid')); group.querySelector('[role=alert]').hidden = true;"
+  >
+    <fieldset
+      class="fieldset"
+      onchange="if (!event.target.matches('input[type=radio]')) return; this.removeAttribute('data-invalid'); this.querySelectorAll('[aria-invalid=true]').forEach((option) => option.removeAttribute('aria-invalid')); this.querySelector('[role=alert]').hidden = true;"
+    >
+      <legend data-variant="label">Notification preference</legend>
+      <p
+        id="notification-preference-error-en"
+        class="text-destructive"
+        role="alert"
+        hidden
+      >
+        Choose one delivery method before continuing.
+      </p>
+      <div class="grid gap-3">
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-email"
+            name="notification-preference"
+            value="email"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-en"
+          />
+          <label for="invalid-email">Email only</label>
+        </div>
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-sms"
+            name="notification-preference"
+            value="sms"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-en"
+          />
+          <label for="invalid-sms">Text message only</label>
+        </div>
+        <div class="field" data-orientation="horizontal">
+          <input
+            type="radio"
+            id="invalid-both"
+            name="notification-preference"
+            value="both"
+            class="input"
+            required
+            aria-describedby="notification-preference-error-en"
+          />
+          <label for="invalid-both">Email and text message</label>
+        </div>
+      </div>
+    </fieldset>
+    <div class="flex flex-wrap gap-2">
+      <button id="notification-preference-submit-en" type="submit" class="btn">
+        Continue
+      </button>
+      <button
+        id="notification-preference-reset-en"
+        type="reset"
+        class="btn"
+        data-variant="outline"
+      >
+        Reset
+      </button>
     </div>
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-sms" name="notification-preference" value="sms" class="input" aria-invalid="true" />
-      <label for="invalid-sms" class="font-normal">SMS only</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal" data-invalid>
-      <input type="radio" id="invalid-both" name="notification-preference" value="both" class="input" aria-invalid="true" />
-      <label for="invalid-both" class="font-normal">Both Email & SMS</label>
-    </div>
-  </div>
-</fieldset>
+  </form>
 </Preview>
 
 ## RTL
 
-Set `dir="rtl"` on the radio group or an ancestor.
+Set `dir="rtl"` on the group or an ancestor. Native radio keyboard behavior follows the document direction, while the option order remains the meaningful DOM order.
 
-<Preview>
-<div dir="rtl" role="radiogroup" aria-label="كثافة العرض" data-slot="radio-group" class="w-fit">
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r1-rtl" name="radio-rtl" value="default" class="input" />
-    <section>
-      <label for="r1-rtl">افتراضي</label>
-      <p>تباعد قياسي لمعظم حالات الاستخدام.</p>
-    </section>
+<Preview title="كثافة العرض">
+  <div
+    dir="rtl"
+    role="radiogroup"
+    aria-labelledby="density-label-rtl"
+    data-slot="radio-group"
+    class="radio-group w-fit"
+  >
+    <span id="density-label-rtl" class="label">
+      كثافة العرض
+    </span>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r1-rtl"
+        name="radio-rtl"
+        value="default"
+        class="input"
+      />
+      <section>
+        <label for="r1-rtl">افتراضي</label>
+        <p>تباعد قياسي لمعظم حالات الاستخدام.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r2-rtl"
+        name="radio-rtl"
+        value="comfortable"
+        class="input"
+        defaultChecked
+      />
+      <section>
+        <label for="r2-rtl">مريح</label>
+        <p>مساحة أكبر بين العناصر.</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input
+        type="radio"
+        id="r3-rtl"
+        name="radio-rtl"
+        value="compact"
+        class="input"
+      />
+      <section>
+        <label for="r3-rtl">مضغوط</label>
+        <p>تباعد أدنى للتخطيطات الكثيفة.</p>
+      </section>
+    </div>
   </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r2-rtl" name="radio-rtl" value="comfortable" class="input" defaultChecked />
-    <section>
-      <label for="r2-rtl">مريح</label>
-      <p>مساحة أكبر بين العناصر.</p>
-    </section>
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input type="radio" id="r3-rtl" name="radio-rtl" value="compact" class="input" />
-    <section>
-      <label for="r3-rtl">مضغوط</label>
-      <p>تباعد أدنى للتخطيطات الكثيفة.</p>
-    </section>
-  </div>
-</div>
 </Preview>
 
 ## React
 
+`RadioGroup` renders the manifest root. `useRadioGroup` listens to the bubbling native `change` event; the application still owns the selected value and form submission.
+
 ```tsx
+import { useState } from "react";
 import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useRadioGroup();
+export function DensitySetting() {
+  const [density, setDensity] = useState("comfortable");
+  const group = useRadioGroup({
+    events: {
+      change(event) {
+        const option = event.target as HTMLInputElement;
+        if (option.type === "radio" && option.checked) setDensity(option.value);
+      },
+    },
+  });
+
   return (
-    <RadioGroup ref={control.ref}><label><input type="radio" name="choice" /> Ready</label></RadioGroup>
+    <RadioGroup
+      ref={group.ref}
+      aria-labelledby="density-label"
+      className="w-fit"
+    >
+      <span id="density-label" className="label">
+        View density
+      </span>
+      {[
+        ["default", "Default"],
+        ["comfortable", "Comfortable"],
+        ["compact", "Compact"],
+      ].map(([value, label]) => (
+        <div className="field" data-orientation="horizontal" key={value}>
+          <input
+            className="input"
+            type="radio"
+            id={`density-${value}`}
+            name="density"
+            value={value}
+            defaultChecked={value === density}
+          />
+          <label htmlFor={`density-${value}`}>{label}</label>
+        </div>
+      ))}
+      <output>Current density: {density}</output>
+    </RadioGroup>
   );
 }
 ```
 
-`useRadioGroup` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
-
 ## Vue
 
+The Vue composable subscribes to the same native event. Its template ref connects the semantic group while reactive state remains application-owned.
+
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 import { RadioGroup, useRadioGroup } from "@a3s-lab/ui/vue";
 
-const control = useRadioGroup();
-const componentRef = control.componentRef;
+const density = ref("comfortable");
+const group = useRadioGroup({
+  events: {
+    change(event) {
+      const option = event.target as HTMLInputElement;
+      if (option.type === "radio" && option.checked)
+        density.value = option.value;
+    },
+  },
+});
+const componentRef = group.componentRef;
+const options = [
+  ["default", "Default"],
+  ["comfortable", "Comfortable"],
+  ["compact", "Compact"],
+];
 </script>
 
 <template>
-  <RadioGroup ref="componentRef"><label><input type="radio" name="choice" /> Ready</label></RadioGroup>
+  <RadioGroup ref="componentRef" aria-labelledby="density-label" class="w-fit">
+    <span id="density-label" class="label">View density</span>
+    <div
+      v-for="[value, label] in options"
+      :key="value"
+      class="field"
+      data-orientation="horizontal"
+    >
+      <input
+        class="input"
+        type="radio"
+        :id="`density-${value}`"
+        name="density"
+        :value="value"
+        :checked="value === density"
+      />
+      <label :for="`density-${value}`">{{ label }}</label>
+    </div>
+    <output>Current density: {{ density }}</output>
+  </RadioGroup>
 </template>
 ```
 
-`useRadioGroup` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+## Accessibility
+
+- Give the complete group one concise accessible name. Prefer `fieldset` and `legend` in forms; otherwise use `role="radiogroup"` with `aria-labelledby` or `aria-label`.
+- Give every radio a visible `label` and one stable submitted `value`. A description belongs in `aria-describedby`, not inside an excessively long accessible name.
+- Use one shared `name` for mutually exclusive options. Do not simulate exclusivity with independent buttons or application-only state.
+- Keep native arrow-key behavior. Tab enters the selected radio, arrows move and select, and Tab leaves the group; do not create a separate Tab stop for every option.
+- Do not add `role="group"` to every option row. The radiogroup or fieldset is the only group boundary.
+- Set `disabled` on only the unavailable option and keep its reason visible. If all choices are unavailable, disable the owning form action and explain the blocking condition.
+- Show an invalid state only after validation runs. Use `required`, `aria-invalid="true"`, and `aria-describedby` to connect a recovery-oriented error; clear stale error attributes and text when a valid option is chosen or the form is reset.
+- Keep the full radio hit target at least 44px on coarse pointers even though the visible indicator remains compact.

@@ -1,6 +1,53 @@
 /* Button */
 @layer components {
   .btn {
-    @apply inline-flex shrink-0 items-center justify-center whitespace-nowrap transition-all outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    @apply inline-flex min-w-0 max-w-full shrink-0 items-center justify-center text-center select-none outline-none transition-[color,background-color,border-color,transform,box-shadow] disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .btn[aria-busy="true"] {
+    cursor: progress;
+  }
+
+  .btn:disabled {
+    opacity: 1;
+  }
+
+  @media (pointer: coarse) {
+    .btn {
+      min-block-size: var(--a3s-touch-target, 2.75rem);
+    }
+
+    .btn[data-size^="icon"] {
+      min-inline-size: var(--a3s-touch-target, 2.75rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition-duration: 0.001ms;
+    }
+
+    .btn[aria-busy="true"] .animate-spin {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .btn:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .btn[aria-pressed="true"] {
+      outline: 1px solid Highlight;
+      outline-offset: -3px;
+    }
   }
 }

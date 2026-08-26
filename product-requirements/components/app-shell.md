@@ -51,6 +51,8 @@ Component-specific adversarial coverage: Full-viewport and embedded use, collaps
 
 The canonical root uses `<div>` semantics and exposes 4 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press`, `wheel` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
@@ -80,8 +82,8 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - State-matrix screenshot: `components/contracts/app-shell-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=ready]:has([data-a3s-components~='app-shell'][data-a3s-state~='ready'])`
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded']:has([data-app-navigation-trigger][aria-expanded=true]))`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed']:has([data-app-navigation-trigger][aria-expanded=false]))`
   - `hidden`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=hidden]:has([data-a3s-components~='app-shell'][data-a3s-state~='hidden'][hidden])`
-  - `mobile-open`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open']:is([open],[aria-expanded=true]))`
+  - `mobile-open`: `.a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open']:has([data-app-navigation-trigger][aria-expanded=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

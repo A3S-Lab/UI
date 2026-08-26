@@ -48,6 +48,8 @@ Component-specific adversarial coverage: Initially open/closed, disabled policy,
 
 The canonical root uses `<details>` semantics and exposes 2 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `click`, `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
 
+
+
 ## Failure, empty, and loading cases
 
 - Progress states: not owned by this component. They preserve geometry and user context, announce bounded status changes, and prevent duplicate actions.
@@ -76,7 +78,7 @@ The canonical root uses `<details>` semantics and exposes 2 named parts. State m
 - Stable root target: `[data-a3s-components~="collapsible"]` inside `.a3s-preview[data-preview-component=collapsible][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/collapsible-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:has(:scope > summary[aria-expanded=false]))`
   - `disabled`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled]:has([data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

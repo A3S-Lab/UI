@@ -156,7 +156,14 @@ async function readSliderFillState(slider: Locator): Promise<SliderFillState> {
 async function setSliderValue(slider: Locator, value: number) {
   await slider.evaluate((element, nextValue) => {
     const input = element as HTMLInputElement;
-    input.value = String(nextValue);
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+    if (!valueSetter) {
+      throw new Error("Native range value setter is unavailable");
+    }
+    valueSetter.call(input, String(nextValue));
     input.dispatchEvent(new Event("input", { bubbles: true }));
   }, value);
 }
@@ -323,10 +330,12 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
 }, testInfo) => {
   await openComponent(page, "slider");
 
-  const slider = page
-    .locator(".a3s-preview[data-preview-component=slider]")
-    .first()
-    .locator('input[type="range"]');
+  const preview = page.locator(".a3s-preview:has(#slider-primary)");
+  const slider = preview.locator("#slider-primary");
+  const output = preview.locator("output");
+  await expect(slider).toHaveAccessibleName("Temperature");
+  await expect(slider).toHaveAttribute("aria-valuetext", "50 degrees Celsius");
+  await expect(output).toHaveText("50 °C");
   const tokens = await slider.evaluate((element) => {
     const style = getComputedStyle(element);
     const rootFontSize = Number.parseFloat(
@@ -355,6 +364,8 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
   await slider.focus();
   await page.keyboard.press("ArrowRight");
   await expect(slider).toHaveValue("51");
+  await expect(slider).toHaveAttribute("aria-valuetext", "51 degrees Celsius");
+  await expect(output).toHaveText("51 °C");
   await expect
     .poll(() =>
       slider.evaluate((element) =>
@@ -424,8 +435,16 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
     .toBeCloseTo(-7, 2);
   await expect(slider).toHaveScreenshot("slider-thumb-end-office.png");
 
-  const rtlSlider = page.locator('[data-slider-demo="standalone"][dir="rtl"]');
+  const rtlSlider = page.locator("#slider-rtl");
+  await expect(rtlSlider).toHaveAttribute("aria-valuetext", "50 بالمائة");
+  await rtlSlider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(rtlSlider).toHaveValue("49");
+  await expect(rtlSlider).toHaveAttribute("aria-valuetext", "49 بالمائة");
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlSlider).toHaveValue("50");
   await setSliderValue(rtlSlider, 80);
+  await expect(rtlSlider).toHaveAttribute("aria-valuetext", "80 بالمائة");
   await expect
     .poll(async () => await readSliderFillState(rtlSlider))
     .toMatchObject({
@@ -434,6 +453,15 @@ test("Slider keeps its visual fill synchronized across intermediate and RTL valu
       value: "80",
       valuePercent: "80%",
     });
+
+  const disabledPreview = page.locator(".a3s-preview:has(#slider-disabled)");
+  const disabledSlider = disabledPreview.locator("#slider-disabled");
+  await expect(disabledSlider).toBeDisabled();
+  await expect(disabledSlider).toHaveAccessibleName("Temperature");
+  await expect(disabledPreview.locator("output")).toHaveText("50 °C");
+  await expect(disabledPreview).toContainText(
+    "This limit is managed by the workspace policy.",
+  );
 });
 
 test("Field composition reuses a localized mutable Slider demo", async ({
@@ -572,6 +600,7 @@ test("every Preview exposes keyboard-operable semantic source and copy feedback"
   expect(phoneShellBox!.x + phoneShellBox!.width).toBeLessThanOrEqual(
     previewBox!.x + previewBox!.width + 1,
   );
+  expect(phoneShellBox!.height).toBeLessThanOrEqual(282);
   const responsiveDocument = htmlPreview.frameLocator("iframe");
   await expect(
     responsiveDocument.getByRole("button", {
@@ -1091,7 +1120,7 @@ test("Device Simulator keeps real viewport dimensions and a structured native bo
   });
 });
 
-test("Button Group preserves joined edges while hovering and nesting", async ({
+test("Button Group preserves joined edges, constrained labels, and split-menu focus", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -1175,10 +1204,34 @@ test("Button Group preserves joined edges while hovering and nesting", async ({
     expect(size.width).toBeCloseTo(36, 0);
   }
 
-  const nested = page.getByRole("group", { name: "Pagination controls" });
-  const pageFive = nested.getByRole("button", { name: "5", exact: true });
-  const previous = nested.getByRole("button", { name: "Previous page" });
-  const seam = await pageFive.evaluate(
+  const constrained = page.locator("[data-button-group-long-labels=en]");
+  const constrainedButtons = constrained.locator(":scope > .btn");
+  const constrainedGeometry = await constrained.evaluate((group) => {
+    const groupRect = group.getBoundingClientRect();
+    const canvasRect = group
+      .closest<HTMLElement>(".a3s-preview__canvas")!
+      .getBoundingClientRect();
+    const buttons = [...group.querySelectorAll<HTMLElement>(":scope > .btn")];
+    const heights = buttons.map(
+      (button) => button.getBoundingClientRect().height,
+    );
+    return {
+      documentClientWidth: document.documentElement.clientWidth,
+      documentScrollWidth: document.documentElement.scrollWidth,
+      groupInsideCanvas:
+        groupRect.left >= canvasRect.left - 1 &&
+        groupRect.right <= canvasRect.right + 1,
+      heightDelta: Math.max(...heights) - Math.min(...heights),
+    };
+  });
+  await expect(constrainedButtons).toHaveCount(3);
+  expect(constrainedGeometry.groupInsideCanvas).toBe(true);
+  expect(constrainedGeometry.heightDelta).toBeLessThanOrEqual(1);
+  expect(constrainedGeometry.documentScrollWidth).toBeLessThanOrEqual(
+    constrainedGeometry.documentClientWidth + 1,
+  );
+
+  const seam = await constrainedButtons.first().evaluate(
     (left, right) => {
       const leftRect = left.getBoundingClientRect();
       const rightRect = right.getBoundingClientRect();
@@ -1191,15 +1244,15 @@ test("Button Group preserves joined edges while hovering and nesting", async ({
         rightStartRadius: rightStyle.borderStartStartRadius,
       };
     },
-    await previous.elementHandle(),
+    await constrainedButtons.nth(1).elementHandle(),
   );
-  expect(seam.gap).toBeCloseTo(8, 1);
-  expect(Number.parseFloat(seam.leftEndRadius)).toBeGreaterThan(0);
-  expect(seam.rightBorderStart).toBe("1px");
-  expect(Number.parseFloat(seam.rightStartRadius)).toBeGreaterThan(0);
+  expect(seam.gap).toBeCloseTo(0, 1);
+  expect(seam.leftEndRadius).toBe("0px");
+  expect(seam.rightBorderStart).toBe("0px");
+  expect(seam.rightStartRadius).toBe("0px");
 
-  const menuTrigger = page.locator("#dropdown-menu-609880-trigger");
-  const menuRoot = page.locator("#dropdown-menu-609880");
+  const menuTrigger = page.locator("#button-group-publish-trigger-en");
+  const menuRoot = page.locator("#button-group-publish-menu-en");
   await expect
     .poll(() =>
       menuRoot.evaluate((element) =>
@@ -1221,7 +1274,7 @@ test("Button Group preserves joined edges while hovering and nesting", async ({
     controller.open("first");
   });
   await expect(menuTrigger).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator("#dropdown-menu-609880-popover")).toBeVisible();
+  await expect(page.locator("#button-group-publish-popover-en")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(menuTrigger).toHaveAttribute("aria-expanded", "false");
   await expect(menuTrigger).toBeFocused();
@@ -1230,10 +1283,10 @@ test("Button Group preserves joined edges while hovering and nesting", async ({
     ".a3s-preview[data-preview-component=button-group]",
   );
   await expect(previews.nth(2)).toHaveScreenshot(
-    "button-group-sizes-office.png",
+    "button-group-split-office.png",
   );
-  await expect(previews.nth(7)).toHaveScreenshot(
-    "button-group-input-office.png",
+  await expect(previews.nth(3)).toHaveScreenshot(
+    "button-group-long-labels-office.png",
   );
 });
 

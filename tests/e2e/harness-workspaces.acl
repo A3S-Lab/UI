@@ -11,15 +11,18 @@ suite "a3s-ui-harness-workspaces" {
         wait "loaded" { load = "networkidle" }
         wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "workspace-ready" { visible = css(".dockview-demo[data-mode=dock][data-ready=true]") }
+        expect "production-fixture-only" { visible = css(".dockview-demo[data-mode=dock]:not(:has(.dockview-demo__panel))") }
 
         expect "task-panel" { visible = css("[data-demo-panel=task]") }
-        expect "editor-panel" { visible = css("[data-demo-panel=editor]") }
+        expect "workspace-file-tree" { visible = css("[data-demo-panel=resources] .dockview-demo__files") }
+        expect "editor-panel" { visible = css("[data-demo-panel=editor] .product-code-workbench[data-code-load-state=ready] [data-code-editor-file]") }
         expect "preview-tab" { visible = role("tab", "预览") }
-        expect "terminal-panel" { visible = css("[data-demo-panel=terminal]") }
+        expect "terminal-panel" { visible = css("[data-demo-panel=terminal] .product-command-preview [role=log]") }
 
         focus "focus-float" { target = css(".dockview-demo[data-mode=dock] .dockview-demo__toolbar nav button:first-child") }
         press "float-preview" { key = "Enter" }
         expect "preview-floating" { visible = css(".dockview-demo[data-mode=dock][data-preview-location=floating] [data-demo-panel=preview]") }
+        expect "preview-device-shell" { visible = css("[data-demo-panel=preview] .device-simulator[data-device-simulator-initialized=true] [data-device-simulator-frame]") }
 
         focus "focus-reset" { target = css(".dockview-demo[data-mode=dock] .dockview-demo__toolbar nav button:last-child") }
         press "reset-layout" { key = "Enter" }
@@ -56,11 +59,12 @@ suite "a3s-ui-harness-workspaces" {
         wait "loaded" { load = "networkidle" }
         wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "grid-ready" { visible = css(".dockview-demo[data-mode=grid][data-ready=true][data-layout-preset=balanced]") }
+        expect "production-fixture-only" { visible = css(".dockview-demo[data-mode=grid]:not(:has(.dockview-demo__panel))") }
 
-        expect "context-panel" { visible = css("[data-demo-panel=grid-context]") }
-        expect "canvas-panel" { visible = css("[data-demo-panel=grid-canvas]") }
-        expect "output-panel" { visible = css("[data-demo-panel=grid-output]") }
-        expect "preview-panel" { visible = css("[data-demo-panel=grid-preview]") }
+        expect "context-panel" { visible = css("[data-demo-panel=grid-context] .dockview-demo__files") }
+        expect "canvas-panel" { visible = css("[data-demo-panel=grid-canvas] .product-code-workbench[data-code-load-state=ready] [data-code-editor-file]") }
+        expect "output-panel" { visible = css("[data-demo-panel=grid-output] .product-command-preview [role=log]") }
+        expect "preview-panel" { visible = css("[data-demo-panel=grid-preview] .code-graph[data-code-graph-initialized=true] [data-code-graph-canvas]") }
         focus "focus-canvas-preset" { target = css(".dockview-demo[data-mode=grid] .dockview-demo__toolbar nav button:last-child") }
         press "apply-canvas-preset" { key = "Enter" }
         expect "canvas-preset-applied" { visible = css(".dockview-demo[data-mode=grid][data-layout-preset=focus-canvas] [data-demo-panel=grid-canvas]") }
@@ -88,10 +92,11 @@ suite "a3s-ui-harness-workspaces" {
         wait "loaded" { load = "networkidle" }
         wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "split-ready" { visible = css(".dockview-demo[data-mode=split][data-ready=true][data-layout-preset=balanced]") }
+        expect "production-fixture-only" { visible = css(".dockview-demo[data-mode=split]:not(:has(.dockview-demo__panel))") }
 
-        expect "context-panel" { visible = css("[data-demo-panel=split-context]") }
-        expect "canvas-panel" { visible = css("[data-demo-panel=split-canvas]") }
-        expect "preview-panel" { visible = css("[data-demo-panel=split-preview]") }
+        expect "context-panel" { visible = css("[data-demo-panel=split-context] .dockview-demo__files") }
+        expect "canvas-panel" { visible = css("[data-demo-panel=split-canvas] .product-code-workbench[data-code-load-state=ready] [data-code-editor-file]") }
+        expect "preview-panel" { visible = css("[data-demo-panel=split-preview] .device-simulator[data-device-simulator-initialized=true] [data-device-simulator-frame]") }
         focus "focus-canvas-preset" { target = css(".dockview-demo[data-mode=split] .dockview-demo__toolbar nav button:last-child") }
         press "apply-canvas-preset" { key = "Enter" }
         expect "canvas-preset-applied" { visible = css(".dockview-demo[data-mode=split][data-layout-preset=focus-canvas] [data-demo-panel=split-canvas]") }
@@ -119,6 +124,9 @@ suite "a3s-ui-harness-workspaces" {
         wait "loaded" { load = "networkidle" }
         wait "document-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "pane-ready" { visible = css(".dockview-demo[data-mode=pane][data-ready=true][data-pane-expansion=mixed]") }
+        expect "production-fixture-only" { visible = css(".dockview-demo[data-mode=pane]:not(:has(.dockview-demo__panel))") }
+        expect "workspace-file-tree" { visible = css("[data-demo-panel=pane-files] .dockview-demo__files") }
+        expect "code-graph" { visible = css("[data-demo-panel=pane-symbols] .code-graph[data-code-graph-initialized=true] [data-code-graph-canvas]") }
 
         focus "focus-collapse-all" { target = css(".dockview-demo[data-mode=pane] .dockview-demo__toolbar nav button:last-child") }
         press "collapse-all" { key = "Enter" }
@@ -135,6 +143,7 @@ suite "a3s-ui-harness-workspaces" {
         press "expand-all" { key = "Enter" }
         expect "all-expanded" { visible = css(".dockview-demo[data-mode=pane][data-pane-expansion=expanded]") }
         expect "history-expanded" { visible = css("button[data-pane-header=pane-history][aria-expanded=true]") }
+        expect "ordered-test-output" { visible = css("[data-demo-panel=pane-history] .product-command-preview [role=log]") }
 
         screenshot "capture-desktop" { path = "harness/pane-view-desktop.png" }
         viewport "compact" { width = 390 height = 844 }

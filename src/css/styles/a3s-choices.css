@@ -2,16 +2,16 @@
 @layer components {
   /* Combobox */
   .combobox > input[role="combobox"] {
-    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border py-2 ps-3 pe-8 text-sm shadow-none transition-[color,border-color];
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border py-2 ps-2.5 pe-8 text-sm shadow-none transition-[color,border-color];
   }
 
   .combobox > input[role="combobox"]:focus-visible {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    outline: 0;
+    box-shadow: var(--a3s-control-focus-shadow);
   }
 
   .combobox > input[role="combobox"][aria-invalid="true"]:focus-visible {
-    outline-color: var(--a3s-red);
+    box-shadow: var(--a3s-control-error-focus-shadow);
   }
 
   .combobox > svg,
@@ -62,12 +62,12 @@
   }
 
   .combobox-chips:focus-within {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    outline: 0;
+    box-shadow: var(--a3s-control-focus-shadow);
   }
 
   .combobox-chips:has([aria-invalid="true"]):focus-within {
-    outline-color: var(--a3s-red);
+    box-shadow: var(--a3s-control-error-focus-shadow);
   }
 
   .combobox-chip {
@@ -87,16 +87,16 @@
   }
   /* Select */
   .select:not(select) > button {
-    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border py-2 ps-3 pe-2 text-sm shadow-none transition-[color,border-color,background-color] [&_svg:not([class*='size-'])]:size-4;
+    @apply border-input bg-background hover:border-[var(--a3s-line-emphasis)] focus-visible:border-ring aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 data-[size=sm]:h-8 gap-1.5 rounded-md border px-2.5 py-2 text-sm shadow-none transition-[color,border-color,background-color] [&_svg:not([class*='size-'])]:size-4;
   }
 
   .select:not(select) > button:focus-visible {
-    outline: var(--a3s-focus-outline);
-    outline-offset: var(--a3s-outline-offset);
+    outline: 0;
+    box-shadow: var(--a3s-control-focus-shadow);
   }
 
   .select:not(select) > button[aria-invalid="true"]:focus-visible {
-    outline-color: var(--a3s-red);
+    box-shadow: var(--a3s-control-error-focus-shadow);
   }
 
   .select:not(select) > button > span {

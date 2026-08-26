@@ -137,4 +137,36 @@ suite "a3s-ui-product-icon-semantics" {
         console "console" { path = "product/icon-semantics-automation-console.json" clear = false }
         page_errors "page-errors" { path = "product/icon-semantics-automation-page-errors.json" clear = false }
     }
+
+    scenario "expert-avatar-composition" {
+        name = "Expert avatars keep stable, distinct compositions across catalog and detail surfaces"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1478 height = 1000 }
+
+        navigate "open" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
+        wait "loaded" { load = "networkidle" }
+        wait "assistant-avatar-contract" { visible = css(".product-expert-avatar[data-avatar-variant]") }
+        expect "delivery-avatar" { visible = css("[data-expert-avatar='assistant:product-delivery-lead'][data-avatar-variant='2-1-000']") }
+        expect "repository-avatar" { visible = css("[data-expert-avatar='assistant:repository-analyst'][data-avatar-variant='4-2-000']") }
+        expect "release-avatar" { visible = css("[data-expert-avatar='assistant:release-reviewer'][data-avatar-variant='0-5-010']") }
+        expect "evidence-avatar" { visible = css("[data-expert-avatar='assistant:evidence-analyst'][data-avatar-variant='1-1-001']") }
+        expect "knowledge-avatar" { visible = css("[data-expert-avatar='assistant:knowledge-curator'][data-avatar-variant='6-0-001']") }
+        expect "editor-avatar" { visible = css("[data-expert-avatar='assistant:technical-editor'][data-avatar-variant='0-0-000']") }
+        expect "incident-avatar" { visible = css("[data-expert-avatar='assistant:incident-coordinator'][data-avatar-variant='6-3-000']") }
+        expect "interface-avatar" { visible = css("[data-expert-avatar='assistant:interface-reviewer'][data-avatar-variant='6-5-001']") }
+        expect "operator-avatar" { visible = css("[data-expert-avatar='assistant:workflow-operator'][data-avatar-variant='1-4-010']") }
+        expect "files-avatar" { visible = css("[data-expert-avatar='assistant:local-file-librarian'][data-avatar-variant='2-5-000']") }
+        expect "office-avatar" { visible = css("[data-expert-avatar='assistant:office-document-editor'][data-avatar-variant='7-2-111']") }
+        expect "analysis-avatar" { visible = css("[data-expert-avatar='assistant:data-analysis-partner'][data-avatar-variant='7-3-101']") }
+
+        click "open-delivery-expert" { target = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
+        expect "detail-avatar-stable" { visible = css("dialog.product-capability-detail-dialog[open] .product-expert-avatar[data-avatar-variant='2-1-000']") }
+        click "close-details" { target = role("button", "关闭能力详情") }
+        expect "catalog-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
+
+        screenshot "experts" { path = "product/expert-avatar-composition.png" }
+        console "console" { path = "product/expert-avatar-composition-console.json" clear = false }
+        page_errors "page-errors" { path = "product/expert-avatar-composition-page-errors.json" clear = false }
+    }
 }

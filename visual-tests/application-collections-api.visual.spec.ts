@@ -221,13 +221,14 @@ test("Bulk Action Bar restores disabled state and reports async completion", asy
 }) => {
   await openComponent(page, "bulk-action-bar");
   const root = page.locator("#bulk-action-bar-demo-en");
-  const archive = root.locator('[data-bulk-action="archive"]');
-  const remove = root.locator('[data-bulk-action="delete"]');
+  const bar = root.locator(":scope > .bulk-action-bar");
+  const archive = bar.locator('[data-bulk-action="archive"]');
+  const remove = bar.locator('[data-bulk-action="delete"]');
 
   await remove.evaluate((element) => {
     (element as HTMLButtonElement).disabled = true;
   });
-  const pending = await root.evaluate((element) => {
+  const pending = await bar.evaluate((element) => {
     const bar = element as HTMLElement & {
       complete(result: Record<string, unknown>): Record<string, unknown>;
       getSelection(): { count: number; values: string[] };
@@ -239,11 +240,11 @@ test("Bulk Action Bar restores disabled state and reports async completion", asy
     return bar.getSelection();
   });
   expect(pending).toEqual({ count: 3, values: ["alpha", "beta", "gamma"] });
-  await expect(root).toHaveAttribute("data-state", "loading");
+  await expect(bar).toHaveAttribute("data-state", "loading");
   await expect(archive).toHaveAttribute("data-pending", "true");
   await expect(archive).toBeDisabled();
 
-  const completion = await root.evaluate((element) => {
+  const completion = await bar.evaluate((element) => {
     const bar = element as HTMLElement & {
       complete(result: Record<string, unknown>): Record<string, unknown>;
     };
@@ -255,13 +256,172 @@ test("Bulk Action Bar restores disabled state and reports async completion", asy
     });
   });
   expect(completion.status).toBe("error");
-  await expect(root).toHaveAttribute("data-result", "error");
-  await expect(root).toHaveAttribute("data-state", "selected");
+  await expect(bar).toHaveAttribute("data-result", "error");
+  await expect(bar).toHaveAttribute("data-state", "selected");
   await expect(archive).toBeEnabled();
   await expect(remove).toBeDisabled();
-  await expect(root.locator("[data-bulk-summary]")).toHaveText(
+  await expect(bar.locator("[data-bulk-summary]")).toHaveText(
     "Archive failed. Try again.",
   );
+});
+
+test("Bulk Action Bar restores focus without stealing a host redirect", async ({
+  page,
+}) => {
+  await openComponent(page, "bulk-action-bar");
+  const root = page.locator("#bulk-action-bar-demo-en");
+  const bar = root.locator(":scope > .bulk-action-bar");
+  const clear = bar.locator("[data-bulk-clear]");
+  const target = page.locator("#bulk-action-bar-collection-en");
+
+  const firstClear = await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      clear(options?: Record<string, unknown>): boolean;
+      setSelection(values: string[]): boolean;
+    };
+    const clear = bar.querySelector("[data-bulk-clear]") as HTMLElement;
+    const events: string[] = [];
+    bar.addEventListener("a3s:bulk-focus-restored", () => {
+      events.push("restored");
+    });
+    bar.setSelection(["alpha", "beta"]);
+    clear.focus();
+    bar.clear({ source: "test" });
+    return new Promise((resolve) =>
+      queueMicrotask(() =>
+        resolve({
+          activeId: document.activeElement?.id || "",
+          events,
+          hidden: bar.hidden,
+        }),
+      ),
+    );
+  });
+  expect(firstClear).toEqual({
+    activeId: "bulk-action-bar-collection-en",
+    events: ["restored"],
+    hidden: true,
+  });
+  await expect(target).toBeFocused();
+
+  const redirected = await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      clear(options?: Record<string, unknown>): boolean;
+      setSelection(values: string[]): boolean;
+    };
+    const clear = bar.querySelector("[data-bulk-clear]") as HTMLElement;
+    const outside = document.createElement("button");
+    outside.type = "button";
+    outside.id = "bulk-focus-host-redirect";
+    outside.textContent = "Host redirect";
+    bar.parentElement?.append(outside);
+    const events: string[] = [];
+    bar.addEventListener("a3s:bulk-focus-restored", () => {
+      events.push("restored");
+    });
+    bar.setSelection(["alpha"]);
+    clear.focus();
+    bar.clear({ source: "test" });
+    outside.focus();
+    return new Promise((resolve) =>
+      queueMicrotask(() =>
+        resolve({
+          activeId: document.activeElement?.id || "",
+          events,
+        }),
+      ),
+    );
+  });
+  expect(redirected).toEqual({
+    activeId: "bulk-focus-host-redirect",
+    events: [],
+  });
+});
+
+test("Bulk Action Bar preserves pending escape and restores the completion snapshot", async ({
+  page,
+}) => {
+  await openComponent(page, "bulk-action-bar");
+  const root = page.locator("#bulk-action-bar-demo-en");
+  const bar = root.locator(":scope > .bulk-action-bar");
+  const clear = bar.locator("[data-bulk-clear]");
+  const archive = bar.locator('[data-bulk-action="archive"]');
+  const target = page.locator("#bulk-action-bar-collection-en");
+
+  await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      setSelection(values: string[]): boolean;
+      setPending(
+        action: string | boolean,
+        pending?: boolean | Record<string, unknown>,
+        options?: Record<string, unknown>,
+      ): void;
+    };
+    bar.setSelection(["alpha", "beta"]);
+    bar.setPending("archive", true, { allowClear: true, message: "Working" });
+  });
+  await expect(archive).toBeDisabled();
+  await expect(clear).toBeEnabled();
+
+  await clear.focus();
+  await clear.click();
+  await expect(bar).toBeVisible();
+  await expect(bar).toHaveAttribute("data-state", "loading");
+  await expect(bar).toHaveAttribute("data-selection-cleared", "true");
+  await expect(clear).toBeFocused();
+
+  const completion = await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      complete(result: Record<string, unknown>): Record<string, unknown>;
+      getSelection(): { count: number; values: string[] };
+    };
+    const events: Array<Record<string, unknown>> = [];
+    bar.addEventListener("a3s:bulk-focus-restored", () => {
+      events.push({ type: "focus" });
+    });
+    let detail: Record<string, unknown> | null = null;
+    bar.addEventListener("a3s:bulk-action-complete", (event) => {
+      detail = (event as CustomEvent).detail;
+    });
+    const result = bar.complete({
+      action: "archive",
+      clearSelection: true,
+      processedCount: 2,
+      status: "success",
+      message: "Done",
+    });
+    return new Promise((resolve) =>
+      queueMicrotask(() => resolve({ detail, events, result, selection: bar.getSelection() })),
+    );
+  });
+  expect(completion.result).toMatchObject({
+    action: "archive",
+    status: "success",
+    processedCount: 2,
+    selection: { count: 2, values: ["alpha", "beta"] },
+  });
+  expect(completion.detail).toMatchObject({
+    action: "archive",
+    selection: { count: 2, values: ["alpha", "beta"] },
+  });
+  expect(completion.events).toEqual([{ type: "focus" }]);
+  await expect(bar).toBeHidden();
+  await expect(target).toBeFocused();
+
+  await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      setSelection(values: string[]): boolean;
+      setPending(
+        action: string | boolean,
+        pending?: boolean | Record<string, unknown>,
+        options?: Record<string, unknown>,
+      ): void;
+    };
+    bar.setSelection(["alpha"]);
+    bar.setPending("archive", true, { allowClear: false });
+  });
+  await expect(clear).toBeDisabled();
+  await expect(archive).toBeDisabled();
 });
 
 test("File Explorer protects selection, restores filters, and recovers rename errors", async ({

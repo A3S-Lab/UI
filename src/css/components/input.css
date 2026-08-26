@@ -1,32 +1,234 @@
 /* Input */
 @layer components {
-  .field > input[type='text']:not(:is(.command > header input, .dialog > * > header input)),
-  .field > input[type='email'],
-  .field > input[type='password'],
-  .field > input[type='number'],
-  .field > input[type='file'],
-  .field > input[type='tel'],
-  .field > input[type='url'],
-  .field > input[type='search']:not(:is(.command > header input, .dialog > * > header input)),
-  .field > input[type='date'],
-  .field > input[type='datetime-local'],
-  .field > input[type='month'],
-  .field > input[type='week'],
-  .field > input[type='time'],
-  .input[type='text'],
-  .input[type='email'],
-  .input[type='password'],
-  .input[type='number'],
-  .input[type='file'],
-  .input[type='tel'],
-  .input[type='url'],
-  .input[type='search'],
-  .input[type='date'],
-  .input[type='datetime-local'],
-  .input[type='month'],
-  .input[type='week'],
-  .input[type='time'],
+  .field
+    > input[type="text"]:not(
+      :is(.command > header input, .dialog > * > header input)
+    ),
+  .field > input[type="email"],
+  .field > input[type="password"],
+  .field > input[type="number"],
+  .field > input[type="file"],
+  .field > input[type="tel"],
+  .field > input[type="url"],
+  .field
+    > input[type="search"]:not(
+      :is(.command > header input, .dialog > * > header input)
+    ),
+  .field > input[type="date"],
+  .field > input[type="datetime-local"],
+  .field > input[type="month"],
+  .field > input[type="week"],
+  .field > input[type="time"],
+  .input[type="text"],
+  .input[type="email"],
+  .input[type="password"],
+  .input[type="number"],
+  .input[type="file"],
+  .input[type="tel"],
+  .input[type="url"],
+  .input[type="search"],
+  .input[type="date"],
+  .input[type="datetime-local"],
+  .input[type="month"],
+  .input[type="week"],
+  .input[type="time"],
   .input:not([type]) {
-    @apply w-full min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply w-full min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed;
+  }
+
+  /* Machine-readable values keep their punctuation order inside RTL fields.
+   * Labels, help, and surrounding layout continue to follow the document. */
+  :where(.field > input, input.input):is(
+    [type="email"],
+    [type="tel"],
+    [type="url"]
+  ) {
+    direction: ltr;
+    text-align: start;
+  }
+}
+
+/* The native border remains the only outer edge. Style packs may change the
+ * radius, density, and surface, while focus adds one contiguous inset pixel. */
+:where(.field > input, input.input):not(
+    :is(
+      [type="button"],
+      [type="checkbox"],
+      [type="color"],
+      [type="hidden"],
+      [type="image"],
+      [type="radio"],
+      [type="range"],
+      [type="reset"],
+      [type="submit"]
+    )
+  ):not(:is(.command > header input, .dialog > * > header input)):not(
+    .input-group > *
+  ):focus-visible {
+  outline: 0;
+  box-shadow: var(--a3s-control-focus-shadow, inset 0 0 0 1px var(--ring));
+}
+
+:where(.field > input, input.input):not(
+    :is(
+      [type="button"],
+      [type="checkbox"],
+      [type="color"],
+      [type="hidden"],
+      [type="image"],
+      [type="radio"],
+      [type="range"],
+      [type="reset"],
+      [type="submit"]
+    )
+  ):not(:is(.command > header input, .dialog > * > header input)):not(
+    .input-group > *
+  )[aria-invalid="true"] {
+  box-shadow: none;
+}
+
+:where(.field > input, input.input):not(
+    :is(
+      [type="button"],
+      [type="checkbox"],
+      [type="color"],
+      [type="hidden"],
+      [type="image"],
+      [type="radio"],
+      [type="range"],
+      [type="reset"],
+      [type="submit"]
+    )
+  ):not(:is(.command > header input, .dialog > * > header input)):not(
+    .input-group > *
+  )[aria-invalid="true"]:focus-visible {
+  box-shadow: var(
+    --a3s-control-error-focus-shadow,
+    inset 0 0 0 1px var(--destructive)
+  );
+}
+
+/* Input-method guarantees are intentionally unlayered so every visual pack
+ * preserves them without specificity escalation or per-pack exceptions. */
+@media (pointer: coarse) {
+  :is(
+    .field
+      > input:is(
+        :not([type]),
+        [type="text"],
+        [type="email"],
+        [type="password"],
+        [type="number"],
+        [type="file"],
+        [type="tel"],
+        [type="url"],
+        [type="search"],
+        [type="date"],
+        [type="datetime-local"],
+        [type="month"],
+        [type="week"],
+        [type="time"]
+      ):not(:is(.command > header input, .dialog > * > header input)),
+    .input:is(
+      :not([type]),
+      [type="text"],
+      [type="email"],
+      [type="password"],
+      [type="number"],
+      [type="file"],
+      [type="tel"],
+      [type="url"],
+      [type="search"],
+      [type="date"],
+      [type="datetime-local"],
+      [type="month"],
+      [type="week"],
+      [type="time"]
+    )
+  ) {
+    min-height: var(--a3s-touch-target, 2.75rem);
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    .field
+      > input:is(
+        :not([type]),
+        [type="text"],
+        [type="email"],
+        [type="password"],
+        [type="number"],
+        [type="file"],
+        [type="tel"],
+        [type="url"],
+        [type="search"],
+        [type="date"],
+        [type="datetime-local"],
+        [type="month"],
+        [type="week"],
+        [type="time"]
+      ):not(:is(.command > header input, .dialog > * > header input)),
+    .input:is(
+      :not([type]),
+      [type="text"],
+      [type="email"],
+      [type="password"],
+      [type="number"],
+      [type="file"],
+      [type="tel"],
+      [type="url"],
+      [type="search"],
+      [type="date"],
+      [type="datetime-local"],
+      [type="month"],
+      [type="week"],
+      [type="time"]
+    )
+  ) {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  :is(
+    .field
+      > input:is(
+        :not([type]),
+        [type="text"],
+        [type="email"],
+        [type="password"],
+        [type="number"],
+        [type="file"],
+        [type="tel"],
+        [type="url"],
+        [type="search"],
+        [type="date"],
+        [type="datetime-local"],
+        [type="month"],
+        [type="week"],
+        [type="time"]
+      ):not(:is(.command > header input, .dialog > * > header input)),
+    .input:is(
+      :not([type]),
+      [type="text"],
+      [type="email"],
+      [type="password"],
+      [type="number"],
+      [type="file"],
+      [type="tel"],
+      [type="url"],
+      [type="search"],
+      [type="date"],
+      [type="datetime-local"],
+      [type="month"],
+      [type="week"],
+      [type="time"]
+    )
+  ):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+    box-shadow: none;
   }
 }

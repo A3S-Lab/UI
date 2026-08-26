@@ -1,150 +1,315 @@
-# 文本区域
+# 多行文本框
 
-文本区域用于录入可能换行的较长内容，并应为字数、格式或校验要求提供持续反馈。
+多行文本框用于采集一个以换行为有效结构的纯文本值。它保留浏览器原生的多行编辑能力，同时让大段粘贴、校验和可用性状态始终处于可控范围内。
 
-<Preview class="w-full max-w-xs">
-<textarea class="textarea" aria-label="消息" placeholder="Type your message here"></textarea>
+<Preview class="w-full max-w-lg" title="发布说明">
+  <div class="field w-full">
+    <label for="textarea-release-note-zh">发布说明</label>
+    <textarea
+      id="textarea-release-note-zh"
+      class="textarea"
+      name="releaseNote"
+      rows="5"
+      maxlength="320"
+      aria-describedby="textarea-release-note-help-zh"
+      placeholder="说明变更内容、验证方法和回滚路径"
+      oninput="this.parentElement.querySelector('[data-textarea-count]').textContent = this.value.length + ' / 320 字'"
+    ></textarea>
+    <p id="textarea-release-note-help-zh" data-field-description>
+      写明变更结果、验证方式，以及验证失败后的处理步骤，最多 320 字。
+    </p>
+    <output
+      id="textarea-release-note-count-zh"
+      class="text-muted-foreground text-sm"
+      data-textarea-count
+      for="textarea-release-note-zh"
+      aria-label="字数统计"
+      aria-live="off"
+    >
+      0 / 320 字
+    </output>
+  </div>
 </Preview>
 
 ## 用法
 
-<Steps>
-  <Step title="引入 CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+引入 Tailwind 和一套完整的 A3S UI 样式：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基本CSS、Textarea组件CSS和一个样式包。
+按组件加载时，依次引入基础样式、多行文本框结构、字段结构和一套视觉样式：
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/textarea.css";
+@import "@a3s-lab/ui/components/field.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用CDN或批量程序导入？请参见[安装页](/installation)。
-
-  </Step>
-  <Step title="添加文本区域 HTML">
-
-Add `class="textarea"` to a `<textarea>` element. Textareas inside a `class="field"` container also receive the same styling automatically.
-
-使用原生 HTML 属性进行：`disabled` 用于取消文本区域，`aria-invalid="true"` 用于无效状态行为样式。
+在原生 `<textarea>` 上添加 `class="textarea"`。生产表单中应与字段组件组合，使持久标签、普通说明、长度约束和当前错误保持在同一关系中。
 
 ```html
-<textarea class="textarea" aria-label="消息" placeholder="Type your message here"></textarea>
+<div class="field">
+  <label for="release-note">发布说明</label>
+  <textarea
+    id="release-note"
+    class="textarea"
+    name="releaseNote"
+    rows="5"
+    maxlength="320"
+    aria-describedby="release-note-help"
+  ></textarea>
+  <p id="release-note-help" data-field-description>
+    写明验证证据和失败后的回滚路径。
+  </p>
+</div>
 ```
 
-  </Step>
-</Steps>
+多行文本框只处理原生纯文本。需要文档结构、格式或语法行为时使用编辑器；还需要提及、附件、工具和提交状态时使用[任务输入器](/components/agent-composer)。
 
-文本区域通过原生浏览器方向处理支持从右到左的布局。
+### 参数
 
-## 示例
+| 参数                                 | 用途                                                |
+| ------------------------------------ | --------------------------------------------------- |
+| `id`                                 | 将原生控件连接到一个持久可见的标签                  |
+| `name`                               | 提供表单字段键；禁用的多行文本框不会进入 `FormData` |
+| `rows`                               | 设置初始编辑视口，但不会启用自动增高                |
+| `minlength`、`maxlength`、`required` | 仅在符合真实纯文本契约时表达原生约束                |
+| `wrap`、`spellcheck`、`autocomplete` | 保留或细化原生编辑行为，不重新实现浏览器能力        |
+| `aria-describedby`                   | 按需关联持久说明和当前错误                          |
+| `aria-invalid="true"`                | 表达一次失败的校验，并保留用户已经输入的文本        |
+| `disabled`                           | 移除聚焦、编辑、校验和表单提交，同时应提供可见原因  |
+| `readonly`                           | 阻止修改，但保留聚焦、选择、复制、滚动和表单提交    |
 
-### 现场
+## 框架用法
 
-使用带有标签和说明的 `field` 创建可访问的文本区域。
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field">
-  <label for="textarea-field">Message</label>
-  <textarea id="textarea-field" placeholder="Type your message here"></textarea>
-  <p>Write a short message.</p>
+<FrameworkTabs
+  htmlInstall="npm install @a3s-lab/ui"
+  reactInstall="npm install @a3s-lab/ui react react-dom"
+  vueInstall="npm install @a3s-lab/ui vue"
+  html={`<div class="field">
+  <label for="textarea-release-note-html-zh">发布说明</label>
+  <textarea id="textarea-release-note-html-zh" class="textarea" name="releaseNote" rows="5" maxlength="320" aria-describedby="textarea-release-note-help-html-zh"></textarea>
+  <p id="textarea-release-note-help-html-zh" data-field-description>写明验证证据和失败后的回滚路径，最多 320 字。</p>
+  <output id="textarea-release-note-count-html-zh" for="textarea-release-note-html-zh" aria-label="字数统计" aria-live="off">0 / 320 字</output>
 </div>
-</Preview>
-
-### 已禁用
-
-<Preview class="w-full max-w-xs">
-<textarea class="textarea" aria-label="消息" placeholder="Type your message here" disabled></textarea>
-</Preview>
-
-### 无效
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field w-full max-w-xs">
-  <label for="textarea-invalid">Message</label>
-  <textarea class="textarea" id="textarea-invalid" placeholder="Type your message here" aria-invalid="true"></textarea>
-  <p>Message is required.</p>
-</div>
-</Preview>
-
-### 按钮
-
-<Preview class="w-full max-w-xs">
-<div class="grid w-full max-w-xs gap-3">
-  <textarea class="textarea" aria-label="消息" placeholder="Type your message here"></textarea>
-  <button type="submit" class="btn">Submit</button>
-</div>
-</Preview>
-
-### 表格
-
-<Preview class="w-full max-w-sm">
-<form class="w-full max-w-sm space-y-6">
-  <div role="group" class="field">
-    <label for="textarea-form">Bio</label>
-    <textarea id="textarea-form" placeholder="Tell us a bit about yourself"></textarea>
-    <p>You can @mention other users and organizations.</p>
-  </div>
-  <button type="submit" class="btn">Submit</button>
-</form>
-</Preview>
-
-### RTL
-
-将 `dir="rtl"` 添加到文本区域、字段或祖先。
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field w-full max-w-xs" dir="rtl">
-  <label for="textarea-rtl">التعليقات</label>
-  <textarea id="textarea-rtl" placeholder="تعليقاتك تساعدنا على التحسين..." rows="4"></textarea>
-  <p>شاركنا أفكارك حول الخدمة.</p>
-</div>
-</Preview>
-
-## React
-
-```tsx
+<script type="module">
+const textarea = document.querySelector("#textarea-release-note-html-zh");
+const count = document.querySelector("#textarea-release-note-count-html-zh");
+textarea.addEventListener("input", event => {
+  count.textContent = event.currentTarget.value.length + " / 320 字";
+});
+textarea.addEventListener("change", event => {
+  persistDraft(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
 import { Textarea, useTextarea } from "@a3s-lab/ui/react";
 
-export function Example() {
-  const control = useTextarea();
-  return (
-    <Textarea
-      ref={control.ref}
-      aria-label="消息"
-      placeholder="Type your message here"
-    />
-  );
-}
-```
+export function ReleaseNote() {
+  const [value, setValue] = useState("");
+  const [committedValue, setCommittedValue] = useState("");
+  const control = useTextarea({
+    events: {
+      input: event => setValue((event.currentTarget as HTMLTextAreaElement).value),
+      change: event => setCommittedValue((event.currentTarget as HTMLTextAreaElement).value),
+    },
+  });
 
-`useTextarea` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+return (
 
-## Vue
-
-```vue
-<script setup lang="ts">
+<div className="field">
+<label htmlFor="textarea-release-note-react-zh">发布说明</label>
+<Textarea
+        id="textarea-release-note-react-zh"
+        ref={control.ref}
+        name="releaseNote"
+        rows={5}
+        maxLength={320}
+        aria-describedby="textarea-release-note-help-react-zh"
+      />
+<p id="textarea-release-note-help-react-zh" data-field-description>
+写明验证证据和失败后的回滚路径，最多 320 字。
+</p>
+<output id="textarea-release-note-count-react-zh" htmlFor="textarea-release-note-react-zh" aria-label="字数统计" aria-live="off">
+{value.length} / 320 字{committedValue ? " · 已触发 change 事件" : ""}
+</output>
+</div>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
 import { Textarea, useTextarea } from "@a3s-lab/ui/vue";
 
-const control = useTextarea();
+const value = ref("");
+const committedValue = ref("");
+const control = useTextarea({
+events: {
+input: event => value.value = (event.currentTarget as HTMLTextAreaElement).value,
+change: event => committedValue.value = (event.currentTarget as HTMLTextAreaElement).value,
+},
+});
 const componentRef = control.componentRef;
+
 </script>
 
 <template>
-  <Textarea
-    ref="componentRef"
-    aria-label="消息"
-    placeholder="Type your message here"
-  />
-</template>
-```
+  <div class="field">
+    <label for="textarea-release-note-vue-zh">发布说明</label>
+    <Textarea
+      id="textarea-release-note-vue-zh"
+      ref="componentRef"
+      name="releaseNote"
+      :rows="5"
+      :maxlength="320"
+      aria-describedby="textarea-release-note-help-vue-zh"
+    />
+    <p id="textarea-release-note-help-vue-zh" data-field-description>写明验证证据和失败后的回滚路径，最多 320 字。</p>
+    <output id="textarea-release-note-count-vue-zh" for="textarea-release-note-vue-zh" aria-label="字数统计" aria-live="off">
+      {{ value.length }} / 320 字{{ committedValue ? " · 已触发 change 事件" : "" }}
+    </output>
+  </div>
+</template>`}
+/>
 
-`useTextarea` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+## 状态与变体
+
+空值和就绪是普通值状态。只有完成校验后才进入无效状态。禁用和只读代表不同的原生可用性契约，不能当作可以互换的视觉变体。
+
+### 有界原生编辑
+
+默认多行文本框是一个稳定的编辑视口，内容超出后在内部滚动，并保留原生垂直调整大小能力。它不会根据内容无限增高。产品若明确需要自动增高，必须限制最大高度、保留内部滚动，并证明粘贴、撤销、输入法组合和响应式切换不会推动无关控件。
+
+`rows` 用于选择合适的初始视口。即使粘贴大量内容，文本也应完整保留，而页面高度不会无限增加。
+
+### 表单校验与恢复
+
+必填的多行文本框在第一次校验前保持中性。校验失败后应保留每一行输入，指出缺少的具体内容，将焦点移回多行文本框，并把错误加入说明关系。内容有效或表单重置后，应同时清除过期错误及其语义。
+
+<Preview class="w-full max-w-xl" title="发布交接">
+  <form
+    class="grid w-full gap-4"
+    data-textarea-validation-demo="zh"
+    novalidate
+    onsubmit="event.preventDefault(); const textarea = this.querySelector('#textarea-validation-zh'); const field = textarea.closest('.field'); const error = this.querySelector('#textarea-validation-error-zh'); if (textarea.checkValidity()) return; field.dataset.invalid = 'true'; textarea.setAttribute('aria-invalid', 'true'); textarea.setAttribute('aria-describedby', 'textarea-validation-help-zh textarea-validation-error-zh'); error.hidden = false; textarea.focus()"
+    onreset="const textarea = this.querySelector('#textarea-validation-zh'); const field = textarea.closest('.field'); const error = this.querySelector('#textarea-validation-error-zh'); const count = this.querySelector('#textarea-validation-count-zh'); field.removeAttribute('data-invalid'); textarea.removeAttribute('aria-invalid'); textarea.setAttribute('aria-describedby', 'textarea-validation-help-zh'); error.hidden = true; count.textContent = '0 / 320 字'"
+  >
+    <div class="field">
+      <label for="textarea-validation-zh">发布交接说明</label>
+      <textarea
+        id="textarea-validation-zh"
+        class="textarea"
+        name="releaseHandoff"
+        rows="5"
+        minlength="40"
+        maxlength="320"
+        required
+        aria-describedby="textarea-validation-help-zh"
+        oninput="const count = this.parentElement.querySelector('[data-validation-count]'); count.textContent = this.value.length + ' / 320 字'; if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'textarea-validation-help-zh'); field.querySelector('[role=alert]').hidden = true"
+      ></textarea>
+      <p id="textarea-validation-help-zh" data-field-description>
+        输入 40–320 个字符，写明验证结果和失败后的回滚路径。
+      </p>
+      <output
+        id="textarea-validation-count-zh"
+        class="text-muted-foreground text-sm"
+        data-validation-count
+        for="textarea-validation-zh"
+        aria-label="字数统计"
+        aria-live="off"
+      >
+        0 / 320 字
+      </output>
+      <p
+        id="textarea-validation-error-zh"
+        data-field-message
+        role="alert"
+        hidden
+      >
+        请补充验证结果，以及验证失败时应执行的回滚步骤。
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        保存交接说明
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        重置
+      </button>
+    </div>
+  </form>
+</Preview>
+
+客户端校验用于改善恢复体验，但不能替代服务端校验、清理、授权和过期响应处理。输入法处于组合输入阶段时，不应校验、转换、持久化或提交。
+
+### 禁用与只读
+
+禁用状态会从聚焦、编辑、约束校验和 `FormData` 中移除该值。只读状态仍允许聚焦、选择、复制、滚动和提交。两者都应保持完整文字透明度，并提供可见原因。
+
+<Preview class="w-full max-w-xl" title="可用性语义">
+  <form class="grid w-full gap-5" data-textarea-availability="zh">
+    <div class="field" data-disabled="true">
+      <label for="textarea-disabled-zh">已归档发布说明</label>
+      <textarea
+        id="textarea-disabled-zh"
+        class="textarea"
+        name="archivedReleaseNote"
+        rows="4"
+        aria-describedby="textarea-disabled-reason-zh"
+        defaultValue="工作区归档后，这份说明仍作为审计记录保留。"
+        disabled
+      />
+      <p id="textarea-disabled-reason-zh" data-field-description>
+        已归档工作区会保留历史，但不能再修改该值。
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="textarea-readonly-zh">已批准发布说明</label>
+      <textarea
+        id="textarea-readonly-zh"
+        class="textarea"
+        name="approvedReleaseNote"
+        rows="4"
+        aria-describedby="textarea-readonly-reason-zh"
+        defaultValue="验证已通过。如果健康检查失败，请恢复上一版本并重新执行冒烟测试。"
+        readonly
+      />
+      <p id="textarea-readonly-reason-zh" data-field-description>
+        只有发布负责人可以修改；当前值仍可选择，并会参与表单提交。
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### 从右到左与混合文本
+
+自然语言内容跟随文档或字段的书写方向。标点顺序必须保持从左到右的技术标记，可以在局部单独设置方向。
+
+<Preview class="w-full max-w-lg" title="从右到左的发布说明">
+  <div class="field w-full" dir="rtl">
+    <label for="textarea-rtl-zh">ملاحظات الإصدار</label>
+    <textarea
+      id="textarea-rtl-zh"
+      class="textarea"
+      rows="5"
+      aria-describedby="textarea-rtl-help-zh"
+      placeholder="اكتب نتيجة التحقق وخطوات التراجع"
+    ></textarea>
+    <p id="textarea-rtl-help-zh" data-field-description>
+      اذكر ما تغيّر وكيف تم التحقق وما الذي يجب فعله عند الفشل.
+    </p>
+  </div>
+</Preview>
+
+## 无障碍
+
+- 保留一个持久可见的标签。占位文本只能演示内容，不能成为唯一无障碍名称。
+- 把稳定的长度限制写入持久说明，并通过 `aria-describedby` 关联。可见字数使用独立的本地化标签，不加入说明关系，也不在每次按键时播报。完成校验后再加入当前错误 ID，恢复后及时移除。
+- 保留浏览器原生的换行编辑、选择、撤销、粘贴、拼写检查、听写、拖动选择和输入法行为。
+- 保持编辑视口有界且可垂直调整大小，避免长内容在光标附近编辑时推动整个页面。
+- 只使用一层连续的内嵌焦点边界。强制颜色模式下改用系统 `Highlight` 轮廓。
+- 在粗指针设备上，编辑文字至少为 16px，避免移动浏览器聚焦缩放。
+- 发布前使用真实移动键盘、物理中文输入法、200% 缩放、触摸选择、Windows 强制颜色和读屏软件组合进行测试。

@@ -29,6 +29,29 @@ test("Data Grid synchronizes partial, full, cleared, and sorted state", async ({
   await expect(bulkBar).toBeVisible();
   await expect(bulkBar.locator("[data-selected-count]")).toHaveText("1");
 
+  const actionButtons = grid.locator(
+    'td[data-label="Actions"] > :is(button, a[href])',
+  );
+  await expect(actionButtons).toHaveCount(3);
+  const actionMetrics = await actionButtons.evaluateAll((elements) =>
+    elements.map((element) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return {
+        clientHeight: element.clientHeight,
+        height: rect.height,
+        scrollHeight: element.scrollHeight,
+        width: rect.width,
+        whiteSpace: style.whiteSpace,
+      };
+    }),
+  );
+  for (const metric of actionMetrics) {
+    expect(metric.whiteSpace).toBe("nowrap");
+    expect(metric.width).toBeGreaterThan(metric.height);
+    expect(metric.scrollHeight).toBeLessThanOrEqual(metric.clientHeight + 1);
+  }
+
   await grid.evaluate((element) => {
     const root = element as HTMLElement & {
       __selectionEvents?: Array<{ selectedCount: number; values: string[] }>;
@@ -85,6 +108,7 @@ test("Data Grid synchronizes partial, full, cleared, and sorted state", async ({
   await expect(grid).toHaveAttribute("data-selection", "none");
   await expect(bulkBar).toBeHidden();
   await expect(selectAll).not.toBeChecked();
+  await expect(selectAll).toBeFocused();
   await expect
     .poll(() =>
       selectAll.evaluate(
@@ -319,4 +343,121 @@ test("Collection components remain bounded at 320px in dark RTL", async ({
       expect(metrics.rootOverflow).toBeLessThanOrEqual(0);
     });
   }
+});
+
+test("Bulk Action Bar keeps hierarchy and reachable commands with real copy", async ({
+  page,
+}) => {
+  await openComponent(page, "bulk-action-bar");
+  const preview = page.locator(
+    ".a3s-preview[data-preview-component=bulk-action-bar]",
+  );
+  const bar = preview.locator(":scope .bulk-action-bar").first();
+  const actions = bar.locator("[data-bulk-actions] > button");
+
+  const assertContained = async () => {
+    const metrics = await bar.evaluate((element) => {
+      const root = element.getBoundingClientRect();
+      const buttons = Array.from(
+        element.querySelectorAll("[data-bulk-actions] > button"),
+      ).map((button) => {
+        const rect = button.getBoundingClientRect();
+        return {
+          bottom: rect.bottom,
+          height: rect.height,
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          width: rect.width,
+        };
+      });
+      const parts = [
+        "[data-bulk-selection]",
+        "[data-bulk-summary]",
+        "[data-bulk-actions]",
+      ].map((selector) => {
+        const rect = element.querySelector(selector)?.getBoundingClientRect();
+        return { bottom: rect?.bottom || 0, top: rect?.top || 0 };
+      });
+      return {
+        documentOverflow:
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+        rootOverflow: element.scrollWidth - element.clientWidth,
+        root: {
+          bottom: root.bottom,
+          left: root.left,
+          right: root.right,
+          top: root.top,
+        },
+        buttons,
+        parts,
+      };
+    });
+    expect(metrics.documentOverflow).toBeLessThanOrEqual(0);
+    expect(metrics.rootOverflow).toBeLessThanOrEqual(0);
+    expect(metrics.buttons.length).toBe(4);
+    for (const button of metrics.buttons) {
+      expect(button.width).toBeGreaterThan(0);
+      expect(button.height).toBeGreaterThan(0);
+      expect(button.left).toBeGreaterThanOrEqual(metrics.root.left - 1);
+      expect(button.right).toBeLessThanOrEqual(metrics.root.right + 1);
+    }
+    return metrics;
+  };
+
+  await bar.evaluate((element) => {
+    const bar = element as HTMLElement & {
+      setSelection(values: string[]): boolean;
+      setSummary(message: string): void;
+    };
+    bar.setSelection(Array.from({ length: 12 }, (_, index) => `env-${index}`));
+    bar.setSummary(
+      "Twelve selected environments are ready for a permission-aware archive operation; review the result before continuing.",
+    );
+  });
+  await expect(bar).toBeVisible();
+  await assertContained();
+  await expect(actions).toHaveCount(4);
+  await page.screenshot({
+    path: ".a3s-test/manual/bulk-action-bar-review/screenshots/desktop-long-en.png",
+    animations: "disabled",
+  });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await bar.evaluate((element) => {
+    const bar = element as HTMLElement & { setSummary(message: string): void };
+    bar.setSummary(
+      "已选择十二个环境；归档权限需要逐项检查，完成后会保留可恢复的结果提示。",
+    );
+  });
+  const phoneMetrics = await assertContained();
+  expect(phoneMetrics.parts[1].top).toBeGreaterThanOrEqual(
+    phoneMetrics.parts[0].top,
+  );
+  expect(phoneMetrics.parts[2].top).toBeGreaterThanOrEqual(
+    phoneMetrics.parts[1].top,
+  );
+  await page.screenshot({
+    path: ".a3s-test/manual/bulk-action-bar-review/screenshots/phone-long-zh.png",
+    animations: "disabled",
+  });
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  await bar.evaluate((element) => {
+    document.documentElement.classList.add("dark", "rp-dark");
+    document.documentElement.dir = "rtl";
+    element.dir = "rtl";
+  });
+  const narrowMetrics = await assertContained();
+  expect(narrowMetrics.parts[1].top).toBeGreaterThanOrEqual(
+    narrowMetrics.parts[0].top,
+  );
+  expect(narrowMetrics.parts[2].top).toBeGreaterThanOrEqual(
+    narrowMetrics.parts[1].top,
+  );
+  await page.screenshot({
+    path: ".a3s-test/manual/bulk-action-bar-review/narrow-dark-rtl.png",
+    animations: "disabled",
+  });
 });

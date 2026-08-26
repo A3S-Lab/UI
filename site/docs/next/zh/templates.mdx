@@ -59,6 +59,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
     {% from "a3s-ui/select.njk" import select %}
     {{ select(
       name="fruit",
+      label="水果",
       items=[
         { value: "apple", label: "Apple" },
         { value: "banana", label: "Banana" },
@@ -71,6 +72,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
     {% from "a3s-ui/select.html.jinja" import select %}
     {{ select(
       name="fruit",
+      label="水果",
       items=[
         { "value": "apple", "label": "Apple" },
         { "value": "banana", "label": "Banana" },
@@ -196,6 +198,7 @@ A3S UI 为具有较大 HTML 结构的组件提供了可选的 Nunjucks 和 Jinja
 | `popover_attrs` | `object` | `{}` | 弹出框元素的额外属性。 |
 | `listbox_attrs` | `object` | `{}` | 列表框的额外属性。 |
 | `input_attrs` | `object` | `{}` | 隐藏输入的额外属性。 |
+| `label` | `string` | `None` / `none` | 独立触发器的稳定无障碍名称；触发器已关联外部标签时省略。 |
 
 ### `sidebar()`
 

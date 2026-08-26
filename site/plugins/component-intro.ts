@@ -46,7 +46,7 @@ const htmlExampleMarkers: Record<
     attributes: ['type="checkbox"'],
     classes: ["input"],
   },
-  "native-select": { classes: ["select"] },
+  "native-select": { classes: ["native-select"] },
   "radio-group": { attributes: ['type="radio"'] },
   slider: { attributes: ['type="range"'] },
   spinner: { classes: ["animate-spin"] },
@@ -220,16 +220,28 @@ function expressionString(value: MdxAttribute["value"]) {
 
 function frameworkTabs(children: MdxNode[]) {
   const index = children.findIndex(
-    (node) =>
-      node.type === "mdxJsxFlowElement" && node.name === "FrameworkTabs",
+    (node) => {
+      if (node.type !== "mdxJsxFlowElement") return false;
+      if (node.name === "FrameworkTabs") return true;
+      return (
+        node.name === "Preview" &&
+        node.attributes?.some((attribute) => attribute.name === "frameworkHtml") ===
+          true
+      );
+    },
   );
   if (index < 0) return undefined;
 
   const node = children[index];
+  const inlinePreview = node.name === "Preview";
+  const frameworkAttribute = (framework: (typeof frameworkNames)[number]) =>
+    inlinePreview
+      ? `framework${framework.charAt(0).toUpperCase()}${framework.slice(1)}`
+      : framework;
   const snippets = Object.fromEntries(
     frameworkNames.map((framework) => {
       const attribute = node.attributes?.find(
-        (candidate) => candidate.name === framework,
+        (candidate) => candidate.name === frameworkAttribute(framework),
       );
       return [framework, expressionString(attribute?.value)];
     }),
@@ -237,11 +249,21 @@ function frameworkTabs(children: MdxNode[]) {
   const installs = Object.fromEntries(
     frameworkNames.map((framework) => {
       const attribute = node.attributes?.find(
-        (candidate) => candidate.name === `${framework}Install`,
+        (candidate) =>
+          candidate.name === `${frameworkAttribute(framework)}Install`,
       );
       return [framework, expressionString(attribute?.value)];
     }),
   ) as FrameworkInstalls;
+
+  if (inlinePreview) {
+    return {
+      index,
+      inline: true,
+      installs,
+      snippets,
+    };
+  }
 
   let headingIndex = index - 1;
   while (headingIndex >= 0 && !isSectionHeading(children[headingIndex])) {
@@ -381,7 +403,9 @@ export function componentPreviewIntegrationPlugin() {
           : undefined
       : undefined;
     const hasController = Boolean(integrationHook);
-    const ranges = authoredTabs
+    const ranges = authoredTabs?.inline
+      ? []
+      : authoredTabs
       ? [
           group === "harness"
             ? {

@@ -1,488 +1,518 @@
 # 表单字段
 
-表单字段把标签、控件、说明和校验反馈组成一个完整输入单元，确保状态和错误紧邻其作用对象。
+表单字段把一个控件的常驻标签、填写要求、说明与局部错误组织成一个完整输入单元，不额外制造第二套交互模型或无意义的无障碍分组。
 
-<Preview class="w-full max-w-md">
-<form>
-  <div role="group" aria-label="结账字段" class="fieldset">
-    <fieldset class="fieldset">
-      <legend>支付方式</legend>
-      <p>所有交易均经过安全加密</p>
-      <div role="group" aria-label="支付方式字段">
-        <div role="group" class="field">
-          <label for="checkout-card-name">持卡人姓名</label>
-          <input id="checkout-card-name" type="text" placeholder="王小明" required />
-        </div>
-        <div role="group" class="field">
-          <label for="checkout-card-number">卡号</label>
-          <input id="checkout-card-number" type="text" placeholder="1234 5678 9012 3456" aria-describedby="checkout-card-number-description" required />
-          <p id="checkout-card-number-description">请输入 16 位卡号</p>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-          <div role="group" class="field">
-            <label for="checkout-exp-month">月</label>
-            <select id="checkout-exp-month" class="select w-full">
-              <option value="">MM</option>
-              <option value="01">01</option>
-              <option value="02">02</option>
-              <option value="03">03</option>
-              <option value="04">04</option>
-              <option value="05">05</option>
-              <option value="06">06</option>
-              <option value="07">07</option>
-              <option value="08">08</option>
-              <option value="09">09</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-          <div role="group" class="field">
-            <label for="checkout-exp-year">年</label>
-            <select id="checkout-exp-year" class="select w-full">
-              <option value="">YYYY</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-            </select>
-          </div>
-          <div role="group" class="field">
-            <label for="checkout-cvv">CVV</label>
-            <input id="checkout-cvv" type="text" placeholder="123" required />
-          </div>
-        </div>
-      </div>
-    </fieldset>
-    <div class="field-separator">
-      <hr role="separator" />
+<Preview class="w-full max-w-lg" title="工作区显示名称">
+  <form
+    class="grid w-full gap-4"
+    data-field-primary-demo="zh"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#field-workspace-name-zh'); if (input.dataset.composing === 'true') { input.focus(); return; } const field = input.closest('.field'); const error = this.querySelector('#field-workspace-name-error-zh'); const length = input.value.trim().length; if (length >= 2 && length <= 40) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'field-workspace-name-description-zh field-workspace-name-error-zh'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#field-workspace-name-zh'); const field = input.closest('.field'); const error = this.querySelector('#field-workspace-name-error-zh'); delete input.dataset.composing; field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'field-workspace-name-description-zh'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="field-workspace-name-zh">
+        工作区显示名称
+        <span
+          class="ms-auto text-xs font-normal text-muted-foreground"
+          aria-hidden="true"
+        >
+          必填
+        </span>
+      </label>
+      <input
+        id="field-workspace-name-zh"
+        name="workspaceName"
+        type="text"
+        value="智能体运行时"
+        dir="auto"
+        minlength="2"
+        maxlength="40"
+        autocomplete="organization"
+        aria-describedby="field-workspace-name-description-zh"
+        required
+        oncompositionstart="this.dataset.composing = 'true'"
+        oncompositionend="delete this.dataset.composing"
+        oninput="if (event.isComposing) return; const length = this.value.trim().length; if (length < 2 || length > 40) return; const field = this.closest('.field'); const error = field.querySelector('[data-field-message]'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'field-workspace-name-description-zh'); error.hidden = true"
+      />
+      <p id="field-workspace-name-description-zh" data-field-description>
+        用于导航、邀请和审计记录，长度为 2 到 40 个字符。
+      </p>
+      <p
+        id="field-workspace-name-error-zh"
+        data-field-message
+        role="alert"
+        hidden
+      >
+        请输入 2 到 40 个字符的工作区名称。
+      </p>
     </div>
-    <fieldset class="fieldset">
-      <legend>账单地址</legend>
-      <p>与该支付方式关联的账单地址</p>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="checkout-same-as-shipping" type="checkbox" defaultChecked />
-        <label for="checkout-same-as-shipping" class="font-normal">与收货地址相同</label>
-      </div>
-    </fieldset>
-    <fieldset class="fieldset">
-      <div role="group" class="field">
-        <label for="checkout-comments">备注</label>
-        <textarea id="checkout-comments" placeholder="添加其他备注" rows="3"></textarea>
-      </div>
-    </fieldset>
-    <div role="group" class="field" data-orientation="horizontal">
-      <button type="submit" class="btn">提交</button>
-      <button type="button" class="btn" data-variant="outline">取消</button>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        保存名称
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        重置
+      </button>
     </div>
-  </div>
-</form>
+  </form>
 </Preview>
 
 ## 用法
 
-<Steps>
-  <Step title="引入 CSS">
-
-导入 Tailwind 和一个完整的 A3S UI 样式包。
+导入 Tailwind 和一个完整的 A3S UI 样式包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui/a3s.css";
 ```
 
-或者只导入基础 CSS、字段组件 CSS 和一个样式包。
+按组件加载时，依次导入基础样式、Field 结构、所用控件结构和一个视觉样式：
 
 ```css
-@import "tailwindcss";
 @import "@a3s-lab/ui/base.css";
 @import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/components/input.css";
 @import "@a3s-lab/ui/styles/a3s.css";
 ```
 
-使用 CDN 或打包工具导入？请参阅[安装页](/installation)。
-
-  </Step>
-  <Step title="添加字段 HTML">
-
-单个控件使用 `class="field"`，相关控件组使用 `class="fieldset"`。需要 `<legend>` 标题时使用原生 `<fieldset>`；其他情况使用带标签的 `role="group"`。
+一个控件只使用一个普通的 `<div class="field">`。原生控件继续负责聚焦、编辑、校验与表单行为，Field 只负责周围的内容关系。
 
 ```html
-<fieldset class="fieldset">
-  <legend>个人资料</legend>
-  <p>这些信息会显示在账单和邮件中。</p>
-  <div role="group" aria-label="个人资料字段">
-    <div role="group" class="field">
-      <label for="name">姓名</label>
-      <input id="name" autocomplete="off" placeholder="王小明" />
-      <p>这些信息会显示在账单和邮件中。</p>
-    </div>
-    <div role="group" class="field" data-invalid>
-      <label for="username">用户名</label>
-      <input id="username" autocomplete="off" aria-invalid="true" aria-describedby="username-error" />
-      <p id="username-error" role="alert">请换一个用户名。</p>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="newsletter" type="checkbox" role="switch" />
-      <label for="newsletter">订阅新闻邮件</label>
-    </div>
-  </div>
-</fieldset>
+<div class="field">
+  <label for="workspace-name">工作区显示名称</label>
+  <input
+    id="workspace-name"
+    name="workspaceName"
+    dir="auto"
+    aria-describedby="workspace-name-help"
+    required
+  />
+  <p id="workspace-name-help" data-field-description>用于导航和邀请。</p>
+  <p id="workspace-name-error" data-field-message role="alert" hidden>
+    请输入工作区名称。
+  </p>
+</div>
 ```
 
-  </Step>
-</Steps>
+不要给单个 Field 添加 `role="group"`。它不会改善控件名称或说明，只会在无障碍树中增加一个未命名分组。多个控件共同回答一个问题时，使用原生 `<fieldset>` 和 `<legend>`。
 
-### HTML 结构
+### 参数
 
-<dl>
-  <dt><code>&lt;fieldset class="fieldset"&gt;</code></dt>
-  <dd>相关字段的原生分组。使用 <code>&lt;legend&gt;</code> 作为标题，并用紧随其后的 <code>&lt;p&gt;</code> 提供说明。</dd>
-  <dt><code>&lt;div role="group" class="fieldset"&gt;</code></dt>
-  <dd>不适合使用 <code>&lt;fieldset&gt;</code> 时的结构分组。请添加 <code>aria-label</code> 或 <code>aria-labelledby</code>。</dd>
-  <dt><code>&lt;div role="group" class="field"&gt;</code></dt>
-  <dd>单个字段的容器。需要时添加 <code>data-orientation</code>。</dd>
-  <dt><code>&lt;label&gt;</code></dt>
-  <dd>控件标签。控件有 <code>id</code> 时，请用 <code>for</code> 与其关联。</dd>
-  <dt><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code></dt>
-  <dd>原生表单控件。请将 <code>aria-invalid="true"</code> 添加到无效控件本身，而不只是外层容器。</dd>
-  <dt><code>&lt;section&gt;</code></dt>
-  <dd>控件与文字并排时，可用它包裹标签和说明。</dd>
-  <dt><code>&lt;p&gt;</code></dt>
-  <dd>帮助或错误文本。校验错误使用 <code>role="alert"</code>，并通过 <code>aria-describedby</code> 与控件关联。</dd>
-</dl>
+| 契约                            | 用途                                                 |
+| ------------------------------- | ---------------------------------------------------- |
+| `.field`                        | 一个控件及其支持关系的结构根节点                     |
+| `<label for>`                   | 常驻可见名称，`for` 必须匹配控件 `id`                |
+| `required` 或可见的“可选”说明   | 表达能否省略，不能只依赖装饰符号                     |
+| `data-field-description`        | 通过 `aria-describedby` 关联的常驻说明               |
+| `data-field-message`            | 当前局部错误，仅在校验后显示，并在显示期间与控件关联 |
+| `data-invalid="true"`           | 校验失败后 Field 的视觉状态                          |
+| `data-disabled="true"`          | 与控件原生 `disabled` 配套的不可用视觉状态           |
+| `data-readonly="true"`          | 与支持控件的原生 `readonly` 配套的只读视觉状态       |
+| `data-orientation="horizontal"` | 在关系仍清晰时水平排列控件与标签内容                 |
+| `data-orientation="responsive"` | 默认堆叠，并在较宽的 Field 容器中改为水平排列        |
 
-## 示例
+## 框架用法
 
-### 输入
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <div role="group" aria-label="账户凭据">
-    <div role="group" class="field">
-      <label for="username">用户名</label>
-      <input id="username" type="text" placeholder="王小明" aria-describedby="username-description" />
-      <p id="username-description">为账户选择一个唯一的用户名。</p>
-    </div>
-    <div role="group" class="field">
-      <label for="password">密码</label>
-      <p id="password-description">至少需要 8 个字符。</p>
-      <input id="password" type="password" placeholder="••••••••" aria-describedby="password-description" />
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### 文本区域
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <div role="group" class="field">
-    <label for="feedback">反馈</label>
-    <textarea id="feedback" placeholder="你的反馈能帮助我们持续改进……" rows="4" aria-describedby="feedback-description"></textarea>
-    <p id="feedback-description">告诉我们你对服务的看法。</p>
-  </div>
-</fieldset>
-</Preview>
-
-### 选择
-
-<Preview class="w-full max-w-xs">
-<div role="group" class="field">
-  <label for="department">部门</label>
-  <select id="department" class="select w-full" aria-describedby="department-description">
-    <option value="">选择部门</option>
-    <option value="engineering">工程</option>
-    <option value="design">设计</option>
-    <option value="marketing">市场</option>
-    <option value="sales">销售</option>
-    <option value="support">客户支持</option>
-    <option value="hr">人力资源</option>
-    <option value="finance">财务</option>
-    <option value="operations">运营</option>
-  </select>
-  <p id="department-description">选择你所在的部门或工作领域。</p>
-</div>
-</Preview>
-
-### 滑块
-
-<Preview class="w-full max-w-xs">
-  <SliderDemo variant="field" />
-</Preview>
-
-### 字段组
-
-<Preview class="w-full max-w-sm">
-<fieldset class="fieldset">
-  <legend>地址信息</legend>
-  <p>我们需要你的地址来配送订单。</p>
-  <div role="group" aria-label="地址字段">
-    <div role="group" class="field">
-      <label for="street">街道地址</label>
-      <input id="street" type="text" placeholder="中山路 123 号" />
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div role="group" class="field">
-        <label for="city">城市</label>
-        <input id="city" type="text" placeholder="上海" />
-      </div>
-      <div role="group" class="field">
-        <label for="zip">邮政编码</label>
-        <input id="zip" type="text" placeholder="90502" />
-      </div>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### 复选框
-
-<Preview class="w-full max-w-xs">
-<div role="group" aria-label="Finder 偏好设置" class="fieldset">
-  <fieldset class="fieldset">
-    <legend data-variant="label">在桌面显示以下项目</legend>
-    <p>选择要在桌面显示的项目。</p>
-    <div role="group" aria-label="桌面项目">
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-hard-disks" type="checkbox" />
-        <label for="finder-hard-disks" class="font-normal">硬盘</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-external-disks" type="checkbox" />
-        <label for="finder-external-disks" class="font-normal">外置磁盘</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-cds" type="checkbox" />
-        <label for="finder-cds" class="font-normal">CD、DVD 和 iPod</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="finder-connected-servers" type="checkbox" />
-        <label for="finder-connected-servers" class="font-normal">已连接的服务器</label>
-      </div>
-    </div>
-  </fieldset>
-  <div class="field-separator">
-    <hr role="separator" />
-  </div>
-  <div role="group" class="field" data-orientation="horizontal">
-    <input id="sync-folders" type="checkbox" defaultChecked />
-    <section>
-      <label for="sync-folders">同步“桌面”和“文稿”文件夹</label>
-      <p>“桌面”和“文稿”文件夹正在与 iCloud 云盘同步，你可以从其他设备访问它们。</p>
-    </section>
-  </div>
-</div>
-</Preview>
-
-### 单选按钮
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <legend data-variant="label">订阅方案</legend>
-  <p>按年和终身方案可享大幅优惠。</p>
-  <div role="radiogroup" aria-label="订阅方案">
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-monthly" type="radio" name="plan" value="monthly" defaultChecked />
-      <label for="plan-monthly" class="font-normal">按月（$9.99/月）</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-yearly" type="radio" name="plan" value="yearly" />
-      <label for="plan-yearly" class="font-normal">按年（$99.99/年）</label>
-    </div>
-    <div role="group" class="field" data-orientation="horizontal">
-      <input id="plan-lifetime" type="radio" name="plan" value="lifetime" />
-      <label for="plan-lifetime" class="font-normal">终身（$299.99）</label>
-    </div>
-  </div>
-</fieldset>
-</Preview>
-
-### 开关
-
-<Preview class="w-full max-w-sm">
-<div role="group" class="field" data-orientation="horizontal">
-  <section>
-    <label for="multi-factor-authentication">多重身份验证</label>
-    <p>启用多重身份验证。没有验证设备时，可以使用发送到邮箱的一次性验证码。</p>
-  </section>
-  <input id="multi-factor-authentication" type="checkbox" role="switch" />
-</div>
-</Preview>
-
-### 卡片式选项
-
-将 `.field` 包裹在 `<label>` 中即可创建整卡可点击的选项，适用于单选按钮、复选框和开关。
-
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset">
-  <legend data-variant="label">计算环境</legend>
-  <p>选择集群使用的计算环境。</p>
-  <div role="radiogroup" aria-label="计算环境">
-    <label for="compute-kubernetes">
-      <div role="group" class="field" data-orientation="horizontal">
-        <section>
-          <h3>Kubernetes</h3>
-          <p>在 Kubernetes 集群上运行 GPU 工作负载。</p>
-        </section>
-        <input id="compute-kubernetes" type="radio" name="compute" value="kubernetes" defaultChecked />
-      </div>
+<FrameworkTabs
+  html={`<form data-workspace-name-form novalidate>
+  <div class="field">
+    <label for="workspace-name">
+      工作区显示名称 <span aria-hidden="true">必填</span>
     </label>
-    <label for="compute-vm">
-      <div role="group" class="field" data-orientation="horizontal">
-        <section>
-          <h3>虚拟机</h3>
-          <p>接入虚拟机集群并运行 GPU 工作负载。</p>
-        </section>
-        <input id="compute-vm" type="radio" name="compute" value="vm" />
-      </div>
-    </label>
+    <input
+      id="workspace-name"
+      name="workspaceName"
+      type="text"
+      value="智能体运行时"
+      dir="auto"
+      minlength="2"
+      maxlength="40"
+      autocomplete="organization"
+      aria-describedby="workspace-name-help"
+      required
+    >
+    <p id="workspace-name-help" data-field-description>用于导航、邀请和审计记录，长度为 2 到 40 个字符。</p>
+    <p id="workspace-name-error" data-field-message role="alert" hidden>请输入 2 到 40 个字符的工作区名称。</p>
   </div>
-</fieldset>
-</Preview>
-
-### 字段分组
-
-将字段堆叠在组内并使用 `.field-separator` 来划分部分。
-
-<Preview class="w-full max-w-xs">
-<div role="group" aria-label="通知偏好设置" class="fieldset">
-  <fieldset class="fieldset">
-    <legend data-variant="label">回复</legend>
-    <p>当 ChatGPT 完成研究、图像生成等耗时请求时接收通知。</p>
-    <div role="group" aria-label="回复通知">
-      <div role="group" class="field" data-orientation="horizontal" data-disabled="true">
-        <input id="push-responses" type="checkbox" defaultChecked disabled />
-        <label for="push-responses" class="font-normal">推送通知</label>
-      </div>
-    </div>
-  </fieldset>
-  <div class="field-separator">
-    <hr role="separator" />
-  </div>
-  <fieldset class="fieldset">
-    <legend data-variant="label">任务</legend>
-    <p>你创建的任务有更新时接收通知。<a href="#">管理任务</a></p>
-    <div role="group" aria-label="任务通知">
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="push-tasks" type="checkbox" />
-        <label for="push-tasks" class="font-normal">推送通知</label>
-      </div>
-      <div role="group" class="field" data-orientation="horizontal">
-        <input id="email-tasks" type="checkbox" />
-        <label for="email-tasks" class="font-normal">邮件通知</label>
-      </div>
-    </div>
-  </fieldset>
-</div>
-</Preview>
-
-### 响应式布局
-
-默认情况下使用 `data-orientation="responsive"` 堆叠，并在较宽的容器中切换为水平堆叠。
-
-<Preview class="w-full max-w-4xl">
-<form>
-  <fieldset class="fieldset">
-    <legend>个人资料</legend>
-    <p>填写你的个人资料。</p>
-    <div class="field-separator">
-      <hr role="separator" />
-    </div>
-    <div role="group" aria-label="个人资料字段">
-      <div role="group" class="field" data-orientation="responsive">
-        <section>
-          <label for="responsive-name">姓名</label>
-          <p id="responsive-name-description">填写用于识别身份的姓名</p>
-        </section>
-        <input id="responsive-name" placeholder="王小明" aria-describedby="responsive-name-description" required />
-      </div>
-      <div class="field-separator">
-        <hr role="separator" />
-      </div>
-      <div role="group" class="field" data-orientation="responsive">
-        <section>
-          <label for="responsive-message">留言</label>
-          <p id="responsive-message-description">在这里填写留言，建议控制在 100 个字符以内。</p>
-        </section>
-        <textarea id="responsive-message" placeholder="你好，世界！" rows="4" aria-describedby="responsive-message-description" required class="min-h-[100px] resize-none sm:min-w-[300px]"></textarea>
-      </div>
-      <div class="field-separator">
-        <hr role="separator" />
-      </div>
-      <div role="group" class="field" data-orientation="responsive">
-        <button type="submit" class="btn">提交</button>
-        <button type="button" class="btn" data-variant="outline">取消</button>
-      </div>
-    </div>
-  </fieldset>
+  <button class="btn" type="submit">保存名称</button>
 </form>
+<script type="module">
+  const form = document.querySelector("[data-workspace-name-form]");
+  const input = form.querySelector("#workspace-name");
+  const field = input.closest(".field");
+  const error = form.querySelector("#workspace-name-error");
+  let composing = false;
+
+  const setInvalid = (invalid) => {
+    if (invalid) {
+      field.dataset.invalid = "true";
+      input.setAttribute("aria-invalid", "true");
+    } else {
+      field.removeAttribute("data-invalid");
+      input.removeAttribute("aria-invalid");
+    }
+
+    input.setAttribute(
+      "aria-describedby",
+      invalid
+        ? "workspace-name-help workspace-name-error"
+        : "workspace-name-help",
+    );
+    error.hidden = !invalid;
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (composing) {
+      input.focus();
+      return;
+    }
+
+    const length = input.value.trim().length;
+    const invalid = length < 2 || length > 40;
+    setInvalid(invalid);
+    if (invalid) input.focus();
+  });
+
+  input.addEventListener("compositionstart", () => {
+    composing = true;
+  });
+  input.addEventListener("compositionend", () => {
+    composing = false;
+  });
+  input.addEventListener("input", (event) => {
+    const length = input.value.trim().length;
+    if (!event.isComposing && length >= 2 && length <= 40) {
+      setInvalid(false);
+    }
+  });
+</script>`}
+  react={`import { useRef, useState } from "react";
+import { Field } from "@a3s-lab/ui/react";
+
+export function WorkspaceNameField() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const composingRef = useRef(false);
+  const [invalid, setInvalid] = useState(false);
+
+  const validate = () => {
+    const input = inputRef.current;
+    if (!input || composingRef.current) return;
+
+    const length = input.value.trim().length;
+    const failed = length < 2 || length > 40;
+    setInvalid(failed);
+    if (failed) input.focus();
+  };
+
+  return (
+    <form
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault();
+        validate();
+      }}
+    >
+      <Field data-invalid={invalid || undefined}>
+        <label htmlFor="workspace-name-react">
+          工作区显示名称 <span aria-hidden="true">必填</span>
+        </label>
+        <input
+          id="workspace-name-react"
+          ref={inputRef}
+          name="workspaceName"
+          defaultValue="智能体运行时"
+          dir="auto"
+          minLength={2}
+          maxLength={40}
+          autoComplete="organization"
+          aria-describedby={
+            invalid
+              ? "workspace-name-help-react workspace-name-error-react"
+              : "workspace-name-help-react"
+          }
+          aria-invalid={invalid || undefined}
+          required
+          onCompositionStart={() => {
+            composingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            composingRef.current = false;
+          }}
+          onInput={(event) => {
+            const composing = (event.nativeEvent as InputEvent).isComposing;
+            const length = event.currentTarget.value.trim().length;
+            if (!composing && length >= 2 && length <= 40) {
+              setInvalid(false);
+            }
+          }}
+        />
+        <p id="workspace-name-help-react" data-field-description>
+          用于导航、邀请和审计记录，长度为 2 到 40 个字符。
+        </p>
+        <p
+          id="workspace-name-error-react"
+          data-field-message
+          role="alert"
+          hidden={!invalid}
+        >
+          请输入 2 到 40 个字符的工作区名称。
+        </p>
+      </Field>
+      <button className="btn" type="submit">保存名称</button>
+    </form>
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Field } from "@a3s-lab/ui/vue";
+
+const input = ref<HTMLInputElement | null>(null);
+const composing = ref(false);
+const invalid = ref(false);
+
+function validate() {
+  if (composing.value || !input.value) return;
+
+  const length = input.value.value.trim().length;
+  invalid.value = length < 2 || length > 40;
+  if (invalid.value) input.value.focus();
+}
+
+function recover(event: Event) {
+  const nativeEvent = event as InputEvent;
+  const control = event.currentTarget as HTMLInputElement;
+  const length = control.value.trim().length;
+  if (!nativeEvent.isComposing && length >= 2 && length <= 40) {
+    invalid.value = false;
+  }
+}
+
+function startComposition() {
+  composing.value = true;
+}
+
+function endComposition() {
+  composing.value = false;
+}
+</script>
+
+<template>
+  <form novalidate @submit.prevent="validate">
+    <Field :data-invalid="invalid || undefined">
+      <label for="workspace-name-vue">
+        工作区显示名称 <span aria-hidden="true">必填</span>
+      </label>
+      <input
+        id="workspace-name-vue"
+        ref="input"
+        name="workspaceName"
+        value="智能体运行时"
+        dir="auto"
+        minlength="2"
+        maxlength="40"
+        autocomplete="organization"
+        :aria-describedby="invalid ? 'workspace-name-help-vue workspace-name-error-vue' : 'workspace-name-help-vue'"
+        :aria-invalid="invalid || undefined"
+        required
+        @compositionstart="startComposition"
+        @compositionend="endComposition"
+        @input="recover"
+      >
+      <p id="workspace-name-help-vue" data-field-description>
+        用于导航、邀请和审计记录，长度为 2 到 40 个字符。
+      </p>
+      <p
+        id="workspace-name-error-vue"
+        data-field-message
+        role="alert"
+        :hidden="!invalid"
+      >
+        请输入 2 到 40 个字符的工作区名称。
+      </p>
+    </Field>
+    <button class="btn" type="submit">保存名称</button>
+  </form>
+</template>`}
+/>
+
+Field 没有 JavaScript 控制器，因此也不需要框架专属 Hook。React 和 Vue 负责自己的表单状态，适配器只渲染同一个 `.field` 根节点与原生关系。
+
+## 状态和变体
+
+空值与已填写都是中性值状态。只有执行校验后才能进入错误状态。禁用和只读是不同的可用性契约，不能合并成同一种淡化外观。
+
+### 必填和可选
+
+在标签旁只说明一次填写要求。原生 `required` 是机器可读契约，可见文字则帮助用户在提交前规划填写内容。
+
+<Preview class="w-full max-w-lg" title="填写要求">
+  <div class="grid w-full gap-5 sm:grid-cols-2">
+    <div class="field">
+      <label for="field-required-owner-zh">
+        工作区所有者
+        <span
+          class="ms-auto text-xs font-normal text-muted-foreground"
+          aria-hidden="true"
+        >
+          必填
+        </span>
+      </label>
+      <input
+        id="field-required-owner-zh"
+        type="email"
+        name="ownerEmail"
+        autocomplete="email"
+        aria-describedby="field-required-owner-help-zh"
+        required
+      />
+      <p id="field-required-owner-help-zh" data-field-description>
+        用于接收账户恢复和账单通知。
+      </p>
+    </div>
+    <div class="field">
+      <label for="field-optional-reference-zh">
+        内部参考编号
+        <span class="ms-auto text-xs font-normal text-muted-foreground">
+          可选
+        </span>
+      </label>
+      <input
+        id="field-optional-reference-zh"
+        name="internalReference"
+        aria-describedby="field-optional-reference-help-zh"
+      />
+      <p id="field-optional-reference-help-zh" data-field-description>
+        仅工作区管理员可见。
+      </p>
+    </div>
+  </div>
 </Preview>
 
-### 验证和错误
+### 禁用和只读
 
-将 `data-invalid` 添加到 `.field`，将 `aria-invalid="true"` 添加到无效控制。
+禁用会让控件退出焦点与表单提交；只读仍允许聚焦、选择、复制和提交。两种状态都要保留当前值，并解释为什么不能编辑。
 
-<Preview class="w-full max-w-xs">
-<div role="group" class="field" data-invalid>
-  <label for="invalid-email">邮箱</label>
-  <input id="invalid-email" type="email" value="wrong-email" aria-invalid="true" aria-describedby="invalid-email-error" />
-  <p id="invalid-email-error" role="alert">请输入有效的邮箱地址。</p>
-</div>
+<Preview class="w-full max-w-lg" title="可用性语义">
+  <form class="grid w-full gap-5" data-field-availability="zh">
+    <div class="field" data-disabled="true">
+      <label for="field-disabled-slug-zh">已归档工作区标识</label>
+      <input
+        id="field-disabled-slug-zh"
+        name="archivedSlug"
+        value="legacy-runtime"
+        aria-describedby="field-disabled-slug-reason-zh"
+        disabled
+      />
+      <p id="field-disabled-slug-reason-zh" data-field-description>
+        归档标识会保留在审计记录中，但不能参与提交。
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="field-readonly-owner-zh">组织所有者</label>
+      <input
+        id="field-readonly-owner-zh"
+        name="organizationOwner"
+        value="owner@example.com"
+        aria-describedby="field-readonly-owner-reason-zh"
+        readonly
+      />
+      <p id="field-readonly-owner-reason-zh" data-field-description>
+        该值仍可选择并参与提交，只有组织转移才能修改。
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### 相关字段
+
+多个控件共同回答一个问题时，使用一个原生 Fieldset。每个子项仍是只包含一个控件的普通 Field，不需要未命名的 `role="group"` 包装层。
+
+<Preview class="w-full max-w-lg" title="相关控件">
+  <fieldset class="fieldset" aria-describedby="field-release-window-help-zh">
+    <legend>发布窗口</legend>
+    <p id="field-release-window-help-zh">用于安排生产环境交接。</p>
+    <div class="grid w-full gap-5 sm:grid-cols-2">
+      <div class="field">
+        <label for="field-release-date-zh">日期</label>
+        <input
+          id="field-release-date-zh"
+          name="releaseDate"
+          type="date"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="field-release-time-zh">本地时间</label>
+        <input
+          id="field-release-time-zh"
+          name="releaseTime"
+          type="time"
+          required
+        />
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+### 响应式方向
+
+只有在标签、说明和控件仍保持清晰关系时才使用响应式方向，语义顺序始终不变。
+
+<Preview class="w-full max-w-3xl" title="响应式字段">
+  <div class="fieldset">
+    <div class="field" data-orientation="responsive">
+      <section>
+        <label for="field-retention-zh">成果保留时间</label>
+        <p id="field-retention-help-zh" data-field-description>
+          输入任务完成后成果继续可用的天数。
+        </p>
+      </section>
+      <input
+        id="field-retention-zh"
+        name="retentionDays"
+        type="number"
+        min="1"
+        max="365"
+        value="30"
+        aria-describedby="field-retention-help-zh"
+        required
+      />
+    </div>
+  </div>
 </Preview>
 
 ### RTL
 
-将 `dir="rtl"` 添加到字段、字段集或祖先。
+在 Field 或祖先节点设置布局方向。邮箱、网址等机器值继续使用原始文本方向。
 
-<Preview class="w-full max-w-xs">
-<fieldset class="fieldset" dir="rtl">
-  <legend>الملف الشخصي</legend>
-  <p>تظهر هذه المعلومات في حسابك.</p>
-  <div role="group" aria-label="حقول الملف الشخصي">
-    <div role="group" class="field">
-      <label for="field-rtl-name">الاسم الكامل</label>
-      <input id="field-rtl-name" type="text" placeholder="أرنب شرير" />
-      <p>اكتب اسمك الأول والأخير.</p>
-    </div>
+<Preview class="w-full max-w-md" title="RTL 字段">
+  <div class="field" dir="rtl">
+    <label for="field-owner-email-rtl">البريد الإلكتروني للمالك</label>
+    <input
+      id="field-owner-email-rtl"
+      name="ownerEmail"
+      type="email"
+      value="owner@example.com"
+      aria-describedby="field-owner-email-help-rtl"
+      dir="ltr"
+    />
+    <p id="field-owner-email-help-rtl" data-field-description>
+      يُستخدم لإشعارات الاسترداد وإدارة مساحة العمل.
+    </p>
   </div>
-</fieldset>
 </Preview>
 
-## React
+## 无障碍
 
-```tsx
-import { Field } from "@a3s-lab/ui/react";
+- 保留一个常驻可见标签，并通过 `for` 与 `id` 关联。占位文字不能成为唯一名称。
+- 普通说明始终放在 `aria-describedby` 中。校验失败后追加可见错误 ID，恢复或重置后及时移除。
+- 无效 Field 保留用户尝试的值，把焦点放回可操作控件，用文字说明问题与具体修正方法，不能只显示红色。
+- 单个 Field 不使用 `role="group"`。只有多个控件共同构成一个问题时才使用 `<fieldset>` 与 `<legend>`。
+- 只有值必须离开焦点和提交时才使用 `disabled`；用户仍需查看、选择、复制或提交值时使用 `readonly`。
+- 无法预先确定方向的用户输入自由文本使用 `dir="auto"`；邮箱、网址、路径等机器值保持原始文本方向。
+- 输入法组合期间不执行校验、裁剪或提交，等待组合输入结束。
+- 发布前验证长本地化标签和错误、390px 布局、200% 缩放、暗色、RTL、强制颜色、粗指针和屏幕阅读器与浏览器组合。
 
-export function Example() {
-  return (
-    <Field role="group">
-      <label htmlFor="name">姓名</label>
-      <input id="name" autoComplete="off" placeholder="王小明" />
-      <p>这些信息会显示在账单和邮件中。</p>
-    </Field>
-  );
-}
-```
-
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
-
-## Vue
-
-```vue
-<script setup lang="ts">
-import { Field } from "@a3s-lab/ui/vue";
-</script>
-
-<template>
-  <Field role="group">
-    <label for="name">姓名</label>
-    <input id="name" autocomplete="off" placeholder="王小明" />
-    <p>这些信息会显示在账单和邮件中。</p>
-  </Field>
-</template>
-```
-
-适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+Field 不负责领域校验、服务端响应、权限、持久化、提交或错误摘要的焦点协调。Form 与宿主应用负责这些工作，同时保持 Field 的局部关系完整。

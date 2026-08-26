@@ -24,7 +24,6 @@ export function ProductSessionExecution({
   const [permission, setPermission] = useState<
     "approved" | "denied" | "pending"
   >("approved");
-  const [copied, setCopied] = useState(false);
 
   const steps = created
     ? [
@@ -266,87 +265,7 @@ export function ProductSessionExecution({
                 </em>
                 <ProductPlaygroundIcon name="chevron" />
               </summary>
-              <section
-                aria-label={zh ? "测试日志" : "Test log"}
-                className="log-viewer product-command-preview"
-                data-a3s-components="log-viewer"
-                data-a3s-state="ready success"
-              >
-                <header>
-                  <div>
-                    <h3>{zh ? "测试日志" : "Test log"}</h3>
-                    <p>npm test -- session</p>
-                  </div>
-                  <button
-                    aria-label={zh ? "复制完整测试日志" : "Copy full test log"}
-                    onClick={async () => {
-                      await navigator.clipboard.writeText(testLogText(locale));
-                      setCopied(true);
-                    }}
-                    type="button"
-                  >
-                    <ProductPlaygroundIcon name={copied ? "check" : "copy"} />
-                  </button>
-                </header>
-                <div data-log-meta>
-                  <span>{zh ? "执行完成" : "Completed"}</span>
-                  <span>
-                    {zh ? "4 条记录 · 保留全部" : "4 records · All retained"}
-                  </span>
-                </div>
-                <div
-                  aria-label={
-                    zh ? "按时间排序的测试输出" : "Chronological test output"
-                  }
-                  role="log"
-                  tabIndex={0}
-                >
-                  <div data-log-record data-stream="stdout">
-                    <span data-log-sequence>#01</span>
-                    <time dateTime="2026-08-24T03:18:04.102Z">
-                      11:18:04.102
-                    </time>
-                    <span data-log-stream>stdout</span>
-                    <pre>$ npm test -- session</pre>
-                  </div>
-                  <div data-log-record data-stream="stdout">
-                    <span data-log-sequence>#02</span>
-                    <time dateTime="2026-08-24T03:18:06.441Z">
-                      11:18:06.441
-                    </time>
-                    <span data-log-stream>stdout</span>
-                    <pre>PASS tests/session.test.ts</pre>
-                  </div>
-                  <div data-log-record data-stream="stdout">
-                    <span data-log-sequence>#03</span>
-                    <time dateTime="2026-08-24T03:18:07.903Z">
-                      11:18:07.903
-                    </time>
-                    <span data-log-stream>stdout</span>
-                    <pre>
-                      {zh
-                        ? "恢复失败后回到原焦点 · 保留返回路径 · 公告恢复状态"
-                        : "Restores focus after failure · Preserves return route · Announces recovery state"}
-                    </pre>
-                  </div>
-                  <div data-log-record data-stream="stdout">
-                    <span data-log-sequence>#04</span>
-                    <time dateTime="2026-08-24T03:18:08.918Z">
-                      11:18:08.918
-                    </time>
-                    <span data-log-stream>stdout</span>
-                    <pre>
-                      {zh
-                        ? "测试：12 通过，0 失败"
-                        : "Tests: 12 passed, 0 failed"}
-                    </pre>
-                  </div>
-                </div>
-                <footer>
-                  <span>{zh ? "退出码 0" : "Exit code 0"}</span>
-                  <strong>{zh ? "12 / 12 通过" : "12 / 12 passed"}</strong>
-                </footer>
-              </section>
+              <ProductTestLogViewer locale={locale} />
             </details>
           </li>
         </ol>
@@ -391,6 +310,85 @@ export function ProductSessionExecution({
         </ul>
       </section>
     </div>
+  );
+}
+
+export function ProductTestLogViewer({
+  locale,
+}: {
+  locale: ProductPlaygroundLocale;
+}) {
+  const zh = locale === "zh";
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <section
+      aria-label={zh ? "测试日志" : "Test log"}
+      className="log-viewer product-command-preview"
+      data-a3s-components="log-viewer"
+      data-a3s-state="ready success"
+    >
+      <header>
+        <div>
+          <h3>{zh ? "测试日志" : "Test log"}</h3>
+          <p>npm test -- session</p>
+        </div>
+        <button
+          aria-label={zh ? "复制完整测试日志" : "Copy full test log"}
+          onClick={async () => {
+            await navigator.clipboard.writeText(testLogText(locale));
+            setCopied(true);
+          }}
+          type="button"
+        >
+          <ProductPlaygroundIcon name={copied ? "check" : "copy"} />
+        </button>
+      </header>
+      <div data-log-meta>
+        <span>{zh ? "执行完成" : "Completed"}</span>
+        <span>{zh ? "4 条记录 · 保留全部" : "4 records · All retained"}</span>
+      </div>
+      <div
+        aria-label={zh ? "按时间排序的测试输出" : "Chronological test output"}
+        role="log"
+        tabIndex={0}
+      >
+        <div data-log-record data-stream="stdout">
+          <span data-log-sequence>#01</span>
+          <time dateTime="2026-08-24T03:18:04.102Z">11:18:04.102</time>
+          <span data-log-stream>stdout</span>
+          <pre>$ npm test -- session</pre>
+        </div>
+        <div data-log-record data-stream="stdout">
+          <span data-log-sequence>#02</span>
+          <time dateTime="2026-08-24T03:18:06.441Z">11:18:06.441</time>
+          <span data-log-stream>stdout</span>
+          <pre>PASS tests/session.test.ts</pre>
+        </div>
+        <div data-log-record data-stream="stdout">
+          <span data-log-sequence>#03</span>
+          <time dateTime="2026-08-24T03:18:07.903Z">11:18:07.903</time>
+          <span data-log-stream>stdout</span>
+          <pre>
+            {zh
+              ? "恢复失败后回到原焦点 · 保留返回路径 · 公告恢复状态"
+              : "Restores focus after failure · Preserves return route · Announces recovery state"}
+          </pre>
+        </div>
+        <div data-log-record data-stream="stdout">
+          <span data-log-sequence>#04</span>
+          <time dateTime="2026-08-24T03:18:08.918Z">11:18:08.918</time>
+          <span data-log-stream>stdout</span>
+          <pre>
+            {zh ? "测试：12 通过，0 失败" : "Tests: 12 passed, 0 failed"}
+          </pre>
+        </div>
+      </div>
+      <footer>
+        <span>{zh ? "退出码 0" : "Exit code 0"}</span>
+        <strong>{zh ? "12 / 12 通过" : "12 / 12 passed"}</strong>
+      </footer>
+    </section>
   );
 }
 

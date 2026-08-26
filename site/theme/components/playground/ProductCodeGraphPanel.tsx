@@ -2,7 +2,36 @@ import { useEffect, useRef } from "react";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
-const codeNodes = [
+export type ProductCodeGraphNode = {
+  degree: number;
+  id: string;
+  kind: string;
+  label: string;
+  path: string;
+  pending?: boolean;
+  size: number;
+  tone: "component" | "config" | "entry" | "module" | "test";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type ProductCodeGraphEdge = readonly [
+  from: string,
+  to: string,
+  weight: number,
+  kind: string,
+];
+
+type ProductCodeGraphElement = HTMLElement & {
+  refresh?: () => unknown;
+  select?: (
+    id: string | null,
+    options?: { before?: boolean; source?: string },
+  ) => boolean;
+};
+
+const defaultCodeNodes = [
   {
     id: "main",
     label: "main.ts",
@@ -147,9 +176,9 @@ const codeNodes = [
     z: -104,
     degree: 2,
   },
-] as const;
+] as const satisfies readonly ProductCodeGraphNode[];
 
-const codeEdges = [
+const defaultCodeEdges = [
   ["main", "router", 2, "import"],
   ["main", "workspace", 3, "import"],
   ["router", "workspace", 1, "import"],
@@ -165,28 +194,73 @@ const codeEdges = [
   ["resources", "tool-calls", 1, "state"],
   ["runtime", "tool-calls", 1, "state"],
   ["workspace", "resources", 1, "state"],
-] as const;
+] as const satisfies readonly ProductCodeGraphEdge[];
 
 export function ProductCodeGraphPanel({
+  className,
+  edges = defaultCodeEdges,
   id,
   locale,
+  nodes = defaultCodeNodes,
+  onSelectNode,
+  selectedNodeId = "task-composer",
+  variant = "code",
 }: {
+  className?: string;
+  edges?: readonly ProductCodeGraphEdge[];
   id: string;
   locale: ProductPlaygroundLocale;
+  nodes?: readonly ProductCodeGraphNode[];
+  onSelectNode?: (id: string) => void;
+  selectedNodeId?: string | null;
+  variant?: "code" | "memory";
 }) {
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<ProductCodeGraphElement>(null);
   const zh = locale === "zh";
+  const selectedNode =
+    nodes.find((node) => node.id === selectedNodeId) ?? nodes[0] ?? null;
+  const selectedConnections = selectedNode
+    ? edges.filter(
+        ([from, to]) => from === selectedNode.id || to === selectedNode.id,
+      ).length
+    : 0;
+  const memoryGraph = variant === "memory";
 
   useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const handleSelection = (event: Event) => {
+      const current = (event as CustomEvent<{ current?: string | null }>).detail
+        ?.current;
+      if (current) onSelectNode?.(current);
+    };
+    root.addEventListener("a3s:code-graph-selection-change", handleSelection);
     window.a3sUI?.start();
     window.a3sUI?.initAll();
-  }, []);
+    return () => {
+      root.removeEventListener(
+        "a3s:code-graph-selection-change",
+        handleSelection,
+      );
+    };
+  }, [onSelectNode]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    root.refresh?.();
+    root.select?.(selectedNodeId, {
+      before: false,
+      source: "react",
+    });
+  }, [edges, nodes, selectedNodeId]);
 
   return (
     <section
       aria-labelledby={`${id}-title`}
-      className="code-graph product-session-code-graph"
-      data-selected-node="task-composer"
+      className={`code-graph product-session-code-graph${className ? ` ${className}` : ""}`}
+      data-graph-domain={variant}
+      data-selected-node={selectedNodeId ?? undefined}
       data-state="ready"
       data-view="graph"
       id={id}
@@ -195,12 +269,18 @@ export function ProductCodeGraphPanel({
       <header>
         <div data-code-graph-identity>
           <strong id={`${id}-title`}>
-            {zh ? "A3S UI / 本次变更依赖" : "A3S UI / change dependencies"}
+            {memoryGraph
+              ? zh
+                ? "记忆 / 来源关系"
+                : "Memory / source relationships"
+              : zh
+                ? "A3S UI / 本次变更依赖"
+                : "A3S UI / change dependencies"}
           </strong>
           <small>
             {zh
-              ? "12 个节点 · 15 条关系 · TypeScript"
-              : "12 nodes · 15 relations · TypeScript"}
+              ? `${nodes.length} 个节点 · ${edges.length} 条关系 · ${memoryGraph ? "长期上下文" : "TypeScript"}`
+              : `${nodes.length} nodes · ${edges.length} relations · ${memoryGraph ? "durable context" : "TypeScript"}`}
           </small>
         </div>
         <div data-code-graph-actions>
@@ -262,10 +342,24 @@ export function ProductCodeGraphPanel({
         <label className="input-group">
           <ProductPlaygroundIcon name="search" />
           <input
-            aria-label={zh ? "筛选代码节点" : "Filter code nodes"}
+            aria-label={
+              memoryGraph
+                ? zh
+                  ? "筛选记忆节点"
+                  : "Filter memory nodes"
+                : zh
+                  ? "筛选代码节点"
+                  : "Filter code nodes"
+            }
             data-code-graph-search
             placeholder={
-              zh ? "筛选文件、符号或类型" : "Filter files, symbols, or kinds"
+              memoryGraph
+                ? zh
+                  ? "筛选标题、来源或类型"
+                  : "Filter titles, sources, or kinds"
+                : zh
+                  ? "筛选文件、符号或类型"
+                  : "Filter files, symbols, or kinds"
             }
             type="search"
           />
@@ -297,30 +391,35 @@ export function ProductCodeGraphPanel({
           </button>
         </div>
         <div aria-label={zh ? "节点类型" : "Node kinds"} data-code-graph-legend>
-          <span>
-            <i data-tone="entry" />
-            {zh ? "入口" : "Entry"}
-          </span>
-          <span>
-            <i data-tone="component" />
-            {zh ? "组件" : "Component"}
-          </span>
-          <span>
-            <i data-tone="test" />
-            {zh ? "测试" : "Test"}
-          </span>
-          <span>
-            <i />
-            {zh ? "模块" : "Module"}
-          </span>
+          {(memoryGraph
+            ? ([
+                ["component", zh ? "工作区" : "Workspace"],
+                ["test", zh ? "个人" : "Personal"],
+              ] as const)
+            : ([
+                ["entry", zh ? "入口" : "Entry"],
+                ["component", zh ? "组件" : "Component"],
+                ["test", zh ? "测试" : "Test"],
+                ["module", zh ? "模块" : "Module"],
+              ] as const)
+          ).map(([tone, label]) => (
+            <span key={tone}>
+              <i data-tone={tone === "module" ? undefined : tone} />
+              {label}
+            </span>
+          ))}
         </div>
       </div>
       <div data-code-graph-surface>
         <div
           aria-label={
-            zh
-              ? "可旋转的三维代码依赖图；使用方向键旋转，加减键缩放"
-              : "Rotatable 3D dependency graph; use arrow keys to rotate and plus or minus to zoom"
+            memoryGraph
+              ? zh
+                ? "可旋转的三维记忆关系图；使用方向键旋转，加减键缩放"
+                : "Rotatable 3D memory graph; use arrow keys to rotate and plus or minus to zoom"
+              : zh
+                ? "可旋转的三维代码依赖图；使用方向键旋转，加减键缩放"
+                : "Rotatable 3D dependency graph; use arrow keys to rotate and plus or minus to zoom"
           }
           data-code-graph-viewport
           role="img"
@@ -342,14 +441,23 @@ export function ProductCodeGraphPanel({
           </div>
         </div>
         <ul
-          aria-label={zh ? "代码节点列表" : "Code node list"}
+          aria-label={
+            memoryGraph
+              ? zh
+                ? "记忆节点列表"
+                : "Memory node list"
+              : zh
+                ? "代码节点列表"
+                : "Code node list"
+          }
           data-code-graph-list
           hidden
         >
-          {codeNodes.map((node) => (
+          {nodes.map((node) => (
             <li
-              aria-selected={node.id === "task-composer"}
+              aria-selected={node.id === selectedNodeId}
               data-code-node
+              data-memory-id={memoryGraph ? node.id : undefined}
               data-node-id={node.id}
               data-node-kind={node.kind}
               data-node-label={node.label}
@@ -359,9 +467,10 @@ export function ProductCodeGraphPanel({
               data-node-x={node.x}
               data-node-y={node.y}
               data-node-z={node.z}
+              data-removal={node.pending ? "pending" : undefined}
               key={node.id}
             >
-              <button aria-pressed={node.id === "task-composer"} type="button">
+              <button aria-pressed={node.id === selectedNodeId} type="button">
                 <i data-node-tone={node.tone} />
                 <span data-node-copy>
                   <strong data-node-label>{node.label}</strong>
@@ -373,7 +482,7 @@ export function ProductCodeGraphPanel({
           ))}
         </ul>
         <div data-code-edges hidden>
-          {codeEdges.map(([from, to, weight, kind]) => (
+          {edges.map(([from, to, weight, kind]) => (
             <i
               data-code-edge
               data-edge-kind={kind}
@@ -385,35 +494,59 @@ export function ProductCodeGraphPanel({
           ))}
         </div>
         <aside
-          aria-label={zh ? "选中节点详情" : "Selected node details"}
+          aria-label={
+            memoryGraph
+              ? zh
+                ? "选中记忆详情"
+                : "Selected memory details"
+              : zh
+                ? "选中节点详情"
+                : "Selected node details"
+          }
           data-code-graph-inspector
         >
           <header>
-            <strong>{zh ? "选中节点" : "Selected node"}</strong>
+            <strong>
+              {memoryGraph
+                ? zh
+                  ? "选中记忆"
+                  : "Selected memory"
+                : zh
+                  ? "选中节点"
+                  : "Selected node"}
+            </strong>
             <p>
-              {zh
-                ? "点击背景清除选择；相邻关系保持高亮。"
-                : "Click the background to clear selection; adjacent relations stay highlighted."}
+              {memoryGraph
+                ? zh
+                  ? "关系表示共同来源与作用范围，不代表自动推断出的事实。"
+                  : "Edges represent shared sources and scope, not inferred facts."
+                : zh
+                  ? "点击背景清除选择；相邻关系保持高亮。"
+                  : "Click the background to clear selection; adjacent relations stay highlighted."}
             </p>
           </header>
           <dl>
             <div>
-              <dt>{zh ? "名称" : "Name"}</dt>
-              <dd data-code-graph-field="label">TaskComposer</dd>
-            </div>
-            <div>
-              <dt>{zh ? "路径" : "Path"}</dt>
-              <dd data-code-graph-field="path">
-                src/features/tasks/components/task-composer.tsx
+              <dt>
+                {memoryGraph ? (zh ? "标题" : "Title") : zh ? "名称" : "Name"}
+              </dt>
+              <dd data-code-graph-field="label">
+                {selectedNode?.label ?? "—"}
               </dd>
             </div>
             <div>
+              <dt>
+                {memoryGraph ? (zh ? "来源" : "Source") : zh ? "路径" : "Path"}
+              </dt>
+              <dd data-code-graph-field="path">{selectedNode?.path ?? "—"}</dd>
+            </div>
+            <div>
               <dt>{zh ? "类型" : "Kind"}</dt>
-              <dd data-code-graph-field="kind">component</dd>
+              <dd data-code-graph-field="kind">{selectedNode?.kind ?? "—"}</dd>
             </div>
             <div>
               <dt>{zh ? "连接" : "Links"}</dt>
-              <dd data-code-graph-field="connections">7</dd>
+              <dd data-code-graph-field="connections">{selectedConnections}</dd>
             </div>
           </dl>
           <button
@@ -429,7 +562,13 @@ export function ProductCodeGraphPanel({
       </div>
       <footer>
         <output aria-live="polite" data-code-graph-status>
-          {zh ? "已显示本次变更图谱" : "Change graph is ready"}
+          {memoryGraph
+            ? zh
+              ? "记忆关系图谱已就绪"
+              : "Memory graph is ready"
+            : zh
+              ? "已显示本次变更图谱"
+              : "Change graph is ready"}
         </output>
         <span>
           {zh

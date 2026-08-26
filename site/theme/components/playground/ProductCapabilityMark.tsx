@@ -1,5 +1,5 @@
-import { withBase } from "@rspress/core/runtime";
 import type { ProductCapabilityDefinition } from "./product-capability-state";
+import { ProductExpertAvatar } from "./ProductExpertAvatar";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 function stableVisualIndex(id: string, count: number) {
@@ -28,17 +28,7 @@ export function ProductCapabilityMark({
   size?: number;
 }) {
   if (definition.tab === "assistants") {
-    return (
-      <img
-        alt=""
-        aria-hidden="true"
-        height={size}
-        src={withBase(
-          `/assets/images/avatar-${stableVisualIndex(definition.id, 3)}.png`,
-        )}
-        width={size}
-      />
-    );
+    return <ProductExpertAvatar expertId={definition.id} size={size} />;
   }
 
   return (

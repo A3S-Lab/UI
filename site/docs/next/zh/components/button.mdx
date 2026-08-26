@@ -2,21 +2,76 @@
 
 按钮触发当前界面中的操作；需要前往其他地址时，应使用带 `href` 的链接并应用相同视觉样式。
 
-<Preview title="常用操作">
-  <div class="flex flex-wrap items-center gap-2">
-    <button type="button" class="btn">
-      保存更改
-    </button>
-    <button type="button" class="btn" data-variant="outline">
-      预览
-    </button>
-    <button type="button" class="btn" data-variant="secondary">
-      稍后处理
-    </button>
-    <button type="button" class="btn" data-variant="destructive">
-      删除
-    </button>
-  </div>
+<Preview class="w-full max-w-xl" title="保存权限更改">
+  <section
+    class="grid w-full gap-4"
+    data-button-primary-demo="zh"
+    data-button-save-state="ready"
+    data-button-submissions="0"
+    aria-labelledby="button-workspace-access-zh"
+  >
+    <div class="grid gap-1">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <strong id="button-workspace-access-zh">工作区访问权限</strong>
+        <span class="text-xs text-muted-foreground">2 项待保存更改</span>
+      </div>
+      <p class="text-sm text-muted-foreground">
+        审阅者访问权限和部署审批设置已经准备好更新。
+      </p>
+    </div>
+    <div class="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <output
+        class="text-sm text-muted-foreground"
+        data-button-status
+        aria-live="polite"
+      >
+        可以保存更改。
+      </output>
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="btn"
+          data-button-save
+          onclick="if (this.disabled) return; const region = this.closest('[data-button-primary-demo]'); const status = region.querySelector('[data-button-status]'); const idle = this.querySelector('[data-button-idle]'); const progress = this.querySelector('[data-button-progress]'); region.dataset.buttonSubmissions = String(Number(region.dataset.buttonSubmissions || '0') + 1); region.dataset.buttonSaveState = 'loading'; this.disabled = true; this.setAttribute('aria-busy', 'true'); idle.classList.add('invisible'); idle.setAttribute('aria-hidden', 'true'); progress.classList.remove('invisible'); progress.setAttribute('aria-hidden', 'false'); status.textContent = '正在保存权限更改…'; window.clearTimeout(this._a3sButtonTimer); this._a3sButtonTimer = window.setTimeout(() => { region.dataset.buttonSaveState = 'saved'; this.disabled = false; this.removeAttribute('aria-busy'); idle.classList.remove('invisible'); idle.setAttribute('aria-hidden', 'false'); progress.classList.add('invisible'); progress.setAttribute('aria-hidden', 'true'); status.textContent = '权限更改已保存。'; }, 1200)"
+        >
+          <span class="grid">
+            <span class="col-start-1 row-start-1" data-button-idle>
+              保存更改
+            </span>
+            <span
+              class="invisible col-start-1 row-start-1 inline-flex items-center justify-center gap-1.5"
+              data-button-progress
+              aria-hidden="true"
+            >
+              <svg
+                data-icon="inline-start"
+                class="animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+              </svg>
+              保存中…
+            </span>
+          </span>
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-variant="outline"
+          onclick="this.closest('[data-button-primary-demo]').querySelector('[data-button-status]').textContent = '将更改审阅者访问权限和部署审批设置。'"
+        >
+          查看更改
+        </button>
+      </div>
+    </div>
+  </section>
 </Preview>
 
 ## 用法
@@ -52,6 +107,149 @@
 | `data-size`    | `xs`、`sm`、`default`、`lg`、`icon-xs`、`icon-sm`、`icon`、`icon-lg` | 控制点击目标与视觉密度             |
 | `data-icon`    | `inline-start` 或 `inline-end`                                       | 放在文字按钮的内联图标上，校正间距 |
 | 原生状态       | `disabled`、`aria-busy`、`aria-pressed`                              | 表达不可用、处理中与切换状态       |
+
+按钮没有 JavaScript 控制器或专用框架 Hook。HTML、React 和 Vue 使用相同的原生激活与状态属性；异步操作和防重复提交由应用状态负责。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<section data-save-settings>
+  <p data-save-status aria-live="polite">可以保存更改。</p>
+  <button type="button" class="btn" data-save-button>
+    <span class="grid">
+      <span class="col-start-1 row-start-1" data-idle-label>保存更改</span>
+      <span class="invisible col-start-1 row-start-1 inline-flex items-center gap-1.5" data-progress-label aria-hidden="true">
+        <svg data-icon="inline-start" class="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+        保存中…
+      </span>
+    </span>
+  </button>
+</section>
+<script type="module">
+  import { savePermissionChanges } from "./workspace.js";
+
+const region = document.querySelector("[data-save-settings]");
+const button = region.querySelector("[data-save-button]");
+const status = region.querySelector("[data-save-status]");
+const idle = button.querySelector("[data-idle-label]");
+const progress = button.querySelector("[data-progress-label]");
+let pending = false;
+
+function setPending(nextPending) {
+pending = nextPending;
+button.disabled = nextPending;
+button.toggleAttribute("aria-busy", nextPending);
+idle.classList.toggle("invisible", nextPending);
+idle.setAttribute("aria-hidden", String(nextPending));
+progress.classList.toggle("invisible", !nextPending);
+progress.setAttribute("aria-hidden", String(!nextPending));
+}
+
+button.addEventListener("click", async () => {
+if (pending) return;
+setPending(true);
+status.textContent = "正在保存权限更改…";
+try {
+await savePermissionChanges();
+status.textContent = "权限更改已保存。";
+} catch {
+status.textContent = "无法保存更改，请检查连接后重试。";
+} finally {
+setPending(false);
+}
+});
+
+</script>`}
+  react={`import { useRef, useState } from "react";
+import { Button } from "@a3s-lab/ui/react";
+
+export function SavePermissionChanges({
+  saveChanges,
+}: {
+  saveChanges: () => Promise<void>;
+}) {
+  const pending = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState("可以保存更改。");
+
+async function save() {
+if (pending.current) return;
+pending.current = true;
+setSaving(true);
+setStatus("正在保存权限更改…");
+try {
+await saveChanges();
+setStatus("权限更改已保存。");
+} catch {
+setStatus("无法保存更改，请检查连接后重试。");
+} finally {
+pending.current = false;
+setSaving(false);
+}
+}
+
+return (
+<section>
+<p aria-live="polite">{status}</p>
+<Button type="button" disabled={saving} aria-busy={saving} onClick={save}>
+<span className="grid">
+<span
+className={"col-start-1 row-start-1" + (saving ? " invisible" : "")}
+aria-hidden={saving} >
+保存更改
+</span>
+<span
+className={"col-start-1 row-start-1 inline-flex items-center gap-1.5" + (saving ? "" : " invisible")}
+aria-hidden={!saving} >
+<svg data-icon="inline-start" className="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+保存中…
+</span>
+</span>
+</Button>
+</section>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Button } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{
+saveChanges: () => Promise<void>;
+}>();
+const saving = ref(false);
+const status = ref("可以保存更改。");
+
+async function save() {
+if (saving.value) return;
+saving.value = true;
+status.value = "正在保存权限更改…";
+try {
+await props.saveChanges();
+status.value = "权限更改已保存。";
+} catch {
+status.value = "无法保存更改，请检查连接后重试。";
+} finally {
+saving.value = false;
+}
+}
+
+</script>
+
+<template>
+  <section>
+    <p aria-live="polite">{{ status }}</p>
+    <Button type="button" :disabled="saving" :aria-busy="saving" @click="save">
+      <span class="grid">
+        <span class="col-start-1 row-start-1" :class="{ invisible: saving }" :aria-hidden="saving">保存更改</span>
+        <span class="col-start-1 row-start-1 inline-flex items-center gap-1.5" :class="{ invisible: !saving }" :aria-hidden="!saving">
+          <svg data-icon="inline-start" class="animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.22-8.56" /></svg>
+          保存中…
+        </span>
+      </span>
+    </Button>
+  </section>
+</template>`}
+/>
 
 ## 状态与变体
 
@@ -232,74 +430,11 @@
   </div>
 </Preview>
 
-## React
-
-```tsx
-import { useState } from "react";
-import { Button } from "@a3s-lab/ui/react";
-
-export function SaveButton({
-  saveChanges,
-}: {
-  saveChanges: () => Promise<void>;
-}) {
-  const [saving, setSaving] = useState(false);
-
-  async function save() {
-    setSaving(true);
-    try {
-      await saveChanges();
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <Button type="button" disabled={saving} aria-busy={saving} onClick={save}>
-      {saving ? "保存中…" : "保存更改"}
-    </Button>
-  );
-}
-```
-
-`Button` 使用清单定义的原生 `<button>` 根元素，也可通过 `as="a"` 渲染链接。按钮没有组件私有事件或方法，因此不提供 `useButton`；直接使用 React 事件与状态即可。
-
-## Vue
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Button } from "@a3s-lab/ui/vue";
-
-const props = defineProps<{
-  saveChanges: () => Promise<void>;
-}>();
-const saving = ref(false);
-
-async function save() {
-  saving.value = true;
-  try {
-    await props.saveChanges();
-  } finally {
-    saving.value = false;
-  }
-}
-</script>
-
-<template>
-  <Button type="button" :disabled="saving" :aria-busy="saving" @click="save">
-    {{ saving ? "保存中…" : "保存更改" }}
-  </Button>
-</template>
-```
-
-Vue 适配器同样不增加包装层。按钮没有专用组合式函数，交互状态由 Vue 事件和响应式状态管理。
-
 ## 可访问性
 
 - 操作使用 `<button>`，导航使用带 `href` 的 `<a>`；不要用点击事件伪装链接。
 - 仅图标按钮必须有可访问名称，通常使用 `aria-label`。
-- 加载状态保留描述动作的文字，并同步 `disabled` 与 `aria-busy="true"`。
+- 加载状态保留具体的动作文字，同步 `disabled` 与 `aria-busy="true"`，并在等待业务操作前立即设置防重复提交保护。
 - 切换按钮由应用维护 `aria-pressed="true|false"`；展开浮层的按钮使用 `aria-expanded` 与 `aria-controls`。
 - 破坏性按钮只表达操作性质。需要二次确认时，使用[警报对话框](/components/alert-dialog)。
-- A3S 样式包提供可见焦点环；不要在应用样式中移除它。
+- A3S 样式包使用单一外移焦点轮廓，不会叠加 box-shadow 光环；不要在应用样式中移除它。

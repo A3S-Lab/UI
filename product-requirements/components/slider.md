@@ -13,7 +13,7 @@
 
 ## User problem
 
-Slider lets users adjust a value quickly across a continuous or stepped range when the result is immediately perceptible and exact typing is unnecessary. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Slider adjusts an approximate value within a bounded range. Use it when users can perceive the result immediately and relative position matters more than typing an exact number. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 
@@ -46,6 +46,8 @@ Component-specific adversarial coverage: Min/max/step, arrow/Page/Home/End, vert
 ## Accessibility
 
 The canonical root uses `<input>` semantics and exposes 0 named parts. State must be available through native properties, text, or documented ARIA rather than color, motion, or icon shape alone. Keyboard users must be able to complete `focus`, `press` without a precise pointer. Focus indicators use the shared focus contract, reduced-motion preferences are respected, and names remain meaningful in both supported locales.
+
+
 
 ## Failure, empty, and loading cases
 

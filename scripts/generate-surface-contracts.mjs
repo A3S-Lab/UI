@@ -26,6 +26,8 @@ const harness = [
       "Professional work surfaces need task context, an editor, preview, output, and resources to remain available while users rearrange their attention without losing state.",
     boundary:
       "The workspace owns panel composition, docking intent, tab focus, size constraints, maximize and restore, compact overflow, and a serializable view layout. The host owns panel data, permissions, business routing, popout security, and persistence policy.",
+    fixture:
+      "Task, workspace files, code editing, device preview, and test output reuse the same Product Application components mounted by the standalone Playground. The documentation fixture may supply deterministic data, but it may not replace those components with skeleton panels, generic cards, or look-alike markup.",
     states:
       "ready, docked, floating preview, maximized, restored, wide, and compact single-group",
     risk: "Dragging cannot be the only layout path; keyboard actions must float, maximize, restore, and reset, while compact mode keeps all five business tabs discoverable.",
@@ -40,6 +42,8 @@ const harness = [
       "Analytical and monitoring surfaces need a stable two-dimensional grid whose regions can be resized without introducing tabs, panel lifecycle, or application routing.",
     boundary:
       "Grid View owns fixed-region sizing, separators, minimum dimensions, balanced and focus presets, and responsive containment. It does not own dynamic panel creation, domain data, saved dashboards, or authorization.",
+    fixture:
+      "Workspace files, code editing, test output, and the 3D dependency graph reuse the exact Product Application components from the standalone Playground. Every balanced and focused preset must keep those production fixtures useful; skeleton panels and decorative placeholder content are forbidden.",
     states: "initializing, ready, balanced, focus-canvas, wide, and compact",
     risk: "Every region must retain a useful minimum size, keyboard presets must offer an alternative to pointer resizing, and compact layouts must not clip the focused canvas.",
   },
@@ -53,6 +57,8 @@ const harness = [
       "Ordered context, canvas, and preview regions need one-dimensional resizing when every region remains simultaneously meaningful and tabs would hide necessary context.",
     boundary:
       "Split View owns ordered panes, separators, minimum sizes, balanced and focus presets, and container adaptation. The host owns pane content, workflow state, persistence, and any decision to add or remove regions.",
+    fixture:
+      "Workspace files, code editing, and the hardware-framed device simulator reuse the exact Product Application components mounted by the standalone Playground. The Harness owns only their spatial composition and cannot substitute simplified demo markup for the production fixtures.",
     states: "initializing, ready, balanced, focus-canvas, wide, and compact",
     risk: "Separator and preset behavior must be keyboard reachable, DOM order must stay truthful, and the narrow topology must preserve all three regions without nested page scrolling.",
   },
@@ -66,6 +72,8 @@ const harness = [
       "Tool inspectors need titled regions that can be expanded, collapsed, and resized independently while keeping their identity visible and their content available on demand.",
     boundary:
       "Pane View owns pane headings, expansion state, size allocation, expand-all and collapse-all commands, and responsive stacking. The host owns the files, symbols, history data, and persistence of user preferences.",
+    fixture:
+      "Workspace files, the 3D dependency graph, and ordered test output reuse the exact Product Application components from the standalone Playground. Expanded panes must expose usable production content rather than a title, skeleton, or generic filler surface.",
     states:
       "initializing, mixed expansion, all collapsed, one expanded, all expanded, wide, and compact",
     risk: "Headings must remain real buttons with synchronized aria-expanded state, expanded bodies must receive usable height, and compact screenshots must prove content rather than title-only panes.",
@@ -239,6 +247,11 @@ ${surface.problem}
 
 ${surface.boundary}
 
+${surface.fixture ? `## Production fixture contract
+
+${surface.fixture}
+` : ""}
+
 ## States
 
 The required state vocabulary is ${surface.states}. State transitions preserve prior user context, never fabricate host success, and keep selection, focus, and disclosure synchronized with semantic attributes.
@@ -268,6 +281,7 @@ Loading preserves geometry and identifies the pending scope. Empty states distin
 - Accessibility evidence contains the named surface, its controls, and truthful expanded, selected, disabled, or inert state.
 - Console and page-error evidence contain no runtime failures.
 - Component-specific edit, rejection, recovery, disclosure, and focus-return transitions are deterministic where this surface owns them.
+- ${surface.fixture ? "Harness content reuses the named Product Application components and the rendered root contains no skeleton or look-alike panel markup." : "Route composition uses only the declared reusable components and does not introduce a parallel application shell."}
 - Product-specific risk is covered: ${surface.risk}
 
 ## A3S Test mapping
