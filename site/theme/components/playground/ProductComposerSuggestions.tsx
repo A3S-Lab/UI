@@ -18,6 +18,7 @@ import {
   getProductCapabilityDefinitions,
   useProductCapabilityRegistry,
 } from "./product-capability-state";
+import { productProjectName } from "./product-project-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 import { useProductWorkspaceFiles } from "./product-workspace-files";
 
@@ -480,5 +481,5 @@ function workspaceLabel(
   if (workspace === "local")
     return locale === "zh" ? "本地工作区" : "Local workspace";
   if (workspace === "root") return "a3s";
-  return "a3s-ui";
+  return productProjectName[locale];
 }

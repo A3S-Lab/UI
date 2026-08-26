@@ -16,11 +16,10 @@
 }
 
 .product-composer:focus-within {
-  border-color: color-mix(in srgb, var(--ui-ink) 18%, var(--ui-line-strong));
-}
-
-.product-composer:has(.agent-composer-editor__content:focus) {
-  border-color: color-mix(in srgb, var(--ui-blue) 52%, var(--ui-line-strong));
+  /* The composer is a compound field. Keep one quiet, high-contrast
+     boundary around the whole control and let the editor retain its caret
+     without drawing a second ring. */
+  border-color: color-mix(in srgb, var(--ui-ink) 26%, var(--ui-line-strong));
 }
 
 .product-composer[data-compact="true"] {

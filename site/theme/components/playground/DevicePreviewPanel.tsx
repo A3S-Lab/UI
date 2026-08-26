@@ -4,6 +4,14 @@ import { useWorkspace } from "./WorkspaceContext";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
+export type DeviceSimulatorState = {
+  device: string;
+  height: number;
+  kind?: string;
+  orientation: "landscape" | "portrait";
+  width: number;
+};
+
 export function DevicePreviewPanel() {
   const { locale } = useWorkspace();
   return <DeviceSimulatorSurface locale={locale} />;
@@ -12,14 +20,26 @@ export function DevicePreviewPanel() {
 export function DeviceSimulatorSurface({
   className = "",
   id,
+  initialDevice = "iphone-15-pro",
+  initialHeight = 852,
+  initialKind = "phone",
+  initialOrientation = "portrait",
+  initialWidth = 393,
   locale,
+  onDeviceChange,
   onExpand,
   role,
   variant = "full",
 }: {
   className?: string;
   id?: string;
+  initialDevice?: string;
+  initialHeight?: number;
+  initialKind?: string;
+  initialOrientation?: "landscape" | "portrait";
+  initialWidth?: number;
   locale: ProductPlaygroundLocale;
+  onDeviceChange?: (state: DeviceSimulatorState) => void;
   onExpand?: () => void;
   role?: "tabpanel";
   variant?: "compact" | "full";
@@ -28,6 +48,19 @@ export function DeviceSimulatorSurface({
   const zh = locale === "zh";
   const compact = variant === "compact";
   const previewUrl = withBase(`/device-preview.html?lang=${locale}`);
+
+  useEffect(() => {
+    const element = root.current;
+    if (!element || !onDeviceChange) return undefined;
+    const handleDeviceChange = (event: Event) => {
+      const detail = (event as CustomEvent<DeviceSimulatorState>).detail;
+      if (!detail) return;
+      onDeviceChange(detail);
+    };
+    element.addEventListener("a3s:device-change", handleDeviceChange);
+    return () =>
+      element.removeEventListener("a3s:device-change", handleDeviceChange);
+  }, [onDeviceChange]);
 
   useEffect(() => {
     window.a3sUI?.start();
@@ -39,12 +72,14 @@ export function DeviceSimulatorSurface({
       ref={root}
       className={`device-simulator playground-device-preview ${className}`.trim()}
       aria-label={zh ? "设备预览" : "Device preview"}
-      data-device="iphone-15-pro"
-      data-device-kind="phone"
+      data-device={initialDevice}
+      data-device-kind={initialKind}
       data-device-title={zh ? "A3S 设备预览" : "A3S device preview"}
-      data-orientation="portrait"
+      data-orientation={initialOrientation}
       data-state="ready"
       data-variant={compact ? "compact" : undefined}
+      data-width={initialWidth}
+      data-height={initialHeight}
       id={id}
       role={role}
     >
@@ -54,7 +89,7 @@ export function DeviceSimulatorSurface({
             <span>{zh ? "设备" : "Device"}</span>
             <select
               className="select"
-              defaultValue="iphone-15-pro"
+              defaultValue={initialDevice}
               data-device-simulator-select
               aria-label={zh ? "设备预设" : "Device preset"}
             >
@@ -133,7 +168,7 @@ export function DeviceSimulatorSurface({
                 type="number"
                 min="240"
                 max="4000"
-                defaultValue="393"
+                defaultValue={initialWidth}
                 inputMode="numeric"
                 data-device-simulator-width
               />
@@ -146,7 +181,7 @@ export function DeviceSimulatorSurface({
                 type="number"
                 min="180"
                 max="3000"
-                defaultValue="852"
+                defaultValue={initialHeight}
                 inputMode="numeric"
                 data-device-simulator-height
               />

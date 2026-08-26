@@ -504,8 +504,27 @@ function ContextReceipt({
   locale: ProductPlaygroundLocale;
 }) {
   const zh = locale === "zh";
+  const [expanded, setExpanded] = useState(true);
+
+  useEffect(() => {
+    // Keep the compact transcript focused on the response first. The full
+    // receipt remains one tap away from its summary on a phone, while the
+    // wider transcript keeps the richer context visible by default. Listen
+    // for breakpoint changes too: the Playground tests and real users can
+    // resize the same session from a desktop into a phone layout.
+    const mediaQuery = window.matchMedia("(max-width: 48rem)");
+    const syncExpansion = () => setExpanded(!mediaQuery.matches);
+    syncExpansion();
+    mediaQuery.addEventListener("change", syncExpansion);
+    return () => mediaQuery.removeEventListener("change", syncExpansion);
+  }, []);
+
   return (
-    <details className="product-session-context" open>
+    <details
+      className="product-session-context"
+      onToggle={(event) => setExpanded(event.currentTarget.open)}
+      open={expanded}
+    >
       <summary>
         <span>
           <ProductPlaygroundIcon name="workspace" />

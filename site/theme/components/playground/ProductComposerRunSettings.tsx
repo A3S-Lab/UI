@@ -7,6 +7,7 @@ import {
   type ProductComposerWorkspace,
 } from "./product-composer-data";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
+import { productProjectName } from "./product-project-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
 
 type ComposerControlKey = "mode" | "run" | "target" | "workspace";
@@ -339,7 +340,7 @@ export function ProductComposerWorkspaceControl({
   const workspaces = [
     {
       id: "ui" as const,
-      label: zh ? "a3s-ui" : "a3s-ui",
+      label: productProjectName[locale],
       path: "/workspace/a3s-ui",
     },
     {

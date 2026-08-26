@@ -1,16 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-const scenarios = [
-  ["代码", "code"],
-  ["设计", "design"],
-  ["写作", "write"],
-  ["工作流", "workflow"],
-  ["自动化", "automation"],
-  ["能力目录", "catalog"],
-  ["连接", "channels"],
-  ["设置", "settings"],
-] as const;
-
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];
   page.on("console", (message) => {
@@ -26,7 +15,7 @@ function collectRuntimeErrors(page: Page) {
 }
 
 async function openProductApplication(page: Page) {
-  await page.goto("app.html", { waitUntil: "networkidle" });
+  await page.goto("playground.html", { waitUntil: "networkidle" });
   const application = page.locator(".a3s-product-application");
   await expect(application).toBeVisible();
   await expect(application).toHaveAttribute("data-view", "start");
@@ -85,21 +74,21 @@ async function revealProductNavigation(playground: Locator) {
   if (await mobileMenu.isVisible()) await mobileMenu.click();
 }
 
-async function openPlayground(page: Page) {
-  await page.goto("playground.html", { waitUntil: "networkidle" });
-  const playground = page.locator(".a3s-workspace-playground");
-  await expect(playground).toBeVisible();
-  await expect(playground.locator(".dv-dockview")).toBeVisible();
-  return playground;
+async function closeProductNavigation(playground: Locator) {
+  const mobileMenu = playground.getByRole("button", {
+    name: "关闭应用导航",
+  });
+  if (await mobileMenu.isVisible()) await mobileMenu.click();
 }
 
-async function openLayoutMenu(page: Page) {
-  const menu = page.locator(".workbench-layout-menu");
-  if ((await menu.getAttribute("open")) === null) {
-    await menu.locator("summary").click();
-  }
-  await expect(menu).toHaveAttribute("open", "");
-  return menu;
+async function openPlayground(page: Page) {
+  // Playground is the task-first Product Application. The retired editor
+  // workspace is deliberately not mounted on this route.
+  const playground = await openProductApplication(page);
+  await expect(page.locator(".a3s-product-application-page")).toBeVisible();
+  await expect(playground.locator(".product-composer").first()).toBeVisible();
+  await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
+  return playground;
 }
 
 test("Product application opens in the approved task shell with complete navigation", async ({
@@ -108,9 +97,6 @@ test("Product application opens in the approved task shell with complete navigat
   const runtimeErrors = collectRuntimeErrors(page);
   const playground = await openProductApplication(page);
 
-  await expect(
-    playground.getByRole("navigation", { name: "主要页面" }),
-  ).toBeVisible();
   const composerEditor = playground.locator(".product-composer .ProseMirror");
   await expect(composerEditor).toBeVisible();
   const composer = playground.locator(".product-composer").first();
@@ -142,7 +128,9 @@ test("Product application opens in the approved task shell with complete navigat
   expect(focusedComposerStyle.borderColor).not.toBe(
     idleComposerStyle.borderColor,
   );
-  expect(focusedComposerStyle.boxShadow).not.toBe(idleComposerStyle.boxShadow);
+  // Focus owns the single boundary; it must not add a second halo or change
+  // the surface elevation.
+  expect(focusedComposerStyle.boxShadow).toBe(idleComposerStyle.boxShadow);
   expect(focusedComposerStyle.borderWidth).toBe("1px");
   expect(focusedComposerStyle.editorOutlineStyle).toBe("none");
   expect(focusedComposerStyle.editorOutlineWidth).toBe("0px");
@@ -152,6 +140,12 @@ test("Product application opens in the approved task shell with complete navigat
   await expect(
     playground.getByRole("tab", { name: "日常办公", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
+
+  await revealProductNavigation(playground);
+  await expect(
+    playground.getByRole("navigation", { name: "主要页面" }),
+  ).toBeVisible();
+  await closeProductNavigation(playground);
 
   await playground.getByRole("button", { name: "文档处理" }).click();
   await expect(
@@ -238,7 +232,9 @@ test("Product application opens in the approved task shell with complete navigat
   });
   await globalSearch.fill("恢复");
   await search.getByRole("option", { name: /修复会话恢复/ }).click();
-  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(page).toHaveURL(
+    /\/playground\/sessions\/fix-session-recovery\.html$/u,
+  );
   await expect(playground).toHaveAttribute("data-view", "session");
   await expect(
     playground.locator('[data-product-surface="session"]'),
@@ -247,7 +243,12 @@ test("Product application opens in the approved task shell with complete navigat
   await expect(
     playground.getByRole("heading", { name: "修复会话恢复", exact: true }),
   ).toBeVisible();
-  await expect(playground.locator(".product-session__tool")).toHaveCount(2);
+  await expect(
+    playground.getByRole("region", { name: "工具调用时间线" }),
+  ).toBeVisible();
+  await expect(
+    playground.getByRole("region", { name: "并行检查" }),
+  ).toBeVisible();
   await playground
     .locator(".product-session__composer .ProseMirror")
     .fill("继续检查移动端焦点顺序");
@@ -264,6 +265,7 @@ test("Product searches keep one neutral container-owned focus boundary", async (
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
   const playground = await openProductApplication(page);
+  await revealProductNavigation(playground);
 
   await playground.getByRole("button", { name: "搜索", exact: true }).click();
   const searchDialog = page.getByRole("dialog", { name: "全局搜索" });
@@ -276,6 +278,7 @@ test("Product searches keep one neutral container-owned focus boundary", async (
   await page.keyboard.press("Escape");
   await expect(searchDialog).not.toBeVisible();
 
+  await revealProductNavigation(playground);
   await playground.getByRole("link", { name: "项目", exact: true }).click();
   await expect(playground).toHaveAttribute("data-view", "projects");
   await expectNeutralSearchBoundary(
@@ -389,7 +392,7 @@ test("Capability navigation preserves the selected catalog tab", async ({
     playground.getByRole("tab", { name: "连接器", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
 
-  await page.goto("en/app/capabilities.html?capability=skills", {
+  await page.goto("en/playground/capabilities.html?capability=skills", {
     waitUntil: "networkidle",
   });
   await expect(
@@ -408,7 +411,9 @@ test("Session detail keeps artifacts in a focused secondary inspector", async ({
 
   await playground.getByRole("link", { name: /修复会话恢复/ }).click();
 
-  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(page).toHaveURL(
+    /\/playground\/sessions\/fix-session-recovery\.html$/u,
+  );
   await expect(playground).toHaveAttribute("data-view", "session");
   await expect(
     playground.locator('[data-product-surface="session"]'),
@@ -442,7 +447,9 @@ test("Session detail keeps artifacts in a focused secondary inspector", async ({
   );
   await expect(detailsTrigger).toHaveAccessibleName("打开任务详情");
   await detailsTrigger.click();
-  await expect(page).toHaveURL(/\/sessions\/fix-session-recovery\.html$/u);
+  await expect(page).toHaveURL(
+    /\/playground\/sessions\/fix-session-recovery\.html$/u,
+  );
   await expect(playground).toHaveAttribute("data-view", "session");
   const details = playground.locator("aside[aria-label='任务详情']");
   await expect(details).toBeVisible();
@@ -829,7 +836,7 @@ test("Product shell mobile drawer, resource menu, and backdrop stay usable", asy
   await more.getByRole("menuitem", { name: "我的文件" }).click();
   await expect(playground).toHaveAttribute("data-view", "resources");
   await expect(sidebar).not.toHaveAttribute("data-mobile-open", "true");
-  const fileTable = playground.locator(".product-resources__table");
+  const fileTable = playground.locator(".product-file-artifacts__table-wrap");
   await expect(
     fileTable.getByRole("columnheader", { name: "更新时间" }),
   ).toBeVisible();
@@ -851,13 +858,21 @@ test("Product shell mobile drawer, resource menu, and backdrop stay usable", asy
   await expect(closeButton).toBeVisible();
   const closeStyle = await closeButton.evaluate((element) => {
     const style = getComputedStyle(element);
+    const header = element.closest<HTMLElement>(
+      ".product-settings__dialog-header",
+    );
+    const headerStyle = header ? getComputedStyle(header) : null;
     return {
       background: style.backgroundColor,
-      zIndex: Number(style.zIndex),
+      headerPosition: headerStyle?.position ?? "static",
+      headerZIndex: Number(headerStyle?.zIndex ?? "auto"),
     };
   });
   expect(closeStyle.background).not.toBe("rgba(0, 0, 0, 0)");
-  expect(closeStyle.zIndex).toBeGreaterThan(0);
+  expect(
+    closeStyle.headerPosition === "static" ||
+      (closeStyle.headerPosition === "absolute" && closeStyle.headerZIndex > 0),
+  ).toBe(true);
   await closeButton.click();
 
   expect(
@@ -877,7 +892,7 @@ test("Product project and inspiration surfaces preserve mobile width", async ({
   await page.setViewportSize({ width: 390, height: 844 });
   const runtimeErrors = collectRuntimeErrors(page);
 
-  await page.goto("app/projects.html", { waitUntil: "networkidle" });
+  await page.goto("playground/projects.html", { waitUntil: "networkidle" });
   const projects = page.locator('[data-product-surface="projects"]');
   await expect(projects).toBeVisible();
   expect(
@@ -886,7 +901,7 @@ test("Product project and inspiration surfaces preserve mobile width", async ({
       .evaluate((element) => element.scrollWidth - element.clientWidth),
   ).toBeLessThanOrEqual(0);
 
-  await page.goto("app/resources/inspiration.html", {
+  await page.goto("playground/resources/inspiration.html", {
     waitUntil: "networkidle",
   });
   const inspiration = page.locator('[data-product-surface="inspiration"]');
@@ -911,141 +926,161 @@ test("Product project and inspiration surfaces preserve mobile width", async ({
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Playground is a standalone Dockview workspace with all six production panels", async ({
+test("Task artifact actions keep their label on one line at desktop width", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1280");
+  const runtimeErrors = collectRuntimeErrors(page);
+
+  await page.goto("playground/resources/files.html", {
+    waitUntil: "networkidle",
+  });
+  const artifacts = page.locator(
+    '[data-product-surface="files"] .product-file-artifacts',
+  );
+  await expect(artifacts).toBeVisible();
+  const actions = artifacts.locator("[data-artifact-task]");
+  await expect(actions).toHaveCount(6);
+
+  const metrics = await actions.evaluateAll((elements) =>
+    elements.map((element) => {
+      const button = element as HTMLElement;
+      const label = button.querySelector<HTMLElement>("span");
+      const cell = button.closest<HTMLElement>("td");
+      const buttonRect = button.getBoundingClientRect();
+      const cellRect = cell?.getBoundingClientRect();
+      const labelStyle = label ? getComputedStyle(label) : null;
+      return {
+        buttonRight: buttonRect.right,
+        cellRight: cellRect?.right ?? 0,
+        labelHeight: label?.getBoundingClientRect().height ?? 0,
+        labelLineHeight: labelStyle
+          ? Number.parseFloat(labelStyle.lineHeight)
+          : 0,
+        whiteSpace: getComputedStyle(button).whiteSpace,
+      };
+    }),
+  );
+
+  for (const metric of metrics) {
+    expect(metric.whiteSpace).toBe("nowrap");
+    expect(metric.labelHeight).toBeLessThanOrEqual(
+      metric.labelLineHeight * 1.1,
+    );
+    expect(metric.buttonRight).toBeLessThanOrEqual(metric.cellRight + 1);
+  }
+
+  await page.screenshot({
+    path: testInfo.outputPath("task-artifacts-desktop.png"),
+  });
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Playground keeps one task-first composition root across its canonical routes", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
   const playground = await openPlayground(page);
+  await revealProductNavigation(playground);
 
-  await expect(page.locator(".a3s-playground-page")).toBeVisible();
+  await expect(playground).toHaveAttribute("data-view", "start");
   await expect(page.locator(".rp-doc-layout")).toHaveCount(0);
-  await expect(
-    playground.locator(".workbench-activity [role=tab]"),
-  ).toHaveCount(scenarios.length);
-  const dock = playground.locator(".workbench-dock");
-  for (const [label, selector] of [
-    ["资源管理器", ".workbench-explorer"],
-    ["任务", ".workbench-task"],
-    ["工作区", ".workbench-code"],
-    ["设备预览", ".playground-device-preview"],
-    ["检查器", ".workbench-inspector"],
-    ["终端", ".workbench-terminal"],
-  ] as const) {
-    const tab = dock.getByRole("tab", { name: label, exact: true }).first();
-    const panel = dock.locator(selector);
-    await expect(tab).toBeVisible();
-    if (!(await panel.isVisible())) {
-      await tab.click();
-    }
-    await expect(panel).toBeVisible();
-    if (label === "任务") {
-      await expect(dock.locator(".ProseMirror")).toBeVisible();
-    }
+  await expect(page.locator(".workbench-commandbar")).toHaveCount(0);
+  await expect(playground.locator(".a3s-workspace-playground")).toHaveCount(0);
+
+  const navigation = playground.getByRole("navigation", { name: "主要页面" });
+  for (const label of [
+    "新建任务",
+    "助理",
+    "项目",
+    "专家·技能·连接器",
+    "自动化",
+  ]) {
+    const link = navigation.getByRole("link", { name: label, exact: true });
+    await expect(link).toHaveAttribute("href", /\/playground(?:\.html|\/)/u);
   }
 
-  for (const [label, id] of scenarios) {
-    await playground.getByRole("tab", { name: label, exact: true }).click();
+  await page.goto("playground/sessions/fix-session-recovery.html", {
+    waitUntil: "networkidle",
+  });
+  const session = page.locator(".a3s-product-application");
+  await expect(session).toHaveAttribute("data-view", "session");
+  await expect(
+    session.locator('[data-product-surface="session"]'),
+  ).toBeVisible();
+  await expect(session.locator(".a3s-workspace-playground")).toHaveCount(0);
+
+  await page.goto("playground/resources/files.html", {
+    waitUntil: "networkidle",
+  });
+  const files = page.locator(".a3s-product-application");
+  await expect(files).toHaveAttribute("data-view", "resources");
+  await expect(files.locator('[data-product-surface="files"]')).toBeVisible();
+  await expect(files.locator(".a3s-workspace-playground")).toHaveCount(0);
+  expect(runtimeErrors).toEqual([]);
+});
+
+test("Dockview Harness routes keep production panels and working layout actions", async ({
+  page,
+}) => {
+  const runtimeErrors = collectRuntimeErrors(page);
+  const routes = [
+    {
+      route: "dock-workspace",
+      mode: "dock",
+      action: "浮动预览",
+      reset: "重置",
+    },
+    { route: "grid-view", mode: "grid", action: "聚焦画布", reset: "均衡" },
+    { route: "split-view", mode: "split", action: "聚焦画布", reset: "均衡" },
+    { route: "pane-view", mode: "pane", action: "全部展开", reset: "全部折叠" },
+  ] as const;
+
+  for (const item of routes) {
+    await page.goto(`harness/${item.route}.html`, { waitUntil: "networkidle" });
+    const demo = page.locator(`.dockview-demo[data-mode="${item.mode}"]`);
+    await expect(demo).toBeVisible();
+    await expect(demo).toHaveAttribute("data-ready", "true");
+    await expect(demo.locator(".dockview-demo__stage")).toBeVisible();
+    const action = demo.getByRole("button", { name: item.action, exact: true });
+    const reset = demo.getByRole("button", { name: item.reset, exact: true });
+    await expect(action).toBeEnabled();
+    await action.click();
+    if (item.mode === "dock") {
+      await expect(demo).toHaveAttribute("data-preview-location", "floating");
+    } else if (item.mode === "grid" || item.mode === "split") {
+      await expect(demo).toHaveAttribute("data-layout-preset", "focus-canvas");
+    } else {
+      await expect(demo).toHaveAttribute("data-pane-expansion", "expanded");
+    }
+    await reset.click();
+    if (item.mode === "dock") {
+      await expect(demo).toHaveAttribute("data-preview-location", "docked");
+    } else if (item.mode === "grid" || item.mode === "split") {
+      await expect(demo).toHaveAttribute("data-layout-preset", "balanced");
+    } else {
+      await expect(demo).toHaveAttribute("data-pane-expansion", "collapsed");
+    }
     await expect(
-      playground.locator(`[data-workbench-surface="${id}"]`),
+      page.locator(`.a3s-preview[data-preview-component="${item.route}"]`),
     ).toBeVisible();
   }
-
-  const codeTab = playground.getByRole("tab", { name: "代码", exact: true });
-  await codeTab.focus();
-  await page.keyboard.press("ArrowDown");
-  await expect(
-    playground.getByRole("tab", { name: "设计", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
-  await page.keyboard.press("End");
-  await expect(
-    playground.getByRole("tab", { name: "设置", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
-  await page.keyboard.press("Home");
-  await expect(codeTab).toHaveAttribute("aria-selected", "true");
-
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Dockview layout actions float, maximize, save, reset, and restore real groups", async ({
+test("Device simulator in the session inspector preserves hardware and viewport state", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
-  const playground = await openPlayground(page);
+  await page.goto("playground/sessions/fix-session-recovery.html", {
+    waitUntil: "networkidle",
+  });
+  const application = page.locator(".a3s-product-application");
+  await application.getByRole("button", { name: "打开任务详情" }).click();
+  const details = page.locator('aside[aria-label="任务详情"]');
+  await details.getByRole("tab", { name: "预览", exact: true }).click();
 
-  let menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "显示终端" }).click();
-  await expect(playground.locator(".workbench-terminal")).toBeVisible();
-
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "浮动检查器" }).click();
-  await expect(
-    playground.locator(".dv-resize-container .workbench-inspector"),
-  ).toBeVisible();
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "检查器已浮动",
-  );
-
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "保存布局" }).click();
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "布局已保存",
-  );
-
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "浮动检查器" }).click();
-  await expect(
-    playground.locator(".dv-resize-container .workbench-inspector"),
-  ).toHaveCount(0);
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "检查器已停靠",
-  );
-
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "恢复布局" }).click();
-  await expect(
-    playground.locator(".dv-resize-container .workbench-inspector"),
-  ).toBeVisible();
-
-  const editorTab = playground
-    .locator(".dv-tab")
-    .filter({ hasText: "工作区" })
-    .first();
-  await editorTab.click();
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "最大化当前组" }).click();
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "已最大化",
-  );
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "最大化当前组" }).click();
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "已恢复",
-  );
-
-  menu = await openLayoutMenu(page);
-  await menu.getByRole("button", { name: "重置布局" }).click();
-  await expect(
-    playground.locator(".dv-resize-container .workbench-inspector"),
-  ).toHaveCount(0);
-  await expect(playground.locator(".workbench-statusbar output")).toContainText(
-    "布局已重置",
-  );
-
-  expect(runtimeErrors).toEqual([]);
-});
-
-test("Device Preview uses a real hardware shell and preserves selected viewport state", async ({
-  page,
-}) => {
-  const runtimeErrors = collectRuntimeErrors(page);
-  const playground = await openPlayground(page);
-  await playground
-    .locator(".dv-tab")
-    .filter({ hasText: "设备预览" })
-    .first()
-    .click();
-
-  const device = playground.locator(".playground-device-preview");
+  const device = details.locator(".product-session-device-simulator");
   await expect(device).toBeVisible();
   await expect(device.locator("[data-device-simulator-frame]")).toBeVisible();
   await expect(
@@ -1057,13 +1092,14 @@ test("Device Preview uses a real hardware shell and preserves selected viewport 
     .getByRole("combobox", { name: "设备预设" })
     .selectOption("pixel-8");
   await expect(device).toHaveAttribute("data-device", "pixel-8");
+  await device.getByRole("button", { name: "打开完整设备模拟器" }).click();
+  await expect(device).not.toHaveAttribute("data-variant", "compact");
   await expect(device.locator("[data-device-simulator-width]")).toHaveValue(
     "412",
   );
   await expect(device.locator("[data-device-simulator-height]")).toHaveValue(
     "915",
   );
-
   await device.getByRole("button", { name: "横屏" }).click();
   await expect(device).toHaveAttribute("data-orientation", "landscape");
   await expect(device.locator("[data-device-simulator-width]")).toHaveValue(
@@ -1089,39 +1125,25 @@ test("Device Preview uses a real hardware shell and preserves selected viewport 
   expect(runtimeErrors).toEqual([]);
 });
 
-test("Playground recovery states and compact workspace do not overflow", async ({
+test("Task-first Playground remains bounded and readable at phone width", async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-1280");
   await page.setViewportSize({ width: 390, height: 844 });
   const runtimeErrors = collectRuntimeErrors(page);
   const playground = await openPlayground(page);
-
-  const state = playground.locator(".workbench-commandbar__actions select");
-  for (const value of [
-    "loading",
-    "empty",
-    "error",
-    "offline",
-    "permission-denied",
-  ]) {
-    await state.selectOption(value);
-    await expect(playground).toHaveAttribute("data-playground-state", value);
-    await expect(
-      playground.locator(
-        ".playground-scene-state, [data-playground-state-panel]",
-      ),
-    ).toBeVisible();
-  }
-  await state.selectOption("ready");
-
-  for (const [label, id] of scenarios) {
-    await playground.getByRole("tab", { name: label, exact: true }).click();
-    await expect(
-      playground.locator(`[data-workbench-surface="${id}"]`),
-    ).toBeVisible();
-  }
-
+  const menuButton = playground.getByRole("button", { name: "打开应用导航" });
+  await menuButton.click();
+  await expect(playground.locator(".product-sidebar")).toHaveAttribute(
+    "data-mobile-open",
+    "true",
+  );
+  await page.goto("playground/sessions/fix-session-recovery.html", {
+    waitUntil: "networkidle",
+  });
+  await expect(playground).toHaveAttribute("data-view", "session");
+  await expect(playground.locator(".product-session__viewport")).toBeVisible();
+  await expect(playground.locator(".product-session__composer")).toBeVisible();
   expect(
     await page.evaluate(
       () =>
@@ -1129,10 +1151,24 @@ test("Playground recovery states and compact workspace do not overflow", async (
         document.documentElement.clientWidth,
     ),
   ).toBe(0);
-  const bounds = await playground.boundingBox();
-  expect(bounds).not.toBeNull();
-  expect(bounds!.width).toBeLessThanOrEqual(390);
-  expect(bounds!.height).toBeLessThanOrEqual(844);
+  const metrics = await playground.evaluate((element) => {
+    const transcript = element.querySelector<HTMLElement>(
+      ".product-session__viewport",
+    );
+    const composer = element.querySelector<HTMLElement>(
+      ".product-session__composer",
+    );
+    return {
+      width: element.getBoundingClientRect().width,
+      transcriptOverflow: transcript
+        ? transcript.scrollWidth - transcript.clientWidth
+        : -1,
+      composerBottom: composer?.getBoundingClientRect().bottom ?? 0,
+    };
+  });
+  expect(metrics.width).toBeLessThanOrEqual(390);
+  expect(metrics.transcriptOverflow).toBe(0);
+  expect(metrics.composerBottom).toBeLessThanOrEqual(844);
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -1145,18 +1181,34 @@ test("Dockview documentation demos and framework tabs render without page errors
     "grid-view",
     "split-view",
     "pane-view",
-  ]) {
+  ] as const) {
     await page.goto(`harness/${route}.html`, { waitUntil: "networkidle" });
-    await expect(page.locator(".dockview-demo")).toBeVisible();
-    await expect(page.locator(".a3s-framework-tabs")).toBeVisible();
-    await expect(page.locator(".a3s-framework-tabs [role=tab]")).toHaveCount(3);
-    await page
-      .locator(".a3s-framework-tabs [role=tab]")
-      .filter({ hasText: "React" })
+    await expect(
+      page.locator(
+        `.dockview-demo[data-mode="${route === "dock-workspace" ? "dock" : route.replace("-view", "")}"]`,
+      ),
+    ).toBeVisible();
+    const preview = page
+      .locator(`.a3s-preview[data-preview-component="${route}"]`)
+      .first();
+    await expect(preview).toBeVisible();
+    await preview.getByRole("button", { name: "展开接入代码" }).click();
+    const integration = preview.locator(
+      ".a3s-preview__source > .a3s-preview-integration",
+    );
+    await expect(integration).toBeVisible();
+    await expect(
+      integration.locator(".a3s-preview-integration__tabs").getByRole("tab"),
+    ).toHaveCount(3);
+    const framework = route === "grid-view" ? "Vue" : "React";
+    await integration
+      .getByRole("tab", { name: framework, exact: true })
       .click();
     await expect(
-      page.locator(".a3s-framework-tabs [role=tabpanel]"),
-    ).toContainText(/use(?:DockviewLayout|Gridview|Splitview|Paneview)/);
+      integration.locator(
+        ".a3s-preview-integration__source:not([hidden]) code",
+      ),
+    ).toContainText(/use(?:DockviewLayout|Gridview|Splitview|Paneview)/u);
   }
   expect(runtimeErrors).toEqual([]);
 });

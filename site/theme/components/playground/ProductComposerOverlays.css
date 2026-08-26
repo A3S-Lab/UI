@@ -583,14 +583,19 @@
 .product-composer-control-panel [data-effort-ticks] {
   display: grid;
   margin-top: 0.5rem;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0.25rem;
 }
 
 .product-composer-control-panel [data-effort-ticks] span {
+  min-width: 0;
+  overflow: hidden;
   color: var(--ui-faint);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
   text-align: center;
+  white-space: nowrap;
 }
 
 .product-composer-control-panel [data-effort-ticks] span[data-active="true"] {

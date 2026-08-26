@@ -1,4 +1,8 @@
-import { DeviceSimulatorSurface } from "./DevicePreviewPanel";
+import { useCallback, useState } from "react";
+import {
+  DeviceSimulatorSurface,
+  type DeviceSimulatorState,
+} from "./DevicePreviewPanel";
 import { ProductCodeGraphPanel } from "./ProductCodeGraphPanel";
 import type { ProductPlaygroundLocale } from "./product-playground-data";
 import { ProductPlaygroundIcon } from "./ProductPlaygroundIcon";
@@ -15,6 +19,16 @@ export function ProductSessionPreviewPanel({
   onExpandedChange: (expanded: boolean) => void;
 }) {
   const zh = locale === "zh";
+  const [simulatorState, setSimulatorState] = useState<DeviceSimulatorState>({
+    device: "iphone-15-pro",
+    height: 852,
+    kind: "phone",
+    orientation: "portrait",
+    width: 393,
+  });
+  const handleDeviceChange = useCallback((next: DeviceSimulatorState) => {
+    setSimulatorState(next);
+  }, []);
 
   return (
     <section
@@ -45,15 +59,25 @@ export function ProductSessionPreviewPanel({
           </header>
           <DeviceSimulatorSurface
             className="product-session-device-simulator"
-            key="full"
+            initialDevice={simulatorState.device}
+            initialHeight={simulatorState.height}
+            initialKind={simulatorState.kind}
+            initialOrientation={simulatorState.orientation}
+            initialWidth={simulatorState.width}
             locale={locale}
+            onDeviceChange={handleDeviceChange}
           />
         </>
       ) : (
         <DeviceSimulatorSurface
           className="product-session-device-simulator"
-          key="compact"
+          initialDevice={simulatorState.device}
+          initialHeight={simulatorState.height}
+          initialKind={simulatorState.kind}
+          initialOrientation={simulatorState.orientation}
+          initialWidth={simulatorState.width}
           locale={locale}
+          onDeviceChange={handleDeviceChange}
           onExpand={() => onExpandedChange(true)}
           variant="compact"
         />

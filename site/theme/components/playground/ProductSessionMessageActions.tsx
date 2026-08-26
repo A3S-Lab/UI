@@ -214,7 +214,10 @@ export function ProductSessionMessageActions({
         open={menuOpen}
         ref={menuRef}
       >
-        <summary aria-label={zh ? "更多回复操作" : "More response actions"}>
+        <summary
+          aria-label={zh ? "更多回复操作" : "More response actions"}
+          role="button"
+        >
           <ProductPlaygroundIcon name="more" />
         </summary>
         <div role="menu">

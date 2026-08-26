@@ -20,16 +20,18 @@ test("project card opens a durable workspace and child-task session", async ({
   page,
 }) => {
   const runtimeErrors = collectRuntimeErrors(page);
-  await page.goto("app/projects.html", { waitUntil: "networkidle" });
+  await page.goto("playground/projects.html", { waitUntil: "networkidle" });
   const application = page.locator("[data-product-application]");
   const projectCard = application.locator(".product-projects__owned > a");
 
   await expect(projectCard).toHaveAttribute(
     "href",
-    /\/app\/projects\/a3s-ui-experience\.html$/u,
+    /\/playground\/projects\/a3s-ui-experience\.html$/u,
   );
   await projectCard.click();
-  await expect(page).toHaveURL(/\/app\/projects\/a3s-ui-experience\.html$/u);
+  await expect(page).toHaveURL(
+    /\/playground\/projects\/a3s-ui-experience\.html$/u,
+  );
   await expect(application).toHaveAttribute("data-view", "project");
   await expect(
     application.locator('[data-product-surface="project"]'),
@@ -42,7 +44,7 @@ test("project card opens a durable workspace and child-task session", async ({
   await revealNavigation(application);
   await expect(
     application.locator(
-      ".product-sidebar__primary a[aria-current='page'][href$='/app/projects.html']",
+      ".product-sidebar__primary a[aria-current='page'][href$='/playground/projects.html']",
     ),
   ).toBeVisible();
   await expect(
@@ -52,7 +54,7 @@ test("project card opens a durable workspace and child-task session", async ({
   const childTask = application.locator(".product-sidebar__project-task");
   await childTask.click();
   await expect(page).toHaveURL(
-    /\/app\/projects\/a3s-ui-experience\/sessions\/release-readiness\.html$/u,
+    /\/playground\/projects\/a3s-ui-experience\/sessions\/release-readiness\.html$/u,
   );
   await expect(application).toHaveAttribute("data-view", "project-session");
   await expect(
@@ -76,15 +78,17 @@ test("project card opens a durable workspace and child-task session", async ({
   await application.getByRole("button", { name: "关闭项目会话搜索" }).click();
 
   const artifactsTrigger = application.getByRole("button", {
-    name: "打开项目产物",
+    name: /查看所有产物/u,
   });
   await artifactsTrigger.click();
-  const artifacts = application.locator("aside[aria-label='项目产物']");
+  const artifacts = application.locator(
+    "aside[aria-label='项目详情'], aside[aria-label='Project details']",
+  );
   await expect(artifacts).toBeVisible();
   await expect(
-    artifacts.getByRole("button", { name: "关闭项目产物" }),
-  ).toBeFocused();
-  await page.keyboard.press("Escape");
+    artifacts.getByRole("button", { name: "关闭项目详情" }),
+  ).toBeVisible();
+  await artifacts.getByRole("button", { name: "关闭项目详情" }).click();
   await expect(artifacts).not.toBeVisible();
   await expect(artifactsTrigger).toBeFocused();
 
