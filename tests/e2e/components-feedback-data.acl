@@ -45,6 +45,23 @@ suite "a3s-ui-feedback-and-data" {
         expect "empty-action-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
     }
 
+    scenario "file-type-icon" {
+        name = "File Type Icon preview preserves semantic formats and extensions"
+        surface = "web"
+        timeout_ms = 45000
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-type-icon.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        expect "file-icon-preview-visible" { visible = css(".a3s-preview[data-preview-component=file-type-icon] .file-type-icon[data-file-type=folder]") }
+        expect "word-icon-visible" { visible = css(".a3s-preview[data-preview-component=file-type-icon] .file-type-icon[data-file-format=word] > [data-file-extension]") }
+        expect "word-extension" { text = "DOCX" }
+        expect "excel-extension" { text = "XLSX" }
+        expect "powerpoint-extension" { text = "PPTX" }
+        expect "pdf-extension" { text = "PDF" }
+        viewport "phone" { width = 390 height = 844 }
+        expect "file-icon-phone-visible" { visible = css(".a3s-preview[data-preview-component=file-type-icon] .file-type-icon") }
+    }
+
     scenario "progress" {
         name = "Progress preview exposes a synchronized value"
         surface = "web"
@@ -199,8 +216,8 @@ suite "a3s-ui-feedback-and-data" {
         expect "current-stage-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper > li[data-state=active][aria-current=step]") }
         expect "pending-stage-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper > li:not([data-state])") }
         viewport "phone" { width = 390 height = 844 }
-        focus "focus-scrollable-stepper" { target = css(".a3s-preview[data-preview-component=stepper] .stepper[tabindex=0]") }
-        expect "stepper-focused" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper:focus") }
+        focus "focus-scrollable-stepper" { target = css(".a3s-preview[data-preview-component=stepper] .stepper[tabindex=\"0\"]") }
+        expect "stepper-focused" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper[tabindex=\"0\"]:focus") }
         expect "phone-stepper-visible" { visible = css(".a3s-preview[data-preview-component=stepper] .stepper") }
         screenshot "stepper-phone" { path = "components/stepper-phone.png" }
     }
@@ -224,13 +241,13 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/log-viewer.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "log-region-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] .log-viewer [role=log][aria-live=polite][tabindex=0]") }
-        expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-actions] button[aria-pressed=true]") }
-        expect "stderr-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-record][data-stream=stderr]") }
+        expect "log-region-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] .log-viewer [role=\"log\"][aria-live=\"polite\"][tabindex=\"0\"]") }
+        expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-actions] button[aria-pressed=\"true\"]") }
+        expect "stderr-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-record][data-stream=\"stderr\"]") }
         expect "compaction-visible" { visible = css(".a3s-preview[data-preview-component=log-viewer] [data-log-gap]") }
         viewport "phone" { width = 390 height = 844 }
-        focus "focus-log-region" { target = css(".a3s-preview[data-preview-component=log-viewer] [role=log]") }
-        expect "log-region-focused" { visible = css(".a3s-preview[data-preview-component=log-viewer] [role=log]:focus") }
+        focus "focus-log-region" { target = css(".a3s-preview[data-preview-component=log-viewer] [role=\"log\"]") }
+        expect "log-region-focused" { visible = css(".a3s-preview[data-preview-component=log-viewer] [role=\"log\"]:focus") }
         screenshot "log-viewer-phone" { path = "components/log-viewer-phone.png" }
     }
 
