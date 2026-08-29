@@ -18,6 +18,28 @@
     list-style: none;
   }
 
+  /*
+   * Hosts that keep context and status together can opt into a context bar.
+   * The wrapper is layout-only: data remains owned by the host and the
+   * composer keeps working with the original direct context list contract.
+   */
+  .agent-composer > [data-composer-context-bar] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .agent-composer > [data-composer-context-bar] > [data-composer-context] {
+    flex: 1 1 auto;
+  }
+
+  .agent-composer > [data-composer-context-bar] > [data-composer-status] {
+    min-width: min(12rem, 100%);
+    flex: 0 1 auto;
+  }
+
   .agent-composer > [data-composer-context] > li {
     display: inline-flex;
     min-width: 0;
@@ -25,7 +47,18 @@
     align-items: center;
   }
 
+  .agent-composer > [data-composer-context-bar] > [data-composer-context] > li {
+    display: inline-flex;
+    min-width: 0;
+    max-width: 100%;
+    align-items: center;
+  }
+
   .agent-composer > [data-composer-context] button {
+    flex: none;
+  }
+
+  .agent-composer > [data-composer-context-bar] > [data-composer-context] button {
     flex: none;
   }
 
@@ -40,7 +73,11 @@
   .agent-composer > footer,
   .agent-composer
     > footer
-    > :is([data-composer-tools], [data-composer-actions]) {
+    > :is(
+      [data-composer-tools],
+      [data-composer-settings],
+      [data-composer-actions]
+    ) {
     display: flex;
     min-width: 0;
     align-items: center;
@@ -53,14 +90,72 @@
 
   .agent-composer
     > footer
-    > :is([data-composer-tools], [data-composer-actions]) {
+    > :is(
+      [data-composer-tools],
+      [data-composer-settings],
+      [data-composer-actions]
+    ) {
     gap: 0.375rem;
   }
 
   .agent-composer > footer > [data-composer-tools] {
+    flex: 1 1 auto;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scrollbar-width: thin;
+  }
+
+  /*
+   * Settings are a single, independently scrollable rail. This prevents a
+   * long model name or localized label from pushing the submit action out of
+   * the viewport. Hosts may set data-separators="true" when controls need a
+   * stronger visual grouping.
+   */
+  .agent-composer > footer > [data-composer-settings] {
+    max-width: 100%;
+    flex: 1 1 auto;
+    gap: 0.125rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .agent-composer > footer > [data-composer-settings]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .agent-composer
+    > footer
+    > [data-composer-settings]
+    > [data-composer-control] {
+    display: inline-flex;
+    min-width: 0;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .agent-composer
+    > footer
+    > [data-composer-settings][data-separators='true']
+    > [data-composer-control]
+    + [data-composer-control] {
+    border-inline-start: 1px solid
+      var(--agent-composer-separator-color, var(--border));
+    padding-inline-start: 0.375rem;
+  }
+
+  .agent-composer [data-composer-setting] {
+    min-height: var(--agent-composer-control-height, var(--a3s-control-height-sm, 1.75rem));
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .agent-composer
+    [data-composer-control][data-open='true']
+    > [data-composer-setting] {
+    border-color: var(--agent-composer-active-border-color, var(--border));
+    background: var(--agent-composer-active-background, var(--muted));
   }
 
   .agent-composer > footer > [data-composer-actions] {
@@ -71,6 +166,44 @@
   .agent-composer [data-composer-status] {
     min-width: 0;
     overflow-wrap: anywhere;
+  }
+
+  .agent-composer [data-composer-loading] {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .agent-composer [data-composer-loading]::before {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: none;
+    border: 2px solid
+      color-mix(in srgb, currentcolor 24%, transparent);
+    border-block-start-color: currentcolor;
+    border-radius: 50%;
+    content: '';
+    animation: agent-composer-spin 700ms linear infinite;
+  }
+
+  .agent-composer:is(
+      [data-drop-active='true'],
+      [data-composer-drop='active']
+    ) {
+    border-color: var(
+      --agent-composer-drop-border-color,
+      var(--ring, var(--primary))
+    );
+    background: var(
+      --agent-composer-drop-background,
+      color-mix(in srgb, var(--ring, var(--primary)) 5%, var(--card))
+    );
+  }
+
+  .agent-composer:is([data-state='submitting'], [data-state='streaming'])
+    [data-composer-settings] {
+    opacity: var(--agent-composer-busy-opacity, 0.82);
   }
 
   .agent-composer > [data-composer-queue] {
@@ -100,11 +233,43 @@
   @media (max-width: 36rem) {
     .agent-composer > footer {
       align-items: stretch;
-      flex-direction: column;
+      flex-wrap: wrap;
+    }
+
+    .agent-composer > footer > [data-composer-tools] {
+      min-width: 0;
+      flex: 1 1 calc(100% - 5rem);
+    }
+
+    .agent-composer > footer > [data-composer-settings] {
+      order: 3;
+      flex-basis: 100%;
+      border-block-start: 1px solid
+        var(--agent-composer-separator-color, var(--border));
+      padding-block-start: 0.375rem;
     }
 
     .agent-composer > footer > [data-composer-actions] {
+      flex: none;
       justify-content: space-between;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .agent-composer [data-composer-setting] {
+      min-height: var(--agent-composer-touch-height, 2.75rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agent-composer [data-composer-loading]::before {
+      animation: none;
+    }
+  }
+
+  @keyframes agent-composer-spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 }

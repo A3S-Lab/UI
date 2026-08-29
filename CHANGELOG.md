@@ -7,6 +7,9 @@
 - Added framework-agnostic Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with responsive, accessible, bilingual documentation.
 - Added complete Codex Workbench and New Agent Thread composition guides while keeping project, Git, transport, environment, and policy state in the host application.
 - Added route-level geometry, state, and browser diagnostic regression coverage for every public component guide.
+- Added the framework-agnostic File Type Icon contract with A3S Office-aligned semantic colors, size variants, host-provided glyph support, and bilingual documentation.
+- Added bounded Agent Composer context bars, settings rails, drag-over feedback, and reduced-motion loading states, with bilingual usage guidance and regression coverage.
+- Added host-owned File Type Icon selected, loading, disabled, and error state hooks without changing semantic type mapping.
 
 ### Fixed
 
@@ -17,8 +20,8 @@
 ### Added
 
 - Published `@a3s-lab/ui@0.3.0` to the public npm registry and created the `v0.3.0` GitHub release.
-- Added Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts extracted from A3S Web's Agent execution, build, evidence, status, and event-stream surfaces, with responsive CSS and bilingual documentation.
-- Added Brand Lockup and Stepper contracts extracted from A3S Web's shared identity and bounded process-path surfaces, with responsive CSS, bilingual documentation, and browser regression coverage.
+- Added Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts extracted from A3S agent execution, build, evidence, status, and event-stream surfaces, with responsive CSS and bilingual documentation.
+- Added Brand Lockup and Stepper contracts extracted from shared A3S identity and bounded process-path surfaces, with responsive CSS, bilingual documentation, and browser regression coverage.
 - Added a first-class Tree component with hierarchical selection, expandable branches, RTL-aware keyboard navigation, typeahead, disabled-item handling, split CSS and JavaScript entrypoints, and bilingual documentation.
 - Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
 - Added a bilingual, interactive Monaco workbench example with multi-file models, A3S ACL language services, TypeScript and JSON diagnostics, command and bottom panels, responsive layout, and synchronized themes.

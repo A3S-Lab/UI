@@ -40,6 +40,7 @@ const requiredFiles = [
   'dist/a3s-ui.css',
   'dist/a3s-ui.cdn.css',
   'dist/components/code-editor.css',
+  'dist/components/file-type-icon.css',
   'dist/js/runtime.js',
   'dist/js/all.js',
   'dist/js/code-editor.js',

@@ -13,6 +13,16 @@
 - A3S UI maps shadcn/ui concepts onto simpler semantic markup; it is not a React, Radix, Base UI, `cn-*`, or `data-slot` DOM port.
 - Prefer the browser platform: native elements, semantic HTML, CSS state selectors, and small vanilla JS only when needed.
 
+## Desktop Ownership Boundary
+- `../../apps/desktop` is the canonical product application and an A3S UI consumer. The dependency direction is Desktop to A3S UI; A3S UI must not depend on or reproduce Desktop.
+- A3S UI owns reusable tokens, semantic markup contracts, component CSS, small behavior controllers, server-rendered templates, documentation, and deterministic component specimens.
+- Desktop owns routes, projects, sessions, permissions, model and capability configuration, persistence, runtime orchestration, native-host integration, automation state, workspace file operations, knowledge-base state, and other product workflows.
+- Do not copy complete React components, route screens, product stores, fixtures that mimic production state, or application-specific styles from Desktop into A3S UI.
+- Documentation examples may compose several public components to validate layout, responsiveness, accessibility, and interaction contracts, but they must not become a parallel product application or a second implementation of Desktop workflows.
+- Before adding an application-scale component, search Desktop for an existing implementation and classify the change. Extract only the smallest reusable visual or interaction contract; keep business-specific behavior in Desktop.
+- When a defect is reusable, fix it in A3S UI and let Desktop consume the package change. When a defect depends on Desktop state or integration, leave the fix in Desktop.
+- Treat Desktop as read-only during A3S UI work unless the user explicitly places Desktop changes in scope. Never overwrite its dirty worktree.
+
 ## Source Boundaries
 - Do not hand-edit build outputs:
   - `dist/**`

@@ -932,7 +932,62 @@
     padding-block-start: 0.125rem;
   }
 
+  .agent-composer > [data-composer-context-bar] {
+    min-height: 2.25rem;
+    padding: 0.25rem 0.5rem;
+    border-block-start: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: color-mix(in srgb, var(--muted) 46%, var(--card));
+  }
+
+  .agent-composer > [data-composer-context-bar] > [data-composer-status] {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+  }
+
+  .agent-composer > footer > [data-composer-settings] {
+    padding-inline: 0.25rem;
+    border-inline: 1px solid var(--border);
+  }
+
+  .agent-composer [data-composer-setting] {
+    padding: 0 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--muted-foreground);
+    font: inherit;
+    font-size: var(--a3s-font-size-compact, 0.75rem);
+    font-weight: 550;
+    cursor: pointer;
+  }
+
+  .agent-composer [data-composer-setting]:hover,
+  .agent-composer [data-composer-setting][aria-expanded='true'] {
+    border-color: var(--border);
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .agent-composer [data-composer-setting]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .agent-composer [data-composer-settings] [data-composer-setting] > [data-setting-label] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .agent-composer [data-composer-status] {
+    color: var(--muted-foreground);
+    font-size: var(--a3s-font-size-micro, 0.6875rem);
+    line-height: 1rem;
+  }
+
+  .agent-composer [data-composer-loading] {
     color: var(--muted-foreground);
     font-size: var(--a3s-font-size-micro, 0.6875rem);
     line-height: 1rem;

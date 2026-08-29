@@ -24,8 +24,11 @@
 ## Next
 
 - [x] Added a framework-agnostic Code Editor with native editing fallback, line and cursor status, indentation shortcuts, JSON validation, read-only state, and a public value API.
-- [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S Web's Agent Factory and operational evidence surfaces.
-- [x] Extracted Brand Lockup and Stepper contracts from repeated A3S Web identity and bounded process-path surfaces.
+- [x] Extracted Agent Workbench, Log Viewer, Property List, Status Badge, and Timeline contracts from A3S agent and operational evidence surfaces.
+- [x] Extracted Brand Lockup and Stepper contracts from repeated A3S identity and bounded process-path surfaces.
 - [x] Added Agent Composer, Agent Transcript, Execution Item, and Approval Request contracts with Codex Workbench and New Agent Thread compositions.
+- [x] Added the File Type Icon contract with Office-aligned semantic colors, responsive size variants, and host-provided glyph support.
+- [x] Added bounded composer context bars and settings rails, explicit drag-over/loading states, and responsive touch behavior.
+- [x] Added host-owned File Type Icon state hooks for selected, loading, disabled, and error feedback.
 - [ ] Expand design tokens and application patterns only as A3S products adopt them, keeping Office parity through visual baselines.
 - [ ] Add migration guidance for Basecoat consumers moving to the A3S theme.

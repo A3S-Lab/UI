@@ -104,6 +104,71 @@ test("Agent Composer keeps context, queue, and submission controls bounded", asy
     (element) => element.scrollWidth - element.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+
+  // Exercise the optional settings rail contract with long localized labels.
+  // The rail must stay bounded without hiding the primary actions.
+  await composer.locator("footer").evaluate((footer) => {
+    const settings = document.createElement("div");
+    settings.dataset.composerSettings = "";
+    settings.dataset.separators = "true";
+    settings.setAttribute("role", "group");
+    settings.setAttribute("aria-label", "Run settings");
+    for (const label of [
+      "Model · a3s/deepseek-chat-long-provider-name",
+      "Execution · Automatic with workspace write permissions",
+    ]) {
+      const control = document.createElement("div");
+      control.dataset.composerControl = "setting";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.composerSetting = "";
+      button.textContent = label;
+      control.append(button);
+      settings.append(control);
+    }
+    footer.insertBefore(settings, footer.querySelector("[data-composer-actions]"));
+  });
+  const settings = composer.locator("[data-composer-settings]");
+  await expect(settings).toHaveRole("group", { name: "Run settings" });
+  await expect(settings.locator("[data-composer-setting]")).toHaveCount(2);
+  const settingsOverflow = await settings.evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  );
+  expect(settingsOverflow).toBeGreaterThanOrEqual(0);
+  expect(
+    await settings.evaluate((element) => getComputedStyle(element).overflowX),
+  ).toBe("auto");
+});
+
+test("File Type Icon keeps semantic identity and host-owned states bounded", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "file-type-icon");
+  const icons = preview.locator(".file-type-icon");
+
+  await expect(icons).toHaveCount(5);
+  await expect(icons.nth(1).locator(":scope > [data-file-extension]")).toHaveText(
+    "DOCX",
+  );
+  // The root's data-file-extension attribute must not be mistaken for the
+  // visible extension node (a regression guard for the direct-child contract).
+  await icons.nth(1).evaluate((element) => {
+    element.dataset.fileExtension = "root-metadata";
+  });
+  await expect(icons.nth(1).locator(":scope > [data-file-extension]")).toHaveCount(1);
+
+  const states = ["selected", "loading", "disabled", "error"] as const;
+  for (const [index, state] of states.entries()) {
+    await icons.nth(index).setAttribute("data-file-icon-state", state);
+  }
+  await expect(icons.nth(0)).toHaveAttribute("data-file-icon-state", "selected");
+  await expect(icons.nth(1)).toHaveAttribute("data-file-icon-state", "loading");
+  await expect(icons.nth(2)).toHaveAttribute("data-file-icon-state", "disabled");
+  await expect(icons.nth(3)).toHaveAttribute("data-file-icon-state", "error");
+  const documentOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - window.innerWidth,
+  );
+  expect(documentOverflow).toBeLessThanOrEqual(0);
 });
 
 test("Agent Transcript preserves chronological roles and bounded rich content", async ({
@@ -181,7 +246,7 @@ test("Brand Lockup preserves textual identity and compact proportions", async ({
   await expect(lockups).toHaveCount(2);
   await expect(linked).toHaveAccessibleName("A3S OS home");
   await expect(linked.locator("[data-brand-name]")).toHaveText("A3S OS");
-  await expect(compact.locator("[data-brand-name]")).toHaveText("A3S Web");
+  await expect(compact.locator("[data-brand-name]")).toHaveText("A3S Cloud");
   await expect(compact.locator("[data-brand-description]")).toHaveText(
     "Control plane",
   );

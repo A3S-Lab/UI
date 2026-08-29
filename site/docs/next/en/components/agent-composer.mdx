@@ -85,6 +85,47 @@ Agent Composer captures the next instruction, attached context, queued input, an
 </form>
 ```
 
+For a product composer with model and run controls, keep settings in their own
+scrollable rail. The rail is intentionally framework-agnostic, so a host can
+use native buttons, selects, or popover triggers without changing the
+component contract:
+
+```html
+<form class="agent-composer" aria-label="Message the coding agent">
+  <div data-composer-context-bar>
+    <ul data-composer-context aria-label="Attached context">...</ul>
+    <span data-composer-status aria-live="polite">Ready</span>
+  </div>
+  <textarea name="prompt" aria-label="Instruction"></textarea>
+  <footer>
+    <div data-composer-tools>...</div>
+    <div
+      data-composer-settings
+      data-separators="true"
+      role="group"
+      aria-label="Run settings"
+    >
+      <div data-composer-control="model">
+        <button type="button" data-composer-setting aria-expanded="false">
+          Model · ACL default
+        </button>
+      </div>
+      <div data-composer-control="execution">
+        <button type="button" data-composer-setting aria-expanded="false">
+          Execution · Default
+        </button>
+      </div>
+    </div>
+    <div data-composer-actions>...</div>
+  </footer>
+</form>
+```
+
+When a host accepts drag-and-drop, set `data-drop-active="true"` on the form
+while a file is over the drop target. For a short-lived operation, add a
+`data-composer-loading` element with a text label; the built-in indicator is
+suppressed when the user prefers reduced motion.
+
 ### Parameters
 
 | API                           | Values                                                           | Purpose                                                     |
@@ -92,10 +133,16 @@ Agent Composer captures the next instruction, attached context, queued input, an
 | `class="agent-composer"`      | Required                                                         | Standalone `<form>`, or a Section inside an owning Form     |
 | `data-state`                  | `idle`, `submitting`, `streaming`, `queued`, `error`, `disabled` | Finite presentation state owned by the host                 |
 | `data-composer-context`       | Optional list                                                    | Attachments, files, symbols, source ranges, images, or URLs |
+| `data-composer-context-bar`   | Optional wrapper                                                 | Keeps context chips and status copy in one bounded row      |
 | `data-composer-tools`         | Optional container                                               | Attachment and context controls                             |
+| `data-composer-settings`      | Optional container                                               | Independently scrollable model and run settings rail        |
+| `data-separators="true"`     | On `data-composer-settings`                                     | Adds logical separators between setting controls            |
+| `data-composer-setting`       | Setting trigger                                                  | Shared hit-area, focus, and active-state contract           |
 | `data-composer-actions`       | Recommended container                                            | Send, queue, stop, or retry actions                         |
 | `data-composer-status`        | Optional status text                                             | Submission or queue feedback                                |
+| `data-composer-loading`       | Optional status marker                                           | Adds a compact loading indicator beside host-owned text     |
 | `data-composer-queue`         | Optional ordered list                                            | Messages waiting behind an active Turn                      |
+| `data-drop-active="true"`    | Temporary form state                                             | Highlights a drag-and-drop target                           |
 | `--agent-composer-min-height` | CSS length, default `5.5rem`                                     | Minimum textarea height                                     |
 | `--agent-composer-max-height` | CSS length, default `18rem`                                      | Maximum textarea height before internal scrolling           |
 
@@ -104,6 +151,11 @@ Agent Composer captures the next instruction, attached context, queued input, an
 Use native `disabled` on individual controls and `aria-disabled="true"` only when the entire composer is unavailable. Keep input text when submission fails. During streaming, applications may send immediately, queue the message, or disable submission; the button label and status text must state which behavior applies.
 
 Attachments and queue items are application data. A3S UI neither uploads files nor mutates a queue. Native `submit` and button events are the integration points. Use a `<section class="agent-composer">` only when an ancestor Form already owns the submit boundary; nested Forms are invalid.
+
+`data-composer-settings` owns layout only. The host remains responsible for
+opening a dialog or popover, persisting the selected model, and exposing the
+result through the trigger's accessible name. On narrow screens the rail
+scrolls horizontally while the primary action stays reachable.
 
 ## Accessibility
 

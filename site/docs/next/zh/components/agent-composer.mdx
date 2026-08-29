@@ -85,6 +85,45 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 </form>
 ```
 
+需要同时呈现模型和执行设置时，建议将它们放进独立的可滚动工具栏。该
+工具栏不绑定任何框架，可以使用原生按钮、选择框或弹出层触发器：
+
+```html
+<form class="agent-composer" aria-label="向编码 Agent 发送消息">
+  <div data-composer-context-bar>
+    <ul data-composer-context aria-label="已附加上下文">...</ul>
+    <span data-composer-status aria-live="polite">就绪</span>
+  </div>
+  <textarea name="prompt" aria-label="指令"></textarea>
+  <footer>
+    <div data-composer-tools>...</div>
+    <div
+      data-composer-settings
+      data-separators="true"
+      role="group"
+      aria-label="执行设置"
+    >
+      <div data-composer-control="model">
+        <button type="button" data-composer-setting aria-expanded="false">
+          模型 · ACL 默认
+        </button>
+      </div>
+      <div data-composer-control="execution">
+        <button type="button" data-composer-setting aria-expanded="false">
+          执行 · 默认
+        </button>
+      </div>
+    </div>
+    <div data-composer-actions>...</div>
+  </footer>
+</form>
+```
+
+支持拖放时，文件进入放置区域期间在表单上设置
+`data-drop-active="true"`。短暂操作可以添加带有文字的
+`data-composer-loading` 元素；用户偏好减少动态效果时，内置指示器会停
+止动画。
+
 ### 参数
 
 | API                           | 取值                                                             | 用途                                        |
@@ -92,10 +131,16 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 | `class="agent-composer"`      | 必须                                                             | 独立 `<form>`，或归外层 Form 所有的 Section |
 | `data-state`                  | `idle`、`submitting`、`streaming`、`queued`、`error`、`disabled` | 由宿主管理的有限展示状态                    |
 | `data-composer-context`       | 可选列表                                                         | 附件、文件、符号、源码范围、图片或 URL      |
+| `data-composer-context-bar`   | 可选包装器                                                       | 将上下文标签和状态文案保持在一个受约束的行内 |
 | `data-composer-tools`         | 可选容器                                                         | 附件与上下文控件                            |
+| `data-composer-settings`      | 可选容器                                                         | 独立滚动的模型与执行设置工具栏              |
+| `data-separators="true"`     | `data-composer-settings` 上的属性                               | 在设置控件之间增加逻辑分隔线                |
+| `data-composer-setting`       | 设置触发器                                                       | 统一的点击区域、焦点与激活状态契约          |
 | `data-composer-actions`       | 推荐容器                                                         | 发送、排队、停止或重试操作                  |
 | `data-composer-status`        | 可选状态文本                                                     | 提交或排队反馈                              |
+| `data-composer-loading`       | 可选状态标记                                                     | 在宿主文字旁显示紧凑的加载指示器            |
 | `data-composer-queue`         | 可选有序列表                                                     | 在当前 Turn 之后等待的消息                  |
+| `data-drop-active="true"`    | 表单临时状态                                                     | 高亮拖放目标                                |
 | `--agent-composer-min-height` | CSS 长度，默认 `5.5rem`                                          | 文本区域最小高度                            |
 | `--agent-composer-max-height` | CSS 长度，默认 `18rem`                                           | 文本区域开始内部滚动前的最大高度            |
 
@@ -104,6 +149,10 @@ Agent 输入框用于提交下一条指令，并呈现附加上下文、排队�
 单个控件使用原生 `disabled`。只有整个输入框均不可用时才使用 `aria-disabled="true"`。提交失败时保留输入内容。流式执行期间，应用可以立即发送、加入队列或禁用提交，但按钮文案和状态文本必须明确说明实际行为。
 
 附件和排队消息都是应用数据。A3S UI 不上传文件，也不修改队列。原生 `submit` 与按钮事件就是集成点。只有祖先 Form 已经提供提交边界时才使用 `<section class="agent-composer">`，嵌套 Form 是无效标记。
+
+`data-composer-settings` 只负责布局。弹出层的打开方式、模型持久化以及
+触发器的可访问名称仍由宿主负责。窄屏下设置工具栏会横向滚动，同时保
+证主要操作始终可达。
 
 ## 无障碍
 
