@@ -94,6 +94,7 @@
 - Deferred the A3S component runtime until React has hydrated live previews, preventing Combobox initialization from causing recoverable hydration errors and client-side re-rendering.
 - Removed decorative overlay blur, restored a visible line-tab indicator and checkbox indeterminate state, and documented framework controller usage with tested method unions and runtime calls.
 - Restored A3S OS blue as the default action, focus, link, and selection theme in light and dark modes; kept violet as an optional persisted accent; and added A3S Test visual acceptance for desktop, mobile, reset, focus, and cross-route persistence.
+- Kept nested Agent Composer editors shrinkable and internally scrollable when hosts add intermediate wrappers or long unbroken input text.
 
 ## [0.3.0] - 2026-08-12
 

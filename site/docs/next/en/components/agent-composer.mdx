@@ -16,13 +16,34 @@ The composer answers four questions: what should happen, which resources may be 
 - Running states distinguish send, queue, stop, and unavailable actions with text, not an icon swap alone.
 - Failed submissions preserve Markdown, selection, resources, settings, and focus, then name a concrete recovery action.
 
+When the editor also needs a drop hint, validation message, or other host-owned
+content, wrap the input with `data-composer-editor`. Intermediate wrappers stay
+shrinkable, and long unbroken text scrolls inside the input instead of widening
+the workbench:
+
+```html
+<form class="agent-composer" aria-label="Message the coding agent">
+  <section class="agent-composer-editor" data-composer-editor>
+    <p data-composer-editor-message role="status">Drop a workspace file here</p>
+    <div>
+      <textarea
+        data-composer-input
+        name="prompt"
+        aria-label="Instruction"
+        placeholder="Describe the task to complete…"
+      ></textarea>
+    </div>
+  </section>
+</form>
+```
+
 ## Public structure
 
 | API | Purpose |
 | --- | --- |
 | `.agent-composer` | The `<form>` boundary; use `<section>` only inside an existing form |
-| `data-composer-editor` | Host for the TipTap instance |
-| `data-composer-input` | ProseMirror root created by TipTap and the accessible textbox |
+| `data-composer-editor` | Host for the TipTap instance or other editor region; keeps nested input width and scroll bounds stable |
+| `data-composer-input` | ProseMirror root or native input marked as the actual task input |
 | `data-composer-resources` | Ordered files, directories, source ranges, images, URLs, and skills |
 | `data-composer-suggestions` | Listbox or tree opened by `@`, `$`, or `/` |
 | `data-composer-setting` | Mode, context, model, and reasoning controls owned by the host |

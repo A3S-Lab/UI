@@ -48,11 +48,40 @@
 
   .agent-composer-editor__content,
   .agent-composer [data-composer-input] {
+    box-sizing: border-box;
     width: 100%;
     min-width: 0;
     min-height: var(--agent-composer-min-height, 6rem);
     max-height: var(--agent-composer-max-height, 18rem);
     overflow-y: auto;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  /* Keep host wrappers shrinkable so long prompts scroll inside the input. */
+  .agent-composer > :is([data-composer-editor], .agent-composer-editor),
+  .agent-composer > :is([data-composer-editor], .agent-composer-editor) > *,
+  .agent-composer > :is([data-composer-editor], .agent-composer-editor) > * > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .agent-composer > :is([data-composer-editor], .agent-composer-editor) {
+    display: grid;
+    width: 100%;
+    min-height: var(--agent-composer-min-height, 6rem);
+  }
+
+  .agent-composer > :is([data-composer-editor], .agent-composer-editor)
+    :is(textarea, [data-composer-input], .agent-composer-editor__content) {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--agent-composer-min-height, 6rem);
+    max-width: 100%;
+    max-height: var(--agent-composer-max-height, 18rem);
+    resize: vertical;
+    overflow: auto;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
   }

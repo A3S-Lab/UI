@@ -16,13 +16,33 @@
 - 运行中必须明确区分立即发送、加入队列、停止和不可提交，不能只替换图标。
 - 提交失败保留 Markdown 草稿、选择、资源、设置与焦点；恢复动作直接说明下一步。
 
+当编辑区还需要承载放置提示、校验消息或其它宿主内容时，可以用
+`data-composer-editor` 包裹输入框。中间的包装元素会保持可收缩，长的
+连续文本也只在输入框内部滚动，不会撑宽整个工作台：
+
+```html
+<form class="agent-composer" aria-label="向编码 Agent 发送消息">
+  <section class="agent-composer-editor" data-composer-editor>
+    <p data-composer-editor-message role="status">可以拖入工作区文件</p>
+    <div>
+      <textarea
+        data-composer-input
+        name="prompt"
+        aria-label="指令"
+        placeholder="描述要完成的任务……"
+      ></textarea>
+    </div>
+  </section>
+</form>
+```
+
 ## 公开结构
 
 | API | 用途 |
 | --- | --- |
 | `.agent-composer` | `<form>` 根边界；祖先已经是表单时才改用 `<section>` |
-| `data-composer-editor` | TipTap 编辑器宿主，不直接承载业务状态 |
-| `data-composer-input` | TipTap 创建的 ProseMirror 根节点，也是自动化和无障碍文本框 |
+| `data-composer-editor` | TipTap 编辑器宿主或其它编辑区；保持嵌套输入框的宽度和滚动边界 |
+| `data-composer-input` | TipTap 的 ProseMirror 根节点或宿主标记的实际输入框 |
 | `data-composer-resources` | 文件、目录、源码范围、图片、URL 或 Skill 的有序资源列表 |
 | `data-composer-suggestions` | `@`、`$`、`/` 触发的 listbox 或 tree |
 | `data-composer-setting` | 模式、上下文、模型、推理强度等宿主控制 |

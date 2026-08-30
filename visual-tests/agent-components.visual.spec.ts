@@ -106,6 +106,72 @@ test("Agent Composer keeps context, queue, and submission controls bounded", asy
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
+test("Agent Composer keeps a nested editor input bounded and internally scrollable", async ({
+  page,
+}) => {
+  const preview = await openComponent(page, "agent-composer");
+  await preview.evaluate((host) => {
+    const form = document.createElement("form");
+    form.className = "agent-composer";
+    form.setAttribute("aria-label", "Nested editor composer");
+
+    const editor = document.createElement("section");
+    editor.className = "agent-composer-editor";
+    editor.dataset.composerEditor = "";
+    const message = document.createElement("p");
+    message.dataset.composerEditorMessage = "";
+    message.setAttribute("role", "status");
+    message.textContent = "Drop a file here";
+    const intermediate = document.createElement("div");
+    const input = document.createElement("textarea");
+    input.dataset.composerInput = "";
+    input.setAttribute("aria-label", "Nested instruction");
+    input.rows = 2;
+    input.value = "long-unbroken-token-".repeat(400);
+    intermediate.append(input);
+    editor.append(message, intermediate);
+    form.append(editor);
+    host.append(form);
+  });
+
+  const composer = preview.locator("form[aria-label='Nested editor composer']");
+  const editor = composer.locator("[data-composer-editor]");
+  const input = composer.getByRole("textbox", { name: "Nested instruction" });
+  await expect(input).toBeVisible();
+  const [documentOverflow, composerOverflow, editorOverflow] = await Promise.all([
+    page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    ),
+    composer.evaluate((element) => element.scrollWidth - element.clientWidth),
+    editor.evaluate((element) => element.scrollWidth - element.clientWidth),
+  ]);
+  expect(documentOverflow).toBeLessThanOrEqual(0);
+  expect(composerOverflow).toBeLessThanOrEqual(0);
+  expect(editorOverflow).toBeLessThanOrEqual(0);
+
+  const geometry = await input.evaluate((element) => {
+    const parent = element.parentElement;
+    const editor = parent?.parentElement;
+    const style = getComputedStyle(element);
+    return {
+      editorMinWidth: editor ? getComputedStyle(editor).minWidth : "",
+      inputOverflowY: style.overflowY,
+      inputScrollHeight: element.scrollHeight,
+      inputClientHeight: element.clientHeight,
+      inputWidth: element.getBoundingClientRect().width,
+      parentMinWidth: parent ? getComputedStyle(parent).minWidth : "",
+      parentWidth: parent?.getBoundingClientRect().width ?? 0,
+      wrap: style.overflowWrap,
+    };
+  });
+  expect(geometry.editorMinWidth).toBe("0px");
+  expect(geometry.parentMinWidth).toBe("0px");
+  expect(geometry.inputWidth).toBeLessThanOrEqual(geometry.parentWidth);
+  expect(geometry.inputOverflowY).toBe("auto");
+  expect(geometry.inputScrollHeight).toBeGreaterThan(geometry.inputClientHeight);
+  expect(geometry.wrap).toBe("anywhere");
+});
+
 test("Agent Transcript preserves chronological roles and bounded rich content", async ({
   page,
 }) => {
