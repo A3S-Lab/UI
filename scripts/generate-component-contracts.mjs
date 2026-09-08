@@ -384,7 +384,7 @@ function assertBehaviorContract(component, interaction) {
 }
 
 function stateMatrixRoot(component) {
-  return `.a3s-component-state-matrix[open][data-component=${component.slug}]`;
+  return `.a3s-component-state-matrix[data-open][data-component=${component.slug}]`;
 }
 
 function qualifiedStateSelector(component, state, selector) {
