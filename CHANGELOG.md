@@ -5,9 +5,9 @@
 ### Fixed
 
 - State acceptance matrix is a plain `role="dialog"` panel (not `<dialog>`).
-  Component contracts capture light/dark/compact evidence first, then open the
-  matrix last so CDP dismiss failures cannot block theme screenshots. Product
-  dismiss remains for interactive users.
+  Component contracts capture light/dark/compact evidence first (via CDP clicks
+  on preview controls), then open the matrix last so dismiss failures cannot
+  block theme screenshots. Product dismiss remains for interactive users.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.
