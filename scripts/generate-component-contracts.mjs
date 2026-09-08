@@ -633,7 +633,7 @@ function renderStateMatrixContract(component, publicPreview) {
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        click "close-state-matrix" { target = css("${stateMatrixRoot(component)} [data-state-matrix-close]") }
+        press "close-state-matrix" { key = "Enter" }
         wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }
         expect "state-trigger-restored" { focused = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
 }
