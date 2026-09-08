@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- Component contracts capture dark evidence and the state matrix before opening
+  the Code panel, so States stays clickable under CDP; framework tabs run after
+  compact capture and the matrix reload (CDP still cannot dismiss the overlay).
 - State acceptance matrix is a plain `role="dialog"` panel (not `<dialog>`).
   Component contracts use CDP clicks for preview controls, capture the matrix on
   desktop after dark evidence, then reload before compact screenshots because CDP
