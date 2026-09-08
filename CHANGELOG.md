@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- Component-contract and product A3S Test suites assert keyboard focus with the
+  protocol `focused` expectation instead of trailing CSS `:focus` selectors, so
+  documentation contract runs no longer fail closed on valid focus ownership.
 - Feedback/data A3S Test scenarios assert keyboard focus with the protocol
   `focused` expectation instead of CSS `:focus` selectors, so Stepper, Log
   Viewer, and related standalone runs no longer fail closed on valid focus
