@@ -95,7 +95,7 @@ suite "a3s-ui-product-automation-and-preview" {
         }
 
         click "cancel" { target = role("button", "取消") }
-        wait "edit-focus-restored" {
+        expect "edit-focus-restored" {
             focused = css("button[aria-label='编辑 发布就绪巡检']")
         }
 
@@ -187,7 +187,7 @@ suite "a3s-ui-product-automation-and-preview" {
             visible = css(".product-run-history[data-detail-open='true'] .product-run-history__detail")
         }
         click "back" { target = role("button", "返回运行记录") }
-        wait "run-focus-restored" {
+        expect "run-focus-restored" {
             focused = css("[data-run-id='regression-watch-0818']")
         }
 
