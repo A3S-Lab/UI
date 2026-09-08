@@ -4,13 +4,9 @@
 
 ### Fixed
 
-- Component-contracts reload after the state-matrix screenshot because CDP
-  cannot reliably activate top-layer `<dialog>` close/Escape; product close
-  still restores focus for real users.
-- State-matrix focuses its close control after `showModal()` and listens for
-  Escape on `document` so real keyboard users can dismiss when native cancel
-  does not fire; focus returns to the trigger from `onClose` after the dialog
-  has fully closed.
+- State acceptance matrix uses non-modal `dialog.show()` (with a page backdrop)
+  so component-contracts can click the close control under CDP; Escape still
+  closes and restores focus to the States trigger via `onClose`.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.

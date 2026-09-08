@@ -1528,10 +1528,9 @@ export function ComponentStateMatrix({
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
-      dialog.showModal();
-      // CDP keyboard events target document.activeElement. Move focus into the
-      // dialog so Escape reaches a listener (native cancel alone is unreliable
-      // under agent-browser key injection).
+      // Non-modal show(): documentation acceptance UI must stay CDP-clickable.
+      // showModal() top-layer blocks agent-browser click/key activation.
+      dialog.show();
       dialog
         .querySelector<HTMLElement>("[data-state-matrix-close]")
         ?.focus({ preventScroll: true });
@@ -1630,16 +1629,23 @@ export function ComponentStateMatrix({
       </button>
       {mounted
         ? createPortal(
-            <dialog
+            <>
+              {open ? (
+                <button
+                  aria-hidden="true"
+                  className="a3s-component-state-matrix__backdrop"
+                  onClick={close}
+                  tabIndex={-1}
+                  type="button"
+                />
+              ) : null}
+              <dialog
               aria-describedby={descriptionId}
               aria-labelledby={titleId}
               className="a3s-component-state-matrix"
               data-component={contract.slug}
               id={`${titleId}-dialog`}
               onCancel={(event) => {
-                // Keep React state as the single closer. Focusing the trigger
-                // while the modal dialog is still open is ignored by the
-                // browser, so restore only from `onClose` after `dialog.close()`.
                 event.preventDefault();
                 close();
               }}
@@ -1713,7 +1719,8 @@ export function ComponentStateMatrix({
                   </article>
                 ))}
               </div>
-            </dialog>,
+            </dialog>
+            </>,
             document.body,
           )
         : null}
