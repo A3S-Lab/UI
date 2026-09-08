@@ -9,6 +9,8 @@
   newline-normalized equality so local `check:*` matches CI.
 - Focus-restoration ACL steps use `expect { focused = ... }` rather than
   `wait { focused = ... }`, because wait only accepts load/text/url/visible/hidden.
+- Focused App Shell and Sidebar expectations use unique list-item locators
+  instead of ambiguous `a:first-of-type` / `a:last-of-type` selectors.
 - Component-contract, actions/forms, and product A3S Test suites assert
   keyboard focus with the protocol `focused` expectation instead of CSS
   `:focus` selectors (including mid-selector and `:has(...:focus)` forms), so
