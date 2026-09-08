@@ -1527,8 +1527,27 @@ export function ComponentStateMatrix({
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // CDP keyboard events target document.activeElement. Move focus into the
+      // dialog so Escape reaches a listener (native cancel alone is unreliable
+      // under agent-browser key injection).
+      dialog
+        .querySelector<HTMLElement>("[data-state-matrix-close]")
+        ?.focus({ preventScroll: true });
+    }
     if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [open]);
 
   useLayoutEffect(() => {
