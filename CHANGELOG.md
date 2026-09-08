@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- Component-contracts close the state-matrix via the close control instead of
+  CDP Escape, which does not reliably cancel a native `<dialog>` under
+  agent-browser key injection; Escape still closes for real keyboard users.
 - State-matrix Escape closes reliably under CDP key injection: focus moves into
   the dialog after `showModal()`, and a document-level Escape listener closes
   when native `<dialog>` cancel does not fire.
