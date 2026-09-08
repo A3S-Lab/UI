@@ -634,7 +634,8 @@ function renderStateMatrixContract(component, publicPreview) {
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
         press "close-state-matrix" { key = "Escape" }
-        expect "state-trigger-restored" { focus_within = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
+        wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }
+        expect "state-trigger-restored" { focused = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
 }
 
 const transientComponentTriggers = new Map([

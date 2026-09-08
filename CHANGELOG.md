@@ -4,6 +4,10 @@
 
 ### Fixed
 
+- State acceptance matrix restores focus to its trigger only after the modal
+  `<dialog>` has closed, so Escape no longer races a no-op focus while the
+  top layer is still open; contract suites wait for the matrix to close before
+  asserting the restored trigger.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.
