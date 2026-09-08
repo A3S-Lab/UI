@@ -63,7 +63,7 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `input.date-picker` and is annotated by the runtime as `[data-a3s-components~="date-picker"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=date-picker]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=date-picker]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -79,8 +79,8 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - Stable root target: `[data-a3s-components~="date-picker"]` inside `.a3s-preview[data-preview-component=date-picker][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/date-picker-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=ready]:has([data-a3s-components~='date-picker'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled]:has([data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid]:has([data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `read-only`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only]:has([data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=date-picker] [data-state-specimen=ready]:has([data-a3s-components~='date-picker'][data-a3s-state~='ready'])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=date-picker] [data-state-specimen=disabled]:has([data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=date-picker] [data-state-specimen=invalid]:has([data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `read-only`: `.a3s-component-state-matrix[data-open][data-component=date-picker] [data-state-specimen=read-only]:has([data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

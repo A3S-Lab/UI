@@ -65,7 +65,7 @@ The canonical root uses `<section>` semantics and exposes 5 named parts. State m
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.tool-call-timeline` and is annotated by the runtime as `[data-a3s-components~="tool-call-timeline"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=tool-call-timeline]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -81,9 +81,9 @@ The canonical root uses `<section>` semantics and exposes 5 named parts. State m
 - Stable root target: `[data-a3s-components~="tool-call-timeline"]` inside `.a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/tool-call-timeline-states.png`.
 - Per-state evidence selectors:
-  - `idle`: `.a3s-component-state-matrix[open][data-component=tool-call-timeline] [data-state-specimen=idle]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='idle'])`
-  - `running`: `.a3s-component-state-matrix[open][data-component=tool-call-timeline] [data-state-specimen=running]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='running'][aria-busy=true])`
-  - `attention`: `.a3s-component-state-matrix[open][data-component=tool-call-timeline] [data-state-specimen=attention]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='attention'])`
-  - `problem`: `.a3s-component-state-matrix[open][data-component=tool-call-timeline] [data-state-specimen=problem]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='problem'])`
-  - `complete`: `.a3s-component-state-matrix[open][data-component=tool-call-timeline] [data-state-specimen=complete]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='complete'])`
+  - `idle`: `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=idle]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='idle'])`
+  - `running`: `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=running]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='running'][aria-busy=true])`
+  - `attention`: `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=attention]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='attention'])`
+  - `problem`: `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=problem]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='problem'])`
+  - `complete`: `.a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=complete]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='complete'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

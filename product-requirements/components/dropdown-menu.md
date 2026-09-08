@@ -63,7 +63,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.dropdown-menu` and is annotated by the runtime as `[data-a3s-components~="dropdown-menu"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=dropdown-menu]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=dropdown-menu]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -79,7 +79,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - Stable root target: `[data-a3s-components~="dropdown-menu"]` inside `.a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/dropdown-menu-states.png`.
 - Per-state evidence selectors:
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `expanded`: `.a3s-component-state-matrix[data-open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))`
+  - `collapsed`: `.a3s-component-state-matrix[data-open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -63,7 +63,7 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `input.input[type=checkbox]:not([role=switch])` and is annotated by the runtime as `[data-a3s-components~="checkbox"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=checkbox]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=checkbox]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -79,8 +79,8 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - Stable root target: `[data-a3s-components~="checkbox"]` inside `.a3s-preview[data-preview-component=checkbox][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/checkbox-states.png`.
 - Per-state evidence selectors:
-  - `checked`: `.a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=checked]:has([data-a3s-components~='checkbox'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))`
-  - `unchecked`: `.a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=unchecked]:has([data-a3s-components~='checkbox'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false])))`
-  - `indeterminate`: `.a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=indeterminate]:has([data-a3s-components~='checkbox'][data-a3s-state~='indeterminate']:is(:indeterminate,[aria-checked=mixed],:has(:indeterminate),:has([aria-checked=mixed])))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=disabled]:has([data-a3s-components~='checkbox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `checked`: `.a3s-component-state-matrix[data-open][data-component=checkbox] [data-state-specimen=checked]:has([data-a3s-components~='checkbox'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))`
+  - `unchecked`: `.a3s-component-state-matrix[data-open][data-component=checkbox] [data-state-specimen=unchecked]:has([data-a3s-components~='checkbox'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false])))`
+  - `indeterminate`: `.a3s-component-state-matrix[data-open][data-component=checkbox] [data-state-specimen=indeterminate]:has([data-a3s-components~='checkbox'][data-a3s-state~='indeterminate']:is(:indeterminate,[aria-checked=mixed],:has(:indeterminate),:has([aria-checked=mixed])))`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=checkbox] [data-state-specimen=disabled]:has([data-a3s-components~='checkbox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -64,7 +64,7 @@ The canonical root uses `<section>` semantics and exposes 3 named parts. State m
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.agent-transcript` and is annotated by the runtime as `[data-a3s-components~="agent-transcript"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=agent-transcript]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=agent-transcript]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -80,10 +80,10 @@ The canonical root uses `<section>` semantics and exposes 3 named parts. State m
 - Stable root target: `[data-a3s-components~="agent-transcript"]` inside `.a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/agent-transcript-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=ready]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='ready'])`
-  - `streaming`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=streaming]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='streaming'][aria-busy=true])`
-  - `waiting`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=waiting]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='waiting'][aria-busy=true])`
-  - `complete`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=complete]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='complete'])`
-  - `error`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=error]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='error'])`
-  - `empty`: `.a3s-component-state-matrix[open][data-component=agent-transcript] [data-state-specimen=empty]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='empty'])`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=ready]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='ready'])`
+  - `streaming`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=streaming]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='streaming'][aria-busy=true])`
+  - `waiting`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=waiting]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='waiting'][aria-busy=true])`
+  - `complete`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=complete]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='complete'])`
+  - `error`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=error]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='error'])`
+  - `empty`: `.a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=empty]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='empty'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

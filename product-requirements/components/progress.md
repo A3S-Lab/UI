@@ -61,7 +61,7 @@ The canonical root uses `<div>` semantics and exposes 1 named part. State must b
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.progress` and is annotated by the runtime as `[data-a3s-components~="progress"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=progress]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=progress]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -77,7 +77,7 @@ The canonical root uses `<div>` semantics and exposes 1 named part. State must b
 - Stable root target: `[data-a3s-components~="progress"]` inside `.a3s-preview[data-preview-component=progress][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/progress-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=progress] [data-state-specimen=ready] [data-a3s-components~='progress'][data-a3s-state~='ready'][role=progressbar][aria-valuenow='66']:has(> span[style*='width'][style*='66%'])`
-  - `complete`: `.a3s-component-state-matrix[open][data-component=progress] [data-state-specimen=complete] [data-a3s-components~='progress'][data-a3s-state~='complete'][role=progressbar][aria-valuenow='100']:has(> span[style*='width'][style*='100%'])`
-  - `indeterminate`: `.a3s-component-state-matrix[open][data-component=progress] [data-state-specimen=indeterminate] [data-a3s-components~='progress'][data-a3s-state~='indeterminate'][role=progressbar]:not([aria-valuenow]):has(> span:not([style*='width']))`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=progress] [data-state-specimen=ready] [data-a3s-components~='progress'][data-a3s-state~='ready'][role=progressbar][aria-valuenow='66']:has(> span[style*='width'][style*='66%'])`
+  - `complete`: `.a3s-component-state-matrix[data-open][data-component=progress] [data-state-specimen=complete] [data-a3s-components~='progress'][data-a3s-state~='complete'][role=progressbar][aria-valuenow='100']:has(> span[style*='width'][style*='100%'])`
+  - `indeterminate`: `.a3s-component-state-matrix[data-open][data-component=progress] [data-state-specimen=indeterminate] [data-a3s-components~='progress'][data-a3s-state~='indeterminate'][role=progressbar]:not([aria-valuenow]):has(> span:not([style*='width']))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

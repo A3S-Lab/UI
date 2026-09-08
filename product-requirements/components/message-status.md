@@ -64,7 +64,7 @@ The canonical root uses `<output>` semantics and exposes 3 named parts. State mu
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.message-status` and is annotated by the runtime as `[data-a3s-components~="message-status"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=message-status]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=message-status]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -80,10 +80,10 @@ The canonical root uses `<output>` semantics and exposes 3 named parts. State mu
 - Stable root target: `[data-a3s-components~="message-status"]` inside `.a3s-preview[data-preview-component=message-status][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/message-status-states.png`.
 - Per-state evidence selectors:
-  - `sending`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=sending]:has([data-a3s-components~='message-status'][data-a3s-state~='sending'][aria-busy=true])`
-  - `streaming`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=streaming]:has([data-a3s-components~='message-status'][data-a3s-state~='streaming'][aria-busy=true])`
-  - `sent`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=sent]:has([data-a3s-components~='message-status'][data-a3s-state~='sent'])`
-  - `queued`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=queued]:has([data-a3s-components~='message-status'][data-a3s-state~='queued'])`
-  - `stopped`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=stopped]:has([data-a3s-components~='message-status'][data-a3s-state~='stopped'])`
-  - `error`: `.a3s-component-state-matrix[open][data-component=message-status] [data-state-specimen=error]:has([data-a3s-components~='message-status'][data-a3s-state~='error'])`
+  - `sending`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=sending]:has([data-a3s-components~='message-status'][data-a3s-state~='sending'][aria-busy=true])`
+  - `streaming`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=streaming]:has([data-a3s-components~='message-status'][data-a3s-state~='streaming'][aria-busy=true])`
+  - `sent`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=sent]:has([data-a3s-components~='message-status'][data-a3s-state~='sent'])`
+  - `queued`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=queued]:has([data-a3s-components~='message-status'][data-a3s-state~='queued'])`
+  - `stopped`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=stopped]:has([data-a3s-components~='message-status'][data-a3s-state~='stopped'])`
+  - `error`: `.a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=error]:has([data-a3s-components~='message-status'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

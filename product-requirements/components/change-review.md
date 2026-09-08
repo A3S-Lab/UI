@@ -64,7 +64,7 @@ The canonical root uses `<section>` semantics and exposes 7 named parts. State m
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.change-review` and is annotated by the runtime as `[data-a3s-components~="change-review"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=change-review]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=change-review]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -80,10 +80,10 @@ The canonical root uses `<section>` semantics and exposes 7 named parts. State m
 - Stable root target: `[data-a3s-components~="change-review"]` inside `.a3s-preview[data-preview-component=change-review][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/change-review-states.png`.
 - Per-state evidence selectors:
-  - `pending`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=pending]:has([data-a3s-components~='change-review'][data-a3s-state~='pending'])`
-  - `reviewing`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=reviewing]:has([data-a3s-components~='change-review'][data-a3s-state~='reviewing'])`
-  - `accepted`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=accepted]:has([data-a3s-components~='change-review'][data-a3s-state~='accepted'])`
-  - `rejected`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=rejected]:has([data-a3s-components~='change-review'][data-a3s-state~='rejected'])`
-  - `conflict`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=conflict]:has([data-a3s-components~='change-review'][data-a3s-state~='conflict'])`
-  - `error`: `.a3s-component-state-matrix[open][data-component=change-review] [data-state-specimen=error]:has([data-a3s-components~='change-review'][data-a3s-state~='error'])`
+  - `pending`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=pending]:has([data-a3s-components~='change-review'][data-a3s-state~='pending'])`
+  - `reviewing`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=reviewing]:has([data-a3s-components~='change-review'][data-a3s-state~='reviewing'])`
+  - `accepted`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=accepted]:has([data-a3s-components~='change-review'][data-a3s-state~='accepted'])`
+  - `rejected`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=rejected]:has([data-a3s-components~='change-review'][data-a3s-state~='rejected'])`
+  - `conflict`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=conflict]:has([data-a3s-components~='change-review'][data-a3s-state~='conflict'])`
+  - `error`: `.a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=error]:has([data-a3s-components~='change-review'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.
