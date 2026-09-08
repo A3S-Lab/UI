@@ -143,7 +143,8 @@ suite "a3s-ui-expanded-contracts" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-code" { target = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter") }
-        expect "marked-code-visible" { visible = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter:focus mark") }
+        expect "marked-code-visible" { visible = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter mark") }
+        expect "highlighter-focused" { focused = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter") }
     }
 
     scenario "hotkey-input" {
