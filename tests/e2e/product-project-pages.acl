@@ -266,7 +266,7 @@ suite "a3s-ui-product-project-pages" {
         expect "overview-restored" { visible = css("[role=tab][aria-controls$='-overview'][aria-selected=true]") }
         press "close-inspector" { key = "Escape" }
         expect "inspector-closed" { visible = css("[data-product-surface=project-session]:not(:has(aside[aria-label='项目详情']))") }
-        wait "trigger-focus-restored" { focused = css("button[aria-label='打开项目详情']") }
+        expect "trigger-focus-restored" { focused = css("button[aria-label='打开项目详情']") }
         accessibility "accessibility" { path = "product/project-task-inspector-mobile-accessibility.json" interactive = true }
         console "console" { path = "product/project-task-inspector-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-task-inspector-mobile-errors.json" clear = false }
@@ -339,7 +339,7 @@ suite "a3s-ui-product-project-pages" {
         expect "pdf-asset-visible" { visible = css("[data-asset-id=visual-report][data-asset-row]") }
         click "open-pdf-file" { target = role("button", "打开 visual-acceptance-report.pdf") }
         expect "pdf-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=pdf][data-presentation=dialog]") }
-        wait "pdf-workbench-close-focused" { focused = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
+        expect "pdf-workbench-close-focused" { focused = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
         wait "pdf-search" { visible = css("input[aria-label='在 PDF 中搜索']") }
         wait "pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
         wait "pdf-renderer-ready" { visible = css(".work-pdf-embed[data-ready=true]") }
@@ -351,17 +351,17 @@ suite "a3s-ui-product-project-pages" {
         wait "pdf-first-page-restored" { visible = css("input[aria-label='页码'][value='1']") }
         screenshot "pdf-workbench-visual" { path = "product/project-asset-pdf-workbench.png" }
         click "close-pdf-preview" { target = role("button", "关闭文件预览") }
-        wait "pdf-focus-restored" { focused = css("[data-asset-id=visual-report] [data-asset-open]") }
+        expect "pdf-focus-restored" { focused = css("[data-asset-id=visual-report] [data-asset-open]") }
         click "return-to-asset-root" { target = css("[data-asset-back]") }
 
         click "open-word-file" { target = role("button", "打开 experience-brief.docx") }
         expect "office-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=document][data-presentation=dialog]") }
-        wait "office-workbench-close-focused" { focused = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
+        expect "office-workbench-close-focused" { focused = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
         expect "office-preview-tools-visible" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "office-preview-document-visible" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         screenshot "office-workbench-visual" { path = "product/project-asset-office-workbench.png" }
         click "close-office-preview" { target = role("button", "关闭文件预览") }
-        wait "office-focus-restored" { focused = css("[data-asset-id=experience-brief] [data-asset-open]") }
+        expect "office-focus-restored" { focused = css("[data-asset-id=experience-brief] [data-asset-open]") }
 
         click "select-design-asset" { target = css("[data-asset-id=design-md] [data-asset-select]") }
         expect "selected-row" { visible = css("[data-asset-id=design-md][data-selected=true]") }
