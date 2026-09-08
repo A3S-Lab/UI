@@ -48,7 +48,7 @@ suite "a3s-ui-product-global-and-settings-contracts" {
         screenshot "confirmation" { path = "product/account-exit-confirmation.png" }
         click "cancel-exit" { target = role("button", "取消") }
         expect "dialog-closed" { visible = css("[data-product-application]:not(:has(dialog.product-exit-dialog[open]))") }
-        expect "account-trigger-restored" { focused = css(".product-sidebar__footer > button:first-child") }
+        expect "account-trigger-restored" { focus_within = css(".product-sidebar__footer > button:first-child") }
 
         accessibility "tree" { path = "product/account-exit-accessibility.json" interactive = true }
         console "console" { path = "product/account-exit-console.json" clear = false }
@@ -74,7 +74,7 @@ suite "a3s-ui-product-global-and-settings-contracts" {
         click "toggle-lock-running-pointer" { target = css(".product-settings[open] main label.product-settings__switch:has(input[aria-label='锁屏继续运行'])") }
         expect "lock-running-enabled" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:checked)") }
         focus "focus-lock-running" { target = css(".product-settings__switch input[role=switch][aria-label='锁屏继续运行']") }
-        expect "lock-running-focused" { focused = css(".product-settings__switch input[role=switch][aria-label='锁屏继续运行']") }
+        expect "lock-running-focused" { focus_within = css(".product-settings__switch input[role=switch][aria-label='锁屏继续运行']") }
         press "toggle-lock-running-keyboard" { key = "Space" }
         expect "lock-running-disabled" { visible = css(".product-settings[open] main .product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:not(:checked))") }
         expect "settings-switch-keyboard-state" { visible = css(".product-settings__switch:has(input[role=switch][aria-label='锁屏继续运行']:not(:checked))") }

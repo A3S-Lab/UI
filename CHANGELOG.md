@@ -11,6 +11,9 @@
   `wait { focused = ... }`, because wait only accepts load/text/url/visible/hidden.
 - Focused App Shell and Sidebar expectations use unique list-item locators
   instead of ambiguous `a:first-of-type` / `a:last-of-type` selectors.
+- Documentation contract focus checks use `focus_within` for composite
+  preview controls and tabs; exact `focused` remains for App Shell link
+  ownership where the deepest active element is the contract.
 - Component-contract, actions/forms, and product A3S Test suites assert
   keyboard focus with the protocol `focused` expectation instead of CSS
   `:focus` selectors (including mid-selector and `:has(...:focus)` forms), so
