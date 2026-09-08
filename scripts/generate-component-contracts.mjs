@@ -633,9 +633,9 @@ function renderStateMatrixContract(component, publicPreview) {
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        click "close-state-matrix" { target = css("${stateMatrixRoot(component)} [data-state-matrix-close]") }
+        click "close-state-matrix" { target = css(".a3s-component-state-matrix__backdrop") }
         wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }
-        expect "state-trigger-restored" { focused = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
+        expect "state-trigger-restored" { focus_within = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
 }
 
 const transientComponentTriggers = new Map([
