@@ -621,14 +621,10 @@ function renderStateExpectations(component) {
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
-  // Capture on desktop after dark evidence. Close the Code panel first so it
-  // cannot cover States. Wait on aria-expanded=false — a hidden wait on
-  // `:not([hidden])` detaches once the panel closes and fails every scenario.
-  // CDP cannot dismiss the matrix overlay, so the scenario reloads before
-  // compact screenshots.
+  // Capture on desktop after dark evidence, before the Code panel opens so
+  // States stays clickable. CDP cannot dismiss the matrix overlay, so the
+  // scenario reloads before framework/compact evidence.
   return `
-        click "close-source-before-state-matrix" { target = css("${publicPreview} [data-preview-control=source][aria-expanded=true]") }
-        wait "source-closed-before-state-matrix" { visible = css("${publicPreview} [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
@@ -778,7 +774,7 @@ ${details ? `${details.source.trim()}\n\n` : ""}
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches \`${component.selector}\` and is annotated by the runtime as \`${component.test.selector}\`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at \`${matrixRoot}\` after dark evidence on desktop, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before compact evidence because CDP cannot dismiss the overlay).
+- The state acceptance matrix opens at \`${matrixRoot}\` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -887,16 +883,6 @@ function renderComponentScenario(component) {
         expect "light-ltr-contract" { visible = css("${publicPreview}[data-preview-scheme=inherit][data-preview-direction=ltr]") }
         screenshot "desktop-light" { path = "components/contracts/${slug}-desktop-light.png" }
 ${lightClose}
-        click "open-source" { target = css("${integrationPreview} [data-preview-control=source]") }
-        expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
-        expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
-        click "select-html" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
-        expect "html-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
-        click "select-react" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(2)") }
-        expect "react-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
-        click "select-vue" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(3)") }
-        expect "vue-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
-
         click "enable-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
         expect "dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
         click "enable-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
@@ -908,7 +894,8 @@ ${renderStateMatrixContract(component, stateMatrixPreview)}
         navigate "reset-after-state-matrix" { url = "http://127.0.0.1:4178/UI/en/components/${slug}.html" }
         wait "state-matrix-page-reloaded" { load = "networkidle" }
         wait "state-matrix-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        wait "state-matrix-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }
+        wait "state-matrix-preview-ready" { visible = css("${integrationPreview}[data-preview-source=ready]") }
+        wait "state-matrix-public-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }
         click "restore-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
         expect "restored-dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
         click "restore-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
@@ -918,6 +905,15 @@ ${renderStateMatrixContract(component, stateMatrixPreview)}
         expect "compact-preview" { visible = css("${publicPreview}${compactPreviewState}") }${compactActivation}
         expect "compact-public-root" { visible = css("${visiblePublicTarget}") }
         screenshot "capture-compact" { path = "components/contracts/${slug}-compact.png" }
+        click "open-source" { target = css("${integrationPreview} [data-preview-control=source]") }
+        expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
+        expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
+        click "select-html" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
+        expect "html-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
+        click "select-react" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(2)") }
+        expect "react-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
+        click "select-vue" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(3)") }
+        expect "vue-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
         accessibility "tree" { path = "components/contracts/${slug}-accessibility.json" interactive = true }
         console "console" { path = "components/contracts/${slug}-console.json" clear = false }
         page_errors "errors" { path = "components/contracts/${slug}-errors.json" clear = false }
