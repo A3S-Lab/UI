@@ -1632,10 +1632,12 @@ export function ComponentStateMatrix({
             <>
               {open ? (
                 <button
-                  aria-hidden="true"
+                  aria-label={
+                    isChinese ? "关闭状态验收" : "Close state acceptance"
+                  }
                   className="a3s-component-state-matrix__backdrop"
+                  data-state-matrix-backdrop
                   onClick={close}
-                  tabIndex={-1}
                   type="button"
                 />
               ) : null}
