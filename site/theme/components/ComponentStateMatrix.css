@@ -9,6 +9,41 @@
   cursor: pointer;
 }
 
+/* Viewport-corner dismiss stays above the panel so CDP center-clicks are not
+   intercepted by the matrix chrome (backdrop center sits under the panel). */
+.a3s-component-state-matrix__dismiss {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ui-paper);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  place-items: center;
+  color: var(--ui-muted);
+  cursor: pointer;
+}
+
+.a3s-component-state-matrix__dismiss:hover,
+.a3s-component-state-matrix__dismiss:focus-visible {
+  color: var(--ui-ink);
+}
+
+.a3s-component-state-matrix__dismiss:focus-visible {
+  outline: 2px solid var(--ui-focus, #3b82f6);
+  outline-offset: 2px;
+}
+
+.a3s-component-state-matrix__dismiss svg {
+  width: 18px;
+  height: 18px;
+}
+
 .a3s-component-state-matrix {
   position: fixed;
   inset: 0;
@@ -34,10 +69,10 @@
   top: 0;
   display: grid;
   min-width: 0;
-  padding: 18px 18px 16px 22px;
+  padding: 18px 22px 16px;
   border-block-end: 1px solid var(--ui-line);
   background: var(--ui-paper);
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 24px;
 }
@@ -63,34 +98,6 @@
   color: var(--ui-muted);
   font-size: 13px;
   line-height: 1.55;
-}
-
-.a3s-component-state-matrix__header > button {
-  display: inline-grid;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  place-items: center;
-  color: var(--ui-muted);
-  cursor: pointer;
-}
-
-.a3s-component-state-matrix__header > button:hover {
-  background: var(--ui-panel-raised);
-  color: var(--ui-ink);
-}
-
-.a3s-component-state-matrix__header > button:focus-visible {
-  outline: 2px solid var(--ui-blue);
-  outline-offset: 2px;
-}
-
-.a3s-component-state-matrix__header > button svg {
-  width: 18px;
-  height: 18px;
 }
 
 .a3s-component-state-matrix__grid {
@@ -329,9 +336,9 @@
 }
 
 @media (pointer: coarse) {
-  .a3s-component-state-matrix__header > button {
-    width: 44px;
-    height: 44px;
+  .a3s-component-state-matrix__dismiss {
+    width: 48px;
+    height: 48px;
   }
 }
 

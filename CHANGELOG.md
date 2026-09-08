@@ -5,9 +5,9 @@
 ### Fixed
 
 - State acceptance matrix is a plain `role="dialog"` panel (not `<dialog>`).
-  Contracts target `[data-open]` and dismiss by focusing the in-panel close
-  control then pressing Enter (CDP center-clicks against overlay geometry were
-  unreliable).
+  Contracts target `[data-open]` and dismiss via a viewport-corner close control
+  above the panel stacking context (CDP center-clicks and key routing against
+  in-panel chrome were unreliable).
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.

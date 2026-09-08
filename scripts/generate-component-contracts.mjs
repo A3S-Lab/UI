@@ -626,9 +626,9 @@ function renderStateMatrixContract(component, publicPreview) {
       ? `
         expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
       : "";
-  // Close via Enter on the focused in-panel control. The matrix opens focus on
-  // that button; CDP center-clicks remain unreliable against overlay geometry,
-  // while native activation of the focused control is stable.
+  // Close via the viewport-corner dismiss control (z-index above the panel).
+  // Backdrop/panel centers stack, so CDP center-clicks on in-panel chrome miss;
+  // Escape/Enter under agent-browser key routing are also unreliable.
   return `
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
@@ -636,8 +636,7 @@ function renderStateMatrixContract(component, publicPreview) {
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        focus "focus-state-matrix-close" { target = css("${stateMatrixRoot(component)} [data-state-matrix-close]") }
-        press "close-state-matrix" { key = "Enter" }
+        click "close-state-matrix" { target = css("[data-state-matrix-close][data-component=${component.slug}]") }
         wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }${postCloseExpectation}`;
 }
 

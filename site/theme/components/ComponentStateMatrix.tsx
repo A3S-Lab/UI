@@ -1639,6 +1639,21 @@ export function ComponentStateMatrix({
                 />
               ) : null}
               {open ? (
+                <button
+                  aria-label={
+                    isChinese ? "关闭状态验收" : "Close state acceptance"
+                  }
+                  className="a3s-component-state-matrix__dismiss"
+                  data-component={contract.slug}
+                  data-state-matrix-close
+                  onClick={close}
+                  ref={closeRef}
+                  type="button"
+                >
+                  <CloseIcon />
+                </button>
+              ) : null}
+              {open ? (
               <div
               aria-describedby={descriptionId}
               aria-labelledby={titleId}
@@ -1663,17 +1678,6 @@ export function ComponentStateMatrix({
                       : "Each specimen clones the live public root and applies the corresponding native HTML, ARIA, and public state input. This matrix supports acceptance; it does not replace product examples."}
                   </p>
                 </div>
-                <button
-                  aria-label={
-                    isChinese ? "关闭状态验收" : "Close state acceptance"
-                  }
-                  data-state-matrix-close
-                  onClick={close}
-                  ref={closeRef}
-                  type="button"
-                >
-                  <CloseIcon />
-                </button>
               </header>
 
               {sourceMissing ? (
