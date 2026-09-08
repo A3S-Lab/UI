@@ -34,8 +34,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/button-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=button]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=button] [data-state-specimen=ready]:has([data-a3s-components~='button'][data-a3s-state~='ready'])") }
@@ -96,8 +96,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/button-group-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=button-group][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=button-group]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=button-group] [data-state-specimen=ready]:has([data-a3s-components~='button-group'][data-a3s-state~='ready'])") }
@@ -156,8 +156,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/bulk-action-bar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=bulk-action-bar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=bulk-action-bar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=bulk-action-bar] [data-state-specimen=empty]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='empty'])") }
@@ -221,8 +221,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/field-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=field][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=field]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=field] [data-state-specimen=empty]:has([data-a3s-components~='field'][data-a3s-state~='empty'][data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))") }
@@ -289,8 +289,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/filter-bar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=filter-bar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=filter-bar] [data-state-specimen=ready]:has([data-a3s-components~='filter-bar'][data-a3s-state~='ready'])") }
@@ -352,8 +352,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/input-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=input][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=input]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=empty]:has([data-a3s-components~='input'][data-a3s-state~='empty'][value=''])") }
@@ -423,8 +423,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/input-group-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=input-group][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=input-group]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))") }
@@ -493,8 +493,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/textarea-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=textarea][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=textarea]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])") }
@@ -556,8 +556,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/code-editor-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-editor]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-editor] [data-state-specimen=ready]:has([data-a3s-components~='code-editor'][data-a3s-state~='ready'][data-dirty=false])") }
@@ -627,8 +627,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/native-select-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=native-select][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=native-select]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=native-select] [data-state-specimen=empty]:has([data-a3s-components~='native-select'][data-a3s-state~='empty'])") }
@@ -696,8 +696,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/select-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=select]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=select] [data-state-specimen=ready]:has([data-a3s-components~='select'][data-a3s-state~='ready'])") }
@@ -759,8 +759,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/checkbox-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=checkbox]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=checkbox] [data-state-specimen=checked]:has([data-a3s-components~='checkbox'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))") }
@@ -821,8 +821,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/radio-group-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=radio-group][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=radio-group]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=radio-group] [data-state-specimen=ready] [data-a3s-components~='radio-group'][data-a3s-state~='ready']:has(input[type=radio][value=comfortable]:checked)") }
@@ -886,8 +886,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/switch-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=switch]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=switch] [data-state-specimen=checked]:has([data-a3s-components~='switch'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))") }
@@ -947,8 +947,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/slider-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=slider]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=slider] [data-state-specimen=ready]:has([data-a3s-components~='slider'][data-a3s-state~='ready'])") }
@@ -1007,8 +1007,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/label-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=label]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=label] [data-state-specimen=ready]:has([data-a3s-components~='label'][data-a3s-state~='ready'])") }
@@ -1067,8 +1067,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/combobox-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=combobox]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=combobox] [data-state-specimen=ready]:has([data-a3s-components~='combobox'][data-a3s-state~='ready'])") }
@@ -1130,8 +1130,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/activity-bar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=activity-bar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=activity-bar] [data-state-specimen=ready]:has([data-a3s-components~='activity-bar'][data-a3s-state~='ready'])") }
@@ -1190,8 +1190,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/breadcrumb-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=breadcrumb]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=breadcrumb] [data-state-specimen=ready]:has([data-a3s-components~='breadcrumb'][data-a3s-state~='ready'])") }
@@ -1249,8 +1249,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tabs-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tabs]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tabs] [data-state-specimen=ready]:has([data-a3s-components~='tabs'][data-a3s-state~='ready'])") }
@@ -1309,8 +1309,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/pagination-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=pagination]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=pagination] [data-state-specimen=ready]:has([data-a3s-components~='pagination'][data-a3s-state~='ready'])") }
@@ -1368,8 +1368,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/sidebar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=sidebar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=sidebar] [data-state-specimen=ready]:has([data-a3s-components~='sidebar'][data-a3s-state~='ready'])") }
@@ -1430,8 +1430,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/alert-dialog-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=alert-dialog]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=alert-dialog] [data-state-specimen=open]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -1500,8 +1500,8 @@ suite "a3s-ui-component-contracts" {
         press "dark-close-public-root" { key = "Escape" }
         wait "dark-public-root-closed" { visible = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete]:not(:has([data-a3s-components~='dialog'][open]))") }
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=dialog]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=dialog] [data-state-specimen=open]:has([data-a3s-components~='dialog'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -1577,8 +1577,8 @@ suite "a3s-ui-component-contracts" {
         press "dark-close-public-root" { key = "Escape" }
         wait "dark-public-root-closed" { visible = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete]:not(:has([data-a3s-components~='drawer'][open]))") }
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=drawer]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=drawer] [data-state-specimen=open]:has([data-a3s-components~='drawer'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -1641,8 +1641,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/dropdown-menu-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=dropdown-menu]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))") }
@@ -1702,8 +1702,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/popover-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=popover]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true]))") }
@@ -1762,8 +1762,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/command-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=command]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=command] [data-state-specimen=ready]:has([data-a3s-components~='command'][data-a3s-state~='ready'])") }
@@ -1825,8 +1825,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/context-menu-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=context-menu]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:has([data-context-trigger][aria-expanded=true]))") }
@@ -1886,8 +1886,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tooltip-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tooltip]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tooltip] [data-state-specimen=ready]:has([data-a3s-components~='tooltip'][data-a3s-state~='ready'])") }
@@ -1946,8 +1946,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/alert-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=alert][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=alert][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=alert][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=alert][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=alert][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=alert]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=alert] [data-state-specimen=ready]:has([data-a3s-components~='alert'][data-a3s-state~='ready'])") }
@@ -2009,8 +2009,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/badge-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=badge][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=badge][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=badge][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=badge][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=badge][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=badge]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=badge] [data-state-specimen=ready]:has([data-a3s-components~='badge'][data-a3s-state~='ready'])") }
@@ -2071,8 +2071,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/status-badge-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=status-badge][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=status-badge][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=status-badge][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=status-badge][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=status-badge][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=status-badge]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=status-badge] [data-state-specimen=neutral]:has([data-a3s-components~='status-badge'][data-a3s-state~='neutral'])") }
@@ -2134,8 +2134,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/empty-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=empty]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=empty] [data-state-specimen=empty]:has([data-a3s-components~='empty'][data-a3s-state~='empty'])") }
@@ -2196,8 +2196,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/progress-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=progress][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=progress][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=progress][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=progress][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=progress][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=progress]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=progress] [data-state-specimen=ready] [data-a3s-components~='progress'][data-a3s-state~='ready'][role=progressbar][aria-valuenow='66']:has(> span[style*='width'][style*='66%'])") }
@@ -2257,8 +2257,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/skeleton-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=skeleton][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=skeleton][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=skeleton][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=skeleton][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=skeleton][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=skeleton]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=skeleton] [data-state-specimen=loading]:has([data-a3s-components~='skeleton'][data-a3s-state~='loading'][aria-busy=true])") }
@@ -2316,8 +2316,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/spinner-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=spinner][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=spinner][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=spinner][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=spinner][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=spinner][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=spinner]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=spinner] [data-state-specimen=loading]:has([data-a3s-components~='spinner'][data-a3s-state~='loading'][aria-busy=true])") }
@@ -2377,8 +2377,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/toast-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=toast][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=toast][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=toast][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=toast][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=toast][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=toast]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=toast] [data-state-specimen=open]:has([data-a3s-components~='toast'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -2441,8 +2441,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/accordion-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=accordion][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=accordion][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=accordion][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=accordion][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=accordion][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=accordion]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=accordion] [data-state-specimen=ready]:has([data-a3s-components~='accordion'][data-a3s-state~='ready'])") }
@@ -2503,8 +2503,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/avatar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=avatar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=avatar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=avatar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=avatar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=avatar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=avatar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=avatar] [data-state-specimen=ready]:has([data-a3s-components~='avatar'][data-a3s-state~='ready'])") }
@@ -2563,8 +2563,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/card-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=card][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=card][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=card][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=card]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=card] [data-state-specimen=ready]:has([data-a3s-components~='card'][data-a3s-state~='ready'])") }
@@ -2622,8 +2622,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/chart-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=chart][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=chart][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=chart][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=chart][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=chart][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=chart]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=chart] [data-state-specimen=ready]:has([data-a3s-components~='chart'][data-a3s-state~='ready'])") }
@@ -2684,8 +2684,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/data-grid-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=data-grid][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=data-grid][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=data-grid][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=data-grid][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=data-grid][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=data-grid]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=data-grid] [data-state-specimen=ready]:has([data-a3s-components~='data-grid'][data-a3s-state~='ready'])") }
@@ -2749,8 +2749,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/item-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=item][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=item][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=item][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=item][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=item][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=item]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=item] [data-state-specimen=ready]:has([data-a3s-components~='item'][data-a3s-state~='ready'])") }
@@ -2810,8 +2810,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/kbd-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=kbd][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=kbd][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=kbd][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=kbd][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=kbd][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=kbd]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=kbd] [data-state-specimen=ready]:has([data-a3s-components~='kbd'][data-a3s-state~='ready'])") }
@@ -2869,8 +2869,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/log-viewer-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=log-viewer][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=log-viewer][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=log-viewer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=log-viewer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=log-viewer][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=log-viewer]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=log-viewer] [data-state-specimen=ready]:has([data-a3s-components~='log-viewer'][data-a3s-state~='ready'])") }
@@ -2932,8 +2932,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/property-list-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=property-list][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=property-list][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=property-list][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=property-list][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=property-list][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=property-list]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=property-list] [data-state-specimen=ready]:has([data-a3s-components~='property-list'][data-a3s-state~='ready'])") }
@@ -2992,8 +2992,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/table-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=table]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=table] [data-state-specimen=ready]:has([data-a3s-components~='table'][data-a3s-state~='ready'])") }
@@ -3054,8 +3054,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/stepper-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=stepper][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=stepper][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=stepper][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=stepper][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=stepper][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=stepper]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=stepper] [data-state-specimen=ready]:has([data-a3s-components~='stepper'][data-a3s-state~='ready'])") }
@@ -3117,8 +3117,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/timeline-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=timeline][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=timeline][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=timeline][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=timeline][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=timeline][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=timeline]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=ready]:has([data-a3s-components~='timeline'][data-a3s-state~='ready'])") }
@@ -3180,8 +3180,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tree-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tree][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tree][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tree][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tree][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tree][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tree]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tree] [data-state-specimen=ready]:has([data-a3s-components~='tree'][data-a3s-state~='ready'])") }
@@ -3243,8 +3243,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/code-diff-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-diff]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-diff] [data-state-specimen=ready]:has([data-a3s-components~='code-diff'][data-a3s-state~='ready'])") }
@@ -3305,8 +3305,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/color-swatches-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=color-swatches][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=color-swatches][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=color-swatches][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=color-swatches][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=color-swatches][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=color-swatches]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=color-swatches] [data-state-specimen=ready]:has([data-a3s-components~='color-swatches'][data-a3s-state~='ready'])") }
@@ -3366,8 +3366,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/file-type-icon-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-type-icon]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-type-icon] [data-state-specimen=ready]:has([data-a3s-components~='file-type-icon'][data-a3s-state~='ready'])") }
@@ -3428,8 +3428,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/highlighter-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=highlighter]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=highlighter] [data-state-specimen=ready]:has([data-a3s-components~='highlighter'][data-a3s-state~='ready'])") }
@@ -3489,8 +3489,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/icon-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=icon]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=icon] [data-state-specimen=ready]:has([data-a3s-components~='icon'][data-a3s-state~='ready'])") }
@@ -3551,8 +3551,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/image-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=image]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=image] [data-state-specimen=loading]:has([data-a3s-components~='image'][data-a3s-state~='loading'][aria-busy=true])") }
@@ -3612,8 +3612,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/image-select-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image-select][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=image-select][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image-select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=image-select][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=image-select][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=image-select]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=image-select] [data-state-specimen=ready]:has([data-a3s-components~='image-select'][data-a3s-state~='ready'])") }
@@ -3673,8 +3673,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/markdown-surface-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=markdown-surface]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=markdown-surface] [data-state-specimen=ready]:has([data-a3s-components~='markdown-surface'][data-a3s-state~='ready'])") }
@@ -3735,8 +3735,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/snippet-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=snippet]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=snippet] [data-state-specimen=ready]:has([data-a3s-components~='snippet'][data-a3s-state~='ready'])") }
@@ -3796,8 +3796,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/streaming-text-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=streaming-text]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=streaming-text] [data-state-specimen=streaming]:has([data-a3s-components~='streaming-text'][data-a3s-state~='streaming'][aria-busy=true])") }
@@ -3858,8 +3858,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/back-to-bottom-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=back-to-bottom]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=back-to-bottom] [data-state-specimen=hidden]:has([data-a3s-components~='back-to-bottom'][data-a3s-state~='hidden'][hidden])") }
@@ -3919,8 +3919,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/collapsible-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=collapsible]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))") }
@@ -3980,8 +3980,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/copy-button-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=copy-button]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=copy-button] [data-state-specimen=ready]:has([data-a3s-components~='copy-button'][data-a3s-state~='ready'])") }
@@ -4043,8 +4043,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/date-picker-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=date-picker]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=date-picker] [data-state-specimen=ready]:has([data-a3s-components~='date-picker'][data-a3s-state~='ready'])") }
@@ -4105,8 +4105,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/editable-text-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=editable-text]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=editable-text] [data-state-specimen=display]:has([data-a3s-components~='editable-text'][data-a3s-state~='display'])") }
@@ -4168,8 +4168,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/emoji-picker-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=emoji-picker]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=emoji-picker] [data-state-specimen=ready]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='ready'])") }
@@ -4229,8 +4229,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/floating-panel-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=floating-panel]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=floating-panel] [data-state-specimen=open]:has([data-a3s-components~='floating-panel'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -4292,8 +4292,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/form-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=form]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=form] [data-state-specimen=ready]:has([data-a3s-components~='form'][data-a3s-state~='ready'])") }
@@ -4356,8 +4356,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/hotkey-input-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=hotkey-input]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=hotkey-input] [data-state-specimen=ready]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='ready'])") }
@@ -4418,8 +4418,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/image-viewer-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=image-viewer]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=image-viewer] [data-state-specimen=open]:has([data-a3s-components~='image-viewer'][data-a3s-state~='open']:is([open],[aria-expanded=true]))") }
@@ -4480,8 +4480,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/sortable-list-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=sortable-list]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=sortable-list] [data-state-specimen=ready]:has([data-a3s-components~='sortable-list'][data-a3s-state~='ready'])") }
@@ -4542,8 +4542,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/table-of-contents-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=table-of-contents]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=table-of-contents] [data-state-specimen=ready]:has([data-a3s-components~='table-of-contents'][data-a3s-state~='ready'])") }
@@ -4602,8 +4602,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/app-shell-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=app-shell][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=app-shell]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=app-shell] [data-state-specimen=ready]:has([data-a3s-components~='app-shell'][data-a3s-state~='ready'])") }
@@ -4665,8 +4665,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/app-page-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=app-page][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=app-page][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=app-page][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=app-page][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=app-page][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=app-page]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=app-page] [data-state-specimen=ready]:has([data-a3s-components~='app-page'][data-a3s-state~='ready'])") }
@@ -4728,8 +4728,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/task-start-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-start][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=task-start][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-start][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=task-start][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=task-start][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-start]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-start] [data-state-specimen=ready]:has([data-a3s-components~='task-start'][data-a3s-state~='ready'])") }
@@ -4791,8 +4791,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/task-workspace-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-workspace][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=task-workspace][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-workspace][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=task-workspace][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=task-workspace][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-workspace]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-workspace] [data-state-specimen=ready]:has([data-a3s-components~='task-workspace'][data-a3s-state~='ready'])") }
@@ -4855,8 +4855,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/catalog-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=catalog][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=catalog][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=catalog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=catalog][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=catalog][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=catalog]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=catalog] [data-state-specimen=ready]:has([data-a3s-components~='catalog'][data-a3s-state~='ready'])") }
@@ -4918,8 +4918,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/setting-row-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=setting-row][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=setting-row][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=setting-row][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=setting-row][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=setting-row][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=setting-row]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=setting-row] [data-state-specimen=ready]:has([data-a3s-components~='setting-row'][data-a3s-state~='ready'])") }
@@ -4981,8 +4981,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/agent-composer-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-composer][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-composer]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-composer] [data-state-specimen=ready]:has([data-a3s-components~='agent-composer'][data-a3s-state~='ready'])") }
@@ -5049,8 +5049,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/agent-transcript-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-transcript][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-transcript]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-transcript] [data-state-specimen=ready]:has([data-a3s-components~='agent-transcript'][data-a3s-state~='ready'])") }
@@ -5113,8 +5113,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/agent-workbench-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-workbench][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=agent-workbench][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-workbench][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=agent-workbench][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=agent-workbench][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-workbench]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=agent-workbench] [data-state-specimen=ready]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='ready'])") }
@@ -5178,8 +5178,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/approval-request-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=approval-request][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=approval-request][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=approval-request][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=approval-request][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=approval-request][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=approval-request]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=approval-request] [data-state-specimen=pending]:has([data-a3s-components~='approval-request'][data-a3s-state~='pending'])") }
@@ -5241,8 +5241,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/execution-item-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-item][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=execution-item][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-item][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=execution-item][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-item][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=execution-item]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=execution-item] [data-state-specimen=queued]:has([data-a3s-components~='execution-item'][data-a3s-state~='queued'])") }
@@ -5305,8 +5305,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/brand-lockup-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=brand-lockup][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=brand-lockup][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=brand-lockup][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=brand-lockup][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=brand-lockup][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=brand-lockup]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=brand-lockup] [data-state-specimen=ready]:has([data-a3s-components~='brand-lockup'][data-a3s-state~='ready'])") }
@@ -5364,8 +5364,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/workspace-header-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=workspace-header][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=workspace-header][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=workspace-header][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=workspace-header][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=workspace-header][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=workspace-header]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=workspace-header] [data-state-specimen=ready]:has([data-a3s-components~='workspace-header'][data-a3s-state~='ready'])") }
@@ -5425,8 +5425,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/toolbar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=toolbar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=toolbar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=toolbar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=toolbar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=toolbar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=toolbar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=toolbar] [data-state-specimen=ready]:has([data-a3s-components~='toolbar'][data-a3s-state~='ready'])") }
@@ -5485,8 +5485,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/ribbon-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=ribbon][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=ribbon][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=ribbon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=ribbon][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=ribbon][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=ribbon]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=ribbon] [data-state-specimen=ready]:has([data-a3s-components~='ribbon'][data-a3s-state~='ready'])") }
@@ -5545,8 +5545,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/settings-layout-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=settings-layout][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=settings-layout][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=settings-layout][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=settings-layout][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=settings-layout][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=settings-layout]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=settings-layout] [data-state-specimen=ready]:has([data-a3s-components~='settings-layout'][data-a3s-state~='ready'])") }
@@ -5606,8 +5606,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/resource-card-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=resource-card][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=resource-card][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=resource-card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=resource-card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=resource-card][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=resource-card]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=resource-card] [data-state-specimen=ready]:has([data-a3s-components~='resource-card'][data-a3s-state~='ready'])") }
@@ -5670,8 +5670,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/split-pane-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=split-pane][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=split-pane][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=split-pane][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=split-pane][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=split-pane][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=split-pane]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=split-pane] [data-state-specimen=ready]:has([data-a3s-components~='split-pane'][data-a3s-state~='ready'])") }
@@ -5730,8 +5730,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/task-pane-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-pane][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=task-pane][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-pane][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=task-pane][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=task-pane][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-pane]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-pane] [data-state-specimen=ready]:has([data-a3s-components~='task-pane'][data-a3s-state~='ready'])") }
@@ -5793,8 +5793,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/status-bar-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=status-bar][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=status-bar][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=status-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=status-bar][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=status-bar][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=status-bar]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=status-bar] [data-state-specimen=ready]:has([data-a3s-components~='status-bar'][data-a3s-state~='ready'])") }
@@ -5855,8 +5855,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/task-plan-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-plan][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=task-plan][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-plan][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=task-plan][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=task-plan][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-plan]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-plan] [data-state-specimen=draft]:has([data-a3s-components~='task-plan'][data-a3s-state~='draft'])") }
@@ -5918,8 +5918,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/plan-step-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=plan-step][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=plan-step][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=plan-step][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=plan-step][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=plan-step][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=plan-step]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=plan-step] [data-state-specimen=pending]:has([data-a3s-components~='plan-step'][data-a3s-state~='pending'])") }
@@ -5982,8 +5982,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/message-status-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-status][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=message-status][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-status][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=message-status][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=message-status][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-status]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-status] [data-state-specimen=sending]:has([data-a3s-components~='message-status'][data-a3s-state~='sending'][aria-busy=true])") }
@@ -6046,8 +6046,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/message-attachment-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-attachment][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=message-attachment][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-attachment][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=message-attachment][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=message-attachment][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-attachment]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-attachment] [data-state-specimen=ready]:has([data-a3s-components~='message-attachment'][data-a3s-state~='ready'])") }
@@ -6109,8 +6109,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/message-citation-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-citation][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=message-citation][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=message-citation][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=message-citation][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=message-citation][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-citation]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=message-citation] [data-state-specimen=ready]:has([data-a3s-components~='message-citation'][data-a3s-state~='ready'])") }
@@ -6171,8 +6171,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/artifact-card-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=artifact-card][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=artifact-card][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=artifact-card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=artifact-card][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=artifact-card][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=artifact-card]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=artifact-card] [data-state-specimen=ready]:has([data-a3s-components~='artifact-card'][data-a3s-state~='ready'])") }
@@ -6234,8 +6234,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/context-selector-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=context-selector][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=context-selector][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=context-selector][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=context-selector][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=context-selector][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=context-selector]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=ready]:has([data-a3s-components~='context-selector'][data-a3s-state~='ready'])") }
@@ -6297,8 +6297,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/task-queue-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-queue][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=task-queue][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=task-queue][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=task-queue][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=task-queue][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-queue]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=task-queue] [data-state-specimen=idle]:has([data-a3s-components~='task-queue'][data-a3s-state~='idle'])") }
@@ -6361,8 +6361,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/checkpoint-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=checkpoint][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=checkpoint][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=checkpoint][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=checkpoint][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=checkpoint][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=checkpoint]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=checkpoint] [data-state-specimen=saving]:has([data-a3s-components~='checkpoint'][data-a3s-state~='saving'][aria-busy=true])") }
@@ -6425,8 +6425,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/follow-up-suggestions-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=follow-up-suggestions][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=follow-up-suggestions][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=follow-up-suggestions][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=follow-up-suggestions][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=follow-up-suggestions]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=follow-up-suggestions] [data-state-specimen=ready]:has([data-a3s-components~='follow-up-suggestions'][data-a3s-state~='ready'])") }
@@ -6487,8 +6487,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tool-call-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tool-call][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tool-call][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-call]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=preparing]:has([data-a3s-components~='tool-call'][data-a3s-state~='preparing'][aria-busy=true])") }
@@ -6558,8 +6558,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tool-call-timeline-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-call-timeline][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-call-timeline]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-call-timeline] [data-state-specimen=idle]:has([data-a3s-components~='tool-call-timeline'][data-a3s-state~='idle'])") }
@@ -6621,8 +6621,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/tool-result-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-result][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=tool-result][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-result][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=tool-result][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=tool-result][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-result]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=tool-result] [data-state-specimen=ready]:has([data-a3s-components~='tool-result'][data-a3s-state~='ready'])") }
@@ -6683,8 +6683,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/change-review-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=change-review][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=change-review][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=change-review][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=change-review][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=change-review][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=change-review]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=change-review] [data-state-specimen=pending]:has([data-a3s-components~='change-review'][data-a3s-state~='pending'])") }
@@ -6747,8 +6747,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/terminal-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=terminal][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=terminal][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=terminal][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=terminal][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=terminal][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=terminal]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=terminal] [data-state-specimen=idle]:has([data-a3s-components~='terminal'][data-a3s-state~='idle'])") }
@@ -6811,8 +6811,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/execution-evidence-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=execution-evidence]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=capturing]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='capturing'][aria-busy=true])") }
@@ -6874,8 +6874,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/file-explorer-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-explorer][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=file-explorer][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-explorer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=file-explorer][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=file-explorer][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-explorer]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-explorer] [data-state-specimen=ready]:has([data-a3s-components~='file-explorer'][data-a3s-state~='ready'])") }
@@ -6939,8 +6939,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/file-manager-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-manager][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=file-manager][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=file-manager][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=file-manager][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=file-manager][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-manager]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=file-manager] [data-state-specimen=ready]:has([data-a3s-components~='file-manager'][data-a3s-state~='ready'])") }
@@ -7005,8 +7005,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/knowledge-library-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=knowledge-library][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=knowledge-library][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=knowledge-library][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=knowledge-library][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=knowledge-library][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=knowledge-library]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=knowledge-library] [data-state-specimen=ready]:has([data-a3s-components~='knowledge-library'][data-a3s-state~='ready'])") }
@@ -7070,8 +7070,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/code-graph-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-graph][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=code-graph][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=code-graph][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=code-graph][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=code-graph][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-graph]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=code-graph] [data-state-specimen=ready]:has([data-a3s-components~='code-graph'][data-a3s-state~='ready'])") }
@@ -7134,8 +7134,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/device-simulator-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=device-simulator][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=device-simulator][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=device-simulator][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=device-simulator][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=device-simulator][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=device-simulator]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=device-simulator] [data-state-specimen=ready]:has([data-a3s-components~='device-simulator'][data-a3s-state~='ready'])") }
@@ -7195,8 +7195,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/scroll-area-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=scroll-area][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=scroll-area][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=scroll-area][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=scroll-area][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=scroll-area][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=scroll-area]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=scroll-area] [data-state-specimen=ready]:has([data-a3s-components~='scroll-area'][data-a3s-state~='ready'])") }
@@ -7254,8 +7254,8 @@ suite "a3s-ui-component-contracts" {
         screenshot "desktop-dark-rtl" { path = "components/contracts/theme-switcher-desktop-dark-rtl.png" }
 
 
-        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=theme-switcher][data-preview-integration=complete] [data-preview-control=source]") }
-        wait "source-closed-before-state-matrix" { hidden = css(".a3s-preview[data-preview-component=theme-switcher][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])") }
+        click "close-source-before-state-matrix" { target = css(".a3s-preview[data-preview-component=theme-switcher][data-preview-integration=complete] [data-preview-control=source][aria-expanded=true]") }
+        wait "source-closed-before-state-matrix" { visible = css(".a3s-preview[data-preview-component=theme-switcher][data-preview-integration=complete] [data-preview-control=source][aria-expanded=false]") }
         click "open-state-matrix" { target = css(".a3s-preview[data-preview-component=theme-switcher][data-preview-integration=complete] [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[data-open][data-component=theme-switcher]") }
         wait "state-specimens-ready" { visible = css(".a3s-component-state-matrix[data-open][data-component=theme-switcher] [data-state-specimen=ready]:has([data-a3s-components~='theme-switcher'][data-a3s-state~='ready'])") }
