@@ -48,7 +48,7 @@ suite "a3s-ui-product-global-and-settings-contracts" {
         screenshot "confirmation" { path = "product/account-exit-confirmation.png" }
         click "cancel-exit" { target = role("button", "取消") }
         expect "dialog-closed" { visible = css("[data-product-application]:not(:has(dialog.product-exit-dialog[open]))") }
-        expect "account-trigger-restored" { visible = css(".product-sidebar__footer > button:first-child:focus") }
+        expect "account-trigger-restored" { focused = css(".product-sidebar__footer > button:first-child") }
 
         accessibility "tree" { path = "product/account-exit-accessibility.json" interactive = true }
         console "console" { path = "product/account-exit-console.json" clear = false }

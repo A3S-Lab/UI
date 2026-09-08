@@ -36,7 +36,7 @@ suite "a3s-ui-product-session-detail" {
         click "open-primary-review-action" { target = role("button", "设备预览") }
         wait "primary-review-opens-preview" { visible = css(".product-session-inspector .device-simulator[data-variant=compact][data-device-simulator-initialized=true]") }
         click "close-primary-review" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
-        expect "primary-review-focus-restored" { visible = css(".product-delivery-summary button[data-primary]:focus") }
+        expect "primary-review-focus-restored" { focused = css(".product-delivery-summary button[data-primary]") }
 
         click "open-search" { target = css("button[aria-label='在会话中搜索']") }
         fill "search-focus" { target = css("input[aria-label='搜索当前会话']") value = "焦点" }
@@ -54,7 +54,7 @@ suite "a3s-ui-product-session-detail" {
         expect "artifact-public-contract" { visible = css(".artifact-card[data-variant=inspector] .highlighter [data-code-line]") }
         expect "artifact-copy-public-contract" { visible = css(".artifact-card[data-variant=inspector] .copy-button[data-copy-button-initialized=true]") }
         click "close-details" { target = css(".product-session-inspector__header > button[aria-label='关闭任务详情']") }
-        expect "details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
+        expect "details-trigger-restored" { focused = css("button[aria-label='打开任务详情']") }
 
         click "open-full-diff" { target = role("button", "查看完整差异") }
         wait "file-explorer-public-contract" { visible = css(".product-session-inspector .file-explorer[data-file-explorer-initialized=true]") }
@@ -131,7 +131,7 @@ suite "a3s-ui-product-session-detail" {
 
         screenshot "mobile-evidence" { path = "product/session-detail-mobile.png" }
         press "close-mobile-details" { key = "Escape" }
-        expect "mobile-details-trigger-restored" { visible = css("button[aria-label='打开任务详情']:focus") }
+        expect "mobile-details-trigger-restored" { focused = css("button[aria-label='打开任务详情']") }
         expect "mobile-session-restored" { visible = css("[data-product-surface=session][data-inspector=hidden]:has(.product-session__viewport):has(.product-session__composer .ProseMirror):has(aside[aria-label='任务详情'][hidden][inert])") }
         screenshot "mobile-restored-evidence" { path = "product/session-detail-mobile-restored.png" }
         console "console" { path = "product/session-detail-mobile-console.json" clear = false }

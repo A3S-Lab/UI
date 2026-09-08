@@ -66,6 +66,13 @@
 
 ### Fixed
 
+- Component-contract and product A3S Test suites assert keyboard focus with the
+  protocol `focused` expectation instead of trailing CSS `:focus` selectors, so
+  documentation contract runs no longer fail closed on valid focus ownership.
+- Feedback/data A3S Test scenarios assert keyboard focus with the protocol
+  `focused` expectation instead of CSS `:focus` selectors, so Stepper, Log
+  Viewer, and related standalone runs no longer fail closed on valid focus
+  (#13).
 - Replaced generic action glyphs in the Playground workspace file manager with a coherent folder and file-family icon system, readable extension labels, consistent grid/list/Quick Look identity, and compact six-column desktop and two-column mobile layouts.
 - Positioned conditionally mounted, already-open popovers through the shared collision runtime, keeping Composer file, model, assistant, and connector panels fully inside short desktop viewports while preserving mobile bottom sheets; compacted short mobile suggestion lists, corrected context-sensitive keyboard guidance, added explicit panel dismissal, and restored each control trigger after Escape.
 - Kept Code Graph labels inside the visible canvas when narrow inspectors or phone viewports leave insufficient room on a node's preferred side.

@@ -12,7 +12,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=start]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=start] [data-product-surface=start]") }
         focus "focus-search" { target = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-start-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -40,7 +40,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=assistant]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=assistant] [data-product-surface=assistant]") }
         focus "focus-search" { target = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-assistant-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -68,7 +68,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=projects]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=projects] [data-product-surface=projects]") }
         focus "focus-search" { target = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-projects-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -96,7 +96,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=project]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=project] [data-product-surface=project]") }
         focus "focus-search" { target = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-project-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -124,7 +124,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=project-session]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=project-session] [data-product-surface=project-session]") }
         focus "focus-search" { target = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-project-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -152,7 +152,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=catalog]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=catalog] [data-product-surface=catalog]") }
         focus "focus-search" { target = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-capabilities-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -180,7 +180,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=automation]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=automation] [data-product-surface=automation]") }
         focus "focus-search" { target = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-automations-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -208,7 +208,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=memory]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=memory] [data-product-surface=memory]") }
         focus "focus-search" { target = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-memory-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -236,7 +236,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=marketplace]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=marketplace] [data-product-surface=marketplace]") }
         focus "focus-search" { target = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-extensions-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -264,7 +264,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=files]") }
         focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-files-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -292,7 +292,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=mail]") }
         focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-mail-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -320,7 +320,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=resources][data-resource=documents]") }
         focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-documents-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -348,7 +348,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=knowledge]") }
         focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-knowledge-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -376,7 +376,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=resources]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=resources] [data-product-surface=inspiration]") }
         focus "focus-search" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-inspiration-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -404,7 +404,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=session]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=session] [data-product-surface=session]") }
         focus "focus-search" { target = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -432,7 +432,7 @@ suite "a3s-ui-playground-route-contracts" {
         wait "route-ready" { visible = css("[data-product-application][data-view=created-session]") }
         expect "surface-ready" { visible = css("[data-product-application][data-view=created-session] [data-product-surface=session]") }
         focus "focus-search" { target = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/playground-created-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }

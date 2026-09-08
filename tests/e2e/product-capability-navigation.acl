@@ -22,7 +22,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "assistant-primary-action" { visible = css("dialog.product-capability-detail-dialog[open] button[data-primary]") }
         screenshot "capture-assistant-detail" { path = "product/capability-detail-desktop.png" }
         click "close-assistant-detail" { target = role("button", "关闭能力详情") }
-        expect "detail-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
+        expect "detail-focus-restored" { focused = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
 
         click "open-skills" { target = role("tab", "技能") }
         wait "skills-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
@@ -85,7 +85,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "detail-footer-reachable" { pointer_reachable = role("button", "查看设置") }
         screenshot "detail-short-desktop" { path = "product/capability-detail-short-desktop.png" }
         press "close-detail" { key = "Escape" }
-        expect "detail-origin-restored" { visible = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main:focus") }
+        expect "detail-origin-restored" { focused = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main") }
 
         click "open-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
         expect "setup-contained" {
@@ -103,7 +103,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "setup-close-reachable" { pointer_reachable = role("button", "关闭配置") }
         screenshot "setup-short-desktop" { path = "product/capability-setup-short-desktop.png" }
         click "close-setup" { target = role("button", "关闭配置") }
-        expect "setup-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
+        expect "setup-origin-restored" { focused = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
 
         console "console" { path = "product/capability-overlays-short-desktop-console.json" clear = false }
         page_errors "page-errors" { path = "product/capability-overlays-short-desktop-page-errors.json" clear = false }
@@ -137,9 +137,9 @@ suite "a3s-ui-product-capability-navigation" {
         expect "remove-confirm-reachable" { pointer_reachable = css("dialog.product-capability-remove[open] button[data-danger]") }
         screenshot "remove-mobile" { path = "product/capability-remove-mobile.png" }
         click "cancel-remove" { target = css("dialog.product-capability-remove[open] footer button:first-child") }
-        expect "remove-origin-restored" { visible = css(".product-capability-detail > footer button[data-danger]:focus") }
+        expect "remove-origin-restored" { focused = css(".product-capability-detail > footer button[data-danger]") }
         click "close-detail" { target = role("button", "关闭能力详情") }
-        expect "detail-card-restored" { visible = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main:focus") }
+        expect "detail-card-restored" { focused = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main") }
 
         click "open-connection-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
         expect "mobile-setup-contained" {
@@ -159,7 +159,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "save-connection-reachable" { pointer_reachable = role("button", "保存并连接") }
         screenshot "setup-mobile" { path = "product/capability-setup-mobile.png" }
         click "close-connection-setup" { target = role("button", "关闭配置") }
-        expect "connection-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
+        expect "connection-origin-restored" { focused = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
 
         console "console" { path = "product/capability-overlays-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/capability-overlays-mobile-page-errors.json" clear = false }

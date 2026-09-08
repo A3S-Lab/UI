@@ -163,7 +163,7 @@ suite "a3s-ui-product-icon-semantics" {
         click "open-delivery-expert" { target = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
         expect "detail-avatar-stable" { visible = css("dialog.product-capability-detail-dialog[open] .product-expert-avatar[data-avatar-variant='2-1-000']") }
         click "close-details" { target = role("button", "关闭能力详情") }
-        expect "catalog-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
+        expect "catalog-focus-restored" { focused = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
 
         screenshot "experts" { path = "product/expert-avatar-composition.png" }
         console "console" { path = "product/expert-avatar-composition-console.json" clear = false }

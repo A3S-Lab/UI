@@ -20,10 +20,10 @@ suite "a3s-ui-application-and-utilities" {
         click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-main-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]") }
-        expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
+        expect "compact-navigation-focused" { focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type") }
         press "close-compact-navigation" { key = "Escape" }
         expect "compact-main-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main]:not([inert]):not([aria-hidden])") }
-        expect "compact-navigation-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-app-navigation-trigger]:focus") }
+        expect "compact-navigation-restored" { focused = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-app-navigation-trigger]") }
         screenshot "app-shell-compact" { path = "components/app-shell-compact.png" }
     }
 
@@ -40,7 +40,7 @@ suite "a3s-ui-application-and-utilities" {
         click "open-inspector" { target = css(".a3s-preview[data-preview-component=task-workspace] [data-task-inspector-trigger]") }
         expect "inspector-open" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace[data-inspector=open] [data-task-inspector]:not([inert])") }
         press "close-inspector" { key = "Escape" }
-        expect "inspector-focus-restored" { visible = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace:not([data-inspector=open]) [data-task-inspector-trigger]:focus") }
+        expect "inspector-focus-restored" { focused = css(".a3s-preview[data-preview-component=task-workspace] .task-workspace:not([data-inspector=open]) [data-task-inspector-trigger]") }
     }
 
     scenario "agent-workbench" {
@@ -55,7 +55,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "inspector-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector]") }
         expect "activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
         focus "focus-build-release" { target = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button") }
-        expect "build-release-focused" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button:focus") }
+        expect "build-release-focused" { focused = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-inspector] button") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-activity-visible" { visible = css(".a3s-preview[data-preview-component=agent-workbench] [data-agent-activity]") }
         screenshot "agent-workbench-phone" { path = "components/agent-workbench-phone.png" }
@@ -72,7 +72,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "resources-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-resources] > li") }
         expect "queue-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-queue] > ol > li") }
         focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-input][aria-label='Task instruction']") }
-        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-input][aria-label='Task instruction']:focus") }
+        expect "instruction-focused" { focused = css(".a3s-preview[data-preview-component=agent-composer] [data-composer-input][aria-label='Task instruction']") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-submit-visible" { visible = css(".a3s-preview[data-preview-component=agent-composer] button[type=submit]") }
     }
@@ -89,7 +89,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "system-turn-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport] > li[data-role=system]") }
         expect "execution-visible" { visible = css(".a3s-preview[data-preview-component=agent-transcript] details.execution-item") }
         focus "focus-transcript" { target = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport]") }
-        expect "transcript-focused" { visible = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport]:focus") }
+        expect "transcript-focused" { focused = css(".a3s-preview[data-preview-component=agent-transcript] [data-transcript-viewport]") }
     }
 
     scenario "approval-request" {
@@ -102,7 +102,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "request-visible" { visible = css(".a3s-preview[data-preview-component=approval-request] .approval-request[data-state=pending]") }
         expect "selected-scope-visible" { visible = css(".a3s-preview[data-preview-component=approval-request] input[type=radio][value=once]:checked") }
         focus "focus-allow" { target = css(".a3s-preview[data-preview-component=approval-request] button[type=submit]") }
-        expect "allow-focused" { visible = css(".a3s-preview[data-preview-component=approval-request] button[type=submit]:focus") }
+        expect "allow-focused" { focused = css(".a3s-preview[data-preview-component=approval-request] button[type=submit]") }
     }
 
     scenario "execution-item" {
@@ -116,7 +116,7 @@ suite "a3s-ui-application-and-utilities" {
         click "close-running-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running] > summary") }
         expect "running-item-closed" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running]:not([open])") }
         focus "focus-waiting-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary") }
-        expect "waiting-item-focused" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary:focus") }
+        expect "waiting-item-focused" { focused = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary") }
     }
 
     scenario "brand-lockup" {
@@ -129,7 +129,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "linked-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup[data-brand-name], .a3s-preview[data-preview-component=brand-lockup] a.brand-lockup [data-brand-name]") }
         expect "compact-identity-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup[data-size=sm] [data-brand-identity]") }
         focus "focus-home-link" { target = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup") }
-        expect "home-link-focused" { visible = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup:focus") }
+        expect "home-link-focused" { focused = css(".a3s-preview[data-preview-component=brand-lockup] a.brand-lockup") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-lockup-visible" { visible = css(".a3s-preview[data-preview-component=brand-lockup] .brand-lockup") }
         screenshot "brand-lockup-phone" { path = "components/brand-lockup-phone.png" }
@@ -148,7 +148,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "phone-title-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-identity] > h1") }
         expect "phone-primary-action-visible" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
         focus "focus-phone-primary-action" { target = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
-        expect "phone-primary-action-focused" { visible = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile]):focus") }
+        expect "phone-primary-action-focused" { focused = css(".a3s-preview[data-preview-component=workspace-header] .workspace-header [data-workspace-actions] > button:not([data-collapse=mobile])") }
         screenshot "workspace-header-phone" { path = "components/workspace-header-phone.png" }
     }
 
@@ -163,7 +163,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
         viewport "phone" { width = 390 height = 844 }
         focus "focus-last-command" { target = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child") }
-        expect "last-command-focused" { visible = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child:focus") }
+        expect "last-command-focused" { focused = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child") }
         screenshot "toolbar-phone" { path = "components/toolbar-phone.png" }
     }
 
@@ -180,7 +180,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "insert-panel-visible" { visible = css("#ribbon-insert:not([hidden])") }
         focus "focus-insert" { target = css("#ribbon-insert-tab") }
         press "move-to-review" { key = "ArrowRight" }
-        expect "review-active" { visible = css("#ribbon-review-tab[aria-selected=true]:focus") }
+        expect "review-active" { focused = css("#ribbon-review-tab[aria-selected=true]") }
         expect "review-panel-visible" { visible = css("#ribbon-review:not([hidden])") }
         screenshot "ribbon-compact" { path = "components/ribbon-compact.png" }
     }
@@ -195,7 +195,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav") }
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout > main") }
         focus "focus-settings-navigation" { target = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav a[aria-current=page]") }
-        expect "settings-navigation-focused" { visible = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav a[aria-current=page]:focus") }
+        expect "settings-navigation-focused" { focused = css(".a3s-preview[data-preview-component=settings-layout] .settings-layout aside nav a[aria-current=page]") }
     }
 
     scenario "resource-card" {
@@ -207,7 +207,7 @@ suite "a3s-ui-application-and-utilities" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "document-resource-visible" { visible = css(".a3s-preview[data-preview-component=resource-card] .resource-card[data-kind=document]") }
         focus "focus-document-resource" { target = css(".a3s-preview[data-preview-component=resource-card] button.resource-card[data-kind=document]") }
-        expect "document-resource-focused" { visible = css(".a3s-preview[data-preview-component=resource-card] button.resource-card[data-kind=document]:focus") }
+        expect "document-resource-focused" { focused = css(".a3s-preview[data-preview-component=resource-card] button.resource-card[data-kind=document]") }
     }
 
     scenario "split-pane" {
@@ -253,7 +253,7 @@ suite "a3s-ui-application-and-utilities" {
         viewport "phone" { width = 390 height = 844 }
         focus "focus-zoom" { target = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]") }
         press "increase-zoom" { key = "ArrowRight" }
-        expect "zoom-remains-focused" { visible = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]:focus") }
+        expect "zoom-remains-focused" { focused = css(".a3s-preview[data-preview-component=status-bar] input[aria-label=Zoom]") }
         expect "phone-actions-visible" { visible = css(".a3s-preview[data-preview-component=status-bar] [data-status-actions]") }
         screenshot "status-bar-phone" { path = "components/status-bar-phone.png" }
     }
@@ -284,7 +284,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-content]") }
         viewport "phone" { width = 390 height = 844 }
         focus "focus-primary-action" { target = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions] button") }
-        expect "primary-action-focused" { visible = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions] button:focus") }
+        expect "primary-action-focused" { focused = css(".a3s-preview[data-preview-component=app-page] .app-page [data-page-actions] button") }
         screenshot "app-page-phone" { path = "components/app-page-phone.png" }
     }
 
@@ -299,7 +299,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "selected-filter-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-filters] button[aria-pressed=true]") }
         expect "results-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-results] .resource-card") }
         focus "focus-search" { target = css(".a3s-preview[data-preview-component=catalog] .catalog input[type=search]") }
-        expect "search-focused" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog input[type=search]:focus") }
+        expect "search-focused" { focused = css(".a3s-preview[data-preview-component=catalog] .catalog input[type=search]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-results-visible" { visible = css(".a3s-preview[data-preview-component=catalog] .catalog [data-catalog-results]") }
         screenshot "catalog-phone" { path = "components/catalog-phone.png" }
@@ -316,7 +316,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "controls-visible" { visible = css(".a3s-preview[data-preview-component=setting-row] .setting-row [data-setting-control]") }
         expect "system-theme-selected" { visible = css(".a3s-preview[data-preview-component=setting-row] input[role=switch]:checked") }
         focus "focus-language" { target = css(".a3s-preview[data-preview-component=setting-row] select[aria-label=Language]") }
-        expect "language-focused" { visible = css(".a3s-preview[data-preview-component=setting-row] select[aria-label=Language]:focus") }
+        expect "language-focused" { focused = css(".a3s-preview[data-preview-component=setting-row] select[aria-label=Language]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-control-visible" { visible = css(".a3s-preview[data-preview-component=setting-row] .setting-row [data-setting-control]") }
         screenshot "setting-row-phone" { path = "components/setting-row-phone.png" }
@@ -332,7 +332,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "suggestions-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start [data-task-suggestions] button") }
         expect "composer-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start form.agent-composer") }
         focus "focus-instruction" { target = css(".a3s-preview[data-preview-component=task-start] .task-start textarea[aria-label=Instruction]") }
-        expect "instruction-focused" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start textarea[aria-label=Instruction]:focus") }
+        expect "instruction-focused" { focused = css(".a3s-preview[data-preview-component=task-start] .task-start textarea[aria-label=Instruction]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-submit-visible" { visible = css(".a3s-preview[data-preview-component=task-start] .task-start button[type=submit]") }
         screenshot "task-start-phone" { path = "components/task-start-phone.png" }
@@ -349,7 +349,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "progress-bounded" { visible = css(".a3s-preview[data-preview-component=task-plan] [role=progressbar][aria-valuenow='50']") }
         expect "active-step-current" { visible = css(".a3s-preview[data-preview-component=task-plan] .plan-step[data-state=active][aria-current=step]") }
         focus "focus-pause" { target = css(".a3s-preview[data-preview-component=task-plan] .task-plan > footer button") }
-        expect "pause-focused" { visible = css(".a3s-preview[data-preview-component=task-plan] .task-plan > footer button:focus") }
+        expect "pause-focused" { focused = css(".a3s-preview[data-preview-component=task-plan] .task-plan > footer button") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-plan-visible" { visible = css(".a3s-preview[data-preview-component=task-plan] .task-plan") }
     }
@@ -364,7 +364,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "active-step-visible" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active][aria-current=step]") }
         expect "blocked-step-visible" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=blocked] [data-plan-step-status]") }
         focus "focus-open-checks" { target = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active] button") }
-        expect "open-checks-focused" { visible = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active] button:focus") }
+        expect "open-checks-focused" { focused = css(".a3s-preview[data-preview-component=plan-step] .plan-step[data-state=active] button") }
     }
 
     scenario "message-status" {
@@ -378,7 +378,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "sent-status-visible" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=sent]") }
         expect "error-status-visible" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error]") }
         focus "focus-retry" { target = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error] button") }
-        expect "retry-focused" { visible = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error] button:focus") }
+        expect "retry-focused" { focused = css(".a3s-preview[data-preview-component=message-status] .message-status[data-state=error] button") }
     }
 
     scenario "message-attachment" {
@@ -391,7 +391,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "completed-file-visible" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=complete]") }
         expect "uploading-file-busy" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=uploading][aria-busy=true]") }
         focus "focus-remove" { target = css(".a3s-preview[data-preview-component=message-attachment] button[aria-label='Remove release-notes.md']") }
-        expect "remove-focused" { visible = css(".a3s-preview[data-preview-component=message-attachment] button[aria-label='Remove release-notes.md']:focus") }
+        expect "remove-focused" { focused = css(".a3s-preview[data-preview-component=message-attachment] button[aria-label='Remove release-notes.md']") }
         viewport "phone" { width = 320 height = 720 }
         expect "phone-upload-visible" { visible = css(".a3s-preview[data-preview-component=message-attachment] .message-attachment[data-state=uploading]") }
     }
@@ -405,7 +405,7 @@ suite "a3s-ui-application-and-utilities" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "citation-source-visible" { visible = css(".a3s-preview[data-preview-component=message-citation] .message-citation [data-citation-source]") }
         focus "focus-citation" { target = css(".a3s-preview[data-preview-component=message-citation] a.message-citation") }
-        expect "citation-focused" { visible = css(".a3s-preview[data-preview-component=message-citation] a.message-citation:focus") }
+        expect "citation-focused" { focused = css(".a3s-preview[data-preview-component=message-citation] a.message-citation") }
     }
 
     scenario "artifact-card" {
@@ -418,7 +418,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "artifact-complete" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card[data-state=complete]") }
         expect "artifact-preview-visible" { visible = css(".a3s-preview[data-preview-component=artifact-card] [data-artifact-preview]") }
         focus "focus-open" { target = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card > footer button:last-child") }
-        expect "open-focused" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card > footer button:last-child:focus") }
+        expect "open-focused" { focused = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card > footer button:last-child") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-artifact-visible" { visible = css(".a3s-preview[data-preview-component=artifact-card] .artifact-card") }
     }
@@ -434,7 +434,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "permission-selector-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=permission]") }
         expect "workspace-selector-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=workspace]") }
         focus "focus-model" { target = css(".a3s-preview[data-preview-component=context-selector] select[aria-label=Model]") }
-        expect "model-focused" { visible = css(".a3s-preview[data-preview-component=context-selector] select[aria-label=Model]:focus") }
+        expect "model-focused" { focused = css(".a3s-preview[data-preview-component=context-selector] select[aria-label=Model]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-workspace-visible" { visible = css(".a3s-preview[data-preview-component=context-selector] .context-selector[data-kind=workspace]") }
     }
@@ -450,7 +450,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "running-item-first" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue > ol > li:first-child[data-state=running]") }
         expect "blocked-item-visible" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked]") }
         focus "focus-review" { target = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked] button") }
-        expect "review-focused" { visible = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked] button:focus") }
+        expect "review-focused" { focused = css(".a3s-preview[data-preview-component=task-queue] .task-queue li[data-state=blocked] button") }
     }
 
     scenario "checkpoint" {
@@ -463,7 +463,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "checkpoint-saved" { visible = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint[data-state=saved]") }
         expect "checkpoint-meta-visible" { visible = css(".a3s-preview[data-preview-component=checkpoint] [data-checkpoint-meta]") }
         focus "focus-restore" { target = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint > footer button") }
-        expect "restore-focused" { visible = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint > footer button:focus") }
+        expect "restore-focused" { focused = css(".a3s-preview[data-preview-component=checkpoint] .checkpoint > footer button") }
     }
 
     scenario "follow-up-suggestions" {
@@ -476,7 +476,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "suggestions-named" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] nav.follow-up-suggestions[aria-label]") }
         expect "three-suggestions-visible" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(3) button") }
         focus "focus-release-checks" { target = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(2) button") }
-        expect "release-checks-focused" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(2) button:focus") }
+        expect "release-checks-focused" { focused = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions li:nth-child(2) button") }
         viewport "phone" { width = 320 height = 720 }
         expect "phone-suggestions-visible" { visible = css(".a3s-preview[data-preview-component=follow-up-suggestions] .follow-up-suggestions") }
     }
@@ -514,7 +514,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "tool-call-open" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call[data-state=running][aria-busy=true][open]") }
         expect "tool-output-visible" { visible = css(".a3s-preview[data-preview-component=tool-call] [data-tool-output]") }
         focus "focus-summary" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
-        expect "summary-focused" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary:focus") }
+        expect "summary-focused" { focused = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
         click "close-tool-call" { target = css(".a3s-preview[data-preview-component=tool-call] details.tool-call > summary") }
         expect "tool-call-closed" { visible = css(".a3s-preview[data-preview-component=tool-call] details.tool-call:not([open])") }
     }
@@ -549,7 +549,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "output-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-panel-en:not([hidden])") }
         focus "focus-output-tab" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
         press "move-to-metadata" { key = "End" }
-        expect "metadata-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-tab-en[aria-selected=true]:focus") }
+        expect "metadata-selected" { focused = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-tab-en[aria-selected=true]") }
         expect "metadata-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-panel-en:not([hidden])") }
         screenshot "metadata-view" { path = "components/tool-result-metadata.png" }
     }
@@ -564,7 +564,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "reviewing-state-visible" { visible = css(".a3s-preview[data-preview-component=change-review] .change-review[data-state=reviewing]") }
         expect "third-file-visible" { visible = css(".a3s-preview[data-preview-component=change-review] [data-review-files] > li:nth-child(3)") }
         focus "focus-accept" { target = css(".a3s-preview[data-preview-component=change-review] .change-review > footer button:last-child") }
-        expect "accept-focused" { visible = css(".a3s-preview[data-preview-component=change-review] .change-review > footer button:last-child:focus") }
+        expect "accept-focused" { focused = css(".a3s-preview[data-preview-component=change-review] .change-review > footer button:last-child") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-files-visible" { visible = css(".a3s-preview[data-preview-component=change-review] [data-review-files]") }
     }
@@ -580,7 +580,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "command-visible" { visible = css(".a3s-preview[data-preview-component=terminal] [data-terminal-command]") }
         expect "output-visible" { visible = css(".a3s-preview[data-preview-component=terminal] [data-terminal-output]") }
         focus "focus-copy" { target = css(".a3s-preview[data-preview-component=terminal] .terminal > header button") }
-        expect "copy-focused" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal > header button:focus") }
+        expect "copy-focused" { focused = css(".a3s-preview[data-preview-component=terminal] .terminal > header button") }
         viewport "phone" { width = 320 height = 720 }
         expect "phone-terminal-visible" { visible = css(".a3s-preview[data-preview-component=terminal] .terminal") }
     }
@@ -643,7 +643,7 @@ suite "a3s-ui-application-and-utilities" {
         expect "result-visible" { visible = css(".a3s-preview[data-preview-component=execution-evidence] [data-evidence-result]") }
         expect "facts-visible" { visible = css(".a3s-preview[data-preview-component=execution-evidence] .property-list") }
         focus "focus-report" { target = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence > footer button") }
-        expect "report-focused" { visible = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence > footer button:focus") }
+        expect "report-focused" { focused = css(".a3s-preview[data-preview-component=execution-evidence] .execution-evidence > footer button") }
     }
 
     scenario "theme-switcher" {
@@ -688,7 +688,7 @@ suite "a3s-ui-application-and-utilities" {
         fill "recover-valid-name" { target = css("#file-explorer-demo-en [data-file-editor]") value = "Health.tsx" }
         press "commit-valid-name" { key = "Enter" }
         expect "renamed-file-visible" { text = "Health.tsx" }
-        expect "file-focus-restored" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']:focus") }
+        expect "file-focus-restored" { focused = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-explorer-visible" { visible = css(".a3s-preview[data-preview-component=file-explorer] .file-explorer") }
     }

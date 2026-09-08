@@ -22,7 +22,7 @@ suite "a3s-ui-product-model-settings" {
         expect "runtime-read-only-dialog" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(fieldset.product-model-provider__connection[disabled])") }
         expect "runtime-catalog-present" { visible = css("dialog.product-model-provider[open] .product-model-catalog__table[role=table]") }
         press "close-runtime-editor" { key = "Escape" }
-        expect "runtime-trigger-restored" { visible = css(".product-model-manager__list article:first-child button[aria-label='管理 运行时目录']:focus") }
+        expect "runtime-trigger-restored" { focused = css(".product-model-manager__list article:first-child button[aria-label='管理 运行时目录']") }
 
         click "manage-local-provider" { target = role("button", "管理 本地端点") }
         expect "local-provider-dialog" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(input[aria-label='API Key'])") }
@@ -109,7 +109,7 @@ suite "a3s-ui-product-model-settings" {
             viewport_coverage_at_least = 100
         }
         focus "model-id-focus" { target = css("dialog.product-model-catalog__draft[open] input:first-of-type") }
-        expect "focused-model-id" { visible = css("dialog.product-model-catalog__draft[open] input:first-of-type:focus") }
+        expect "focused-model-id" { focused = css("dialog.product-model-catalog__draft[open] input:first-of-type") }
         fill "mobile-model-id" { target = label("模型 ID") value = "mobile-fixture" }
         expect "mobile-submit-enabled" { visible = css("dialog.product-model-catalog__draft[open] button[data-primary]:not(:disabled)") }
         screenshot "mobile-model-dialog-evidence" { path = "product/model-settings-model-dialog-mobile.png" }
@@ -117,7 +117,7 @@ suite "a3s-ui-product-model-settings" {
         expect "provider-dialog-restored" { visible = css("dialog.product-model-provider[open][data-provider-editor]:has(button[aria-label='显示 API Key'])") }
         focus "focus-provider-complete" { target = css("dialog.product-model-provider[open] > footer button:last-child") }
         press "close-provider-dialog" { key = "Enter" }
-        expect "provider-trigger-restored" { visible = css(".product-model-manager__list article:nth-child(2) button[aria-label='管理 本地端点']:focus") }
+        expect "provider-trigger-restored" { focused = css(".product-model-manager__list article:nth-child(2) button[aria-label='管理 本地端点']") }
         expect "local-card-selected" { visible = css(".product-model-manager__list article:nth-child(2)[data-selected=true]") }
 
         screenshot "mobile-evidence" { path = "product/model-settings-mobile.png" }
