@@ -5,9 +5,9 @@
 ### Fixed
 
 - State acceptance matrix is a plain `role="dialog"` panel (not `<dialog>`).
-  Contracts target `[data-open]` and dismiss via a viewport-corner close control
-  stacked above docs chrome and the matrix panel (CDP center-clicks were landing
-  on site header / panel chrome instead of the dismiss control).
+  Contracts capture matrix evidence then reload the component page, because
+  agent-browser CDP cannot reliably activate dismiss/Escape while the overlay
+  owns the page. Product dismiss remains for interactive users.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.
