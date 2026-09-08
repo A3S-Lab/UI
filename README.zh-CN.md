@@ -1,6 +1,7 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" alt="A3S UI — 面向所有 A3S 界面的统一设计系统" width="1200">
+  <img src="./assets/readme/hero.svg" alt="A3S UI — one design system for every A3S surface" width="1200">
 </p>
+
 
 <p align="center">
   <strong>Language / 语言:</strong>
@@ -9,28 +10,28 @@
 </p>
 
 <p align="center">
-  面向任务工作区、文档工具与运维控制台的框架无关设计系统。
+  用于任务工作区、文档工具和操作控制台的与框架无关的设计系统。
 </p>
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/UI/"><img alt="简体中文文档" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
-  <a href="https://a3s-lab.github.io/UI/en/"><img alt="英文文档" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
+  <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
+  <a href="https://a3s-lab.github.io/UI/en/"><img alt="Documentation in English" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/playground.html"><img alt="A3S UI Playground" src="https://img.shields.io/badge/try-Playground-2864e8?style=flat-square"></a>
-  <a href="https://github.com/A3S-Lab/UI/actions/workflows/pages.yml"><img alt="GitHub Pages 部署" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/UI/pages.yml?branch=main&style=flat-square&label=pages"></a>
-  <a href="./LICENSE.md"><img alt="MIT 许可证" src="https://img.shields.io/badge/license-MIT-28a978?style=flat-square"></a>
+  <a href="https://github.com/A3S-Lab/UI/actions/workflows/pages.yml"><img alt="GitHub Pages deployment" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/UI/pages.yml?branch=main&style=flat-square&label=pages"></a>
+  <a href="./LICENSE.md"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-28a978?style=flat-square"></a>
 </p>
 
-## 一种视觉语言：从控件到工作台
+## 一种视觉语言，从控件到工作台
 
-A3S UI 将 A3S Office 中沉淀的交互模式沉淀为可复用的语义 HTML。它组合 Tailwind CSS v4、原生浏览器元素与小型原生 JavaScript 控制器——无需 React、Radix 或框架运行时。
+A3S UI 将 A3S Office 中精炼的交互模式转变为可重用的语义 HTML。它结合了 Tailwind CSS v4、本机浏览器元素和小型普通 JavaScript 控制器，无需 React、Radix 或框架运行时。
 
-系统现已公开 **116** 个公共组件契约：86 个通用组件覆盖控件、导航、内容、浮层与产品结构；30 个 Harness 组件则按任务、对话、执行、审查、证据、文件导航、知识管理、编辑、终端、日志与设备预览等工作流，为编码 Agent 分组。
+该系统现在公开了 116 个公共组件合约。 86 个通用组件涵盖控件、导航、内容、覆盖和产品结构，而 30 个组件 Harness 则对编码代理的任务、对话、执行、审查、证据、文件导航、知识管理、编辑、终端、日志和设备预览工作流程进行分组。
 
 <p align="center">
-  <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI 中文文档首页与 Office Workbench 组件样例" width="1280"></a>
+  <a href="https://a3s-lab.github.io/UI/"><img src="./assets/readme/docs-home.png" alt="A3S UI Chinese documentation homepage with the Office Workbench component specimen" width="1280"></a>
 </p>
 
-## 三步开始
+## 从三步开始
 
 从 npm 安装公共包：
 
@@ -38,26 +39,26 @@ A3S UI 将 A3S Office 中沉淀的交互模式沉淀为可复用的语义 HTML�
 npm install @a3s-lab/ui
 ```
 
-加载 Tailwind 与完整 A3S 包：
+加载 Tailwind 和完整的 A3S 包：
 
 ```css
 @import "tailwindcss";
 @import "@a3s-lab/ui";
 ```
 
-不运行 Tailwind 的应用可改为加载预编译包：
+不运行 Tailwind 的应用程序可以改为加载预编译包：
 
 ```css
 @import "@a3s-lab/ui/cdn.css";
 ```
 
-仅在界面使用交互式组合时导入运行时：
+仅当界面使用交互式组合时才导入运行时：
 
 ```js
 import "@a3s-lab/ui/all";
 ```
 
-然后用语义标记组合界面：
+然后用语义标记组成界面：
 
 ```html
 <header class="workspace-header">
@@ -71,42 +72,42 @@ import "@a3s-lab/ui/all";
 </header>
 ```
 
-拆分 CSS 导入、控制器级 JavaScript 导入与服务端渲染模板，见[安装指南](https://a3s-lab.github.io/UI/installation.html)。
+请参阅 [installation guide](https://a3s-lab.github.io/UI/installation.html) 了解拆分 CSS 导入、控制器级 JavaScript 导入和服务器渲染模板。
 
-## 组件家族
+## 组件系列
 
-| 家族 | 包含的模式 |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 输入与操作 | Button、Button Group、Bulk Action Bar、Copy Button、Editable Text、Form、Field、Input、Input Group、Hotkey Input、Textarea、Label |
-| 选择与搜索 | Native Select、Select、Combobox、Filter Bar、Date Picker、Color Swatches、Image Select、Emoji Picker、Checkbox、Radio Group、Switch、Slider |
-| 导航 | Activity Bar、Breadcrumb、Back to Bottom、Tabs、Pagination、Sidebar、Table of Contents |
-| 浮层 | Alert Dialog、Dialog、Drawer、Dropdown Menu、Context Menu、Popover、Floating Panel、Image Viewer、Command、Tooltip |
-| 反馈与状态 | Alert、Badge、Status Badge、Empty、Progress、Skeleton、Spinner、Streaming Text、Toast |
-| 数据与内容 | Accordion、Collapsible、Avatar、Icon、File Type Icon、Image、Card、Item、Kbd、Markdown Surface、Highlighter、Code Diff、Snippet、Chart、Property List、Data Grid、Table、Sortable List、Stepper、Timeline、Tree |
-| 布局与工作区 | App Shell、App Page、Catalog、Setting Row、Brand Lockup、Workspace Header、Toolbar、Ribbon、Settings Layout、Resource Card、Split Pane、Task Pane、Status Bar |
-| Harness | Task Start、Task Workspace、Agent Composer、Agent Transcript、Agent Workbench、Context Selector、Message Status、Message Attachment、Message Citation、Follow-up Suggestions、Task Plan、Plan Step、Task Queue、Approval Request、Execution Item、Checkpoint、Tool Call、Tool Call Timeline、Tool Result、Change Review、Execution Evidence、Artifact Card、File Explorer、File Manager、Knowledge Library、3D Code Graph、Code Editor、Terminal、Log Viewer、Device Simulator |
-| 工具 | Scroll Area、Theme Switcher |
+|家庭|包含图案|
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|输入和行动|按钮、按钮组、批量操作栏、复制按钮、可编辑文本、表单、字段、输入、输入组、热键输入、文本区域和标签 |
+|选择和搜索|本机选择、选择、组合框、过滤器栏、日期选择器、色样、图像选择、表情符号选择器、复选框、单选按钮组、开关和滑块 |
+|导航 |活动栏、面包屑导航、返回底部、选项卡、分页、侧边栏和目录 |
+|覆盖|警报对话框、对话框、抽屉式菜单、下拉菜单、上下文菜单、弹出框、浮动面板、图像查看器、命令和工具提示 |
+|反馈和状态 |警报、徽章、状态徽章、空、进度、骨架、旋转器、流文本和 Toast |
+|数据与内容|手风琴、可折叠、头像、图标、文件类型图标、图像、卡片、项目、Kbd、Markdown 表面、荧光笔、代码差异、代码段、图表、属性列表、数据网格、表格、可排序列表、步进器、时间轴和树 |
+|布局和工作空间|应用程序外壳、应用程序页面、目录、设置行、品牌锁定、工作区标题、工具栏、功能区、设置布局、资源卡、拆分窗格、任务窗格和状态栏 |
+|线束|任务启动、任务工作区、代理编写器、代理成绩单、代理工作台、上下文选择器、消息状态、消息附件、消息引用、后续建议、任务计划、计划步骤、任务队列、批准请求、执行项目、检查点、工具调用、工具调用时间线、工具结果、更改审核、执行证据、工件卡、文件资源管理器、文件管理器、知识库、3D 代码图、代码编辑器、终端、日志查看器、和设备模拟器|
+|公用事业 |滚动区域和主题切换器 |
 
-可选的 Dockview 集成与语义清单并列，增加 Dock Workspace、Grid View、Split View、Pane View，且不改变 116 组件计数。它完整再导出 Dockview 8.1 的 MIT 表面（原生 TypeScript、React、Vue），并叠加 A3S 主题 token、版本化布局持久化，以及 Edge Group 安全的布局重置。
+可选的 Dockview 集成位于语义清单旁边，并添加了 Dock 工作区、网格视图、拆分视图和窗格视图，而无需更改 116 个组件的数量。它为本机 TypeScript、React 和 Vue 重新导出完整的 Dockview 8.1 MIT 表面，然后添加 A3S 主题令牌、版本化布局持久性和 Edge Group 安全布局重置。
 
-集成的 [Form 系统](https://a3s-lab.github.io/UI/components/form-system/) 提供确定性 Form Core、可视化 Designer、受控 Renderer、持久交互契约、Cloud 宿主适配器、CLI、Web Components、React Hook Form 集成，以及原生 Vue composable。其指南与交互示例直接位于 A3S UI 组件目录中。
+集成的 [Form system](https://a3s-lab.github.io/UI/components/form-system/) 添加了确定性 Form Core、可视化设计器、受控渲染器、持久交互合约、云主机适配器、CLI、Web 组件、React Hook Form 集成和本机 Vue 可组合项。它的指南和交互式示例直接位于 A3S UI 组件目录中。
 
-每个组件指南都包含实时预览、最小用法、公共参数、状态与变体，以及无障碍说明。预览台会推导正确的控件、内容、浮层或工作区布局；手机与平板模式在隔离的 CSS viewport 中运行，使响应式 media query 使用所选宽度。浏览[完整组件目录](https://a3s-lab.github.io/UI/components/)。
+每个组件指南都包含实时预览、最低限度使用、公共参数、状态和变体以及可访问性注释。预览阶段派生正确的控件、内容、覆盖或工作区布局，而手机和平板电脑模式在独立的 CSS 视口中运行，因此响应式媒体查询使用选定的宽度。浏览[complete component catalog](https://a3s-lab.github.io/UI/components/)。
 
 ## 设计基础
 
-A3S 主题是完整设计系统，而不是叠在无关控件上的色板：
+A3S 主题是一个完整的设计系统，而不是叠加在不相关控件上的调色板：
 
-- **颜色** — 白与近黑产品表面，稀缺的 iris 焦点色、A3S 品牌蓝，以及保留的语义状态色。
-- **字体** — 以应用为先的层级：密集标签与可读的长文文档。
-- **间距** — 控件、面板、工具栏与文档画布的一致节奏。
-- **形状与海拔** — 克制的圆角、边框与阴影，保持信息密度。
-- **动效** — 短而有目的的过渡，并支持减少动效。
-- **无障碍** — 语义元素、显式 ARIA 状态、键盘交互、RTL 感知布局，以及亮/暗主题。
+- **颜色** — 白色和近乎黑色的产品表面，虹膜焦点稀少，A3S 品牌蓝色，以及保留的语义状态。
+- **排版** — 应用程序优先的层次结构，具有密集的标签和可读的长格式文档。
+- **间距** — 控件、面板、工具栏和文档画布的一致节奏。
+- **形状和高度** - 限制半径、边界和阴影，以保留信息密度。
+- **运动** — 简短、有目的的过渡，具有减少运动的支持。
+- **辅助功能** — 语义元素、显式 ARIA 状态、键盘交互、RTL 感知布局和浅色/深色主题。
 
-## 应用级模式与 Harness
+## 应用规模模式和利用
 
-任务应用层是 A3S UI 与仅原语工具包的分界：
+任务应用层是 A3S UI 与纯原始套件的不同之处：
 
 ```text
 App Shell
@@ -133,69 +134,69 @@ Dockview integration
 └── Grid View + Split View + Pane View
 ```
 
-这些模式可独立复用，但其 token 与布局契约旨在组合成文档编辑器、任务工作区与可观测控制台。默认任务几何为：248px 导航区、760px 阅读栏、320–380px 可选检查器、36px 控件、44px 粗指针目标。响应式导航在低于 768px 时变为内含抽屉；检查器在低于 900px 时变为浮层，低于 520px 时变为底部抽屉。
+这些模式是独立可重用的，但它们的令牌和布局契约旨在组成文档编辑器、任务工作区和可观察性控制台。默认任务几何结构使用 248 像素导航区域、760 像素阅读列、320-380 像素可选检查器、36 像素控件和 44 像素粗指针目标。响应式导航成为 768 像素以下的包含式抽屉；检查员变为低于 900 像素的覆盖层和低于 520 像素的底部抽屉。
 
-Device Simulator 在缩放后的手机、平板与桌面硬件壳内保持精确 iframe viewport 尺寸，并为受信任的 `a3s-webview` 宿主暴露结构化原生预览边界。
+设备模拟器在缩放的手机、平板电脑和桌面硬件外壳内保留精确的 iframe 视口尺寸，然后为受信任的 `a3s-webview` 主机公开结构化的本机预览边界。
 
-双语模式指南覆盖 Task Workspace、New Task、Capability Catalog、Settings Center、Projects 与 Automations。仓库、终端、浏览器、传输、调度、持久化与策略逻辑仍由应用拥有。
+双语模式指南涵盖任务工作区、新任务、功能目录、设置中心、项目和自动化。应用程序继续拥有存储库、终端、浏览器、传输、调度、持久性和策略逻辑。
 
-独立的 [Playground](https://a3s-lab.github.io/UI/playground.html) 是双语、任务优先的 A3S 产品应用，而不是组件陈列或可停靠 IDE。其规范 `/playground` 路由族在一套连贯的桌面与紧凑屏流程中组合：持久任务与项目会话、基于 TipTap 的 composer、模型与 effort 控制、工作区引用、跟进队列、权限审查、工具调用证据、Finder 风格本地文件、代码与 Office/PDF 工作台、Knowledge、Memory、以截图驱动的 Inspiration 工作流、扩展、自动化与生产设置。遗留 `/app` URL 仍为路由别名。Playground 不在文档章节层级之内。
+独立的 [Playground](https://a3s-lab.github.io/UI/playground.html) 是双语、任务优先的 A3S 产品应用程序，而不是组件展示或可停靠 IDE。其规范的 `/playground` 路线系列将持久任务和项目会话、基于 TipTap 的编辑器、模型和工作量控制、工作空间参考、后续队列、权限审查、工具调用证据、Finder 风格的本地文件、代码和 Office/PDF 工作台、知识、内存、屏幕截图主导的灵感工作流程、扩展、自动化和生产设置结合在一个连贯的桌面和紧凑屏幕流程中。旧版 `/app` URL 仍然是路由别名。 Playground 位于文档章节层次结构之外。
 
-## 文档语言与版本
+## 文档语言和版本
 
-文档站与 A3S Code 网站使用同一套 Rspress、React 与 TypeScript 技术栈。简体中文为默认语言；每个已发布版本也提供英文文档。每个当前组件与 Harness 集成指南通过一套持久标签页同时呈现 HTML、React 与 Vue：框架正确的安装、必需导入、可高亮复制的示例，以及在公共契约有行为时匹配的 hooks / composables。
+该文档网站使用与 A3S Code 网站相同的 Rspress、React 和 TypeScript 堆栈。默认语言为简体中文；每个发布的版本还提供英文文档。当前的每个组件和 Harness 集成指南都通过一个持久选项卡集来呈现 HTML、React 和 Vue，其中包含框架正确的安装、所需的导入、突出显示的可复制示例以及公共合约具有行为的匹配挂钩或可组合项。
 
-| 版本 | 简体中文 | English |
-| -------- | ------------------------------------------------------ | --------------------------------------------------------- |
-| `next` | [默认文档](https://a3s-lab.github.io/UI/) | [英文文档](https://a3s-lab.github.io/UI/en/) |
-| `v0.3.0` | [稳定版中文](https://a3s-lab.github.io/UI/v0.3.0/) | [稳定版英文](https://a3s-lab.github.io/UI/v0.3.0/en/) |
-| `v0.2.0` | [稳定版中文](https://a3s-lab.github.io/UI/v0.2.0/) | [稳定版英文](https://a3s-lab.github.io/UI/v0.2.0/en/) |
-| `v0.1.0` | [稳定版中文](https://a3s-lab.github.io/UI/v0.1.0/) | [稳定版英文](https://a3s-lab.github.io/UI/v0.1.0/en/) |
+|版本 | 简体中文 |英语 |
+| -------- | ------------------------------------------------------ | -------------------------------------------------------------------- |
+| `next` | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| `v0.3.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.3.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.3.0/en/) |
+| `v0.2.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.2.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.2.0/en/) |
+| `v0.1.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.1.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.1.0/en/) |
 
-语言与版本切换会在目标树存在对应路由时保留当前页面。
+只要目标树中存在该路由，语言和版本切换就会保留当前页面。
 
-## 包入口
+## 包入口点
 
-| 导入 | 用途 |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `@a3s-lab/ui` | 完整默认 A3S CSS 包 |
-| `@a3s-lab/ui/base` | Token、工具类与结构组件 CSS（不含视觉样式） |
-| `@a3s-lab/ui/components/{name}.css` | 单个组件的结构 CSS |
-| `@a3s-lab/ui/styles/a3s.css` | 拆分导入构建用的 A3S 视觉基础 |
-| `@a3s-lab/ui/runtime` | 共享生命周期与控制器注册表 |
-| `@a3s-lab/ui/all` | 共享运行时 + 除 Chart 外全部自动初始化控制器 |
-| `@a3s-lab/ui/{controller}` | 单个 JavaScript 控制器，如 `app-shell`、`task-workspace`、`tabs`、`split-pane`、`code-editor` 或 `device-simulator` |
-| `@a3s-lab/ui/manifest` | 全部 116 个公共组件的机器可读元数据 |
-| `@a3s-lab/ui/components.json` | JSON 组件选择器、部件、动作、状态与测试选择器 |
-| `@a3s-lab/ui/ai` | DOM 标注、发现、选择器与快照辅助 |
-| `@a3s-lab/ui/a3s-test` | 可直接运行的确定性工作流示例 |
-| `@a3s-lab/ui/a3s-test/selectors` | 组件、部件、动作、ready 与状态选择器辅助 |
-| `@a3s-lab/ui/react` | 可选的薄 React 适配器与类型化控制器 hooks；React 仍为 peer dependency |
-| `@a3s-lab/ui/vue` | 可选的薄 Vue 适配器与类型化控制器 composables；Vue 仍为 peer dependency |
-| `@a3s-lab/ui/dockview` | 完整原生 Dockview、Gridview、Splitview、Paneview API，外加 A3S 主题与持久化 |
-| `@a3s-lab/ui/dockview/react` | 完整 React Dockview API，外加布局与视图 hooks |
-| `@a3s-lab/ui/dockview/vue` | 完整 Vue 3 Dockview API，外加匹配 composables |
-| `@a3s-lab/ui/dockview/css` | Dockview 基础 CSS 与 A3S 亮/暗主题变量 |
-| `@a3s-lab/ui/form` | Form 文档、编译器、Designer、Renderer、适配器与集成契约 |
-| `@a3s-lab/ui/form/core` | 框架无关的编译、规则、校验、补丁、语言目录与无头状态 |
-| `@a3s-lab/ui/form/react` | React Designer、Renderer、文件上传、签名、数据源与检查器控件 |
-| `@a3s-lab/ui/form/react-hooks` | 兼容 React Hook Form 的 `useA3SForm`、resolver、字段数组、订阅与 Renderer 绑定 |
-| `@a3s-lab/ui/form/vue` | Vue 3 Designer 与 Renderer 适配器 |
-| `@a3s-lab/ui/form/vue-hooks` | 原生 Vue `useA3SForm`、字段、字段数组、上下文、校验与 Renderer composables |
-| `@a3s-lab/ui/form/web-component` | 框架中立的 `<a3s-form-designer>` 与 `<a3s-form-renderer>` 自定义元素 |
-| `@a3s-lab/ui/form/cloud` | 类型化 A3S Cloud 宿主适配器 |
-| `@a3s-lab/ui/form/a3s-ui.css` | 面向产品表面的 A3S UI + Form 布局与交互样式 |
-| `@a3s-lab/ui/templates/*` | 用于服务端渲染应用的 Nunjucks 与 Jinja 模板 |
+|进口|目的|
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `@a3s-lab/ui` |完整的默认 A3S CSS 捆绑包 |
+| `@a3s-lab/ui/base` |没有视觉样式的令牌、实用程序和结构组件 CSS |
+| `@a3s-lab/ui/components/{name}.css` |一个组件的结构CSS |
+| `@a3s-lab/ui/styles/a3s.css` |用于分割导入构建的 A3S 视觉基础 |
+| `@a3s-lab/ui/runtime` |共享生命周期和控制器注册表|
+| `@a3s-lab/ui/all` |共享运行时加上所有自动初始化控制器（图表 | 除外）
+| `@a3s-lab/ui/{controller}` |一个 JavaScript 控制器，例如 `app-shell`、`task-workspace`、`tabs`、`split-pane`、`code-editor` 或 `device-simulator` |
+| `@a3s-lab/ui/manifest` |所有 116 个公共组件的机器可读元数据 |
+| `@a3s-lab/ui/components.json` | JSON 组件选择器、部件、操作、状态和测试选择器 |
+| `@a3s-lab/ui/ai` | DOM 注释、发现、选择器和快照助手 |
+| `@a3s-lab/ui/a3s-test` |准备运行的确定性工作流程示例 |
+| `@a3s-lab/ui/a3s-test/selectors` |组件、部分、操作、就绪和状态选择器助手 |
+| `@a3s-lab/ui/react` |可选的瘦 React 适配器和类型化控制器挂钩； React 仍然是对等依赖 |
+| `@a3s-lab/ui/vue` |可选的瘦 Vue 适配器和类型化控制器可组合项； Vue 仍然是对等依赖 |
+| `@a3s-lab/ui/dockview` |完整的本机 Dockview、Gridview、Splitview 和 Paneview API 以及 A3S 主题和持久性 |
+| `@a3s-lab/ui/dockview/react` |完整的 React Dockview API 以及布局和视图挂钩 |
+| `@a3s-lab/ui/dockview/vue` |完整的 Vue 3 Dockview API 以及匹配的可组合项 |
+| `@a3s-lab/ui/dockview/css` | Dockview 基础 CSS 和 A3S 浅色/深色主题变量 |
+| `@a3s-lab/ui/form` |表单文档、编译器、设计器、渲染器、适配器和集成合约 |
+| `@a3s-lab/ui/form/core` |独立于框架的编译、规则、验证、补丁、区域设置目录和无头状态 |
+| `@a3s-lab/ui/form/react` | React Designer、Renderer、文件上传、签名、数据源和检查器控件 |
+| `@a3s-lab/ui/form/react-hooks` | React Hook Form 兼容`useA3SForm`、解析器、字段数组、订阅和渲染器绑定 |
+| `@a3s-lab/ui/form/vue` | Vue 3 设计器和渲染器适配器 |
+| `@a3s-lab/ui/form/vue-hooks` | Native Vue `useA3SForm`、字段、字段数组、上下文、验证和渲染器可组合项 |
+| `@a3s-lab/ui/form/web-component` |框架中立的 `<a3s-form-designer>` 和 `<a3s-form-renderer>` 自定义元素 |
+| `@a3s-lab/ui/form/cloud` |类型A3S Cloud主机适配器|
+| `@a3s-lab/ui/form/a3s-ui.css` | A3S UI plus 产品界面的表单布局和交互样式 |
+| `@a3s-lab/ui/templates/*` |用于服务器渲染应用程序的 Nunjucks 和 Jinja 模板 |
 
-公共运行时命名空间为 `window.a3sUI`。遗留运行时别名仍保留以兼容。
+公共运行时命名空间是`window.a3sUI`。旧版运行时别名仍可用于兼容性。
 
-可选语义运行时为匹配根标注 `data-a3s-components`，为部件标注 `data-a3s-parts`，为精确部件归属标注 `data-a3s-part-owners`，为当前状态标注 `data-a3s-state`。它不替代应用行为，也不引入框架运行时。原生 HTML、React、Vue 与确定性测试示例见双语[集成指南](https://a3s-lab.github.io/UI/integration.html)。
+可选的语义运行时用 `data-a3s-components` 注释匹配的根，用 `data-a3s-parts` 注释部分，用 `data-a3s-part-owners` 注释精确的部分所有权，用 `data-a3s-state` 注释当前状态。它不会取代应用程序行为或引入框架运行时。请参阅双语 [Integration guide](https://a3s-lab.github.io/UI/integration.html) 了解本机 HTML、React、Vue 和确定性测试示例。
 
-React 与 Vue 还暴露 `useA3SLocale`、`useA3STheme` 与 `useA3SMotion`。这些 hooks / composables 观察与原生 HTML 相同的根级 `lang`、`dir`、`data-theme`、`.dark` 与 media-query 契约；翻译资源、持久化与服务端协商仍由应用拥有。
+React 和 Vue 还公开了 `useA3SLocale`、`useA3STheme` 和 `useA3SMotion`。这些钩子和可组合项与原生 HTML 遵循相同的根 `lang`、`dir`、`data-theme`、`.dark` 和媒体查询约定；翻译资源、持久性和服务器协商仍然由应用程序拥有。
 
-运行时还会把打开的 `[data-popover]` 表面保持在可视 viewport 内。下拉菜单、popover、select 与 combobox 共享碰撞翻转、受限可用高度、实时滚动/缩放定位，以及逻辑 RTL 对齐。
+运行时还会在视觉视口内保持打开的 `[data-popover]` 曲面。下拉菜单、弹出窗口、选择和组合框共享碰撞翻转、可用高度受限、实时滚动/调整大小定位和逻辑 RTL 对齐。
 
-## 开发
+## 发展
 
 ```bash
 npm ci
@@ -211,16 +212,16 @@ npx playwright install chromium
 npm run test:visual
 ```
 
-本地运行文档站：`npm run docs:dev`。静态构建写入 `site/doc_build`，并从 `main` 部署到 GitHub Pages。
+使用 `npm run docs:dev` 在本地运行文档站点。静态构建写入`site/doc_build`并从`main`部署到GitHub Pages。
 
-按组件与路由运行浏览器套件：`npm run test:e2e:a3s`。已报告的缺陷类会保留为页面级 A3S Test 回归，含动作-状态断言、截图、控制台输出与页面错误证据。场景默认串行，使有状态预览保持确定性；仅在浏览器适配器有足够隔离容量时设置 `A3S_TEST_MAX_PARALLEL`。命令期望 `PATH` 上有 `a3s-test`；本地适配器需要显式路径时使用 `A3S_TEST_BIN`、`A3S_TEST_BROWSER_DRIVER` 与 `A3S_TEST_BROWSER_EXECUTABLE`。
+使用 `npm run test:e2e:a3s` 运行特定于组件和特定于路由的浏览器套件。报告的缺陷类保留为页面级A3S Test回归，包含操作状态断言、屏幕截图、控制台输出和页面错误证据。默认情况下，场景连续运行，因此状态预览保持确定性；仅当浏览器适配器有足够的隔离能力时才设置`A3S_TEST_MAX_PARALLEL`。该命令期望 `PATH` 上有 `a3s-test`；当本地适配器需要显式路径时，使用 `A3S_TEST_BIN`、`A3S_TEST_BROWSER_DRIVER` 和 `A3S_TEST_BROWSER_EXECUTABLE`。
 
-当前发布契约将 116 个公共组件、94 个 Playground 导出，以及 20 个 Harness 或 Playground 表面映射到 230 份实质性 PRD。已核对的 ACL 清单与证据总计见 `product-requirements/README.md`。`npm run test:e2e:a3s:check` 在浏览器运行前拒绝缺失、重复、浅层、过期或无效映射；机器可读索引位于 `product-requirements/`。
+发布合同目前将 116 个公共组件、94 个 Playground 导出以及 20 个 Harness 或 Playground 表面映射到 230 个实质性 PRD。检查的 ACL 库存和证据总数位于`product-requirements/README.md`。 `npm run test:e2e:a3s:check` 在浏览器运行之前拒绝丢失、重复、浅、陈旧或无效的映射；机器可读索引位于`product-requirements/`下。
 
-视觉检查使用 Playwright，含平台特定的桌面与紧凑基线。每个公共组件路由还有组件根几何与状态契约，以及浏览器诊断覆盖。设置 `A3S_UI_VISUAL_CHROMIUM_EXECUTABLE` 可复用系统 Chromium；默认本地端口被占用时设置 `A3S_UI_VISUAL_PORT`。这些检查有意不纳入 CI。
+视觉检查使用具有特定于平台的桌面和紧凑基线的 Playwright。每个公共组件路由还具有组件根几何结构和状态契约以及浏览器诊断覆盖范围。设置`A3S_UI_VISUAL_CHROMIUM_EXECUTABLE`以重用系统Chromium安装，并在默认本地端口被占用时设置`A3S_UI_VISUAL_PORT`；这些检查故意不属于 CI 的一部分。
 
-## 渊源与许可证
+## 血统和许可
 
-A3S UI 基于 [Basecoat](https://github.com/hunvreus/basecoat)（由 [Ronan Berder](https://github.com/hunvreus) 创建），并保留其对 [shadcn/ui](https://ui.shadcn.com/) 视觉语言的语义 HTML 诠释。A3S 主题与工作台组件在此基础上扩展，服务 A3S 产品。
+A3S UI 建立在由 [Ronan Berder](https://github.com/hunvreus) 创建的 [Basecoat](https://github.com/hunvreus/basecoat) 的基础上，并保留其对 [shadcn/ui](https://ui.shadcn.com/) 视觉语言的语义 HTML 解释。 A3S 主题和工作台组件扩展了 A3S 产品的基础。
 
-以 [MIT License](./LICENSE.md) 发布。
+在[MIT License](./LICENSE.md)下发布。
