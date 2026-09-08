@@ -63,7 +63,7 @@ The canonical root uses `<article>` semantics and exposes 5 named parts. State m
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.execution-evidence` and is annotated by the runtime as `[data-a3s-components~="execution-evidence"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=execution-evidence]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=execution-evidence]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -79,9 +79,9 @@ The canonical root uses `<article>` semantics and exposes 5 named parts. State m
 - Stable root target: `[data-a3s-components~="execution-evidence"]` inside `.a3s-preview[data-preview-component=execution-evidence][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/execution-evidence-states.png`.
 - Per-state evidence selectors:
-  - `capturing`: `.a3s-component-state-matrix[open][data-component=execution-evidence] [data-state-specimen=capturing]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='capturing'][aria-busy=true])`
-  - `verified`: `.a3s-component-state-matrix[open][data-component=execution-evidence] [data-state-specimen=verified]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='verified'])`
-  - `unverified`: `.a3s-component-state-matrix[open][data-component=execution-evidence] [data-state-specimen=unverified]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='unverified'])`
-  - `expired`: `.a3s-component-state-matrix[open][data-component=execution-evidence] [data-state-specimen=expired]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='expired'])`
-  - `error`: `.a3s-component-state-matrix[open][data-component=execution-evidence] [data-state-specimen=error]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='error'])`
+  - `capturing`: `.a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=capturing]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='capturing'][aria-busy=true])`
+  - `verified`: `.a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=verified]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='verified'])`
+  - `unverified`: `.a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=unverified]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='unverified'])`
+  - `expired`: `.a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=expired]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='expired'])`
+  - `error`: `.a3s-component-state-matrix[data-open][data-component=execution-evidence] [data-state-specimen=error]:has([data-a3s-components~='execution-evidence'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

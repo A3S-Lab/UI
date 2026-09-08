@@ -63,7 +63,7 @@ The canonical root uses `<ol>` semantics and exposes 2 named parts. State must b
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.timeline` and is annotated by the runtime as `[data-a3s-components~="timeline"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=timeline]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=timeline]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -79,9 +79,9 @@ The canonical root uses `<ol>` semantics and exposes 2 named parts. State must b
 - Stable root target: `[data-a3s-components~="timeline"]` inside `.a3s-preview[data-preview-component=timeline][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/timeline-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=timeline] [data-state-specimen=ready]:has([data-a3s-components~='timeline'][data-a3s-state~='ready'])`
-  - `active`: `.a3s-component-state-matrix[open][data-component=timeline] [data-state-specimen=active]:has([data-a3s-components~='timeline'][data-a3s-state~='active'][data-active=true])`
-  - `success`: `.a3s-component-state-matrix[open][data-component=timeline] [data-state-specimen=success]:has([data-a3s-components~='timeline'][data-a3s-state~='success'])`
-  - `warning`: `.a3s-component-state-matrix[open][data-component=timeline] [data-state-specimen=warning]:has([data-a3s-components~='timeline'][data-a3s-state~='warning'])`
-  - `danger`: `.a3s-component-state-matrix[open][data-component=timeline] [data-state-specimen=danger]:has([data-a3s-components~='timeline'][data-a3s-state~='danger'])`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=ready]:has([data-a3s-components~='timeline'][data-a3s-state~='ready'])`
+  - `active`: `.a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=active]:has([data-a3s-components~='timeline'][data-a3s-state~='active'][data-active=true])`
+  - `success`: `.a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=success]:has([data-a3s-components~='timeline'][data-a3s-state~='success'])`
+  - `warning`: `.a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=warning]:has([data-a3s-components~='timeline'][data-a3s-state~='warning'])`
+  - `danger`: `.a3s-component-state-matrix[data-open][data-component=timeline] [data-state-specimen=danger]:has([data-a3s-components~='timeline'][data-a3s-state~='danger'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

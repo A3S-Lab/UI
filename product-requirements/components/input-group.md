@@ -194,7 +194,7 @@ Automation cannot prove real iOS and Android virtual keyboards, physical CJK IME
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.input-group` and is annotated by the runtime as `[data-a3s-components~="input-group"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=input-group]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=input-group]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -210,10 +210,10 @@ Automation cannot prove real iOS and Android virtual keyboards, physical CJK IME
 - Stable root target: `[data-a3s-components~="input-group"]` inside `.a3s-preview[data-preview-component=input-group][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/input-group-states.png`.
 - Per-state evidence selectors:
-  - `empty`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))`
-  - `ready`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready']:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid]:has([data-a3s-components~='input-group'][data-a3s-state~='invalid']:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid))`
-  - `loading`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading]:has([data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled]:has([data-a3s-components~='input-group'][data-a3s-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived']))`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly]:has([data-a3s-components~='input-group'][data-a3s-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='release']))`
+  - `empty`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready']:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly])))`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=invalid]:has([data-a3s-components~='input-group'][data-a3s-state~='invalid']:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid))`
+  - `loading`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=loading]:has([data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status]))`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=disabled]:has([data-a3s-components~='input-group'][data-a3s-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived']))`
+  - `readonly`: `.a3s-component-state-matrix[data-open][data-component=input-group] [data-state-specimen=readonly]:has([data-a3s-components~='input-group'][data-a3s-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='release']))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

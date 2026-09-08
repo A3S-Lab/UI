@@ -64,7 +64,7 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.hotkey-input` and is annotated by the runtime as `[data-a3s-components~="hotkey-input"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=hotkey-input]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=hotkey-input]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -80,8 +80,8 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - Stable root target: `[data-a3s-components~="hotkey-input"]` inside `.a3s-preview[data-preview-component=hotkey-input][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/hotkey-input-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=ready]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='ready'])`
-  - `recording`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=recording]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='recording'][aria-busy=true])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=disabled]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=invalid]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=hotkey-input] [data-state-specimen=ready]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='ready'])`
+  - `recording`: `.a3s-component-state-matrix[data-open][data-component=hotkey-input] [data-state-specimen=recording]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='recording'][aria-busy=true])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=hotkey-input] [data-state-specimen=disabled]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=hotkey-input] [data-state-specimen=invalid]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

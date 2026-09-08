@@ -73,7 +73,7 @@ The canonical root uses `<details>` semantics and exposes 11 named parts. State 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.tool-call` and is annotated by the runtime as `[data-a3s-components~="tool-call"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=tool-call]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=tool-call]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -89,17 +89,17 @@ The canonical root uses `<details>` semantics and exposes 11 named parts. State 
 - Stable root target: `[data-a3s-components~="tool-call"]` inside `.a3s-preview[data-preview-component=tool-call][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/tool-call-states.png`.
 - Per-state evidence selectors:
-  - `preparing`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=preparing]:has([data-a3s-components~='tool-call'][data-a3s-state~='preparing'][aria-busy=true])`
-  - `awaiting`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=awaiting]:has([data-a3s-components~='tool-call'][data-a3s-state~='awaiting'][aria-busy=true])`
-  - `running`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=running]:has([data-a3s-components~='tool-call'][data-a3s-state~='running'][aria-busy=true])`
-  - `succeeded`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=succeeded]:has([data-a3s-components~='tool-call'][data-a3s-state~='succeeded'])`
-  - `failed`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=failed]:has([data-a3s-components~='tool-call'][data-a3s-state~='failed'])`
-  - `denied`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=denied]:has([data-a3s-components~='tool-call'][data-a3s-state~='denied'])`
-  - `timed-out`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=timed-out]:has([data-a3s-components~='tool-call'][data-a3s-state~='timed-out'])`
-  - `interrupted`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=interrupted]:has([data-a3s-components~='tool-call'][data-a3s-state~='interrupted'])`
-  - `queued`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=queued]:has([data-a3s-components~='tool-call'][data-a3s-state~='queued'])`
-  - `waiting`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=waiting]:has([data-a3s-components~='tool-call'][data-a3s-state~='waiting'][aria-busy=true])`
-  - `success`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=success]:has([data-a3s-components~='tool-call'][data-a3s-state~='success'])`
-  - `cancelled`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=cancelled]:has([data-a3s-components~='tool-call'][data-a3s-state~='cancelled'])`
-  - `error`: `.a3s-component-state-matrix[open][data-component=tool-call] [data-state-specimen=error]:has([data-a3s-components~='tool-call'][data-a3s-state~='error'])`
+  - `preparing`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=preparing]:has([data-a3s-components~='tool-call'][data-a3s-state~='preparing'][aria-busy=true])`
+  - `awaiting`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=awaiting]:has([data-a3s-components~='tool-call'][data-a3s-state~='awaiting'][aria-busy=true])`
+  - `running`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=running]:has([data-a3s-components~='tool-call'][data-a3s-state~='running'][aria-busy=true])`
+  - `succeeded`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=succeeded]:has([data-a3s-components~='tool-call'][data-a3s-state~='succeeded'])`
+  - `failed`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=failed]:has([data-a3s-components~='tool-call'][data-a3s-state~='failed'])`
+  - `denied`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=denied]:has([data-a3s-components~='tool-call'][data-a3s-state~='denied'])`
+  - `timed-out`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=timed-out]:has([data-a3s-components~='tool-call'][data-a3s-state~='timed-out'])`
+  - `interrupted`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=interrupted]:has([data-a3s-components~='tool-call'][data-a3s-state~='interrupted'])`
+  - `queued`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=queued]:has([data-a3s-components~='tool-call'][data-a3s-state~='queued'])`
+  - `waiting`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=waiting]:has([data-a3s-components~='tool-call'][data-a3s-state~='waiting'][aria-busy=true])`
+  - `success`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=success]:has([data-a3s-components~='tool-call'][data-a3s-state~='success'])`
+  - `cancelled`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=cancelled]:has([data-a3s-components~='tool-call'][data-a3s-state~='cancelled'])`
+  - `error`: `.a3s-component-state-matrix[data-open][data-component=tool-call] [data-state-specimen=error]:has([data-a3s-components~='tool-call'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.
