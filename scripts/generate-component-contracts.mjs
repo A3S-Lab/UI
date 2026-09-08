@@ -626,6 +626,8 @@ function renderStateMatrixContract(component, publicPreview) {
       ? `
         expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
       : "";
+  // Escape closes via the document listener. Do not CDP-click the page backdrop:
+  // it sits under the dialog (lower z-index), so center-clicks hit the dialog.
   return `
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
@@ -633,7 +635,7 @@ function renderStateMatrixContract(component, publicPreview) {
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        click "close-state-matrix" { target = css("[data-state-matrix-backdrop]") }
+        press "close-state-matrix" { key = "Escape" }
         wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }
         expect "state-trigger-restored" { focus_within = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
 }

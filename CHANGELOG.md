@@ -4,9 +4,10 @@
 
 ### Fixed
 
-- State acceptance matrix uses non-modal `dialog.show()` with a page backdrop
-  so component-contracts can dismiss via the backdrop under CDP; Escape and the
-  close control still restore focus to the States trigger for real users.
+- State acceptance matrix uses non-modal `dialog.show()` so documentation
+  acceptance stays CDP-reachable. Component-contracts dismiss with Escape (the
+  page backdrop sits under the dialog and is not a reliable CDP click target);
+  Escape and the close control still restore the States trigger.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.
