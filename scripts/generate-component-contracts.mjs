@@ -621,10 +621,9 @@ function renderStateExpectations(component) {
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
-  // Run last in the scenario: CDP cannot reliably dismiss the overlay, and
-  // mid-scenario reload/click leave later dark/compact evidence blocked.
+  // Capture on desktop after dark evidence. CDP cannot dismiss the overlay, so
+  // the scenario reloads before compact screenshots.
   return `
-        viewport "desktop-for-state-matrix" { width = 1440 height = 1000 }
         click "open-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
@@ -774,7 +773,7 @@ ${details ? `${details.source.trim()}\n\n` : ""}
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches \`${component.selector}\` and is annotated by the runtime as \`${component.test.selector}\`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at \`${matrixRoot}\` after responsive evidence, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs leave the matrix open at scenario end because CDP cannot dismiss the overlay).
+- The state acceptance matrix opens at \`${matrixRoot}\` after dark evidence on desktop, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -900,6 +899,15 @@ ${lightClose}
         expect "dark-public-root" { visible = css("${visiblePublicTarget}") }${darkContextExpectations}
         screenshot "desktop-dark-rtl" { path = "components/contracts/${slug}-desktop-dark-rtl.png" }
 ${darkClose}
+${renderStateMatrixContract(component, stateMatrixPreview)}
+        navigate "reset-after-state-matrix" { url = "http://127.0.0.1:4178/UI/en/components/${slug}.html" }
+        wait "state-matrix-page-reloaded" { load = "networkidle" }
+        wait "state-matrix-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "state-matrix-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }
+        click "restore-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
+        expect "restored-dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
+        click "restore-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
+        expect "restored-rtl-preview" { visible = css("${publicPreview}[data-preview-direction=rtl]") }
 
         viewport "compact" { width = 390 height = 844 }${compactPreparation}${compactAnchor}
         expect "compact-preview" { visible = css("${publicPreview}${compactPreviewState}") }${compactActivation}
@@ -909,7 +917,6 @@ ${darkClose}
         console "console" { path = "components/contracts/${slug}-console.json" clear = false }
         page_errors "errors" { path = "components/contracts/${slug}-errors.json" clear = false }
 ${compactClose}
-${renderStateMatrixContract(component, stateMatrixPreview)}
     }`;
 }
 
