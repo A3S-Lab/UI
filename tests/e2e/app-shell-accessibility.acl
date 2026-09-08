@@ -25,16 +25,16 @@ suite "a3s-ui-app-shell-accessibility" {
             visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]")
         }
         expect "first-link-focused" {
-            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type")
+            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] li:first-child a")
         }
 
         press "wrap-backward" { key = "Shift+Tab" }
         expect "last-link-focused" {
-            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:last-of-type")
+            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] li:last-child a")
         }
         press "wrap-forward" { key = "Tab" }
         expect "first-link-focused-again" {
-            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type")
+            focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] li:first-child a")
         }
 
         press "close-navigation" { key = "Escape" }

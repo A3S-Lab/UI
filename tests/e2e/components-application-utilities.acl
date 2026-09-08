@@ -20,7 +20,7 @@ suite "a3s-ui-application-and-utilities" {
         click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-main-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]") }
-        expect "compact-navigation-focused" { focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type") }
+        expect "compact-navigation-focused" { focused = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] li:first-child a") }
         press "close-compact-navigation" { key = "Escape" }
         expect "compact-main-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main]:not([inert]):not([aria-hidden])") }
         expect "compact-navigation-restored" { focused = css(".a3s-preview[data-preview-component=app-shell] .app-shell:not([data-mobile-navigation=open]) [data-app-navigation-trigger]") }

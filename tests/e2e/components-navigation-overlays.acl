@@ -23,8 +23,8 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
         viewport "phone" { width = 390 height = 844 }
-        focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type") }
-        expect "last-ancestor-reachable" { focused = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type") }
+        focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb ol > li:has(> a):last-of-type > a") }
+        expect "last-ancestor-reachable" { focused = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb ol > li:has(> a):last-of-type > a") }
         screenshot "breadcrumb-phone" { path = "components/breadcrumb-phone.png" }
     }
 
@@ -73,7 +73,7 @@ suite "a3s-ui-navigation-and-overlays" {
         viewport "phone" { width = 390 height = 844 }
         click "open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
         expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
-        expect "mobile-navigation-focused" { focused = css("#demo-sidebar nav a:first-of-type") }
+        expect "mobile-navigation-focused" { focused = css("#demo-sidebar nav a[aria-current=page]") }
         screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
         press "close-mobile-sidebar" { key = "Escape" }
         expect "mobile-sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true]") }
