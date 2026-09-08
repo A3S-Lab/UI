@@ -252,10 +252,8 @@ suite "a3s-ui-feedback-and-data" {
         expect "tree-initialized" { visible = css("#tree-demo[data-tree-initialized=true]") }
         focus "focus-root-branch" { target = css("#tree-demo-src") }
         press "collapse-root-branch" { key = "ArrowLeft" }
-        expect "root-collapsed" {
-            visible = css("#tree-demo-src[aria-expanded=false]")
-            focused = css("#tree-demo-src")
-        }
+        expect "root-collapsed" { visible = css("#tree-demo-src[aria-expanded=false]") }
+        expect "root-remains-focused" { focused = css("#tree-demo-src") }
         press "expand-root-branch" { key = "ArrowRight" }
         press "enter-root-branch" { key = "ArrowRight" }
         expect "components-focused" { focused = css("#tree-demo-components") }
