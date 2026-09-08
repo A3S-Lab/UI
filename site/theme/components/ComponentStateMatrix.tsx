@@ -1513,7 +1513,8 @@ export function ComponentStateMatrix({
   contract,
   isChinese,
 }: ComponentStateMatrixProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const matrixRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
@@ -1525,17 +1526,8 @@ export function ComponentStateMatrix({
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (open && !dialog.open) {
-      // Non-modal show(): documentation acceptance UI must stay CDP-clickable.
-      // showModal() top-layer blocks agent-browser click/key activation.
-      dialog.show();
-      dialog
-        .querySelector<HTMLElement>("[data-state-matrix-close]")
-        ?.focus({ preventScroll: true });
-    }
-    if (!open && dialog.open) dialog.close();
+    if (!open) return;
+    closeRef.current?.focus({ preventScroll: true });
   }, [open]);
 
   useEffect(() => {
@@ -1606,7 +1598,12 @@ export function ComponentStateMatrix({
       });
   }, [canvasRef, contract, isChinese, open]);
 
-  const close = () => setOpen(false);
+  const close = () => {
+    setOpen(false);
+    queueMicrotask(() => {
+      triggerRef.current?.focus({ preventScroll: true });
+    });
+  };
 
   return (
     <>
@@ -1641,20 +1638,17 @@ export function ComponentStateMatrix({
                   type="button"
                 />
               ) : null}
-              <dialog
+              {open ? (
+              <div
               aria-describedby={descriptionId}
               aria-labelledby={titleId}
+              aria-modal="true"
               className="a3s-component-state-matrix"
               data-component={contract.slug}
+              data-open=""
               id={`${titleId}-dialog`}
-              onCancel={(event) => {
-                event.preventDefault();
-                close();
-              }}
-              onClose={() => {
-                triggerRef.current?.focus({ preventScroll: true });
-              }}
-              ref={dialogRef}
+              ref={panelRef}
+              role="dialog"
             >
               <header className="a3s-component-state-matrix__header">
                 <div>
@@ -1675,6 +1669,7 @@ export function ComponentStateMatrix({
                   }
                   data-state-matrix-close
                   onClick={close}
+                  ref={closeRef}
                   type="button"
                 >
                   <CloseIcon />
@@ -1721,7 +1716,8 @@ export function ComponentStateMatrix({
                   </article>
                 ))}
               </div>
-            </dialog>
+            </div>
+              ) : null}
             </>,
             document.body,
           )

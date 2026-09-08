@@ -13,6 +13,8 @@
   position: fixed;
   inset: 0;
   z-index: 41;
+  display: flex;
+  flex-direction: column;
   width: min(1080px, calc(100vw - 32px));
   max-width: none;
   max-height: min(840px, calc(100dvh - 32px));
@@ -24,10 +26,6 @@
   background: var(--ui-paper);
   color: var(--ui-ink);
   box-shadow: 0 20px 20px -8px rgb(0 0 0 / 24%);
-}
-
-.a3s-component-state-matrix::backdrop {
-  background: transparent;
 }
 
 .a3s-component-state-matrix__header {
@@ -338,8 +336,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .a3s-component-state-matrix,
-  .a3s-component-state-matrix::backdrop {
+  .a3s-component-state-matrix {
     transition: none;
   }
 }

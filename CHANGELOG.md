@@ -4,11 +4,9 @@
 
 ### Fixed
 
-- State acceptance matrix uses non-modal `dialog.show()` so documentation
-  acceptance stays CDP-reachable. Component-contracts dismiss by clicking the
-  in-dialog close control (page backdrop sits under the dialog; Escape under
-  agent-browser key routing was unreliable). Trigger focus restore remains for
-  real users via the dialog `close` lifecycle.
+- State acceptance matrix is a plain `role="dialog"` panel (not `<dialog>`), so
+  CDP can activate the close control; contracts target `[data-open]` and dismiss
+  via the in-panel close button.
 - Component-contract generators emit `focused=` instead of CSS `:focus`, use
   POSIX-relative paths on Windows, and compare generated artifacts with
   newline-normalized equality so local `check:*` matches CI.
