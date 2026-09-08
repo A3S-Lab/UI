@@ -24,7 +24,7 @@ suite "a3s-ui-navigation-and-overlays" {
         expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
         viewport "phone" { width = 390 height = 844 }
         focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb ol > li:has(> a):last-of-type > a") }
-        expect "last-ancestor-reachable" { focused = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb ol > li:has(> a):last-of-type > a") }
+        expect "last-ancestor-reachable" { focus_within = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb ol > li:has(> a):last-of-type > a") }
         screenshot "breadcrumb-phone" { path = "components/breadcrumb-phone.png" }
     }
 
@@ -41,7 +41,7 @@ suite "a3s-ui-navigation-and-overlays" {
         viewport "compact-rtl" { width = 390 height = 844 }
         focus "focus-first-rtl-tab" { target = css("#tabs-rtl-tab-overview") }
         press "move-right-in-rtl" { key = "ArrowRight" }
-        expect "rtl-last-tab-active" { focused = css("#tabs-rtl-tab-settings[aria-selected=true]") }
+        expect "rtl-last-tab-active" { focus_within = css("#tabs-rtl-tab-settings[aria-selected=true]") }
         expect "rtl-last-panel-visible" { visible = css("#tabs-rtl-panel-settings:not([hidden])") }
         screenshot "tabs-compact-rtl" { path = "components/tabs-compact-rtl.png" }
     }
@@ -73,11 +73,11 @@ suite "a3s-ui-navigation-and-overlays" {
         viewport "phone" { width = 390 height = 844 }
         click "open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
         expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
-        expect "mobile-navigation-focused" { focused = css("#demo-sidebar nav a[aria-current=page]") }
+        expect "mobile-navigation-focused" { focus_within = css("#demo-sidebar nav a[aria-current=page]") }
         screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
         press "close-mobile-sidebar" { key = "Escape" }
         expect "mobile-sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true]") }
-        expect "mobile-toggle-restored" { focused = css("#demo-sidebar + main button") }
+        expect "mobile-toggle-restored" { focus_within = css("#demo-sidebar + main button") }
     }
 
     scenario "alert-dialog" {
@@ -90,10 +90,10 @@ suite "a3s-ui-navigation-and-overlays" {
         viewport "phone" { width = 390 height = 844 }
         click "open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
         wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=alert-dialog] [data-a3s-components~='alert-dialog'][role='alertdialog'][open] > div") }
-        expect "cancel-focused" { focused = css("#demo-alert-dialog footer button:first-of-type") }
+        expect "cancel-focused" { focus_within = css("#demo-alert-dialog footer button:first-of-type") }
         screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
         click "cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
-        expect "dialog-trigger-restored" { focused = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
+        expect "dialog-trigger-restored" { focus_within = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
     }
 
     scenario "dialog" {
@@ -109,7 +109,7 @@ suite "a3s-ui-navigation-and-overlays" {
         fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
         screenshot "dialog-phone" { path = "components/dialog-phone.png" }
         press "close-dialog" { key = "Escape" }
-        expect "dialog-trigger-restored" { focused = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button") }
+        expect "dialog-trigger-restored" { focus_within = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button") }
     }
 
     scenario "drawer" {
@@ -125,7 +125,7 @@ suite "a3s-ui-navigation-and-overlays" {
         screenshot "drawer-phone" { path = "components/drawer-phone.png" }
         click "cancel-drawer" { target = role("button", "Cancel") }
         wait "drawer-close-animation" { load = "networkidle" }
-        expect "drawer-trigger-restored" { focused = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button") }
+        expect "drawer-trigger-restored" { focus_within = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button") }
     }
 
     scenario "dropdown-menu" {
@@ -152,11 +152,11 @@ suite "a3s-ui-navigation-and-overlays" {
         click "open-popover" { target = css("#demo-popover-trigger") }
         expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
-        expect "popover-input-focused" { focused = css("#demo-popover-width") }
+        expect "popover-input-focused" { focus_within = css("#demo-popover-width") }
         fill "edit-popover-width" { target = css("#demo-popover-width") value = "72%" }
         screenshot "popover-phone" { path = "components/popover-phone.png" }
         press "close-popover" { key = "Escape" }
-        expect "popover-trigger-restored" { focused = css("#demo-popover-trigger") }
+        expect "popover-trigger-restored" { focus_within = css("#demo-popover-trigger") }
     }
 
     scenario "command" {
@@ -198,13 +198,13 @@ suite "a3s-ui-navigation-and-overlays" {
         press "open-submenu" { key = "ArrowRight" }
         expect "submenu-open" { visible = css("#context-menu-demo-en [data-context-submenu-content][aria-hidden=false]") }
         click "choose-diff-view" { target = css("#context-menu-demo-en [data-context-submenu-content] [data-value=diff]") }
-        expect "diff-selection-closed-menu" { focused = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]") }
+        expect "diff-selection-closed-menu" { focus_within = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]") }
         press "reopen-context-menu" { key = "Shift+F10" }
         click "disable-watch" { target = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch]") }
-        expect "watch-selection-closed-menu" { focused = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]") }
+        expect "watch-selection-closed-menu" { focus_within = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]") }
         press "reopen-to-check-state" { key = "Shift+F10" }
         expect "watch-state-preserved" { visible = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch][aria-checked=false]") }
         press "close-context-menu" { key = "Escape" }
-        expect "trigger-restored" { focused = css("#context-menu-demo-en [data-context-trigger]") }
+        expect "trigger-restored" { focus_within = css("#context-menu-demo-en [data-context-trigger]") }
     }
 }

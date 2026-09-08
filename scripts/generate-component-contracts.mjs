@@ -634,7 +634,7 @@ function renderStateMatrixContract(component, publicPreview) {
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
         press "close-state-matrix" { key = "Escape" }
-        expect "state-trigger-restored" { focused = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
+        expect "state-trigger-restored" { focus_within = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
 }
 
 const transientComponentTriggers = new Map([
@@ -865,7 +865,7 @@ function renderComponentScenario(component) {
     slug === "code-editor"
       ? `
         focus "compact-anchor-public-preview" { target = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone][aria-pressed=false]") }
-        expect "compact-anchor-visible" { focused = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone]") }
+        expect "compact-anchor-visible" { focus_within = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone]") }
         expect "compact-public-root-framed" {
             target = css("${visiblePublicTarget}")
             viewport_coverage_at_least = 75
@@ -895,11 +895,11 @@ ${lightClose}${renderStateMatrixContract(component, stateMatrixPreview)}
         expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
         focus "focus-html-tab" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
         press "select-html" { key = "Enter" }
-        expect "html-selected" { focused = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
+        expect "html-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
         press "select-react" { key = "ArrowRight" }
-        expect "react-selected" { focused = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
+        expect "react-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
         press "select-vue" { key = "ArrowRight" }
-        expect "vue-selected" { focused = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
+        expect "vue-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
 
         focus "focus-appearance" { target = css("${publicPreview} [data-preview-control=appearance]") }
         press "enable-dark-preview" { key = "Enter" }

@@ -69,7 +69,7 @@ suite "a3s-ui-product-project-workflow" {
         expect "all-artifacts-visible" { visible = css("aside[aria-label='项目详情'] .product-inspector-file-list:has(button:nth-child(3))") }
         screenshot "artifact-evidence" { path = "product/project-session-artifacts.png" }
         click "close-artifact-details" { target = role("button", "关闭项目详情") }
-        expect "deliverable-focus-restored" { focused = css("button[data-project-deliverable]") }
+        expect "deliverable-focus-restored" { focus_within = css("button[data-project-deliverable]") }
 
         click "mark-response-helpful" { target = role("button", "回复有帮助") }
         expect "helpful-selected" { visible = css(".product-project-session .product-session__message-actions button[aria-label='回复有帮助'][aria-pressed=true]") }
@@ -80,7 +80,7 @@ suite "a3s-ui-product-project-workflow" {
         click "reopen-details" { target = role("button", "打开项目详情") }
         expect "details-visible-again" { visible = css("aside[aria-label='项目详情']") }
         press "close-details" { key = "Escape" }
-        expect "details-trigger-restored" { focused = css("button[aria-label='打开项目详情']") }
+        expect "details-trigger-restored" { focus_within = css("button[aria-label='打开项目详情']") }
 
         fill "continue-task" { target = css(".product-session__composer [role=textbox][aria-label='任务指令']") value = "继续执行暗色模式验收" }
         click "send-follow-up" { target = role("button", "发送任务") }
@@ -120,7 +120,7 @@ suite "a3s-ui-product-project-workflow" {
 
         screenshot "mobile-evidence" { path = "product/project-workflow-mobile.png" }
         press "close-mobile-details" { key = "Escape" }
-        expect "mobile-details-trigger-restored" { focused = css("button[aria-label='打开项目详情']") }
+        expect "mobile-details-trigger-restored" { focus_within = css("button[aria-label='打开项目详情']") }
         expect "mobile-conversation-restored" { visible = css("[data-product-surface=project-session]:has(.product-project-session__report):has(.product-session__composer .ProseMirror):not(:has(aside[aria-label='项目详情']))") }
         screenshot "mobile-restored-evidence" { path = "product/project-session-mobile-restored.png" }
         console "console" { path = "product/project-workflow-mobile-console.json" clear = false }
@@ -146,7 +146,7 @@ suite "a3s-ui-product-project-workflow" {
         click "open-configuration" { target = role("button", "打开项目配置") }
         expect "mobile-configuration" { visible = css("aside[aria-label='项目配置']") }
         press "close-configuration" { key = "Escape" }
-        expect "configuration-trigger-restored" { focused = css("button[aria-label='打开项目配置']") }
+        expect "configuration-trigger-restored" { focus_within = css("button[aria-label='打开项目配置']") }
 
         screenshot "mobile-workspace-evidence" { path = "product/project-workspace-mobile.png" }
 
@@ -176,7 +176,7 @@ suite "a3s-ui-product-project-workflow" {
         expect "mobile-close-action-semantic" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
         screenshot "mobile-code-evidence" { path = "product/project-asset-code-mobile.png" }
         press "close-mobile-code-preview" { key = "Escape" }
-        expect "mobile-file-focus-restored" { focused = css("[data-asset-id=design-md] [data-asset-open]") }
+        expect "mobile-file-focus-restored" { focus_within = css("[data-asset-id=design-md] [data-asset-open]") }
         expect "mobile-composer-unfocused" { visible = css(".product-project-workspace__composer .agent-composer-editor__content:not(:focus)") }
 
         click "open-mobile-folder" { target = role("button", "打开文件夹 visual-acceptance") }
@@ -197,7 +197,7 @@ suite "a3s-ui-product-project-workflow" {
         wait "mobile-pdf-navigation-closed" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=closed]") }
         screenshot "mobile-pdf-evidence" { path = "product/project-asset-pdf-mobile.png" }
         click "close-mobile-pdf" { target = role("button", "关闭文件预览") }
-        expect "mobile-pdf-focus-restored" { focused = css("[data-asset-id=visual-report] [data-asset-open]") }
+        expect "mobile-pdf-focus-restored" { focus_within = css("[data-asset-id=visual-report] [data-asset-open]") }
         click "return-from-mobile-folder" { target = css("[data-asset-back]") }
 
         click "open-mobile-office" { target = role("button", "打开 experience-brief.docx") }
@@ -207,7 +207,7 @@ suite "a3s-ui-product-project-workflow" {
         screenshot "mobile-office-evidence" { path = "product/project-asset-office-mobile.png" }
         accessibility "mobile-office-accessibility" { path = "product/project-asset-office-mobile-accessibility.json" interactive = true }
         click "close-mobile-office" { target = role("button", "关闭文件预览") }
-        expect "mobile-office-focus-restored" { focused = css("[data-asset-id=experience-brief] [data-asset-open]") }
+        expect "mobile-office-focus-restored" { focus_within = css("[data-asset-id=experience-brief] [data-asset-open]") }
         console "console" { path = "product/project-workspace-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-workspace-mobile-page-errors.json" clear = false }
     }

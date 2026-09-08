@@ -312,7 +312,7 @@ function renderPlaygroundScenario(surface) {
         wait "route-ready" { visible = css("${root}") }
         expect "surface-ready" { visible = css("${target}") }
         focus "focus-search" { target = css("${root} .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { focused = css("${root} .product-sidebar__window button[aria-label='搜索']") }
+        expect "search-focused" { focus_within = css("${root} .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/${surface.id}-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
