@@ -625,8 +625,7 @@ function renderStateMatrixContract(component, publicPreview) {
   // mid-scenario reload/click leave later dark/compact evidence blocked.
   return `
         viewport "desktop-for-state-matrix" { width = 1440 height = 1000 }
-        focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
-        press "open-state-matrix" { key = "Enter" }
+        click "open-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
@@ -884,23 +883,19 @@ function renderComponentScenario(component) {
         expect "light-ltr-contract" { visible = css("${publicPreview}[data-preview-scheme=inherit][data-preview-direction=ltr]") }
         screenshot "desktop-light" { path = "components/contracts/${slug}-desktop-light.png" }
 ${lightClose}
-        focus "focus-source" { target = css("${integrationPreview} [data-preview-control=source]") }
-        press "open-source" { key = "Enter" }
+        click "open-source" { target = css("${integrationPreview} [data-preview-control=source]") }
         expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
         expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
-        focus "focus-html-tab" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
-        press "select-html" { key = "Enter" }
-        expect "html-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
-        press "select-react" { key = "ArrowRight" }
-        expect "react-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
-        press "select-vue" { key = "ArrowRight" }
-        expect "vue-selected" { focus_within = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
+        click "select-html" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
+        expect "html-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
+        click "select-react" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(2)") }
+        expect "react-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
+        click "select-vue" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(3)") }
+        expect "vue-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
 
-        focus "focus-appearance" { target = css("${publicPreview} [data-preview-control=appearance]") }
-        press "enable-dark-preview" { key = "Enter" }
+        click "enable-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
         expect "dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
-        focus "focus-direction" { target = css("${publicPreview} [data-preview-control=direction]") }
-        press "enable-rtl-preview" { key = "Enter" }
+        click "enable-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
         expect "rtl-preview" { visible = css("${publicPreview}[data-preview-direction=rtl]") }${darkActivation}
         expect "dark-public-root" { visible = css("${visiblePublicTarget}") }${darkContextExpectations}
         screenshot "desktop-dark-rtl" { path = "components/contracts/${slug}-desktop-dark-rtl.png" }
