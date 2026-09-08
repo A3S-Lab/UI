@@ -46,7 +46,7 @@ suite "a3s-ui-product-resource-surfaces" {
         focus "focus-cancel-disconnect" { target = css(".product-mail__dialog[open] footer button:first-child") }
         press "cancel-disconnect" { key = "Enter" }
         expect "connection-kept" { visible = css(".product-mail__service[data-connected=true]") }
-        expect "disconnect-focus-restored" { visible = css(".product-mail__ready button[data-danger]:focus") }
+        expect "disconnect-focus-restored" { focus_within = css(".product-mail__ready button[data-danger]") }
         press "disconnect-again" { key = "Enter" }
         wait "disconnect-dialog-again" { visible = css(".product-mail__dialog[open]") }
         focus "focus-confirm-disconnect" { target = css(".product-mail__dialog[open] footer button[data-danger]") }
@@ -94,7 +94,7 @@ suite "a3s-ui-product-resource-surfaces" {
         wait "disconnect-dialog" { visible = css(".product-connection__dialog[open]") }
         focus "focus-cancel-disconnect" { target = css(".product-connection__dialog[open] footer button:first-child") }
         press "cancel-disconnect" { key = "Enter" }
-        expect "disconnect-focus-restored" { visible = css(".product-connection__actions button[data-danger]:focus") }
+        expect "disconnect-focus-restored" { focus_within = css(".product-connection__actions button[data-danger]") }
         press "disconnect-again" { key = "Enter" }
         wait "disconnect-dialog-again" { visible = css(".product-connection__dialog[open]") }
         focus "focus-confirm-disconnect" { target = css(".product-connection__dialog[open] footer button[data-danger]") }
@@ -184,7 +184,7 @@ suite "a3s-ui-product-resource-surfaces" {
         click "enable-dark-appearance" { target = role("menuitemcheckbox", "深色外观") }
         expect "dark-manager" { visible = css("html.dark .product-file-manager") }
         press "close-account-menu" { key = "Escape" }
-        expect "account-trigger-restored" { visible = css(".product-sidebar__footer > button[aria-expanded=false]:focus") }
+        expect "account-trigger-restored" { focus_within = css(".product-sidebar__footer > button[aria-expanded=false]") }
         screenshot "desktop-dark" { path = "product/files-icon-identity-dark.png" }
 
         viewport "mobile" { width = 390 height = 844 }
@@ -242,12 +242,12 @@ suite "a3s-ui-product-resource-surfaces" {
         click "open-sources" { target = role("tab", "来源") }
         expect "sources-selected" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']") }
         press "move-to-settings" { key = "ArrowRight" }
-        expect "settings-selected-and-focused" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-settings-panel']:focus") }
+        expect "settings-selected-and-focused" { focus_within = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-settings-panel']") }
         press "return-to-sources" { key = "ArrowLeft" }
-        expect "sources-selected-and-focused" { visible = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']:focus") }
+        expect "sources-selected-and-focused" { focus_within = css(".product-knowledge-library [role=tab][aria-selected=true][tabindex='0'][aria-controls$='-sources-panel']") }
 
         click "open-source-form" { target = role("button", "添加来源") }
-        expect "source-path-focused" { visible = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']:focus") }
+        expect "source-path-focused" { focus_within = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']") }
         fill "invalid-source-path" { target = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']") value = "../private" }
         click "submit-invalid-source" { target = css(".product-knowledge-library [data-knowledge-source-form] button[type=submit]") }
         expect "source-validation" { visible = css(".product-knowledge-library [data-knowledge-source-form] [role=alert]") }
@@ -255,30 +255,30 @@ suite "a3s-ui-product-resource-surfaces" {
         fill "source-name" { target = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源显示名称']") value = "Product notes" }
         click "add-source" { target = css(".product-knowledge-library [data-knowledge-source-form] button[type=submit]") }
         expect "source-added-pending" { visible = css(".product-knowledge-library [data-source-path='/workspace/docs/product-notes'] [data-source-status=pending]") }
-        expect "add-trigger-focus-restored" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+        expect "add-trigger-focus-restored" { focus_within = css(".product-knowledge-library [data-knowledge-sources] > header button") }
 
         click "manage-indexed-source" { target = role("button", "管理 DESIGN.md") }
-        expect "source-action-focused" { visible = css(".product-knowledge-library [data-source-id=design] [data-knowledge-source-actions] button:first-of-type:focus") }
+        expect "source-action-focused" { focus_within = css(".product-knowledge-library [data-source-id=design] [data-knowledge-source-actions] button:first-of-type") }
         screenshot "source-actions-evidence" { path = "product/knowledge-source-actions-desktop.png" }
         click "mark-for-reindex" { target = role("button", "下次更新时重新索引") }
         expect "source-marked-pending" { visible = css(".product-knowledge-library [data-source-id=design] [data-source-status=pending]") }
-        expect "manage-trigger-focus-restored" { visible = css(".product-knowledge-library button[aria-label='管理 DESIGN.md']:focus") }
+        expect "manage-trigger-focus-restored" { focus_within = css(".product-knowledge-library button[aria-label='管理 DESIGN.md']") }
 
         click "manage-added-source" { target = role("button", "管理 Product notes") }
         click "request-remove-connection" { target = role("button", "移除关联") }
         expect "safe-removal-copy" { text = "工作空间中的原文件会保留" }
-        expect "cancel-removal-focused" { visible = css(".product-knowledge-library [data-source-remove-confirmation] button:first-of-type:focus") }
+        expect "cancel-removal-focused" { focus_within = css(".product-knowledge-library [data-source-remove-confirmation] button:first-of-type") }
         screenshot "remove-confirmation-evidence" { path = "product/knowledge-source-removal-desktop.png" }
         click "confirm-remove-connection" { target = role("button", "确认移除") }
         expect "source-disconnected" { visible = css(".product-knowledge-library [data-knowledge-sources]:not(:has([data-source-path='/workspace/docs/product-notes']))") }
-        expect "stable-focus-after-removal" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+        expect "stable-focus-after-removal" { focus_within = css(".product-knowledge-library [data-knowledge-sources] > header button") }
 
         viewport "mobile" { width = 390 height = 844 }
         click "reopen-source-form" { target = role("button", "添加来源") }
-        expect "mobile-form-focused" { visible = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']:focus") }
+        expect "mobile-form-focused" { focus_within = css(".product-knowledge-library [data-knowledge-source-form] input[aria-label='来源路径']") }
         screenshot "mobile-source-form" { path = "product/knowledge-source-form-mobile.png" }
         press "close-form-with-escape" { key = "Escape" }
-        expect "mobile-add-trigger-restored" { visible = css(".product-knowledge-library [data-knowledge-sources] > header button:focus") }
+        expect "mobile-add-trigger-restored" { focus_within = css(".product-knowledge-library [data-knowledge-sources] > header button") }
 
         screenshot "mobile-evidence" { path = "product/knowledge-source-management-mobile.png" }
         console "console" { path = "product/knowledge-source-management-console.json" clear = false }

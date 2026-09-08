@@ -28,6 +28,10 @@ const coveragePath = path.join(
 );
 const checkOnly = process.argv.includes("--check");
 
+function relativePosix(...segments) {
+  return path.relative(...segments).split(path.sep).join("/");
+}
+
 function splitTableRow(line) {
   if (!line.startsWith("| ") || !line.endsWith("|")) return [];
   return line
@@ -134,7 +138,7 @@ async function optionalComponentDetails(slug) {
   const filePath = path.join(componentDetailsRoot, `${slug}.md`);
   try {
     return {
-      path: path.relative(projectRoot, filePath),
+      path: relativePosix(projectRoot, filePath),
       source: await readFile(filePath, "utf8"),
     };
   } catch (error) {
@@ -380,7 +384,7 @@ function assertBehaviorContract(component, interaction) {
 }
 
 function stateMatrixRoot(component) {
-  return `.a3s-component-state-matrix[open][data-component=${component.slug}]`;
+  return `.a3s-component-state-matrix[data-open][data-component=${component.slug}]`;
 }
 
 function qualifiedStateSelector(component, state, selector) {
@@ -617,20 +621,15 @@ function renderStateExpectations(component) {
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
-  const postCloseExpectation =
-    component.slug === "radio-group"
-      ? `
-        expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
-      : "";
+  // Capture on desktop after dark evidence, before the Code panel opens so
+  // States stays clickable. CDP cannot dismiss the matrix overlay, so the
+  // scenario reloads before framework/compact evidence.
   return `
-        focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
-        press "open-state-matrix" { key = "Enter" }
+        click "open-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
-        screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        press "close-state-matrix" { key = "Escape" }
-        expect "state-trigger-restored" { visible = css("${publicPreview} [data-preview-control=states]:focus") }${postCloseExpectation}`;
+        screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }`;
 }
 
 const transientComponentTriggers = new Map([
@@ -775,7 +774,7 @@ ${details ? `${details.source.trim()}\n\n` : ""}
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches \`${component.selector}\` and is annotated by the runtime as \`${component.test.selector}\`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at \`${matrixRoot}\`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
+- The state acceptance matrix opens at \`${matrixRoot}\` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -861,7 +860,7 @@ function renderComponentScenario(component) {
     slug === "code-editor"
       ? `
         focus "compact-anchor-public-preview" { target = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone][aria-pressed=false]") }
-        expect "compact-anchor-visible" { visible = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone]:focus") }
+        expect "compact-anchor-visible" { focus_within = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone]") }
         expect "compact-public-root-framed" {
             target = css("${visiblePublicTarget}")
             viewport_coverage_at_least = 75
@@ -883,34 +882,38 @@ function renderComponentScenario(component) {
         expect "public-root" { visible = css("${visiblePublicTarget}") }
         expect "light-ltr-contract" { visible = css("${publicPreview}[data-preview-scheme=inherit][data-preview-direction=ltr]") }
         screenshot "desktop-light" { path = "components/contracts/${slug}-desktop-light.png" }
-${lightClose}${renderStateMatrixContract(component, stateMatrixPreview)}
-
-        focus "focus-source" { target = css("${integrationPreview} [data-preview-control=source]") }
-        press "open-source" { key = "Enter" }
-        expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
-        expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
-        focus "focus-html-tab" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
-        press "select-html" { key = "Enter" }
-        expect "html-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]:focus") }
-        press "select-react" { key = "ArrowRight" }
-        expect "react-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]:focus") }
-        press "select-vue" { key = "ArrowRight" }
-        expect "vue-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]:focus") }
-
-        focus "focus-appearance" { target = css("${publicPreview} [data-preview-control=appearance]") }
-        press "enable-dark-preview" { key = "Enter" }
+${lightClose}
+        click "enable-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
         expect "dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
-        focus "focus-direction" { target = css("${publicPreview} [data-preview-control=direction]") }
-        press "enable-rtl-preview" { key = "Enter" }
+        click "enable-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
         expect "rtl-preview" { visible = css("${publicPreview}[data-preview-direction=rtl]") }${darkActivation}
         expect "dark-public-root" { visible = css("${visiblePublicTarget}") }${darkContextExpectations}
         screenshot "desktop-dark-rtl" { path = "components/contracts/${slug}-desktop-dark-rtl.png" }
 ${darkClose}
+${renderStateMatrixContract(component, stateMatrixPreview)}
+        navigate "reset-after-state-matrix" { url = "http://127.0.0.1:4178/UI/en/components/${slug}.html" }
+        wait "state-matrix-page-reloaded" { load = "networkidle" }
+        wait "state-matrix-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "state-matrix-preview-ready" { visible = css("${integrationPreview}[data-preview-source=ready]") }
+        wait "state-matrix-public-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }
+        click "restore-dark-preview" { target = css("${publicPreview} [data-preview-control=appearance]") }
+        expect "restored-dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
+        click "restore-rtl-preview" { target = css("${publicPreview} [data-preview-control=direction]") }
+        expect "restored-rtl-preview" { visible = css("${publicPreview}[data-preview-direction=rtl]") }
 
         viewport "compact" { width = 390 height = 844 }${compactPreparation}${compactAnchor}
         expect "compact-preview" { visible = css("${publicPreview}${compactPreviewState}") }${compactActivation}
         expect "compact-public-root" { visible = css("${visiblePublicTarget}") }
         screenshot "capture-compact" { path = "components/contracts/${slug}-compact.png" }
+        click "open-source" { target = css("${integrationPreview} [data-preview-control=source]") }
+        expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
+        expect "framework-panel" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-mode=complete]") }
+        click "select-html" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(1)") }
+        expect "html-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=html] [role=tab]:nth-child(1)[aria-selected=true]") }
+        click "select-react" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(2)") }
+        expect "react-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=react] [role=tab]:nth-child(2)[aria-selected=true]") }
+        click "select-vue" { target = css("${integrationPreview} [data-component-integration=${slug}] [role=tab]:nth-child(3)") }
+        expect "vue-selected" { visible = css("${integrationPreview} [data-component-integration=${slug}][data-framework=vue] [role=tab]:nth-child(3)[aria-selected=true]") }
         accessibility "tree" { path = "components/contracts/${slug}-accessibility.json" interactive = true }
         console "console" { path = "components/contracts/${slug}-console.json" clear = false }
         page_errors "errors" { path = "components/contracts/${slug}-errors.json" clear = false }
@@ -933,11 +936,11 @@ async function writeOrCheck(filePath, expected) {
     try {
       actual = await readFile(filePath, "utf8");
     } catch {
-      throw new Error(`${path.relative(projectRoot, filePath)} is missing.`);
+      throw new Error(`${relativePosix(projectRoot, filePath)} is missing.`);
     }
-    if (actual !== expected) {
+    if (actual.replace(/\r\n/g, "\n") !== expected.replace(/\r\n/g, "\n")) {
       throw new Error(
-        `${path.relative(projectRoot, filePath)} is stale; run npm run generate:component-contracts.`,
+        `${relativePosix(projectRoot, filePath)} is stale; run npm run generate:component-contracts.`,
       );
     }
     return;

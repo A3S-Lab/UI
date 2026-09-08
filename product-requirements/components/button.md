@@ -152,7 +152,7 @@ Automation cannot prove switch-control and voice-control activation, real iOS an
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.btn` and is annotated by the runtime as `[data-a3s-components~="button"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=button]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=button]` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -168,8 +168,8 @@ Automation cannot prove switch-control and voice-control activation, real iOS an
 - Stable root target: `[data-a3s-components~="button"]` inside `.a3s-preview[data-preview-component=button][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/button-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=button] [data-state-specimen=ready]:has([data-a3s-components~='button'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=button] [data-state-specimen=disabled]:has([data-a3s-components~='button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `loading`: `.a3s-component-state-matrix[open][data-component=button] [data-state-specimen=loading]:has([data-a3s-components~='button'][data-a3s-state~='loading'][aria-busy=true])`
-  - `pressed`: `.a3s-component-state-matrix[open][data-component=button] [data-state-specimen=pressed]:has([data-a3s-components~='button'][data-a3s-state~='pressed'][aria-pressed=true])`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=button] [data-state-specimen=ready]:has([data-a3s-components~='button'][data-a3s-state~='ready'])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=button] [data-state-specimen=disabled]:has([data-a3s-components~='button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `loading`: `.a3s-component-state-matrix[data-open][data-component=button] [data-state-specimen=loading]:has([data-a3s-components~='button'][data-a3s-state~='loading'][aria-busy=true])`
+  - `pressed`: `.a3s-component-state-matrix[data-open][data-component=button] [data-state-specimen=pressed]:has([data-a3s-components~='button'][data-a3s-state~='pressed'][aria-pressed=true])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

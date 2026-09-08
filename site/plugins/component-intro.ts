@@ -403,20 +403,22 @@ export function componentPreviewIntegrationPlugin() {
           : undefined
       : undefined;
     const hasController = Boolean(integrationHook);
-    const ranges = authoredTabs?.inline
+    const ranges: NodeRange[] = authoredTabs?.inline
       ? []
       : authoredTabs
-      ? [
-          group === "harness"
-            ? {
+        ? group === "harness"
+          ? [
+              {
                 end: authoredTabs.index + 1,
                 start: authoredTabs.index,
-              }
-            : authoredTabs.range,
-        ]
-      : [reactRange, vueRange].filter(
-          (range): range is NodeRange => range !== undefined,
-        );
+              },
+            ]
+          : authoredTabs.range
+            ? [authoredTabs.range]
+            : []
+        : [reactRange, vueRange].filter(
+            (range): range is NodeRange => range !== undefined,
+          );
 
     removeRanges(tree.children, ranges);
     const firstPreview = tree.children.find(
