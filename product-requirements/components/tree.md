@@ -64,7 +64,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.tree` and is annotated by the runtime as `[data-a3s-components~="tree"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=tree]` after responsive evidence, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs leave the matrix open at scenario end because CDP cannot dismiss the overlay).
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=tree]` after dark evidence on desktop, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
