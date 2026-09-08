@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Fixed
+
+- State acceptance matrix restores focus to its trigger only after the modal
+  `<dialog>` has closed, so Escape no longer races a no-op focus while the
+  top layer is still open; contract suites wait for the matrix to close before
+  asserting the restored trigger.
+- Documentation contract focus checks use `focus_within` for composite
+  preview controls and tabs; exact `focused` remains for App Shell link
+  ownership and the restored state-matrix trigger.
 ### Added
 
 - Exported `SelectControl` from `@a3s-lab/ui/form/react` so downstream custom
@@ -47,7 +56,7 @@
 - Rebuilt Playground Memory as a traceable, human-reviewed workflow with real scope and type filtering, relationship zoom, durable candidate acceptance, source evidence, reversible removal requests, mobile detail drawers, settings ownership, and task-context reuse.
 - Rebuilt Playground knowledge management around source roots and indexed-item counts, with validated source creation, recoverable disconnects that retain workspace files, per-source reindexing, keyboard-complete detail tabs, and retry completion that reconciles every source state.
 - Rebuilt Playground Inspiration as a screenshot-led four-column masonry library with coherent filters and favorites, a centered single-task detail dialog, responsive embedded previews, and a tested handoff that retains the selected template in the task composer.
-- Reordered bilingual documentation navigation by learning dependency鈥擥uide, Foundations, Components, Harness, then Playground鈥攁nd kept Resources last while limiting each stable version to sections it actually publishes.
+- Reordered bilingual documentation navigation by learning dependency閳ユ摜uide, Foundations, Components, Harness, then Playground閳ユ攣nd kept Resources last while limiting each stable version to sections it actually publishes.
 - Replaced the legacy workspace-composition Playground with a bilingual task-first product application that unifies durable sessions, project work, the production composer, execution review, local files and editors, Knowledge, Memory, extensions, automations, and settings under canonical `/playground` routes.
 - Rebuilt model settings as a production configuration workspace with host-managed and custom providers, connection fields, credential visibility, model capabilities and limits, default selection, staged save/reset behavior, and compact-screen operation without inventing vendor-specific models.
 - Rebuilt the project workspace as a complete task surface with Activity, Plan, Tasks, and Assets views, scoped filtering and search, project configuration, collaboration state, and a context-aware TipTap composer; widened the application shell and conversation geometry for production-scale work.
@@ -153,7 +162,7 @@
 ### Changed
 
 - Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
-- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320鈥?80-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320閳?80-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
 - Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.

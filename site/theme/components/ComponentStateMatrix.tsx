@@ -1589,10 +1589,6 @@ export function ComponentStateMatrix({
   }, [canvasRef, contract, isChinese, open]);
 
   const close = () => setOpen(false);
-  const restoreTriggerFocus = () => {
-    setOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
-  };
 
   return (
     <>
@@ -1622,10 +1618,15 @@ export function ComponentStateMatrix({
               data-component={contract.slug}
               id={`${titleId}-dialog`}
               onCancel={(event) => {
+                // Keep React state as the single closer. Focusing the trigger
+                // while the modal dialog is still open is ignored by the
+                // browser, so restore only from `onClose` after `dialog.close()`.
                 event.preventDefault();
-                restoreTriggerFocus();
+                close();
               }}
-              onClose={restoreTriggerFocus}
+              onClose={() => {
+                triggerRef.current?.focus({ preventScroll: true });
+              }}
               ref={dialogRef}
             >
               <header className="a3s-component-state-matrix__header">
