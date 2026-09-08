@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- State-matrix Escape closes reliably under CDP key injection: focus moves into
+  the dialog after `showModal()`, and a document-level Escape listener closes
+  when native `<dialog>` cancel does not fire.
 - State acceptance matrix restores focus to its trigger only after the modal
   `<dialog>` has closed, so Escape no longer races a no-op focus while the
   top layer is still open; contract suites wait for the matrix to close before
