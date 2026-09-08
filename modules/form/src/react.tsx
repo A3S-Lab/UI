@@ -10,6 +10,7 @@ export * from './react/designer';
 export * from './react/file-upload';
 export * from './react/node-registry';
 export * from './react/renderer';
+export * from './react/select-control';
 export * from './react/signature';
 
 export const FormInspectorControl = Control;
