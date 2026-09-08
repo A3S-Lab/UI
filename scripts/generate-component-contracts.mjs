@@ -626,9 +626,9 @@ function renderStateMatrixContract(component, publicPreview) {
       ? `
         expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
       : "";
-  // Close via the in-dialog control. Page backdrop sits under the dialog
-  // (lower z-index), so CDP center-clicks miss it; Escape is also unreliable
-  // under agent-browser key routing. Non-modal show() keeps this button activatable.
+  // Close via the in-panel control. The matrix is a plain role=dialog div
+  // (not <dialog>), so CDP can activate the close button without top-layer
+  // issues. Escape under agent-browser key routing remains unreliable.
   return `
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
