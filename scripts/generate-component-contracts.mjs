@@ -621,27 +621,16 @@ function renderStateExpectations(component) {
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
-  const postCloseExpectation =
-    component.slug === "radio-group"
-      ? `
-        expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
-      : "";
-  // agent-browser CDP cannot reliably activate the dismiss control while the
-  // matrix overlay owns the page (click/Enter/Escape all leave it open). Reload
-  // after evidence so later light→dark→compact steps are not blocked. Product
-  // dismiss still closes and restores trigger focus for real users.
+  // Run last in the scenario: CDP cannot reliably dismiss the overlay, and
+  // mid-scenario reload/click leave later dark/compact evidence blocked.
   return `
+        viewport "desktop-for-state-matrix" { width = 1440 height = 1000 }
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
-        screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        navigate "reset-after-state-matrix" { url = "http://127.0.0.1:4178/UI/en/components/${component.slug}.html" }
-        wait "state-matrix-page-reloaded" { load = "networkidle" }
-        wait "state-matrix-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        wait "state-matrix-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }
-        wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }${postCloseExpectation}`;
+        screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }`;
 }
 
 const transientComponentTriggers = new Map([
@@ -786,7 +775,7 @@ ${details ? `${details.source.trim()}\n\n` : ""}
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches \`${component.selector}\` and is annotated by the runtime as \`${component.test.selector}\`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at \`${matrixRoot}\`, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload after matrix evidence because CDP cannot dismiss the overlay).
+- The state acceptance matrix opens at \`${matrixRoot}\` after responsive evidence, preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs leave the matrix open at scenario end because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -894,8 +883,7 @@ function renderComponentScenario(component) {
         expect "public-root" { visible = css("${visiblePublicTarget}") }
         expect "light-ltr-contract" { visible = css("${publicPreview}[data-preview-scheme=inherit][data-preview-direction=ltr]") }
         screenshot "desktop-light" { path = "components/contracts/${slug}-desktop-light.png" }
-${lightClose}${renderStateMatrixContract(component, stateMatrixPreview)}
-
+${lightClose}
         focus "focus-source" { target = css("${integrationPreview} [data-preview-control=source]") }
         press "open-source" { key = "Enter" }
         expect "source-open" { visible = css("${integrationPreview} [data-preview-source-panel]:not([hidden])") }
@@ -926,6 +914,7 @@ ${darkClose}
         console "console" { path = "components/contracts/${slug}-console.json" clear = false }
         page_errors "errors" { path = "components/contracts/${slug}-errors.json" clear = false }
 ${compactClose}
+${renderStateMatrixContract(component, stateMatrixPreview)}
     }`;
 }
 
