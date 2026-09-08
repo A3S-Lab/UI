@@ -150,7 +150,7 @@ Automation cannot prove real iOS and Android virtual-keyboard behavior, physical
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `textarea.textarea` and is annotated by the runtime as `[data-a3s-components~="textarea"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=textarea]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=textarea]` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -166,9 +166,9 @@ Automation cannot prove real iOS and Android virtual-keyboard behavior, physical
 - Stable root target: `[data-a3s-components~="textarea"]` inside `.a3s-preview[data-preview-component=textarea][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/textarea-states.png`.
 - Per-state evidence selectors:
-  - `empty`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])`
-  - `ready`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled]:has([data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid]:has([data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly]:has([data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `empty`: `.a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=disabled]:has([data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=invalid]:has([data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `readonly`: `.a3s-component-state-matrix[data-open][data-component=textarea] [data-state-specimen=readonly]:has([data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

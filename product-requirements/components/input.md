@@ -158,7 +158,7 @@ Automated browser evidence does not prove real iOS and Android keyboard layouts,
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `input.input:not([type=checkbox]):not([type=radio]):not([type=range])` and is annotated by the runtime as `[data-a3s-components~="input"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=input]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=input]` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -174,9 +174,9 @@ Automated browser evidence does not prove real iOS and Android keyboard layouts,
 - Stable root target: `[data-a3s-components~="input"]` inside `.a3s-preview[data-preview-component=input][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/input-states.png`.
 - Per-state evidence selectors:
-  - `empty`: `.a3s-component-state-matrix[open][data-component=input] [data-state-specimen=empty]:has([data-a3s-components~='input'][data-a3s-state~='empty'][value=''])`
-  - `ready`: `.a3s-component-state-matrix[open][data-component=input] [data-state-specimen=ready]:has([data-a3s-components~='input'][data-a3s-state~='ready'][value='alex@example.com'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=input] [data-state-specimen=disabled]:has([data-a3s-components~='input'][data-a3s-state~='disabled'][disabled][value='archived@example.com'])`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=input] [data-state-specimen=invalid]:has([data-a3s-components~='input'][data-a3s-state~='invalid'][required][aria-invalid=true][value='owner@']:invalid)`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=input] [data-state-specimen=readonly]:has([data-a3s-components~='input'][data-a3s-state~='readonly'][readonly][value='account-owner@example.com'])`
+  - `empty`: `.a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=empty]:has([data-a3s-components~='input'][data-a3s-state~='empty'][value=''])`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=ready]:has([data-a3s-components~='input'][data-a3s-state~='ready'][value='alex@example.com'])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=disabled]:has([data-a3s-components~='input'][data-a3s-state~='disabled'][disabled][value='archived@example.com'])`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=invalid]:has([data-a3s-components~='input'][data-a3s-state~='invalid'][required][aria-invalid=true][value='owner@']:invalid)`
+  - `readonly`: `.a3s-component-state-matrix[data-open][data-component=input] [data-state-specimen=readonly]:has([data-a3s-components~='input'][data-a3s-state~='readonly'][readonly][value='account-owner@example.com'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

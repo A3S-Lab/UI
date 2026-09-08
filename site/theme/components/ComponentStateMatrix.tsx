@@ -1513,7 +1513,8 @@ export function ComponentStateMatrix({
   contract,
   isChinese,
 }: ComponentStateMatrixProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const matrixRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
@@ -1525,10 +1526,19 @@ export function ComponentStateMatrix({
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (!open) return;
+    closeRef.current?.focus({ preventScroll: true });
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [open]);
 
   useLayoutEffect(() => {
@@ -1588,10 +1598,11 @@ export function ComponentStateMatrix({
       });
   }, [canvasRef, contract, isChinese, open]);
 
-  const close = () => setOpen(false);
-  const restoreTriggerFocus = () => {
+  const close = () => {
     setOpen(false);
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
+    queueMicrotask(() => {
+      triggerRef.current?.focus({ preventScroll: true });
+    });
   };
 
   return (
@@ -1615,18 +1626,44 @@ export function ComponentStateMatrix({
       </button>
       {mounted
         ? createPortal(
-            <dialog
+            <>
+              {open ? (
+                <button
+                  aria-label={
+                    isChinese ? "关闭状态验收" : "Close state acceptance"
+                  }
+                  className="a3s-component-state-matrix__backdrop"
+                  data-state-matrix-backdrop
+                  onClick={close}
+                  type="button"
+                />
+              ) : null}
+              {open ? (
+                <button
+                  aria-label={
+                    isChinese ? "关闭状态验收" : "Close state acceptance"
+                  }
+                  className="a3s-component-state-matrix__dismiss"
+                  data-component={contract.slug}
+                  data-state-matrix-close
+                  onClick={close}
+                  ref={closeRef}
+                  type="button"
+                >
+                  <CloseIcon />
+                </button>
+              ) : null}
+              {open ? (
+              <div
               aria-describedby={descriptionId}
               aria-labelledby={titleId}
+              aria-modal="true"
               className="a3s-component-state-matrix"
               data-component={contract.slug}
+              data-open=""
               id={`${titleId}-dialog`}
-              onCancel={(event) => {
-                event.preventDefault();
-                restoreTriggerFocus();
-              }}
-              onClose={restoreTriggerFocus}
-              ref={dialogRef}
+              ref={panelRef}
+              role="dialog"
             >
               <header className="a3s-component-state-matrix__header">
                 <div>
@@ -1641,16 +1678,6 @@ export function ComponentStateMatrix({
                       : "Each specimen clones the live public root and applies the corresponding native HTML, ARIA, and public state input. This matrix supports acceptance; it does not replace product examples."}
                   </p>
                 </div>
-                <button
-                  aria-label={
-                    isChinese ? "关闭状态验收" : "Close state acceptance"
-                  }
-                  data-state-matrix-close
-                  onClick={close}
-                  type="button"
-                >
-                  <CloseIcon />
-                </button>
               </header>
 
               {sourceMissing ? (
@@ -1693,7 +1720,9 @@ export function ComponentStateMatrix({
                   </article>
                 ))}
               </div>
-            </dialog>,
+            </div>
+              ) : null}
+            </>,
             document.body,
           )
         : null}

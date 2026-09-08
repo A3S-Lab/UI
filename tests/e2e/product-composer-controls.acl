@@ -137,7 +137,7 @@ suite "a3s-ui-product-composer-controls" {
         }
         expect "assistant-picker-close-reachable" { pointer_reachable = role("button", "关闭资源选择") }
         press "close-assistant-picker" { key = "Escape" }
-        expect "attachment-trigger-restored-after-assistant" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+        expect "attachment-trigger-restored-after-assistant" { focus_within = css(".product-start [data-composer-attachment-trigger]") }
 
         click "open-context-for-connector" { target = role("button", "添加任务上下文") }
         click "open-connector-picker" { target = role("menuitem", "连接器") }
@@ -147,7 +147,7 @@ suite "a3s-ui-product-composer-controls" {
             viewport_coverage_at_least = 100
         }
         press "close-connector-picker" { key = "Escape" }
-        expect "attachment-trigger-restored-after-connector" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+        expect "attachment-trigger-restored-after-connector" { focus_within = css(".product-start [data-composer-attachment-trigger]") }
 
         click "open-workspace-control" { target = css(".product-start [data-composer-control=workspace] > button") }
         expect "workspace-control-contained" {
@@ -156,7 +156,7 @@ suite "a3s-ui-product-composer-controls" {
         }
         expect "workspace-control-close-reachable" { pointer_reachable = role("button", "关闭工作区") }
         press "close-workspace-control" { key = "Escape" }
-        expect "workspace-trigger-restored" { visible = css(".product-start [data-composer-control=workspace] > button:focus") }
+        expect "workspace-trigger-restored" { focus_within = css(".product-start [data-composer-control=workspace] > button") }
 
         click "open-permission-control" { target = css(".product-start [data-composer-control=mode] > button") }
         expect "permission-control-contained" {
@@ -165,7 +165,7 @@ suite "a3s-ui-product-composer-controls" {
         }
         expect "permission-control-close-reachable" { pointer_reachable = role("button", "关闭权限边界") }
         press "close-permission-control" { key = "Escape" }
-        expect "permission-trigger-restored" { visible = css(".product-start [data-composer-control=mode] > button:focus") }
+        expect "permission-trigger-restored" { focus_within = css(".product-start [data-composer-control=mode] > button") }
 
         click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
         click "open-model-picker" { target = css(".product-start [data-run-settings-row] > div > button:last-child") }
@@ -214,7 +214,7 @@ suite "a3s-ui-product-composer-controls" {
             viewport_coverage_at_least = 100
         }
         press "close-picker" { key = "Escape" }
-        expect "trigger-focus-restored" { visible = css(".product-start [data-composer-attachment-trigger]:focus") }
+        expect "trigger-focus-restored" { focus_within = css(".product-start [data-composer-attachment-trigger]") }
 
         click "open-run-settings" { target = css(".product-start [data-composer-control=run] > button") }
         expect "run-panel" { visible = css(".product-start [data-control-panel=run][role=dialog]") }

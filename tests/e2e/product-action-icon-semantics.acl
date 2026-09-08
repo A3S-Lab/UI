@@ -203,7 +203,7 @@ suite "a3s-ui-product-action-icon-semantics" {
         screenshot "open-detail" { path = "product/action-icons-memory-detail-open.png" }
 
         click "close-detail" { target = role("button", "关闭记忆详情") }
-        wait "record-focus-restored" { visible = css(".product-memory__timeline [data-memory-id]:first-child > button:focus") }
+        expect "record-focus-restored" { focus_within = css(".product-memory__timeline [data-memory-id]:first-child > button") }
 
         screenshot "result" { path = "product/action-icons-memory-detail-closed.png" }
         console "console" { path = "product/action-icons-memory-console.json" clear = false }

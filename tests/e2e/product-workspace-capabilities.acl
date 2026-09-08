@@ -15,7 +15,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "open-notifications" { target = css("[data-product-control=notifications]") }
         expect "notification-result" { visible = css(".product-sidebar__notifications[aria-label='消息中心']") }
         press "close-notifications" { key = "Escape" }
-        expect "notification-focus-restored" { visible = css("[data-product-control=notifications]:focus") }
+        expect "notification-focus-restored" { focus_within = css("[data-product-control=notifications]") }
 
         expect "settings-icon-matches-control" { visible = css("[data-product-control=settings] svg[data-icon=settings]") }
         click "open-settings" { target = css("[data-product-control=settings]") }
@@ -201,14 +201,14 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "mobile-code-preview" { visible = css(".product-code-workbench [data-markdown-preview]") }
         click "open-file-assistant" { target = role("button", "打开文件助手") }
         expect "mobile-file-assistant" { visible = css(".product-file-workbench[data-assistant-open=true] [data-file-assistant]") }
-        expect "mobile-assistant-input-visible" { visible = css("[data-file-assistant] textarea:focus") }
+        expect "mobile-assistant-input-visible" { focus_within = css("[data-file-assistant] textarea") }
         fill "ask-about-file" { target = css("[data-file-assistant] textarea") value = "检查当前文件的发布风险" }
         expect "mobile-assistant-send-visible" { visible = css("[data-file-assistant] form > button:not(:disabled)") }
 
         screenshot "mobile-evidence" { path = "product/file-workbench-mobile.png" }
         press "close-assistant" { key = "Escape" }
         expect "assistant-closed" { visible = css(".product-file-workbench:not([data-assistant-open])") }
-        expect "assistant-trigger-restored" { visible = css(".product-file-workbench__header button[aria-label='打开文件助手']:focus") }
+        expect "assistant-trigger-restored" { focus_within = css(".product-file-workbench__header button[aria-label='打开文件助手']") }
         console "console" { path = "product/file-workbench-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/file-workbench-mobile-page-errors.json" clear = false }
     }
@@ -232,14 +232,14 @@ suite "a3s-ui-product-workspace-capabilities" {
 
         focus "focus-timeline-tab" { target = css(".product-memory > nav button[aria-controls$='timeline-panel']") }
         press "next-tab" { key = "ArrowRight" }
-        expect "graph-tab-focused" { visible = css(".product-memory > nav button[aria-controls$='graph-panel'][aria-selected=true]:focus") }
+        expect "graph-tab-focused" { focus_within = css(".product-memory > nav button[aria-controls$='graph-panel'][aria-selected=true]") }
         expect "graph-canvas" { visible = css(".product-memory__graph.code-graph[data-graph-domain=memory][data-code-graph-initialized=true] [data-code-graph-viewport]") }
         click "show-graph-list" { target = role("button", "列表") }
         expect "graph-list-visible" { visible = css(".product-memory__graph[data-view=list] [data-code-graph-list]") }
         click "inspect-graph-node" { target = css(".product-memory__graph [data-memory-id=visual-evidence] > button") }
         expect "graph-selection-opens-inspector" { visible = css(".product-memory__inspector[data-open=true]") }
         click "close-graph-inspector" { target = role("button", "关闭记忆详情") }
-        expect "graph-focus-restored" { visible = css(".product-memory__graph [data-code-graph-viewport]:focus") }
+        expect "graph-focus-restored" { focus_within = css(".product-memory__graph [data-code-graph-viewport]") }
         click "return-to-3d-graph" { target = role("button", "3D") }
         expect "graph-view-restored" { visible = css(".product-memory__graph[data-view=graph][data-code-graph-initialized=true]") }
         screenshot "graph-evidence" { path = "product/memory-graph-desktop.png" }
@@ -262,7 +262,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "source-evidence-visible" { visible = css(".product-memory__inspector [data-memory-source-detail]") }
         expect "source-locator-visible" { text = "memory/evolution/terminology" }
         press "close-source-with-escape" { key = "Escape" }
-        expect "source-trigger-restored" { visible = css(".product-memory__inspector button[aria-expanded=false]:focus") }
+        expect "source-trigger-restored" { focus_within = css(".product-memory__inspector button[aria-expanded=false]") }
 
         click "request-removal" { target = role("button", "请求遗忘") }
         expect "removal-confirmation" { text = "请求遗忘这条记忆？" }
@@ -308,23 +308,23 @@ suite "a3s-ui-product-workspace-capabilities" {
 
         click "open-memory-detail" { target = css(".product-memory__timeline [data-memory-id=visual-evidence] > button") }
         expect "detail-drawer-visible" { visible = css(".product-memory__inspector[role=dialog][data-open=true]") }
-        expect "close-focused" { visible = css(".product-memory__inspector [data-memory-inspector-close]:focus") }
+        expect "close-focused" { focus_within = css(".product-memory__inspector [data-memory-inspector-close]") }
         screenshot "compact-drawer" { path = "product/memory-inspector-compact.png" }
         press "close-compact-drawer" { key = "Escape" }
-        expect "compact-record-focus-restored" { visible = css(".product-memory__timeline [data-memory-id=visual-evidence] > button:focus") }
+        expect "compact-record-focus-restored" { focus_within = css(".product-memory__timeline [data-memory-id=visual-evidence] > button") }
 
         viewport "phone" { width = 390 height = 844 }
         click "reopen-memory-detail" { target = css(".product-memory__timeline [data-memory-id=visual-evidence] > button") }
         expect "phone-detail-visible" { visible = css(".product-memory__inspector[role=dialog][data-open=true]") }
 
         click "open-source" { target = role("button", "查看来源") }
-        expect "source-visible" { visible = css(".product-memory__inspector [data-memory-source-detail]:focus") }
+        expect "source-visible" { focus_within = css(".product-memory__inspector [data-memory-source-detail]") }
         screenshot "mobile-drawer" { path = "product/memory-inspector-mobile.png" }
 
         press "close-source" { key = "Escape" }
-        expect "source-focus-restored" { visible = css(".product-memory__inspector button[aria-expanded=false]:focus") }
+        expect "source-focus-restored" { focus_within = css(".product-memory__inspector button[aria-expanded=false]") }
         press "close-drawer" { key = "Escape" }
-        expect "record-focus-restored" { visible = css(".product-memory__timeline [data-memory-id=visual-evidence] > button:focus") }
+        expect "record-focus-restored" { focus_within = css(".product-memory__timeline [data-memory-id=visual-evidence] > button") }
 
         console "console" { path = "product/memory-inspector-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/memory-inspector-mobile-page-errors.json" clear = false }
@@ -385,7 +385,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "request-uninstall" { target = role("button", "卸载") }
         expect "uninstall-consequences" { text = "已经生成的任务内容和证据不会被删除" }
         click "cancel-uninstall" { target = role("button", "取消") }
-        expect "uninstall-focus-restored" { visible = css(".product-marketplace__detail button[data-danger]:focus") }
+        expect "uninstall-focus-restored" { focus_within = css(".product-marketplace__detail button[data-danger]") }
         click "request-uninstall-again" { target = role("button", "卸载") }
         click "confirm-uninstall" { target = role("button", "确认卸载") }
         expect "uninstalled-state" { visible = css("[data-extension-id=dependency-watch][data-installed=false]") }
@@ -414,10 +414,10 @@ suite "a3s-ui-product-workspace-capabilities" {
         click "open-mobile-detail" { target = css("[data-extension-id=dependency-watch] [data-extension-review]") }
         expect "mobile-detail-visible" { visible = css("[data-extension-detail-dialog][open]") }
         expect "mobile-permissions-visible" { visible = css("[data-extension-detail-dialog] [data-extension-permissions]") }
-        expect "mobile-close-focused" { visible = css("[data-extension-detail-dialog] [data-extension-detail-close]:focus") }
+        expect "mobile-close-focused" { focus_within = css("[data-extension-detail-dialog] [data-extension-detail-close]") }
         screenshot "mobile-detail" { path = "product/extension-detail-mobile.png" }
         press "close-mobile-detail" { key = "Escape" }
-        expect "mobile-card-focus-restored" { visible = css("[data-extension-id=dependency-watch] [data-extension-review]:focus") }
+        expect "mobile-card-focus-restored" { focus_within = css("[data-extension-id=dependency-watch] [data-extension-review]") }
 
         console "console" { path = "product/extension-detail-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/extension-detail-mobile-page-errors.json" clear = false }
@@ -461,7 +461,7 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "refresh-result" { text = "未自动加载新内容" }
 
         click "open-add-source" { target = role("button", "添加来源") }
-        expect "source-name-focused" { visible = css(".product-marketplace__source-dialog[open] input[aria-label='来源名称']:focus") }
+        expect "source-name-focused" { focus_within = css(".product-marketplace__source-dialog[open] input[aria-label='来源名称']") }
         click "submit-empty-source" { target = role("button", "加入待验证清单") }
         expect "required-name-error" { text = "请输入来源名称" }
         fill "source-name" { target = css(".product-marketplace__source-dialog input[aria-label='来源名称']") value = "Design registry" }

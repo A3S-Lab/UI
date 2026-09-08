@@ -64,7 +64,7 @@ The canonical root uses `<label>` semantics and exposes 3 named parts. State mus
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.context-selector` and is annotated by the runtime as `[data-a3s-components~="context-selector"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=context-selector]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[data-open][data-component=context-selector]` after dark evidence on desktop (before the Code panel opens), preserves hidden roots in the DOM contract, and keeps product dismiss/focus restore for interactive users (contract runs reload before framework and compact evidence because CDP cannot dismiss the overlay).
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
@@ -80,9 +80,9 @@ The canonical root uses `<label>` semantics and exposes 3 named parts. State mus
 - Stable root target: `[data-a3s-components~="context-selector"]` inside `.a3s-preview[data-preview-component=context-selector][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/context-selector-states.png`.
 - Per-state evidence selectors:
-  - `ready`: `.a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=ready]:has([data-a3s-components~='context-selector'][data-a3s-state~='ready'])`
-  - `loading`: `.a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=loading]:has([data-a3s-components~='context-selector'][data-a3s-state~='loading'][aria-busy=true])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=disabled]:has([data-a3s-components~='context-selector'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=invalid]:has([data-a3s-components~='context-selector'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `unavailable`: `.a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=unavailable]:has([data-a3s-components~='context-selector'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `ready`: `.a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=ready]:has([data-a3s-components~='context-selector'][data-a3s-state~='ready'])`
+  - `loading`: `.a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=loading]:has([data-a3s-components~='context-selector'][data-a3s-state~='loading'][aria-busy=true])`
+  - `disabled`: `.a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=disabled]:has([data-a3s-components~='context-selector'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `invalid`: `.a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=invalid]:has([data-a3s-components~='context-selector'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `unavailable`: `.a3s-component-state-matrix[data-open][data-component=context-selector] [data-state-specimen=unavailable]:has([data-a3s-components~='context-selector'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

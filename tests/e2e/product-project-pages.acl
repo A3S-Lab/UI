@@ -58,7 +58,7 @@ suite "a3s-ui-product-project-pages" {
         click "request-connector-configuration" { target = role("button", "添加连接器") }
         expect "configuration-request-confirmed" { text = "已请求配置连接器" }
         click "close-configuration-drawer" { target = css("aside[aria-label='项目配置'] > header button") }
-        expect "configuration-focus-restored" { visible = css("button[data-configuration-trigger][aria-expanded=false]:focus") }
+        expect "configuration-focus-restored" { focus_within = css("button[data-configuration-trigger][aria-expanded=false]") }
 
         click "select-team-activity" { target = role("button", "成员动态") }
         expect "team-activity-selected" { visible = css("[data-activity-filters] button[aria-pressed=true]:nth-child(2)") }
@@ -109,14 +109,14 @@ suite "a3s-ui-product-project-pages" {
 
         click "open-configuration" { target = role("button", "打开项目配置") }
         expect "full-screen-configuration" { visible = css("aside[aria-label='项目配置'][role=dialog][aria-modal=true]") }
-        expect "configuration-focus" { visible = css("aside[aria-label='项目配置'] > header button:focus") }
+        expect "configuration-focus" { focus_within = css("aside[aria-label='项目配置'] > header button") }
         expect "close-pointer-reachable" { pointer_reachable = role("button", "关闭项目配置") }
         click "request-skill-configuration" { target = role("button", "添加技能") }
         expect "skill-request-confirmed" { text = "已请求配置技能" }
         screenshot "configuration-visual" { path = "product/project-configuration-mobile.png" }
         press "close-configuration" { key = "Escape" }
         expect "configuration-closed" { visible = css("button[data-configuration-trigger][aria-expanded=false]") }
-        expect "configuration-focus-restored" { visible = css("button[data-configuration-trigger]:focus") }
+        expect "configuration-focus-restored" { focus_within = css("button[data-configuration-trigger]") }
         console "console" { path = "product/project-activity-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-activity-mobile-errors.json" clear = false }
     }
@@ -160,7 +160,7 @@ suite "a3s-ui-product-project-pages" {
         expect "compact-density" { visible = css(".product-project-plan[data-compact=true]") }
         check "restore-dates" { target = css("#product-project-plan-options label:nth-of-type(2) input") }
         press "close-view-options" { key = "Escape" }
-        expect "view-options-closed" { visible = css("button[data-plan-view-options][aria-expanded=false]:focus") }
+        expect "view-options-closed" { focus_within = css("button[data-plan-view-options][aria-expanded=false]") }
 
         click "collapse-backlog" { target = role("button", "折叠待开始") }
         expect "backlog-collapsed" { visible = css(".product-project-plan__group[data-group=backlog] button[data-plan-collapse][aria-expanded=false]") }
@@ -250,7 +250,7 @@ suite "a3s-ui-product-project-pages" {
         expect "project-context" { visible = css("nav[aria-label='项目路径']") }
         click "open-project-details" { target = role("button", "打开项目详情") }
         expect "modal-inspector" { visible = css("aside[aria-label='项目详情'][role=dialog][aria-modal=true]") }
-        expect "modal-focus" { visible = css("aside[aria-label='项目详情'] > header button:focus") }
+        expect "modal-focus" { focus_within = css("aside[aria-label='项目详情'] > header button") }
         expect "project-tablist-name" { visible = css("[role=tablist][aria-label='项目详情视图']") }
         expect "shared-task-pane" { visible = css("aside.task-pane[data-task-inspector][aria-label='项目详情']") }
         expect "shared-overview-contract" { visible = css(".product-inspector-overview:has(> .product-inspector-overview__summary > .status-badge):has(> dl.property-list[data-variant=plain]):has(> section.task-plan[data-variant=plain])") }
@@ -266,7 +266,7 @@ suite "a3s-ui-product-project-pages" {
         expect "overview-restored" { visible = css("[role=tab][aria-controls$='-overview'][aria-selected=true]") }
         press "close-inspector" { key = "Escape" }
         expect "inspector-closed" { visible = css("[data-product-surface=project-session]:not(:has(aside[aria-label='项目详情']))") }
-        wait "trigger-focus-restored" { visible = css("button[aria-label='打开项目详情']:focus") }
+        expect "trigger-focus-restored" { focus_within = css("button[aria-label='打开项目详情']") }
         accessibility "accessibility" { path = "product/project-task-inspector-mobile-accessibility.json" interactive = true }
         console "console" { path = "product/project-task-inspector-mobile-console.json" clear = false }
         page_errors "page-errors" { path = "product/project-task-inspector-mobile-errors.json" clear = false }
@@ -324,11 +324,11 @@ suite "a3s-ui-product-project-pages" {
         expect "code-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=code][data-presentation=dialog]") }
         expect "project-context-retained" { visible = css("[data-product-surface=project]:has(.product-project-workspace__tabs):has([data-asset-row]):has(.product-project-workspace__composer):has(aside[aria-label='项目配置'])") }
         expect "close-action-semantic" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close][aria-label='关闭文件预览'] svg[data-icon=close]") }
-        expect "dialog-focus-contained" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        expect "dialog-focus-contained" { focus_within = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
         screenshot "code-workbench-visual" { path = "product/project-asset-code-workbench.png" }
         press "close-code-preview-with-escape" { key = "Escape" }
         expect "asset-preview-closed" { visible = css("[data-product-surface=project]:not(:has(dialog[data-project-asset-dialog][open]))") }
-        expect "file-focus-restored" { visible = css("[data-asset-id=design-md] [data-asset-open]:focus") }
+        expect "file-focus-restored" { focus_within = css("[data-asset-id=design-md] [data-asset-open]") }
         expect "composer-did-not-steal-focus" { visible = css(".product-project-workspace__composer .agent-composer-editor__content:not(:focus)") }
 
         select "restore-all-asset-types" { target = css("[data-asset-type-filter] select") values = ["all"] }
@@ -339,7 +339,7 @@ suite "a3s-ui-product-project-pages" {
         expect "pdf-asset-visible" { visible = css("[data-asset-id=visual-report][data-asset-row]") }
         click "open-pdf-file" { target = role("button", "打开 visual-acceptance-report.pdf") }
         expect "pdf-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=pdf][data-presentation=dialog]") }
-        wait "pdf-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        expect "pdf-workbench-close-focused" { focus_within = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
         wait "pdf-search" { visible = css("input[aria-label='在 PDF 中搜索']") }
         wait "pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
         wait "pdf-renderer-ready" { visible = css(".work-pdf-embed[data-ready=true]") }
@@ -351,17 +351,17 @@ suite "a3s-ui-product-project-pages" {
         wait "pdf-first-page-restored" { visible = css("input[aria-label='页码'][value='1']") }
         screenshot "pdf-workbench-visual" { path = "product/project-asset-pdf-workbench.png" }
         click "close-pdf-preview" { target = role("button", "关闭文件预览") }
-        wait "pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
+        expect "pdf-focus-restored" { focus_within = css("[data-asset-id=visual-report] [data-asset-open]") }
         click "return-to-asset-root" { target = css("[data-asset-back]") }
 
         click "open-word-file" { target = role("button", "打开 experience-brief.docx") }
         expect "office-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=document][data-presentation=dialog]") }
-        wait "office-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
+        expect "office-workbench-close-focused" { focus_within = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]") }
         expect "office-preview-tools-visible" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "office-preview-document-visible" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         screenshot "office-workbench-visual" { path = "product/project-asset-office-workbench.png" }
         click "close-office-preview" { target = role("button", "关闭文件预览") }
-        wait "office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }
+        expect "office-focus-restored" { focus_within = css("[data-asset-id=experience-brief] [data-asset-open]") }
 
         click "select-design-asset" { target = css("[data-asset-id=design-md] [data-asset-select]") }
         expect "selected-row" { visible = css("[data-asset-id=design-md][data-selected=true]") }
@@ -450,7 +450,7 @@ suite "a3s-ui-product-project-pages" {
         expect "scope-restored" { visible = css("[data-plan-navigation] [data-plan-scope]") }
 
         click "create-active-task" { target = css("[data-group=active] [data-plan-empty-add]") }
-        expect "active-create-focus" { visible = css("[data-group=active] [data-plan-create] input:focus") }
+        expect "active-create-focus" { focus_within = css("[data-group=active] [data-plan-create] input") }
         screenshot "create-visual" { path = "product/project-plan-mobile-create.png" }
         press "cancel-active-create" { key = "Escape" }
         wait "active-empty-restored" { visible = css("[data-group=active] [data-plan-empty-add]") }
