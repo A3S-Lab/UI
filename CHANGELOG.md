@@ -66,6 +66,9 @@
 
 ### Fixed
 
+- Component-contract generators emit `focused=` instead of CSS `:focus`, use
+  POSIX-relative paths on Windows, and compare generated artifacts with
+  newline-normalized equality so local `check:*` matches CI.
 - Component-contract, actions/forms, and product A3S Test suites assert
   keyboard focus with the protocol `focused` expectation instead of CSS
   `:focus` selectors (including mid-selector and `:has(...:focus)` forms), so

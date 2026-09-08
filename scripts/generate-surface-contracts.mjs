@@ -15,6 +15,10 @@ const requirementsRoot = path.join(
 );
 const checkOnly = process.argv.includes("--check");
 
+function relativePosix(...segments) {
+  return path.relative(...segments).split(path.sep).join("/");
+}
+
 const harness = [
   {
     id: "dock-workspace",
@@ -308,7 +312,7 @@ function renderPlaygroundScenario(surface) {
         wait "route-ready" { visible = css("${root}") }
         expect "surface-ready" { visible = css("${target}") }
         focus "focus-search" { target = css("${root} .product-sidebar__window button[aria-label='搜索']") }
-        expect "search-focused" { visible = css("${root} .product-sidebar__window button[aria-label='搜索']:focus") }
+        expect "search-focused" { focused = css("${root} .product-sidebar__window button[aria-label='搜索']") }
         screenshot "capture-desktop" { path = "playground/routes/${surface.id}-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
@@ -332,11 +336,11 @@ async function writeOrCheck(filePath, expected) {
     try {
       actual = await readFile(filePath, "utf8");
     } catch {
-      throw new Error(`${path.relative(projectRoot, filePath)} is missing.`);
+      throw new Error(`${relativePosix(projectRoot, filePath)} is missing.`);
     }
-    if (actual !== expected) {
+    if (actual.replace(/\r\n/g, "\n") !== expected.replace(/\r\n/g, "\n")) {
       throw new Error(
-        `${path.relative(projectRoot, filePath)} is stale; run npm run generate:surface-contracts.`,
+        `${relativePosix(projectRoot, filePath)} is stale; run npm run generate:surface-contracts.`,
       );
     }
     return;
