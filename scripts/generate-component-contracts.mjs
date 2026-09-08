@@ -621,9 +621,12 @@ function renderStateExpectations(component) {
 function renderStateMatrixContract(component, publicPreview) {
   const stateSelectors = stateEvidenceSelectors(component);
   const firstStateSelector = Object.values(stateSelectors)[0];
-  // Capture on desktop after dark evidence. CDP cannot dismiss the overlay, so
-  // the scenario reloads before compact screenshots.
+  // Capture on desktop after dark evidence. Close the source panel first so it
+  // cannot cover States. CDP cannot dismiss the matrix overlay, so the scenario
+  // reloads before compact screenshots.
   return `
+        click "close-source-before-state-matrix" { target = css("${publicPreview} [data-preview-control=source]") }
+        wait "source-closed-before-state-matrix" { hidden = css("${publicPreview} [data-preview-source-panel]:not([hidden])") }
         click "open-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         wait "state-matrix-open" { visible = css("${stateMatrixRoot(component)}") }
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
