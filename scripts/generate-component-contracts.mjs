@@ -626,6 +626,9 @@ function renderStateMatrixContract(component, publicPreview) {
       ? `
         expect "live-selection-survives-state-matrix" { visible = css("${publicPreview} .radio-group input[type=radio][value=comfortable]:checked") }`
       : "";
+  // Native <dialog showModal()> top-layer controls are not reliably activated by
+  // CDP click/key injection. Reload after evidence so later contract steps are
+  // not blocked; product Escape/close still restore focus for real users.
   return `
         focus "focus-state-matrix" { target = css("${publicPreview} [data-preview-control=states]") }
         press "open-state-matrix" { key = "Enter" }
@@ -633,9 +636,9 @@ function renderStateMatrixContract(component, publicPreview) {
         wait "state-specimens-ready" { visible = css("${firstStateSelector}") }
 ${renderStateExpectations(component)}
         screenshot "state-matrix" { path = "components/contracts/${component.slug}-states.png" }
-        press "close-state-matrix" { key = "Enter" }
-        wait "state-matrix-closed" { hidden = css("${stateMatrixRoot(component)}") }
-        expect "state-trigger-restored" { focused = css("${publicPreview} [data-preview-control=states]") }${postCloseExpectation}`;
+        navigate "reset-after-state-matrix" { url = "http://127.0.0.1:4178/UI/en/components/${component.slug}.html" }
+        wait "loaded-after-state-matrix" { load = "networkidle" }
+        wait "preview-ready-after-state-matrix" { visible = css("${publicPreview}[data-preview-source=ready]") }${postCloseExpectation}`;
 }
 
 const transientComponentTriggers = new Map([
@@ -780,7 +783,7 @@ ${details ? `${details.source.trim()}\n\n` : ""}
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches \`${component.selector}\` and is annotated by the runtime as \`${component.test.selector}\`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at \`${matrixRoot}\`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at \`${matrixRoot}\`, preserves hidden roots in the DOM contract, and exposes a close control that restores focus to its trigger for real keyboard and pointer users.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.

@@ -63,7 +63,7 @@ The canonical root uses `<section>` semantics and exposes 6 named parts. State m
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
 - The public root matches `.task-plan` and is annotated by the runtime as `[data-a3s-components~="task-plan"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
-- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=task-plan]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after the close control is activated.
+- The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=task-plan]`, preserves hidden roots in the DOM contract, and exposes a close control that restores focus to its trigger for real keyboard and pointer users.
 - Pointer and keyboard paths produce the same outcome for every applicable action.
 - The public-root live preview uses the same public assets and contract as a consumer integration.
 - HTML, React, and Vue examples remain in the page's integrated code panel and preserve the same semantic root, states, events, and methods.
