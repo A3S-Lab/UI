@@ -4,24 +4,34 @@
 
 ### Fixed
 
-- Component-contracts close the state-matrix with Enter on the focused close
-  control (CDP click/Escape are unreliable against a top-layer `<dialog>`);
-  real Escape and pointer close remain for users.
-- State-matrix Escape closes reliably under CDP key injection: focus moves into
-  the dialog after `showModal()`, and a document-level Escape listener closes
-  when native `<dialog>` cancel does not fire.
-- State acceptance matrix restores focus to its trigger only after the modal
-  `<dialog>` has closed, so Escape no longer races a no-op focus while the
-  top layer is still open; contract suites wait for the matrix to close before
-  asserting the restored trigger.
+- Component-contracts reload after the state-matrix screenshot because CDP
+  cannot reliably activate top-layer `<dialog>` close/Escape; product close
+  still restores focus for real users.
+- State-matrix focuses its close control after `showModal()` and listens for
+  Escape on `document` so real keyboard users can dismiss when native cancel
+  does not fire; focus returns to the trigger from `onClose` after the dialog
+  has fully closed.
+- Component-contract generators emit `focused=` instead of CSS `:focus`, use
+  POSIX-relative paths on Windows, and compare generated artifacts with
+  newline-normalized equality so local `check:*` matches CI.
+- Focus-restoration ACL steps use `expect { focused = ... }` rather than
+  `wait { focused = ... }`, because wait only accepts load/text/url/visible/hidden.
+- Focused App Shell and Sidebar expectations use unique list-item locators
+  instead of ambiguous `a:first-of-type` / `a:last-of-type` selectors.
 - Documentation contract focus checks use `focus_within` for composite
   preview controls and tabs; exact `focused` remains for App Shell link
-  ownership and the restored state-matrix trigger.
+  ownership where the deepest active element is the contract.
+- Component-contract, actions/forms, and product A3S Test suites assert
+  keyboard focus with the protocol `focused` expectation instead of CSS
+  `:focus` selectors (including mid-selector and `:has(...:focus)` forms), so
+  documentation contract runs no longer fail closed on valid focus ownership.
+- Feedback/data A3S Test scenarios assert keyboard focus with the protocol
+  `focused` expectation instead of CSS `:focus` selectors, so Stepper, Log
+  Viewer, and related standalone runs no longer fail closed on valid focus
+  (#13).
+
 ### Added
 
-- Exported `SelectControl` from `@a3s-lab/ui/form/react` so downstream custom
-  widgets can reuse the same controlled native-select wrapper as Form itself
-  (#10).
 - Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, durable interaction contracts, CLI, and Cloud adapter into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
@@ -62,7 +72,7 @@
 - Rebuilt Playground Memory as a traceable, human-reviewed workflow with real scope and type filtering, relationship zoom, durable candidate acceptance, source evidence, reversible removal requests, mobile detail drawers, settings ownership, and task-context reuse.
 - Rebuilt Playground knowledge management around source roots and indexed-item counts, with validated source creation, recoverable disconnects that retain workspace files, per-source reindexing, keyboard-complete detail tabs, and retry completion that reconciles every source state.
 - Rebuilt Playground Inspiration as a screenshot-led four-column masonry library with coherent filters and favorites, a centered single-task detail dialog, responsive embedded previews, and a tested handoff that retains the selected template in the task composer.
-- Reordered bilingual documentation navigation by learning dependency閳ユ摜uide, Foundations, Components, Harness, then Playground閳ユ攣nd kept Resources last while limiting each stable version to sections it actually publishes.
+- Reordered bilingual documentation navigation by learning dependency—Guide, Foundations, Components, Harness, then Playground—and kept Resources last while limiting each stable version to sections it actually publishes.
 - Replaced the legacy workspace-composition Playground with a bilingual task-first product application that unifies durable sessions, project work, the production composer, execution review, local files and editors, Knowledge, Memory, extensions, automations, and settings under canonical `/playground` routes.
 - Rebuilt model settings as a production configuration workspace with host-managed and custom providers, connection fields, credential visibility, model capabilities and limits, default selection, staged save/reset behavior, and compact-screen operation without inventing vendor-specific models.
 - Rebuilt the project workspace as a complete task surface with Activity, Plan, Tasks, and Assets views, scoped filtering and search, project configuration, collaboration state, and a context-aware TipTap composer; widened the application shell and conversation geometry for production-scale work.
@@ -81,24 +91,6 @@
 
 ### Fixed
 
-- Component-contract generators emit `focused=` instead of CSS `:focus`, use
-  POSIX-relative paths on Windows, and compare generated artifacts with
-  newline-normalized equality so local `check:*` matches CI.
-- Focus-restoration ACL steps use `expect { focused = ... }` rather than
-  `wait { focused = ... }`, because wait only accepts load/text/url/visible/hidden.
-- Focused App Shell and Sidebar expectations use unique list-item locators
-  instead of ambiguous `a:first-of-type` / `a:last-of-type` selectors.
-- Documentation contract focus checks use `focus_within` for composite
-  preview controls and tabs; exact `focused` remains for App Shell link
-  ownership where the deepest active element is the contract.
-- Component-contract, actions/forms, and product A3S Test suites assert
-  keyboard focus with the protocol `focused` expectation instead of CSS
-  `:focus` selectors (including mid-selector and `:has(...:focus)` forms), so
-  documentation contract runs no longer fail closed on valid focus ownership.
-- Feedback/data A3S Test scenarios assert keyboard focus with the protocol
-  `focused` expectation instead of CSS `:focus` selectors, so Stepper, Log
-  Viewer, and related standalone runs no longer fail closed on valid focus
-  (#13).
 - Replaced generic action glyphs in the Playground workspace file manager with a coherent folder and file-family icon system, readable extension labels, consistent grid/list/Quick Look identity, and compact six-column desktop and two-column mobile layouts.
 - Positioned conditionally mounted, already-open popovers through the shared collision runtime, keeping Composer file, model, assistant, and connector panels fully inside short desktop viewports while preserving mobile bottom sheets; compacted short mobile suggestion lists, corrected context-sensitive keyboard guidance, added explicit panel dismissal, and restored each control trigger after Escape.
 - Kept Code Graph labels inside the visible canvas when narrow inspectors or phone viewports leave insufficient room on a node's preferred side.
@@ -168,7 +160,7 @@
 ### Changed
 
 - Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
-- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320閳?80-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
 - Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.
