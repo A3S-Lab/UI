@@ -12,6 +12,15 @@ Recorded without promoting any component to **Verified**:
 - CUA attach refresh against locked trycua `e88e9d899ac5effaeae38619527ebaa46b26ce72` / driver **0.23.2** with embedded `source_sha`: `.gui-certification/records-local/semantic-attach.json` (passed, 113 semantic) and `window-vision-attach.json` (passed, 113 semantic, 1 visual). Daemon config: `cua-config-attach.json`.
 - Official `run-gui-certification-macos.sh` (bounded session policy) still fails fixture inventory / path capability admission on this host; attach evidence above uses the reviewed unrestricted embedded attach path preferred for local refresh.
 
+## Production release evidence (2026-09-10)
+
+Recorded without promoting any component to **Verified**:
+
+- Published `@a3s-lab/ui@0.4.0` to the public npm registry (`npm view @a3s-lab/ui version` → `0.4.0`).
+- Created GitHub release `v0.4.0` at https://github.com/A3S-Lab/UI/releases/tag/v0.4.0 with a frozen `site/docs/v0.4.0` documentation snapshot.
+- GitHub Pages deploy on `main` succeeded; live docs respond at https://a3s-lab.github.io/UI/ and https://a3s-lab.github.io/UI/v0.4.0/ with pinned install commands for `@a3s-lab/ui@0.4.0`.
+- Discord release announcement workflow still fails on this repository (same as `v0.3.0` / `v0.2.1`); publication itself does not depend on that channel.
+
 ## Status rules
 
 - **Contracted · unverified**: source, PRD, documentation, framework, and deterministic evidence paths exist, but the complete proof bundle has not been reviewed.

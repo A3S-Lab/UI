@@ -14,6 +14,7 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@a3s-lab/ui"><img alt="npm version" src="https://img.shields.io/npm/v/@a3s-lab/ui?style=flat-square&color=315fc4"></a>
   <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/en/"><img alt="Documentation in English" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/playground.html"><img alt="A3S UI Playground" src="https://img.shields.io/badge/try-Playground-2864e8?style=flat-square"></a>
