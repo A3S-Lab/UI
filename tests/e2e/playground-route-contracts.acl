@@ -16,10 +16,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-start-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=start]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=start]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=start] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=start] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=start] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-start-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=start] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -44,10 +44,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-assistant-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=assistant]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=assistant]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=assistant] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=assistant] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=assistant] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-assistant-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=assistant] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -72,10 +72,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-projects-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=projects]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=projects]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=projects] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=projects] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=projects] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-projects-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=projects] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -100,10 +100,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-project-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=project]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=project]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=project] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=project] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=project] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-project-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=project] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -128,10 +128,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-project-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=project-session]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=project-session]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=project-session] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=project-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=project-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-project-session-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=project-session] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -156,10 +156,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-capabilities-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=catalog]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=catalog]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=catalog] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=catalog] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=catalog] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-capabilities-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=catalog] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -184,10 +184,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-automations-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=automation]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=automation]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=automation] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=automation] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=automation] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-automations-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=automation] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -212,10 +212,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-memory-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=memory]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=memory]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=memory] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=memory] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=memory] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-memory-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=memory] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -240,10 +240,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-extensions-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=marketplace]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=marketplace]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=marketplace] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=marketplace] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=marketplace] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-extensions-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=marketplace] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -268,10 +268,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-files-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-files-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -296,10 +296,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-mail-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-mail-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -324,10 +324,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-documents-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-documents-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -352,10 +352,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-knowledge-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-knowledge-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -380,10 +380,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-inspiration-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=resources]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=resources] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=resources] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-inspiration-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=resources] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -408,10 +408,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=session]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=session]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=session] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=session] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-session-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=session] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }
@@ -436,10 +436,10 @@ suite "a3s-ui-playground-route-contracts" {
         screenshot "capture-desktop" { path = "playground/routes/playground-created-session-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("[data-product-application][data-view=created-session]:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("[data-product-application][data-view=created-session]:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("[data-product-application][data-view=created-session] .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("[data-product-application][data-view=created-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("[data-product-application][data-view=created-session] .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/playground-created-session-compact.png" }
         focus "focus-mobile-close" { target = css("[data-product-application][data-view=created-session] .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }

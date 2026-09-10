@@ -467,7 +467,7 @@
   }
 
   .combobox [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 max-h-72 gap-0 rounded-lg p-0 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground ring-foreground/10 max-h-72 gap-0 rounded-lg p-0 shadow-md ring-1;
   }
 
   .combobox [role="listbox"] {
@@ -537,7 +537,7 @@
   }
 
   .select:not(select) [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 rounded-lg p-1 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground ring-foreground/10 rounded-lg p-1 shadow-md ring-1;
   }
 
   .select:not(select) [role="listbox"] {
@@ -683,7 +683,7 @@
 
   /* Dropdown Menu */
   .dropdown-menu > [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground ring-foreground/10 gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-md ring-1;
   }
 
   .dropdown-menu
@@ -754,7 +754,7 @@
 
   /* Popover */
   [data-popover] {
-    @apply bg-popover text-popover-foreground ring-foreground/10 flex flex-col gap-2.5 rounded-lg p-2.5 text-sm shadow-md ring-1 duration-100;
+    @apply bg-popover text-popover-foreground ring-foreground/10 flex flex-col gap-2.5 rounded-lg p-2.5 text-sm shadow-md ring-1;
   }
   .popover > [data-popover] > header,
   .popover > [data-popover] > [data-header] {
@@ -855,7 +855,7 @@
   }
 
   /* Radio */
-  :is(.radio-group, [role="radiogroup"], [data-slot="radio-group"]) {
+  :is(.radio-group, [role="radiogroup"]) {
     @apply grid gap-2;
   }
 
@@ -1008,7 +1008,7 @@
 
   /* Field */
   .fieldset {
-    @apply gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3;
+    @apply gap-4 has-[>.radio-group]:gap-3;
   }
 
   .fieldset > legend {
@@ -1021,9 +1021,7 @@
 
     &[role="radiogroup"],
     &:has(> .field > input[type="checkbox"]:not([role="switch"])),
-    &:has(> .field > input[type="radio"]),
-    &[data-slot="checkbox-group"],
-    &[data-slot="radio-group"] {
+    &:has(> .field > input[type="radio"]) {
       @apply gap-3;
     }
   }

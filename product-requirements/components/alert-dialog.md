@@ -78,6 +78,6 @@ The canonical root uses `<dialog>` semantics and exposes 3 named parts. State mu
 - Stable root target: `[data-a3s-components~="alert-dialog"]` inside `.a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/alert-dialog-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=open]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=closed]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=open]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='open'][open])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=closed]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='closed']:not([open]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

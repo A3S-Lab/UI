@@ -83,7 +83,7 @@ The canonical root uses `<article>` semantics and exposes 4 named parts. State m
   - `ready`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=ready]:has([data-a3s-components~='resource-card'][data-a3s-state~='ready'])`
   - `selected`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=selected]:has([data-a3s-components~='resource-card'][data-a3s-state~='selected'][data-selected=true])`
   - `installed`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=installed]:has([data-a3s-components~='resource-card'][data-a3s-state~='installed'])`
-  - `unavailable`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=unavailable]:has([data-a3s-components~='resource-card'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `unavailable`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=unavailable] [data-a3s-components~='resource-card'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
   - `loading`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=loading]:has([data-a3s-components~='resource-card'][data-a3s-state~='loading'][aria-busy=true])`
   - `error`: `.a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=error]:has([data-a3s-components~='resource-card'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -236,7 +236,14 @@ export function ProductCatalogSurface({
   };
 
   const restoreFocus = (origin: HTMLElement | null) => {
-    window.requestAnimationFrame(() => origin?.focus());
+    if (!origin) return;
+    // Nested dialog close can leave focus on a dying node for one frame; wait
+    // until after layout so the origin control reliably receives keyboard focus.
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        if (origin.isConnected) origin.focus();
+      });
+    });
   };
 
   const closeDetail = () => {

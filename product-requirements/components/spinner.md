@@ -13,7 +13,7 @@
 
 ## User problem
 
-There is no dedicated Spinner component in A3S UI. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Spinner is a documented markup utility, not a controller-backed component. There is no `spinner.js` or `spinner.css`. A3S UI publishes a stable contract (`role="status"` + `animate-spin`) so HTML, React, and Vue examples share one selector for tests and adapters. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 
@@ -27,7 +27,7 @@ The host application continues to own domain data, authorization, transport, per
 
 ## Interaction contract
 
-- Canonical root: `.animate-spin[role=status]` on `<span>`.
+- Canonical root: `.animate-spin[role=status], svg.animate-spin[role=status]` on `<span>`.
 - Stable automation root: `[data-a3s-components~="spinner"]`.
 - Named parts: none; consumers must not depend on incidental descendants.
 - This is a presentation contract. It must not invent click or keyboard behavior when the composed native elements do not own an action.
@@ -57,7 +57,7 @@ The canonical root uses `<span>` semantics and exposes 0 named parts. State must
 ## Acceptance criteria
 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
-- The public root matches `.animate-spin[role=status]` and is annotated by the runtime as `[data-a3s-components~="spinner"]`.
+- The public root matches `.animate-spin[role=status], svg.animate-spin[role=status]` and is annotated by the runtime as `[data-a3s-components~="spinner"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
 - The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=spinner]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
 - Pointer and keyboard paths produce the same outcome for every applicable action.

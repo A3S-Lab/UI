@@ -60,7 +60,42 @@ function createRuntimeBundle(source) {
     .replace(/\nexport \{ componentMap, components \};\n?$/, "\n");
 }
 
-function createReactAdapter() {
+function createControllerLoadersSource(controllerSlugs) {
+  const entries = controllerSlugs
+    .map(
+      (slug) =>
+        `  ${jsString(slug)}: () => import(${jsString(`../js/${slug}.js`)}),`,
+    )
+    .join("\n");
+  return `const CONTROLLER_LOADERS = Object.freeze({
+${entries}
+});
+
+const loadedControllers = new Set();
+let baseRuntimePromise;
+
+function loadRuntime(slug) {
+  if (typeof window === "undefined") return Promise.resolve();
+  // First principles: adapters load basecoat + AI runtime once, then only the
+  // controller that owns this slug. Never pull js/all.js for a single import.
+  baseRuntimePromise ??= Promise.all([
+    import("../js/basecoat.js"),
+    import("../ai/runtime.js"),
+  ]);
+  const tasks = [baseRuntimePromise];
+  const loadController = CONTROLLER_LOADERS[slug];
+  if (loadController && !loadedControllers.has(slug)) {
+    tasks.push(
+      loadController().then(() => {
+        loadedControllers.add(slug);
+      }),
+    );
+  }
+  return Promise.all(tasks);
+}`;
+}
+
+function createReactAdapter(controllerSlugs) {
   const declarations = components
     .map((component) => {
       const exportName = kebabToPascal(component.slug);
@@ -85,15 +120,8 @@ function createReactAdapter() {
   return `import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { componentMap } from "../ai/manifest.js";
 
-let runtimePromise;
-function loadRuntime() {
-  if (typeof window === "undefined") return Promise.resolve();
-  runtimePromise ??= Promise.all([
-    import("../js/all.js"),
-    import("../ai/runtime.js"),
-  ]);
-  return runtimePromise;
-}
+${createControllerLoadersSource(controllerSlugs)}
+
 
 function reactAttributes(attributes) {
   const aliases = {
@@ -378,7 +406,7 @@ export function createA3SComponent(slug) {
       const element = localRef.current;
       if (!element) return;
       let active = true;
-      loadRuntime().then(() => {
+      loadRuntime(slug).then(() => {
         if (!active) return;
         window.a3sUI?.start();
         window.a3sUI?.initAll();
@@ -504,7 +532,7 @@ export const components: Readonly<Record<string, A3SComponent>>;
 `;
 }
 
-function createVueAdapter() {
+function createVueAdapter(controllerSlugs) {
   const declarations = components
     .map((component) => {
       const exportName = kebabToPascal(component.slug);
@@ -529,15 +557,8 @@ function createVueAdapter() {
   return `import { defineComponent, h, onBeforeUnmount, onMounted, readonly, ref, shallowRef, watch } from "vue";
 import { componentMap } from "../ai/manifest.js";
 
-let runtimePromise;
-function loadRuntime() {
-  if (typeof window === "undefined") return Promise.resolve();
-  runtimePromise ??= Promise.all([
-    import("../js/all.js"),
-    import("../ai/runtime.js"),
-  ]);
-  return runtimePromise;
-}
+${createControllerLoadersSource(controllerSlugs)}
+
 
 function mergeClassNames(...values) {
   return values.filter(Boolean).join(" ");
@@ -802,7 +823,7 @@ export function createA3SComponent(slug) {
       });
       onMounted(async () => {
         if (!root.value) return;
-        await loadRuntime();
+        await loadRuntime(slug);
         if (!active || !root.value) return;
         window.a3sUI?.start();
         window.a3sUI?.initAll();
@@ -1164,11 +1185,27 @@ async function assertCoverage() {
 await assertCoverage();
 await mkdir(path.join(outputRoot, "frameworks"), { recursive: true });
 await mkdir(path.join(outputRoot, "a3s-test"), { recursive: true });
+const controllerSlugs = (
+  await readdir(path.join(projectRoot, "src", "js"))
+)
+  .filter((file) => file.endsWith(".js") && file !== "basecoat.js")
+  .map((file) => file.slice(0, -".js".length))
+  .sort();
 const runtimeSource = await readFile(
   path.join(projectRoot, "src", "ai", "runtime.js"),
   "utf8",
 );
 const manifestJson = serializeManifest();
+const reactAdapter = createReactAdapter(controllerSlugs);
+const vueAdapter = createVueAdapter(controllerSlugs);
+if (
+  /import\(["']\.\.\/js\/all\.js["']\)/.test(reactAdapter) ||
+  /import\(["']\.\.\/js\/all\.js["']\)/.test(vueAdapter)
+) {
+  throw new Error(
+    "framework adapters must not load js/all.js; use per-controller imports",
+  );
+}
 await Promise.all([
   writeFile(path.join(outputRoot, "components.json"), `${manifestJson}\n`),
   writeFile(
@@ -1192,13 +1229,13 @@ await Promise.all([
   ),
   writeFile(
     path.join(outputRoot, "frameworks", "react.js"),
-    createReactAdapter(),
+    reactAdapter,
   ),
   writeFile(
     path.join(outputRoot, "frameworks", "react.d.ts"),
     createReactTypes(),
   ),
-  writeFile(path.join(outputRoot, "frameworks", "vue.js"), createVueAdapter()),
+  writeFile(path.join(outputRoot, "frameworks", "vue.js"), vueAdapter),
   writeFile(path.join(outputRoot, "frameworks", "vue.d.ts"), createVueTypes()),
 ]);
 

@@ -80,7 +80,7 @@ The canonical root uses `<aside>` semantics and exposes 4 named parts. State mus
 - State-matrix screenshot: `components/contracts/sidebar-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=ready]:has([data-a3s-components~='sidebar'][data-a3s-state~='ready'])`
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=false]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded'])`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed'])`
   - `hidden`: `.a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=hidden]:has([data-a3s-components~='sidebar'][data-a3s-state~='hidden'][hidden])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

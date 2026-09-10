@@ -78,7 +78,7 @@ The canonical root uses `<details>` semantics and exposes 2 named parts. State m
 - Stable root target: `[data-a3s-components~="collapsible"]` inside `.a3s-preview[data-preview-component=collapsible][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/collapsible-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:has(:scope > summary[aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled]:has([data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open] [data-a3s-components~='collapsible'][data-a3s-state~='open'][open]:has(> summary[aria-expanded=true])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed] [data-a3s-components~='collapsible'][data-a3s-state~='closed']:not([open]):has(> summary[aria-expanded=false])`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled] [data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

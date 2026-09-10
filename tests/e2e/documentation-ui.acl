@@ -292,49 +292,73 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
+        wait "preview-ready" {
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete][data-preview-source=ready]")
+        }
+
         viewport "desktop" {
             width = 1440
             height = 1000
         }
 
-        click "show-source" {
-            target = role("button", "Show integration code")
+        focus "focus-show-source" {
+            target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=source]")
+        }
+
+        press "show-source" {
+            key = "Enter"
+        }
+
+        wait "source-panel-ready" {
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-source-panel]:not([hidden])")
         }
 
         expect "highlighted-source-visible" {
-            visible = css(".a3s-preview [data-preview-source-panel]:not([hidden]) .line span[style]")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-source-panel]:not([hidden]) .line span[style]")
         }
 
-        click "use-dark-preview" {
-            target = role("button", "Preview in dark mode")
+        focus "focus-dark-preview" {
+            target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=appearance]")
+        }
+
+        press "use-dark-preview" {
+            key = "Enter"
         }
 
         expect "dark-preview-applied" {
-            visible = css(".a3s-preview[data-preview-scheme=dark] .a3s-preview__canvas.dark")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete][data-preview-scheme=dark] .a3s-preview__canvas.dark")
         }
 
-        click "use-rtl-preview" {
-            target = role("button", "Preview right-to-left layout")
+        focus "focus-rtl-preview" {
+            target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=direction]")
+        }
+
+        press "use-rtl-preview" {
+            key = "Enter"
         }
 
         expect "rtl-preview-applied" {
-            visible = css(".a3s-preview[data-preview-direction=rtl] .a3s-preview__canvas[dir=rtl]")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete][data-preview-direction=rtl] .a3s-preview__canvas[dir=rtl]")
         }
 
-        click "use-phone-width" {
-            target = role("button", "Phone width")
+        focus "focus-phone-width" {
+            target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=viewport][data-preview-viewport-option=phone]")
+        }
+
+        press "use-phone-width" {
+            key = "Enter"
         }
 
         expect "phone-width-applied" {
-            visible = css(".a3s-preview[data-preview-viewport=phone] button[aria-label='Phone width'][aria-pressed=true]")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-viewport=phone] [data-preview-control=viewport][data-preview-viewport-option=phone][aria-pressed=true]")
         }
 
         expect "phone-shell-visible" {
-            visible = css(".a3s-preview[data-preview-viewport=phone] .a3s-preview__viewport-shell")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-viewport=phone] .a3s-preview__viewport-shell")
         }
 
         expect "phone-frame-visible" {
-            visible = css(".a3s-preview[data-preview-viewport=phone] iframe[title='Common actions phone preview']")
+            visible = css(".a3s-preview[data-preview-component=button][data-preview-viewport=phone] .a3s-preview__viewport-shell iframe[title$='phone preview']")
         }
 
         screenshot "preview-tooling-evidence" {
@@ -368,20 +392,32 @@ suite "a3s-ui-site-and-overlays" {
             visible = css(".a3s-responsive-navigation > summary")
         }
 
-        click "open-navigation" {
-            target = role("button", "打开主导航")
+        focus "focus-open-navigation" {
+            target = css(".a3s-responsive-navigation > summary")
+        }
+
+        press "open-navigation" {
+            key = "Enter"
         }
 
         expect "navigation-open" {
             visible = css(".a3s-responsive-navigation[open] .a3s-responsive-navigation__surface")
         }
 
-        click "open-language-switcher" {
+        focus "focus-language-switcher" {
             target = css(".a3s-responsive-navigation [data-preference=language] > summary")
         }
 
-        click "switch-to-english" {
+        press "open-language-switcher" {
+            key = "Enter"
+        }
+
+        focus "focus-english" {
             target = css(".a3s-responsive-navigation [data-preference=language] a[lang=en]")
+        }
+
+        press "switch-to-english" {
+            key = "Enter"
         }
 
         wait "english-route-loaded" {
@@ -396,8 +432,12 @@ suite "a3s-ui-site-and-overlays" {
             load = "networkidle"
         }
 
-        click "open-component-navigation" {
-            target = role("button", "Open primary navigation")
+        focus "focus-component-navigation" {
+            target = css(".a3s-responsive-navigation > summary")
+        }
+
+        press "open-component-navigation" {
+            key = "Enter"
         }
 
         expect "english-guide-is-first" {
@@ -436,8 +476,12 @@ suite "a3s-ui-site-and-overlays" {
             url = "http://127.0.0.1:4178/UI/v0.1.0/en/components/button.html"
         }
 
-        click "open-versioned-navigation" {
-            target = role("button", "Open primary navigation")
+        focus "focus-versioned-navigation" {
+            target = css(".a3s-responsive-navigation > summary")
+        }
+
+        press "open-versioned-navigation" {
+            key = "Enter"
         }
 
         expect "versioned-guide-is-first" {
@@ -545,8 +589,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
-        click "trigger-dropdown" {
+        focus "focus-dropdown" {
             target = css("#demo-dropdown-menu-trigger")
+        }
+
+        press "trigger-dropdown" {
+            key = "Enter"
         }
 
         wait "overlay-ready" {
@@ -579,8 +627,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
-        click "trigger-popover" {
+        focus "focus-popover" {
             target = css("#demo-popover-trigger")
+        }
+
+        press "trigger-popover" {
+            key = "Enter"
         }
 
         wait "overlay-ready" {
@@ -613,8 +665,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
-        click "trigger-select" {
+        focus "focus-select" {
             target = css("#select-demo-trigger")
+        }
+
+        press "trigger-select" {
+            key = "Enter"
         }
 
         wait "overlay-ready" {
@@ -647,8 +703,12 @@ suite "a3s-ui-site-and-overlays" {
             visible = css("html:not([data-a3s-defer-init])")
         }
 
-        click "trigger-combobox" {
+        focus "focus-combobox" {
             target = css("#framework-combobox > input[role=combobox]")
+        }
+
+        press "trigger-combobox" {
+            key = "ArrowDown"
         }
 
         wait "overlay-ready" {

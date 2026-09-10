@@ -191,5 +191,5 @@ Automation cannot prove real iOS and Android touch targeting, switch-control or 
 - State-matrix screenshot: `components/contracts/button-group-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=ready]:has([data-a3s-components~='button-group'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=disabled]:has([data-a3s-components~='button-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=disabled] [data-a3s-components~='button-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

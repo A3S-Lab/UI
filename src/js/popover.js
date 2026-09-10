@@ -31,11 +31,22 @@
   };
 
   const focusAutofocusElement = (state) => {
-    const element = state.content.querySelector("[autofocus]");
+    const element =
+      state.content.querySelector("[autofocus]") ||
+      state.content.querySelector(
+        [
+          "input:not([disabled]):not([type=hidden])",
+          "textarea:not([disabled])",
+          "select:not([disabled])",
+          "button:not([disabled])",
+          '[href]',
+          '[tabindex]:not([tabindex="-1"])',
+        ].join(", "),
+      );
     if (!(element instanceof HTMLElement)) return;
 
     window.cancelAnimationFrame(state.focusFrame);
-    let remainingAttempts = 2;
+    let remainingAttempts = 8;
     const focus = () => {
       state.focusFrame = 0;
       if (
@@ -44,13 +55,15 @@
       ) {
         return;
       }
+      // Force style resolution after aria-hidden flips visibility/display.
+      void state.content.offsetHeight;
       element.focus({ preventScroll: true });
       if (document.activeElement !== element && remainingAttempts > 0) {
         remainingAttempts -= 1;
         state.focusFrame = window.requestAnimationFrame(focus);
       }
     };
-    state.focusFrame = window.requestAnimationFrame(focus);
+    focus();
   };
 
   const initPopover = (root) => {

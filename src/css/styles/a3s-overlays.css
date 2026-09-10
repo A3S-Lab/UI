@@ -113,7 +113,7 @@
 
   /* Dropdown Menu */
   .dropdown-menu > [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
+    @apply bg-popover text-popover-foreground border border-border gap-0 overflow-x-hidden overflow-y-auto rounded-lg p-1 shadow-[var(--a3s-shadow-soft)];
   }
 
   .dropdown-menu
@@ -182,9 +182,9 @@
     @apply text-accent-foreground;
   }
 
-  /* Popover */
+  /* Popover — no duration: open must be immediately observable (see popover.css). */
   [data-popover] {
-    @apply bg-popover text-popover-foreground border border-border flex flex-col gap-4 rounded-lg p-4 text-sm shadow-[var(--a3s-shadow-soft)] duration-[var(--a3s-motion-normal)];
+    @apply bg-popover text-popover-foreground border border-border flex flex-col gap-4 rounded-lg p-4 text-sm shadow-[var(--a3s-shadow-soft)];
   }
   .popover > [data-popover] > header,
   .popover > [data-popover] > [data-header] {

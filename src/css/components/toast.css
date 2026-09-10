@@ -14,8 +14,17 @@
     &[data-align="center"] {
       @apply left-1/2 -translate-x-1/2;
     }
+    /* Instant open: do not animate from off-viewport/opacity 0. CSS waits only
+       check DOM presence; a3s-test expects use real visibility, and users should
+       observe the toast as soon as it is announced. Exit may still collapse. */
     .toast {
-      @apply pointer-events-auto grid w-full min-w-0 grid-rows-[1fr] animate-[toast-up_180ms_ease-out] transition-[grid-template-rows,opacity] duration-200 ease-out;
+      @apply pointer-events-auto grid w-full min-w-0 grid-rows-[1fr] opacity-100;
+
+      @media (prefers-reduced-motion: no-preference) {
+        transition:
+          grid-template-rows 200ms ease-out,
+          opacity 200ms ease-out;
+      }
 
       .toast-content {
         @apply flex min-h-10 min-w-0 items-start gap-2 overflow-hidden px-3 py-2 text-[11px] leading-4;
@@ -46,8 +55,7 @@
         }
       }
       &[aria-hidden="true"] {
-        @apply grid-rows-[0fr] overflow-hidden border-0 p-0 opacity-0;
-        visibility: hidden;
+        @apply pointer-events-none grid-rows-[0fr] overflow-hidden border-0 p-0 opacity-0;
 
         .toast-content {
           @apply min-h-0 border-0 py-0;
@@ -60,11 +68,5 @@
     .toaster {
       max-width: none;
     }
-  }
-}
-@keyframes toast-up {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
   }
 }

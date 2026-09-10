@@ -15,6 +15,7 @@ suite "a3s-ui-product-action-icon-semantics" {
 
         click "back-to-task" { target = css("a[aria-label='返回新建任务']") }
         wait "task-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
+        wait "task-composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
         expect "task-composer" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
 
         screenshot "result" { path = "product/action-icons-mail-back.png" }
@@ -84,7 +85,7 @@ suite "a3s-ui-product-action-icon-semantics" {
         expect "playground-icon-contract" { visible = css("[data-composer-resource-picker=assistant] svg[data-icon]") }
         expect "assistant-picker-icon" { visible = css("[data-composer-resource-picker=assistant] > header > span > svg[data-icon=assistant]") }
         expect "assistant-search-focused" { visible = css("[data-composer-resource-picker=assistant] [data-resource-picker-search]:focus-within input:focus-visible") }
-        expect "assistant-option-icon" { visible = css("[data-composer-resource-picker=assistant] [role=option] svg[data-icon=assistant]") }
+        expect "assistant-option-avatar" { visible = css("[data-composer-resource-picker=assistant] [role=option] [data-expert-avatar]") }
         screenshot "assistant-picker" { path = "product/action-icons-composer-assistant.png" }
         click "attach-assistant" { target = css("[data-composer-resource-picker=assistant] [role=option]:first-child") }
         expect "assistant-attached" { visible = css("[data-composer-resources] [data-resource-kind=assistant]") }
@@ -305,7 +306,8 @@ suite "a3s-ui-product-action-icon-semantics" {
         accessibility "inspiration-accessibility" { path = "product/action-icons-inspiration-accessibility.json" interactive = true }
         click "create-task" { target = role("button", "一键创建任务") }
         wait "task-url" { url = "http://127.0.0.1:4178/UI/playground.html" }
-        expect "template-attached" { visible = css("[data-composer-resources] [data-resource-id='inspiration:personal-workbench']") }
+        wait "task-composer-ready" { visible = css(".product-start [role=textbox][aria-label='任务指令']") }
+        expect "template-attached" { visible = css(".product-start [data-composer-resources] [data-resource-id='inspiration:personal-workbench']") }
 
         screenshot "result" { path = "product/action-icons-inspiration-task.png" }
         console "console" { path = "product/action-icons-inspiration-console.json" clear = false }

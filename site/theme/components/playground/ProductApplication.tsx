@@ -133,8 +133,19 @@ export function ProductApplication() {
       if (!query.matches) setMobileOpen(false);
     };
     update();
+    // CDP Emulation.setDeviceMetricsOverride does not reliably emit matchMedia
+    // "change" or window "resize". Observe layout width and visualViewport too.
     query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    window.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("resize", update);
+    const observer = new ResizeObserver(update);
+    observer.observe(document.documentElement);
+    return () => {
+      query.removeEventListener("change", update);
+      window.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("resize", update);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {

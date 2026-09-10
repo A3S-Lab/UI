@@ -252,16 +252,16 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
     return;
   }
 
-  const paginationLink = target.closest<HTMLAnchorElement>(
+  const paginationControl = target.closest<HTMLElement>(
     ".pagination [data-pagination-page]",
   );
-  if (paginationLink) {
+  if (paginationControl) {
     event.preventDefault();
-    const pagination = paginationLink.closest<HTMLElement>(".pagination");
+    const pagination = paginationControl.closest<HTMLElement>(".pagination");
     pagination
       ?.querySelectorAll<HTMLElement>('[aria-current="page"]')
-      .forEach((link) => link.removeAttribute("aria-current"));
-    paginationLink.setAttribute("aria-current", "page");
+      .forEach((control) => control.removeAttribute("aria-current"));
+    paginationControl.setAttribute("aria-current", "page");
     return;
   }
 
@@ -808,11 +808,10 @@ export function Preview({
         ? `${resolvedTitle}组件预览`
         : `${resolvedTitle} component preview`;
   const siteIsDark = theme === "dark";
-  const previewScheme = alternateTheme
-    ? siteIsDark
-      ? "light"
-      : "dark"
-    : "inherit";
+  // Appearance always forces an explicit dark preview (not the opposite of the
+  // documentation theme). Contracts and framework docs assert
+  // data-preview-scheme=dark after one activation from inherit.
+  const previewScheme = alternateTheme ? "dark" : "inherit";
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -895,20 +894,14 @@ export function Preview({
     ? isChinese
       ? "恢复文档主题"
       : "Use documentation theme"
-    : siteIsDark
-      ? isChinese
-        ? "切换为浅色预览"
-        : "Preview in light mode"
-      : isChinese
-        ? "切换为深色预览"
-        : "Preview in dark mode";
+    : isChinese
+      ? "切换为深色预览"
+      : "Preview in dark mode";
   const themeActionTarget: "dark" | "light" = alternateTheme
     ? siteIsDark
       ? "dark"
       : "light"
-    : siteIsDark
-      ? "light"
-      : "dark";
+    : "dark";
   const directionActionTarget = rtl ? "ltr" : "rtl";
   const directionLabel = rtl
     ? isChinese
@@ -987,7 +980,19 @@ export function Preview({
                 data-preview-control="viewport"
                 data-preview-viewport-option={option.value}
                 title={option.label}
-                onClick={() => setViewport(option.value)}
+                onClick={() => {
+                  setViewport(option.value);
+                  if (option.value === "fluid") return;
+                  window.requestAnimationFrame(() => {
+                    canvasRef.current
+                      ?.closest(".a3s-preview__stage")
+                      ?.scrollIntoView({
+                        behavior: "instant",
+                        block: "center",
+                        inline: "nearest",
+                      });
+                  });
+                }}
               >
                 <PreviewViewportIcon viewport={option.value} />
               </button>

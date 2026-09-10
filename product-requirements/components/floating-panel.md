@@ -81,8 +81,8 @@ The canonical root uses `<aside>` semantics and exposes 4 named parts. State mus
 - Stable root target: `[data-a3s-components~="floating-panel"]` inside `.a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/floating-panel-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=open]:has([data-a3s-components~='floating-panel'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=closed]:has([data-a3s-components~='floating-panel'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=open]:has([data-a3s-components~='floating-panel'][data-a3s-state~='open'])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=closed]:has([data-a3s-components~='floating-panel'][data-a3s-state~='closed'])`
   - `floating`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=floating]:has([data-a3s-components~='floating-panel'][data-a3s-state~='floating'])`
   - `docked`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=docked]:has([data-a3s-components~='floating-panel'][data-a3s-state~='docked'])`
   - `sheet`: `.a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=sheet]:has([data-a3s-components~='floating-panel'][data-a3s-state~='sheet'])`

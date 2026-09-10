@@ -33,7 +33,8 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/collapsible.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "close-details" { target = css(".a3s-preview[data-preview-component=collapsible] summary") }
+        focus "focus-summary" { target = css(".a3s-preview[data-preview-component=collapsible] summary") }
+        press "close-details" { key = "Enter" }
         expect "closed-root-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible:not([open])") }
         press "reopen-details" { key = "Enter" }
         expect "content-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible[open] [data-collapsible-content]") }
@@ -81,7 +82,9 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/editable-text.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "begin-edit" { target = css(".a3s-preview[data-preview-component=editable-text] [data-editable-action=edit]") }
+        focus "focus-begin-edit" { target = css(".a3s-preview[data-preview-component=editable-text] [data-editable-action=edit]") }
+        press "begin-edit" { key = "Enter" }
+        wait "edit-mode" { visible = css(".a3s-preview[data-preview-component=editable-text] .editable-text[data-state=editing] input[aria-label=Title]") }
         fill "change-title" { target = css(".a3s-preview[data-preview-component=editable-text] input[aria-label=Title]") value = "Release plan" }
         press "commit-title" { key = "Enter" }
         expect "title-committed" { text = "Release plan" }
@@ -277,7 +280,8 @@ suite "a3s-ui-expanded-contracts" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/table-of-contents.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "open-contract" { target = css(".a3s-preview[data-preview-component=table-of-contents] a[href='#contract']") }
+        focus "focus-contract" { target = css(".a3s-preview[data-preview-component=table-of-contents] a[href='#contract']") }
+        press "open-contract" { key = "Enter" }
         expect "contract-current" { visible = css(".a3s-preview[data-preview-component=table-of-contents] a[href='#contract'][aria-current=location]") }
     }
 }

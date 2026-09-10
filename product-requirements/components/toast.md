@@ -81,9 +81,9 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - Stable root target: `[data-a3s-components~="toast"]` inside `.a3s-preview[data-preview-component=toast][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/toast-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=open]:has([data-a3s-components~='toast'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=open]:has([data-a3s-components~='toast'][data-a3s-state~='open'])`
   - `closing`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closing]:has([data-a3s-components~='toast'][data-a3s-state~='closing'][aria-busy=true])`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closed]:has([data-a3s-components~='toast'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closed]:has([data-a3s-components~='toast'][data-a3s-state~='closed'])`
   - `success`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=success]:has([data-a3s-components~='toast'][data-a3s-state~='success'])`
   - `warning`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=warning]:has([data-a3s-components~='toast'][data-a3s-state~='warning'])`
   - `danger`: `.a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=danger]:has([data-a3s-components~='toast'][data-a3s-state~='danger'])`

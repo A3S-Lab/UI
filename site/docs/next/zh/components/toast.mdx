@@ -3,9 +3,22 @@
 Toast 在任务继续进行时提供短暂、非阻塞的结果反馈，并为重要后续操作保留可访问路径。
 
 <Preview class="max-w-md">
-<div id="toaster" class="toaster"></div>
+<div id="toaster" class="toaster">
+  <div class="toast" role="status" aria-atomic="true" aria-hidden="false" data-category="success" data-duration="-1">
+    <div class="toast-content"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+      <div class="toast-body">
+        <strong>操作成功</strong>
+        <p>更改已保存，可以继续当前任务。</p>
+      </div>
+      <footer>
+        <button type="button" class="btn" data-toast-action>关闭</button>
+      </footer>
+    </div>
+  </div>
+</div>
 <button
   class="btn" data-variant="outline"
+  data-preview-onclick
   onclick="document.getElementById('toaster').toast({
     category: 'success',
     title: '操作成功',

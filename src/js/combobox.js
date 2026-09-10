@@ -476,7 +476,8 @@
         syncClearButton(state);
       }
     };
-    const handleTriggerClick = () => {
+    const handleTriggerClick = (event) => {
+      if (event.detail === 0) return;
       if (state.popover.getAttribute('aria-hidden') === 'false') {
         root.close(false);
       } else {

@@ -80,6 +80,6 @@ The canonical root uses `<a>` semantics and exposes 3 named parts. State must be
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=ready]:has([data-a3s-components~='message-citation'][data-a3s-state~='ready'])`
   - `visited`: `.a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=visited]:has([data-a3s-components~='message-citation'][data-a3s-state~='visited'][aria-current])`
-  - `unavailable`: `.a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=unavailable]:has([data-a3s-components~='message-citation'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `unavailable`: `.a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=unavailable] [data-a3s-components~='message-citation'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
   - `error`: `.a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=error]:has([data-a3s-components~='message-citation'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

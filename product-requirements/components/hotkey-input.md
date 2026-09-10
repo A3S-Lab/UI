@@ -82,6 +82,6 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=ready]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='ready'])`
   - `recording`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=recording]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='recording'][aria-busy=true])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=disabled]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=invalid]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=disabled] [data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=invalid] [data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -722,6 +722,21 @@
       }
       if (event.key === "Enter" || event.key === " ") {
         handleSelectionIntent(event, "keyboard");
+        return;
+      }
+      // F2 is the standard file-manager rename shortcut. Prefer it over
+      // Shift+F10/ContextMenu under CDP, where Chromium often steals F10 for
+      // browser chrome and drops focus to document.body.
+      if (event.key === "F2") {
+        const item =
+          event.target?.closest?.('[role="treeitem"]') || state.selection.item;
+        if (!item || !state.tree.contains(item)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        root.beginRename(item, {
+          originalEvent: event,
+          source: "keyboard",
+        });
       }
     };
     const handleTreeChange = (event) => {

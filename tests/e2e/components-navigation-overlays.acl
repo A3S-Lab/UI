@@ -9,7 +9,8 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=activity-bar] .activity-bar nav") }
-        click "open-traces" { target = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces']") }
+        focus "focus-traces" { target = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces']") }
+        press "open-traces" { key = "Enter" }
         expect "traces-current" { visible = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces'][aria-current=page]") }
         screenshot "activity-bar-current" { path = "components/activity-bar-current.png" }
     }
@@ -35,7 +36,8 @@ suite "a3s-ui-navigation-and-overlays" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "activate-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
+        focus "focus-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
+        press "activate-second-tab" { key = "Enter" }
         expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
         expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
         viewport "compact-rtl" { width = 390 height = 844 }
@@ -55,7 +57,8 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
         expect "component-visible" { visible = css(".a3s-preview[data-preview-component=pagination] nav.pagination") }
-        click "select-page-three" { target = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][data-size=icon]") }
+        focus "focus-page-three" { target = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][data-size=icon]") }
+        press "select-page-three" { key = "Enter" }
         expect "page-three-current" { visible = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][aria-current=page]") }
         screenshot "pagination-phone" { path = "components/pagination-phone.png" }
     }
@@ -68,11 +71,16 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
-        click "toggle-sidebar" { target = role("button", "Toggle sidebar") }
+        focus "focus-toggle-sidebar" { target = css(".a3s-sidebar-demo > main button") }
+        press "toggle-sidebar" { key = "Enter" }
         expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
+        wait "mobile-toggle-ready" { visible = css(".a3s-sidebar-demo > main button") }
+        focus "focus-open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
+        press "open-mobile-sidebar" { key = "Enter" }
+        wait "mobile-sidebar-open-wait" { visible = css("#demo-sidebar[aria-hidden=false]") }
         expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
+        wait "mobile-navigation-focus-wait" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
         expect "mobile-navigation-focused" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
         screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
         press "close-mobile-sidebar" { key = "Escape" }
@@ -88,11 +96,13 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
+        focus "focus-open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
+        press "open-dialog" { key = "Enter" }
         wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=alert-dialog] [data-a3s-components~='alert-dialog'][role='alertdialog'][open] > div") }
         expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
         screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
-        click "cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
+        focus "focus-cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
+        press "cancel-dialog" { key = "Enter" }
         expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']:focus") }
     }
 
@@ -104,7 +114,8 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-dialog" { target = role("button", "Open Dialog") }
+        focus "focus-open-dialog" { target = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button") }
+        press "open-dialog" { key = "Enter" }
         wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=dialog] [data-a3s-components~='dialog'][open] > div") }
         fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
         screenshot "dialog-phone" { path = "components/dialog-phone.png" }
@@ -120,10 +131,14 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-drawer" { target = role("button", "Open Drawer") }
+        wait "drawer-trigger" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button[data-preview-onclick*='demo-drawer']") }
+        focus "focus-open-drawer" { target = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button[data-preview-onclick*='demo-drawer']") }
+        press "open-drawer" { key = "Enter" }
+        wait "drawer-open-wait" { visible = css("#demo-drawer[open]") }
         expect "drawer-open" { visible = css("#demo-drawer[open]") }
         screenshot "drawer-phone" { path = "components/drawer-phone.png" }
-        click "cancel-drawer" { target = role("button", "Cancel") }
+        focus "focus-cancel-drawer" { target = css("#demo-drawer button[data-preview-onclick*='close']") }
+        press "cancel-drawer" { key = "Enter" }
         wait "drawer-close-animation" { load = "networkidle" }
         expect "drawer-trigger-restored" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button:focus") }
     }
@@ -135,7 +150,9 @@ suite "a3s-ui-navigation-and-overlays" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "open-menu" { target = css("#demo-dropdown-menu-trigger") }
+        wait "trigger-ready" { visible = css("#demo-dropdown-menu-trigger") }
+        focus "focus-trigger" { target = css("#demo-dropdown-menu-trigger") }
+        press "open-menu" { key = "Enter" }
         expect "menu-visible" { visible = css("#demo-dropdown-menu [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-overlay-open]") }
         screenshot "dropdown" { path = "components/dropdown-menu.png" }
@@ -149,9 +166,12 @@ suite "a3s-ui-navigation-and-overlays" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "open-popover" { target = css("#demo-popover-trigger") }
+        focus "focus-open-popover" { target = css("#demo-popover-trigger") }
+        press "open-popover" { key = "Enter" }
+        wait "wait-popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
+        wait "wait-popover-input-focused" { visible = css("#demo-popover-width:focus") }
         expect "popover-input-focused" { visible = css("#demo-popover-width:focus") }
         fill "edit-popover-width" { target = css("#demo-popover-width") value = "72%" }
         screenshot "popover-phone" { path = "components/popover-phone.png" }

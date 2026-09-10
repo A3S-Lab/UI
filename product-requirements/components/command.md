@@ -84,6 +84,6 @@ The canonical root uses `<div>` semantics and exposes 5 named parts. State must 
   - `ready`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=ready]:has([data-a3s-components~='command'][data-a3s-state~='ready'])`
   - `empty`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=empty]:has([data-a3s-components~='command'][data-a3s-state~='empty'])`
   - `loading`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=loading]:has([data-a3s-components~='command'][data-a3s-state~='loading'][aria-busy=true])`
-  - `open`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=open]:has([data-a3s-components~='command'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=closed]:has([data-a3s-components~='command'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=open]:has([data-a3s-components~='command'][data-a3s-state~='open'])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=command] [data-state-specimen=closed]:has([data-a3s-components~='command'][data-a3s-state~='closed'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

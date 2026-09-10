@@ -29,7 +29,7 @@ The host application continues to own domain data, authorization, transport, per
 
 ## Interaction contract
 
-- Canonical root: `[data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]` on `<button>`.
+- Canonical root: `[data-a3s-theme-toggle]` on `<button>`.
 - Stable automation root: `[data-a3s-components~="theme-switcher"]`.
 - Named parts: none; consumers must not depend on incidental descendants.
 - Supported interaction intents: `click`, `focus`. Each intent targets the documented root or named part and must remain scoped to one instance.
@@ -60,7 +60,7 @@ The canonical root uses `<button>` semantics and exposes 0 named parts. State mu
 ## Acceptance criteria
 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
-- The public root matches `[data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]` and is annotated by the runtime as `[data-a3s-components~="theme-switcher"]`.
+- The public root matches `[data-a3s-theme-toggle]` and is annotated by the runtime as `[data-a3s-components~="theme-switcher"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
 - The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=theme-switcher]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
 - Pointer and keyboard paths produce the same outcome for every applicable action.

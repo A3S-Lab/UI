@@ -78,7 +78,7 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - Stable root target: `[data-a3s-components~="switch"]` inside `.a3s-preview[data-preview-component=switch][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/switch-states.png`.
 - Per-state evidence selectors:
-  - `checked`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=checked]:has([data-a3s-components~='switch'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))`
-  - `unchecked`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=unchecked]:has([data-a3s-components~='switch'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false])))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=disabled]:has([data-a3s-components~='switch'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `checked`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=checked] [data-a3s-components~='switch'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true]))`
+  - `unchecked`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=unchecked] [data-a3s-components~='switch'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false]))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=disabled] [data-a3s-components~='switch'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

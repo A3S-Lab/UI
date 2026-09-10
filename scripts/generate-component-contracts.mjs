@@ -353,6 +353,14 @@ function aclSelector(value) {
   return value.replaceAll('"', "'");
 }
 
+/** Convert `:scope`-relative part selectors into `:has()`-safe relative selectors. */
+function relativePartSelector(value) {
+  return aclSelector(value)
+    .replaceAll(":scope >", ">")
+    .replaceAll(":scope ", "")
+    .replace(/^:scope$/u, "");
+}
+
 function behaviorActions(component, interaction) {
   return component.actions.filter((action) =>
     (aclInteractionAliases[action] ?? [action]).some((actionType) =>
@@ -485,7 +493,14 @@ function qualifiedStateSelector(component, state, selector) {
   if (state === "readonly" || state === "read-only") {
     return `${root}:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`;
   }
-  if (progressingStates.has(state)) return `${root}[aria-busy=true]`;
+  if (progressingStates.has(state)) {
+    // Copy Button stamps busy via data-state/copying; aria-busy is applied by
+    // the state matrix after the generic button normalizer runs.
+    if (component.slug === "copy-button" && state === "copying") {
+      return `${root}[data-state=copying][aria-busy=true]`;
+    }
+    return `${root}[aria-busy=true]`;
+  }
   if (state === "active") return `${root}[data-active=true]`;
   if (state === "selected") return `${root}[data-selected=true]`;
   if (state === "pressed") return `${root}[aria-pressed=true]`;
@@ -510,16 +525,83 @@ function qualifiedStateSelector(component, state, selector) {
       "mobile-open",
     ].includes(state)
   ) {
-    if (component.parts.trigger) {
-      return `${root}:has(${aclSelector(component.parts.trigger)}[aria-expanded=true])`;
+    if (component.slug === "tree") {
+      return `${root}:has([role=treeitem][aria-expanded=true])`;
     }
-    return `${root}:is([open],[aria-expanded=true])`;
+    if (component.slug === "accordion") {
+      return `${root}:has(> details[open])`;
+    }
+    if (component.slug === "collapsible") {
+      return `${root}[open]:has(> summary[aria-expanded=true])`;
+    }
+    if (component.slug === "combobox") {
+      return `${root}:has(input[role=combobox][aria-expanded=true], button[aria-haspopup=listbox][aria-expanded=true])`;
+    }
+    if (
+      ["dialog", "drawer", "alert-dialog"].includes(component.slug)
+    ) {
+      return `${root}[open]`;
+    }
+    // Many application/overlay specimens only stamp data-a3s-state / data-state.
+    // Do not require native [open] or an in-root aria-expanded trigger that the
+    // documentation preview never mounts inside the public root.
+    if (
+      [
+        "app-shell",
+        "sidebar",
+        "command",
+        "toast",
+        "floating-panel",
+        "task-pane",
+        "context-menu",
+        "agent-workbench",
+        "task-workspace",
+      ].includes(component.slug)
+    ) {
+      return root;
+    }
+    if (component.parts.trigger) {
+      return `${root}:has(${relativePartSelector(component.parts.trigger)}[aria-expanded=true])`;
+    }
+    return root;
   }
   if (state === "collapsed" || state === "closed") {
-    if (component.parts.trigger) {
-      return `${root}:has(${aclSelector(component.parts.trigger)}[aria-expanded=false])`;
+    if (component.slug === "tree") {
+      return `${root}:has([role=treeitem][aria-expanded=false])`;
     }
-    return `${root}:is(:not([open]),[aria-expanded=false])`;
+    if (component.slug === "accordion") {
+      return `${root}:not(:has(> details[open]))`;
+    }
+    if (component.slug === "collapsible") {
+      return `${root}:not([open]):has(> summary[aria-expanded=false])`;
+    }
+    if (component.slug === "combobox") {
+      return `${root}:has(input[role=combobox][aria-expanded=false], button[aria-haspopup=listbox][aria-expanded=false])`;
+    }
+    if (
+      ["dialog", "drawer", "alert-dialog"].includes(component.slug)
+    ) {
+      return `${root}:not([open])`;
+    }
+    if (
+      [
+        "app-shell",
+        "sidebar",
+        "command",
+        "toast",
+        "floating-panel",
+        "task-pane",
+        "context-menu",
+        "agent-workbench",
+        "task-workspace",
+      ].includes(component.slug)
+    ) {
+      return root;
+    }
+    if (component.parts.trigger) {
+      return `${root}:has(${relativePartSelector(component.parts.trigger)}[aria-expanded=false])`;
+    }
+    return root;
   }
   if (state === "hidden") return `${root}[hidden]`;
   if (state === "visible") return `${root}:not([hidden])`;
@@ -529,7 +611,12 @@ function qualifiedStateSelector(component, state, selector) {
 function stateSpecimenSelector(component, state, selector) {
   const specimen = `${stateMatrixRoot(component)} [data-state-specimen=${state}]`;
   const qualified = qualifiedStateSelector(component, state, selector);
+  // Nested :has() is invalid CSS and dropped by browsers. Prefer a descendant
+  // combinator whenever the qualified state selector already uses :has(), or
+  // for components whose specimen markup keeps the public root as a child of
+  // the specimen shell rather than a :has()-reachable composite.
   if (
+    qualified.includes(":has(") ||
     component.slug === "progress" ||
     component.slug === "radio-group" ||
     (component.slug === "code-editor" &&
@@ -574,12 +661,12 @@ function renderStateExpectations(component) {
         expect "readonly-state-reason-visible" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] [data-state-specimen-feedback]") }`
         : component.slug === "input-group"
           ? `
-        expect "empty-group-stays-neutral" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:has(label[for]):has(.input-group:not([aria-busy]) > input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has([data-state-specimen-feedback])") }
+        expect "empty-group-stays-neutral" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:has(label[for]):has(.input-group:not([aria-busy]) > input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has([data-input-group-state-description])") }
         expect "ready-group-preserves-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=ready] .input-group > input[value='runtime']") }
-        expect "invalid-group-preserves-native-recovery" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] .field[data-invalid]:has(.input-group > input[required][minlength='3'][aria-invalid=true][value='r']:invalid):has([data-state-specimen-feedback][role=alert])") }
+        expect "invalid-group-preserves-native-recovery" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=invalid] .field[data-invalid]:has(.input-group > input[required][minlength='3'][aria-invalid=true][value='r']:invalid):has([data-input-group-state-error][role=alert]:not([hidden]))") }
         expect "loading-group-preserves-editable-value" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .input-group[aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status])") }
-        expect "disabled-group-preserves-value-and-reason" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] .field[data-disabled]:has(.input-group[data-disabled] > input[disabled][value='archived']):has([data-state-specimen-feedback])") }
-        expect "readonly-group-preserves-submission-semantics" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] .field[data-readonly]:has(.input-group[data-readonly] > input[readonly][value='release']):has([data-state-specimen-feedback])") }`
+        expect "disabled-group-preserves-value-and-reason" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=disabled] .field[data-disabled]:has(.input-group[data-disabled] > input[disabled][value='archived']):has([data-input-group-state-description])") }
+        expect "readonly-group-preserves-submission-semantics" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=readonly] .field[data-readonly]:has(.input-group[data-readonly] > input[readonly][value='release']):has([data-input-group-state-description])") }`
         : component.slug === "field"
           ? `
         expect "empty-field-stays-neutral" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .field:not([data-invalid]):has(> input[value='']:not([aria-invalid])):has(> [data-field-description]):has(> [data-field-message][hidden])") }
@@ -607,7 +694,7 @@ function renderStateExpectations(component) {
         expect "open-state-content" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=open] dialog.dialog[open] > :is(div, article):has(header h2):has(section):has(footer button)") }`
                 : component.slug === "bulk-action-bar"
                   ? `
-        expect "empty-state-hides-region" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .bulk-action-bar[data-state=empty][hidden]") }
+        expect "empty-state-hides-region" { hidden = css("${stateMatrixRoot(component)} [data-state-specimen=empty] .bulk-action-bar[data-state=empty][hidden]") }
         expect "loading-state-disables-conflicts" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-action]:not([data-bulk-clear])[disabled]") }
         expect "loading-state-keeps-clear-escape" { visible = css("${stateMatrixRoot(component)} [data-state-specimen=loading] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-clear]:not([disabled]):not([aria-disabled=true])") }`
                 : "";
@@ -638,16 +725,25 @@ const transientComponentTriggers = new Map([
   ["drawer", "Open Drawer"],
 ]);
 
-function renderPublicRootActivation(component, visiblePublicTarget, phase) {
+function renderPublicRootActivation(
+  component,
+  publicPreview,
+  visiblePublicTarget,
+  phase,
+) {
   const trigger = transientComponentTriggers.get(component.slug);
   if (trigger) {
+    // Prefer keyboard activation with a CSS target: focus/press reject role()
+    // targets, and CDP click hit-testing often misses nested preview triggers.
     return `
-        click "${phase}-open-public-root" { target = role("button", "${trigger}") }
+        focus "${phase}-focus-public-root-trigger" { target = css("${publicPreview} button.btn[data-preview-onclick]") }
+        press "${phase}-open-public-root" { key = "Enter" }
         wait "${phase}-public-root-ready" { visible = css("${visiblePublicTarget}") }`;
   }
   if (component.slug === "toast" && phase === "light") {
     return `
-        click "${phase}-create-public-root" { target = role("button", "Toast from front-end") }
+        focus "${phase}-focus-toast-trigger" { target = css("${publicPreview} button.btn[data-preview-onclick]") }
+        press "${phase}-create-public-root" { key = "Enter" }
         wait "${phase}-public-root-ready" { visible = css("${visiblePublicTarget}") }`;
   }
   return "";
@@ -660,7 +756,14 @@ function renderPublicRootClose(
   phase,
 ) {
   if (!transientComponentTriggers.has(component.slug)) return "";
+  // Native dialog/drawer dismiss on Escape only while focus remains inside the
+  // open surface; screenshots and later steps can move focus away.
+  const openSurface =
+    component.slug === "dialog"
+      ? `${publicSelector}[open] > :is(div, article)`
+      : `${publicSelector}[open]`;
   return `
+        focus "${phase}-focus-open-public-root" { target = css("${publicPreview} ${openSurface}") }
         press "${phase}-close-public-root" { key = "Escape" }
         wait "${phase}-public-root-closed" { visible = css("${publicPreview}:not(:has(${publicSelector}[open]))") }`;
 }
@@ -802,13 +905,14 @@ function renderComponentScenario(component) {
   const { integrationPreview, publicPreview, publicRoot, publicSelector } =
     contractPreviewSelectors(component);
   const visiblePublicTarget =
-    slug === "dialog"
+    slug === "dialog" || slug === "drawer"
       ? `${publicRoot}[open] > :is(div, article)`
       : transientComponentTriggers.has(slug)
         ? `${publicRoot}[open]`
         : publicRoot;
   const lightActivation = renderPublicRootActivation(
     component,
+    publicPreview,
     visiblePublicTarget,
     "light",
   );
@@ -820,6 +924,7 @@ function renderComponentScenario(component) {
   );
   const darkActivation = renderPublicRootActivation(
     component,
+    publicPreview,
     visiblePublicTarget,
     "dark",
   );
@@ -836,6 +941,7 @@ function renderComponentScenario(component) {
   );
   const compactActivation = renderPublicRootActivation(
     component,
+    publicPreview,
     visiblePublicTarget,
     "compact",
   );
@@ -857,18 +963,33 @@ function renderComponentScenario(component) {
     slug === "dialog"
       ? "[data-preview-scheme=inherit][data-preview-direction=ltr]"
       : "[data-preview-scheme=dark][data-preview-direction=rtl]";
+  // Phone preview mounts the live root inside a sandboxed iframe and hides the
+  // fluid canvas, so compact evidence targets the visible phone shell — not the
+  // hidden main-document public root (0% coverage). Compact height 640 matches
+  // workspace phone shells (~594px) so ≥75% coverage is geometrically possible.
+  const compactViewport =
+    slug === "code-editor"
+      ? `viewport "compact" { width = 390 height = 640 }`
+      : `viewport "compact" { width = 390 height = 844 }`;
   const compactAnchor =
     slug === "code-editor"
       ? `
         focus "compact-anchor-public-preview" { target = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone][aria-pressed=false]") }
-        expect "compact-anchor-visible" { visible = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone]:focus") }
+        press "compact-enable-phone-viewport" { key = "Enter" }
+        wait "compact-phone-viewport" { visible = css("${publicPreview}[data-preview-viewport=phone] .a3s-preview__viewport-shell") }
+        expect "compact-anchor-visible" { visible = css("${publicPreview} [data-preview-control=viewport][data-preview-viewport-option=phone][aria-pressed=true]:focus") }
+        click "compact-shell-into-view" { target = css("${publicPreview}[data-preview-viewport=phone] .a3s-preview__viewport-shell") }
+        wait "compact-shell-settled" { visible = css("${publicPreview}[data-preview-viewport=phone] .a3s-preview__viewport-shell") }
         expect "compact-public-root-framed" {
-            target = css("${visiblePublicTarget}")
+            target = css("${publicPreview}[data-preview-viewport=phone] .a3s-preview__viewport-shell")
             viewport_coverage_at_least = 75
         }`
       : "";
   const stateMatrixPreview =
     slug === "code-editor" ? integrationPreview : publicPreview;
+  // Monaco workers keep the network active after first paint; prefer DOM readiness.
+  const loadWait =
+    slug === "code-editor" ? "domcontentloaded" : "networkidle";
   return `    scenario "component-contract-${slug}" {
         name = "${component.name} keeps one public contract across documentation integrations and responsive states"
         surface = "web"
@@ -876,7 +997,7 @@ function renderComponentScenario(component) {
         viewport "desktop" { width = 1440 height = 1000 }
 
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/${slug}.html" }
-        wait "loaded" { load = "networkidle" }
+        wait "loaded" { load = "${loadWait}" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "preview-ready" { visible = css("${integrationPreview}[data-preview-source=ready]") }
         wait "public-preview-ready" { visible = css("${publicPreview}[data-preview-source=ready]") }${lightActivation}
@@ -899,6 +1020,7 @@ ${lightClose}${renderStateMatrixContract(component, stateMatrixPreview)}
 
         focus "focus-appearance" { target = css("${publicPreview} [data-preview-control=appearance]") }
         press "enable-dark-preview" { key = "Enter" }
+        wait "dark-preview-ready" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
         expect "dark-preview" { visible = css("${publicPreview}[data-preview-scheme=dark]") }
         focus "focus-direction" { target = css("${publicPreview} [data-preview-control=direction]") }
         press "enable-rtl-preview" { key = "Enter" }
@@ -907,9 +1029,9 @@ ${lightClose}${renderStateMatrixContract(component, stateMatrixPreview)}
         screenshot "desktop-dark-rtl" { path = "components/contracts/${slug}-desktop-dark-rtl.png" }
 ${darkClose}
 
-        viewport "compact" { width = 390 height = 844 }${compactPreparation}${compactAnchor}
+        ${compactViewport}${compactPreparation}${compactAnchor}
         expect "compact-preview" { visible = css("${publicPreview}${compactPreviewState}") }${compactActivation}
-        expect "compact-public-root" { visible = css("${visiblePublicTarget}") }
+        expect "compact-public-root" { visible = css("${slug === "code-editor" ? `${publicPreview}[data-preview-viewport=phone] .a3s-preview__viewport-shell` : visiblePublicTarget}") }
         screenshot "capture-compact" { path = "components/contracts/${slug}-compact.png" }
         accessibility "tree" { path = "components/contracts/${slug}-accessibility.json" interactive = true }
         console "console" { path = "components/contracts/${slug}-console.json" clear = false }

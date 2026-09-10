@@ -82,8 +82,8 @@ The canonical root uses `<button>` semantics and exposes 2 named parts. State mu
 - State-matrix screenshot: `components/contracts/copy-button-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=ready]:has([data-a3s-components~='copy-button'][data-a3s-state~='ready'])`
-  - `copying`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copying]:has([data-a3s-components~='copy-button'][data-a3s-state~='copying'][aria-busy=true])`
+  - `copying`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copying]:has([data-a3s-components~='copy-button'][data-a3s-state~='copying'][data-state=copying][aria-busy=true])`
   - `copied`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copied]:has([data-a3s-components~='copy-button'][data-a3s-state~='copied'])`
   - `error`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=error]:has([data-a3s-components~='copy-button'][data-a3s-state~='error'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=disabled]:has([data-a3s-components~='copy-button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=disabled] [data-a3s-components~='copy-button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

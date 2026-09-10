@@ -341,14 +341,14 @@ suite "a3s-ui-product-project-pages" {
         expect "pdf-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=pdf][data-presentation=dialog]") }
         wait "pdf-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
         wait "pdf-search" { visible = css("input[aria-label='在 PDF 中搜索']") }
-        wait "pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
+        wait "pdf-content-ready" { visible = css("dialog[data-project-asset-dialog][open] [data-office-load-state=ready] input[aria-label='页码']") }
         wait "pdf-renderer-ready" { visible = css(".work-pdf-embed[data-ready=true]") }
         wait "pdf-first-thumbnail-rendered" { visible = css("[data-pdf-page-index='0'] .work-pdf-thumbnail-preview > img") }
         click "select-pdf-second-page" { target = role("button", "第 2 页") }
-        wait "pdf-second-page-selected" { visible = css("input[aria-label='页码'][value='2']") }
+        wait "pdf-second-page-selected" { visible = css("button[aria-label='第 2 页'][aria-current=page]") }
         screenshot "pdf-second-page-visual" { path = "product/project-asset-pdf-second-page.png" }
         click "restore-pdf-first-page" { target = role("button", "第 1 页") }
-        wait "pdf-first-page-restored" { visible = css("input[aria-label='页码'][value='1']") }
+        wait "pdf-first-page-restored" { visible = css("button[aria-label='第 1 页'][aria-current=page]") }
         screenshot "pdf-workbench-visual" { path = "product/project-asset-pdf-workbench.png" }
         click "close-pdf-preview" { target = role("button", "关闭文件预览") }
         wait "pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
@@ -357,8 +357,10 @@ suite "a3s-ui-product-project-pages" {
         click "open-word-file" { target = role("button", "打开 experience-brief.docx") }
         expect "office-workbench-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-workbench-kind=document][data-presentation=dialog]") }
         wait "office-workbench-close-focused" { visible = css("dialog[data-project-asset-dialog][open] [data-file-workbench-close]:focus") }
-        expect "office-preview-tools-visible" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
-        expect "office-preview-document-visible" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
+        wait "office-host-ready" { visible = css("dialog[data-project-asset-dialog][open] [data-office-load-state=ready]") }
+        wait "office-preview-tools-ready" { visible = css("dialog[data-project-asset-dialog][open] [data-office-load-state=ready] [aria-label='文字预览工具']") }
+        expect "office-preview-tools-visible" { visible = css("dialog[data-project-asset-dialog][open] [data-office-load-state=ready] [aria-label='文字预览工具']") }
+        expect "office-preview-document-visible" { visible = css("dialog[data-project-asset-dialog][open] [aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         screenshot "office-workbench-visual" { path = "product/project-asset-office-workbench.png" }
         click "close-office-preview" { target = role("button", "关闭文件预览") }
         wait "office-focus-restored" { visible = css("[data-asset-id=experience-brief] [data-asset-open]:focus") }

@@ -86,5 +86,5 @@ The canonical root uses `<section>` semantics and exposes 5 named parts. State m
   - `waiting`: `.a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=waiting]:has([data-a3s-components~='task-workspace'][data-a3s-state~='waiting'][aria-busy=true])`
   - `complete`: `.a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=complete]:has([data-a3s-components~='task-workspace'][data-a3s-state~='complete'])`
   - `error`: `.a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=error]:has([data-a3s-components~='task-workspace'][data-a3s-state~='error'])`
-  - `inspector-open`: `.a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=inspector-open]:has([data-a3s-components~='task-workspace'][data-a3s-state~='inspector-open']:is([open],[aria-expanded=true]))`
+  - `inspector-open`: `.a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=inspector-open]:has([data-a3s-components~='task-workspace'][data-a3s-state~='inspector-open'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

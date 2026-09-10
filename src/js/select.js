@@ -452,7 +452,10 @@
     root.togglePopover = () => state.trigger.getAttribute('aria-expanded') === 'true' ? root.close() : root.open();
 
     const handleTriggerKeydown = (event) => handleKeyNavigation(event, root);
-    const handleTriggerClick = root.togglePopover;
+    const handleTriggerClick = (event) => {
+      if (event.detail === 0) return;
+      root.togglePopover();
+    };
     const handleListboxMousemove = (event) => {
       const option = event.target.closest('[role="option"]');
       if (option && state.visibleOptions.includes(option)) {

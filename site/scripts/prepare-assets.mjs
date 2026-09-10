@@ -62,3 +62,27 @@ await copyFile(
   componentManifestSource,
   path.join(publicAssets, 'a3s-ui.components.json'),
 );
+
+// rspress preview serves doc_build/; keep public assets mirrored there so local
+// e2e does not keep exercising a stale stylesheet/runtime snapshot.
+const docBuildAssets = path.join(siteRoot, 'doc_build', 'assets');
+try {
+  await access(docBuildAssets);
+  for (const fileName of [
+    'a3s-ui.css',
+    'a3s-ui.min.js',
+    'a3s-ui.ai.js',
+    'a3s-ui.components.json',
+    'a3s-cascade.css',
+  ]) {
+    const from = path.join(publicAssets, fileName);
+    try {
+      await access(from);
+      await copyFile(from, path.join(docBuildAssets, fileName));
+    } catch {
+      // Optional assets (cascade) may be absent depending on the docs build.
+    }
+  }
+} catch {
+  // doc_build appears after the first docs build/preview.
+}

@@ -26,7 +26,7 @@
       "stateEvidenceScreenshot": "components/contracts/button-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=button] [data-state-specimen=ready]:has([data-a3s-components~='button'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=button] [data-state-specimen=disabled]:has([data-a3s-components~='button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=button] [data-state-specimen=disabled] [data-a3s-components~='button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
         "loading": ".a3s-component-state-matrix[open][data-component=button] [data-state-specimen=loading]:has([data-a3s-components~='button'][data-a3s-state~='loading'][aria-busy=true])",
         "pressed": ".a3s-component-state-matrix[open][data-component=button] [data-state-specimen=pressed]:has([data-a3s-components~='button'][data-a3s-state~='pressed'][aria-pressed=true])"
       },
@@ -69,7 +69,7 @@
       "stateEvidenceScreenshot": "components/contracts/button-group-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=ready]:has([data-a3s-components~='button-group'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=disabled]:has([data-a3s-components~='button-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=button-group] [data-state-specimen=disabled] [data-a3s-components~='button-group'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=button-group]",
       "states": [
@@ -110,7 +110,7 @@
         "empty": ".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=empty]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='empty'])",
         "selected": ".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=selected]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='selected'][data-selected=true])",
         "loading": ".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=loading]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='loading'][aria-busy=true])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=disabled]:has([data-a3s-components~='bulk-action-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=bulk-action-bar] [data-state-specimen=disabled] [data-a3s-components~='bulk-action-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=bulk-action-bar]",
       "states": [
@@ -144,11 +144,11 @@
       "slug": "field",
       "stateEvidenceScreenshot": "components/contracts/field-states.png",
       "stateEvidenceSelectors": {
-        "empty": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty]:has([data-a3s-components~='field'][data-a3s-state~='empty'][data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))",
-        "ready": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready]:has([data-a3s-components~='field'][data-a3s-state~='ready'][data-state~='ready']:not([data-invalid]):has(> input[value='Agent Runtime']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled]:has([data-a3s-components~='field'][data-a3s-state~='disabled'][data-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description]))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid]:has([data-a3s-components~='field'][data-a3s-state~='invalid'][data-state~='invalid'][data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A']):has(> [data-field-message][role=alert]:not([hidden])))",
-        "readonly": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly]:has([data-a3s-components~='field'][data-a3s-state~='readonly'][data-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description]))"
+        "empty": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=empty] [data-a3s-components~='field'][data-a3s-state~='empty'][data-state~='empty']:not([data-invalid]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden])",
+        "ready": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=ready] [data-a3s-components~='field'][data-a3s-state~='ready'][data-state~='ready']:not([data-invalid]):has(> input[value='Agent Runtime']:not([aria-invalid]):not(:disabled):not([readonly])):has(> [data-field-description]):has(> [data-field-message][hidden])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=disabled] [data-a3s-components~='field'][data-a3s-state~='disabled'][data-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='Archived Runtime']):has(> [data-field-description])",
+        "invalid": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=invalid] [data-a3s-components~='field'][data-a3s-state~='invalid'][data-state~='invalid'][data-invalid]:not([aria-invalid]):has(> input[aria-invalid=true][value='A']):has(> [data-field-message][role=alert]:not([hidden]))",
+        "readonly": ".a3s-component-state-matrix[open][data-component=field] [data-state-specimen=readonly] [data-a3s-components~='field'][data-a3s-state~='readonly'][data-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='Production Runtime']):has(> [data-field-description])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=field]",
       "states": [
@@ -177,6 +177,7 @@
       "behaviorActions": [
         "click",
         "fill",
+        "focus",
         "press",
         "type"
       ],
@@ -198,7 +199,7 @@
         "ready": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=ready]:has([data-a3s-components~='filter-bar'][data-a3s-state~='ready'])",
         "active": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=active]:has([data-a3s-components~='filter-bar'][data-a3s-state~='active'][data-active=true])",
         "empty": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=empty]:has([data-a3s-components~='filter-bar'][data-a3s-state~='empty'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=disabled]:has([data-a3s-components~='filter-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=disabled] [data-a3s-components~='filter-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
         "loading": ".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=loading]:has([data-a3s-components~='filter-bar'][data-a3s-state~='loading'][aria-busy=true])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=filter-bar]",
@@ -291,12 +292,12 @@
       "slug": "input-group",
       "stateEvidenceScreenshot": "components/contracts/input-group-states.png",
       "stateEvidenceSelectors": {
-        "empty": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty]:has([data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly])))",
-        "ready": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready]:has([data-a3s-components~='input-group'][data-a3s-state~='ready']:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid]:has([data-a3s-components~='input-group'][data-a3s-state~='invalid']:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid))",
-        "loading": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading]:has([data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled]:has([data-a3s-components~='input-group'][data-a3s-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived']))",
-        "readonly": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly]:has([data-a3s-components~='input-group'][data-a3s-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='release']))"
+        "empty": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=empty] [data-a3s-components~='input-group'][data-a3s-state~='empty']:not([aria-busy]):has(> input[value='']:not([aria-invalid]):not(:disabled):not([readonly]))",
+        "ready": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=ready] [data-a3s-components~='input-group'][data-a3s-state~='ready']:not([aria-busy]):has(> input[value='runtime']:not([aria-invalid]):not(:disabled):not([readonly]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=invalid] [data-a3s-components~='input-group'][data-a3s-state~='invalid']:has(> input[required][minlength='3'][aria-invalid=true][value='r']:invalid)",
+        "loading": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=loading] [data-a3s-components~='input-group'][data-a3s-state~='loading'][aria-busy=true]:has(> input[value='runtime']:not(:disabled):not([readonly])):has(> [data-input-group-status][role=status])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=disabled] [data-a3s-components~='input-group'][data-a3s-state~='disabled'][data-disabled]:not([aria-disabled]):has(> input[disabled][value='archived'])",
+        "readonly": ".a3s-component-state-matrix[open][data-component=input-group] [data-state-specimen=readonly] [data-a3s-components~='input-group'][data-a3s-state~='readonly'][data-readonly]:not([aria-readonly]):has(> input[readonly][value='release'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=input-group]",
       "states": [
@@ -344,9 +345,9 @@
       "stateEvidenceSelectors": {
         "empty": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])",
         "ready": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled]:has([data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid]:has([data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))",
-        "readonly": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly]:has([data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled] [data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid] [data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))",
+        "readonly": ".a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly] [data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=textarea]",
       "states": [
@@ -483,10 +484,10 @@
       "stateEvidenceScreenshot": "components/contracts/select-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=ready]:has([data-a3s-components~='select'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=disabled]:has([data-a3s-components~='select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "expanded": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded]:has([data-a3s-components~='select'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed]:has([data-a3s-components~='select'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=invalid]:has([data-a3s-components~='select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=disabled] [data-a3s-components~='select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "expanded": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded] [data-a3s-components~='select'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=collapsed] [data-a3s-components~='select'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false])",
+        "invalid": ".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=invalid] [data-a3s-components~='select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=select]",
       "states": [
@@ -529,10 +530,10 @@
       "slug": "checkbox",
       "stateEvidenceScreenshot": "components/contracts/checkbox-states.png",
       "stateEvidenceSelectors": {
-        "checked": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=checked]:has([data-a3s-components~='checkbox'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))",
-        "unchecked": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=unchecked]:has([data-a3s-components~='checkbox'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false])))",
-        "indeterminate": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=indeterminate]:has([data-a3s-components~='checkbox'][data-a3s-state~='indeterminate']:is(:indeterminate,[aria-checked=mixed],:has(:indeterminate),:has([aria-checked=mixed])))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=disabled]:has([data-a3s-components~='checkbox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "checked": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=checked] [data-a3s-components~='checkbox'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true]))",
+        "unchecked": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=unchecked] [data-a3s-components~='checkbox'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false]))",
+        "indeterminate": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=indeterminate] [data-a3s-components~='checkbox'][data-a3s-state~='indeterminate']:is(:indeterminate,[aria-checked=mixed],:has(:indeterminate),:has([aria-checked=mixed]))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=disabled] [data-a3s-components~='checkbox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=checkbox]",
       "states": [
@@ -616,9 +617,9 @@
       "slug": "switch",
       "stateEvidenceScreenshot": "components/contracts/switch-states.png",
       "stateEvidenceSelectors": {
-        "checked": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=checked]:has([data-a3s-components~='switch'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true])))",
-        "unchecked": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=unchecked]:has([data-a3s-components~='switch'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false])))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=disabled]:has([data-a3s-components~='switch'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "checked": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=checked] [data-a3s-components~='switch'][data-a3s-state~='checked']:is(:checked,[aria-checked=true],:has(:checked),:has([aria-checked=true]))",
+        "unchecked": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=unchecked] [data-a3s-components~='switch'][data-a3s-state~='unchecked']:is(input:not(:checked),[aria-checked=false],:has(input:not(:checked)),:has([aria-checked=false]))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=disabled] [data-a3s-components~='switch'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=switch]",
       "states": [
@@ -657,7 +658,7 @@
       "stateEvidenceScreenshot": "components/contracts/slider-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=ready]:has([data-a3s-components~='slider'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=disabled]:has([data-a3s-components~='slider'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=disabled] [data-a3s-components~='slider'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=slider]",
       "states": [
@@ -692,7 +693,7 @@
       "stateEvidenceScreenshot": "components/contracts/label-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=label] [data-state-specimen=ready]:has([data-a3s-components~='label'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=label] [data-state-specimen=disabled]:has([data-a3s-components~='label'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=label] [data-state-specimen=disabled] [data-a3s-components~='label'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=label]",
       "states": [
@@ -715,6 +716,7 @@
       "behaviorActions": [
         "click",
         "fill",
+        "focus",
         "press",
         "select"
       ],
@@ -734,10 +736,10 @@
       "stateEvidenceScreenshot": "components/contracts/combobox-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=ready]:has([data-a3s-components~='combobox'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled]:has([data-a3s-components~='combobox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "expanded": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded]:has([data-a3s-components~='combobox'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed]:has([data-a3s-components~='combobox'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid]:has([data-a3s-components~='combobox'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled] [data-a3s-components~='combobox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "expanded": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded] [data-a3s-components~='combobox'][data-a3s-state~='expanded']:has(input[role=combobox][aria-expanded=true], button[aria-haspopup=listbox][aria-expanded=true])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed] [data-a3s-components~='combobox'][data-a3s-state~='collapsed']:has(input[role=combobox][aria-expanded=false], button[aria-haspopup=listbox][aria-expanded=false])",
+        "invalid": ".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid] [data-a3s-components~='combobox'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=combobox]",
       "states": [
@@ -761,7 +763,8 @@
         "focus"
       ],
       "behaviorActions": [
-        "click"
+        "click",
+        "focus"
       ],
       "category": "navigation",
       "contractId": "NV-01",
@@ -851,7 +854,7 @@
       "stateEvidenceScreenshot": "components/contracts/tabs-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=tabs] [data-state-specimen=ready]:has([data-a3s-components~='tabs'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=tabs] [data-state-specimen=disabled]:has([data-a3s-components~='tabs'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=tabs] [data-state-specimen=disabled] [data-a3s-components~='tabs'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=tabs]",
       "states": [
@@ -869,7 +872,8 @@
         "focus"
       ],
       "behaviorActions": [
-        "click"
+        "click",
+        "focus"
       ],
       "category": "navigation",
       "contractId": "NV-05",
@@ -904,6 +908,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "navigation",
@@ -922,8 +927,8 @@
       "stateEvidenceScreenshot": "components/contracts/sidebar-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=ready]:has([data-a3s-components~='sidebar'][data-a3s-state~='ready'])",
-        "expanded": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed']:has([data-sidebar-trigger], button[aria-controls][aria-expanded=false]))",
+        "expanded": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=expanded]:has([data-a3s-components~='sidebar'][data-a3s-state~='expanded'])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=collapsed]:has([data-a3s-components~='sidebar'][data-a3s-state~='collapsed'])",
         "hidden": ".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=hidden]:has([data-a3s-components~='sidebar'][data-a3s-state~='hidden'][hidden])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=sidebar]",
@@ -948,6 +953,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "overlays",
@@ -965,8 +971,8 @@
       "slug": "alert-dialog",
       "stateEvidenceScreenshot": "components/contracts/alert-dialog-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=open]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=closed]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))"
+        "open": ".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=open]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='open'][open])",
+        "closed": ".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=closed]:has([data-a3s-components~='alert-dialog'][data-a3s-state~='closed']:not([open]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=alert-dialog]",
       "states": [
@@ -988,6 +994,7 @@
       "behaviorActions": [
         "click",
         "fill",
+        "focus",
         "press"
       ],
       "category": "overlays",
@@ -1005,8 +1012,8 @@
       "slug": "dialog",
       "stateEvidenceScreenshot": "components/contracts/dialog-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=open]:has([data-a3s-components~='dialog'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=closed]:has([data-a3s-components~='dialog'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))"
+        "open": ".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=open]:has([data-a3s-components~='dialog'][data-a3s-state~='open'][open])",
+        "closed": ".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=closed]:has([data-a3s-components~='dialog'][data-a3s-state~='closed']:not([open]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=dialog]",
       "states": [
@@ -1026,6 +1033,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "overlays",
@@ -1043,8 +1051,8 @@
       "slug": "drawer",
       "stateEvidenceScreenshot": "components/contracts/drawer-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=open]:has([data-a3s-components~='drawer'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=closed]:has([data-a3s-components~='drawer'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))"
+        "open": ".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=open]:has([data-a3s-components~='drawer'][data-a3s-state~='open'][open])",
+        "closed": ".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=closed]:has([data-a3s-components~='drawer'][data-a3s-state~='closed']:not([open]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=drawer]",
       "states": [
@@ -1065,6 +1073,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press",
         "select"
       ],
@@ -1083,9 +1092,9 @@
       "slug": "dropdown-menu",
       "stateEvidenceScreenshot": "components/contracts/dropdown-menu-states.png",
       "stateEvidenceSelectors": {
-        "expanded": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "expanded": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded] [data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed] [data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled] [data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=dropdown-menu]",
       "states": [
@@ -1107,6 +1116,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "overlays",
@@ -1124,8 +1134,8 @@
       "slug": "popover",
       "stateEvidenceScreenshot": "components/contracts/popover-states.png",
       "stateEvidenceSelectors": {
-        "expanded": ".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded]:has([data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed]:has([data-a3s-components~='popover'][data-a3s-state~='collapsed']:has(button[aria-controls][aria-expanded=false]))"
+        "expanded": ".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded] [data-a3s-components~='popover'][data-a3s-state~='expanded']:has(button[aria-controls][aria-expanded=true])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed] [data-a3s-components~='popover'][data-a3s-state~='collapsed']:has(button[aria-controls][aria-expanded=false])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=popover]",
       "states": [
@@ -1166,8 +1176,8 @@
         "ready": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=ready]:has([data-a3s-components~='command'][data-a3s-state~='ready'])",
         "empty": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=empty]:has([data-a3s-components~='command'][data-a3s-state~='empty'])",
         "loading": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=loading]:has([data-a3s-components~='command'][data-a3s-state~='loading'][aria-busy=true])",
-        "open": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=open]:has([data-a3s-components~='command'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=closed]:has([data-a3s-components~='command'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))"
+        "open": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=open]:has([data-a3s-components~='command'][data-a3s-state~='open'])",
+        "closed": ".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=closed]:has([data-a3s-components~='command'][data-a3s-state~='closed'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=command]",
       "states": [
@@ -1213,9 +1223,9 @@
       "slug": "context-menu",
       "stateEvidenceScreenshot": "components/contracts/context-menu-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:has([data-context-trigger][aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed']:has([data-context-trigger][aria-expanded=false]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=disabled]:has([data-a3s-components~='context-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "open": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open'])",
+        "closed": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed'])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=disabled] [data-a3s-components~='context-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=context-menu]",
       "states": [
@@ -1253,7 +1263,7 @@
       "stateEvidenceScreenshot": "components/contracts/tooltip-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=tooltip] [data-state-specimen=ready]:has([data-a3s-components~='tooltip'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=tooltip] [data-state-specimen=disabled]:has([data-a3s-components~='tooltip'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=tooltip] [data-state-specimen=disabled] [data-a3s-components~='tooltip'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=tooltip]",
       "states": [
@@ -1538,9 +1548,9 @@
       "slug": "toast",
       "stateEvidenceScreenshot": "components/contracts/toast-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=open]:has([data-a3s-components~='toast'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
+        "open": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=open]:has([data-a3s-components~='toast'][data-a3s-state~='open'])",
         "closing": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closing]:has([data-a3s-components~='toast'][data-a3s-state~='closing'][aria-busy=true])",
-        "closed": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closed]:has([data-a3s-components~='toast'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))",
+        "closed": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=closed]:has([data-a3s-components~='toast'][data-a3s-state~='closed'])",
         "success": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=success]:has([data-a3s-components~='toast'][data-a3s-state~='success'])",
         "warning": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=warning]:has([data-a3s-components~='toast'][data-a3s-state~='warning'])",
         "danger": ".a3s-component-state-matrix[open][data-component=toast] [data-state-specimen=danger]:has([data-a3s-components~='toast'][data-a3s-state~='danger'])"
@@ -1571,6 +1581,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "data-display",
@@ -1589,9 +1600,9 @@
       "stateEvidenceScreenshot": "components/contracts/accordion-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=ready]:has([data-a3s-components~='accordion'][data-a3s-state~='ready'])",
-        "open": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open]:has([data-a3s-components~='accordion'][data-a3s-state~='open']:has(:scope > details > summary[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed]:has([data-a3s-components~='accordion'][data-a3s-state~='closed']:has(:scope > details > summary[aria-expanded=false]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=disabled]:has([data-a3s-components~='accordion'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "open": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open] [data-a3s-components~='accordion'][data-a3s-state~='open']:has(> details[open])",
+        "closed": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed] [data-a3s-components~='accordion'][data-a3s-state~='closed']:not(:has(> details[open]))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=disabled] [data-a3s-components~='accordion'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=accordion]",
       "states": [
@@ -1795,7 +1806,7 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=item] [data-state-specimen=ready]:has([data-a3s-components~='item'][data-a3s-state~='ready'])",
         "selected": ".a3s-component-state-matrix[open][data-component=item] [data-state-specimen=selected]:has([data-a3s-components~='item'][data-a3s-state~='selected'][data-selected=true])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=item] [data-state-specimen=disabled]:has([data-a3s-components~='item'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=item] [data-state-specimen=disabled] [data-a3s-components~='item'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=item]",
       "states": [
@@ -1923,6 +1934,8 @@
         "wheel"
       ],
       "behaviorActions": [
+        "check",
+        "click",
         "wheel"
       ],
       "category": "data-display",
@@ -2074,9 +2087,9 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=ready]:has([data-a3s-components~='tree'][data-a3s-state~='ready'])",
         "selected": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=selected]:has([data-a3s-components~='tree'][data-a3s-state~='selected'][data-selected=true])",
-        "expanded": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=expanded]:has([data-a3s-components~='tree'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=collapsed]:has([data-a3s-components~='tree'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=disabled]:has([data-a3s-components~='tree'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "expanded": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=expanded] [data-a3s-components~='tree'][data-a3s-state~='expanded']:has([role=treeitem][aria-expanded=true])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=collapsed] [data-a3s-components~='tree'][data-a3s-state~='collapsed']:has([role=treeitem][aria-expanded=false])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=disabled] [data-a3s-components~='tree'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=tree]",
       "states": [
@@ -2165,8 +2178,8 @@
       "stateEvidenceScreenshot": "components/contracts/color-swatches-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=ready]:has([data-a3s-components~='color-swatches'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=disabled]:has([data-a3s-components~='color-swatches'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=invalid]:has([data-a3s-components~='color-swatches'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=disabled] [data-a3s-components~='color-swatches'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=invalid] [data-a3s-components~='color-swatches'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=color-swatches]",
       "states": [
@@ -2355,8 +2368,8 @@
       "stateEvidenceScreenshot": "components/contracts/image-select-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=image-select] [data-state-specimen=ready]:has([data-a3s-components~='image-select'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=image-select] [data-state-specimen=disabled]:has([data-a3s-components~='image-select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=image-select] [data-state-specimen=invalid]:has([data-a3s-components~='image-select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=image-select] [data-state-specimen=disabled] [data-a3s-components~='image-select'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=image-select] [data-state-specimen=invalid] [data-a3s-components~='image-select'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=image-select]",
       "states": [
@@ -2539,6 +2552,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "data-display",
@@ -2556,9 +2570,9 @@
       "slug": "collapsible",
       "stateEvidenceScreenshot": "components/contracts/collapsible-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]:has([data-a3s-components~='collapsible'][data-a3s-state~='open']:has(:scope > summary[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]:has([data-a3s-components~='collapsible'][data-a3s-state~='closed']:has(:scope > summary[aria-expanded=false]))",
-        "disabled": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled]:has([data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "open": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open] [data-a3s-components~='collapsible'][data-a3s-state~='open'][open]:has(> summary[aria-expanded=true])",
+        "closed": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed] [data-a3s-components~='collapsible'][data-a3s-state~='closed']:not([open]):has(> summary[aria-expanded=false])",
+        "disabled": ".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=disabled] [data-a3s-components~='collapsible'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=collapsible]",
       "states": [
@@ -2598,10 +2612,10 @@
       "stateEvidenceScreenshot": "components/contracts/copy-button-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=ready]:has([data-a3s-components~='copy-button'][data-a3s-state~='ready'])",
-        "copying": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copying]:has([data-a3s-components~='copy-button'][data-a3s-state~='copying'][aria-busy=true])",
+        "copying": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copying]:has([data-a3s-components~='copy-button'][data-a3s-state~='copying'][data-state=copying][aria-busy=true])",
         "copied": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copied]:has([data-a3s-components~='copy-button'][data-a3s-state~='copied'])",
         "error": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=error]:has([data-a3s-components~='copy-button'][data-a3s-state~='error'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=disabled]:has([data-a3s-components~='copy-button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=disabled] [data-a3s-components~='copy-button'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=copy-button]",
       "states": [
@@ -2645,9 +2659,9 @@
       "stateEvidenceScreenshot": "components/contracts/date-picker-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=ready]:has([data-a3s-components~='date-picker'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled]:has([data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid]:has([data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))",
-        "read-only": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only]:has([data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled] [data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid] [data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))",
+        "read-only": ".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only] [data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=date-picker]",
       "states": [
@@ -2673,6 +2687,7 @@
       "behaviorActions": [
         "click",
         "fill",
+        "focus",
         "press"
       ],
       "category": "forms",
@@ -2694,7 +2709,7 @@
         "editing": ".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=editing]:has([data-a3s-components~='editable-text'][data-a3s-state~='editing'])",
         "saving": ".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=saving]:has([data-a3s-components~='editable-text'][data-a3s-state~='saving'][aria-busy=true])",
         "error": ".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=error]:has([data-a3s-components~='editable-text'][data-a3s-state~='error'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=disabled]:has([data-a3s-components~='editable-text'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=disabled] [data-a3s-components~='editable-text'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=editable-text]",
       "states": [
@@ -2744,7 +2759,7 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=ready]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='ready'])",
         "empty": ".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=empty]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='empty'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=disabled]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=disabled] [data-a3s-components~='emoji-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=emoji-picker]",
       "states": [
@@ -2782,8 +2797,8 @@
       "slug": "floating-panel",
       "stateEvidenceScreenshot": "components/contracts/floating-panel-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=open]:has([data-a3s-components~='floating-panel'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=closed]:has([data-a3s-components~='floating-panel'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))",
+        "open": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=open]:has([data-a3s-components~='floating-panel'][data-a3s-state~='open'])",
+        "closed": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=closed]:has([data-a3s-components~='floating-panel'][data-a3s-state~='closed'])",
         "floating": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=floating]:has([data-a3s-components~='floating-panel'][data-a3s-state~='floating'])",
         "docked": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=docked]:has([data-a3s-components~='floating-panel'][data-a3s-state~='docked'])",
         "sheet": ".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=sheet]:has([data-a3s-components~='floating-panel'][data-a3s-state~='sheet'])"
@@ -2833,9 +2848,9 @@
         "ready": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=ready]:has([data-a3s-components~='form'][data-a3s-state~='ready'])",
         "submitting": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=submitting]:has([data-a3s-components~='form'][data-a3s-state~='submitting'][aria-busy=true])",
         "success": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=success]:has([data-a3s-components~='form'][data-a3s-state~='success'])",
-        "invalid": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=invalid]:has([data-a3s-components~='form'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=invalid] [data-a3s-components~='form'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))",
         "error": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=error]:has([data-a3s-components~='form'][data-a3s-state~='error'])",
-        "read-only": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=read-only]:has([data-a3s-components~='form'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))"
+        "read-only": ".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=read-only] [data-a3s-components~='form'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=form]",
       "states": [
@@ -2883,8 +2898,8 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=ready]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='ready'])",
         "recording": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=recording]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='recording'][aria-busy=true])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=disabled]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=invalid]:has([data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=disabled] [data-a3s-components~='hotkey-input'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=hotkey-input] [data-state-specimen=invalid] [data-a3s-components~='hotkey-input'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=hotkey-input]",
       "states": [
@@ -2926,8 +2941,8 @@
       "slug": "image-viewer",
       "stateEvidenceScreenshot": "components/contracts/image-viewer-states.png",
       "stateEvidenceSelectors": {
-        "open": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=open]:has([data-a3s-components~='image-viewer'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=closed]:has([data-a3s-components~='image-viewer'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))",
+        "open": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=open]:has([data-a3s-components~='image-viewer'][data-a3s-state~='open'])",
+        "closed": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=closed]:has([data-a3s-components~='image-viewer'][data-a3s-state~='closed'])",
         "loading": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=loading]:has([data-a3s-components~='image-viewer'][data-a3s-state~='loading'][aria-busy=true])",
         "error": ".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=error]:has([data-a3s-components~='image-viewer'][data-a3s-state~='error'])"
       },
@@ -2973,7 +2988,7 @@
         "ready": ".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=ready]:has([data-a3s-components~='sortable-list'][data-a3s-state~='ready'])",
         "dragging": ".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=dragging]:has([data-a3s-components~='sortable-list'][data-a3s-state~='dragging'])",
         "keyboard": ".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=keyboard]:has([data-a3s-components~='sortable-list'][data-a3s-state~='keyboard'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=disabled]:has([data-a3s-components~='sortable-list'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=disabled] [data-a3s-components~='sortable-list'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=sortable-list]",
       "states": [
@@ -2995,7 +3010,8 @@
         "focus"
       ],
       "behaviorActions": [
-        "click"
+        "click",
+        "focus"
       ],
       "category": "navigation",
       "contractId": "NV-07",
@@ -3034,6 +3050,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "application",
@@ -3052,10 +3069,10 @@
       "stateEvidenceScreenshot": "components/contracts/app-shell-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=ready]:has([data-a3s-components~='app-shell'][data-a3s-state~='ready'])",
-        "expanded": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded']:has([data-app-navigation-trigger][aria-expanded=true]))",
-        "collapsed": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed']:has([data-app-navigation-trigger][aria-expanded=false]))",
+        "expanded": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=expanded]:has([data-a3s-components~='app-shell'][data-a3s-state~='expanded'])",
+        "collapsed": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=collapsed]:has([data-a3s-components~='app-shell'][data-a3s-state~='collapsed'])",
         "hidden": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=hidden]:has([data-a3s-components~='app-shell'][data-a3s-state~='hidden'][hidden])",
-        "mobile-open": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open']:has([data-app-navigation-trigger][aria-expanded=true]))"
+        "mobile-open": ".a3s-component-state-matrix[open][data-component=app-shell] [data-state-specimen=mobile-open]:has([data-a3s-components~='app-shell'][data-a3s-state~='mobile-open'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=app-shell]",
       "states": [
@@ -3147,7 +3164,7 @@
         "ready": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=ready]:has([data-a3s-components~='task-start'][data-a3s-state~='ready'])",
         "loading": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=loading]:has([data-a3s-components~='task-start'][data-a3s-state~='loading'][aria-busy=true])",
         "offline": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=offline]:has([data-a3s-components~='task-start'][data-a3s-state~='offline'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=disabled]:has([data-a3s-components~='task-start'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=disabled] [data-a3s-components~='task-start'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
         "error": ".a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=error]:has([data-a3s-components~='task-start'][data-a3s-state~='error'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=task-start]",
@@ -3199,7 +3216,7 @@
         "waiting": ".a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=waiting]:has([data-a3s-components~='task-workspace'][data-a3s-state~='waiting'][aria-busy=true])",
         "complete": ".a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=complete]:has([data-a3s-components~='task-workspace'][data-a3s-state~='complete'])",
         "error": ".a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=error]:has([data-a3s-components~='task-workspace'][data-a3s-state~='error'])",
-        "inspector-open": ".a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=inspector-open]:has([data-a3s-components~='task-workspace'][data-a3s-state~='inspector-open']:is([open],[aria-expanded=true]))"
+        "inspector-open": ".a3s-component-state-matrix[open][data-component=task-workspace] [data-state-specimen=inspector-open]:has([data-a3s-components~='task-workspace'][data-a3s-state~='inspector-open'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=task-workspace]",
       "states": [
@@ -3297,9 +3314,9 @@
       "stateEvidenceScreenshot": "components/contracts/setting-row-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=ready]:has([data-a3s-components~='setting-row'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=disabled]:has([data-a3s-components~='setting-row'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=invalid]:has([data-a3s-components~='setting-row'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))",
-        "readonly": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=readonly]:has([data-a3s-components~='setting-row'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))",
+        "disabled": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=disabled] [data-a3s-components~='setting-row'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=invalid] [data-a3s-components~='setting-row'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))",
+        "readonly": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=readonly] [data-a3s-components~='setting-row'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))",
         "loading": ".a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=loading]:has([data-a3s-components~='setting-row'][data-a3s-state~='loading'][aria-busy=true])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=setting-row]",
@@ -3353,8 +3370,8 @@
         "loading": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=loading]:has([data-a3s-components~='agent-composer'][data-a3s-state~='loading'][aria-busy=true])",
         "offline": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=offline]:has([data-a3s-components~='agent-composer'][data-a3s-state~='offline'])",
         "error": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=error]:has([data-a3s-components~='agent-composer'][data-a3s-state~='error'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=disabled]:has([data-a3s-components~='agent-composer'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=invalid]:has([data-a3s-components~='agent-composer'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=disabled] [data-a3s-components~='agent-composer'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=agent-composer] [data-state-specimen=invalid] [data-a3s-components~='agent-composer'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=agent-composer]",
       "states": [
@@ -3464,8 +3481,8 @@
         "waiting": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=waiting]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='waiting'][aria-busy=true])",
         "complete": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=complete]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='complete'])",
         "error": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=error]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='error'])",
-        "inspector-open": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=inspector-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='inspector-open']:is([open],[aria-expanded=true]))",
-        "context-open": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=context-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='context-open']:is([open],[aria-expanded=true]))"
+        "inspector-open": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=inspector-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='inspector-open'])",
+        "context-open": ".a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=context-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='context-open'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=agent-workbench]",
       "states": [
@@ -3684,7 +3701,7 @@
       "stateEvidenceScreenshot": "components/contracts/toolbar-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=toolbar] [data-state-specimen=ready]:has([data-a3s-components~='toolbar'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=toolbar] [data-state-specimen=disabled]:has([data-a3s-components~='toolbar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=toolbar] [data-state-specimen=disabled] [data-a3s-components~='toolbar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=toolbar]",
       "states": [
@@ -3723,7 +3740,7 @@
       "stateEvidenceScreenshot": "components/contracts/ribbon-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=ribbon] [data-state-specimen=ready]:has([data-a3s-components~='ribbon'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=ribbon] [data-state-specimen=disabled]:has([data-a3s-components~='ribbon'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=ribbon] [data-state-specimen=disabled] [data-a3s-components~='ribbon'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=ribbon]",
       "states": [
@@ -3802,7 +3819,7 @@
         "ready": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=ready]:has([data-a3s-components~='resource-card'][data-a3s-state~='ready'])",
         "selected": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=selected]:has([data-a3s-components~='resource-card'][data-a3s-state~='selected'][data-selected=true])",
         "installed": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=installed]:has([data-a3s-components~='resource-card'][data-a3s-state~='installed'])",
-        "unavailable": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=unavailable]:has([data-a3s-components~='resource-card'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
+        "unavailable": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=unavailable] [data-a3s-components~='resource-card'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
         "loading": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=loading]:has([data-a3s-components~='resource-card'][data-a3s-state~='loading'][aria-busy=true])",
         "error": ".a3s-component-state-matrix[open][data-component=resource-card] [data-state-specimen=error]:has([data-a3s-components~='resource-card'][data-a3s-state~='error'])"
       },
@@ -3850,7 +3867,7 @@
       "stateEvidenceScreenshot": "components/contracts/split-pane-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=split-pane] [data-state-specimen=ready]:has([data-a3s-components~='split-pane'][data-a3s-state~='ready'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=split-pane] [data-state-specimen=disabled]:has([data-a3s-components~='split-pane'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=split-pane] [data-state-specimen=disabled] [data-a3s-components~='split-pane'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=split-pane]",
       "states": [
@@ -3890,8 +3907,8 @@
       "stateEvidenceScreenshot": "components/contracts/task-pane-states.png",
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=ready]:has([data-a3s-components~='task-pane'][data-a3s-state~='ready'])",
-        "open": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=open]:has([data-a3s-components~='task-pane'][data-a3s-state~='open']:is([open],[aria-expanded=true]))",
-        "closed": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=closed]:has([data-a3s-components~='task-pane'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))",
+        "open": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=open]:has([data-a3s-components~='task-pane'][data-a3s-state~='open'])",
+        "closed": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=closed]:has([data-a3s-components~='task-pane'][data-a3s-state~='closed'])",
         "loading": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=loading]:has([data-a3s-components~='task-pane'][data-a3s-state~='loading'][aria-busy=true])",
         "error": ".a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=error]:has([data-a3s-components~='task-pane'][data-a3s-state~='error'])"
       },
@@ -4163,7 +4180,7 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=ready]:has([data-a3s-components~='message-citation'][data-a3s-state~='ready'])",
         "visited": ".a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=visited]:has([data-a3s-components~='message-citation'][data-a3s-state~='visited'][aria-current])",
-        "unavailable": ".a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=unavailable]:has([data-a3s-components~='message-citation'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
+        "unavailable": ".a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=unavailable] [data-a3s-components~='message-citation'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
         "error": ".a3s-component-state-matrix[open][data-component=message-citation] [data-state-specimen=error]:has([data-a3s-components~='message-citation'][data-a3s-state~='error'])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=message-citation]",
@@ -4251,9 +4268,9 @@
       "stateEvidenceSelectors": {
         "ready": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=ready]:has([data-a3s-components~='context-selector'][data-a3s-state~='ready'])",
         "loading": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=loading]:has([data-a3s-components~='context-selector'][data-a3s-state~='loading'][aria-busy=true])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=disabled]:has([data-a3s-components~='context-selector'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))",
-        "invalid": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=invalid]:has([data-a3s-components~='context-selector'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))",
-        "unavailable": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=unavailable]:has([data-a3s-components~='context-selector'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=disabled] [data-a3s-components~='context-selector'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))",
+        "invalid": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=invalid] [data-a3s-components~='context-selector'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))",
+        "unavailable": ".a3s-component-state-matrix[open][data-component=context-selector] [data-state-specimen=unavailable] [data-a3s-components~='context-selector'][data-a3s-state~='unavailable']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=context-selector]",
       "states": [
@@ -4394,7 +4411,7 @@
         "ready": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions] [data-state-specimen=ready]:has([data-a3s-components~='follow-up-suggestions'][data-a3s-state~='ready'])",
         "loading": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions] [data-state-specimen=loading]:has([data-a3s-components~='follow-up-suggestions'][data-a3s-state~='loading'][aria-busy=true])",
         "empty": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions] [data-state-specimen=empty]:has([data-a3s-components~='follow-up-suggestions'][data-a3s-state~='empty'])",
-        "disabled": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions] [data-state-specimen=disabled]:has([data-a3s-components~='follow-up-suggestions'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))"
+        "disabled": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions] [data-state-specimen=disabled] [data-a3s-components~='follow-up-suggestions'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=follow-up-suggestions]",
       "states": [
@@ -4492,6 +4509,7 @@
       ],
       "behaviorActions": [
         "click",
+        "focus",
         "press"
       ],
       "category": "harness",
@@ -4760,7 +4778,7 @@
         "empty": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=empty]:has([data-a3s-components~='file-explorer'][data-a3s-state~='empty'])",
         "error": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=error]:has([data-a3s-components~='file-explorer'][data-a3s-state~='error'])",
         "permission-denied": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=permission-denied]:has([data-a3s-components~='file-explorer'][data-a3s-state~='permission-denied'])",
-        "readonly": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=readonly]:has([data-a3s-components~='file-explorer'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))",
+        "readonly": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=readonly] [data-a3s-components~='file-explorer'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))",
         "renaming": ".a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=renaming]:has([data-a3s-components~='file-explorer'][data-a3s-state~='renaming'][aria-busy=true])"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=file-explorer]",
@@ -4823,7 +4841,7 @@
         "error": ".a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=error]:has([data-a3s-components~='file-manager'][data-a3s-state~='error'])",
         "offline": ".a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=offline]:has([data-a3s-components~='file-manager'][data-a3s-state~='offline'])",
         "permission-denied": ".a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=permission-denied]:has([data-a3s-components~='file-manager'][data-a3s-state~='permission-denied'])",
-        "readonly": ".a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=readonly]:has([data-a3s-components~='file-manager'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))"
+        "readonly": ".a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=readonly] [data-a3s-components~='file-manager'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))"
       },
       "stateMatrixSelector": ".a3s-component-state-matrix[open][data-component=file-manager]",
       "states": [
@@ -5018,7 +5036,7 @@
         "wheel"
       ],
       "behaviorActions": [
-        "wheel"
+        "focus"
       ],
       "category": "utilities",
       "contractId": "UT-01",
@@ -5051,7 +5069,8 @@
         "focus"
       ],
       "behaviorActions": [
-        "click"
+        "click",
+        "focus"
       ],
       "category": "utilities",
       "contractId": "UT-02",

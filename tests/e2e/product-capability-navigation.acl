@@ -22,6 +22,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "assistant-primary-action" { visible = css("dialog.product-capability-detail-dialog[open] button[data-primary]") }
         screenshot "capture-assistant-detail" { path = "product/capability-detail-desktop.png" }
         click "close-assistant-detail" { target = role("button", "关闭能力详情") }
+        wait "detail-focus-ready" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
         expect "detail-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
 
         click "open-skills" { target = role("tab", "技能") }
@@ -49,8 +50,10 @@ suite "a3s-ui-product-capability-navigation" {
         wait "assistant-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=assistants" }
         expect "navigation-closed" { visible = css("button[aria-label='打开应用导航']") }
         expect "mobile-catalog" { visible = css("[data-product-surface=catalog][data-catalog-tab=assistants]") }
-        click "open-skills" { target = role("tab", "技能") }
-        expect "skills-current" { visible = css("[role=tab][aria-selected=true]:nth-child(2)") }
+        focus "focus-skills" { target = css("[data-product-surface=catalog] [role=tablist] [role=tab]:nth-child(2)") }
+        press "open-skills" { key = "Enter" }
+        wait "skills-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
+        expect "skills-current" { visible = css("[data-product-surface=catalog][data-catalog-tab=skills]") }
 
         click "reopen-navigation" { target = role("button", "打开应用导航") }
         click "open-settings" { target = role("button", "设置") }
@@ -85,6 +88,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "detail-footer-reachable" { pointer_reachable = role("button", "查看设置") }
         screenshot "detail-short-desktop" { path = "product/capability-detail-short-desktop.png" }
         press "close-detail" { key = "Escape" }
+        wait "detail-origin-focus-ready" { visible = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main:focus") }
         expect "detail-origin-restored" { visible = css("[data-capability-id='connector:document-library'] .product-catalog__entry-main:focus") }
 
         click "open-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
@@ -103,6 +107,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "setup-close-reachable" { pointer_reachable = role("button", "关闭配置") }
         screenshot "setup-short-desktop" { path = "product/capability-setup-short-desktop.png" }
         click "close-setup" { target = role("button", "关闭配置") }
+        wait "setup-origin-focus-ready" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
         expect "setup-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
 
         console "console" { path = "product/capability-overlays-short-desktop-console.json" clear = false }
@@ -137,8 +142,10 @@ suite "a3s-ui-product-capability-navigation" {
         expect "remove-confirm-reachable" { pointer_reachable = css("dialog.product-capability-remove[open] button[data-danger]") }
         screenshot "remove-mobile" { path = "product/capability-remove-mobile.png" }
         click "cancel-remove" { target = css("dialog.product-capability-remove[open] footer button:first-child") }
+        wait "remove-origin-focus-ready" { visible = css(".product-capability-detail > footer button[data-danger]:focus") }
         expect "remove-origin-restored" { visible = css(".product-capability-detail > footer button[data-danger]:focus") }
         click "close-detail" { target = role("button", "关闭能力详情") }
+        wait "detail-card-focus-ready" { visible = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main:focus") }
         expect "detail-card-restored" { visible = css("[data-capability-id='connector:git-repository'] .product-catalog__entry-main:focus") }
 
         click "open-connection-setup" { target = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action") }
@@ -159,6 +166,7 @@ suite "a3s-ui-product-capability-navigation" {
         expect "save-connection-reachable" { pointer_reachable = role("button", "保存并连接") }
         screenshot "setup-mobile" { path = "product/capability-setup-mobile.png" }
         click "close-connection-setup" { target = role("button", "关闭配置") }
+        wait "connection-origin-focus-ready" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
         expect "connection-origin-restored" { visible = css("[data-capability-id='connector:issue-tracker'] .product-catalog__quick-action:focus") }
 
         console "console" { path = "product/capability-overlays-mobile-console.json" clear = false }
@@ -176,8 +184,10 @@ suite "a3s-ui-product-capability-navigation" {
         click "open-capabilities" { target = css(".product-sidebar__capability-link") }
         wait "assistant-url" { url = "http://127.0.0.1:4178/UI/en/playground/capabilities.html?capability=assistants" }
         expect "featured-scenarios" { text = "Featured scenarios" }
-        click "open-skills" { target = role("tab", "Skills") }
-        expect "skills-selected" { visible = css("[role=tab][aria-selected=true]:nth-child(2)") }
+        focus "focus-skills" { target = css("[data-product-surface=catalog] [role=tablist] [role=tab]:nth-child(2)") }
+        press "open-skills" { key = "Enter" }
+        wait "skills-url" { url = "http://127.0.0.1:4178/UI/en/playground/capabilities.html?capability=skills" }
+        expect "skills-selected" { visible = css("[data-product-surface=catalog][data-catalog-tab=skills]") }
 
         screenshot "capture-english" { path = "product/capability-navigation-english.png" }
         console "console" { path = "product/capability-navigation-english-console.json" clear = false }

@@ -80,8 +80,8 @@ The canonical root uses `<dialog>` semantics and exposes 4 named parts. State mu
 - Stable root target: `[data-a3s-components~="image-viewer"]` inside `.a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/image-viewer-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=open]:has([data-a3s-components~='image-viewer'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=closed]:has([data-a3s-components~='image-viewer'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=open]:has([data-a3s-components~='image-viewer'][data-a3s-state~='open'])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=closed]:has([data-a3s-components~='image-viewer'][data-a3s-state~='closed'])`
   - `loading`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=loading]:has([data-a3s-components~='image-viewer'][data-a3s-state~='loading'][aria-busy=true])`
   - `error`: `.a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=error]:has([data-a3s-components~='image-viewer'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

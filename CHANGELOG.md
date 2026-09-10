@@ -29,6 +29,47 @@
 
 ### Changed
 
+- Feedback Empty and Table e2e scenarios wait for complete preview readiness and target Empty’s primary recovery button before focus evidence, reducing long-suite race failures without softening visibility asserts.
+- Code workbench keyboard save marks the public editor clean immediately on `a3s:code-save`, and the workspace intake e2e refocuses the editor before Ctrl+S so dirty→clean evidence does not race suite load.
+- Dialog and Drawer contract scenarios refocus the open surface before Escape so dark/compact close waits do not hang after screenshots move focus.
+- React and Vue adapters now lazy-load `basecoat.js` plus only the controller for the mounted slug instead of `js/all.js`, with a generate-time guard against regressing to the full bundle.
+- Resolved Wave 0 public-contract contradictions: Spinner and Scroll Area docs now state they are presentation utilities; Radio Group and Theme Switcher use canonical roots (`.radio-group` / `[data-a3s-theme-toggle]`) without incidental `data-slot` or onclick-string selectors; style packs and radio/card CSS drop `data-slot` leakage.
+- Popover open/close no longer interpolates opacity or scale. Closed surfaces use `visibility` only (opacity stays 1) with `transition: none !important`, and documentation `prepare:assets` mirrors CSS/JS into `doc_build/` so rspress preview e2e does not keep a stale stylesheet.
+- Dropdown menu ignores synthetic `click` events (`detail === 0`) after Enter/Space so keyboard open no longer immediately toggles closed.
+- Overlay documentation previews keep the top inset on `.a3s-preview__canvas` instead of stage padding so near-miss pointer clicks no longer hit an empty stage dead zone above the control.
+- Pagination live previews use buttons for in-page page selection so keyboard activation matches the documentation demo contract without hash navigation.
+- App Shell compact navigation no longer fades opacity while opening; discrete open/closed state uses clip-path and visibility so assistive and test clients do not race partial opacity.
+- Scroll Area documentation previews keep the overflow host focusable (`tabindex="0"`) and document that keyboard scrolling requires a focusable host.
+- File Explorer starts inline rename with **F2** on the focused or selected item (in addition to Context Menu), avoiding Chromium’s habit of stealing Shift+F10 for browser chrome under CDP.
+- Navigation and documentation overlay e2e contracts prefer focus + Enter/Space (and scoped preview-control selectors) so a3s-test CDP hit-target near-misses do not overfit the product to pointer geometry.
+- Phone-width preview tooling asserts a framed `iframe[title$='phone preview']` instead of a demo-specific title string that drifts when preview content changes.
+- File Manager root keyboard handling no longer steals Enter/Space from toolbar actions, view toggles, or search fields; listbox shortcuts still apply when focus is on a file item.
+- Playground Product Application compact shell state also tracks `resize`, `visualViewport`, and document `ResizeObserver` updates so CDP viewport overrides still synchronize sidebar `inert`.
+- Playground route contracts wait for compact closed/open navigation state after viewport and keyboard open instead of one-shot expects that race React commit.
+- Product task-creation evidence prefers keyboard activation for composer controls with stable CSS targets, and waits for settings dialog sections before appearance changes.
+- Input Group focus-boundary evidence fills the current documentation placeholder (`Project name or repository path`); Dock workspace evidence targets the `explorer` panel id.
+- Application-utilities Code Graph and Tool Result evidence prefer focus + Enter/ArrowRight with waits instead of CDP click/`End` paths that near-miss or race tab selection.
+- Component-contract generation avoids nested `:has()` inside `:has()` (invalid CSS) by using descendant selectors for qualified state specimens, and Tree expanded/collapsed evidence matches `treeitem` aria-expanded state on the public root.
+- Documentation preview appearance control always forces an explicit dark preview from inherit (instead of the opposite of the site theme), so dark/RTL contract evidence is theme-invariant.
+- Transient Dialog/Drawer/Toast public-root activation in component contracts uses focus + Enter on `button.btn[data-preview-onclick]` instead of role()-targeted focus or CDP click near-misses.
+- Input Group state-matrix detail expects use the specimen description/error nodes (`data-input-group-state-*`) rather than a non-existent feedback attribute.
+- Component-contract open/expanded/collapsed evidence matches real specimen DOM: Accordion uses `details[open]`, Collapsible uses relative `> summary`, Combobox uses `input[role=combobox]`, and application shells use stamped `data-a3s-state` when triggers live outside the public root.
+- Bulk Action Bar empty evidence asserts `hidden` instead of `visible` on the intentionally hidden region.
+- Bulk Action Bar loading specimens stamp conflicting actions `disabled` while keeping clear operable, even when cloned roots lack controller methods.
+- Drawer public-root evidence waits on the open drawer's content panel (`> article`), matching Dialog, so `[open]` alone cannot race a not-visible dialog root.
+- Feedback Toast dismissal evidence targets cancelable created toasts only, so the durable state-matrix specimen in the same toaster cannot false-fail dismiss.
+- Data Grid sort evidence uses focus + Enter instead of CDP click for ascending/descending toggles.
+- Documentation responsive language/version navigation uses focus + Enter so sticky chrome left by prior theme scenarios cannot intercept CDP clicks.
+- Product action-icon evidence waits for the start composer after mail/inspiration handoff, and assistant picker options assert expert avatars instead of a generic assistant glyph.
+- Capability navigation evidence waits on catalog tab URL state and focus restoration after destructive confirmation cancel, instead of racing CDP tab clicks and immediate `:focus` expects.
+- Project asset PDF readiness waits on the office host ready marker and page-number field presence; React controlled inputs do not expose a reliable `value` attribute for CSS matching.
+- Mobile project PDF page changes poll the page-number field after EmbedPDF finishes navigation (async), prove the selected thumbnail while the drawer is reopened, then restore page one through the page-number field because previous/next page steppers are intentionally hidden under the mobile overflow menu.
+- Memory evolution graph evidence keeps the wide desktop reading-pane inspector (no compact dismiss control), asserts selection copy, and leaves compact inspector dismiss coverage to the dedicated mobile/compact scenarios.
+- Code Graph React mounts no longer hardcode `data-view="graph"`, so the controller-owned list/graph view survives parent re-renders.
+- Code Editor compact framing evidence measures the visible phone preview shell after scroll-into-view, at a compact viewport height that can geometrically admit ≥75% coverage.
+- Copy Button state-matrix specimens keep copy semantics and stamp `aria-busy` for copying; Toast live previews mount a durable `.toast` source for state acceptance.
+- Browser driver function keys (`F1`–`F24`) and `ContextMenu` now emit non-zero Windows VK codes, and non-printable presses use CDP `rawKeyDown`.
+
 - Narrowed Button Group to its first-principles responsibility of joining peer actions: React and Vue now emit the same named `div[role="group"]`, constrained text labels wrap without page overflow, split-menu triggers expose stable active-item semantics, and bilingual docs, PRD detail, state specimens, and Playwright/A3S Test coverage now share the same focus and ownership contract.
 - Composed the public Code Editor into the Playground file workbench and the public Log Viewer into session execution records, including real edit, find, format, preview, save, ordered-stream, and copy-feedback paths instead of detached showcase-only examples.
 - Established `apps/desktop` as the sole owner of product routing, persistence, permissions, domain state, and orchestration; A3S UI now limits Playground work to deterministic integration fixtures and reuses the public Artifact Card, Highlighter, Copy Button, File Explorer, Code Diff, Device Simulator, and Code Graph contracts instead of maintaining parallel implementations.
@@ -63,6 +104,10 @@
 
 ### Fixed
 
+- Code Editor A3S Test scenarios wait on `domcontentloaded` plus Monaco/workbench readiness instead of `networkidle`, because Monaco workers keep the network active after first paint and caused false page-ready timeouts.
+- Button duplicate-protection evidence targets the busy control with an explicit click after native `disabled` drops keyboard focus, instead of pressing Enter on whichever element inherited focus.
+- Popovers open instantly (no enter opacity/visibility animation) and no longer toggle `visibility`, so open state is observable as soon as `aria-hidden` becomes false.
+- Toast open is immediate: removed the off-viewport `toast-up` entrance so a newly created toast is observable as soon as it is announced (exit may still collapse with reduced-motion awareness).
 - Replaced generic action glyphs in the Playground workspace file manager with a coherent folder and file-family icon system, readable extension labels, consistent grid/list/Quick Look identity, and compact six-column desktop and two-column mobile layouts.
 - Positioned conditionally mounted, already-open popovers through the shared collision runtime, keeping Composer file, model, assistant, and connector panels fully inside short desktop viewports while preserving mobile bottom sheets; compacted short mobile suggestion lists, corrected context-sensitive keyboard guidance, added explicit panel dismissal, and restored each control trigger after Escape.
 - Kept Code Graph labels inside the visible canvas when narrow inspectors or phone viewports leave insufficient room on a node's preferred side.

@@ -81,5 +81,5 @@ The canonical root uses `<section>` semantics and exposes 4 named parts. State m
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=ready]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='ready'])`
   - `empty`: `.a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=empty]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='empty'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=disabled]:has([data-a3s-components~='emoji-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=disabled] [data-a3s-components~='emoji-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

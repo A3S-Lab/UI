@@ -168,7 +168,7 @@ Automation cannot prove real iOS and Android virtual-keyboard behavior, physical
 - Per-state evidence selectors:
   - `empty`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=empty]:has([data-a3s-components~='textarea'][data-a3s-state~='empty'])`
   - `ready`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=ready]:has([data-a3s-components~='textarea'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled]:has([data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid]:has([data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly]:has([data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=disabled] [data-a3s-components~='textarea'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=invalid] [data-a3s-components~='textarea'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
+  - `readonly`: `.a3s-component-state-matrix[open][data-component=textarea] [data-state-specimen=readonly] [data-a3s-components~='textarea'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

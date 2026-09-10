@@ -80,7 +80,7 @@ The canonical root uses `<section>` semantics and exposes 3 named parts. State m
 - State-matrix screenshot: `components/contracts/accordion-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=ready]:has([data-a3s-components~='accordion'][data-a3s-state~='ready'])`
-  - `open`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open]:has([data-a3s-components~='accordion'][data-a3s-state~='open']:has(:scope > details > summary[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed]:has([data-a3s-components~='accordion'][data-a3s-state~='closed']:has(:scope > details > summary[aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=disabled]:has([data-a3s-components~='accordion'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=open] [data-a3s-components~='accordion'][data-a3s-state~='open']:has(> details[open])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=closed] [data-a3s-components~='accordion'][data-a3s-state~='closed']:not(:has(> details[open]))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=accordion] [data-state-specimen=disabled] [data-a3s-components~='accordion'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

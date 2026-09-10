@@ -175,9 +175,19 @@
   )
   .a3s-preview__stage {
   min-height: calc(280px + var(--a3s-preview-overlay-extension));
-  padding-block-start: 64px;
+  /* Keep inset on the canvas, not stage padding: stage padding is a dead
+     hit-target that steals near-miss pointer clicks during layout settle. */
+  padding-block-start: 0;
   overflow: visible;
   align-items: start;
+}
+
+.a3s-preview[data-preview-layout="overlay"] .a3s-preview__canvas,
+.a3s-preview:has(
+    .a3s-preview__canvas :is([data-popover], [data-context-content])
+  )
+  .a3s-preview__canvas {
+  padding-block-start: 64px;
 }
 
 .a3s-preview[data-preview-layout="workspace"] .a3s-preview__stage {

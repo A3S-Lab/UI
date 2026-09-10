@@ -81,8 +81,8 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
 - State-matrix screenshot: `components/contracts/setting-row-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=ready]:has([data-a3s-components~='setting-row'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=disabled]:has([data-a3s-components~='setting-row'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=invalid]:has([data-a3s-components~='setting-row'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=readonly]:has([data-a3s-components~='setting-row'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=disabled] [data-a3s-components~='setting-row'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=invalid] [data-a3s-components~='setting-row'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
+  - `readonly`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=readonly] [data-a3s-components~='setting-row'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
   - `loading`: `.a3s-component-state-matrix[open][data-component=setting-row] [data-state-specimen=loading]:has([data-a3s-components~='setting-row'][data-a3s-state~='loading'][aria-busy=true])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

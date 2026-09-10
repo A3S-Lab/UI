@@ -79,6 +79,6 @@ The canonical root uses `<fieldset>` semantics and exposes 3 named parts. State 
 - State-matrix screenshot: `components/contracts/color-swatches-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=ready]:has([data-a3s-components~='color-swatches'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=disabled]:has([data-a3s-components~='color-swatches'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=invalid]:has([data-a3s-components~='color-swatches'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=disabled] [data-a3s-components~='color-swatches'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=color-swatches] [data-state-specimen=invalid] [data-a3s-components~='color-swatches'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

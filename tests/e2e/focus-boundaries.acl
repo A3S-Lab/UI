@@ -28,12 +28,13 @@ suite "a3s-ui-focus-boundaries" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/input-group.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "search" { target = placeholder("Search...") value = "agent runtime" }
+        fill "search" { target = placeholder("Project name or repository path") value = "agent runtime" }
         focus "focus-search" { target = css(".a3s-preview[data-preview-component=input-group] .input-group > input") }
         expect "container-owns-focus" { visible = css(".a3s-preview[data-preview-component=input-group] .input-group:focus-within > input:focus-visible") }
         screenshot "focused-light" { path = "focus/input-group-light.png" }
 
-        click "dark-preview" { target = css(".a3s-preview[data-preview-component=input-group] [data-preview-control=appearance]") }
+        focus "focus-dark-preview" { target = css(".a3s-preview[data-preview-component=input-group] [data-preview-control=appearance]") }
+        press "dark-preview" { key = "Enter" }
         expect "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=input-group][data-preview-scheme=dark]") }
         focus "refocus-dark-search" { target = css(".a3s-preview[data-preview-component=input-group] .input-group > input") }
         screenshot "focused-dark" { path = "focus/input-group-dark.png" }

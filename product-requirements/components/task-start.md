@@ -83,6 +83,6 @@ The canonical root uses `<section>` semantics and exposes 4 named parts. State m
   - `ready`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=ready]:has([data-a3s-components~='task-start'][data-a3s-state~='ready'])`
   - `loading`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=loading]:has([data-a3s-components~='task-start'][data-a3s-state~='loading'][aria-busy=true])`
   - `offline`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=offline]:has([data-a3s-components~='task-start'][data-a3s-state~='offline'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=disabled]:has([data-a3s-components~='task-start'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=disabled] [data-a3s-components~='task-start'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
   - `error`: `.a3s-component-state-matrix[open][data-component=task-start] [data-state-specimen=error]:has([data-a3s-components~='task-start'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

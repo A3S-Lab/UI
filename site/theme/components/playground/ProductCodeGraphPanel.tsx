@@ -262,7 +262,6 @@ export function ProductCodeGraphPanel({
       data-graph-domain={variant}
       data-selected-node={selectedNodeId ?? undefined}
       data-state="ready"
-      data-view="graph"
       id={id}
       ref={rootRef}
     >

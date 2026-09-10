@@ -77,12 +77,10 @@
       inset-inline-start: 0;
       width: min(var(--app-shell-navigation-size), calc(100% - 3rem));
       clip-path: inset(0 100% 0 0);
-      opacity: 0;
       pointer-events: none;
       visibility: hidden;
       transition:
         clip-path var(--a3s-motion-overlay, 220ms) ease,
-        opacity var(--a3s-motion-overlay, 220ms) ease,
         visibility 0s linear var(--a3s-motion-overlay, 220ms);
     }
 
@@ -110,7 +108,6 @@
 
     .app-shell[data-mobile-navigation='open'] > [data-app-navigation] {
       clip-path: inset(0);
-      opacity: 1;
       pointer-events: auto;
       visibility: visible;
       transition-delay: 0s;

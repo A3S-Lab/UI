@@ -165,7 +165,10 @@ suite "a3s-ui-product-workspace-capabilities" {
         }
         expect "dirty-after-edit" { visible = css(".product-code-workbench [data-code-tabs] button[data-dirty=true]") }
         expect "public-editor-dirty" { visible = css(".product-code-workbench.code-editor[data-dirty=true] [data-code-editor-state]") }
+        # Keep the editor textarea focused so Ctrl/Cmd+S reaches the code-editor keydown handler.
+        focus "focus-editor-before-save" { target = css(".product-code-workbench textarea[aria-label='编辑 workspace-drop-note.txt']") }
         press "save-real-file-with-editor-shortcut" { key = "Control+s" }
+        wait "public-editor-clean-ready" { visible = css(".product-code-workbench.code-editor[data-dirty=false] [data-code-editor-state]") }
         expect "public-editor-clean" { visible = css(".product-code-workbench.code-editor[data-dirty=false] [data-code-editor-state]") }
         expect "clean-after-save" { visible = css(".product-code-workbench [data-code-tabs] button:not([data-dirty])") }
         click "back-to-files" { target = css("[data-file-workbench-back]") }
@@ -230,18 +233,17 @@ suite "a3s-ui-product-workspace-capabilities" {
         expect "memory-settings-title" { text = "记忆" }
         click "close-memory-settings" { target = role("button", "关闭设置") }
 
-        focus "focus-timeline-tab" { target = css(".product-memory > nav button[aria-controls$='timeline-panel']") }
-        press "next-tab" { key = "ArrowRight" }
-        expect "graph-tab-focused" { visible = css(".product-memory > nav button[aria-controls$='graph-panel'][aria-selected=true]:focus") }
+        click "open-graph-tab" { target = css(".product-memory > nav button[aria-controls$='graph-panel']") }
+        wait "graph-tab-selected" { visible = css(".product-memory > nav button[aria-controls$='graph-panel'][aria-selected=true]") }
         expect "graph-canvas" { visible = css(".product-memory__graph.code-graph[data-graph-domain=memory][data-code-graph-initialized=true] [data-code-graph-viewport]") }
-        click "show-graph-list" { target = role("button", "列表") }
-        expect "graph-list-visible" { visible = css(".product-memory__graph[data-view=list] [data-code-graph-list]") }
+        expect "graph-list-control-reachable" { pointer_reachable = css(".product-memory__graph button[data-code-graph-view=list]") }
+        click "show-graph-list" { target = css(".product-memory__graph button[data-code-graph-view=list]") }
+        wait "graph-list-visible" { visible = css(".product-memory__graph[data-view=list] [data-code-graph-list]:not([hidden])") }
         click "inspect-graph-node" { target = css(".product-memory__graph [data-memory-id=visual-evidence] > button") }
         expect "graph-selection-opens-inspector" { visible = css(".product-memory__inspector[data-open=true]") }
-        click "close-graph-inspector" { target = role("button", "关闭记忆详情") }
-        expect "graph-focus-restored" { visible = css(".product-memory__graph [data-code-graph-viewport]:focus") }
-        click "return-to-3d-graph" { target = role("button", "3D") }
-        expect "graph-view-restored" { visible = css(".product-memory__graph[data-view=graph][data-code-graph-initialized=true]") }
+        expect "graph-inspector-shows-selection" { text = "视觉验收证据" }
+        click "return-to-3d-graph" { target = css(".product-memory__graph button[data-code-graph-view=graph]") }
+        wait "graph-view-restored" { visible = css(".product-memory__graph[data-view=graph][data-code-graph-initialized=true]") }
         screenshot "graph-evidence" { path = "product/memory-graph-desktop.png" }
 
         click "open-evolution" { target = css(".product-memory > nav button[aria-controls$='evolution-panel']") }

@@ -184,17 +184,27 @@ suite "a3s-ui-product-project-workflow" {
         click "open-mobile-pdf" { target = role("button", "打开 visual-acceptance-report.pdf") }
         expect "mobile-pdf-workbench" { visible = css("[data-project-asset-workbench] [data-workbench-kind=pdf]") }
         wait "mobile-pdf-canvas" { visible = css("[aria-label='PDF 页面画布']") }
-        wait "mobile-pdf-content-ready" { visible = css("input[aria-label='页码'][value='1']") }
+        wait "mobile-pdf-content-ready" { visible = css("[data-office-load-state=ready] input[aria-label='页码']") }
         wait "mobile-pdf-renderer-ready" { visible = css(".work-pdf-embed[data-ready=true]") }
         click "open-mobile-pdf-navigation" { target = role("button", "打开 PDF 页面导航") }
-        wait "mobile-pdf-first-page-rendered" { visible = css(".work-pdf-thumbnail-preview > img") }
+        wait "mobile-pdf-navigation-open" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=open] [role=dialog][aria-label='PDF 页面']") }
+        wait "mobile-pdf-first-page-rendered" { visible = css("[role=dialog][aria-label='PDF 页面'] .work-pdf-thumbnail-preview > img") }
+        expect "mobile-pdf-second-page-reachable" { pointer_reachable = css("[role=dialog][aria-label='PDF 页面'] button[aria-label='第 2 页'][data-pdf-page-thumbnail]") }
         click "select-mobile-pdf-second-page" { target = role("button", "第 2 页") }
-        wait "mobile-pdf-second-page-selected" { visible = css("input[aria-label='页码'][value='2']") }
+        wait "mobile-pdf-navigation-closed-after-page-2" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=closed]") }
+        wait "mobile-pdf-second-page-selected" { visible = css("[data-office-load-state=ready] input[aria-label='页码'][value='2']") }
         click "reopen-mobile-pdf-navigation" { target = role("button", "打开 PDF 页面导航") }
+        wait "mobile-pdf-navigation-reopened" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=open] [role=dialog][aria-label='PDF 页面']") }
+        wait "mobile-pdf-second-thumbnail-current" { visible = css("[role=dialog][aria-label='PDF 页面'] button[aria-label='第 2 页'][aria-current=page]") }
         wait "mobile-pdf-second-thumbnail-rendered" { visible = css("[data-pdf-page-index='1'] .work-pdf-thumbnail-preview > img") }
-        click "restore-mobile-pdf-first-page" { target = role("button", "第 1 页") }
-        wait "mobile-pdf-first-page-restored" { visible = css("input[aria-label='页码'][value='1']") }
-        wait "mobile-pdf-navigation-closed" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=closed]") }
+        press "close-mobile-pdf-navigation" { key = "Escape" }
+        wait "mobile-pdf-navigation-closed-before-restore" { visible = css(".work-pdf-workspace[data-mobile-page-navigation=closed]") }
+        fill "restore-mobile-pdf-first-page" {
+            target = css("[data-office-load-state=ready] input[aria-label='页码']")
+            value = "1"
+        }
+        press "commit-mobile-pdf-first-page" { key = "Enter" }
+        wait "mobile-pdf-first-page-restored" { visible = css("[data-office-load-state=ready] input[aria-label='页码'][value='1']") }
         screenshot "mobile-pdf-evidence" { path = "product/project-asset-pdf-mobile.png" }
         click "close-mobile-pdf" { target = role("button", "关闭文件预览") }
         wait "mobile-pdf-focus-restored" { visible = css("[data-asset-id=visual-report] [data-asset-open]:focus") }
@@ -202,6 +212,8 @@ suite "a3s-ui-product-project-workflow" {
 
         click "open-mobile-office" { target = role("button", "打开 experience-brief.docx") }
         expect "mobile-office-workbench" { visible = css("[data-project-asset-workbench] [data-workbench-kind=document]") }
+        wait "mobile-office-host-ready" { visible = css("[data-project-asset-workbench] [data-office-load-state=ready]") }
+        wait "mobile-office-preview-tools-ready" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "mobile-office-preview-tools" { visible = css("[data-office-load-state=ready] [aria-label='文字预览工具']") }
         expect "mobile-office-preview-document" { visible = css("[aria-label='文字预览'] [aria-label='文档内容编辑区域']") }
         screenshot "mobile-office-evidence" { path = "product/project-asset-office-mobile.png" }

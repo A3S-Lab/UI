@@ -80,7 +80,7 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - State-matrix screenshot: `components/contracts/date-picker-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=ready]:has([data-a3s-components~='date-picker'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled]:has([data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid]:has([data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
-  - `read-only`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only]:has([data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled] [data-a3s-components~='date-picker'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid] [data-a3s-components~='date-picker'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
+  - `read-only`: `.a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only] [data-a3s-components~='date-picker'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

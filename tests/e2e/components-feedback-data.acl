@@ -41,10 +41,14 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/empty.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=empty][data-preview-integration=complete][data-preview-source=ready]") }
         expect "empty-state-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty") }
-        expect "empty-action-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
-        focus "focus-empty-recovery" { target = css(".a3s-preview[data-preview-component=empty] .empty .btn") }
-        expect "empty-recovery-focused" { visible = css(".a3s-preview[data-preview-component=empty] .empty .btn:focus") }
+        # Target the primary recovery button; the empty footer also has outline and link variants.
+        wait "empty-action-ready" { visible = css(".a3s-preview[data-preview-component=empty] .empty footer button.btn:not([data-variant])") }
+        expect "empty-action-visible" { visible = css(".a3s-preview[data-preview-component=empty] .empty footer button.btn:not([data-variant])") }
+        focus "focus-empty-recovery" { target = css(".a3s-preview[data-preview-component=empty] .empty footer button.btn:not([data-variant])") }
+        wait "empty-recovery-focus-ready" { visible = css(".a3s-preview[data-preview-component=empty] .empty footer button.btn:not([data-variant]):focus") }
+        expect "empty-recovery-focused" { visible = css(".a3s-preview[data-preview-component=empty] .empty footer button.btn:not([data-variant]):focus") }
     }
 
     scenario "progress" {
@@ -85,14 +89,17 @@ suite "a3s-ui-feedback-and-data" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         viewport "phone" { width = 390 height = 844 }
-        click "create-toast" { target = role("button", "Toast from front-end") }
-        expect "toast-visible" { visible = css("#toaster .toast:not([aria-hidden=true])") }
-        expect "toast-title-visible" { visible = css(".rp-not-doc #toaster .toast h2") }
-        expect "toast-description-visible" { visible = css(".rp-not-doc #toaster .toast p") }
-        focus "focus-dismiss" { target = css("#toaster [data-toast-cancel]") }
+        focus "focus-create-toast" { target = css(".a3s-preview[data-preview-component=toast] button.btn[data-preview-onclick]") }
+        press "create-toast" { key = "Enter" }
+        wait "toast-ready" { visible = css("#toaster .toast:has([data-toast-cancel]):not([aria-hidden=true])") }
+        expect "toast-visible" { visible = css("#toaster .toast:has([data-toast-cancel]):not([aria-hidden=true])") }
+        expect "toast-title-visible" { visible = css("#toaster .toast:has([data-toast-cancel]) h2, #toaster .toast:has([data-toast-cancel]) strong") }
+        expect "toast-description-visible" { visible = css("#toaster .toast:has([data-toast-cancel]) p") }
+        focus "focus-dismiss" { target = css("#toaster .toast:has([data-toast-cancel]) [data-toast-cancel]") }
         screenshot "toast-phone-focused" { path = "components/toast-phone-focused.png" }
-        click "dismiss-toast" { target = css("#toaster [data-toast-cancel]") }
-        expect "toast-dismissed" { visible = css("#toaster:not(:has(.toast:not([aria-hidden=true])))") }
+        press "dismiss-toast" { key = "Enter" }
+        wait "toast-dismissed-ready" { visible = css("#toaster:not(:has([data-toast-cancel]))") }
+        expect "toast-dismissed" { visible = css("#toaster:not(:has([data-toast-cancel]))") }
     }
 
     scenario "accordion" {
@@ -102,7 +109,8 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/accordion.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "open-return-policy" { target = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2) > summary") }
+        focus "focus-return-policy" { target = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2) > summary") }
+        press "open-return-policy" { key = "Enter" }
         expect "return-policy-open" { visible = css(".a3s-preview[data-preview-component=accordion] details:nth-of-type(2)[open]") }
     }
 
@@ -176,10 +184,14 @@ suite "a3s-ui-feedback-and-data" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/table.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
-        expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table] table > caption") }
-        wheel "scroll-table-viewport" { target = css(".a3s-preview[data-preview-component=table] .table-container") delta_y = 120 }
-        expect "table-remains-readable" { visible = css(".a3s-preview[data-preview-component=table] .table-container table.table") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete][data-preview-source=ready]") }
+        wait "table-ready" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] .table-container table.table") }
+        expect "table-visible" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] .table-container table.table") }
+        expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] table > caption") }
+        # Wheel uses elementFromPoint at the target center; bring the complete preview into view first.
+        click "bring-table-into-view" { target = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] .table-container table.table") }
+        wheel "scroll-table-viewport" { target = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] .table-container") delta_y = 120 }
+        expect "table-remains-readable" { visible = css(".a3s-preview[data-preview-component=table][data-preview-integration=complete] .table-container table.table") }
     }
 
     scenario "property-list" {
@@ -288,9 +300,13 @@ suite "a3s-ui-feedback-and-data" {
         expect "partial-selection-restored" { visible = css("#data-grid-demo-en[data-selection=some] .bulk-action-bar:not([hidden])") }
         check "restore-staging" { target = css("#data-grid-demo-en [data-grid-select][value=staging]") }
         expect "full-selection-restored" { visible = css("#data-grid-demo-en[data-selection=all] [data-selected-count]") }
-        click "sort-name" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
+        focus "focus-sort-name" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
+        press "sort-name" { key = "Enter" }
+        wait "name-ascending-ready" { visible = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
         expect "name-ascending" { visible = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
-        click "reverse-name-sort" { target = css("#data-grid-demo-en [data-grid-sort=name]") }
+        focus "focus-reverse-name-sort" { target = css("#data-grid-demo-en th[aria-sort=ascending] [data-grid-sort=name]") }
+        press "reverse-name-sort" { key = "Enter" }
+        wait "name-descending-ready" { visible = css("#data-grid-demo-en th[aria-sort=descending] [data-grid-sort=name]") }
         expect "name-descending" { visible = css("#data-grid-demo-en th[aria-sort=descending] [data-grid-sort=name]") }
         focus "focus-clear-selection" { target = css("#data-grid-demo-en [data-grid-clear-selection]") }
         press "clear-selection" { key = "Enter" }
@@ -310,13 +326,13 @@ suite "a3s-ui-feedback-and-data" {
         expect "bulk-actions-visible" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-bulk-action-bar-initialized=true][data-state=selected]:not([hidden])") }
         focus "focus-archive-action" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]") }
         expect "archive-action-focused" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]:focus") }
-        click "start-archive" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]") }
+        press "start-archive" { key = "Enter" }
         expect "archive-loading" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-state=loading][aria-busy=true] [data-bulk-action=archive][data-pending=true]") }
         expect "archive-disabled" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-action=archive]:disabled") }
         wait "archive-error" { text = "Archive failed. Check permissions and retry." }
         expect "archive-recovered" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar] .bulk-action-bar[data-state=selected][data-result=error]") }
         focus "focus-clear-action" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
-        click "clear-selection" { target = css(".a3s-preview[data-preview-component=bulk-action-bar] [data-bulk-clear]") }
+        press "clear-selection" { key = "Enter" }
         expect "bulk-actions-hidden" { visible = css(".a3s-preview[data-preview-component=bulk-action-bar]:has(.bulk-action-bar[data-state=empty][hidden])") }
         expect "focus-returned" { visible = css("#bulk-action-bar-collection-en:focus") }
     }

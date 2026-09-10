@@ -1,10 +1,14 @@
 # Scroll Area
 
+<Callout title="Scrollbar utility" icon="info">
+  Scroll Area is a scrollbar styling utility (`.scrollbar` / `.scrollbar-sm`) for hosts that already scroll with overflow. It is not a scroll-container controller and has no dedicated JavaScript.
+</Callout>
+
 Scroll Area bounds long content while preserving its reading order and a discoverable, native-feeling scroll path.
 
 <Preview class="w-full max-w-42">
 <div class="card h-72 p-0">
-  <div class="scrollbar h-full overflow-y-auto p-4">
+  <div class="scrollbar h-full overflow-y-auto p-4" tabindex="0">
     <div class="space-y-4">
       <h4 class="text-sm leading-none font-medium">Tags</h4>
       <div class="text-sm">
@@ -67,7 +71,7 @@ Use `scrollbar` or `scrollbar-sm` on an element that already scrolls with `overf
 
 Use `scrollbar` or `scrollbar-sm` on an element that already scrolls with `overflow-auto`, `overflow-y-auto`, or `overflow-x-auto`.
 
-The component class augments native scrolling for cross-browser styling. It does not wrap content, replace browser scroll behavior, or require JavaScript.
+The component class augments native scrolling for cross-browser styling. It does not wrap content, replace browser scroll behavior, or require JavaScript. Hosts that need keyboard scrolling should keep the overflow element focusable (`tabindex="0"` or a native control).
 
 ## Examples
 

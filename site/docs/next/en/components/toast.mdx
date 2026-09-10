@@ -3,9 +3,22 @@
 Toast provides brief, non-blocking result feedback while work continues and keeps important follow-up actions accessible.
 
 <Preview class="max-w-md">
-<div id="toaster" class="toaster"></div>
+<div id="toaster" class="toaster">
+  <div class="toast" role="status" aria-atomic="true" aria-hidden="false" data-category="success" data-duration="-1">
+    <div class="toast-content"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+      <div class="toast-body">
+        <strong>Success</strong>
+        <p>A success toast called from the front-end.</p>
+      </div>
+      <footer>
+        <button type="button" class="btn" data-toast-action>Dismiss</button>
+      </footer>
+    </div>
+  </div>
+</div>
 <button
   class="btn" data-variant="outline"
+  data-preview-onclick
   onclick="document.getElementById('toaster').toast({
     category: 'success',
     title: 'Success',

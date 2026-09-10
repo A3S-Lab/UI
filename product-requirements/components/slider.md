@@ -78,5 +78,5 @@ The canonical root uses `<input>` semantics and exposes 0 named parts. State mus
 - State-matrix screenshot: `components/contracts/slider-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=ready]:has([data-a3s-components~='slider'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=disabled]:has([data-a3s-components~='slider'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=disabled] [data-a3s-components~='slider'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -84,7 +84,7 @@ The canonical root uses `<form>` semantics and exposes 4 named parts. State must
   - `ready`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=ready]:has([data-a3s-components~='form'][data-a3s-state~='ready'])`
   - `submitting`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=submitting]:has([data-a3s-components~='form'][data-a3s-state~='submitting'][aria-busy=true])`
   - `success`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=success]:has([data-a3s-components~='form'][data-a3s-state~='success'])`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=invalid]:has([data-a3s-components~='form'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=invalid] [data-a3s-components~='form'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
   - `error`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=error]:has([data-a3s-components~='form'][data-a3s-state~='error'])`
-  - `read-only`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=read-only]:has([data-a3s-components~='form'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `read-only`: `.a3s-component-state-matrix[open][data-component=form] [data-state-specimen=read-only] [data-a3s-components~='form'][data-a3s-state~='read-only']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

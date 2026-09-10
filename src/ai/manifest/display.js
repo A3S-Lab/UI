@@ -77,7 +77,8 @@ export const feedbackComponents = [
     slug: "spinner",
     name: "Spinner",
     category: "feedback",
-    selector: ".animate-spin[role=status]",
+    // Presentation utility: documented markup contract, no spinner.js controller.
+    selector: ".animate-spin[role=status], svg.animate-spin[role=status]",
     tag: "span",
     className: "animate-spin",
     attributes: { "aria-label": "Loading", role: "status" },

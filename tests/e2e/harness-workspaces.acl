@@ -14,7 +14,7 @@ suite "a3s-ui-harness-workspaces" {
         expect "production-fixture-only" { visible = css(".dockview-demo[data-mode=dock]:not(:has(.dockview-demo__panel))") }
 
         expect "task-panel" { visible = css("[data-demo-panel=task]") }
-        expect "workspace-file-tree" { visible = css("[data-demo-panel=resources] .dockview-demo__files") }
+        expect "workspace-file-tree" { visible = css("[data-demo-panel=explorer] .dockview-demo__files") }
         expect "editor-panel" { visible = css("[data-demo-panel=editor] .product-code-workbench[data-code-load-state=ready] [data-code-editor-file]") }
         expect "preview-tab" { visible = role("tab", "预览") }
         expect "terminal-panel" { visible = css("[data-demo-panel=terminal] .product-command-preview [role=log]") }

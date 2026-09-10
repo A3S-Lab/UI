@@ -29,7 +29,7 @@ The host application continues to own domain data, authorization, transport, per
 
 ## Interaction contract
 
-- Canonical root: `.radio-group, [role=radiogroup], [data-slot=radio-group]` on `<div>`.
+- Canonical root: `.radio-group, [role=radiogroup]` on `<div>`.
 - Stable automation root: `[data-a3s-components~="radio-group"]`.
 - Named parts: `option` (`input[type=radio]`); `label` (`label`).
 - Supported interaction intents: `check`, `focus`, `press`. Each intent targets the documented root or named part and must remain scoped to one instance.
@@ -60,7 +60,7 @@ The canonical root uses `<div>` semantics and exposes 2 named parts. State must 
 ## Acceptance criteria
 
 - The user can identify the primary value, current state, and next valid action without relying on decoration.
-- The public root matches `.radio-group, [role=radiogroup], [data-slot=radio-group]` and is annotated by the runtime as `[data-a3s-components~="radio-group"]`.
+- The public root matches `.radio-group, [role=radiogroup]` and is annotated by the runtime as `[data-a3s-components~="radio-group"]`.
 - Every documented state above has an independent specimen cloned from the live public root; no fixture may claim mutually exclusive states on one instance.
 - The state acceptance matrix opens at `.a3s-component-state-matrix[open][data-component=radio-group]`, preserves hidden roots in the DOM contract, and restores focus to its trigger after Escape.
 - Pointer and keyboard paths produce the same outcome for every applicable action.

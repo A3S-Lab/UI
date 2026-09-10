@@ -85,5 +85,5 @@ The canonical root uses `<div>` semantics and exposes 4 named parts. State must 
   - `editing`: `.a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=editing]:has([data-a3s-components~='editable-text'][data-a3s-state~='editing'])`
   - `saving`: `.a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=saving]:has([data-a3s-components~='editable-text'][data-a3s-state~='saving'][aria-busy=true])`
   - `error`: `.a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=error]:has([data-a3s-components~='editable-text'][data-a3s-state~='error'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=disabled]:has([data-a3s-components~='editable-text'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=disabled] [data-a3s-components~='editable-text'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

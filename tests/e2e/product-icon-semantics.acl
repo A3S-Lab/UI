@@ -13,9 +13,13 @@ suite "a3s-ui-product-icon-semantics" {
         expect "skill-icon" { visible = css("[role=tab][href*='capability=skills'] svg[data-icon=checklist]") }
         expect "connector-icon" { visible = css("[role=tab][href*='capability=connectors'] svg[data-icon=link]") }
 
-        click "open-skills" { target = role("tab", "技能") }
+        focus "focus-skills" { target = css("[data-product-surface=catalog] [role=tablist] [role=tab]:nth-child(2)") }
+        press "open-skills" { key = "Enter" }
+        wait "skills-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=skills" }
         expect "skills-selected" { visible = css("[data-product-surface=catalog][data-catalog-tab=skills] [role=tab][aria-selected=true] svg[data-icon=checklist]") }
-        click "open-connectors" { target = role("tab", "连接器") }
+        focus "focus-connectors" { target = css("[data-product-surface=catalog] [role=tablist] [role=tab]:nth-child(3)") }
+        press "open-connectors" { key = "Enter" }
+        wait "connectors-url" { url = "http://127.0.0.1:4178/UI/playground/capabilities.html?capability=connectors" }
         expect "connectors-selected" { visible = css("[data-product-surface=catalog][data-catalog-tab=connectors] [role=tab][aria-selected=true] svg[data-icon=link]") }
 
         screenshot "tabs" { path = "product/icon-semantics-capability-tabs.png" }
@@ -163,6 +167,7 @@ suite "a3s-ui-product-icon-semantics" {
         click "open-delivery-expert" { target = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main") }
         expect "detail-avatar-stable" { visible = css("dialog.product-capability-detail-dialog[open] .product-expert-avatar[data-avatar-variant='2-1-000']") }
         click "close-details" { target = role("button", "关闭能力详情") }
+        wait "catalog-focus-ready" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
         expect "catalog-focus-restored" { visible = css("[data-capability-id='assistant:product-delivery-lead'] .product-catalog__entry-main:focus") }
 
         screenshot "experts" { path = "product/expert-avatar-composition.png" }

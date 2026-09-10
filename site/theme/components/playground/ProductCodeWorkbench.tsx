@@ -162,6 +162,8 @@ export function ProductCodeWorkbench({
     if (!editor) return;
 
     const handleSave = () => {
+      // Mark clean immediately so data-dirty does not race the React saveRevision effect.
+      editor.markClean?.();
       onSaved(zh ? "已通过快捷键保存" : "Saved with keyboard shortcut");
     };
 

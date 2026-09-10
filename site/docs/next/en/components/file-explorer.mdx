@@ -408,7 +408,7 @@ Cancelable hooks are `a3s:file-before-selection-change`, `a3s:file-before-filter
 
 ## States and variants
 
-Read-only mode preserves selection, filtering, copy path, and open actions while removing write commands instead of disabling everything. Filter counts include leaf files rather than directory nodes. Rename uses `data-file-editor` in the current row: Enter submits and returns focus to the item, Escape cancels, and blur commits unless `data-rename-blur="cancel"` is set. The controller rejects empty names and path separators; the host validates duplicates, platform rules, authorization, and persistence.
+Read-only mode preserves selection, filtering, copy path, and open actions while removing write commands instead of disabling everything. Filter counts include leaf files rather than directory nodes. Rename uses `data-file-editor` in the current row: **F2** starts rename on the focused or selected item, Enter submits and returns focus to the item, Escape cancels, and blur commits unless `data-rename-blur="cancel"` is set. Context Menu rename remains available for pointer users. The controller rejects empty names and path separators; the host validates duplicates, platform rules, authorization, and persistence.
 
 Source status may appear as a short trailing file marker. Commit, stage, branch creation, and remote synchronization are separate workflows composed from Toolbar, Tree, Alert, and Dialog; they do not belong in File Explorer's base public contract.
 

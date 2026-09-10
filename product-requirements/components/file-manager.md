@@ -91,5 +91,5 @@ The canonical root uses `<section>` semantics and exposes 10 named parts. State 
   - `error`: `.a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=error]:has([data-a3s-components~='file-manager'][data-a3s-state~='error'])`
   - `offline`: `.a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=offline]:has([data-a3s-components~='file-manager'][data-a3s-state~='offline'])`
   - `permission-denied`: `.a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=permission-denied]:has([data-a3s-components~='file-manager'][data-a3s-state~='permission-denied'])`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=readonly]:has([data-a3s-components~='file-manager'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `readonly`: `.a3s-component-state-matrix[open][data-component=file-manager] [data-state-specimen=readonly] [data-a3s-components~='file-manager'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

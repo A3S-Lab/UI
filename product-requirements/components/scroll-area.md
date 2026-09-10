@@ -13,7 +13,7 @@
 
 ## User problem
 
-Scroll Area bounds long content while preserving its reading order and a discoverable, native-feeling scroll path. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Scroll Area is a scrollbar styling utility (`.scrollbar` / `.scrollbar-sm`) for hosts that already scroll with overflow. It is not a scroll-container controller and has no dedicated JavaScript. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 

@@ -79,7 +79,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - Stable root target: `[data-a3s-components~="dropdown-menu"]` inside `.a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/dropdown-menu-states.png`.
 - Per-state evidence selectors:
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has([data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded] [data-a3s-components~='dropdown-menu'][data-a3s-state~='expanded']:has(button[aria-haspopup=menu][aria-expanded=true])`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed] [data-a3s-components~='dropdown-menu'][data-a3s-state~='collapsed']:has(button[aria-haspopup=menu][aria-expanded=false])`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled] [data-a3s-components~='dropdown-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

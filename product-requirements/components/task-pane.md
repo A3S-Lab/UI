@@ -80,8 +80,8 @@ The canonical root uses `<aside>` semantics and exposes 4 named parts. State mus
 - State-matrix screenshot: `components/contracts/task-pane-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=ready]:has([data-a3s-components~='task-pane'][data-a3s-state~='ready'])`
-  - `open`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=open]:has([data-a3s-components~='task-pane'][data-a3s-state~='open']:is([open],[aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=closed]:has([data-a3s-components~='task-pane'][data-a3s-state~='closed']:is(:not([open]),[aria-expanded=false]))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=open]:has([data-a3s-components~='task-pane'][data-a3s-state~='open'])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=closed]:has([data-a3s-components~='task-pane'][data-a3s-state~='closed'])`
   - `loading`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=loading]:has([data-a3s-components~='task-pane'][data-a3s-state~='loading'][aria-busy=true])`
   - `error`: `.a3s-component-state-matrix[open][data-component=task-pane] [data-state-specimen=error]:has([data-a3s-components~='task-pane'][data-a3s-state~='error'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

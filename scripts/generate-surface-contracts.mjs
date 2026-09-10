@@ -312,10 +312,10 @@ function renderPlaygroundScenario(surface) {
         screenshot "capture-desktop" { path = "playground/routes/${surface.id}-desktop.png" }
 
         viewport "compact" { width = 390 height = 844 }
-        expect "closed-navigation-inert" { visible = css("${root}:has(.product-sidebar[inert])") }
+        wait "closed-navigation-inert" { visible = css("${root}:has(.product-sidebar[inert])") }
         focus "focus-mobile-navigation" { target = css("${root} .product-application__mobile-menu") }
         press "open-mobile-navigation" { key = "Enter" }
-        expect "mobile-navigation-open" { visible = css("${root} .product-sidebar[data-mobile-open=true]:not([inert])") }
+        wait "mobile-navigation-open" { visible = css("${root} .product-sidebar[data-mobile-open=true]:not([inert])") }
         screenshot "compact-open" { path = "playground/routes/${surface.id}-compact.png" }
         focus "focus-mobile-close" { target = css("${root} .product-sidebar__window button[aria-label='关闭应用导航']") }
         press "close-mobile-navigation" { key = "Enter" }

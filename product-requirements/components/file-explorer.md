@@ -88,6 +88,6 @@ The canonical root uses `<section>` semantics and exposes 7 named parts. State m
   - `empty`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=empty]:has([data-a3s-components~='file-explorer'][data-a3s-state~='empty'])`
   - `error`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=error]:has([data-a3s-components~='file-explorer'][data-a3s-state~='error'])`
   - `permission-denied`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=permission-denied]:has([data-a3s-components~='file-explorer'][data-a3s-state~='permission-denied'])`
-  - `readonly`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=readonly]:has([data-a3s-components~='file-explorer'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly])))`
+  - `readonly`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=readonly] [data-a3s-components~='file-explorer'][data-a3s-state~='readonly']:is([readonly],[aria-readonly=true],[data-readonly],:has([readonly]))`
   - `renaming`: `.a3s-component-state-matrix[open][data-component=file-explorer] [data-state-specimen=renaming]:has([data-a3s-components~='file-explorer'][data-a3s-state~='renaming'][aria-busy=true])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

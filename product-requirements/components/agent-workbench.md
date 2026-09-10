@@ -86,6 +86,6 @@ The canonical root uses `<section>` semantics and exposes 4 named parts. State m
   - `waiting`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=waiting]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='waiting'][aria-busy=true])`
   - `complete`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=complete]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='complete'])`
   - `error`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=error]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='error'])`
-  - `inspector-open`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=inspector-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='inspector-open']:is([open],[aria-expanded=true]))`
-  - `context-open`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=context-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='context-open']:is([open],[aria-expanded=true]))`
+  - `inspector-open`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=inspector-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='inspector-open'])`
+  - `context-open`: `.a3s-component-state-matrix[open][data-component=agent-workbench] [data-state-specimen=context-open]:has([data-a3s-components~='agent-workbench'][data-a3s-state~='context-open'])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

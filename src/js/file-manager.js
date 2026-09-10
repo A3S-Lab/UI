@@ -458,6 +458,16 @@
     };
 
     const handleKeydown = (event) => {
+      const eventTarget = event.target;
+      if (
+        eventTarget instanceof Element &&
+        !eventTarget.closest("[data-file-item]") &&
+        eventTarget.closest(
+          "input, textarea, select, button, [data-file-action], [data-file-view], a[href]",
+        )
+      ) {
+        return;
+      }
       const visible = state.items.filter(
         (item) => !item.hidden && item.getAttribute("aria-disabled") !== "true",
       );

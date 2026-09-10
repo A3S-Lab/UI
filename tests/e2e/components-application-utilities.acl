@@ -8,18 +8,23 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
+        focus "focus-collapse-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
+        press "collapse-navigation" { key = "Enter" }
         expect "shell-collapsed" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-navigation=collapsed]") }
         viewport "compact" { width = 768 height = 900 }
+        wait "compact-toggle-ready" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
         expect "compact-toggle-updated" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
         navigate "reopen-compact" { url = "http://127.0.0.1:4178/UI/en/components/app-shell.html" }
         wait "compact-loaded" { load = "networkidle" }
         wait "compact-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "compact-navigation-closed" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger][aria-expanded=false][aria-label='Open navigation']") }
         accessibility "compact-navigation-closed-tree" { path = "components/app-shell-compact-closed-accessibility.json" interactive = true }
-        click "open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
+        focus "focus-open-compact-navigation" { target = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation-trigger]") }
+        press "open-compact-navigation" { key = "Enter" }
+        wait "wait-compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-navigation-open" { visible = css(".a3s-preview[data-preview-component=app-shell] .app-shell[data-mobile-navigation=open] [data-app-navigation]") }
         expect "compact-main-inert" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main][inert][aria-hidden=true]") }
+        wait "wait-compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
         expect "compact-navigation-focused" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-navigation] a:first-of-type:focus") }
         press "close-compact-navigation" { key = "Escape" }
         expect "compact-main-restored" { visible = css(".a3s-preview[data-preview-component=app-shell] [data-app-main]:not([inert]):not([aria-hidden])") }
@@ -113,7 +118,8 @@ suite "a3s-ui-application-and-utilities" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "running-item-open" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running][open]") }
-        click "close-running-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running] > summary") }
+        focus "focus-close-running-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running] > summary") }
+        press "close-running-item" { key = "Enter" }
         expect "running-item-closed" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=running]:not([open])") }
         focus "focus-waiting-item" { target = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary") }
         expect "waiting-item-focused" { visible = css(".a3s-preview[data-preview-component=execution-item] details.execution-item[data-state=waiting] > summary:focus") }
@@ -159,7 +165,8 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/toolbar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "toggle-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
+        focus "focus-bold" { target = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold]") }
+        press "toggle-bold" { key = "Enter" }
         expect "bold-pressed" { visible = css(".a3s-preview[data-preview-component=toolbar] button[aria-label=Bold][aria-pressed=true]") }
         viewport "phone" { width = 390 height = 844 }
         focus "focus-last-command" { target = css(".a3s-preview[data-preview-component=toolbar] .toolbar [role=group]:last-child > button:last-child") }
@@ -265,10 +272,9 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/scroll-area.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        wheel "scroll-content" {
-            target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar")
-            delta_y = 240
-        }
+        focus "focus-scroll-area" { target = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar") }
+        expect "scroll-area-focused" { visible = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar:focus") }
+        press "keyboard-scroll" { key = "PageDown" }
         expect "scroll-area-visible" { visible = css(".a3s-preview[data-preview-component=scroll-area] .scrollbar") }
     }
 
@@ -488,18 +494,19 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-graph.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "graph-ready" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-state=ready][data-view=graph][data-code-graph-initialized=true]") }
+        wait "graph-ready" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-state=ready][data-view=graph][data-code-graph-initialized=true]") }
         expect "canvas-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-canvas]:not([hidden])") }
-        click "show-operable-list" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-view=list]") }
-        expect "list-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-view=list] [data-code-graph-list]:not([hidden])") }
+        focus "focus-operable-list" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-view=list]") }
+        press "show-operable-list" { key = "Enter" }
+        wait "list-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] .code-graph[data-view=list] [data-code-graph-list]:not([hidden])") }
         fill "filter-prompt-editor" {
             target = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-search]")
             value = "PromptEditor"
         }
-        expect "prompt-editor-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor]:not([hidden])") }
+        wait "prompt-editor-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor]:not([hidden])") }
         focus "focus-prompt-editor" { target = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor] > button") }
         press "select-prompt-editor" { key = "Enter" }
-        expect "prompt-editor-selected" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor][aria-selected=true]") }
+        wait "prompt-editor-selected" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-node][data-node-id=prompt-editor][aria-selected=true]") }
         expect "selection-inspector-visible" { visible = css(".a3s-preview[data-preview-component=code-graph] [data-code-graph-inspector]:not([data-empty]) [data-code-graph-field=path]") }
         screenshot "filtered-list" { path = "components/code-graph-filtered-list.png" }
     }
@@ -529,9 +536,11 @@ suite "a3s-ui-application-and-utilities" {
         expect "timeline-attention-state" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-state=attention][aria-busy=true][data-tool-call-timeline-initialized=true]") }
         expect "actionable-call-visible" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-call-list] > li:not([data-tool-history]) .tool-call[data-state=awaiting]") }
         expect "expand-history-action-visible" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]:not([hidden])") }
-        click "show-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]") }
+        focus "focus-expand-history" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=expand-history]") }
+        press "show-earlier-calls" { key = "Enter" }
         expect "history-expanded" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline[data-history-expanded] [data-tool-history]:not([hidden])") }
-        click "hide-earlier-calls" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=collapse-history]") }
+        focus "focus-collapse-history" { target = css(".a3s-preview[data-preview-component=tool-call-timeline] [data-tool-timeline-action=collapse-history]") }
+        press "hide-earlier-calls" { key = "Enter" }
         expect "expand-history-action-restored" { visible = css(".a3s-preview[data-preview-component=tool-call-timeline] .tool-call-timeline:not([data-history-expanded]) [data-tool-timeline-action=expand-history]:not([hidden])") }
         accessibility "collapsed-timeline-tree" { path = "components/tool-call-timeline-collapsed-accessibility.json" interactive = true }
     }
@@ -543,13 +552,14 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tool-result.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "result-ready" { visible = css(".a3s-preview[data-preview-component=tool-result] .tool-result[data-state=ready][data-tabs-initialized=true]") }
-        click "open-output" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
-        expect "output-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en[aria-selected=true]") }
-        expect "output-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-panel-en:not([hidden])") }
+        wait "result-ready" { visible = css(".a3s-preview[data-preview-component=tool-result] .tool-result[data-state=ready][data-tabs-initialized=true]") }
         focus "focus-output-tab" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
-        press "move-to-metadata" { key = "End" }
-        expect "metadata-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-tab-en[aria-selected=true]:focus") }
+        press "open-output" { key = "Enter" }
+        wait "output-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en[aria-selected=true]") }
+        expect "output-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-panel-en:not([hidden])") }
+        focus "refocus-output-tab" { target = css(".a3s-preview[data-preview-component=tool-result] #tool-result-output-tab-en") }
+        press "move-to-metadata" { key = "ArrowRight" }
+        wait "metadata-selected" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-tab-en[aria-selected=true]:focus") }
         expect "metadata-panel-visible" { visible = css(".a3s-preview[data-preview-component=tool-result] #tool-result-metadata-panel-en:not([hidden])") }
         screenshot "metadata-view" { path = "components/tool-result-metadata.png" }
     }
@@ -653,12 +663,16 @@ suite "a3s-ui-application-and-utilities" {
         navigate "open-home" { url = "http://127.0.0.1:4178/UI/en/" }
         wait "home-loaded" { load = "networkidle" }
         wait "home-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "force-light" { target = css("[data-theme-appearance=light]") }
+        focus "focus-force-light" { target = css("[data-theme-appearance=light]") }
+        press "force-light" { key = "Enter" }
+        wait "wait-light-ready" { visible = css("html:not(.dark):not(.rp-dark)") }
         expect "light-ready" { visible = css("html:not(.dark):not(.rp-dark)") }
         navigate "open-component" { url = "http://127.0.0.1:4178/UI/en/components/theme-switcher.html" }
         wait "component-loaded" { load = "networkidle" }
         wait "component-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "toggle-theme" { target = css(".a3s-preview[data-preview-component=theme-switcher] button[aria-label='Toggle dark mode']") }
+        focus "focus-toggle-theme" { target = css(".a3s-preview[data-preview-component=theme-switcher] button[aria-label='Toggle dark mode']") }
+        press "toggle-theme" { key = "Enter" }
+        wait "wait-dark-ready" { visible = css("html.dark.rp-dark") }
         expect "dark-applied" { visible = css("html.dark.rp-dark") }
         screenshot "theme-switcher" { path = "components/theme-switcher.png" }
     }
@@ -678,10 +692,9 @@ suite "a3s-ui-application-and-utilities" {
         expect "collapsed-branch-restored" { visible = css("#file-explorer-demo-en [data-value=tests][aria-expanded=false]:not([hidden])") }
         focus "focus-status-file" { target = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx']") }
         press "select-status-file" { key = "Enter" }
-        expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]") }
-        press "open-file-menu" { key = "Shift+F10" }
-        expect "file-menu-open" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-context-content][aria-hidden=false]") }
-        click "rename-status-file" { target = css("#file-explorer-demo-en [data-context-content] [data-value=rename]") }
+        expect "status-file-selected" { visible = css(".a3s-preview[data-preview-component=file-explorer] [data-value='src/components/Status.tsx'][aria-selected=true]:focus") }
+        press "begin-rename" { key = "F2" }
+        wait "rename-editor-ready" { visible = css("#file-explorer-demo-en [data-file-editor]") }
         fill "enter-invalid-name" { target = css("#file-explorer-demo-en [data-file-editor]") value = "bad/name.tsx" }
         press "reject-invalid-name" { key = "Enter" }
         expect "rename-error-visible" { visible = css("#file-explorer-demo-en [data-rename-state=error] [data-file-editor][aria-invalid=true]") }
@@ -707,10 +720,14 @@ suite "a3s-ui-application-and-utilities" {
         focus "focus-src" { target = css("#file-manager-demo-en [data-file-value=src]") }
         press "select-design" { key = "ArrowRight" }
         expect "design-selected" { visible = css("#file-manager-demo-en [data-file-value=design][aria-selected=true]") }
-        click "open-quick-look" { target = css("#file-manager-demo-en [data-file-action=preview]") }
+        focus "focus-open-quick-look" { target = css("#file-manager-demo-en [data-file-action=preview]") }
+        press "open-quick-look" { key = "Enter" }
+        wait "quick-look-ready" { visible = css("#file-manager-demo-en [data-file-manager-preview]:not([hidden]) [data-preview-for=design]:not([hidden])") }
         expect "quick-look-visible" { visible = css("#file-manager-demo-en [data-file-manager-preview]:not([hidden]) [data-preview-for=design]:not([hidden])") }
-        click "close-quick-look" { target = css("#file-manager-demo-en [data-file-action=close-preview]") }
-        click "switch-grid" { target = css("#file-manager-demo-en [data-file-view=grid]") }
+        focus "focus-close-quick-look" { target = css("#file-manager-demo-en [data-file-action=close-preview]") }
+        press "close-quick-look" { key = "Enter" }
+        focus "focus-switch-grid" { target = css("#file-manager-demo-en [data-file-view=grid]") }
+        press "switch-grid" { key = "Enter" }
         expect "grid-active" { visible = css("#file-manager-demo-en[data-view=grid] [data-file-manager-viewport][data-view=grid]") }
         viewport "phone" { width = 390 height = 844 }
         expect "phone-manager-visible" { visible = css("#file-manager-demo-en.file-manager") }
@@ -735,9 +752,11 @@ suite "a3s-ui-application-and-utilities" {
         fill "filter-migration" { target = css("#knowledge-library-demo-en [data-knowledge-library-search] input") value = "migration" }
         expect "migration-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-value=migration]:not([hidden])") }
         fill "clear-search" { target = css("#knowledge-library-demo-en [data-knowledge-library-search] input") value = "" }
-        click "show-updating" { target = css("#knowledge-library-demo-en [data-knowledge-filter=updating]") }
+        focus "focus-show-updating" { target = css("#knowledge-library-demo-en [data-knowledge-filter=updating]") }
+        press "show-updating" { key = "Enter" }
         expect "release-visible" { visible = css("#knowledge-library-demo-en [data-knowledge-value=release]:not([hidden])") }
-        click "show-all" { target = css("#knowledge-library-demo-en [data-knowledge-filter=all]") }
+        focus "focus-show-all" { target = css("#knowledge-library-demo-en [data-knowledge-filter=all]") }
+        press "show-all" { key = "Enter" }
         focus "focus-migration" { target = css("#knowledge-library-demo-en [data-knowledge-value=migration]") }
         press "select-migration" { key = "Enter" }
         expect "migration-selected" { visible = css("#knowledge-library-demo-en [data-knowledge-value=migration][aria-selected=true]") }

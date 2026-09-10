@@ -1,7 +1,16 @@
 /* Popover */
 @layer components {
   [data-popover] {
-    @apply absolute z-50 min-w-full w-max overflow-x-hidden overflow-y-auto visible opacity-100 scale-100 transition-[opacity,scale,visibility] outline-hidden;
+    /* Instant open: keep opacity at 1 always. Closed uses visibility only so
+       style-pack duration utilities cannot fade a newly opened surface, while
+       layout/measurement and autofocus keep working (unlike display:none). */
+    @apply absolute z-50 min-w-full w-max overflow-x-hidden overflow-y-auto visible opacity-100 scale-100 outline-hidden;
+    transition: none !important;
+
+    &[aria-hidden='true'] {
+      @apply pointer-events-none invisible;
+      transition: none !important;
+    }
 
     &[data-resolved-side='bottom'] {
       transform-origin: center top;
@@ -65,10 +74,6 @@
 
     &[data-resolved-side='right'][data-resolved-align='end'] {
       transform-origin: left bottom;
-    }
-
-    &[aria-hidden='true'] {
-      @apply invisible opacity-0 scale-95;
     }
 
     &:not([data-side]),

@@ -84,6 +84,6 @@ The canonical root uses `<form>` semantics and exposes 5 named parts. State must
   - `ready`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=ready]:has([data-a3s-components~='filter-bar'][data-a3s-state~='ready'])`
   - `active`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=active]:has([data-a3s-components~='filter-bar'][data-a3s-state~='active'][data-active=true])`
   - `empty`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=empty]:has([data-a3s-components~='filter-bar'][data-a3s-state~='empty'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=disabled]:has([data-a3s-components~='filter-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=disabled] [data-a3s-components~='filter-bar'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
   - `loading`: `.a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=loading]:has([data-a3s-components~='filter-bar'][data-a3s-state~='loading'][aria-busy=true])`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

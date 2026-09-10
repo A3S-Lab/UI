@@ -4,6 +4,14 @@ This ledger separates contract coverage from product verification. The inventory
 
 No component is **Verified** at this baseline. Generated PRDs, routes, state specimens, framework adapters, or green interaction tests establish a contract, but they do not replace manual visual and interaction review.
 
+## Deterministic admission evidence (2026-09-10)
+
+Recorded without promoting any component to **Verified**:
+
+- Full local `node ./scripts/run-a3s-e2e.mjs` harness: **30/30** suites green (`/tmp/a3s-ui-full-e2e4.log`), including regenerated `component-contracts` (Dialog/Drawer refocus open surface before Escape), hardened Empty/Table readiness waits, and Code Workbench Ctrl+S dirty→clean evidence.
+- CUA attach refresh against locked trycua `e88e9d899ac5effaeae38619527ebaa46b26ce72` / driver **0.23.2** with embedded `source_sha`: `.gui-certification/records-local/semantic-attach.json` (passed, 113 semantic) and `window-vision-attach.json` (passed, 113 semantic, 1 visual). Daemon config: `cua-config-attach.json`.
+- Official `run-gui-certification-macos.sh` (bounded session policy) still fails fixture inventory / path capability admission on this host; attach evidence above uses the reviewed unrestricted embedded attach path preferred for local refresh.
+
 ## Status rules
 
 - **Contracted · unverified**: source, PRD, documentation, framework, and deterministic evidence paths exist, but the complete proof bundle has not been reviewed.
@@ -55,19 +63,19 @@ No component is **Verified** at this baseline. Generated PRDs, routes, state spe
 
 | Component           | Contract                | Priority | Review status           | Current evidence gap                                  |
 | ------------------- | ----------------------- | -------- | ----------------------- | ----------------------------------------------------- |
-| `activity-bar`      | `NV-01` · Narrow        | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `breadcrumb`        | `NV-02` · Keep          | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `tabs`              | `NV-04` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `pagination`        | `NV-05` · Keep          | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `sidebar`           | `NV-06` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `alert-dialog`      | `OV-01` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `dialog`            | `OV-02` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `drawer`            | `OV-03` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `dropdown-menu`     | `OV-04` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `popover`           | `OV-06` · Keep          | P0       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `command`           | `OV-09` · Keep          | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `context-menu`      | `OV-05` · Keep          | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
-| `tooltip`           | `OV-10` · Narrow        | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
+| `activity-bar`      | `NV-01` · Narrow        | P1       | In review               | `components-navigation-overlays` ACL passes keyboard destination activation; full proof bundle (zoom, AT, forced colors) remains. |
+| `breadcrumb`        | `NV-02` · Keep          | P1       | In review               | Compact keyboard reachability passes in navigation ACL; full proof bundle remains. |
+| `tabs`              | `NV-04` · Keep          | P0       | In review               | Panel switching and RTL arrow navigation pass in navigation ACL; full proof bundle remains. |
+| `pagination`        | `NV-05` · Keep          | P1       | In review               | Phone keyboard page selection passes in navigation ACL; full proof bundle remains. |
+| `sidebar`           | `NV-06` · Keep          | P0       | In review               | Contained toggle, mobile open/focus, Escape restore pass via scoped demo controls; full proof bundle remains. |
+| `alert-dialog`      | `OV-01` · Keep          | P0       | In review               | Keyboard open, cancel focus, trigger restore pass in navigation ACL; full proof bundle remains. |
+| `dialog`            | `OV-02` · Keep          | P0       | In review               | Edit + Escape trigger restore pass in navigation ACL; full proof bundle remains. |
+| `drawer`            | `OV-03` · Keep          | P0       | In review               | Mobile open/cancel/focus restore pass in navigation ACL; full proof bundle remains. |
+| `dropdown-menu`     | `OV-04` · Keep          | P0       | In review               | Keyboard open + documentation escape pass in navigation and documentation-ui ACLs; full proof bundle remains. |
+| `popover`           | `OV-06` · Keep          | P0       | In review               | Autofocus, Escape restore, and MDX-frame escape pass; full proof bundle remains. |
+| `command`           | `OV-09` · Keep          | P1       | In review               | Filter path passes in navigation ACL; full proof bundle remains. |
+| `context-menu`      | `OV-05` · Keep          | P1       | In review               | Keyboard invocation, nested selection, checked state, and focus return pass; full proof bundle remains. |
+| `tooltip`           | `OV-10` · Narrow        | P1       | In review               | Pointer hover path passes in navigation ACL; full proof bundle remains. |
 | `back-to-bottom`    | `NV-03` · Keep          | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
 | `floating-panel`    | `OV-07` · Narrow        | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |
 | `image-viewer`      | `OV-08` · Host boundary | P1       | Contracted · unverified | Complete proof bundle has not been manually reviewed. |

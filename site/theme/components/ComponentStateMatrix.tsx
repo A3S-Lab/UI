@@ -327,7 +327,24 @@ function normalizeBulkActionBarState(
     controller.setPending?.(action?.dataset.bulkAction ?? "action", true, {
       message: isChinese ? "正在处理已选项目…" : "Processing selected items…",
     });
+    root.setAttribute("aria-busy", "true");
     root.dataset.state = "loading";
+    // Cloned specimens may miss controller methods until scan re-inits; stamp the
+    // loading contract directly so conflicting actions stay disabled while clear escapes.
+    for (const candidate of root.querySelectorAll<HTMLElement>(
+      "[data-bulk-actions] [data-bulk-action]",
+    )) {
+      const isClear = candidate.hasAttribute("data-bulk-clear");
+      if (candidate instanceof HTMLButtonElement) {
+        candidate.disabled = !isClear;
+        if (isClear) candidate.removeAttribute("disabled");
+        else candidate.setAttribute("disabled", "");
+      } else if (isClear) {
+        candidate.removeAttribute("aria-disabled");
+      } else {
+        candidate.setAttribute("aria-disabled", "true");
+      }
+    }
     return;
   }
 
@@ -342,9 +359,11 @@ function findElementById(root: HTMLElement, id: string) {
 }
 
 function disclosureTrigger(root: HTMLElement) {
-  if (root.matches("summary, [aria-expanded]")) return root;
+  if (root.matches("summary, [aria-expanded], input[role=combobox]")) {
+    return root;
+  }
   return root.querySelector<HTMLElement>(
-    ":scope > button[aria-controls], :scope > button[aria-haspopup], :scope > summary, [data-trigger][aria-controls], [aria-expanded][aria-controls]",
+    ":scope > button[aria-controls], :scope > button[aria-haspopup], :scope > summary, input[role=combobox], [data-trigger][aria-controls], [aria-expanded][aria-controls], [data-sidebar-trigger], [data-app-navigation-trigger], [data-context-trigger], [data-task-inspector-trigger]",
   );
 }
 
@@ -354,6 +373,22 @@ function applyDisclosureState(root: HTMLElement, expanded: boolean) {
 
   if (root instanceof HTMLDialogElement || root instanceof HTMLDetailsElement) {
     root.toggleAttribute("open", expanded);
+  }
+
+  // Accordion owns nested details items; stamp the first item for open evidence.
+  if (root.matches(".accordion")) {
+    const items = Array.from(root.querySelectorAll<HTMLDetailsElement>(":scope > details"));
+    for (const [index, item] of items.entries()) {
+      item.open = expanded && index === 0;
+      item.querySelector("summary")?.setAttribute(
+        "aria-expanded",
+        String(item.open),
+      );
+    }
+  }
+
+  if (root.matches(".sidebar, .app-shell")) {
+    root.dataset.navigation = expanded ? "expanded" : "collapsed";
   }
 
   const controlledId = trigger?.getAttribute("aria-controls");
@@ -1292,6 +1327,23 @@ function applyButtonState(
 ) {
   if (!root.matches("button.btn, a.btn")) return;
 
+  // Copy Button keeps its own label/icon contract; only stamp busy/disabled.
+  if (root.matches(".copy-button")) {
+    root.removeAttribute("aria-busy");
+    root.removeAttribute("aria-disabled");
+    const busy = busyStates.has(state);
+    const disabled = state === "disabled";
+    if (root instanceof HTMLButtonElement) {
+      root.disabled = disabled;
+      root.type = "button";
+    } else if (disabled) {
+      root.setAttribute("aria-disabled", "true");
+      root.tabIndex = -1;
+    }
+    if (busy) root.setAttribute("aria-busy", "true");
+    return;
+  }
+
   const loading = state === "loading";
   const pressed = state === "pressed";
   const disabled = state === "disabled" || loading;
@@ -1529,6 +1581,9 @@ export function ComponentStateMatrix({
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
+    return () => {
+      if (dialog.open) dialog.close();
+    };
   }, [open]);
 
   useLayoutEffect(() => {
@@ -1586,6 +1641,30 @@ export function ComponentStateMatrix({
         );
         if (clone) applyState(clone, state, isChinese);
       });
+
+    // Cloned Bulk Action Bar roots keep init markers without setPending. Re-stamp
+    // loading conflicts after scan/apply so disabled evidence stays honest.
+    matrix
+      .querySelectorAll<HTMLElement>(
+        '[data-state-specimen-mount="loading"] .bulk-action-bar[data-state="loading"]',
+      )
+      .forEach((root) => {
+        root.setAttribute("aria-busy", "true");
+        for (const candidate of root.querySelectorAll<HTMLElement>(
+          "[data-bulk-actions] [data-bulk-action]",
+        )) {
+          const isClear = candidate.hasAttribute("data-bulk-clear");
+          if (candidate instanceof HTMLButtonElement) {
+            candidate.disabled = !isClear;
+            if (isClear) candidate.removeAttribute("disabled");
+            else candidate.setAttribute("disabled", "");
+          } else if (isClear) {
+            candidate.removeAttribute("aria-disabled");
+          } else {
+            candidate.setAttribute("aria-disabled", "true");
+          }
+        }
+      });
   }, [canvasRef, contract, isChinese, open]);
 
   const close = () => setOpen(false);
@@ -1604,6 +1683,12 @@ export function ComponentStateMatrix({
         }
         data-preview-control="states"
         onClick={() => setOpen(true)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setOpen(true);
+          }
+        }}
         ref={triggerRef}
         title={isChinese ? "状态验收" : "State acceptance"}
         type="button"

@@ -236,7 +236,7 @@ export const formComponents = [
     slug: "radio-group",
     name: "Radio Group",
     category: "forms",
-    selector: ".radio-group, [role=radiogroup], [data-slot=radio-group]",
+    selector: ".radio-group, [role=radiogroup]",
     className: "radio-group",
     attributes: { role: "radiogroup" },
     parts: { option: "input[type=radio]", label: "label" },
@@ -316,8 +316,7 @@ export const utilityComponents = [
     slug: "theme-switcher",
     name: "Theme Switcher",
     category: "utilities",
-    selector:
-      '[data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]',
+    selector: "[data-a3s-theme-toggle]",
     tag: "button",
     className: "btn",
     attributes: { "data-a3s-theme-toggle": "", type: "button" },

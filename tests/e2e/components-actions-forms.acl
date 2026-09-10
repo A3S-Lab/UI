@@ -12,11 +12,28 @@ suite "a3s-ui-actions-and-forms" {
         expect "one-primary-decision-context" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-button-primary-demo=en][data-button-save-state=ready][data-button-submissions='0']:has([data-button-status][aria-live=polite]):has(button.btn[data-button-save][type=button]):has(button.btn[data-variant=outline])") }
         expect "native-action-root" { visible = css("[data-button-primary-demo=en] button.btn[data-button-save][data-a3s-components~=button][type=button]:not([disabled]):not([aria-busy])") }
 
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]") }
+        expect "state-matrix-focused" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]:focus") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states][aria-expanded=true]") }
+        wait "state-matrix-dialog" { visible = css(".a3s-component-state-matrix[open][data-component=button] .a3s-component-state-matrix__header") }
+        wait "state-matrix-ready" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin") }
+        wait "ready-state-is-actionable" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=ready]:not([disabled]):not([aria-busy]):not([aria-pressed])") }
+        wait "disabled-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=disabled][disabled]:not([aria-busy])") }
+        wait "loading-state-has-label" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin + span") }
+        wait "pressed-state-is-visible-and-semantic" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=pressed][aria-pressed=true] > svg[aria-hidden=true] + span") }
+        screenshot "button-states" { path = "components/button-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        wait "state-trigger-focus-ready" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]:focus") }
+        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
         focus "focus-primary-action" { target = css("[data-button-primary-demo=en] [data-button-save]") }
         press "activate-primary-with-enter" { key = "Enter" }
+        wait "loading-ready" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
         expect "loading-is-visible-and-native" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
-        press "repeat-while-disabled" { key = "Enter" }
-        expect "rapid-repeat-is-rejected" { visible = css("[data-button-primary-demo=en][data-button-submissions='1'] [data-button-save][disabled][aria-busy=true]") }
+        # Native disabled removes focus; target the busy control explicitly instead of pressing Enter on whatever inherited focus.
+        click "repeat-while-disabled" { target = css("[data-button-primary-demo=en] [data-button-save][disabled][aria-busy=true]") }
+        expect "rapid-repeat-is-rejected" { visible = css("[data-button-primary-demo=en][data-button-submissions='1'][data-button-save-state=loading] [data-button-save][disabled][aria-busy=true]") }
         screenshot "button-loading" { path = "components/button-loading.png" }
         wait "first-save-completes" { text = "Permission changes saved." }
         expect "ready-state-restored" { visible = css("[data-button-primary-demo=en][data-button-save-state=saved][data-button-submissions='1']:has([data-button-status]) [data-button-save]:not([disabled]):not([aria-busy]) [data-button-idle]:not(.invisible)[aria-hidden=false]") }
@@ -29,20 +46,10 @@ suite "a3s-ui-actions-and-forms" {
         press "activate-supporting-action" { key = "Enter" }
         expect "supporting-action-feedback" { text = "Reviewer access and deployment approval will change." }
 
-        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]") }
-        press "open-state-matrix" { key = "Enter" }
-        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=button]") }
-        wait "state-matrix-ready" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin") }
-        wait "ready-state-is-actionable" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=ready]:not([disabled]):not([aria-busy]):not([aria-pressed])") }
-        wait "disabled-state-is-native" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=disabled][disabled]:not([aria-busy])") }
-        wait "loading-state-has-label" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=loading][disabled][aria-busy=true] > svg.animate-spin + span") }
-        wait "pressed-state-is-visible-and-semantic" { visible = css(".a3s-component-state-matrix[open][data-component=button] button.btn[data-state-specimen-root=pressed][aria-pressed=true] > svg[aria-hidden=true] + span") }
-        screenshot "button-states" { path = "components/button-states.png" }
-        press "close-state-matrix" { key = "Escape" }
-        expect "state-trigger-focus-restored" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete] [data-preview-control=states]:focus") }
-
         viewport "phone" { width = 390 height = 844 }
         navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/button.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "chinese-phone-ready" { visible = css("[data-button-primary-demo=zh] [data-button-save]") }
         focus "focus-chinese-phone-action" { target = css("[data-button-primary-demo=zh] [data-button-save]") }
         expect "chinese-phone-focus-contained" { visible = css(".a3s-preview[data-preview-component=button][data-preview-integration=complete]:has([data-button-primary-demo=zh] [data-button-save]:focus)") }
@@ -72,21 +79,24 @@ suite "a3s-ui-actions-and-forms" {
 
         focus "focus-split-menu-trigger" { target = css("#button-group-publish-trigger-en") }
         press "open-split-menu" { key = "Enter" }
-        expect "split-menu-open" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
+        wait "split-menu-open" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
         expect "split-menu-trigger-retains-focus" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=true]") }
         press "activate-first-split-item" { key = "ArrowDown" }
+        wait "first-split-item-ready" { visible = css("#button-group-publish-trigger-en:focus[aria-activedescendant=button-group-publish-schedule-en] + #button-group-publish-popover-en #button-group-publish-schedule-en.active") }
         expect "first-split-item-active" { visible = css("#button-group-publish-trigger-en:focus[aria-activedescendant=button-group-publish-schedule-en] + #button-group-publish-popover-en #button-group-publish-schedule-en.active") }
         screenshot "button-group-desktop-open" { path = "components/button-group-desktop-open.png" }
         press "close-split-menu" { key = "Escape" }
+        wait "split-menu-focus-ready" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
         expect "split-menu-focus-restored" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
 
         viewport "phone" { width = 390 height = 844 }
         expect "long-label-group-visible" { visible = css("[data-button-group-long-labels=en]:has(> button[disabled][aria-describedby=button-group-production-reason-en])") }
         focus "group-menu-trigger-in-view" { target = css("#button-group-publish-trigger-en") }
         press "open-group-menu-on-phone" { key = "Enter" }
-        expect "group-menu-open-on-phone" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
+        wait "group-menu-open-on-phone" { visible = css("#button-group-publish-popover-en[aria-hidden=false]") }
         screenshot "button-group-phone-open" { path = "components/button-group-phone-open.png" }
         press "close-group-menu" { key = "Escape" }
+        wait "group-menu-focus-ready" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
         expect "group-menu-focus-restored" { visible = css("#button-group-publish-trigger-en:focus[aria-expanded=false]") }
         accessibility "button-group-accessibility" { path = "components/button-group-accessibility.json" interactive = true }
         console "button-group-console" { path = "components/button-group-console.json" clear = false }
@@ -333,18 +343,22 @@ suite "a3s-ui-actions-and-forms" {
     scenario "code-editor" {
         name = "Code Editor preview exercises Monaco workbench and native fallback states"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 60000
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-editor.html" }
-        wait "loaded" { load = "networkidle" }
+        # Monaco workers keep the network active; wait on DOM + workbench readiness instead of networkidle.
+        wait "loaded" { load = "domcontentloaded" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         wait "monaco-ready" { visible = css(".monaco-workbench[data-monaco-ready=true] .monaco-editor") }
         click "open-command-palette" { target = css(".monaco-workbench [data-workbench-command-trigger]") }
+        wait "command-dialog-ready" { visible = css("[data-workbench-command-dialog][open]") }
         expect "command-dialog-visible" { visible = css("[data-workbench-command-dialog][open]") }
         fill "filter-panel-command" { target = css("[data-workbench-command-input]") value = "panel" }
         click "toggle-panel-command" { target = css("[data-workbench-command=toggle-panel]") }
+        wait "panel-closed-ready" { visible = css(".monaco-workbench[data-panel-open=false]") }
         expect "panel-closed" { visible = css(".monaco-workbench[data-panel-open=false]") }
         focus "panel-toggle-in-view" { target = css(".monaco-workbench__statusbar button[aria-label='Toggle bottom panel']") }
         press "reopen-panel" { key = "Enter" }
+        wait "panel-reopened-ready" { visible = css(".monaco-workbench[data-panel-open=true] [data-workbench-panel]") }
         expect "panel-reopened" { visible = css(".monaco-workbench[data-panel-open=true] [data-workbench-panel]") }
         focus "runtime-model-tab-in-view" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
         press "open-runtime-model" { key = "Enter" }
@@ -396,19 +410,25 @@ suite "a3s-ui-actions-and-forms" {
 
         focus "focus-trigger" { target = css("#select-demo-trigger") }
         press "open-at-end" { key = "End" }
+        wait "last-option-ready" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-5]") }
         expect "last-option-active" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-5]") }
         press "choose-last-option" { key = "Enter" }
+        wait "pineapple-ready" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus") }
         expect "pineapple-selected" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus") }
 
         press "typeahead-banana" { key = "b" }
+        wait "banana-ready" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-2]") }
         expect "banana-active" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-2]") }
         press "cancel-typeahead" { key = "Escape" }
+        wait "cancel-ready" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus:not([aria-activedescendant])") }
         expect "cancel-preserves-value-and-focus" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus:not([aria-activedescendant])") }
 
         focus "focus-disabled-option-trigger" { target = css("#select-disabled-option-trigger") }
         press "open-disabled-option-list" { key = "Enter" }
+        wait "disabled-option-trigger-ready" { visible = css("#select-disabled-option-trigger[aria-expanded=true]") }
         expect "disabled-option-trigger-expanded" { visible = css("#select-disabled-option-trigger[aria-expanded=true]") }
-        expect "disabled-option-list-visible" { visible = css("#select-disabled-option [data-popover][aria-hidden=false]") }
+        wait "disabled-option-list-ready" { visible = css("#select-disabled-option [data-popover][aria-hidden=false] [role=option][data-value=apple]") }
+        expect "disabled-option-list-visible" { visible = css("#select-disabled-option [data-popover][aria-hidden=false] [role=option][data-value=apple]") }
         expect "disabled-option-is-semantic" { visible = css("#select-disabled-option:has(input[type=hidden][value='']) [role=option][data-value=grapes][aria-disabled=true]") }
         focus "restore-disabled-option-trigger" { target = css("#select-disabled-option-trigger") }
         press "move-home" { key = "Home" }
@@ -660,10 +680,12 @@ suite "a3s-ui-actions-and-forms" {
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/combobox.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "open-frameworks" { target = css("#framework-combobox > input[role=combobox]") }
+        focus "focus-frameworks" { target = css("#framework-combobox > input[role=combobox]") }
+        press "open-frameworks" { key = "ArrowDown" }
         wait "options-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
         fill "filter-frameworks" { target = css("#framework-combobox > input[role=combobox]") value = "Astro" }
         wait "options-visible" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
+        wait "astro-ready" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
         expect "astro-visible" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
         screenshot "filtered-combobox" { path = "components/combobox.png" }
     }
@@ -676,14 +698,22 @@ suite "a3s-ui-actions-and-forms" {
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         expect "filter-ready" { visible = css("#filter-bar-demo-en[data-filter-bar-initialized=true]") }
-        click "remove-active-state" { target = css("#filter-bar-demo-en [data-filter-chip] [data-filter-remove]") }
-        expect "required-fallback-selected" { visible = css("#filter-bar-demo-en [data-filter-value=all][aria-pressed=true]") }
-        click "choose-paused" { target = css("#filter-bar-demo-en [data-filter-value=paused]") }
-        expect "paused-selected" { visible = css("#filter-bar-demo-en [data-filter-value=paused][aria-pressed=true]") }
+        focus "focus-active-chip-remove" { target = css("#filter-bar-demo-en [data-filter-chip][data-filter-value=active] [data-filter-remove]") }
+        press "remove-active-state" { key = "Enter" }
+        wait "required-fallback-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        expect "required-fallback-selected" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        focus "focus-paused" { target = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=paused]") }
+        press "choose-paused" { key = "Enter" }
+        wait "paused-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=paused][aria-pressed=true]") }
+        expect "paused-selected" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=paused][aria-pressed=true]") }
         fill "search-projects" { target = css("#filter-bar-demo-en input[type=search]") value = "release" }
+        wait "compound-query-ready" { visible = css("#filter-bar-demo-en[data-filters=active] input[type=search]:not(:placeholder-shown)") }
         expect "compound-query-active" { visible = css("#filter-bar-demo-en[data-filters=active] input[type=search]:not(:placeholder-shown)") }
-        click "clear-filters" { target = css("#filter-bar-demo-en [data-filter-clear]") }
-        expect "required-default-restored" { visible = css("#filter-bar-demo-en [data-filter-value=all][aria-pressed=true]") }
+        focus "focus-clear-filters" { target = css("#filter-bar-demo-en [data-filter-clear]") }
+        press "clear-filters" { key = "Enter" }
+        wait "required-default-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        expect "required-default-restored" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        wait "search-clear-ready" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }
         expect "search-cleared" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }
     }
 }

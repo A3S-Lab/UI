@@ -81,8 +81,8 @@ The canonical root uses `<div>` semantics and exposes 5 named parts. State must 
 - State-matrix screenshot: `components/contracts/combobox-states.png`.
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=ready]:has([data-a3s-components~='combobox'][data-a3s-state~='ready'])`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled]:has([data-a3s-components~='combobox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded]:has([data-a3s-components~='combobox'][data-a3s-state~='expanded']:has(button[aria-haspopup=listbox][aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed]:has([data-a3s-components~='combobox'][data-a3s-state~='collapsed']:has(button[aria-haspopup=listbox][aria-expanded=false]))`
-  - `invalid`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid]:has([data-a3s-components~='combobox'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true])))`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled] [data-a3s-components~='combobox'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=expanded] [data-a3s-components~='combobox'][data-a3s-state~='expanded']:has(input[role=combobox][aria-expanded=true], button[aria-haspopup=listbox][aria-expanded=true])`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=collapsed] [data-a3s-components~='combobox'][data-a3s-state~='collapsed']:has(input[role=combobox][aria-expanded=false], button[aria-haspopup=listbox][aria-expanded=false])`
+  - `invalid`: `.a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid] [data-a3s-components~='combobox'][data-a3s-state~='invalid']:is([aria-invalid=true],[data-validation-state=invalid],:has([aria-invalid=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

@@ -82,7 +82,7 @@ The canonical root uses `<div>` semantics and exposes 3 named parts. State must 
 - Per-state evidence selectors:
   - `ready`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=ready]:has([data-a3s-components~='tree'][data-a3s-state~='ready'])`
   - `selected`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=selected]:has([data-a3s-components~='tree'][data-a3s-state~='selected'][data-selected=true])`
-  - `expanded`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=expanded]:has([data-a3s-components~='tree'][data-a3s-state~='expanded']:is([open],[aria-expanded=true]))`
-  - `collapsed`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=collapsed]:has([data-a3s-components~='tree'][data-a3s-state~='collapsed']:is(:not([open]),[aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=disabled]:has([data-a3s-components~='tree'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `expanded`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=expanded] [data-a3s-components~='tree'][data-a3s-state~='expanded']:has([role=treeitem][aria-expanded=true])`
+  - `collapsed`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=collapsed] [data-a3s-components~='tree'][data-a3s-state~='collapsed']:has([role=treeitem][aria-expanded=false])`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=tree] [data-state-specimen=disabled] [data-a3s-components~='tree'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.

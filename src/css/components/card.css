@@ -8,7 +8,7 @@
     }
 
     > header {
-      @apply @container/card-header grid auto-rows-min items-start has-[>[data-slot=card-action],>.card-action]:grid-cols-[1fr_auto] has-[>p]:grid-rows-[auto_auto];
+      @apply @container/card-header grid auto-rows-min items-start has-[>.card-action]:grid-cols-[1fr_auto] has-[>p]:grid-rows-[auto_auto];
     }
 
     > header > :is(h2, h3, [data-title], .card-title) {
@@ -22,7 +22,7 @@
       overflow-wrap: anywhere;
     }
 
-    > header > :is([data-slot="card-action"], .card-action) {
+    > header > .card-action {
       @apply col-start-2 row-span-2 row-start-1 self-start justify-self-end;
     }
 

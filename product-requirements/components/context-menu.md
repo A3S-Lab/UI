@@ -79,7 +79,7 @@ The canonical root uses `<div>` semantics and exposes 5 named parts. State must 
 - Stable root target: `[data-a3s-components~="context-menu"]` inside `.a3s-preview[data-preview-component=context-menu][data-preview-integration=complete]`.
 - State-matrix screenshot: `components/contracts/context-menu-states.png`.
 - Per-state evidence selectors:
-  - `open`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open']:has([data-context-trigger][aria-expanded=true]))`
-  - `closed`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed']:has([data-context-trigger][aria-expanded=false]))`
-  - `disabled`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=disabled]:has([data-a3s-components~='context-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true])))`
+  - `open`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]:has([data-a3s-components~='context-menu'][data-a3s-state~='open'])`
+  - `closed`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]:has([data-a3s-components~='context-menu'][data-a3s-state~='closed'])`
+  - `disabled`: `.a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=disabled] [data-a3s-components~='context-menu'][data-a3s-state~='disabled']:is([disabled],[aria-disabled=true],:has([disabled]),:has([aria-disabled=true]))`
 - Required evidence: desktop light screenshot, state-matrix screenshot, desktop dark/RTL screenshot, compact screenshot, interactive accessibility tree, console log, and page-error log.
