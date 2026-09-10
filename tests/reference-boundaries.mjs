@@ -449,7 +449,7 @@ for (const locale of locales) {
     `site/docs/next/${locale}/components/_meta.json`,
   );
   assert.doesNotMatch(componentMeta, /playground/iu);
-  for (const version of ["next", "v0.3.0", "v0.2.0", "v0.1.0"]) {
+  for (const version of ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"]) {
     await assert.rejects(
       readFile(
         path.join(

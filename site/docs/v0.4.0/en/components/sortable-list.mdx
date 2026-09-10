@@ -1,0 +1,83 @@
+# Sortable List
+
+Reorders a bounded ordered collection and gives pointer and keyboard paths the same result, cancellation, and status announcement.
+
+<Preview class="w-full">
+<ol class="sortable-list"><li data-sortable-item data-sortable-id="research"><button type="button" data-sortable-handle aria-label="Move Research"></button><span>Research</span></li><li data-sortable-item data-sortable-id="review"><button type="button" data-sortable-handle aria-label="Move Review"></button><span>Review</span></li><li data-sortable-item data-sortable-id="publish"><button type="button" data-sortable-handle aria-label="Move Publish"></button><span>Publish</span></li><li class="sr-only" aria-live="polite" data-sortable-status></li></ol>
+</Preview>
+
+## Usage
+
+```html
+<ol class="sortable-list">
+  <li data-sortable-item data-sortable-id="research"><button type="button" data-sortable-handle aria-label="Move Research"></button><span>Research</span></li><li data-sortable-item data-sortable-id="review"><button type="button" data-sortable-handle aria-label="Move Review"></button><span>Review</span></li><li data-sortable-item data-sortable-id="publish"><button type="button" data-sortable-handle aria-label="Move Publish"></button><span>Publish</span></li><li class="sr-only" aria-live="polite" data-sortable-status></li>
+</ol>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/sortable-list";
+
+const component = document.querySelector(".sortable-list");
+component.getOrder();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { SortableList, useSortableList } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useSortableList();
+  return (
+    <SortableList ref={control.ref}>
+      <li data-sortable-item data-sortable-id="research"><button type="button" data-sortable-handle aria-label="Move Research"></button><span>Research</span></li><li data-sortable-item data-sortable-id="review"><button type="button" data-sortable-handle aria-label="Move Review"></button><span>Review</span></li><li data-sortable-item data-sortable-id="publish"><button type="button" data-sortable-handle aria-label="Move Publish"></button><span>Publish</span></li><li className="sr-only" aria-live="polite" data-sortable-status></li>
+    </SortableList>
+  );
+}
+```
+
+`useSortableList` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { SortableList, useSortableList } from "@a3s-lab/ui/vue";
+
+const control = useSortableList();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <SortableList ref="componentRef">
+    <li data-sortable-item data-sortable-id="research"><button type="button" data-sortable-handle aria-label="Move Research"></button><span>Research</span></li><li data-sortable-item data-sortable-id="review"><button type="button" data-sortable-handle aria-label="Move Review"></button><span>Review</span></li><li data-sortable-item data-sortable-id="publish"><button type="button" data-sortable-handle aria-label="Move Publish"></button><span>Publish</span></li><li class="sr-only" aria-live="polite" data-sortable-status></li>
+  </SortableList>
+</template>
+```
+
+`useSortableList` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.sortable-list` |
+| Native root | `<ol>` |
+| States | `ready`, `dragging`, `keyboard`, `disabled` |
+| Events | `a3s:sortable-before-reorder`, `a3s:sortable-cancel`, `a3s:sortable-reorder` |
+| Methods | `cancel`, `getOrder`, `move`, `refresh` |
+
+## Product boundary
+
+It does not persist order, decide cross-list business rules, or scale to thousands of rows. The host validates permission before reordering and restores snapshots after failure.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Handles are focusable: Space picks up, arrows move, Enter drops, and Escape cancels. A live region announces the item and new position.

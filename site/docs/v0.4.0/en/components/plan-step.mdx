@@ -1,0 +1,81 @@
+# Plan Step
+
+Plan Step is one observable unit inside a Task Plan. It presents a stable title, optional description, status, and one bounded action.
+
+<Preview class="w-full max-w-2xl">
+  <ol class="task-plan border-0 bg-transparent">
+    <li class="plan-step" data-state="active" aria-current="step"><span data-plan-marker aria-hidden="true">2</span><div data-step-identity><h3>Verify responsive behavior</h3><p data-step-description>Exercise desktop, phone, RTL, and reduced motion.</p></div><button type="button" class="btn" data-size="sm" data-variant="outline">Open checks</button></li>
+    <li class="plan-step" data-state="blocked"><span data-plan-marker aria-hidden="true">3</span><div data-step-identity><h3>Publish the package</h3><p data-step-description>A release approval is required before publishing.</p></div><span data-plan-step-status>Blocked</span></li>
+  </ol>
+</Preview>
+
+## Usage
+
+```html
+<li class="plan-step" data-state="active" aria-current="step">
+  <span data-plan-marker aria-hidden="true">2</span>
+  <div data-step-identity><h3>Verify responsive behavior</h3><p data-step-description>...</p></div>
+  <span data-plan-step-status>Active</span>
+</li>
+```
+
+### Parameters
+
+| API | Values | Purpose |
+| --- | --- | --- |
+| `data-state` | `pending`, `active`, `complete`, `blocked`, `error`, `skipped` | Step state |
+| `data-plan-marker` | Optional | Compact visual index or icon |
+| `data-step-identity` | Required | Title and optional description |
+| `data-plan-step-status` | Recommended | State in text |
+
+## States and variants
+
+Use `blocked` when external input or approval can resume the step. Use `error` when execution failed and recovery is required.
+
+## Accessibility
+
+The marker is decorative when the ordered list already conveys position. Never use color alone for blocked, error, or complete state.
+
+## React
+
+```tsx
+import { PlanStep } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <PlanStep data-state="active" aria-current="step">
+      <span data-plan-marker="" aria-hidden="true">
+        2
+      </span>
+      <div data-step-identity="">
+        <h3>Verify responsive behavior</h3>
+        <p data-step-description="">Verify the layout at 390 px and 1280 px.</p>
+      </div>
+      <span data-plan-step-status="">Active</span>
+    </PlanStep>
+  );
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { PlanStep } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <PlanStep data-state="active" aria-current="step">
+    <span data-plan-marker="" aria-hidden="true">2</span>
+    <div data-step-identity="">
+      <h3>Verify responsive behavior</h3>
+      <p data-step-description="">Verify the layout at 390 px and 1280 px.</p>
+    </div>
+    <span data-plan-step-status="">Active</span>
+  </PlanStep>
+</template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

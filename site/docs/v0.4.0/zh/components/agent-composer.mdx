@@ -1,0 +1,202 @@
+# 任务输入器
+
+任务输入器负责把指令、文件、源码范围、Skill、运行设置和后续队列组织成一次可恢复的提交。主输入区必须由 TipTap 驱动；普通 `textarea` 无法可靠承载 Markdown、输入触发、结构化选择、输入法和受控草稿，因此不属于该组件的生产契约。
+
+<Preview class="w-full max-w-4xl" title="生产级任务输入器">
+  <AgentComposerDemo />
+</Preview>
+
+## 设计边界
+
+输入器回答四个问题：用户要做什么、允许参考哪些资源、按什么运行设置执行、当前操作会发送还是排队。上传、模型请求、权限判断和持久化仍由宿主拥有，组件只维护可见交互与稳定事件。
+
+- Enter 提交，Shift + Enter 换行；输入法组合期间不得拦截 Enter。
+- `@` 打开文件树，`$` 打开 Skill 列表，`/` 打开内置命令；菜单采用 listbox 或 tree，并通过 `aria-activedescendant` 保持焦点在编辑器。
+- 文件和目录可通过选择器或拖放进入资源区；资源必须可辨认、可移除，并保留类型和稳定标识。
+- 运行中必须明确区分立即发送、加入队列、停止和不可提交，不能只替换图标。
+- 提交失败保留 Markdown 草稿、选择、资源、设置与焦点；恢复动作直接说明下一步。
+
+当编辑区还需要承载放置提示、校验消息或其它宿主内容时，可以用
+`data-composer-editor` 包裹输入框。中间的包装元素会保持可收缩，长的
+连续文本也只在输入框内部滚动，不会撑宽整个工作台：
+
+```html
+<form class="agent-composer" aria-label="向编码 Agent 发送消息">
+  <section class="agent-composer-editor" data-composer-editor>
+    <p data-composer-editor-message role="status">可以拖入工作区文件</p>
+    <div>
+      <textarea
+        data-composer-input
+        name="prompt"
+        aria-label="指令"
+        placeholder="描述要完成的任务……"
+      ></textarea>
+    </div>
+  </section>
+</form>
+```
+
+## 公开结构
+
+| API | 用途 |
+| --- | --- |
+| `.agent-composer` | `<form>` 根边界；祖先已经是表单时才改用 `<section>` |
+| `data-composer-editor` | TipTap 编辑器宿主或其它编辑区；保持嵌套输入框的宽度和滚动边界 |
+| `data-composer-input` | TipTap 的 ProseMirror 根节点或宿主标记的实际输入框 |
+| `data-composer-resources` | 文件、目录、源码范围、图片、URL 或 Skill 的有序资源列表 |
+| `data-composer-suggestions` | `@`、`$`、`/` 触发的 listbox 或 tree |
+| `data-composer-setting` | 模式、上下文、模型、推理强度等宿主控制 |
+| `data-composer-actions` | 发送、加入队列、停止和重试 |
+| `data-composer-status` | 一条礼貌型状态播报，不逐 Token 更新 |
+| `data-composer-queue` | 后续指令队列，可编辑、移除、排序、暂停和恢复 |
+
+`ready`、`submitting`、`streaming`、`queued`、`stopping`、`offline`、`error` 和 `disabled` 是根状态。局部按钮仍使用原生 `disabled`。
+
+## 框架用法
+
+TipTap 依赖位于独立入口，不会增加只使用 CSS 或普通组件的应用体积。三个框架共享同一 DOM、事件和 Markdown 数据格式。
+
+<FrameworkTabs
+  html={`<form class="agent-composer" aria-label="任务输入器" data-state="ready">
+  <section class="agent-composer-editor" data-composer-editor>
+    <div data-composer-input role="textbox" aria-label="任务指令" aria-multiline="true"></div>
+  </section>
+  <ul data-composer-resources aria-label="已添加资源">
+    <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+  </ul>
+  <footer>
+    <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
+    <div data-composer-actions><button type="submit">发送</button></div>
+  </footer>
+</form>
+<script type="module">
+import { Editor } from "@tiptap/core";
+import Placeholder from "@tiptap/extension-placeholder";
+import { Markdown } from "@tiptap/markdown";
+import StarterKit from "@tiptap/starter-kit";
+import "@a3s-lab/ui";
+import "@a3s-lab/ui/agent-composer";
+
+const form = document.querySelector(".agent-composer");
+const editor = new Editor({
+  element: form.querySelector("[data-composer-input]"),
+  extensions: [
+    StarterKit.configure({ heading: false, codeBlock: false }),
+    Placeholder.configure({ placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…" }),
+    Markdown,
+  ],
+  contentType: "markdown",
+  content: "检查权限边界。",
+  editorProps: {
+    attributes: {
+      role: "textbox",
+      "aria-label": "任务指令",
+      "aria-multiline": "true",
+      "data-composer-input": "",
+    },
+    handleKeyDown: (_view, event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
+      event.preventDefault();
+      form.requestSubmit();
+      return true;
+    },
+  },
+});
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  submitTask({ markdown: editor.getMarkdown() });
+});
+</script>`}
+  react={`import { useState } from "react";
+import { EditorContent } from "@tiptap/react";
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/react";
+
+export function TaskInput() {
+  const [draft, setDraft] = useState("");
+  const composer = useAgentComposer({
+    events: {
+      "a3s:composer-submit": event => saveTask(event.detail),
+      "a3s:composer-action": event => runComposerAction(event.detail),
+    },
+  });
+  const editor = useAgentComposerEditor({
+    value: draft,
+    onChange: setDraft,
+    onSubmit: markdown => submitTask({ markdown }),
+    onTriggerChange: trigger => openSuggestionSource(trigger),
+    placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…",
+  });
+
+  return (
+    <AgentComposer ref={composer.ref} aria-label="任务输入器" data-state="ready">
+      <section className="agent-composer-editor" data-composer-editor>
+        {editor.editor && <EditorContent editor={editor.editor} />}
+      </section>
+      <ul data-composer-resources aria-label="已添加资源">
+        <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+      </ul>
+      <footer>
+        <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
+        <div data-composer-actions><button type="submit">发送</button></div>
+      </footer>
+    </AgentComposer>
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { EditorContent } from "@tiptap/vue-3";
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/vue";
+
+const draft = ref("");
+const composer = useAgentComposer({
+  events: {
+    "a3s:composer-submit": event => saveTask(event.detail),
+    "a3s:composer-action": event => runComposerAction(event.detail),
+  },
+});
+const editor = useAgentComposerEditor({
+  value: draft,
+  onSubmit: markdown => submitTask({ markdown }),
+  onTriggerChange: trigger => openSuggestionSource(trigger),
+  placeholder: "描述任务；@ 添加文件，$ 使用 Skill，/ 运行命令…",
+});
+const tiptap = editor.editor;
+</script>
+
+<template>
+  <AgentComposer :ref="composer.componentRef" aria-label="任务输入器" data-state="ready">
+    <section class="agent-composer-editor" data-composer-editor>
+      <EditorContent v-if="tiptap" :editor="tiptap" />
+    </section>
+    <ul data-composer-resources aria-label="已添加资源">
+      <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="移除 DESIGN.md">移除</button></li>
+    </ul>
+    <footer>
+      <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">高强度</button></div>
+      <div data-composer-actions><button type="submit">发送</button></div>
+    </footer>
+  </AgentComposer>
+</template>`}
+/>
+
+`useAgentComposer` 管理根组件事件与控制器；`useAgentComposerEditor` 管理 TipTap 实例、Markdown、焦点、插入内容和触发范围替换。不要同时创建两个编辑器实例；实际页面通常直接使用 `AgentComposerEditor`，只有需要完全自定义渲染时才单独调用编辑器 Hook。
+
+## 控制器
+
+| 方法 | 结果 |
+| --- | --- |
+| `getDraft()` / `setDraft(markdown)` | 读取或受控更新 Markdown |
+| `focusInput()` | 把焦点送回 ProseMirror 输入面 |
+| `openSuggestions(trigger)` / `closeSuggestions()` | 管理触发菜单，不转移编辑焦点 |
+| `setState(state, options)` | 更新提交、流式、停止、离线或错误状态 |
+| `setError(message)` | 保留草稿并显示可恢复错误 |
+| `runAction(action, options)` | 经过可取消的授权事件后执行宿主动作 |
+
+关键事件包括 `a3s:composer-before-submit`、`a3s:composer-submit`、`a3s:composer-draft-change`、`a3s:composer-trigger-change`、`a3s:composer-before-action`、`a3s:composer-action` 与 `a3s:composer-queue-action`。
+
+## 产品验收
+
+在发布前至少验证中文输入法、撤销重做、长 Markdown、空草稿、失焦恢复、菜单键盘导航、文件夹拖放、资源去重、停止中的重复点击、离线重试、队列编辑与 320px 布局。测试只通过“能输入和能发送”仍不足以证明组件可用于真实任务工作台。

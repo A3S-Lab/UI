@@ -1,0 +1,82 @@
+# Label
+
+Label gives a form control a persistent, clickable name so its meaning remains clear after placeholder text disappears.
+
+<Preview>
+<label class="label gap-2">
+  <input type="checkbox" class="input" />
+  Accept terms and conditions
+</label>
+</Preview>
+
+## Usage
+
+<Steps>
+  <Step title="Include CSS">
+
+Import Tailwind and one full A3S UI style bundle.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+Or import only the base CSS, Label component CSS, and one style pack.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/label.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+Using CDN or bundler imports? See the [Installation page](/installation).
+
+  </Step>
+  <Step title="Add your label HTML">
+
+Add `class="label"` to a `<label>` element.
+
+```html
+<label class="label" for="email">Your email address</label>
+```
+
+  </Step>
+</Steps>
+
+## Examples
+
+### RTL
+
+Add `dir="rtl"` to the label or an ancestor.
+
+<Preview>
+<div class="grid gap-3" dir="rtl">
+  <label class="label" for="email-rtl">البريد الإلكتروني</label>
+  <input class="input" id="email-rtl" type="email" placeholder="name@example.com" />
+</div>
+</Preview>
+
+## React
+
+```tsx
+import { Label } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return <Label htmlFor="email">Your email address</Label>;
+}
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { Label } from "@a3s-lab/ui/vue";
+</script>
+
+<template><Label for="email">Your email address</Label></template>
+```
+
+The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above.

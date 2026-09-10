@@ -1,0 +1,281 @@
+# 命令面板
+
+命令面板让用户通过搜索快速定位并执行操作，适合键盘优先的导航、切换和高频工作流。它应提供可预测的命令名称、清晰的分组与快捷键，而不是承担复杂表单或长篇内容。
+
+<Preview class="w-full max-w-sm">
+<div id="demo-command-standalone" class="command border" aria-label="命令菜单">
+  <header>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+    <input type="text" id="demo-command-standalone-input" placeholder="输入命令或搜索…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="demo-command-standalone-menu" />
+  </header>
+  <div role="menu" id="demo-command-standalone-menu" aria-orientation="vertical" data-empty="没有匹配结果。">
+    <div role="group" aria-labelledby="demo-command-recent">
+      <span role="heading" id="demo-command-recent">最近使用</span>
+      <div role="menuitem" data-filter="打开项目 Open project" data-keywords="仓库 工作区 repository workspace"><span>打开项目</span><span data-shortcut>⌘O</span></div>
+      <div role="menuitem" data-filter="新建任务 New task" data-keywords="创建 工作 create work"><span>新建任务</span><span data-shortcut>⌘N</span></div>
+      <div role="menuitem" data-filter="查看任务队列 Task queue" data-keywords="运行 等待 running queued"><span>查看任务队列</span><span data-shortcut>⌘J</span></div>
+    </div>
+    <hr role="separator" />
+    <div role="group" aria-labelledby="demo-command-workspace">
+      <span role="heading" id="demo-command-workspace">工作区</span>
+      <div role="menuitem" data-filter="切换主题 Change theme" data-keywords="外观 深色 浅色 appearance dark light"><span>切换主题</span><span data-shortcut>⌘⇧L</span></div>
+      <div role="menuitem" data-filter="打开设置 Open settings" data-keywords="偏好 配置 preferences configuration"><span>打开设置</span><span data-shortcut>⌘,</span></div>
+      <div role="menuitem" aria-disabled="true" data-filter="运行诊断 Run diagnostics"><span>运行诊断</span><span data-shortcut>维护中</span></div>
+    </div>
+  </div>
+</div>
+</Preview>
+
+## 用法
+
+<Callout title="支持模板宏" icon="code" action={{ label: "查看模板", href: "/templates#command" }}>
+该组件为 Jinja 和 Nunjucks 提供 `command()` 和 `command_dialog()` 宏。
+</Callout>
+
+<Steps>
+  <Step title="引入样式">
+
+导入 Tailwind 和完整样式包：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+拆分导入时，同时包含基础层、命令面板结构与主题样式：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/command.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+  </Step>
+  <Step title="引入脚本">
+
+使用完整运行时：
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+拆分加载时，同时引入共享运行时和命令面板控制器：
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/command.min.js" defer></script>
+```
+
+  </Step>
+  <Step title="添加语义化结构">
+
+```html
+<div class="command border" aria-label="命令菜单">
+  <header>
+    <svg aria-hidden="true"><!-- 搜索图标 --></svg>
+    <input
+      type="text"
+      role="combobox"
+      aria-label="命令搜索"
+      aria-expanded="true"
+      aria-controls="project-command-menu"
+      placeholder="输入命令或搜索…"
+    />
+  </header>
+  <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+    <div role="group" aria-labelledby="project-command-heading">
+      <span id="project-command-heading" role="heading">项目</span>
+      <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+      <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
+    </div>
+  </div>
+</div>
+```
+
+需要模态命令面板时，将 `.command` 放进原生 `<dialog class="command-dialog">`，并为对话框提供可访问名称。
+
+  </Step>
+</Steps>
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;dialog class="command-dialog"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+  <dd>模态命令面板容器。直接子元素应为 <code>.command</code>，并通过 <code>aria-label</code> 或 <code>aria-labelledby</code> 提供名称。</dd>
+  <dt><code>&lt;div class="command"&gt;</code></dt>
+  <dd>
+    命令面板根元素。设置 <code>data-filter="manual"</code> 可由应用接管远程搜索或索引过滤。
+    <dl>
+      <dt><code>&lt;header&gt;</code></dt>
+      <dd>搜索图标和输入框的容器。</dd>
+      <dt><code>&lt;input role="combobox"&gt;</code></dt>
+      <dd>命令搜索框。使用 <code>aria-controls</code> 指向命令列表，并保持 <code>aria-expanded</code> 与列表状态一致。</dd>
+      <dt><code>&lt;div role="menu"&gt;</code></dt>
+      <dd>命令列表；通过 <code>data-empty</code> 提供本地化的无结果文案。</dd>
+      <dt><code>&lt;div role="group"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>组织相关命令；组内全部命令被过滤后会自动隐藏。</dd>
+      <dt><code>&lt;span role="heading"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>命令组标题，应由父级的 <code>aria-labelledby</code> 引用。</dd>
+      <dt><code>&lt;div role="menuitem"&gt;</code></dt>
+      <dd>可执行操作。导航命令使用 <code>&lt;a role="menuitem"&gt;</code>；不可用操作使用 <code>aria-disabled="true"</code>。</dd>
+      <dt><code>&lt;span data-shortcut&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>位于行尾的快捷键提示。</dd>
+      <dt><code>&lt;hr role="separator"&gt;</code> <span class="badge" data-variant="secondary">可选</span></dt>
+      <dd>命令组之间的分隔线；搜索期间会自动隐藏。</dd>
+    </dl>
+  </dd>
+</dl>
+
+### JavaScript API
+
+| API | 类型 | 描述 |
+| --- | --- | --- |
+| `command.refresh()` | 方法 | 动态添加、移除或重命名命令后，重新扫描当前列表。 |
+
+## 示例
+
+### 模态命令面板
+
+把高频操作放在前面，并显示可记忆的快捷键。点击遮罩或按 <kbd>Esc</kbd> 关闭。
+
+<Preview>
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-dialog-demo').showModal()">打开命令面板</button>
+<dialog id="command-dialog-demo" class="command-dialog" aria-label="命令菜单" onclick="if (event.target === this) this.close()">
+  <div class="command">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-dialog-input" placeholder="输入命令或搜索…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-dialog-menu" />
+    </header>
+    <div role="menu" id="command-dialog-menu" data-empty="没有匹配结果。">
+      <div role="group" aria-labelledby="command-dialog-project">
+        <span role="heading" id="command-dialog-project">项目</span>
+        <div role="menuitem" data-filter="打开项目 Open project"><span>打开项目</span><span data-shortcut>⌘O</span></div>
+        <div role="menuitem" data-filter="新建任务 New task"><span>新建任务</span><span data-shortcut>⌘N</span></div>
+        <div role="menuitem" data-filter="切换分支 Switch branch"><span>切换分支</span><span data-shortcut>⌘⇧B</span></div>
+      </div>
+      <hr role="separator" />
+      <div role="group" aria-labelledby="command-dialog-view">
+        <span role="heading" id="command-dialog-view">视图</span>
+        <div role="menuitem" data-filter="显示终端 Show terminal"><span>显示终端</span><span data-shortcut>⌘J</span></div>
+        <div role="menuitem" data-filter="切换侧栏 Toggle sidebar"><span>切换侧栏</span><span data-shortcut>⌘B</span></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+</Preview>
+
+### 长列表
+
+长列表保持搜索框可见，命令区域独立滚动。分组应反映用户心智模型，避免按技术模块堆砌。
+
+<Preview>
+<button type="button" class="btn" data-variant="outline" onclick="document.getElementById('command-scrollable-dialog').showModal()">浏览全部命令</button>
+<dialog id="command-scrollable-dialog" class="command-dialog" aria-label="全部命令" onclick="if (event.target === this) this.close()">
+  <div class="command">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-scrollable-input" placeholder="搜索全部命令…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="命令搜索" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-scrollable-menu" />
+    </header>
+    <div role="menu" id="command-scrollable-menu" data-empty="没有匹配结果。">
+      <div role="group" aria-labelledby="command-navigation"><span role="heading" id="command-navigation">导航</span><div role="menuitem" data-filter="首页 Home">首页</div><div role="menuitem" data-filter="收件箱 Inbox">收件箱</div><div role="menuitem" data-filter="项目 Projects">项目</div><div role="menuitem" data-filter="设置 Settings">设置</div></div>
+      <hr role="separator" />
+      <div role="group" aria-labelledby="command-actions"><span role="heading" id="command-actions">操作</span><div role="menuitem" data-filter="新建文件 New file">新建文件</div><div role="menuitem" data-filter="新建文件夹 New folder">新建文件夹</div><div role="menuitem" data-filter="创建副本 Duplicate">创建副本</div><div role="menuitem" data-filter="移动到 Move to">移动到…</div></div>
+      <hr role="separator" />
+      <div role="group" aria-labelledby="command-tools"><span role="heading" id="command-tools">工具</span><div role="menuitem" data-filter="打开终端 Open terminal">打开终端</div><div role="menuitem" data-filter="查看日志 View logs">查看日志</div><div role="menuitem" data-filter="运行检查 Run checks">运行检查</div><div role="menuitem" data-filter="设备预览 Device preview">设备预览</div></div>
+      <hr role="separator" />
+      <div role="group" aria-labelledby="command-account"><span role="heading" id="command-account">账户</span><div role="menuitem" data-filter="个人资料 Profile">个人资料</div><div role="menuitem" data-filter="通知 Notifications">通知</div><div role="menuitem" data-filter="退出登录 Sign out">退出登录</div></div>
+    </div>
+  </div>
+</dialog>
+</Preview>
+
+## RTL
+
+将 `dir="rtl"` 添加到命令根元素或祖先；标题、输入与快捷键会随文档方向重新排列。
+
+<Preview class="w-full max-w-sm">
+<div dir="rtl">
+  <div id="command-rtl" class="command border" aria-label="قائمة الأوامر">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" id="command-rtl-input" placeholder="اكتب أمرًا أو ابحث…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="بحث الأوامر" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-controls="command-rtl-menu" />
+    </header>
+    <div role="menu" id="command-rtl-menu" data-empty="لم يتم العثور على نتائج.">
+      <div role="group" aria-labelledby="command-rtl-navigation">
+        <span role="heading" id="command-rtl-navigation">التنقل</span>
+        <div role="menuitem" data-filter="فتح المشروع"><span>فتح المشروع</span><span data-shortcut>⌘O</span></div>
+        <div role="menuitem" data-filter="مهمة جديدة"><span>مهمة جديدة</span><span data-shortcut>⌘N</span></div>
+        <div role="menuitem" data-filter="فتح الإعدادات"><span>فتح الإعدادات</span><span data-shortcut>⌘,</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</Preview>
+
+## React
+
+```tsx
+import { Command, useCommand } from "@a3s-lab/ui/react";
+
+export function ProjectCommands() {
+  const command = useCommand();
+
+  return (
+    <Command ref={command.ref} className="border" aria-label="项目命令">
+      <header>
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" /><path d="m10 10 3 3" stroke="currentColor" /></svg>
+        <input
+          id="project-command-input"
+          type="text"
+          role="combobox"
+          aria-label="命令搜索"
+          aria-expanded="true"
+          aria-controls="project-command-menu"
+          placeholder="输入命令或搜索…"
+        />
+      </header>
+      <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+        <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+        <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
+      </div>
+    </Command>
+  );
+}
+```
+
+`useCommand` 提供组件引用、就绪状态和 `call("refresh")`。动态增删命令后调用 `refresh`，无需维护第二套框架专属过滤状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Command, useCommand } from "@a3s-lab/ui/vue";
+
+const command = useCommand();
+const componentRef = command.componentRef;
+</script>
+
+<template>
+  <Command ref="componentRef" class="border" aria-label="项目命令">
+    <header>
+        <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" /><path d="m10 10 3 3" stroke="currentColor" /></svg>
+      <input
+        id="project-command-input"
+        type="text"
+        role="combobox"
+        aria-label="命令搜索"
+        aria-expanded="true"
+        aria-controls="project-command-menu"
+        placeholder="输入命令或搜索…"
+      />
+    </header>
+    <div id="project-command-menu" role="menu" data-empty="没有匹配结果。">
+      <div role="menuitem" data-filter="打开项目 Open project">打开项目</div>
+      <div role="menuitem" data-filter="新建任务 New task">新建任务</div>
+    </div>
+  </Command>
+</template>
+```
+
+`useCommand` 提供组件引用、就绪状态和 `call("refresh")`。动态增删命令后调用 `refresh`，无需维护第二套框架专属过滤状态。

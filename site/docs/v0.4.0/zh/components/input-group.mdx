@@ -1,0 +1,379 @@
+# 输入组合
+
+输入组合把一个主要值，以及理解或操作该值所必需的上下文放进同一个连续边界。它不替代字段、校验、建议列表、富文本编辑或应用状态。
+
+<Preview class="w-full max-w-xl" title="项目搜索">
+  <div class="field w-full">
+    <label for="input-group-project-search-zh" dir="auto">搜索项目</label>
+    <div class="input-group">
+      <input
+        id="input-group-project-search-zh"
+        type="search"
+        name="projectQuery"
+        dir="auto"
+        autocomplete="off"
+        aria-describedby="input-group-project-search-help-zh"
+        placeholder="项目名称或仓库路径"
+        oninput="if (event.isComposing) return; this.parentElement.querySelector('[data-input-group-status]').textContent = this.value ? '8 个匹配项目' : '尚未输入查询'"
+      />
+      <span data-align="inline-start" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5" /><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      </span>
+      <span
+        id="input-group-project-search-status-zh"
+        data-align="inline-end"
+        data-input-group-status
+        role="status"
+        aria-live="polite"
+        dir="auto"
+      >
+        尚未输入查询
+      </span>
+    </div>
+    <p id="input-group-project-search-help-zh" data-field-description dir="auto">
+      按项目名称或仓库路径搜索。
+    </p>
+  </div>
+</Preview>
+
+## 用法
+
+引入 Tailwind 和一套完整的 A3S UI 样式：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+按组件加载时，依次引入基础样式、输入组合结构、字段结构、一套视觉样式和小型行为控制器：
+
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/input-group.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/input-group";
+```
+
+根节点只放一个直接主要控件。持久标签、普通说明和当前错误属于外围字段。根节点默认没有组件角色，因为原生控件已经负责名称、值、键盘行为和表单语义。
+
+```html
+<div class="field">
+  <label for="repository-filter">仓库筛选</label>
+  <div class="input-group">
+    <input id="repository-filter" name="repositoryFilter" aria-describedby="repository-filter-help" />
+    <span data-align="inline-start" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none">...</svg></span>
+    <span data-align="inline-end">8 个匹配项</span>
+  </div>
+  <p id="repository-filter-help" data-field-description>按仓库名称或路径搜索。</p>
+</div>
+```
+
+不需要共享边界时使用独立输入框或多行文本框。需要可选择建议时使用组合框，需要结构化内容时使用编辑器，需要提及、附件、工具和提交状态时使用任务输入器。
+
+### 参数
+
+| 参数 | 用途 |
+| --- | --- |
+| `.input-group` | 提供共享视觉边界和指针聚焦转发，但它本身不是表单控件 |
+| 直接 `input`、`textarea`、`select` 或 `[data-control]` | 提供唯一主要值、原生语义、焦点和提交行为 |
+| `data-align="inline-start|inline-end"` | 按逻辑方向放置简短前后缀、状态、快捷键或有限操作 |
+| `data-align="block-start|block-end"` | 将较长附加内容移到块级行，同时保持 DOM 与键盘顺序 |
+| `data-orientation="vertical"` | 保留已存在的纵向组合兼容性；块级对齐本身也会产生该布局 |
+| `aria-busy="true"` | 表示宿主工作正在进行，但不禁用可编辑值 |
+| `data-disabled`、`data-readonly` | 可选的外壳样式镜像；语义仍以原生 `disabled` 或 `readonly` 为准 |
+| `data-input-group-status` | 标识有限的结果或进度文本；只有变化需要播报时才添加 `role="status"` |
+
+旧的 `start` 和 `end` 仍分别作为 `inline-start` 与 `inline-end` 的别名。新标记应使用明确的逻辑值。
+
+## 框架用法
+
+<FrameworkTabs
+  htmlInstall="npm install @a3s-lab/ui@0.4.0"
+  reactInstall="npm install @a3s-lab/ui@0.4.0 react react-dom"
+  vueInstall="npm install @a3s-lab/ui@0.4.0 vue"
+  html={`<div class="field">
+  <label for="input-group-project-search-html-zh" dir="auto">搜索项目</label>
+  <div class="input-group">
+    <input id="input-group-project-search-html-zh" type="search" name="projectQuery" autocomplete="off" dir="auto" aria-describedby="input-group-project-search-help-html-zh">
+    <span data-align="inline-start" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5"></circle><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></span>
+    <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">尚未输入查询</span>
+  </div>
+  <p id="input-group-project-search-help-html-zh" data-field-description dir="auto">按项目名称或仓库路径搜索。</p>
+</div>
+<script type="module">
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/input-group";
+const input = document.querySelector("#input-group-project-search-html-zh");
+const status = input.parentElement.querySelector("[data-input-group-status]");
+input.addEventListener("input", event => {
+  if (event.isComposing) return;
+  status.textContent = event.currentTarget.value ? "8 个匹配项目" : "尚未输入查询";
+});
+input.addEventListener("change", event => {
+  saveProjectQuery(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
+import { InputGroup, useInputGroup } from "@a3s-lab/ui/react";
+
+export function ProjectSearch() {
+  const [query, setQuery] = useState("");
+  const group = useInputGroup();
+
+  return (
+    <div className="field">
+      <label htmlFor="input-group-project-search-react-zh" dir="auto">搜索项目</label>
+      <InputGroup ref={group.ref}>
+        <input
+          id="input-group-project-search-react-zh"
+          type="search"
+          name="projectQuery"
+          autoComplete="off"
+          dir="auto"
+          aria-describedby="input-group-project-search-help-react-zh"
+          value={query}
+          onChange={event => setQuery(event.currentTarget.value)}
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <SearchIcon />
+        </span>
+        <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">
+          {query ? "8 个匹配项目" : "尚未输入查询"}
+        </span>
+      </InputGroup>
+      <p id="input-group-project-search-help-react-zh" data-field-description dir="auto">
+        按项目名称或仓库路径搜索。
+      </p>
+    </div>
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { InputGroup, useInputGroup } from "@a3s-lab/ui/vue";
+
+const query = ref("");
+const group = useInputGroup();
+const componentRef = group.componentRef;
+</script>
+
+<template>
+  <div class="field">
+    <label for="input-group-project-search-vue-zh" dir="auto">搜索项目</label>
+    <InputGroup ref="componentRef">
+      <input
+        id="input-group-project-search-vue-zh"
+        v-model="query"
+        type="search"
+        name="projectQuery"
+        autocomplete="off"
+        dir="auto"
+        aria-describedby="input-group-project-search-help-vue-zh"
+      >
+      <span data-align="inline-start" aria-hidden="true"><SearchIcon /></span>
+      <span data-align="inline-end" data-input-group-status role="status" aria-live="polite" dir="auto">
+        {{ query ? "8 个匹配项目" : "尚未输入查询" }}
+      </span>
+    </InputGroup>
+    <p id="input-group-project-search-help-vue-zh" data-field-description dir="auto">
+      按项目名称或仓库路径搜索。
+    </p>
+  </div>
+</template>`}
+/>
+
+## 状态与变体
+
+空值和就绪是普通值状态。完成校验尝试后才进入无效状态。加载会保留当前值和编辑能力。禁用与只读具有不同的原生行为，不能被简化成同一种半透明外观。
+
+### 校验与恢复
+
+输入组合只反映校验结果，不制定校验策略。失败后应保留尝试值、聚焦无效控件、在外壳之外写明具体修正方法，并把错误 ID 加入 `aria-describedby`。有效编辑或重置后清除过期错误。输入法处于组合输入阶段时不要校验。
+
+<Preview class="w-full max-w-xl" title="工作区地址">
+  <form
+    class="grid w-full gap-4"
+    data-input-group-validation-demo="zh"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#input-group-validation-zh'); const field = input.closest('.field'); const error = this.querySelector('#input-group-validation-error-zh'); if (input.checkValidity()) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'input-group-validation-help-zh input-group-validation-error-zh'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#input-group-validation-zh'); const field = input.closest('.field'); const error = this.querySelector('#input-group-validation-error-zh'); field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'input-group-validation-help-zh'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="input-group-validation-zh">工作区地址</label>
+      <div class="input-group">
+        <input
+          id="input-group-validation-zh"
+          type="text"
+          name="workspaceAddress"
+          required
+          minlength="3"
+          maxlength="24"
+          pattern="[a-z0-9\-]+"
+          autocomplete="off"
+          aria-describedby="input-group-validation-help-zh"
+          placeholder="runtime-lab"
+          oninput="if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); const error = field.querySelector('[role=alert]'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'input-group-validation-help-zh'); error.hidden = true"
+        />
+        <span data-align="inline-start" aria-hidden="true">a3s.dev/</span>
+      </div>
+      <p id="input-group-validation-help-zh" data-field-description>
+        使用 3–24 个小写字母、数字或连字符。
+      </p>
+      <p id="input-group-validation-error-zh" data-field-message role="alert" hidden>
+        使用 3–24 个小写字母、数字或连字符。
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">保存地址</button>
+      <button class="btn" type="reset" data-variant="outline">重置</button>
+    </div>
+  </form>
+</Preview>
+
+服务端校验、清理、授权和过期响应处理仍不可缺少。客户端约束只负责改善本地恢复体验。
+
+### 有限操作
+
+只有直接查看、显示、复制、清空、选择单位或提交同一个值的操作才属于该边界。交互后代保留自己的焦点和激活行为，外壳控制器不会转发它们的点击。
+
+<Preview class="w-full max-w-xl" title="仓库地址">
+  <div class="field w-full">
+    <label for="input-group-repository-url-zh">仓库地址</label>
+    <div class="input-group">
+      <input
+        id="input-group-repository-url-zh"
+        type="url"
+        value="https://github.com/a3s-lab/ui"
+        readonly
+        aria-describedby="input-group-repository-url-help-zh"
+      />
+      <span data-align="inline-start" aria-hidden="true">https://</span>
+      <button
+        class="btn"
+        type="button"
+        data-align="inline-end"
+        data-variant="ghost"
+        aria-label="复制仓库地址"
+        onclick="this.closest('.field').querySelector('#input-group-copy-status-zh').textContent = '已请求复制'"
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="6.5" y="6.5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" /><path d="M5 12.5H4.5A1.5 1.5 0 0 1 3 11V4.5A1.5 1.5 0 0 1 4.5 3H11a1.5 1.5 0 0 1 1.5 1.5V5" stroke="currentColor" stroke-width="1.4" /></svg>
+      </button>
+    </div>
+    <p id="input-group-repository-url-help-zh" data-field-description>
+      只读值仍可选择，并会参与表单提交。
+    </p>
+    <p id="input-group-copy-status-zh" class="text-muted-foreground text-sm" aria-live="polite">
+      可以复制
+    </p>
+  </div>
+</Preview>
+
+### 禁用与只读
+
+禁用会移除聚焦、编辑、校验和表单提交。只读会保留聚焦、选择、复制和提交。两者都应清晰可读，并说明值无法修改的原因。
+
+<Preview class="w-full max-w-xl" title="可用性语义">
+  <form class="grid w-full gap-5" data-input-group-availability="zh">
+    <div class="field" data-disabled="true">
+      <label for="input-group-disabled-zh">已归档项目筛选</label>
+      <div class="input-group" data-input-group-disabled data-disabled>
+        <input
+          id="input-group-disabled-zh"
+          name="archivedFilter"
+          value="archived-runtime"
+          aria-describedby="input-group-disabled-help-zh"
+          disabled
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 6.5h12v9H4zM3 3.5h14v3H3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+        </span>
+      </div>
+      <p id="input-group-disabled-help-zh" data-field-description>
+        已归档项目会保留审计值，但不能修改或提交。
+      </p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="input-group-readonly-zh">已批准发布筛选</label>
+      <div class="input-group" data-input-group-readonly data-readonly>
+        <input
+          id="input-group-readonly-zh"
+          name="approvedFilter"
+          value="release-runtime"
+          aria-describedby="input-group-readonly-help-zh"
+          readonly
+        />
+        <span data-align="inline-start" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="8" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" /><path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" /></svg>
+        </span>
+      </div>
+      <p id="input-group-readonly-help-zh" data-field-description>
+        发布策略锁定了编辑；该值仍可选择和提交。
+      </p>
+    </div>
+  </form>
+</Preview>
+
+### 有界多行输入
+
+原生多行文本框可以与一个简短计数或直接相关操作共享边界。编辑视口保持有界，大段粘贴后在内部滚动，并保留原生垂直调整大小。需要结构、语法、提及、附件或工具栏时，应使用编辑器或任务输入器。
+
+<Preview class="w-full max-w-xl" title="发布交接">
+  <div class="field w-full">
+    <label for="input-group-handoff-zh">发布交接</label>
+    <div class="input-group" data-orientation="vertical">
+      <textarea
+        id="input-group-handoff-zh"
+        name="releaseHandoff"
+        rows="5"
+        maxlength="6000"
+        aria-describedby="input-group-handoff-help-zh"
+        placeholder="说明验证证据和回滚路径"
+        oninput="this.parentElement.querySelector('[data-input-group-status]').textContent = this.value.length + ' / 6000 字'"
+      ></textarea>
+      <span data-align="block-end" data-input-group-status>0 / 6000 字</span>
+    </div>
+    <p id="input-group-handoff-help-zh" data-field-description>
+      写明验证结果，以及失败后应执行的准确恢复步骤。
+    </p>
+  </div>
+</Preview>
+
+### 从右到左与长内容
+
+逻辑对齐跟随外围书写方向。URL、路径等技术值可以设置局部从左到右方向。行内附加内容会先截断，不能撑宽文档；有意义的长说明应移到外壳之外或块级附加区域。
+
+<Preview class="w-full max-w-xl" title="从右到左项目搜索">
+  <div class="field w-full" dir="rtl">
+    <label for="input-group-rtl-zh">البحث في المشاريع</label>
+    <div class="input-group">
+      <input
+        id="input-group-rtl-zh"
+        type="search"
+        dir="auto"
+        aria-describedby="input-group-rtl-help-zh"
+        placeholder="اسم المشروع أو مسار المستودع"
+      />
+      <span data-align="inline-start" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.5" /><path d="m12.5 12.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      </span>
+      <span data-align="inline-end">8 مشاريع مطابقة</span>
+    </div>
+    <p id="input-group-rtl-help-zh" data-field-description>
+      ابحث باسم المشروع أو مسار المستودع.
+    </p>
+  </div>
+</Preview>
+
+## 无障碍
+
+- 保留一个持久可见标签，并通过 `aria-describedby` 关联普通说明。占位符不能成为唯一名称。
+- 除非组合确实存在原生控件和字段无法表达的分组关系，否则根节点不要添加组件角色。
+- 保留原生输入、选择、粘贴、撤销、搜索清除、密码管理器、自动填充和输入法行为。
+- 仅图标操作需要准确的无障碍名称。粗指针环境下，可编辑文字至少为 16px，操作目标至少为 44×44 CSS 像素。
+- 无效状态需要原生约束、`aria-invalid="true"`、具体错误和恢复路径，不能只依赖颜色。
+- 加载状态保持值与焦点稳定，只使用一个有限状态消息，过期响应不能覆盖更新后的输入。
+- 强制颜色模式使用系统 `Highlight` 轮廓替代内嵌焦点样式。发布前仍需测试真实移动键盘、物理中文输入法、200% 缩放、触控选择、Windows 强制颜色和读屏器/浏览器组合。

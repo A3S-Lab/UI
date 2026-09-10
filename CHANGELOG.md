@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.4.0] - 2026-09-10
+
 ### Added
 
 - Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, durable interaction contracts, CLI, and Cloud adapter into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.

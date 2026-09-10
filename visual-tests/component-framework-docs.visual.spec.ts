@@ -229,7 +229,7 @@ test.describe("component framework quick starts", () => {
   test("published versions keep complete semantic framework examples without inventing adapters", async ({
     page,
   }) => {
-    await openComponentGuide(page, "v0.3.0/components/tabs.html");
+    await openComponentGuide(page, "v0.4.0/components/tabs.html");
 
     const preview = integratedPreview(page, "tabs");
     await expect(preview).toHaveAttribute(
@@ -240,7 +240,7 @@ test.describe("component framework quick starts", () => {
     await quickStart.getByRole("tab", { name: "React", exact: true }).click();
     await expect(
       quickStart.locator(".a3s-preview-integration__install code"),
-    ).toHaveText("npm install @a3s-lab/ui@0.3.0 react react-dom");
+    ).toHaveText("npm install @a3s-lab/ui@0.4.0 react react-dom");
     await expect(
       quickStart.locator(".a3s-preview-integration__source:not([hidden]) code"),
     ).toContainText("TabsExample");

@@ -1,0 +1,114 @@
+# 徽章
+
+徽章用一小段文字标记类别、版本、数量或需要注意的静态属性，帮助用户扫读信息；它不替代状态说明，也不承担主要操作。
+
+<Preview class="w-full">
+<div class="flex flex-wrap items-center gap-2">
+  <span class="badge">当前版本</span>
+  <span class="badge" data-variant="secondary">TypeScript</span>
+  <span class="badge" data-variant="outline">草稿</span>
+  <span class="badge" data-variant="destructive">2 个阻塞项</span>
+</div>
+</Preview>
+
+## 用法
+
+<Steps>
+  <Step title="引入 CSS">
+
+导入 Tailwind 和完整样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+也可以只导入基础样式、徽章组件和一个样式包。
+
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/badge.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+  </Step>
+  <Step title="添加徽章 HTML">
+
+默认使用 `<span>`。只有徽章本身确实导航到另一个地址时，才使用带 `href` 的 `<a>`。
+
+```html
+<span class="badge" data-variant="secondary">TypeScript</span>
+<a class="badge" data-variant="outline" href="/releases/0.4.0">
+  查看 0.4.0 版本
+</a>
+```
+
+  </Step>
+</Steps>
+
+### 参数
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| 根元素 | `<span>`、`<a href>` | 静态标签或真实导航 |
+| `class="badge"` | 必填 | 稳定根类名 |
+| `data-variant` | `primary`、`secondary`、`outline`、`ghost`、`link`、`destructive` | 表达强调层级或风险语义 |
+| `data-icon` | `inline-start`、`inline-end` | 校正内联图标的尺寸和间距 |
+
+## 状态与变体
+
+默认变体只用于当前上下文中最需要被识别的一项，例如“当前版本”。`secondary` 适合技术类别，`outline` 适合低强调元数据，`destructive` 只标记明确的问题或阻塞。`ghost` 与 `link` 主要服务可导航徽章，不能把静态文本伪装成可点击控件。
+
+<Preview class="w-full">
+<div class="grid gap-4">
+  <div class="flex flex-wrap items-center gap-2" aria-label="发布元数据">
+    <span class="badge"><svg aria-hidden="true" data-icon="inline-start" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>已验证</span>
+    <span class="badge" data-variant="secondary">稳定通道</span>
+    <span class="badge" data-variant="outline">12 项变更</span>
+  </div>
+  <a class="badge" data-variant="link" href="#badge-release-notes">
+    查看发布说明
+    <svg aria-hidden="true" data-icon="inline-end" data-rtl-flip xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+  </a>
+</div>
+</Preview>
+
+徽章不提供任意颜色 API。类别颜色必须来自产品中稳定、可解释的分类体系；成功、运行中、失败等动态生命周期优先使用[状态徽章](/components/status-badge)，等待过程使用[进度](/components/progress)或[加载指示器](/components/spinner)。
+
+长句、错误原因和恢复操作不应塞进徽章。文本超过一个短语时，改用普通元数据、警报或说明区域。
+
+## React
+
+```tsx
+import { Badge } from "@a3s-lab/ui/react";
+
+export function ReleaseBadge() {
+  return (
+    <Badge as="a" href="/releases/0.4.0" data-variant="outline">
+      0.4.0 预览版
+    </Badge>
+  );
+}
+```
+
+`Badge` 只映射同一个 `span` 或 `a` 根元素。它没有组件私有状态或控制器，因此不提供没有行为依据的 hook。
+
+## Vue
+
+```vue
+<script setup>
+import { Badge } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <Badge as="a" href="/releases/0.4.0" data-variant="outline">
+    0.4.0 预览版
+  </Badge>
+</template>
+```
+
+Vue 适配器使用相同的根元素、属性和内容，不增加包装层。
+
+## 可访问性
+
+徽章的含义必须由可见文字表达，颜色和图标只能辅助识别。装饰图标设置 `aria-hidden="true"`；只有图标承载额外信息时才提供独立文本。数量应写成“12 项变更”或在可访问名称中补足单位，不能只显示无法解释的“12”。静态徽章不应获得焦点；可交互徽章必须使用真实链接或按钮语义，并具备清晰动作名称和触控目标。动态状态更新若需要播报，应由拥有状态的区域提供实时语义，而不是给每个徽章都添加 `role="status"`。

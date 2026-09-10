@@ -10,7 +10,7 @@ const projectRoot = path.resolve(
   "..",
 );
 const checkOnly = process.argv.includes("--check");
-const docsVersions = ["next", "v0.3.0", "v0.2.0", "v0.1.0"];
+const docsVersions = ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"];
 const placeholderPattern =
   /(?:Component content|Component summary|组件内容|组件摘要|>\s*(?:\.{3}|…)\s*<)/u;
 const structuralCommentPattern = /(?:\{\/\*[^*]+\*\/\}|<!--[^>]+-->)/u;

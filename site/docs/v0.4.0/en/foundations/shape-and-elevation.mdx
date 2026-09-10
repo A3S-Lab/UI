@@ -1,0 +1,49 @@
+# Shape and elevation
+
+A3S UI uses four radii: 4, 6, 8, and 12px. Static surfaces stay flat. A surface earns a shadow only when it floats above content or remains anchored while content passes underneath it.
+
+<Preview>
+  <div class="grid w-full gap-4 sm:grid-cols-4">
+    <div class="rounded-sm border border-border bg-card p-5 text-center text-sm">
+      Tiny
+      <br />
+      <code class="text-xs text-muted-foreground">4px</code>
+    </div>
+    <div class="rounded-md border border-border bg-card p-5 text-center text-sm">
+      Control
+      <br />
+      <code class="text-xs text-muted-foreground">6px</code>
+    </div>
+    <div class="rounded-lg border border-border bg-card p-5 text-center text-sm">
+      Surface
+      <br />
+      <code class="text-xs text-muted-foreground">8px</code>
+    </div>
+    <div class="rounded-xl bg-card p-5 text-center text-sm shadow-[var(--a3s-shadow-soft)]">
+      Overlay
+      <br />
+      <code class="text-xs text-muted-foreground">12px</code>
+    </div>
+  </div>
+</Preview>
+
+## Radius
+
+| Token                             | Default | Use                                            |
+| --------------------------------- | ------: | ---------------------------------------------- |
+| `--radius-sm` / `--a3s-radius-xs` |   `4px` | Badge interiors and tiny controls              |
+| `--radius-md` / `--a3s-radius-sm` |   `6px` | Buttons, inputs, and navigation items          |
+| `--radius-lg` / `--a3s-radius-md` |   `8px` | Cards, toolbars, and stable surfaces           |
+| `--radius-xl` / `--a3s-radius-lg` |  `12px` | Dialogs, drawers, popovers, and preview frames |
+
+Pills are reserved for status, compact filters, switch tracks, and circular actions. They are not the default shape for ordinary buttons or cards.
+
+## Shadows
+
+| Token                  | Value                                                  | Use                                            |
+| ---------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| `--a3s-shadow-control` | `0 1px 2px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 3%)` | Selected controls and quiet preview boundaries |
+| `--a3s-shadow-soft`    | `0 8px 16px -4px rgb(0 0 0 / 20%)`                     | Menus, popovers, and floating panels           |
+| `--a3s-shadow`         | `0 20px 20px -8px rgb(0 0 0 / 24%)`                    | Modal dialogs                                  |
+
+Dark mode increases opacity instead of adding bright borders. Static cards, shells, catalogs, transcripts, and setting rows do not receive shadows. Use either a clear boundary or floating elevation on one edge by default, not both as duplicate emphasis.

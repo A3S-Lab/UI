@@ -1,0 +1,132 @@
+# 工具调用
+
+工具调用把一次外部能力执行拆成可审计的名称、参数、进度、结果和恢复动作。默认摘要只回答“正在做什么、由谁执行、处于什么状态”，展开后才显示可能很长的输入输出。
+
+<Preview class="w-full max-w-4xl" title="运行中的仓库检索">
+  <details class="tool-call" data-state="running" open>
+    <summary>
+      <span data-tool-kind aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+      <span data-tool-identity><strong>检索权限边界实现</strong><small data-tool-operation>search · rg "permission|policy" src</small></span>
+      <span data-tool-duration>1.8 s</span>
+      <span class="status-badge" data-state="info" data-tool-status>运行中</span>
+      <span data-tool-chevron aria-hidden="true">›</span>
+    </summary>
+    <section data-tool-content>
+      <div data-tool-metadata><span>工作目录 <code>/workspace/ui</code></span><span>调用 ID <code>call_8f42</code></span><span>输出已脱敏</span></div>
+      <div data-tool-view>
+        <header><strong>参数</strong><span>JSON</span></header>
+        <pre data-tool-input>{`{"query":"permission|policy","path":"src","limit":200}`}</pre>
+      </div>
+      <div data-tool-view>
+        <header><strong>实时输出</strong><span>3 个匹配</span></header>
+        <pre data-tool-output>{`src/security/policy.ts:42: export function authorize(...)
+src/runtime/permission.ts:18: type PermissionDecision = ...
+tests/policy.spec.ts:71: expect(decision).toEqual(...)`}</pre>
+      </div>
+      <progress data-tool-progress value="68" max="100" aria-label="工具调用进度">68%</progress>
+      <p data-tool-error hidden>调用失败。检查权限后重试。</p>
+    </section>
+    <footer>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" data-tool-action="copy-output">复制输出</button>
+      <button type="button" class="btn" data-size="sm" data-variant="outline" data-tool-action="cancel">停止</button>
+    </footer>
+  </details>
+</Preview>
+
+## 产品边界
+
+工具调用不是日志容器。它必须保留用户判断一次执行是否可信所需的信息，同时避免把提供方内部字段直接倾倒到界面。
+
+- 标题使用业务动作，例如“读取配置”，而不是只有 `shell_command`。
+- 状态必须区分准备、等待批准、运行、成功、拒绝、失败、超时和中断。
+- 危险操作在执行前进入 `awaiting`，并由宿主提供明确的批准与拒绝动作。
+- 输入、输出和错误分区展示；长内容保留滚动边界，不能撑破任务时间线。
+- 重试、停止、复制或打开文件等动作发送事件，网络、权限和审计仍由宿主负责。
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<details class="tool-call" data-state="preparing">
+  <summary>
+    <span data-tool-kind aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M3 4h10M3 8h10M3 12h6" /></svg></span>
+    <span data-tool-identity><strong>读取仓库状态</strong><small data-tool-operation>shell · git status --short</small></span>
+    <span data-tool-duration>0 ms</span>
+    <span data-tool-status>准备中</span>
+    <span data-tool-chevron aria-hidden="true">›</span>
+  </summary>
+  <section data-tool-content>
+    <pre data-tool-input>{"workdir":"/workspace/ui"}</pre>
+    <pre data-tool-output></pre>
+    <p data-tool-error hidden></p>
+  </section>
+  <footer><button type="button" data-tool-action="copy-output">复制输出</button></footer>
+</details>
+<script type="module">
+  import "@a3s-lab/ui";
+  import "@a3s-lab/ui/tool-call";
+  const call = document.querySelector(".tool-call");
+  call.setState("running", { label: "运行中" });
+  call.appendOutput("M src/runtime.ts\\n");
+  call.setState("succeeded", { label: "成功", duration: "824 ms" });
+</script>`}
+  react={`import { ToolCall, useToolCall } from "@a3s-lab/ui/react";
+
+export function RepositoryStatus() {
+  const control = useToolCall({
+    events: {
+      "a3s:tool-before-action": event => authorizeToolAction(event.detail),
+      "a3s:tool-state-change": event => recordToolState(event.detail),
+    },
+  });
+
+  return (
+    <ToolCall ref={control.ref} data-state="preparing">
+      <summary><span data-tool-identity><strong>读取仓库状态</strong><small>shell · git status --short</small></span><span data-tool-status>准备中</span></summary>
+      <section data-tool-content><pre data-tool-output /></section>
+    </ToolCall>
+  );
+}
+
+control.call("setState", "running", { label: "运行中" });
+control.call("appendOutput", chunk);`}
+  vue={`<script setup lang="ts">
+import { ToolCall, useToolCall } from "@a3s-lab/ui/vue";
+
+const control = useToolCall({
+  events: {
+    "a3s:tool-before-action": event => authorizeToolAction(event.detail),
+    "a3s:tool-state-change": event => recordToolState(event.detail),
+  },
+});
+
+function append(chunk: string) {
+  control.call("setState", "running", { label: "运行中" });
+  control.call("appendOutput", chunk);
+}
+</script>
+
+<template>
+  <ToolCall :ref="control.componentRef" data-state="preparing">
+    <summary><span data-tool-identity><strong>读取仓库状态</strong><small>shell · git status --short</small></span><span data-tool-status>准备中</span></summary>
+    <section data-tool-content><pre data-tool-output /></section>
+  </ToolCall>
+</template>`}
+/>
+
+## 控制器
+
+| 方法 | 结果 |
+| --- | --- |
+| `setState(state, options)` | 同步状态、状态文案、耗时与错误，并发送状态事件 |
+| `setProgress(value)` | 设置 `0–100` 的确定进度；非数字恢复为不确定进度 |
+| `appendOutput(chunk)` | 追加流式输出并发送 `a3s:tool-output-change` |
+| `setOutput(output)` | 原子替换输出，适合非流式结果 |
+| `openCall()` / `close()` / `toggle(force)` | 控制原生 `<details>` |
+| `runAction(action)` | 经过可取消的授权事件后发送宿主动作 |
+| `getState()` | 返回只读状态、进度、耗时、输出和展开快照 |
+
+状态优先使用 `preparing`、`awaiting`、`running`、`succeeded`、`failed`、`denied`、`timed-out` 与 `interrupted`。旧的 `queued`、`waiting`、`success`、`cancelled` 和 `error` 仍为兼容状态。
+
+## 无障碍与安全
+
+摘要中的动作名称和状态不能只靠颜色或图标表达。运行时使用 `aria-busy`，等待授权时把焦点送到真实按钮，完成后用一条礼貌型状态播报结果。渲染前必须移除令牌、Cookie、密钥和用户隐私；复制动作只复制已经脱敏的可见输出。

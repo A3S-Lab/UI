@@ -1,0 +1,40 @@
+# Accessibility
+
+A3S UI starts from semantic HTML and adds ARIA only when native elements cannot express a composite interaction. Styling selectors never require a fake role.
+
+<Preview>
+<form class="grid w-full max-w-md gap-4" onsubmit="event.preventDefault()">
+  <div class="field">
+    <label for="accessibility-name">Gateway name <span aria-hidden="true">*</span></label>
+    <input id="accessibility-name" class="input" required aria-describedby="accessibility-name-help" value="production-gateway" />
+    <small id="accessibility-name-help">Shown in topology and trace views.</small>
+  </div>
+  <div class="flex items-center gap-2">
+    <button type="submit" class="btn">Save configuration</button>
+    <span class="text-sm text-muted-foreground" role="status" aria-live="polite">No unsaved changes</span>
+  </div>
+</form>
+</Preview>
+
+## Requirements
+
+- Use `<button>` for actions and `<a>` for navigation.
+- Associate every form control with a visible `<label>` or an accessible name.
+- Use `disabled`, `required`, `checked`, and native validation before custom state.
+- Keep visible focus rings and logical keyboard order.
+- Use `<fieldset>` and `<legend>` for grouped choices and Ribbon command groups.
+- Announce asynchronous results with a bounded `status` or `alert` region.
+- Preserve text and structure at 200% zoom and at a 320px viewport.
+
+## Composite widgets
+
+| Component | Keyboard contract |
+| --- | --- |
+| Tabs / Ribbon | Arrow keys move between enabled tabs; Home and End jump |
+| Menu / Select / Combobox | Arrow keys navigate, Enter selects, Escape closes |
+| Dialog / Drawer | Focus stays inside; Escape closes when allowed |
+| Split Pane | Arrow keys resize; Home and End use bounds; double click resets |
+
+## Parameters
+
+Direction is inherited from `dir="rtl"`. Components use logical properties; only directional icons should be flipped. Motion follows the user's reduced-motion preference. Dark mode must preserve text, boundary, focus, and status contrast.

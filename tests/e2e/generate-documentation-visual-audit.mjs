@@ -13,7 +13,7 @@ const outputRoot = resolve(
   ".a3s-test/generated/documentation-visual-audit",
 );
 const baseUrl = "http://127.0.0.1:4178/UI/";
-const versions = ["next", "v0.3.0", "v0.2.0", "v0.1.0"];
+const versions = ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"];
 const locales = ["zh", "en"];
 const ignoredBuiltRoutes = new Set(["device-preview.html"]);
 const viewportDefinitions = {

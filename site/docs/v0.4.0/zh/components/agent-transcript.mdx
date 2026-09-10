@@ -1,0 +1,225 @@
+# Agent 对话记录
+
+Agent 对话记录按时间顺序呈现用户、Agent 和系统 Turn。它可接收流式内容，但不负责传输、Markdown 渲染、历史保留或虚拟化。
+
+<Preview class="w-full max-w-3xl">
+  <section class="agent-transcript" aria-label="对话">
+    <header>
+      <strong>取消测试</strong>
+      <span>本地环境</span>
+    </header>
+    <ol data-transcript-viewport>
+      <li data-role="user">
+        <article>
+          <header>
+            <strong>你</strong>
+            <time dateTime="2026-08-13T08:40:00Z">08:40</time>
+          </header>
+          <div data-message-content>
+            <p>为流式执行路径补充取消测试。</p>
+          </div>
+        </article>
+      </li>
+      <li data-role="agent">
+        <article>
+          <header>
+            <strong>A3S Code</strong>
+            <span class="status-badge" data-state="active" data-indicator>
+              运行中
+            </span>
+          </header>
+          <div data-message-content>
+            <p>
+              我在 <code>src/runtime.ts</code>{" "}
+              找到了流生命周期。修改前会先检查现有测试。
+            </p>
+          </div>
+          <details class="execution-item" data-state="success">
+            <summary>
+              <span data-execution-icon aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m4 17 6-5-6-5" />
+                  <path d="M12 19h8" />
+                </svg>
+              </span>
+              <span data-execution-identity>
+                <strong>搜索测试</strong>
+                <small>rg "cancel|abort" tests src</small>
+              </span>
+              <span
+                class="status-badge"
+                data-state="success"
+                data-execution-status
+              >
+                已完成
+              </span>
+              <span data-execution-disclosure aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </span>
+            </summary>
+            <section>
+              <pre>tests/runtime.spec.ts:118: aborts an idle request</pre>
+            </section>
+          </details>
+        </article>
+      </li>
+      <li data-role="system">
+        <article>
+          <div data-message-content>
+            <p>正在等待批准，以便在当前项目之外运行命令。</p>
+          </div>
+        </article>
+      </li>
+    </ol>
+    <footer>
+      <span data-transcript-status aria-live="polite">
+        Agent 正在处理
+      </span>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost">
+        跳到最新
+      </button>
+    </footer>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section class="agent-transcript" aria-label="对话">
+  <ol data-transcript-viewport>
+    <li data-role="user"><article>...</article></li>
+    <li data-role="agent"><article>...</article></li>
+    <li data-role="system"><article>...</article></li>
+  </ol>
+</section>
+```
+
+### HTML 结构
+
+| API                                         | 取值                      | 用途                             |
+| ------------------------------------------- | ------------------------- | -------------------------------- |
+| `class="agent-transcript"`                  | 必须                      | 具有名称的对话区域               |
+| 直接子 `<ol>` 或 `data-transcript-viewport` | 推荐                      | 有序且有边界的 Turn 视口         |
+| 子项 `data-role`                            | `user`、`agent`、`system` | 与提供方名称无关的稳定展示角色   |
+| 子项 `<article>`                            | 推荐                      | 单条消息或 Turn 表面             |
+| `data-message-content`                      | 推荐                      | 富文本、代码、执行项、审批和证据 |
+| `data-transcript-status`                    | 可选                      | 粗粒度异步状态                   |
+| `--agent-transcript-content-width`          | CSS 长度，默认 `47.5rem`  | 阅读列最大宽度                   |
+| `--agent-transcript-gap`                    | CSS 长度，默认 `1rem`     | Turn 间距                        |
+| `--agent-message-max-width`                 | CSS 长度，默认 `48rem`    | 可读消息宽度                     |
+
+## 状态与变体
+
+助理输出作为画布上的开放文档内容；用户 Turn 使用克制的蓝色输入表面，系统消息使用有边界的通知。执行、审批、引用和产物块留在所属 Turn 内，但不要再给整个助理回复增加边框。加载中、空、已中断和失败历史应通过明确内容呈现，并在适用时组合 Empty 或 Alert。流式执行期间，追加或更新当前 Agent Turn，不要重建之前的 Turn。长历史由宿主应用窗口化；已知总量时，通过 `aria-posinset` 和 `aria-setsize` 保留有序列表位置。
+
+## React
+
+```tsx
+import { AgentTranscript } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <AgentTranscript aria-label="取消测试对话">
+      <header>
+        <strong>取消测试</strong>
+        <span>本地环境</span>
+      </header>
+      <ol data-transcript-viewport>
+        <li data-role="user">
+          <article>
+            <header>
+              <strong>你</strong>
+              <time dateTime="2026-08-13T08:40:00Z">08:40</time>
+            </header>
+            <div data-message-content>
+              <p>为流式执行路径补充取消测试。</p>
+            </div>
+          </article>
+        </li>
+        <li data-role="agent">
+          <article>
+            <header>
+              <strong>A3S Code</strong>
+              <span>运行中</span>
+            </header>
+            <div data-message-content>
+              <p>我会先检查现有测试，再修改流生命周期。</p>
+            </div>
+          </article>
+        </li>
+      </ol>
+      <footer>
+        <span data-transcript-status aria-live="polite">
+          正在处理
+        </span>
+      </footer>
+    </AgentTranscript>
+  );
+}
+```
+
+`AgentTranscript` 只映射具名的 `<section>` 根节点。消息数据、Markdown 安全渲染、历史窗口化与滚动策略由宿主管理，因此静态适配器不提供伪造的 hook。
+
+## Vue
+
+```vue
+<script setup>
+import { AgentTranscript } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <AgentTranscript aria-label="取消测试对话">
+    <header><strong>取消测试</strong><span>本地环境</span></header>
+    <ol data-transcript-viewport>
+      <li data-role="user">
+        <article>
+          <header>
+            <strong>你</strong
+            ><time datetime="2026-08-13T08:40:00Z">08:40</time>
+          </header>
+          <div data-message-content><p>为流式执行路径补充取消测试。</p></div>
+        </article>
+      </li>
+      <li data-role="agent">
+        <article>
+          <header><strong>A3S Code</strong><span>运行中</span></header>
+          <div data-message-content>
+            <p>我会先检查现有测试，再修改流生命周期。</p>
+          </div>
+        </article>
+      </li>
+    </ol>
+    <footer>
+      <span data-transcript-status aria-live="polite">正在处理</span>
+    </footer>
+  </AgentTranscript>
+</template>
+```
+
+Vue 版本保留完全相同的列表、文章与状态区域，不接管消息存储或传输。
+
+## 可访问性
+
+为对话区域提供可访问名称，并用有序列表保持真实时间顺序。只有设置了明确高度且实际可能溢出的视口才加入 `tabindex="0"`；普通文档流不能制造多余焦点停靠点。实时区域只播报“需要审批”“执行完成”等粗粒度变化，不能包含整个对话或 Token 流。读者离开最新 Turn 后，新内容不得抢焦点或强制滚动；宿主应显示未读提示并提供“跳到最新”操作。历史窗口化由宿主负责，已知总量时用 `aria-posinset` 与 `aria-setsize` 保留列表位置。

@@ -33,7 +33,7 @@ export function HelpSettings({ locale }: { locale: ProductPlaygroundLocale }) {
 
   const copyDiagnostics = () => {
     const diagnosticSummary = [
-      "A3S UI 0.3.0",
+      "A3S UI 0.4.0",
       `Locale: ${locale}`,
       `Theme: ${document.documentElement.classList.contains("dark") ? "dark" : "light"}`,
       "Storage: available",
@@ -59,7 +59,7 @@ export function HelpSettings({ locale }: { locale: ProductPlaygroundLocale }) {
         <img alt="" height="56" src={withBase("/logo.png")} width="56" />
         <span>
           <strong>A3S UI</strong>
-          <small>v0.3.0 · {zh ? "本地工作区" : "Local workspace"}</small>
+          <small>v0.4.0 · {zh ? "本地工作区" : "Local workspace"}</small>
         </span>
       </section>
       <section className="product-settings__rows">

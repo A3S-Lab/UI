@@ -1,0 +1,68 @@
+# File Type Icon
+
+Provides a stable, restrained type cue in file lists and attachments while the actual filename remains the primary identifier.
+
+<Preview class="w-full">
+<span class="file-type-icon" role="img" aria-label="TypeScript file" style="--file-color:#249bf6"><span data-file-extension>TS</span></span>
+</Preview>
+
+## Usage
+
+```html
+<span class="file-type-icon" role="img" aria-label="TypeScript file" style="--file-color:#249bf6">
+  <span data-file-extension>TS</span>
+</span>
+```
+
+## React
+
+```tsx
+import { FileTypeIcon } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <FileTypeIcon role="img" aria-label="TypeScript file" style={{ "--file-color": "#249bf6" }}>
+      <span data-file-extension>TS</span>
+    </FileTypeIcon>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { FileTypeIcon } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <FileTypeIcon role="img" aria-label="TypeScript file" style="--file-color:#249bf6">
+    <span data-file-extension>TS</span>
+  </FileTypeIcon>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.file-type-icon` |
+| Native root | `<span>` |
+| States | `ready`, `generic`, `known`, `host-provided` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+The icon does not decide file safety, executability, or MIME truth. Brand and provider graphics remain host-owned assets supplied through the generic icon slot.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Decorative instances use aria-hidden. Icon-only instances need a file-type name, and extension text remains readable without color recognition.

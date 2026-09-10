@@ -1,0 +1,92 @@
+# 设置布局
+
+Settings Layout 提供可导航的配置分区与真实表单控件，适用于运维配置、偏好、策略、Provider、路由与其他结构化设置。
+
+<Preview>
+<div class="settings-layout w-full" style="--settings-navigation-size:11rem">
+  <aside><nav aria-label="Settings sections"><ul><li><a href="#settings-general" aria-current="page">General</a></li><li><a href="#settings-providers">Providers</a></li><li><a href="#settings-routing">Routing</a></li><li><a href="#settings-security">Security</a></li></ul></nav></aside>
+  <main>
+<section id="settings-general"><header><h2>常规</h2><p>该网关的身份与网络默认值。</p></header><div class="grid gap-4 sm:grid-cols-2"><div class="field"><label for="settings-name">网关名称</label><input id="settings-name" class="input" value="production-east" /></div><div class="field"><label for="settings-port">端口</label><input id="settings-port" class="input" type="number" value="8080" /></div></div><label class="field" data-orientation="horizontal"><input class="input" type="checkbox" role="switch" defaultChecked /><section><span class="font-medium">可观测性</span><p>采集调用链、日志与性能指标。</p></section></label><footer class="flex justify-end"><button type="button" class="btn">保存更改</button></footer></section>
+  </main>
+</div>
+</Preview>
+
+## 用法
+
+```html
+<div class="settings-layout">
+  <aside><nav aria-label="Settings sections">...</nav></aside>
+  <main><section id="general">...</section></main>
+</div>
+```
+
+### 参数
+
+| 参数 | 默认 | 目的 |
+| --- | --- | --- |
+| `--settings-navigation-size` | `14rem` | 导航栏宽度 |
+| `--settings-layout-height` | `auto` | 可选有界高度，导航与内容独立滚动 |
+| `--settings-section-gap` | `1.5rem` | 配置部分之间的间隙 |
+| `aria-current="page"` | — | 标记活动设置目标 |
+
+## 变体和状态
+
+布局使用固定的二级导航边界和独立滚动内容区。低于 768px 时，导航变成有边界的横向分区列表。表单状态属于子组件：`required`、`disabled`、`aria-invalid`、验证消息、脏状态和保存反馈。需要稳定的“名称—控件”网格时，组合[设置行](/components/setting-row)。
+
+## 可访问性
+
+使用真实表单控件与字段标签，不要用未结构化的源码编辑器代替配置界面。原始配置源码可作为高级入口保留。每个分区都需要唯一标题与 ID，供导航直接定位。
+
+## React
+
+```tsx
+import { SettingsLayout } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <SettingsLayout>
+      <aside>
+        <nav aria-label="Settings sections">
+          <a href="#general" aria-current="page">
+            常规
+          </a>
+        </nav>
+      </aside>
+      <main>
+        <section id="general">
+          <h2>常规</h2>
+          <p>配置工作区默认值。</p>
+        </section>
+      </main>
+    </SettingsLayout>
+  );
+}
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { SettingsLayout } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <SettingsLayout>
+    <aside>
+      <nav aria-label="Settings sections">
+        <a href="#general" aria-current="page">常规</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="general">
+        <h2>常规</h2>
+        <p>配置工作区默认值。</p>
+      </section>
+    </main>
+  </SettingsLayout>
+</template>
+```
+
+适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。

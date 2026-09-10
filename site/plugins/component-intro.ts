@@ -413,7 +413,7 @@ export function componentPreviewIntegrationPlugin() {
                 start: authoredTabs.index,
               }
             : authoredTabs.range,
-        ]
+        ].filter((range): range is NodeRange => range !== undefined)
       : [reactRange, vueRange].filter(
           (range): range is NodeRange => range !== undefined,
         );

@@ -1,0 +1,365 @@
+# 折叠面板
+
+折叠面板把相关但不需要同时阅读的内容收纳在一组标题下，适合减少页面长度，同时保留清晰的信息层级。
+
+<Preview class="w-full max-w-sm">
+<section class="accordion">
+  <details open>
+    <summary>
+      支持哪些部署方式？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>可以部署到静态托管、边缘网络或自有服务器，构建产物和运行要求保持一致。</section>
+  </details>
+  <details>
+    <summary>
+      如何更新现有项目？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>先升级依赖并查看变更记录，再运行类型检查、交互测试和视觉回归测试。</section>
+  </details>
+  <details>
+    <summary>
+      遇到问题时需要提供什么？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>请提供最小复现、浏览器版本、控制台错误以及问题页面的截图。</section>
+  </details>
+</section>
+</Preview>
+
+## 用法
+
+<Steps>
+  <Step title="引入 CSS">
+
+导入 Tailwind 和一个完整的 A3S UI 样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+或者仅导入基础 CSS、折叠面板组件 CSS 和一个样式包。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/accordion.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+使用 CDN 或包管理器集成时，请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="引入 JavaScript">
+
+复制或提供完整的 A3S UI JavaScript 包。
+
+```html
+<script src="/assets/js/all.min.js" defer></script>
+```
+
+或者仅加载 A3S UI 运行时和折叠面板脚本。
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/accordion.min.js" defer></script>
+```
+
+使用 CDN 或包管理器集成时，请参见[安装页](/installation)。
+
+  </Step>
+  <Step title="添加折叠面板 HTML">
+
+```html
+<section class="accordion">
+  <details open>
+    <summary>
+      是否支持键盘操作？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>支持。组件保留原生详情元素的展开状态、焦点顺序与键盘行为。</section>
+  </details>
+</section>
+```
+
+  </Step>
+</Steps>
+
+A3S UI 保留原生 `<details>` 与 `<summary>` 的披露语义。脚本默认只允许打开一个项目，并阻止不可用项目切换；需要同时展开多个项目时，在根元素上添加 `data-multiple`。
+
+### HTML 结构
+
+<dl>
+  <dt><code>&lt;section class="accordion"&gt;</code></dt>
+  <dd>
+    折叠面板根容器。添加 <code>data-multiple</code> 后可同时展开多个项目。
+    <dl>
+      <dt><code>&lt;details open&gt;</code></dt>
+      <dd>
+        单个折叠项目。用原生 <code>open</code> 设置初始展开项；项目不可切换时添加 <code>aria-disabled="true"</code>。
+        <dl>
+          <dt><code>&lt;summary&gt;</code></dt>
+          <dd>折叠触发器。始终保留可见标题；尾部图标只辅助表达方向。</dd>
+          <dt><code>&lt;section&gt;</code></dt>
+          <dd>展开内容。根据内容选择合适的语义元素，不需要额外角色。</dd>
+        </dl>
+      </dd>
+    </dl>
+  </dd>
+</dl>
+
+### JavaScript API
+
+折叠面板不公开自定义方法或事件。需要编程控制时，直接读写原生 `details.open` 布尔值。
+
+```js
+document.querySelector("#deployment-details").open = true;
+```
+
+## 状态与变体
+
+### 基本
+
+一次显示一个项目的基本折叠面板。第一项默认打开。
+
+<Preview class="w-full max-w-sm">
+<section class="accordion">
+  <details open>
+    <summary>
+      如何撤销一次发布？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>在发布记录中选择目标版本并发起回滚。系统会先展示受影响的实例和配置差异。</section>
+  </details>
+  <details>
+    <summary>
+      如何轮换访问密钥？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>先创建新密钥并更新调用方，确认流量稳定后再撤销旧密钥。</section>
+  </details>
+  <details>
+    <summary>
+      审计记录保留多久？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>默认保留 90 天；更长周期由工作区的数据保留策略决定。</section>
+  </details>
+</section>
+</Preview>
+
+### 多个
+
+使用 `data-multiple` 允许用户同时比较多个相关项目。
+
+<Preview class="w-full max-w-md">
+<section class="accordion" data-multiple>
+  <details open>
+    <summary>
+      通知渠道
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>分别配置发布失败、审批等待和安全事件的通知接收人。</section>
+  </details>
+  <details>
+    <summary>
+      会话与安全
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>查看活跃会话、设置登录策略，并撤销不再可信的设备。</section>
+  </details>
+  <details>
+    <summary>
+      数据保留
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>为日志、产物和审计记录设置独立的保留周期。</section>
+  </details>
+</section>
+</Preview>
+
+### 已禁用
+
+在某个项目上使用 `aria-disabled="true"` 将其禁用。
+
+<Preview class="w-full max-w-md">
+<section class="accordion">
+  <details open>
+    <summary>
+      可以查看近期操作记录吗？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>可以。活动页面会按时间展示当前工作区内可见的操作。</section>
+  </details>
+  <details aria-disabled="true">
+    <summary>
+      跨组织审计记录
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>当前角色没有查看跨组织审计记录的权限。</section>
+  </details>
+  <details>
+    <summary>
+      如何修改通知邮箱？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>在个人设置中提交新地址，并通过新邮箱中的确认链接完成变更。</section>
+  </details>
+</section>
+</Preview>
+
+### 边框
+
+使用带边框的根时，向行添加水平填充。
+
+<Preview class="w-full max-w-md">
+<section class="accordion rounded-md border [&>details>summary]:px-4 [&>details>:not(summary)]:px-4">
+  <details id="billing" open>
+    <summary>
+      发布何时开始计时？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>从第一台实例接收变更开始计时；等待审批和主动暂停会单独记录，不计入执行耗时。</section>
+  </details>
+  <details>
+    <summary>
+      传输内容是否加密？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>传输链路与持久化数据都需要加密，密钥管理由宿主环境负责。</section>
+  </details>
+  <details>
+    <summary>
+      可以接入哪些事件源？
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>组件不绑定服务商；宿主可把仓库、流水线和告警系统的事件映射到同一契约。</section>
+  </details>
+</section>
+</Preview>
+
+### 卡
+
+当一组问题需要独立标题和背景说明时，可在单个卡片内组合折叠面板。
+
+<Preview class="w-full max-w-md">
+<div class="card">
+  <header>
+    <h2>发布与回滚</h2>
+    <p>确认发布范围、失败处理和回滚窗口。</p>
+  </header>
+  <section>
+    <section class="accordion">
+      <details open>
+        <summary>
+          发布前会检查什么？
+          <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <section>系统会校验配置、依赖版本、目标实例和必要审批，并明确列出阻塞项。</section>
+      </details>
+      <details>
+        <summary>
+          部分实例失败怎么办？
+          <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <section>先停止继续扩散，再根据健康实例比例选择重试、回滚或人工接管。</section>
+      </details>
+      <details>
+        <summary>
+          回滚窗口有多长？
+          <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <section>窗口由发布策略定义；超过窗口后仍可发起新的回滚任务，但需要重新评估数据兼容性。</section>
+      </details>
+    </section>
+  </section>
+</div>
+</Preview>
+
+### RTL
+
+折叠面板间距使用逻辑属性。在折叠面板或父元素上设置 `dir="rtl"`。
+
+<Preview class="w-full max-w-md">
+<section class="accordion" dir="rtl">
+  <details open>
+    <summary>
+      كيف يمكنني إعادة تعيين كلمة المرور؟
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>انقر على 'نسيت كلمة المرور' في صفحة تسجيل الدخول، أدخل عنوان بريدك الإلكتروني، وسنرسل لك رابطا لإعادة تعيين كلمة المرور. سينتهي صلاحية الرابط خلال 24 ساعة.</section>
+  </details>
+  <details>
+    <summary>
+      هل يمكنني تغيير خطة الاشتراك الخاصة بي؟
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>نعم، يمكنك تغيير الخطة من إعدادات الفوترة.</section>
+  </details>
+  <details>
+    <summary>
+      ما هي طرق الدفع التي تقبلونها؟
+      <svg class="lucide lucide-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+    </summary>
+    <section>نقبل بطاقات الائتمان الرئيسية والتحويلات البنكية.</section>
+  </details>
+</section>
+</Preview>
+
+## React
+
+```tsx
+import { Accordion, useAccordion } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useAccordion();
+  return (
+    <Accordion ref={control.ref} aria-label="发布说明">
+      <details open>
+        <summary>
+          如何撤销发布？
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </summary>
+        <section>选择目标版本，确认受影响实例后发起回滚。</section>
+      </details>
+    </Accordion>
+  );
+}
+```
+
+`useAccordion` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## Vue
+
+```vue
+<script setup>
+import { Accordion, useAccordion } from "@a3s-lab/ui/vue";
+
+const control = useAccordion();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Accordion ref="componentRef" aria-label="发布说明">
+    <details open>
+      <summary>
+        如何撤销发布？
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </summary>
+      <section>选择目标版本，确认受影响实例后发起回滚。</section>
+    </details>
+  </Accordion>
+</template>
+```
+
+`useAccordion` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。
+
+## 可访问性
+
+保留原生 `<details>` 与 `<summary>`，不要用普通容器模拟展开状态。标题必须可见且能独立说明内容；图标使用 `aria-hidden="true"`，不能替代标题。不可切换的项目同时设置 `aria-disabled="true"`，并由控制器阻止指针和键盘切换。展开状态由浏览器暴露，宿主只在状态变化需要跨区域反馈时增加简短播报。

@@ -1,0 +1,110 @@
+# 活动栏
+
+活动栏是 A3S 工作区使用的紧凑、持久的导航表面。它支持标签模式和仅图标模式，而无需更改语义导航。
+
+<Preview>
+<div class="h-[28rem] w-full max-w-64 overflow-hidden rounded-xl border border-border">
+  <aside class="activity-bar" aria-label="工作区导航">
+<header><A3SAssetImage className="size-7 rounded-lg" path="/logo.png" alt="" /><span data-navigation-label>A3S 控制台</span></header>
+    <nav aria-label="主要导航">
+      <ul>
+<li><a href="#activity-overview" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-navigation-label>概述</span></a></li>
+<li><a href="#activity-traces"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18V6m0 6h5l3-5 4 10 4-5"/></svg><span data-navigation-label>调用链</span></a></li>
+<li><a href="#activity-topology"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="m9 11 6-4m-6 6 6 4"/></svg><span data-navigation-label>拓扑</span></a></li>
+<li><a href="#activity-settings"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg><span data-navigation-label>设置</span></a></li>
+      </ul>
+    </nav>
+<footer><span class="size-2 rounded-full bg-[var(--a3s-green)]" aria-hidden="true"></span><span data-navigation-label>网关健康</span></footer>
+  </aside>
+</div>
+</Preview>
+
+## 用法
+
+```html
+<aside class="activity-bar" aria-label="工作区导航">
+  <header>
+    <img src="/logo.png" alt="" width="28" height="28" />
+    <span data-navigation-label>A3S 控制台</span>
+  </header>
+  <nav aria-label="主要导航">
+    <ul>
+      <li><a href="/overview" aria-current="page">…</a></li>
+    </ul>
+  </nav>
+  <footer>…</footer>
+</aside>
+```
+
+### HTML 结构
+
+| 元素或参数 | 必填 | 目的 |
+| --- | --- | --- |
+| `<aside class="activity-bar">` | 是 | 组件根节点 |
+| `<nav aria-label="…">` | 是 | 具名导航地标 |
+| `<ul>` 和 `<li>` | 是 | 导航集合 |
+| `aria-current="page"` | 当前项 | 表示当前目标并应用对应样式 |
+| `data-navigation-label` | 可选 | 紧凑模式下隐藏标签 |
+| `data-labels="hidden"` | 可选 | 在根节点上切换为仅图标布局 |
+
+## 状态与变体
+
+独立使用时，在根节点添加 `data-labels="hidden"` 进入仅图标模式；放在 [App Shell](/components/app-shell) 中时，由外壳的 `data-navigation="collapsed"` 统一控制。折叠只改变标签的视觉呈现，不改变链接数量、顺序或名称。页面目标使用链接，切换当前视图内部模式才使用按钮和 `aria-pressed`，两者不能混用。
+
+## React
+
+```tsx
+import { ActivityBar } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ActivityBar aria-label="工作区导航">
+      <header>
+        <img src="/logo.png" alt="" width={28} height={28} />
+        <span data-navigation-label>A3S 控制台</span>
+      </header>
+      <nav aria-label="主要导航">
+        <ul>
+          <li><a href="/overview" aria-current="page"><span data-navigation-label>概述</span></a></li>
+          <li><a href="/traces"><span data-navigation-label>调用链</span></a></li>
+          <li><a href="/topology"><span data-navigation-label>拓扑</span></a></li>
+        </ul>
+      </nav>
+      <footer><span data-navigation-label>网关健康</span></footer>
+    </ActivityBar>
+  );
+}
+```
+
+`ActivityBar` 渲染同一个 `<aside>` 根节点，路由与当前项仍由应用负责。活动栏没有独立控制器，因此不提供伪造的 hook。
+
+## Vue
+
+```vue
+<script setup>
+import { ActivityBar } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <ActivityBar aria-label="工作区导航">
+    <header>
+      <img src="/logo.png" alt="" width="28" height="28" />
+      <span data-navigation-label>A3S 控制台</span>
+    </header>
+    <nav aria-label="主要导航">
+      <ul>
+        <li><a href="/overview" aria-current="page"><span data-navigation-label>概述</span></a></li>
+        <li><a href="/traces"><span data-navigation-label>调用链</span></a></li>
+        <li><a href="/topology"><span data-navigation-label>拓扑</span></a></li>
+      </ul>
+    </nav>
+    <footer><span data-navigation-label>网关健康</span></footer>
+  </ActivityBar>
+</template>
+```
+
+Vue 适配器同样只映射语义根元素，不接管 Vue Router 或选中状态。
+
+## 可访问性
+
+每个导航地标都必须有能区分用途的名称；当前页面使用 `aria-current="page"`，不能只靠蓝色背景表示。仅图标模式仍把可读标签保留在 DOM 中，图标本身设置 `aria-hidden="true"`。折叠后保持链接顺序与键盘顺序不变，并为粗指针提供至少 44px 的命中区域。宿主负责路由、权限与当前项；活动栏只呈现导航结构，不应自行隐藏用户仍可访问的目标。

@@ -1629,12 +1629,11 @@ for (const mdxFile of mdxFiles) {
   const builtFile = builtPathForMdx(mdxFile);
   const sourceParts = path.relative(docsRoot, mdxFile).split(path.sep);
   const isStructuredFormGuide =
-    sourceParts[0] === "next" &&
     ["en", "zh"].includes(sourceParts[1]) &&
     sourceParts[2] === "components" &&
     sourceParts[3] === "form-system";
   const isVersionedComponentGuide =
-    ["next", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
+    ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
     ["en", "zh"].includes(sourceParts[1]) &&
     sourceParts[2] === "components" &&
     sourceParts[3] !== "index.mdx" &&

@@ -14,7 +14,7 @@ describe('A3S UI style integration', () => {
       'utf8',
     );
 
-    expect(uiPackage.version).toBe('0.3.0');
+    expect(uiPackage.version).toBe('0.4.0');
     expect(integratedStyles.startsWith('@import "@a3s-lab/ui/cdn.css";')).toBe(true);
     expect(bundledCss).toContain('--a3s-control-height: 2.25rem');
     expect(bundledCss).toContain('.app-shell');

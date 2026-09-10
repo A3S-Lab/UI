@@ -1,0 +1,184 @@
+# 审批请求
+
+审批请求说明 Agent 为什么需要额外权限，并收集一次有边界的权限决定。策略评估、过期、持久化和批准后的执行由宿主应用负责。
+
+<Preview class="w-full max-w-2xl">
+  <section
+    class="approval-request"
+    data-state="pending"
+    aria-labelledby="approval-demo-title"
+  >
+    <header>
+      <div>
+        <h2 id="approval-demo-title">允许更新生产集群吗？</h2>
+        <p>该命令会把当前发布清单应用到 production 集群，并可能重启 6 个实例。</p>
+      </div>
+      <span class="status-badge" data-state="warning" data-indicator>需要审批</span>
+    </header>
+    <section>
+      <dl
+        class="property-list"
+        data-size="sm"
+        data-variant="plain"
+        data-layout="rows"
+      >
+        <div>
+          <dt>命令</dt>
+          <dd><code>kubectl apply -f deploy/production.yaml</code></dd>
+        </div>
+        <div>
+          <dt>目标</dt>
+          <dd><code>production / asia-east-1</code></dd>
+        </div>
+      </dl>
+    </section>
+    <form>
+      <fieldset>
+        <legend>权限范围</legend>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="once" checked />
+          <strong>仅允许一次</strong>
+          <small>只允许当前任务中的这一条完整命令。</small>
+        </label>
+        <label>
+          <input type="radio" name="approval-scope-demo" value="session" />
+          <strong>本任务内允许相同目标</strong>
+          <small>仅允许相同清单与集群，直到当前任务结束。</small>
+        </label>
+      </fieldset>
+      <footer>
+        <button type="button" class="btn" data-size="sm" data-variant="outline" data-approval="deny">拒绝</button>
+        <button type="submit" class="btn" data-size="sm">允许命令</button>
+      </footer>
+    </form>
+  </section>
+</Preview>
+
+## 用法
+
+```html
+<section
+  class="approval-request"
+  data-state="pending"
+  aria-labelledby="approval-title"
+>
+  <header>
+    <div>
+      <h2 id="approval-title">允许此命令吗？</h2>
+      <p>原因与影响。</p>
+    </div>
+  </header>
+  <section>具体资源、命令、站点或 Capability。</section>
+  <form>
+    <fieldset>
+      <legend>权限范围</legend>
+      ...
+    </fieldset>
+    <footer>...</footer>
+  </form>
+</section>
+```
+
+### HTML 结构
+
+| API                        | 取值                                       | 用途                                    |
+| -------------------------- | ------------------------------------------ | --------------------------------------- |
+| `class="approval-request"` | 必须                                       | 具有名称的决策表面                      |
+| `data-state`               | `pending`、`approved`、`denied`、`expired`、`error` | 审批生命周期展示                 |
+| 直接子 `<header>`          | 必须                                       | 决策标题、原因和状态                    |
+| 直接子 `<section>`         | 推荐                                       | 具体命令、路径、站点、Capability 和影响 |
+| 直接子 `<form>`            | Pending 状态                               | 原生范围选择和决策提交                  |
+| `<fieldset>` 与 `<legend>` | 存在多个范围时必须                         | 命名互斥选项组                          |
+
+## 状态与变体
+
+只渲染策略实际允许的范围。结束状态应把决策控件替换为不可变的结果文本、操作人和时间。如果审批在控件聚焦期间过期，保留说明，禁用失效控件，并播报需要重新请求。
+
+组件不发送策略事件。所选范围使用原生 `submit`，拒绝或取消使用普通按钮事件。应用可以取消 Submit 以执行异步决策。
+
+## React
+
+```tsx
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/react";
+
+type Props = {
+  onApprove(scope: string): void;
+  onDeny(): void;
+};
+
+export function Example({ onApprove, onDeny }: Props) {
+  const control = useApprovalRequest({
+    events: {
+      submit(event) {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        onApprove(new FormData(form).get("scope")?.toString() ?? "once");
+      },
+    },
+  });
+
+  return (
+    <ApprovalRequest ref={control.ref} data-state="pending" aria-labelledby="approval-title">
+      <header><div><h2 id="approval-title">允许更新生产集群吗？</h2><p>可能重启 6 个实例。</p></div></header>
+      <section><code>kubectl apply -f deploy/production.yaml</code></section>
+      <form>
+        <fieldset>
+          <legend>权限范围</legend>
+          <label><input type="radio" name="scope" value="once" defaultChecked />仅允许一次</label>
+          <label><input type="radio" name="scope" value="task" />本任务内允许相同目标</label>
+        </fieldset>
+        <footer>
+          <button type="button" data-approval="deny" onClick={onDeny}>拒绝</button>
+          <button type="submit" data-approval="approve">允许命令</button>
+        </footer>
+      </form>
+    </ApprovalRequest>
+  );
+}
+```
+
+`useApprovalRequest` 监听冒泡到根节点的原生 `submit`。批准范围由表单提交，拒绝使用普通按钮处理；策略与执行仍由宿主完成。
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { ApprovalRequest, useApprovalRequest } from "@a3s-lab/ui/vue";
+
+const props = defineProps<{ onApprove(scope: string): void; onDeny(): void }>();
+const control = useApprovalRequest({
+  events: {
+    submit(event) {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      props.onApprove(new FormData(form).get("scope")?.toString() ?? "once");
+    },
+  },
+});
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <ApprovalRequest ref="componentRef" data-state="pending" aria-labelledby="approval-title">
+    <header><div><h2 id="approval-title">允许更新生产集群吗？</h2><p>可能重启 6 个实例。</p></div></header>
+    <section><code>kubectl apply -f deploy/production.yaml</code></section>
+    <form>
+      <fieldset>
+        <legend>权限范围</legend>
+        <label><input type="radio" name="scope" value="once" checked />仅允许一次</label>
+        <label><input type="radio" name="scope" value="task" />本任务内允许相同目标</label>
+      </fieldset>
+      <footer>
+        <button type="button" data-approval="deny" @click="props.onDeny()">拒绝</button>
+        <button type="submit" data-approval="approve">允许命令</button>
+      </footer>
+    </form>
+  </ApprovalRequest>
+</template>
+```
+
+Vue composable 使用相同的原生表单事件与根元素引用，不复制审批状态。
+
+## 可访问性
+
+用可见标题命名请求，并通过 `aria-labelledby` 与根节点关联。在任何选项之前明确说明资源、目标环境、实际影响和可恢复性；范围使用带 `legend` 的原生单选组。安全默认值应是最窄的一次性范围，不能预选永久授权。只有请求确实阻塞当前任务时才把焦点移到标题；非阻塞请求只播报到达，不抢夺焦点。审批过期或失败时保留上下文、禁用旧控件并提供重新请求路径。宿主负责策略评估、授权持久化、审计和批准后的执行，组件不能把按钮点击等同于权限已经生效。

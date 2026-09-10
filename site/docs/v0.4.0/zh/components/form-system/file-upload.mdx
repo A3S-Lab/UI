@@ -1,0 +1,270 @@
+import { FileUploadDemo } from '../../../../../theme/mdx/form/FileUploadDemo';
+
+# 文件上传
+
+文件上传是需要宿主服务的官方字段扩展。Renderer 负责选择、拖放、前置校验、并发队列、进度、取消、失败重试、已上传列表和删除状态；宿主负责授权、网络传输、存储、扫描、下载和删除。
+
+受控值只保存闭合的 JSON 文件引用。浏览器 `File`、Blob、临时 URL、上传凭证、请求状态和进度不会进入 `FormDocument`、`FormPlan` 或表单值。
+
+<FileUploadDemo />
+
+示例使用本地模拟服务展示进度和删除延迟，不会发送或保存文件内容。可选择 PDF 或图片，上传结果会立即显示在受控值中。
+
+## 值结构
+
+每个文件使用四个稳定属性：
+
+```ts
+interface FormFileReference {
+  id: string;
+  name: string;
+  size: number;
+  mediaType: string;
+}
+```
+
+| 属性 | 类型 | 约束 | 用途 |
+| --- | --- | --- | --- |
+| `id` | `string` | 1–512 字符 | 宿主存储中的稳定文件标识 |
+| `name` | `string` | 1–1,024 字符 | 展示文件名 |
+| `size` | 非负安全整数 | 字节 | 大小展示与审计 |
+| `mediaType` | `string` | 1–255 字符 | MIME 类型 |
+
+引用对象不接受额外属性。下载地址、签名参数、访问令牌、存储桶名称和内部路径应由宿主根据 `id` 解析。
+
+```json
+{
+  "attachments": [
+    {
+      "id": "file_01JZ8K3Q2W",
+      "name": "release-notes.pdf",
+      "size": 184320,
+      "mediaType": "application/pdf"
+    }
+  ]
+}
+```
+
+## Schema
+
+`createFormFileUploadSchema` 生成闭合的对象数组 Schema，并限制最少和最多文件数。
+
+```ts
+import { createFormFileUploadSchema } from '@a3s-lab/ui/form/react';
+
+const schema = {
+  type: 'object',
+  properties: {
+    attachments: createFormFileUploadSchema({
+      minFiles: 1,
+      maxFiles: 5,
+    }),
+  },
+  required: ['attachments'],
+  additionalProperties: false,
+};
+```
+
+| 参数 | 类型 | 默认值 | 约束 |
+| --- | --- | --- | --- |
+| `minFiles` | `number` | `0` | 0 到 `maxFiles` 的安全整数 |
+| `maxFiles` | `number` | `5` | 0–100 的安全整数 |
+
+`required` 表示数组属性必须存在，`minFiles` 表示数组至少包含多少个文件。两项约束用途不同。
+
+## UI 节点属性
+
+```ts
+const node = {
+  id: 'attachments',
+  kind: 'field',
+  label: '附件',
+  description: '上传审批所需材料',
+  schemaPath: '/properties/attachments',
+  widget: 'a3s.file-upload',
+  customProps: {
+    accept: '.pdf,image/*',
+    maxFileSize: 10 * 1024 * 1024,
+    maxConcurrentUploads: 2,
+  },
+};
+```
+
+| 属性 | 类型 | 默认值 | 运行时行为 |
+| --- | --- | --- | --- |
+| `customProps.accept` | `string` | 空 | 逗号分隔的扩展名、完整 MIME 或 `image/*` 形式的 MIME 通配符 |
+| `customProps.maxFileSize` | `number` | `10 MiB` | 单个文件的字节上限，范围 1 B–5 GiB |
+| `customProps.maxConcurrentUploads` | `number` | `2` | 同一字段同时执行的上传数，范围 1–4 |
+| Schema `minItems` | `number` | `0` | 提交校验所需的最少文件数 |
+| Schema `maxItems` | `number` | `5` | 已上传文件和待重试任务的总容量 |
+
+Designer 的属性面板编辑文件类型、单文件上限和并发数；校验面板编辑最少与最多文件数。设计画布显示接受类型、大小和数量摘要，不执行真实上传。
+
+## 宿主文件服务
+
+`createFileUploadNodeRegistry` 接收一个带类型的宿主服务。Core 和 Renderer 不直接调用存储 SDK。
+
+```ts
+import {
+  createFileUploadNodeRegistry,
+  type FormFileService,
+} from '@a3s-lab/ui/form/react';
+
+const fileService: FormFileService = {
+  async upload(request) {
+    const stored = await storage.upload(request.file, {
+      signal: request.signal,
+      onProgress: request.onProgress,
+    });
+
+    return {
+      id: stored.id,
+      name: request.file.name,
+      size: request.file.size,
+      mediaType: request.file.type || 'application/octet-stream',
+    };
+  },
+
+  async remove(request) {
+    await storage.remove(request.file.id, { signal: request.signal });
+  },
+
+  async open(request) {
+    await storage.open(request.file.id, { signal: request.signal });
+  },
+};
+
+const nodeRegistry = createFileUploadNodeRegistry({ service: fileService });
+```
+
+三个请求都包含相同的字段上下文：
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `node` | `CompiledNode` | 当前文件字段及其配置 |
+| `plan` | `FormPlan` | 当前不可变编译结果 |
+| `valuePath` | `string \| undefined` | 当前具体值路径 |
+| `rowIndices` | `readonly number[]` | 嵌套重复组中的具体行索引 |
+| `signal` | `AbortSignal` | 取消、卸载和任务终止信号 |
+
+`upload` 额外接收浏览器 `file` 和 `onProgress({ loaded, total? })`。`remove` 与可选的 `open` 接收已经校验过的 `FormFileReference`。
+
+服务失败默认显示不含内部异常的通用提示。需要展示宿主错误码时，通过 `getErrorMessage` 映射为可公开文案：
+
+```ts
+const nodeRegistry = createFileUploadNodeRegistry({
+  service: fileService,
+  getErrorMessage(error, operation) {
+    if (isQuotaError(error)) return '存储空间不足，请清理后重试。';
+    if (operation === 'remove') return '文件暂时无法删除，请稍后重试。';
+    return undefined;
+  },
+});
+```
+
+映射结果最多显示 500 个字符。原始异常、响应体和凭证不应直接返回给界面。
+
+## React
+
+自定义组件能力必须同时进入编译器和 Renderer。Designer 会从 `nodeRegistry` 自动补齐组件能力；单独编译时应显式传入注册键。
+
+```tsx
+import { assertCompiled } from '@a3s-lab/ui/form/core';
+import {
+  createFileUploadNodeRegistry,
+  FormRenderer,
+} from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const nodeRegistry = createFileUploadNodeRegistry({ service: fileService });
+const plan = assertCompiled(document, {
+  capabilities: { widgets: Object.keys(nodeRegistry) },
+});
+
+<FormRenderer
+  plan={plan}
+  value={value}
+  onChange={setValue}
+  nodeRegistry={nodeRegistry}
+/>;
+```
+
+## Vue
+
+Vue 适配器透传相同的注册表和受控值，不需要第二套上传实现。
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { A3SFormRenderer } from '@a3s-lab/ui/form/vue';
+import { createFileUploadNodeRegistry } from '@a3s-lab/ui/form/react';
+import '@a3s-lab/ui/form/a3s-ui.css';
+
+const value = ref({ attachments: [] });
+const nodeRegistry = createFileUploadNodeRegistry({ service: fileService });
+</script>
+
+<template>
+  <A3SFormRenderer
+    :plan="plan"
+    v-model="value"
+    :node-registry="nodeRegistry"
+  />
+</template>
+```
+
+## Web Component
+
+注册表通过元素属性传入，值变更继续使用 `value-change` 事件。
+
+```ts
+import { defineA3SFormElements } from '@a3s-lab/ui/form/web-component';
+import { createFileUploadNodeRegistry } from '@a3s-lab/ui/form/react';
+
+defineA3SFormElements();
+
+const renderer = document.querySelector('a3s-form-renderer');
+renderer.plan = plan;
+renderer.value = { attachments: [] };
+renderer.nodeRegistry = createFileUploadNodeRegistry({ service: fileService });
+renderer.addEventListener('value-change', (event) => {
+  saveDraft(event.detail);
+});
+```
+
+## 交互状态
+
+| 状态 | 行为 |
+| --- | --- |
+| 空状态 | 显示拖放区、选择按钮和接受类型摘要 |
+| 队列 | 超过并发上限的文件等待空闲槽位 |
+| 上传中 | 显示文件名、大小、原生进度语义和取消操作 |
+| 上传失败 | 保留本地 `File` 供重试，可移除失败项 |
+| 已上传 | 显示稳定引用；可调用宿主打开和删除能力 |
+| 删除中 | 锁定当前文件操作，宿主成功后才更新受控值 |
+| 删除失败 | 文件引用保持不变，提供重试删除 |
+| 只读或禁用 | 禁止选择、拖放、取消和删除；宿主提供的打开操作保持可用 |
+
+文件类型、大小和容量在网络请求前检查。一次最多保留 120 个本地任务，防止异常选择产生无界运行时状态。组件卸载时会中止仍在执行的上传、删除和打开请求。
+
+## 键盘与辅助技术
+
+- 文件选择使用原生 `input[type="file"]`，可通过 Tab 聚焦并由浏览器打开系统文件面板；
+- 取消、重试、打开和删除均使用带完整文件名的按钮名称；
+- 上传进度使用原生 `progress` 语义；
+- 成功上传和删除通过 `aria-live="polite"` 宣告；
+- 错误使用 `role="alert"`，Schema 错误继续进入表单错误摘要；
+- 长文件名在视觉上截断，完整名称保留在标题和无障碍名称中；
+- 390px 窄容器中，选择按钮与文件操作会改为可触达的纵向布局；
+- `prefers-reduced-motion` 会关闭非必要过渡。
+
+## 安全边界
+
+- 授权检查必须发生在宿主服务端，不能只依赖文件选择器的 `accept`；
+- MIME、扩展名和文件内容需要由可信服务重新校验；
+- 病毒扫描、内容审核、配额、保留策略和审计归宿主负责；
+- `id` 应是不可猜测或经过授权解析的稳定标识；
+- `open` 应按需获取短期访问能力，不应把签名 URL 写进表单值；
+- 上传成功后只接受四个声明属性，带额外字段的返回值会进入失败状态；
+- 取消信号必须传递到实际网络请求，避免界面卸载后继续占用带宽；
+- 删除成功前不得从受控值移除引用，避免界面状态与存储状态失配。

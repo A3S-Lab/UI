@@ -49,7 +49,7 @@ Before accepting a submitted value or durable interaction, call the public `eval
 
 ## A3S UI styles
 
-Import `@a3s-lab/ui/form/a3s-ui.css` once in A3S products and standalone surfaces. It combines the published A3S UI 0.3.0 stylesheet with the Form layout layer. Fields use the documented A3S UI `field`, `input`, `textarea`, `select`, `fieldset`, `btn`, `tabs`, `accordion`, `table`, and `progress` contracts.
+Import `@a3s-lab/ui/form/a3s-ui.css` once in A3S products and standalone surfaces. It combines the published A3S UI 0.4.0 stylesheet with the Form layout layer. Fields use the documented A3S UI `field`, `input`, `textarea`, `select`, `fieldset`, `btn`, `tabs`, `accordion`, `table`, and `progress` contracts.
 
 Use `@a3s-lab/ui/form/styles.css` when the host already loads A3S UI or must not receive document-level styles. This isolated entry stays inside `.a3s-form-designer` and `.a3s-form-renderer` and does not install a global preflight.
 

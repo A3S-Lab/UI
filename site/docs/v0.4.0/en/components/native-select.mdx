@@ -1,0 +1,216 @@
+# Native Select
+
+Native Select lets users choose one value from a short fixed list while preserving familiar operating-system interaction and accessibility.
+
+<Preview>
+<div class="field w-full">
+  <label for="native-select-fruit-en">Fruit</label>
+  <select id="native-select-fruit-en" class="native-select w-full" aria-describedby="native-select-fruit-help-en">
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+    <option value="blueberry">Blueberry</option>
+    <option value="pineapple">Pineapple</option>
+    <option value="long-label">Dragon fruit from the seasonal international produce collection</option>
+  </select>
+  <p id="native-select-fruit-help-en">Choose one fruit for the current order.</p>
+</div>
+</Preview>
+
+## Usage
+
+<Steps>
+  <Step title="Include CSS">
+
+Import Tailwind and one full A3S UI style bundle.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+Or import only the base CSS, Native Select component CSS, and one style pack.
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/native-select.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+Using CDN or bundler imports? See the [Installation page](/installation).
+
+  </Step>
+  <Step title="Add your native select HTML">
+
+Add the canonical `class="native-select"` to a native `<select>`. Use standard `<option>` and `<optgroup>` elements. The former `select` class remains a visual migration alias, but new markup and framework adapters use `native-select` so it cannot be confused with the custom Select root.
+
+```html
+<div class="field">
+  <label for="native-select-fruit-html">Fruit</label>
+  <select id="native-select-fruit-html" class="native-select" aria-describedby="native-select-fruit-help-html">
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+    <option value="blueberry">Blueberry</option>
+    <option value="pineapple">Pineapple</option>
+  </select>
+  <p id="native-select-fruit-help-html">Choose one fruit for the current order.</p>
+</div>
+```
+
+  </Step>
+</Steps>
+
+Use Native Select for native browser behavior, form integration, and mobile-optimized pickers. Use [Select](/components/select) for custom option content, multi-select behavior, or JavaScript APIs.
+
+## Examples
+
+### Groups
+
+<Preview>
+<div class="field w-full">
+  <label for="native-select-food-en">Food</label>
+  <select id="native-select-food-en" class="native-select w-full">
+    <option value="">Select food</option>
+    <optgroup label="Fruits">
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+      <option value="blueberry">Blueberry</option>
+    </optgroup>
+    <optgroup label="Vegetables">
+      <option value="carrot">Carrot</option>
+      <option value="potato">Potato</option>
+      <option value="tomato">Tomato</option>
+    </optgroup>
+    <optgroup label="Unavailable" disabled>
+      <option value="mango">Mango — out of season</option>
+    </optgroup>
+  </select>
+</div>
+</Preview>
+
+### Disabled
+
+<Preview>
+<div class="field w-full" data-disabled="true">
+  <label for="native-select-disabled-en">Fruit</label>
+  <select id="native-select-disabled-en" class="native-select w-full" value="apple" aria-describedby="native-select-disabled-reason-en" disabled>
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+  </select>
+  <p id="native-select-disabled-reason-en">This choice is managed by workspace policy.</p>
+</div>
+</Preview>
+
+### Invalid
+
+<Preview>
+<div class="field" data-invalid="true">
+  <label for="native-select-invalid-en">Fruit</label>
+  <select id="native-select-invalid-en" class="native-select w-full" required aria-invalid="true" aria-describedby="native-select-invalid-error-en">
+    <option value="">Select a fruit</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+  </select>
+  <p id="native-select-invalid-error-en" role="alert">Choose a fruit before continuing.</p>
+</div>
+</Preview>
+
+`required` keeps the browser validity result and the authored `aria-invalid` state truthful to the same empty value.
+
+### Size
+
+<Preview>
+<div class="grid w-full gap-4 sm:grid-cols-2">
+  <div class="field">
+    <label for="native-select-size-default-en">Default</label>
+    <select id="native-select-size-default-en" class="native-select w-full">
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="native-select-size-small-en">Small</label>
+    <select id="native-select-size-small-en" class="native-select w-full" data-size="sm">
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+    </select>
+  </div>
+</div>
+</Preview>
+
+### RTL
+
+Set `dir="rtl"` on the select or a parent element.
+
+<Preview>
+<div class="field w-full" dir="rtl">
+  <label for="native-select-fruit-rtl-en">الفاكهة</label>
+  <select id="native-select-fruit-rtl-en" class="native-select w-full">
+    <option value="">اختر فاكهة</option>
+    <option value="apple">تفاح</option>
+    <option value="banana">موز</option>
+    <option value="blueberry">توت</option>
+  </select>
+</div>
+</Preview>
+
+## React
+
+```tsx
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useNativeSelect();
+  return (
+    <div className="field">
+      <label htmlFor="native-select-fruit-react">Fruit</label>
+      <NativeSelect
+        id="native-select-fruit-react"
+        ref={control.ref}
+        defaultValue=""
+        aria-describedby="native-select-fruit-help-react"
+      >
+        <option value="">Select a fruit</option>
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+      </NativeSelect>
+      <p id="native-select-fruit-help-react">Choose one fruit for the current order.</p>
+    </div>
+  );
+}
+```
+
+`useNativeSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.
+
+## Vue
+
+```vue
+<script setup>
+import { NativeSelect, useNativeSelect } from "@a3s-lab/ui/vue";
+
+const control = useNativeSelect();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <div class="field">
+    <label for="native-select-fruit-vue">Fruit</label>
+    <NativeSelect
+      id="native-select-fruit-vue"
+      ref="componentRef"
+      value=""
+      aria-describedby="native-select-fruit-help-vue"
+    >
+      <option value="">Select a fruit</option>
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+    </NativeSelect>
+    <p id="native-select-fruit-help-vue">Choose one fruit for the current order.</p>
+  </div>
+</template>
+```
+
+`useNativeSelect` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.

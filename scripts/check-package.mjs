@@ -198,6 +198,7 @@ for (const filePath of packedFiles) {
   const allowed =
     filePath === "LICENSE.md" ||
     filePath === "README.md" ||
+    filePath === "README.zh-CN.md" ||
     filePath === "package.json" ||
     filePath.startsWith("dist/") ||
     filePath.startsWith("templates/");

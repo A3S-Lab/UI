@@ -1,0 +1,71 @@
+# Collapsible
+
+Uses the native details element to contain secondary explanation while preserving a clear label, state, and no-script fallback.
+
+<Preview class="w-full">
+<details class="collapsible" open><summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div></details>
+</Preview>
+
+## Usage
+
+```html
+<details class="collapsible" open>
+  <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+</details>
+```
+
+## React
+
+```tsx
+import { Collapsible, useCollapsible } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useCollapsible();
+  return (
+    <Collapsible ref={control.ref} open>
+      <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+    </Collapsible>
+  );
+}
+```
+
+`useCollapsible` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { Collapsible, useCollapsible } from "@a3s-lab/ui/vue";
+
+const control = useCollapsible();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <Collapsible ref="componentRef" open>
+    <summary>Why this permission is needed</summary><div data-collapsible-content>The folder is read only until access is approved.</div>
+  </Collapsible>
+</template>
+```
+
+`useCollapsible` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `details.collapsible` |
+| Native root | `<details>` |
+| States | `open`, `closed`, `disabled` |
+| Events | `toggle` |
+| Methods | — |
+
+## Product boundary
+
+Collapsible is for supplemental content. Never hide required fields, errors, or primary actions inside it. Use Accordion when several sections need coordinated exclusivity.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+The summary retains native keyboard behavior and visible focus. Disabled state blocks pointer and keyboard use, and collapsing never changes reading order.

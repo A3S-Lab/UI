@@ -107,7 +107,7 @@ export function ProductExtensionHost({
           </span>
           <div>
             <small>{zh ? "发布候选" : "Release candidate"}</small>
-            <h1>v0.3.0</h1>
+            <h1>v0.4.0</h1>
             <p>
               {zh
                 ? "关键检查已完成，可以开始最终评审。"
@@ -155,8 +155,8 @@ export function ProductExtensionHost({
           </header>
           <blockquote>
             {zh
-              ? "发布候选 v0.3.0 已通过构建、交互和双端视觉验收，没有未解决风险。"
-              : "Release candidate v0.3.0 passed build, interaction, and both viewport reviews with no open risks."}
+              ? "发布候选 v0.4.0 已通过构建、交互和双端视觉验收，没有未解决风险。"
+              : "Release candidate v0.4.0 passed build, interaction, and both viewport reviews with no open risks."}
           </blockquote>
           {proposal === "pending" ? (
             <footer>

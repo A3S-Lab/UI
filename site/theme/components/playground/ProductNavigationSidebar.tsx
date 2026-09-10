@@ -182,7 +182,7 @@ export function ProductNavigationSidebar({
           <img alt="" height="28" src={withBase("/logo.png")} width="28" />
           <span>
             <strong>A3S</strong>
-            <small>v0.3.0</small>
+            <small>v0.4.0</small>
           </span>
         </Link>
         <div>

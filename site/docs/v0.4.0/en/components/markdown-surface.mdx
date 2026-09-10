@@ -1,0 +1,68 @@
+# Markdown Surface
+
+Provides a coherent reading hierarchy for sanitized Markdown output, code, tables, media, and explicit custom-renderer slots.
+
+<Preview class="w-full">
+<article class="markdown-surface"><h2>Run summary</h2><p>The task completed with <strong>three verified changes</strong>.</p><pre tabIndex="0"><code>npm run release:check</code></pre><blockquote>Review generated output before publishing.</blockquote></article>
+</Preview>
+
+## Usage
+
+```html
+<article class="markdown-surface">
+  <h2>Run summary</h2><p>The task completed with <strong>three verified changes</strong>.</p><pre tabindex="0"><code>npm run release:check</code></pre><blockquote>Review generated output before publishing.</blockquote>
+</article>
+```
+
+## React
+
+```tsx
+import { MarkdownSurface } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <MarkdownSurface>
+      <h2>Run summary</h2><p>The task completed with <strong>three verified changes</strong>.</p><pre tabIndex="0"><code>npm run release:check</code></pre><blockquote>Review generated output before publishing.</blockquote>
+    </MarkdownSurface>
+  );
+}
+```
+
+This component has no behavior controller; the React adapter only renders its semantic root.
+
+## Vue
+
+```vue
+<script setup>
+import { MarkdownSurface } from "@a3s-lab/ui/vue";
+
+</script>
+
+<template>
+  <MarkdownSurface>
+    <h2>Run summary</h2><p>The task completed with <strong>three verified changes</strong>.</p><pre tabindex="0"><code>npm run release:check</code></pre><blockquote>Review generated output before publishing.</blockquote>
+  </MarkdownSurface>
+</template>
+```
+
+The Vue adapter adds no wrapper and does not alter native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.markdown-surface` |
+| Native root | `<article>` |
+| States | `ready`, `loading`, `empty`, `error` |
+| Events | — |
+| Methods | — |
+
+## Product boundary
+
+It does not parse untrusted HTML, load remote renderers, or decide whether links are safe. Diagram, math, and media slots are registered explicitly by the host.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Heading levels stay continuous, links are visible and focusable, and code remains left-to-right. Tables and code own bounded overflow on narrow screens.

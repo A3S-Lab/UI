@@ -1,0 +1,211 @@
+# 复选框
+
+复选框让用户从一组非互斥选项中选择零项、一项或多项。它适合随表单一起提交的选择；会立即改变系统状态的二元设置应使用[开关](/components/switch)。
+
+<Preview title="通知渠道">
+  <fieldset class="fieldset">
+    <legend data-variant="label">接收发布状态</legend>
+    <p>选择团队需要接收通知的渠道。</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-email" name="release-channel" value="email" defaultChecked />
+        <section>
+          <label for="release-email">电子邮件</label>
+          <p>在发布完成或失败时发送摘要。</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="release-desktop" name="release-channel" value="desktop" />
+        <section>
+          <label for="release-desktop">桌面通知</label>
+          <p>仅在此设备在线时提醒。</p>
+        </section>
+      </div>
+      <div class="field" data-orientation="horizontal" data-disabled>
+        <input class="input" type="checkbox" id="release-sms" name="release-channel" value="sms" disabled />
+        <section>
+          <label for="release-sms">短信</label>
+          <p>当前工作区尚未配置短信服务。</p>
+        </section>
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+## 用法
+
+导入 Tailwind 与完整 A3S 样式包：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+为原生复选框添加 `input` 类，并使用 `label` 建立名称关联。只有一个输入时，标签可以直接与它配对。
+
+```html
+<div class="field" data-orientation="horizontal">
+  <input class="input" type="checkbox" id="include-logs" name="include-logs" />
+  <label for="include-logs">附带诊断日志</label>
+</div>
+```
+
+需要按组件加载时，依次导入基础样式、复选框结构、字段结构和 A3S 视觉样式。CDN 与其他接入方式见[安装](/installation)。
+
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/checkbox.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+### 参数
+
+| 参数 | 值 | 用途 |
+| --- | --- | --- |
+| 根元素 | `<input type="checkbox">` | 保留浏览器的表单、键盘和无障碍语义 |
+| `class` | `input` | 应用复选框结构与视觉样式 |
+| `checked` | 布尔属性 | 表示已选择；服务端渲染时只用于真实默认值 |
+| `disabled` | 布尔属性 | 阻止交互；所在 `.field` 同步设置 `data-disabled` |
+| `aria-invalid` | `true` | 在校验失败后表达无效状态 |
+| `aria-describedby` | 元素 ID | 关联帮助、限制或错误信息 |
+| `indeterminate` | DOM 属性 | 表示子项只选中一部分，不等同于第三个提交值 |
+
+## 状态与变体
+
+未选中和已选中是用户可操作的常态。禁用状态必须同时解释原因；无效状态只在用户提交或离开字段后出现，避免页面首次加载就显示错误。
+
+<Preview title="选择与校验状态">
+  <div class="grid gap-4">
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-selected" name="state-selected" defaultChecked />
+      <label for="state-selected">包含源文件</label>
+    </div>
+    <div class="field" data-orientation="horizontal">
+      <input class="input" type="checkbox" id="state-unselected" name="state-unselected" />
+      <label for="state-unselected">包含构建缓存</label>
+    </div>
+    <div class="field" data-orientation="horizontal" data-invalid>
+      <input class="input" type="checkbox" id="state-required" name="state-required" aria-invalid="true" aria-describedby="state-required-error" />
+      <section>
+        <label for="state-required">确认已移除敏感数据</label>
+        <p id="state-required-error" role="alert">导出前必须完成确认。</p>
+      </section>
+    </div>
+    <div class="field" data-orientation="horizontal" data-disabled>
+      <input class="input" type="checkbox" id="state-disabled" name="state-disabled" disabled />
+      <section>
+        <label for="state-disabled">包含审计归档</label>
+        <p>只有工作区所有者可以更改此项。</p>
+      </section>
+    </div>
+  </div>
+</Preview>
+
+`indeterminate` 只能通过 DOM 属性设置，常用于“全选”控件。它仍会按 `checked` 属性决定表单提交结果，因此应用必须分别维护两个状态。
+
+```js
+const selectAll = document.querySelector("#select-all");
+const selectedCount = 2;
+const totalCount = 5;
+
+selectAll.checked = selectedCount === totalCount;
+selectAll.indeterminate = selectedCount > 0 && selectedCount < totalCount;
+```
+
+## 多项选择
+
+相关选项使用 `fieldset` 和 `legend` 分组。标签回答“这一项是什么”，说明文字补充后果或限制；不要把整段说明都塞进标签。
+
+<Preview title="导出内容">
+  <fieldset class="fieldset">
+    <legend data-variant="legend">选择导出内容</legend>
+    <p>至少选择一项，导出任务才可开始。</p>
+    <div class="grid gap-3">
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-documents" name="export-content" value="documents" defaultChecked />
+        <label for="export-documents">文档</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-comments" name="export-content" value="comments" defaultChecked />
+        <label for="export-comments">评论与批注</label>
+      </div>
+      <div class="field" data-orientation="horizontal">
+        <input class="input" type="checkbox" id="export-history" name="export-content" value="history" />
+        <label for="export-history">版本历史</label>
+      </div>
+    </div>
+  </fieldset>
+</Preview>
+
+表格中的行选择属于[表格](/components/table)或[数据网格](/components/data-grid)的整体交互。表头“全选”必须同步可见行、跨页选择范围和不确定状态，不能只在复选框文档中拼出一个没有行为的静态表格。
+
+## React
+
+`Checkbox` 渲染清单定义的原生输入。需要从 DOM 事件连接业务状态时，`useCheckbox` 可以订阅 `change` 与 `input`，但不会替应用维护选中值。
+
+```tsx
+import { useState } from "react";
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/react";
+
+export function ReleaseNotification() {
+  const [enabled, setEnabled] = useState(false);
+  const checkbox = useCheckbox({
+    events: {
+      change(event) {
+        setEnabled((event.currentTarget as HTMLInputElement).checked);
+      },
+    },
+  });
+
+  return (
+    <div className="field" data-orientation="horizontal">
+      <Checkbox ref={checkbox.ref} id="release-notification" name="release-notification" />
+      <section>
+        <label htmlFor="release-notification">发布通知</label>
+        <p aria-live="polite">{enabled ? "已启用" : "未启用"}</p>
+      </section>
+    </div>
+  );
+}
+```
+
+## Vue
+
+Vue 组合式函数使用同一份清单事件。模板引用连接原生输入，响应式状态仍由应用拥有。
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { Checkbox, useCheckbox } from "@a3s-lab/ui/vue";
+
+const enabled = ref(false);
+const checkbox = useCheckbox({
+  events: {
+    change(event) {
+      enabled.value = (event.currentTarget as HTMLInputElement).checked;
+    },
+  },
+});
+const componentRef = checkbox.componentRef;
+</script>
+
+<template>
+  <div class="field" data-orientation="horizontal">
+    <Checkbox ref="componentRef" id="release-notification" name="release-notification" />
+    <section>
+      <label for="release-notification">发布通知</label>
+      <p aria-live="polite">{{ enabled ? "已启用" : "未启用" }}</p>
+    </section>
+  </div>
+</template>
+```
+
+## 可访问性
+
+- 每个复选框都必须有可访问名称，优先使用与 `id` 配对的可见 `label`。
+- 相关多选项使用 `fieldset` 与 `legend`；不要为普通 `.field` 添加冗余的 `role="group"`。
+- 空格键切换聚焦的原生复选框。不要用自定义点击处理替换浏览器行为，也不要阻止标签点击。
+- 帮助或错误信息通过 `aria-describedby` 关联；校验失败时同步设置 `aria-invalid="true"`。
+- 禁用项仍应显示标签和不可用原因。若用户仍需理解或复制内容，优先只禁用控件，不要隐藏整行。
+- `indeterminate` 只是部分选择的视觉和无障碍状态；提交值仍由 `checked` 决定。

@@ -1,0 +1,174 @@
+import { LayoutDemo } from '../../../../../theme/mdx/form/LayoutDemo';
+
+# 布局与辅助内容
+
+布局节点只组织界面，不改变受控值结构。字段继续通过 `schemaPath` 绑定数据；容器通过 `children` 决定顺序和嵌套关系。所有示例直接使用 `FormRenderer` 和 A3S UI 样式入口。
+
+## 通用容器属性
+
+| 属性 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 文档内唯一的稳定标识 |
+| `kind` | `"group" \| "section"` | 是 | 普通容器或语义分组 |
+| `layout` | `UiLayout` | 是 | 容器的排列方式 |
+| `children` | `string[]` | 是 | 直接子节点，按数组顺序渲染 |
+| `label` | `string` | 否 | 容器标题；标签页、折叠面板和向导步骤使用它作为导航名称 |
+| `description` | `string` | 否 | 容器标题下方的补充说明 |
+| `columns` | `1 \| 2 \| 3 \| 4 \| 6 \| 12` | 否 | 内部栅格列数，默认 `12` |
+| `width` | `1–12` | 否 | 当前容器在父级 12 列栅格中占用的宽度 |
+| `gap` | `0 \| 8 \| 12 \| 16 \| 24 \| 32` | 否 | 子节点间距，单位为 CSS 像素 |
+
+窄容器会把并排字段和列组改为单列。响应式判断以 Form 容器宽度为准，嵌入侧栏、弹窗或工作区节点时不依赖浏览器窗口宽度。
+
+## 栅格容器 `grid`
+
+栅格容器适合字段宽度不完全相同的参数面板。子节点的 `width` 决定占用列数，内部总宽度使用 `columns`。
+
+<LayoutDemo example="grid" />
+
+| 属性 | 推荐值 | 用途 |
+| --- | --- | --- |
+| `kind` | `"group"` | 创建无额外业务语义的布局容器 |
+| `layout` | `"grid"` | 启用显式栅格排列 |
+| `columns` | `12` | 与字段 `width` 的 12 列宽度保持一致 |
+| `gap` | `12` 或 `16` | 控制行列间距 |
+| 子节点 `width` | `1–12` | 例如 `8 + 4` 或 `6 + 6` |
+
+```ts
+{
+  id: 'runtime-grid',
+  kind: 'group',
+  layout: 'grid',
+  columns: 12,
+  gap: 16,
+  children: ['model', 'timeout'],
+}
+```
+
+## 两栏布局 `columns-2`
+
+`columns-2` 是 Designer 预设。它生成一个 `layout: "columns"` 的外层容器和两个 `width: 6` 的内部 group。每一栏可以继续放置字段、卡片或其他布局。
+
+<LayoutDemo example="columns-2" />
+
+| 节点 | 关键属性 | 用途 |
+| --- | --- | --- |
+| 外层容器 | `layout: "columns"`, `columns: 12` | 管理两栏顺序和间距 |
+| 左栏 | `kind: "group"`, `width: 6` | 第一处投放区域 |
+| 右栏 | `kind: "group"`, `width: 6` | 第二处投放区域 |
+| 内部字段 | `width: 1–12` | 使用各栏自己的 12 列栅格 |
+
+两项需要直接比较时使用两栏；较长说明、地址和多行输入不应被强行压进窄栏。
+
+## 三栏布局 `columns-3`
+
+`columns-3` 同样是 Designer 预设，三个内部 group 的 `width` 均为 `4`。它适合短值和同类参数，不适合大段文本或复杂复合字段。
+
+<LayoutDemo example="columns-3" />
+
+| 节点 | 关键属性 | 用途 |
+| --- | --- | --- |
+| 外层容器 | `layout: "columns"`, `columns: 12` | 管理三栏顺序和间距 |
+| 每一栏 | `kind: "group"`, `width: 4` | 独立投放区域 |
+| 每栏内部 | `layout: "flow"`, `columns: 12` | 允许继续配置内部字段宽度 |
+
+在窄容器中三栏自动变为单列，字段顺序仍按 `children` 保持稳定。
+
+## 卡片分组 `card`
+
+卡片用于有明确标题和说明的业务分组。`kind: "section"` 提供分组语义，`layout: "card"` 使用 A3S UI Card 表面。
+
+<LayoutDemo example="card" />
+
+| 属性 | 推荐值 | 用途 |
+| --- | --- | --- |
+| `kind` | `"section"` | 表达独立内容分组 |
+| `layout` | `"card"` | 使用 A3S UI Card 样式 |
+| `label` | 简短标题 | 说明这一组字段的共同用途 |
+| `description` | 一句话 | 只补充必要的填写规则 |
+| `children` | 字段或布局节点 | 避免再嵌套一层无信息卡片 |
+
+同一页面不应把每个字段都包装成卡片。只有标题、说明和字段确实构成一个完整任务时使用。
+
+## 标签页 `tabs`
+
+标签页适合同一层级、无需按顺序完成的设置。外层节点使用 `layout: "tabs"`，直接子节点必须是 `layout: "tab"` 的 group 或 section。
+
+<LayoutDemo example="tabs" />
+
+| 节点 | 属性 | 说明 |
+| --- | --- | --- |
+| 标签页容器 | `layout: "tabs"` | 管理当前活动页，不写入表单值 |
+| 标签页 | `layout: "tab"` | 作为直接子节点 |
+| 标签名称 | 子节点 `label` | 同时作为 Tab 的可见名称和无障碍名称 |
+| 标签内容 | 子节点 `children` | 放置该页的字段和布局 |
+
+运行时提供 `tablist`、`tab` 和 `tabpanel` 语义，支持左右方向键、Home 和 End。需要逐步校验和确认页时应使用向导，不使用标签页模拟步骤。
+
+## 折叠面板 `collapse`
+
+折叠面板适合低频或高级设置。外层节点使用 `layout: "collapse"`，直接子节点使用 `layout: "collapse-panel"`。
+
+<LayoutDemo example="collapse" />
+
+| 节点 | 属性 | 说明 |
+| --- | --- | --- |
+| 折叠容器 | `layout: "collapse"` | 管理一组可展开内容 |
+| 折叠面板 | `layout: "collapse-panel"` | 作为直接子节点 |
+| 面板名称 | 子节点 `label` | 作为原生 `summary` 文案 |
+| 面板内容 | 子节点 `children` | 放置字段和布局节点 |
+
+运行时使用原生 `details` 与 `summary`，键盘、展开状态和辅助技术语义由浏览器提供。必填字段不应藏在默认关闭且没有错误提示的面板中。
+
+## 说明文字 `content`
+
+说明文字使用 `kind: "content"` 和 `presentation: "text"`。它只显示静态文案，不创建 Schema 属性，也不写入受控值。
+
+<LayoutDemo example="content" />
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `"content"` | 辅助内容固定值 |
+| `presentation` | `"text"` | 普通说明文字 |
+| `content` | `string` | 直接展示的文本 |
+| `width` | 12 列宽度 | 控制在父级栅格中的占位 |
+
+说明文字只承载填写所需的信息。动态数据、富文本和可执行链接应由经过注册的宿主组件负责。
+
+## 分隔线 `divider`
+
+分隔线用于区分相邻内容区域。`content` 留空时只显示线条，设置后在中间显示简短标题。
+
+<LayoutDemo example="divider" />
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `"content"` | 辅助内容固定值 |
+| `presentation` | `"divider"` | 分隔线展示方式 |
+| `content` | `string` | 可选的分隔标题 |
+| `width` | 12 列宽度 | 控制分隔线长度 |
+
+分隔线不能代替结构。内容本身有明确标题时，优先使用 section 或 card。
+
+## 间距 `spacer`
+
+间距节点提供受控的垂直留白。它对辅助技术隐藏，不产生文案或表单值。
+
+<LayoutDemo example="spacer" />
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `"content"` | 辅助内容固定值 |
+| `presentation` | `"spacer"` | 间距展示方式 |
+| `gap` | `8 \| 12 \| 16 \| 24 \| 32` | 间距高度，默认 `24` |
+| `width` | 12 列宽度 | 控制在父级布局中的占位 |
+
+间距只用于少量需要额外呼吸感的位置。页面的基础节奏应由容器 `gap` 统一维护。
+
+## A3S UI 样式入口
+
+```ts
+import '@a3s-lab/ui/form/a3s-ui.css';
+```
+
+该入口加载 `@a3s-lab/ui` 和 Form 布局层。字段继续使用 A3S UI 的 `input`、`textarea`、`select`、`field` 与 `fieldset` 契约；容器复用 Card、Tabs 和 Accordion 的表面与交互状态。宿主已经加载 A3S UI 时，可以改用 `@a3s-lab/ui/form/styles.css`，避免重复安装全局样式。

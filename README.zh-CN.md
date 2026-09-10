@@ -149,6 +149,7 @@ Dockview integration
 |版本 | 简体中文 |英语 |
 | -------- | ------------------------------------------------------ | -------------------------------------------------------------------- |
 | `next` | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| `v0.4.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.4.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.4.0/en/) |
 | `v0.3.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.3.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.3.0/en/) |
 | `v0.2.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.2.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.2.0/en/) |
 | `v0.1.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.1.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.1.0/en/) |

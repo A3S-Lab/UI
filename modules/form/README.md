@@ -166,7 +166,7 @@ function handleAction(event: { actionId: string }) {
 </template>
 ```
 
-`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.3.0 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` instead when an embedding host must remain fully isolated from document-level CSS. The scoped entries do not install a global preflight. All entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
+`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.4.0 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` instead when an embedding host must remain fully isolated from document-level CSS. The scoped entries do not install a global preflight. All entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
 
 <a id="architecture"></a>
 

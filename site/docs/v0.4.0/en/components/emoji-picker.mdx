@@ -1,0 +1,83 @@
+# Emoji Picker
+
+Selects one emoji from a searchable, keyboard-navigable finite set and returns it to the host as ordinary text.
+
+<Preview class="w-full">
+<section class="emoji-picker" aria-label="Choose a reaction"><input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div></section>
+</Preview>
+
+## Usage
+
+```html
+<section class="emoji-picker" aria-label="Choose a reaction">
+  <input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+</section>
+```
+
+### Standalone controller
+
+```js
+import "@a3s-lab/ui/runtime";
+import "@a3s-lab/ui/emoji-picker";
+
+const component = document.querySelector(".emoji-picker");
+component.getState();
+```
+
+The controller is idempotent; the complete package can instead import `@a3s-lab/ui/all` once. The host performs permission and business validation through cancelable `before-*` events.
+
+## React
+
+```tsx
+import { EmojiPicker, useEmojiPicker } from "@a3s-lab/ui/react";
+
+export function Example() {
+  const control = useEmojiPicker();
+  return (
+    <EmojiPicker ref={control.ref} aria-label="Choose a reaction">
+      <input className="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+    </EmojiPicker>
+  );
+}
+```
+
+`useEmojiPicker` exposes the same DOM contract through a ref, readiness state, event subscriptions, and typed method calls. It introduces no framework-only state.
+
+## Vue
+
+```vue
+<script setup>
+import { EmojiPicker, useEmojiPicker } from "@a3s-lab/ui/vue";
+
+const control = useEmojiPicker();
+const componentRef = control.componentRef;
+</script>
+
+<template>
+  <EmojiPicker ref="componentRef" aria-label="Choose a reaction">
+    <input class="input" type="search" placeholder="Search reactions" aria-label="Search reactions" /><div data-emoji-grid role="listbox"><button type="button" data-emoji-value="👍" aria-label="Thumbs up">👍</button><button type="button" data-emoji-value="🎉" aria-label="Celebrate">🎉</button><button type="button" data-emoji-value="❤️" aria-label="Love">❤️</button><p hidden data-emoji-empty>No reactions match.</p></div>
+  </EmojiPicker>
+</template>
+```
+
+`useEmojiPicker` exposes the same event and method set as the React hook while the template retains the same root class and native attributes.
+
+## Contract
+
+| Surface | Value |
+| --- | --- |
+| Root selector | `.emoji-picker` |
+| Native root | `<section>` |
+| States | `ready`, `empty`, `disabled` |
+| Events | `a3s:emoji-before-select`, `a3s:emoji-query-change`, `a3s:emoji-select` |
+| Methods | `getState`, `refresh`, `select`, `setQuery` |
+
+## Product boundary
+
+It does not own recents, skin-tone preferences, remote packs, or message sending. Large catalogs need host-provided grouping, virtualization, and localized search data.
+
+The component publishes a reusable interaction boundary only. Data fetching, persistence, permission, trusted content, and business entities remain host-owned.
+
+## Accessibility
+
+Every emoji button has a name, arrow keys move through visible results, and empty search is announced. Emoji is content here, never an unlabeled interface icon.

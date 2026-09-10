@@ -451,7 +451,7 @@ export function ProductAccountMenu({
         <ProductPlaygroundIcon name="version" />
         <span>
           <strong>{zh ? "社区版本" : "Community edition"}</strong>
-          <small>A3S UI v0.3.0</small>
+          <small>A3S UI v0.4.0</small>
         </span>
         <ProductPlaygroundIcon name="arrow" />
       </button>
@@ -498,7 +498,7 @@ export function ProductAccountMenu({
           setUpdateRequested(true);
           document.dispatchEvent(
             new CustomEvent("a3s:playground-check-update", {
-              detail: { version: "0.3.0" },
+              detail: { version: "0.4.0" },
             }),
           );
         }}

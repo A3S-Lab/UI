@@ -1,0 +1,78 @@
+# 产物卡
+
+产物卡展示报告、文档、图片、补丁或数据集等持久输出。它比目录资源卡更扁平、更紧凑。
+
+<Preview class="w-full max-w-2xl">
+  <article class="artifact-card" data-state="complete">
+    <header><div><h3>发布就绪报告</h3><span data-artifact-meta>Markdown · 刚刚更新</span></div><span class="status-badge" data-state="success">已就绪</span></header>
+    <section>
+      <div data-artifact-preview>
+        <strong>发布就绪</strong>
+        <p>所有包与文档检查均已通过。</p>
+      </div>
+    </section>
+    <footer><span>24 行 · 3 条引用</span><div><button type="button" class="btn" data-size="sm" data-variant="outline">下载</button> <button type="button" class="btn" data-size="sm">打开</button></div></footer>
+  </article>
+</Preview>
+
+## 用法
+
+```html
+<article class="artifact-card" data-state="complete">
+  <header><h3>发布就绪报告</h3><span data-artifact-meta>Markdown</span></header>
+  <section><div data-artifact-preview>...</div></section>
+  <footer>...</footer>
+</article>
+```
+
+### HTML 结构
+
+| API | 取值 | 用途 |
+| --- | --- | --- |
+| `data-state` | `ready`、`generating`、`complete`、`stale`、`error` | 产物生命周期 |
+| `data-artifact-preview` | 可选 | 紧凑内容预览 |
+| `data-artifact-meta` | 推荐 | 类型、大小或修订版本 |
+
+## 状态与变体
+
+生成中状态保留未来的标题与格式。过期状态说明发生了什么变化以及如何重新生成。
+
+## React
+
+```tsx
+import { ArtifactCard } from "@a3s-lab/ui/react";
+
+export function Example() {
+  return (
+    <ArtifactCard data-state="complete">
+      <header><div><h3>发布就绪报告</h3><span data-artifact-meta>Markdown · 刚刚更新</span></div></header>
+      <section><div data-artifact-preview><strong>发布就绪</strong><p>所有检查均已通过。</p></div></section>
+      <footer><span>24 行 · 3 条引用</span><div><button type="button">下载</button><button type="button">打开</button></div></footer>
+    </ArtifactCard>
+  );
+}
+```
+
+`ArtifactCard` 保留 `<article>`、标题、预览和操作区的语义。它不下载文件，也不打开路由，因此没有静态组件 hook。
+
+## Vue
+
+```vue
+<script setup>
+import { ArtifactCard } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <ArtifactCard data-state="complete">
+    <header><div><h3>发布就绪报告</h3><span data-artifact-meta>Markdown · 刚刚更新</span></div></header>
+    <section><div data-artifact-preview><strong>发布就绪</strong><p>所有检查均已通过。</p></div></section>
+    <footer><span>24 行 · 3 条引用</span><div><button type="button">下载</button><button type="button">打开</button></div></footer>
+  </ArtifactCard>
+</template>
+```
+
+Vue 适配器映射同一文章契约，产物内容和操作回调仍由宿主传入。
+
+## 可访问性
+
+用符合页面层级的标题命名产物，元数据只补充格式、版本、大小和时间，不能重复整段预览。生成中状态保留标题与预期格式，并用一个礼貌型状态说明进度；错误和过期状态必须写出原因与重新生成入口。下载与打开是两个不同操作，需要明确名称和可见焦点。宿主负责内容可信度、生成、版本、下载和路由，卡片只展示持久输出，不能把“已生成”自动表述为“已验证”。
