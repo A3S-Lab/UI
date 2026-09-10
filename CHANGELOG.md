@@ -6,7 +6,7 @@
 
 ### Added
 
-- Published `-lab/ui@0.4.0` to the public npm registry and created the `v0.4.0` GitHub release.
+- Published `@a3s-lab/ui@0.4.0` to the public npm registry and created the `v0.4.0` GitHub release.
 - Integrated the complete Form source, deterministic Rust/WASM core, Designer, Renderer, durable interaction contracts, CLI, and Cloud adapter into `@a3s-lab/ui/form`; added React Hook Form bindings and native Vue composables with shared A3S Core validation; and moved every current Form guide and interactive example into the A3S UI component catalog without a separate Form site or demo route.
 - Added bilingual persistent current-task sessions to the product application, preserving composer context, follow-ups, recent-task navigation, recovery states, and task artifacts across route changes and refreshes.
 - Added the complete Dockview 8.1 MIT integration through native, React, and Vue entrypoints, including Dockview, Gridview, Splitview, Paneview, the A3S light/dark theme, versioned layout persistence, framework hooks, bilingual MDX guides, and a real dockable Playground workspace.
