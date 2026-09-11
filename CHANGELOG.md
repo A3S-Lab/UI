@@ -79,17 +79,17 @@
 - Settings Layout (`LW-09`) demos now use scoped primary/nav markers with localized Chinese nav; deterministic A3S Test run `a3s-test-17840-1` captures nav focus, ready/loading/error matrix, and 390px Chinese evidence.
 - Split Pane (`LW-11`) demos now use scoped primary/separator markers; deterministic A3S Test run `a3s-test-4852-1` captures ArrowRight resize, ready/disabled matrix, and 390px Chinese separator label.
 - Task Pane (`LW-12`) demos now use scoped primary/paper markers; deterministic A3S Test run `a3s-test-23448-1` captures paper select, overlay + state matrix, and 390px Chinese 页面设置.
-- Task Plan (`HR-11`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29916-1` captures Pause �?paused, state matrix, and 390px Chinese 发布计划.
+- Task Plan (`HR-11`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29916-1` captures Pause → paused, state matrix, and 390px Chinese 发布计划.
 - Plan Step (`HR-12`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12524-1` captures open checks, state matrix, and 390px Chinese evidence.
 - Artifact Card (`HR-20`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-3032-1` captures open action, state matrix, and 390px Chinese 发布就绪报告.
-- Checkpoint (`HR-16`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-27504-1` captures Restore �?restoring, state matrix, and 390px Chinese evidence.
+- Checkpoint (`HR-16`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-27504-1` captures Restore → restoring, state matrix, and 390px Chinese evidence.
 - Follow-up Suggestions (`HR-10`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-28188-1` captures selection, state matrix, and 390px Chinese evidence.
-- Tool Call (`HR-17`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8396-1` captures Stop �?interrupted, lifecycle matrix, and 390px Chinese evidence.
+- Tool Call (`HR-17`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8396-1` captures Stop → interrupted, lifecycle matrix, and 390px Chinese evidence.
 - Tool Call Timeline (`HR-26`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-32468-1` captures expand/collapse, state matrix, and 390px Chinese evidence.
 - Tool Result (`HR-27`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-32508-1` captures Output/Metadata tabs, state matrix, and 390px Chinese evidence.
-- Context Selector (`HR-06`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29420-1` captures model select, state matrix, and 390px Chinese 运行时发�?
+- Context Selector (`HR-06`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29420-1` captures model select, state matrix, and 390px Chinese 运行时发布.
 - Approval Request (`HR-14`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-21920-1` captures session-scope approve, state matrix, and 390px Chinese evidence.
-- Execution Item (`HR-15`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24560-1` captures Stop �?cancelled, state matrix, and 390px Chinese evidence.
+- Execution Item (`HR-15`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24560-1` captures Stop → cancelled, state matrix, and 390px Chinese evidence.
 - Task Queue (`HR-13`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-23056-1` captures queue interaction, state matrix, and 390px Chinese evidence.
 - Change Review (`HR-18`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-22604-1` captures review action, state matrix, and 390px Chinese evidence.
 - Execution Evidence (`HR-19`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-31088-1` captures open report, state matrix, and 390px Chinese evidence.
@@ -98,7 +98,7 @@
 - Catalog (`LW-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-31272-1` captures Development filter, state matrix, and 390px Chinese evidence.
 - Task Start (`HR-01`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24624-1` captures suggestion apply, state matrix, and 390px Chinese evidence.
 - Task Workspace (`HR-02`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-6780-1` captures Attach, state matrix, and 390px Chinese evidence.
-- Agent Composer (`HR-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-4948-1` captures Stop �?ready, state matrix, and 390px Chinese evidence.
+- Agent Composer (`HR-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-4948-1` captures Stop → ready, state matrix, and 390px Chinese evidence.
 - Agent Transcript (`HR-04`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12060-1` captures jump-to-latest, state matrix, and 390px Chinese evidence.
 - Agent Workbench (`HR-05`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8248-1` captures build release, state matrix, and 390px Chinese evidence.
 - Terminal (`HR-23`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-16180-1` captures copy status, state matrix, and 390px Chinese evidence.
@@ -124,7 +124,7 @@
 - Form (`IA-06`) docs demos now exercise summary validation, duplicate-submit protection (`aria-busy` + disabled submit), success retention, reset, and read-only presentation; deterministic A3S Test run `a3s-test-25412-1` captures desktop invalid/success/state-matrix and 390px Chinese evidence.
 - Editable Text (`IA-05`) adds `data-editable-required` / `data-editable-save-delay`, `aria-busy` while saving, and EN/ZH primary demos; deterministic A3S Test run `a3s-test-4728-1` covers Escape cancel, empty rejection, async save, state matrix, and 390px Chinese commit.
 - Copy Button (`IA-04`) rejects empty sources, blocks repeat while copying, and ships EN/ZH primary/empty demos; deterministic A3S Test run `a3s-test-25524-1` covers keyboard copy, empty error, reset, state matrix, and 390px Chinese feedback.
-- Wave 0 Demote framing: README moves Spinner and Scroll Area into compatibility recipes; EN/ZH guides state React/Vue exports are aliases until the next major, and Scroll Area copy no longer calls utility classes a “component.�?
+- Wave 0 Demote framing: README moves Spinner and Scroll Area into compatibility recipes; EN/ZH guides state React/Vue exports are aliases until the next major, and Scroll Area copy no longer calls utility classes a “component.”
 - Theme Switcher publishes canonical `.theme-switcher` (with `[data-a3s-theme-toggle]` alias) in the manifest, runtime recognition, and next EN/ZH docs.
 
 ## [0.4.0] - 2026-09-10
@@ -194,7 +194,7 @@
 - Mobile project PDF page changes poll the page-number field after EmbedPDF finishes navigation (async), prove the selected thumbnail while the drawer is reopened, then restore page one through the page-number field because previous/next page steppers are intentionally hidden under the mobile overflow menu.
 - Memory evolution graph evidence keeps the wide desktop reading-pane inspector (no compact dismiss control), asserts selection copy, and leaves compact inspector dismiss coverage to the dedicated mobile/compact scenarios.
 - Code Graph React mounts no longer hardcode `data-view="graph"`, so the controller-owned list/graph view survives parent re-renders.
-- Code Editor compact framing evidence measures the visible phone preview shell after scroll-into-view, at a compact viewport height that can geometrically admit �?5% coverage.
+- Code Editor compact framing evidence measures the visible phone preview shell after scroll-into-view, at a compact viewport height that can geometrically admit ≥75% coverage.
 - Copy Button state-matrix specimens keep copy semantics and stamp `aria-busy` for copying; Toast live previews mount a durable `.toast` source for state acceptance.
 - Browser driver function keys (`F1`–`F24`) and `ContextMenu` now emit non-zero Windows VK codes, and non-printable presses use CDP `rawKeyDown`.
 
@@ -305,7 +305,7 @@
 ### Changed
 
 - Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
-- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320�?80-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
 - Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.

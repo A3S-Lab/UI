@@ -94,7 +94,7 @@ function RatingDesign({ node }: FormNodeDesignProps) {
 function RatingInspector({ node, onUpdate }: FormNodeInspectorProps) {
   return (
     <>
-      <FormInspectorControl label="Maximum score" hint="3â€?0">
+      <FormInspectorControl label="Maximum score" hint="3â€“10">
         <input
           type="number"
           min="3"

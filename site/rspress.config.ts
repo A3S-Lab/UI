@@ -41,10 +41,10 @@ const config: UserConfig = {
   locales: [
     {
       lang: "zh",
-      label: "简体中�?,
+      label: "简体中文",
       title: "A3S UI",
       description:
-        "面向 A3S 产品、任务工作区、运维控制台与文档工具的框架无关设计系统�?,
+        "面向 A3S 产品、任务工作区、运维控制台与文档工具的框架无关设计系统。",
     },
     {
       lang: "en",
