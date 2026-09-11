@@ -1,3 +1,7 @@
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { applyCssPageZoom } from "./page-zoom.js";
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openButton(page: Page, locale: "en" | "zh" = "en") {
@@ -370,6 +374,86 @@ test("Button contains long Chinese and RTL labels with coarse-pointer geometry",
   }
 });
 
+test("Button AT smoke keeps Save naming, polite status, and loading busy state", async ({
+  page,
+}) => {
+  await openButton(page);
+  const region = primaryRegion(page);
+  const button = region.locator("[data-button-save]");
+  const status = region.locator("[data-button-status]");
+
+  await expect(button).toHaveAccessibleName("Save changes");
+  await expect(status).toHaveAttribute("aria-live", "polite");
+
+  await button.focus();
+  const focusVisual = await button.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      boxShadow: style.boxShadow,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  const hasOutline =
+    focusVisual.outlineStyle !== "none" &&
+    Number.parseFloat(focusVisual.outlineWidth) > 0;
+  const hasFocusShadow = focusVisual.boxShadow !== "none";
+  expect(hasOutline || hasFocusShadow).toBe(true);
+
+  await button.click();
+  await expect(button).toBeDisabled();
+  await expect(button).toHaveAttribute("aria-busy", "true");
+  await expect(button).toHaveAccessibleName("Saving…");
+});
+
+test("Button remains usable at true 200% CSS page zoom", async ({ page }) => {
+  await openButton(page);
+  await applyCssPageZoom(page, 2);
+
+  const region = primaryRegion(page);
+  const button = region.locator("[data-button-save]");
+
+  await expect(button).toBeVisible();
+  await expect(button).toHaveAccessibleName("Save changes");
+  await button.scrollIntoViewIfNeeded();
+
+  const metrics = await page.evaluate(() => {
+    const control = document.querySelector<HTMLElement>(
+      "[data-button-primary-demo=en] [data-button-save]",
+    )!;
+    const buttonBounds = control.getBoundingClientRect();
+    const html = document.documentElement;
+    return {
+      buttonHeight: buttonBounds.height,
+      buttonHorizontallyContained:
+        buttonBounds.left >= -1 &&
+        buttonBounds.right <= window.innerWidth + 1,
+      buttonInViewport:
+        buttonBounds.left >= -1 &&
+        buttonBounds.top >= -1 &&
+        buttonBounds.right <= window.innerWidth + 1 &&
+        buttonBounds.bottom <= window.innerHeight + 1,
+      buttonWidth: buttonBounds.width,
+      documentOverflowX: html.scrollWidth > html.clientWidth + 1,
+      zoom: getComputedStyle(html).zoom,
+    };
+  });
+
+  expect(metrics.zoom === "2" || metrics.zoom === "200%").toBe(true);
+  expect(metrics.documentOverflowX).toBe(false);
+  expect(metrics.buttonHorizontallyContained).toBe(true);
+  expect(metrics.buttonInViewport).toBe(true);
+  expect(metrics.buttonWidth).toBeGreaterThanOrEqual(44);
+  expect(metrics.buttonHeight).toBeGreaterThanOrEqual(44);
+
+  const proofDir = join(process.cwd(), "temp/verified-proof/button");
+  mkdirSync(proofDir, { recursive: true });
+  await button.screenshot({
+    animations: "disabled",
+    path: join(proofDir, "primary-en-200pct-zoom.png"),
+  });
+});
+
 test("Button exposes system focus and removes nonessential loading motion", async ({
   page,
 }) => {
@@ -433,8 +517,7 @@ test("Button keeps one focus boundary and complete states across compatibility s
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
 
       const ready = page.locator("#compat-ready");

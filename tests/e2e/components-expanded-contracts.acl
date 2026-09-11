@@ -14,30 +14,83 @@ suite "a3s-ui-expanded-contracts" {
     }
 
     scenario "code-diff" {
-        name = "Code Diff preserves explicit addition and removal markers"
+        name = "Code Diff preserves addition/removal markers, covers state matrix, and confirms Chinese caption"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-diff.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "addition-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='+']") }
-        expect "removal-visible" { visible = css(".a3s-preview[data-preview-component=code-diff] [data-diff-line='-']") }
-        focus "focus-diff-code" { target = css(".a3s-preview[data-preview-component=code-diff] .code-diff pre[tabindex]") }
-        expect "diff-code-focused" { visible = css(".a3s-preview[data-preview-component=code-diff] .code-diff pre[tabindex]:focus") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-code-diff-primary-demo=en] [data-diff-line='+']") }
+        expect "removal-visible" { visible = css("[data-code-diff-primary-demo=en] [data-diff-line='-']") }
+        expect "caption-copy" { text = "src/session.ts" }
+        focus "focus-diff-code" { target = css("[data-code-diff-primary-demo=en] [data-diff-scroller]") }
+        expect "diff-code-focused" { visible = css("[data-code-diff-primary-demo=en] [data-diff-scroller]:focus") }
+        screenshot "code-diff-desktop" { path = "components/code-diff-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=code-diff]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=code-diff] [data-state-specimen=ready]") }
+        expect "state-specimen-loading" { visible = css(".a3s-component-state-matrix[open][data-component=code-diff] [data-state-specimen=loading]") }
+        expect "state-specimen-empty" { visible = css(".a3s-component-state-matrix[open][data-component=code-diff] [data-state-specimen=empty]") }
+        screenshot "code-diff-states" { path = "components/code-diff-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=code-diff][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/code-diff.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-code-diff-primary-demo=zh] [data-diff-caption]") }
+        expect "chinese-caption" { text = "会话重连差异" }
+        screenshot "code-diff-chinese-phone" { path = "components/code-diff-chinese-phone.png" }
+        accessibility "code-diff-accessibility" { path = "components/code-diff-accessibility.json" interactive = true }
+        console "code-diff-console" { path = "components/code-diff-console.json" clear = false }
+        page_errors "code-diff-errors" { path = "components/code-diff-errors.json" clear = false }
     }
 
     scenario "collapsible" {
-        name = "Collapsible keeps native keyboard disclosure behavior"
+        name = "Collapsible keeps native keyboard disclosure, covers state matrix, and confirms Chinese copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/collapsible.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "focus-summary" { target = css(".a3s-preview[data-preview-component=collapsible] summary") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-collapsible-primary-demo=en][open] [data-collapsible-content]") }
+        expect "open-copy" { text = "The folder is read only until access is approved." }
+        focus "focus-summary" { target = css("[data-collapsible-primary-demo=en] [data-collapsible-summary]") }
         press "close-details" { key = "Enter" }
-        expect "closed-root-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible:not([open])") }
+        expect "closed-root" { visible = css("[data-collapsible-primary-demo=en]:not([open])") }
         press "reopen-details" { key = "Enter" }
-        expect "content-visible" { visible = css(".a3s-preview[data-preview-component=collapsible] details.collapsible[open] [data-collapsible-content]") }
+        expect "content-visible" { visible = css("[data-collapsible-primary-demo=en][open] [data-collapsible-content]") }
+        screenshot "collapsible-desktop" { path = "components/collapsible-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=collapsible] [data-state-specimen=closed]") }
+        screenshot "collapsible-states" { path = "components/collapsible-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=collapsible][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/collapsible.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-collapsible-primary-demo=zh][open] [data-collapsible-summary]") }
+        expect "chinese-summary" { text = "为什么需要此权限" }
+        focus "focus-chinese-summary" { target = css("[data-collapsible-primary-demo=zh] [data-collapsible-summary]") }
+        press "close-chinese" { key = "Enter" }
+        expect "chinese-closed" { visible = css("[data-collapsible-primary-demo=zh]:not([open])") }
+        screenshot "collapsible-chinese-phone" { path = "components/collapsible-chinese-phone.png" }
+        accessibility "collapsible-accessibility" { path = "components/collapsible-accessibility.json" interactive = true }
+        console "collapsible-console" { path = "components/collapsible-console.json" clear = false }
+        page_errors "collapsible-errors" { path = "components/collapsible-errors.json" clear = false }
     }
 
     scenario "color-swatches" {
@@ -53,65 +106,294 @@ suite "a3s-ui-expanded-contracts" {
     }
 
     scenario "copy-button" {
-        name = "Copy Button reports the result in its live feedback"
+        name = "Copy Button preserves keyboard copy, empty rejection, busy duplicate protection, reset, and compact Chinese feedback"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/copy-button.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "copy-command" { target = role("button", "Copy command") }
-        wait "copy-result" { text = "Copied" }
-        expect "copied-state" { visible = css(".a3s-preview[data-preview-component=copy-button] .copy-button[data-state=copied]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-ready-root" { visible = css("button.copy-button[data-copy-primary-demo=en][data-state=ready][data-copy-text]:has([data-copy-label]):has([data-copy-feedback][aria-live=polite])") }
+
+        focus "focus-empty-copy" { target = css("button.copy-button[data-copy-empty-demo=en]") }
+        press "activate-empty-copy" { key = "Enter" }
+        expect "empty-source-errors" { visible = css("button.copy-button[data-copy-empty-demo=en][data-state=error]:has([data-copy-feedback])") }
+        expect "empty-error-feedback" { text = "Copy failed" }
+        screenshot "copy-button-empty-error" { path = "components/copy-button-empty-error.png" }
+
+        focus "focus-primary-copy" { target = css("button.copy-button[data-copy-primary-demo=en]") }
+        press "activate-primary-copy" { key = "Enter" }
+        wait "copied-feedback" { visible = css("button.copy-button[data-copy-primary-demo=en][data-state=copied]:has([data-copy-feedback])") }
+        expect "copied-feedback-text" { text = "Copied" }
+        click "repeat-while-copied-or-ready" { target = css("button.copy-button[data-copy-primary-demo=en]") }
+        wait "ready-after-reset" { visible = css("button.copy-button[data-copy-primary-demo=en][data-state=ready]:not([aria-busy])") }
+        screenshot "copy-button-ready-reset" { path = "components/copy-button-ready-reset.png" }
+
+        focus "focus-primary-for-space" { target = css("button.copy-button[data-copy-primary-demo=en]") }
+        press "activate-with-space" { key = "Space" }
+        wait "space-copied" { visible = css("button.copy-button[data-copy-primary-demo=en][data-state=copied]") }
+        screenshot "copy-button-copied" { path = "components/copy-button-copied.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=copy-button]") }
+        expect "state-specimen-copying" { visible = css(".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=copying] button.copy-button[data-state-specimen-root=copying][data-state=copying][aria-busy=true]") }
+        expect "state-specimen-error" { visible = css(".a3s-component-state-matrix[open][data-component=copy-button] [data-state-specimen=error] button.copy-button[data-state-specimen-root=error][data-state=error]") }
+        screenshot "copy-button-states" { path = "components/copy-button-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=copy-button][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/copy-button.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("button.copy-button[data-copy-primary-demo=zh]") }
+        focus "focus-chinese-copy" { target = css("button.copy-button[data-copy-primary-demo=zh]") }
+        press "activate-chinese-copy" { key = "Enter" }
+        wait "chinese-copied" { visible = css("button.copy-button[data-copy-primary-demo=zh][data-state=copied]") }
+        expect "chinese-feedback" { text = "已复制" }
+        screenshot "copy-button-chinese-phone" { path = "components/copy-button-chinese-phone.png" }
+        accessibility "copy-button-accessibility" { path = "components/copy-button-accessibility.json" interactive = true }
+        console "copy-button-console" { path = "components/copy-button-console.json" clear = false }
+        page_errors "copy-button-errors" { path = "components/copy-button-errors.json" clear = false }
     }
 
     scenario "date-picker" {
-        name = "Date Picker accepts an ISO calendar date through the native input"
+        name = "Date Picker preserves min/max bounds, leap-day entry, empty and overflow recovery, native availability, and compact Chinese confirmation"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/date-picker.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "set-target-date" { target = css(".a3s-preview[data-preview-component=date-picker] input[type=date]") value = "2026-09-01" }
-        expect "date-input-visible" { visible = css(".a3s-preview[data-preview-component=date-picker] input.date-picker") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-bounded-root" { visible = css("form[data-date-picker-primary-demo=en][data-date-value='2026-08-14'] #date-target-en.date-picker[type=date][required][min='2024-01-01'][max='2028-12-31']:not([disabled]):not([readonly])") }
+        expect "fixtures-ready" { visible = css("form[data-date-picker-primary-demo=en] [data-date-fixtures=en]") }
+
+        click "load-leap-day" { target = css("form[data-date-picker-primary-demo=en] [data-date-fixture=leap-day]") }
+        wait "leap-fixture-ready" { text = "Fixture loaded leap day 2028-02-29." }
+        click "accept-leap-day" { target = role("button", "Check date") }
+        wait "leap-day-status" { text = "Target date accepted as a local calendar day." }
+        expect "leap-day-accepted" { text = "Target date accepted as a local calendar day." }
+        expect "leap-day-recorded" { visible = css("form[data-date-picker-primary-demo=en][data-date-value='2028-02-29']") }
+        screenshot "date-picker-leap-day" { path = "components/date-picker-leap-day.png" }
+
+        click "load-overflow-date" { target = css("form[data-date-picker-primary-demo=en] [data-date-fixture=overflow]") }
+        wait "overflow-fixture-ready" { text = "Fixture loaded overflow date 2029-01-01." }
+        click "reject-overflow" { target = role("button", "Check date") }
+        wait "overflow-status" { visible = css("form[data-date-picker-primary-demo=en] .field[data-invalid=true]:has(#date-target-en[aria-invalid=true])") }
+        expect "overflow-invalid" { visible = css("form[data-date-picker-primary-demo=en] .field[data-invalid=true]:has(#date-target-en[aria-invalid=true])") }
+        expect "overflow-message" { text = "Choose a date between 2024-01-01 and 2028-12-31." }
+        screenshot "date-picker-overflow" { path = "components/date-picker-overflow.png" }
+
+        click "clear-date-empty" { target = css("form[data-date-picker-primary-demo=en] [data-date-fixture=empty]") }
+        wait "empty-fixture-ready" { text = "Fixture cleared the target date." }
+        click "reject-empty" { target = role("button", "Check date") }
+        wait "empty-status" { visible = css("form[data-date-picker-primary-demo=en] .field[data-invalid=true]:has(#date-target-en[aria-invalid=true])") }
+        expect "empty-invalid" { visible = css("form[data-date-picker-primary-demo=en] .field[data-invalid=true]:has(#date-target-en[aria-invalid=true])") }
+        expect "empty-message" { text = "Choose a target date." }
+        screenshot "date-picker-empty" { path = "components/date-picker-empty.png" }
+
+        expect "disabled-keeps-native-lock" { visible = css("[data-date-picker-availability=en] .field[data-disabled=true]:has(#date-disabled-en.date-picker[disabled][value='2025-12-01'])") }
+        expect "readonly-keeps-native-lock" { visible = css("[data-date-picker-availability=en] .field[data-readonly=true]:has(#date-readonly-en.date-picker[readonly][value='2026-03-18'])") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=date-picker]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=disabled] input.date-picker[data-state-specimen-root=disabled][disabled]") }
+        expect "state-specimen-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=invalid] input.date-picker[data-state-specimen-root=invalid][aria-invalid=true]") }
+        expect "state-specimen-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=date-picker] [data-state-specimen=read-only] input.date-picker[data-state-specimen-root='read-only'][readonly]") }
+        screenshot "date-picker-states" { path = "components/date-picker-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=date-picker][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/date-picker.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("form[data-date-picker-primary-demo=zh] #date-target-zh") }
+        click "load-chinese-leap" { target = css("form[data-date-picker-primary-demo=zh] [data-date-fixture=leap-day]") }
+        wait "chinese-fixture-ready" { text = "已加载闰日夹具 2028-02-29。" }
+        click "accept-chinese-date" { target = role("button", "检查日期") }
+        wait "chinese-status" { text = "已接受本地日历日作为目标日期。" }
+        expect "chinese-accepted" { text = "已接受本地日历日作为目标日期。" }
+        screenshot "date-picker-chinese-phone" { path = "components/date-picker-chinese-phone.png" }
+        accessibility "date-picker-accessibility" { path = "components/date-picker-accessibility.json" interactive = true }
+        console "date-picker-console" { path = "components/date-picker-console.json" clear = false }
+        page_errors "date-picker-errors" { path = "components/date-picker-errors.json" clear = false }
     }
 
     scenario "editable-text" {
-        name = "Editable Text commits a keyboard edit and returns to display mode"
+        name = "Editable Text preserves Escape cancel, empty rejection, async save, focus return, and compact Chinese editing"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/editable-text.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "focus-begin-edit" { target = css(".a3s-preview[data-preview-component=editable-text] [data-editable-action=edit]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-display-root" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=display][data-editable-required]:has([data-editable-value]):has([data-editable-action=edit]):has([data-editable-form][aria-hidden=true])") }
+
+        focus "focus-begin-edit" { target = css("[data-editable-primary-demo=en] [data-editable-action=edit]") }
         press "begin-edit" { key = "Enter" }
-        wait "edit-mode" { visible = css(".a3s-preview[data-preview-component=editable-text] .editable-text[data-state=editing] input[aria-label=Title]") }
-        fill "change-title" { target = css(".a3s-preview[data-preview-component=editable-text] input[aria-label=Title]") value = "Release plan" }
+        wait "edit-mode" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=editing] input[aria-label=Title]:not([disabled])") }
+        fill "draft-then-escape" { target = css("[data-editable-primary-demo=en] input[aria-label=Title]") value = "Scratch draft" }
+        press "cancel-with-escape" { key = "Escape" }
+        expect "escape-restores-display" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=display]:has([data-editable-value])") }
+        expect "escape-restores-authored-value" { text = "Release notes" }
+        expect "escape-returns-focus-to-edit" { visible = css("[data-editable-primary-demo=en] [data-editable-action=edit]:focus") }
+
+        focus "focus-edit-for-empty" { target = css("[data-editable-primary-demo=en] [data-editable-action=edit]") }
+        press "begin-empty-edit" { key = "Enter" }
+        wait "empty-edit-mode" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=editing] input[aria-label=Title]") }
+        fill "clear-title" { target = css("[data-editable-primary-demo=en] input[aria-label=Title]") value = "x" }
+        fill "clear-title-empty" { target = css("[data-editable-primary-demo=en] input[aria-label=Title]") value = "" }
+        press "submit-empty-title" { key = "Enter" }
+        expect "empty-rejected-as-error" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=error]:has(input[aria-label=Title][aria-invalid=true])") }
+        screenshot "editable-text-empty-error" { path = "components/editable-text-empty-error.png" }
+        press "escape-from-error" { key = "Escape" }
+        expect "error-cancel-restores-display" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=display]:not([aria-busy])") }
+
+        focus "focus-edit-for-save" { target = css("[data-editable-primary-demo=en] [data-editable-action=edit]") }
+        press "begin-valid-edit" { key = "Enter" }
+        wait "valid-edit-mode" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=editing] input[aria-label=Title]") }
+        fill "change-title" { target = css("[data-editable-primary-demo=en] input[aria-label=Title]") value = "Release plan" }
         press "commit-title" { key = "Enter" }
+        wait "saving-state" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=saving][aria-busy=true]:has(input[aria-label=Title][disabled])") }
+        expect "saving-blocks-input" { visible = css(".editable-text[data-editable-primary-demo=en][aria-busy=true] input[aria-label=Title][disabled]") }
+        screenshot "editable-text-saving" { path = "components/editable-text-saving.png" }
+        wait "saved-display" { visible = css(".editable-text[data-editable-primary-demo=en][data-state=display]:not([aria-busy]):has([data-editable-value])") }
         expect "title-committed" { text = "Release plan" }
-        expect "display-mode" { visible = css(".a3s-preview[data-preview-component=editable-text] .editable-text[data-state=display]") }
+        expect "save-returns-focus-to-edit" { visible = css("[data-editable-primary-demo=en] [data-editable-action=edit]:focus") }
+        screenshot "editable-text-saved" { path = "components/editable-text-saved.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=editable-text]") }
+        expect "state-specimen-saving" { visible = css(".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=saving] .editable-text[data-state-specimen-root=saving][data-state=saving][aria-busy=true]") }
+        expect "state-specimen-error" { visible = css(".a3s-component-state-matrix[open][data-component=editable-text] [data-state-specimen=error] .editable-text[data-state-specimen-root=error][data-state=error]") }
+        screenshot "editable-text-states" { path = "components/editable-text-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=editable-text][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/editable-text.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css(".editable-text[data-editable-primary-demo=zh] [data-editable-action=edit]") }
+        focus "focus-chinese-edit" { target = css("[data-editable-primary-demo=zh] [data-editable-action=edit]") }
+        press "begin-chinese-edit" { key = "Enter" }
+        wait "chinese-edit-mode" { visible = css(".editable-text[data-editable-primary-demo=zh][data-state=editing] input[aria-label=标题]") }
+        fill "change-chinese-title" { target = css("[data-editable-primary-demo=zh] input[aria-label=标题]") value = "发布计划" }
+        press "commit-chinese-title" { key = "Enter" }
+        wait "chinese-saving" { visible = css(".editable-text[data-editable-primary-demo=zh][data-state=saving][aria-busy=true]") }
+        wait "chinese-saved" { visible = css(".editable-text[data-editable-primary-demo=zh][data-state=display]:not([aria-busy])") }
+        expect "chinese-title-committed" { text = "发布计划" }
+        screenshot "editable-text-chinese-phone" { path = "components/editable-text-chinese-phone.png" }
+        accessibility "editable-text-accessibility" { path = "components/editable-text-accessibility.json" interactive = true }
+        console "editable-text-console" { path = "components/editable-text-console.json" clear = false }
+        page_errors "editable-text-errors" { path = "components/editable-text-errors.json" clear = false }
     }
 
     scenario "emoji-picker" {
-        name = "Emoji Picker filters and selects a named result"
+        name = "Emoji Picker filters, selects, recovers from empty search, keeps disabled locked, and confirms Chinese selection"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/emoji-picker.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "filter-reactions" { target = css(".a3s-preview[data-preview-component=emoji-picker] input[aria-label='Search reactions']") value = "celebrate" }
-        focus "focus-celebrate" { target = css(".a3s-preview[data-preview-component=emoji-picker] [data-emoji-value='🎉']") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-root" { visible = css("[data-emoji-picker-primary-demo=en] .emoji-picker[data-emoji-demo-root=en] [data-emoji-grid] [data-emoji-value='🎉']") }
+
+        fill "filter-celebrate" { target = css("[data-emoji-picker-primary-demo=en] input[aria-label='Search reactions']") value = "celebrate" }
+        wait "celebrate-visible" { visible = css("[data-emoji-picker-primary-demo=en] [data-emoji-value='🎉']:not([hidden])") }
+        expect "celebrate-only-ready" { visible = css("[data-emoji-picker-primary-demo=en] .emoji-picker[data-state=ready] [data-emoji-value='🎉']:not([hidden])") }
+        focus "focus-celebrate" { target = css("[data-emoji-picker-primary-demo=en] [data-emoji-value='🎉']") }
         press "choose-celebrate" { key = "Enter" }
-        expect "celebrate-selected" { visible = css(".a3s-preview[data-preview-component=emoji-picker] [data-emoji-value='🎉'][aria-selected=true]") }
+        wait "celebrate-status" { text = "Selected 🎉" }
+        expect "celebrate-selected" { visible = css("[data-emoji-picker-primary-demo=en] [data-emoji-value='🎉'][aria-selected=true]") }
+        expect "celebrate-recorded" { visible = css("[data-emoji-picker-primary-demo=en][data-emoji-value='🎉']") }
+        screenshot "emoji-picker-celebrate" { path = "components/emoji-picker-celebrate.png" }
+
+        fill "filter-empty" { target = css("[data-emoji-picker-primary-demo=en] input[aria-label='Search reactions']") value = "zzzz" }
+        wait "empty-state" { visible = css("[data-emoji-picker-primary-demo=en] .emoji-picker[data-state=empty] [data-emoji-empty]:not([hidden])") }
+        expect "empty-message" { text = "No reactions match." }
+        screenshot "emoji-picker-empty" { path = "components/emoji-picker-empty.png" }
+
+        fill "clear-filter" { target = css("[data-emoji-picker-primary-demo=en] input[aria-label='Search reactions']") value = "" }
+        wait "ready-again" { visible = css("[data-emoji-picker-primary-demo=en] .emoji-picker[data-state=ready] [data-emoji-value='🚀']:not([hidden])") }
+        click "choose-ship" { target = css("[data-emoji-picker-primary-demo=en] [data-emoji-value='🚀']") }
+        wait "ship-status" { text = "Selected 🚀" }
+        expect "ship-selected" { visible = css("[data-emoji-picker-primary-demo=en] [data-emoji-value='🚀'][aria-selected=true]") }
+        screenshot "emoji-picker-ship" { path = "components/emoji-picker-ship.png" }
+
+        expect "availability-empty" { visible = css("[data-emoji-picker-availability=en] .emoji-picker[data-state=empty] [data-emoji-empty]:not([hidden])") }
+        expect "availability-disabled" { visible = css("[data-emoji-picker-availability=en] .emoji-picker[data-disabled=true] input[disabled]") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=emoji-picker]") }
+        expect "state-specimen-empty" { visible = css(".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=empty] .emoji-picker[data-state-specimen-root=empty]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=emoji-picker] [data-state-specimen=disabled] .emoji-picker[data-state-specimen-root=disabled]") }
+        screenshot "emoji-picker-states" { path = "components/emoji-picker-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=emoji-picker][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/emoji-picker.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-emoji-picker-primary-demo=zh] .emoji-picker [data-emoji-value='🎉']") }
+        fill "filter-chinese-celebrate" { target = css("[data-emoji-picker-primary-demo=zh] input[aria-label='搜索回应']") value = "庆祝" }
+        wait "chinese-celebrate-visible" { visible = css("[data-emoji-picker-primary-demo=zh] [data-emoji-value='🎉']:not([hidden])") }
+        click "choose-chinese-celebrate" { target = css("[data-emoji-picker-primary-demo=zh] [data-emoji-value='🎉']") }
+        wait "chinese-status" { text = "已选择 🎉" }
+        expect "chinese-selected" { visible = css("[data-emoji-picker-primary-demo=zh][data-emoji-value='🎉']") }
+        screenshot "emoji-picker-chinese-phone" { path = "components/emoji-picker-chinese-phone.png" }
+        accessibility "emoji-picker-accessibility" { path = "components/emoji-picker-accessibility.json" interactive = true }
+        console "emoji-picker-console" { path = "components/emoji-picker-console.json" clear = false }
+        page_errors "emoji-picker-errors" { path = "components/emoji-picker-errors.json" clear = false }
     }
 
     scenario "file-type-icon" {
-        name = "File Type Icon keeps a textual type cue"
+        name = "File Type Icon keeps a textual type cue, covers state matrix, and confirms Chinese label"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/file-type-icon.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "typescript-cue-visible" { visible = css(".a3s-preview[data-preview-component=file-type-icon] .file-type-icon[aria-label='TypeScript file'] [data-file-extension]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-file-type-icon-primary-demo=en][aria-label='TypeScript file'] [data-file-extension]") }
+        expect "extension-copy" { text = "TS" }
+        screenshot "file-type-icon-desktop" { path = "components/file-type-icon-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=file-type-icon]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=file-type-icon] [data-state-specimen=ready]") }
+        expect "state-specimen-generic" { visible = css(".a3s-component-state-matrix[open][data-component=file-type-icon] [data-state-specimen=generic]") }
+        expect "state-specimen-known" { visible = css(".a3s-component-state-matrix[open][data-component=file-type-icon] [data-state-specimen=known]") }
+        screenshot "file-type-icon-states" { path = "components/file-type-icon-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=file-type-icon][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/file-type-icon.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-file-type-icon-primary-demo=zh][aria-label='TypeScript 文件']") }
+        expect "chinese-extension" { text = "TS" }
+        screenshot "file-type-icon-chinese-phone" { path = "components/file-type-icon-chinese-phone.png" }
+        accessibility "file-type-icon-accessibility" { path = "components/file-type-icon-accessibility.json" interactive = true }
+        console "file-type-icon-console" { path = "components/file-type-icon-console.json" clear = false }
+        page_errors "file-type-icon-errors" { path = "components/file-type-icon-errors.json" clear = false }
     }
 
     scenario "floating-panel" {
@@ -126,27 +408,41 @@ suite "a3s-ui-expanded-contracts" {
         expect "close-focused" { visible = css(".a3s-preview[data-preview-component=floating-panel] [data-floating-panel-action=close]:focus") }
     }
 
-    scenario "form" {
-        name = "Form keeps labeled input and submission in one task boundary"
-        surface = "web"
-        timeout_ms = 45000
-        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/form.html" }
-        wait "loaded" { load = "networkidle" }
-        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "rename-workspace" { target = label("Workspace name") value = "Evaluation" }
-        focus "focus-submit" { target = css(".a3s-preview[data-preview-component=form] form.form button[type=submit]") }
-        expect "submit-focused" { visible = css(".a3s-preview[data-preview-component=form] form.form button[type=submit]:focus") }
-    }
-
     scenario "highlighter" {
-        name = "Highlighter keeps code focusable and marked text explicit"
+        name = "Highlighter keeps marked code focusable, covers state matrix, and confirms Chinese mark copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/highlighter.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "focus-code" { target = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter") }
-        expect "marked-code-visible" { visible = css(".a3s-preview[data-preview-component=highlighter] pre.highlighter:focus mark") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-highlighter-primary-demo=en] [data-code-mark]") }
+        expect "marked-copy" { text = "ready" }
+        focus "focus-code" { target = css("[data-highlighter-primary-demo=en]") }
+        expect "marked-code-focused" { visible = css("[data-highlighter-primary-demo=en]:focus [data-code-mark]") }
+        screenshot "highlighter-desktop" { path = "components/highlighter-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=highlighter]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=highlighter] [data-state-specimen=ready]") }
+        expect "state-specimen-loading" { visible = css(".a3s-component-state-matrix[open][data-component=highlighter] [data-state-specimen=loading]") }
+        expect "state-specimen-error" { visible = css(".a3s-component-state-matrix[open][data-component=highlighter] [data-state-specimen=error]") }
+        screenshot "highlighter-states" { path = "components/highlighter-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=highlighter][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/highlighter.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-highlighter-primary-demo=zh] [data-code-mark]") }
+        expect "chinese-mark" { text = "就绪" }
+        screenshot "highlighter-chinese-phone" { path = "components/highlighter-chinese-phone.png" }
+        accessibility "highlighter-accessibility" { path = "components/highlighter-accessibility.json" interactive = true }
+        console "highlighter-console" { path = "components/highlighter-console.json" clear = false }
+        page_errors "highlighter-errors" { path = "components/highlighter-errors.json" clear = false }
     }
 
     scenario "hotkey-input" {
@@ -179,24 +475,72 @@ suite "a3s-ui-expanded-contracts" {
     }
 
     scenario "icon" {
-        name = "Icon exposes a named graphic without a wrapper control"
+        name = "Icon exposes a named graphic, covers state matrix, and confirms Chinese label"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/icon.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "named-icon-visible" { visible = css(".a3s-preview[data-preview-component=icon] .icon[role=img][aria-label=Verified] svg") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-icon-primary-demo=en][role=img][aria-label=Verified] svg") }
+        screenshot "icon-desktop" { path = "components/icon-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=icon]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=icon] [data-state-specimen=ready]") }
+        expect "state-specimen-labeled" { visible = css(".a3s-component-state-matrix[open][data-component=icon] [data-state-specimen=labeled]") }
+        screenshot "icon-states" { path = "components/icon-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=icon][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/icon.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-icon-primary-demo=zh][aria-label='已验证']") }
+        expect "chinese-icon" { visible = css("[data-icon-primary-demo=zh][role=img] svg") }
+        screenshot "icon-chinese-phone" { path = "components/icon-chinese-phone.png" }
+        accessibility "icon-accessibility" { path = "components/icon-accessibility.json" interactive = true }
+        console "icon-console" { path = "components/icon-console.json" clear = false }
+        page_errors "icon-errors" { path = "components/icon-errors.json" clear = false }
     }
 
     scenario "image" {
-        name = "Image reserves geometry and supplies alternative text"
+        name = "Image reserves geometry with alt text, covers state matrix, and confirms Chinese caption"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "image-visible" { visible = css(".a3s-preview[data-preview-component=image] figure.image[data-state=ready] img[alt]") }
-        expect "caption-visible" { visible = css(".a3s-preview[data-preview-component=image] figure.image figcaption") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-image-primary-demo=en][data-state=ready] img[alt='Official A3S OS mark']") }
+        expect "caption-visible" { visible = css("[data-image-primary-demo=en] [data-image-caption]") }
+        expect "caption-copy" { text = "Official identity asset rendered with a stable aspect ratio." }
+        screenshot "image-desktop" { path = "components/image-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=image]") }
+        wait "state-specimen-loading" { visible = css(".a3s-component-state-matrix[open][data-component=image] [data-state-specimen=loading]") }
+        expect "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=image] [data-state-specimen=ready]") }
+        screenshot "image-states" { path = "components/image-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=image][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/image.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-image-primary-demo=zh][data-state=ready]") }
+        expect "chinese-alt" { visible = css("[data-image-primary-demo=zh] img[alt='A3S OS 官方标志']") }
+        expect "chinese-caption" { text = "使用稳定纵横比呈现官方身份资产。" }
+        screenshot "image-chinese-phone" { path = "components/image-chinese-phone.png" }
+        accessibility "image-accessibility" { path = "components/image-accessibility.json" interactive = true }
+        console "image-console" { path = "components/image-console.json" clear = false }
+        page_errors "image-errors" { path = "components/image-errors.json" clear = false }
     }
 
     scenario "image-select" {
@@ -211,66 +555,193 @@ suite "a3s-ui-expanded-contracts" {
     }
 
     scenario "image-viewer" {
-        name = "Image Viewer offers button-driven zoom inside the bounded dialog"
+        name = "Image Viewer zooms inside the dialog, covers open/closed matrix, and confirms Chinese controls"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/image-viewer.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        click "zoom-in" { target = role("button", "Zoom in") }
-        expect "zoom-applied" { visible = css(".a3s-preview[data-preview-component=image-viewer] dialog.image-viewer[style*='--image-viewer-zoom: 1.25']") }
-        screenshot "viewer-zoomed" { path = "components/image-viewer-zoomed.png" }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-image-viewer-primary-demo=en][data-state=open] [data-image-viewer-caption]") }
+        expect "caption-copy" { text = "Inspect without changing the source asset." }
+        click "zoom-in" { target = css("[data-image-viewer-primary-demo=en] [data-image-viewer-action=zoom-in]") }
+        expect "zoom-applied" { visible = css("[data-image-viewer-primary-demo=en][style*='--image-viewer-zoom: 1.25']") }
+        screenshot "image-viewer-desktop" { path = "components/image-viewer-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=image-viewer]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=closed]") }
+        expect "state-specimen-loading" { visible = css(".a3s-component-state-matrix[open][data-component=image-viewer] [data-state-specimen=loading]") }
+        screenshot "image-viewer-states" { path = "components/image-viewer-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=image-viewer][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/image-viewer.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-image-viewer-primary-demo=zh] [data-image-viewer-action=zoom-in]") }
+        expect "chinese-title" { text = "图像预览" }
+        expect "chinese-caption" { text = "检查图像而不修改源文件。" }
+        click "chinese-zoom-in" { target = css("[data-image-viewer-primary-demo=zh] [data-image-viewer-action=zoom-in]") }
+        expect "chinese-zoom-applied" { visible = css("[data-image-viewer-primary-demo=zh][style*='--image-viewer-zoom: 1.25']") }
+        screenshot "image-viewer-chinese-phone" { path = "components/image-viewer-chinese-phone.png" }
+        accessibility "image-viewer-accessibility" { path = "components/image-viewer-accessibility.json" interactive = true }
+        console "image-viewer-console" { path = "components/image-viewer-console.json" clear = false }
+        page_errors "image-viewer-errors" { path = "components/image-viewer-errors.json" clear = false }
     }
 
     scenario "markdown-surface" {
-        name = "Markdown Surface keeps headings, code, and callouts in one reading flow"
+        name = "Markdown Surface keeps heading/code/callout flow, covers state matrix, and confirms Chinese reading copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/markdown-surface.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "heading-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface h2") }
-        expect "code-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre code") }
-        expect "callout-visible" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface blockquote") }
-        focus "focus-markdown-code" { target = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre[tabindex]") }
-        expect "markdown-code-focused" { visible = css(".a3s-preview[data-preview-component=markdown-surface] article.markdown-surface pre[tabindex]:focus") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-markdown-surface-primary-demo=en] [data-markdown-heading]") }
+        expect "heading-copy" { text = "Run summary" }
+        expect "code-visible" { visible = css("[data-markdown-surface-primary-demo=en] [data-markdown-code] code") }
+        expect "callout-visible" { visible = css("[data-markdown-surface-primary-demo=en] [data-markdown-callout]") }
+        focus "focus-markdown-code" { target = css("[data-markdown-surface-primary-demo=en] [data-markdown-code]") }
+        expect "markdown-code-focused" { visible = css("[data-markdown-surface-primary-demo=en] [data-markdown-code]:focus") }
+        screenshot "markdown-surface-desktop" { path = "components/markdown-surface-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=markdown-surface]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=markdown-surface] [data-state-specimen=ready]") }
+        expect "state-specimen-loading" { visible = css(".a3s-component-state-matrix[open][data-component=markdown-surface] [data-state-specimen=loading]") }
+        screenshot "markdown-surface-states" { path = "components/markdown-surface-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=markdown-surface][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/markdown-surface.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-markdown-surface-primary-demo=zh] [data-markdown-heading]") }
+        expect "chinese-heading" { text = "运行摘要" }
+        expect "chinese-callout" { text = "发布前请检查生成结果。" }
+        screenshot "markdown-surface-chinese-phone" { path = "components/markdown-surface-chinese-phone.png" }
+        accessibility "markdown-surface-accessibility" { path = "components/markdown-surface-accessibility.json" interactive = true }
+        console "markdown-surface-console" { path = "components/markdown-surface-console.json" clear = false }
+        page_errors "markdown-surface-errors" { path = "components/markdown-surface-errors.json" clear = false }
     }
 
     scenario "snippet" {
-        name = "Snippet keeps a short command beside its copy action"
+        name = "Snippet keeps command and copy action, covers state matrix, and confirms Chinese copy label"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/snippet.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "command-visible" { visible = css(".a3s-preview[data-preview-component=snippet] .snippet > code") }
-        click "copy-snippet" { target = role("button", "Copy") }
-        expect "copy-action-visible" { visible = css(".a3s-preview[data-preview-component=snippet] .snippet .copy-button") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-snippet-primary-demo=en] > code") }
+        expect "command-copy" { text = "npm install @a3s-lab/ui" }
+        click "copy-snippet" { target = css("[data-snippet-primary-demo=en] .copy-button") }
+        expect "copy-action-visible" { visible = css("[data-snippet-primary-demo=en] .copy-button") }
+        screenshot "snippet-desktop" { path = "components/snippet-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=snippet]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=snippet] [data-state-specimen=ready]") }
+        screenshot "snippet-states" { path = "components/snippet-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=snippet][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/snippet.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-snippet-primary-demo=zh] [data-copy-label]") }
+        expect "chinese-copy-label" { text = "复制" }
+        screenshot "snippet-chinese-phone" { path = "components/snippet-chinese-phone.png" }
+        accessibility "snippet-accessibility" { path = "components/snippet-accessibility.json" interactive = true }
+        console "snippet-console" { path = "components/snippet-console.json" clear = false }
+        page_errors "snippet-errors" { path = "components/snippet-errors.json" clear = false }
     }
 
     scenario "sortable-list" {
-        name = "Sortable List supports keyboard pickup, move, and drop"
+        name = "Sortable List supports keyboard reorder, covers state matrix, and confirms Chinese item labels"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sortable-list.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "focus-research" { target = css(".a3s-preview[data-preview-component=sortable-list] [data-sortable-id=research] [data-sortable-handle]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-sortable-list-primary-demo=en] [data-sortable-id=research]") }
+        focus "focus-research" { target = css("[data-sortable-list-primary-demo=en] [data-sortable-id=research] [data-sortable-handle]") }
         press "pick-up" { key = "Space" }
         press "move-down" { key = "ArrowDown" }
         press "drop" { key = "Enter" }
-        expect "review-now-first" { visible = css(".a3s-preview[data-preview-component=sortable-list] .sortable-list > [data-sortable-id=review]:first-child") }
+        expect "review-now-first" { visible = css("[data-sortable-list-primary-demo=en] > [data-sortable-id=review]:first-child") }
+        screenshot "sortable-list-desktop" { path = "components/sortable-list-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=sortable-list]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=sortable-list] [data-state-specimen=ready]") }
+        screenshot "sortable-list-states" { path = "components/sortable-list-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=sortable-list][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/sortable-list.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-sortable-list-primary-demo=zh] [data-sortable-id=research]") }
+        expect "chinese-research" { text = "研究" }
+        expect "chinese-review" { text = "审核" }
+        screenshot "sortable-list-chinese-phone" { path = "components/sortable-list-chinese-phone.png" }
+        accessibility "sortable-list-accessibility" { path = "components/sortable-list-accessibility.json" interactive = true }
+        console "sortable-list-console" { path = "components/sortable-list-console.json" clear = false }
+        page_errors "sortable-list-errors" { path = "components/sortable-list-errors.json" clear = false }
     }
 
     scenario "streaming-text" {
-        name = "Streaming Text exposes a readable in-progress state without layout replacement"
+        name = "Streaming Text keeps live status readable, covers state matrix, and confirms Chinese stream copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/streaming-text.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "streaming-visible" { visible = css(".a3s-preview[data-preview-component=streaming-text] .streaming-text[data-state=streaming][aria-busy=true]") }
-        expect "status-visible" { visible = css(".a3s-preview[data-preview-component=streaming-text] [data-streaming-status]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-streaming-primary-demo=en][data-state=streaming][aria-busy=true]") }
+        expect "content-copy" { text = "Checking package contracts and visual states" }
+        expect "status-copy" { text = "Receiving verified output…" }
+        screenshot "streaming-text-desktop" { path = "components/streaming-text-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=streaming-text]") }
+        wait "state-specimen-streaming" { visible = css(".a3s-component-state-matrix[open][data-component=streaming-text] [data-state-specimen=streaming]") }
+        expect "state-specimen-complete" { visible = css(".a3s-component-state-matrix[open][data-component=streaming-text] [data-state-specimen=complete]") }
+        expect "state-specimen-paused" { visible = css(".a3s-component-state-matrix[open][data-component=streaming-text] [data-state-specimen=paused]") }
+        expect "state-specimen-error" { visible = css(".a3s-component-state-matrix[open][data-component=streaming-text] [data-state-specimen=error]") }
+        screenshot "streaming-text-states" { path = "components/streaming-text-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=streaming-text][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/streaming-text.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-streaming-primary-demo=zh][data-state=streaming]") }
+        expect "chinese-content" { text = "正在检查包契约与视觉状态" }
+        expect "chinese-status" { text = "正在接收已验证输出…" }
+        screenshot "streaming-text-chinese-phone" { path = "components/streaming-text-chinese-phone.png" }
+        accessibility "streaming-text-accessibility" { path = "components/streaming-text-accessibility.json" interactive = true }
+        console "streaming-text-console" { path = "components/streaming-text-console.json" clear = false }
+        page_errors "streaming-text-errors" { path = "components/streaming-text-errors.json" clear = false }
     }
 
     scenario "table-of-contents" {

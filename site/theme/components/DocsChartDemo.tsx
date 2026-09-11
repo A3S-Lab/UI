@@ -206,7 +206,13 @@ function chartConfiguration(
   };
 }
 
-export function ChartDemo({ variant = "bar" }: { variant?: ChartDemoVariant }) {
+export function ChartDemo({
+  variant = "bar",
+  primary = false,
+}: {
+  variant?: ChartDemoVariant;
+  primary?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const descriptionId = useId();
   const language = useLang();
@@ -240,7 +246,12 @@ export function ChartDemo({ variant = "bar" }: { variant?: ChartDemoVariant }) {
   }, [table, variant, zh]);
 
   return (
-    <figure className="a3s-chart-demo m-0 w-full">
+    <figure
+      className="a3s-chart-demo m-0 w-full"
+      {...(primary
+        ? { "data-chart-primary-demo": zh ? "zh" : "en" }
+        : undefined)}
+    >
       <div className="chart">
         <canvas ref={canvasRef} aria-describedby={descriptionId}>
           {table.summary}

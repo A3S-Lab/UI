@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="textarea"]` |
 | Interaction scenario | `components-actions-forms.acl#textarea` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-textarea` |
-| Deep review source | `product-requirements/component-details/textarea.md` |
+| Deep review source | `product-requirements\component-details\textarea.md` |
 
 ## User problem
 

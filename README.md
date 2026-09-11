@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" alt="A3S UI — one design system for every A3S surface" width="1200">
+  <img src="./assets/readme/hero.svg" alt="A3S UI �?one design system for every A3S surface" width="1200">
 </p>
 
 
@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@a3s-lab/ui"><img alt="npm version" src="https://img.shields.io/npm/v/@a3s-lab/ui?style=flat-square&color=315fc4"></a>
-  <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中文-315fc4?style=flat-square"></a>
+  <a href="https://a3s-lab.github.io/UI/"><img alt="Documentation in Simplified Chinese" src="https://img.shields.io/badge/docs-简体中�?315fc4?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/en/"><img alt="Documentation in English" src="https://img.shields.io/badge/docs-English-5f6875?style=flat-square"></a>
   <a href="https://a3s-lab.github.io/UI/playground.html"><img alt="A3S UI Playground" src="https://img.shields.io/badge/try-Playground-2864e8?style=flat-square"></a>
   <a href="https://github.com/A3S-Lab/UI/actions/workflows/pages.yml"><img alt="GitHub Pages deployment" src="https://img.shields.io/github/actions/workflow/status/A3S-Lab/UI/pages.yml?branch=main&style=flat-square&label=pages"></a>
@@ -83,11 +83,12 @@ See the [installation guide](https://a3s-lab.github.io/UI/installation.html) for
 | Selection and search | Native Select, Select, Combobox, Filter Bar, Date Picker, Color Swatches, Image Select, Emoji Picker, Checkbox, Radio Group, Switch, and Slider                                                                                                                                                                                                                                                                                                                                    |
 | Navigation           | Activity Bar, Breadcrumb, Back to Bottom, Tabs, Pagination, Sidebar, and Table of Contents                                                                                                                                                                                                                                                                                                                                                                                         |
 | Overlays             | Alert Dialog, Dialog, Drawer, Dropdown Menu, Context Menu, Popover, Floating Panel, Image Viewer, Command, and Tooltip                                                                                                                                                                                                                                                                                                                                                             |
-| Feedback and status  | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Spinner, Streaming Text, and Toast                                                                                                                                                                                                                                                                                                                                                                                          |
+| Feedback and status  | Alert, Badge, Status Badge, Empty, Progress, Skeleton, Streaming Text, and Toast                                                                                                                                                                                                                                                                                                                                                                                                  |
 | Data and content     | Accordion, Collapsible, Avatar, Icon, File Type Icon, Image, Card, Item, Kbd, Markdown Surface, Highlighter, Code Diff, Snippet, Chart, Property List, Data Grid, Table, Sortable List, Stepper, Timeline, and Tree                                                                                                                                                                                                                                                                |
 | Layout and workspace | App Shell, App Page, Catalog, Setting Row, Brand Lockup, Workspace Header, Toolbar, Ribbon, Settings Layout, Resource Card, Split Pane, Task Pane, and Status Bar                                                                                                                                                                                                                                                                                                                  |
 | Harness              | Task Start, Task Workspace, Agent Composer, Agent Transcript, Agent Workbench, Context Selector, Message Status, Message Attachment, Message Citation, Follow-up Suggestions, Task Plan, Plan Step, Task Queue, Approval Request, Execution Item, Checkpoint, Tool Call, Tool Call Timeline, Tool Result, Change Review, Execution Evidence, Artifact Card, File Explorer, File Manager, Knowledge Library, 3D Code Graph, Code Editor, Terminal, Log Viewer, and Device Simulator |
-| Utilities            | Scroll Area and Theme Switcher                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Utilities            | Theme Switcher                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Compatibility recipes | Spinner (`role="status"` + `animate-spin`) and Scroll Area (`.scrollbar` / `.scrollbar-sm`) remain documented aliases for tests and adapters until the next major migration; they are not controller-backed components. |
 
 The optional Dockview integration sits beside the semantic manifest and adds Dock Workspace, Grid View, Split View, and Pane View without changing the 116-component count. It re-exports the complete Dockview 8.1 MIT surface for native TypeScript, React, and Vue, then adds A3S theme tokens, versioned layout persistence, and an Edge Group-safe layout reset.
 
@@ -99,12 +100,12 @@ Every component guide includes a live preview, minimal usage, public parameters,
 
 The A3S theme is a complete design system rather than a palette layered over unrelated controls:
 
-- **Color** — white and near-black product surfaces with scarce iris focus, A3S brand blue, and reserved semantic states.
-- **Typography** — application-first hierarchy with dense labels and readable long-form documentation.
-- **Spacing** — a consistent rhythm for controls, panels, toolbars, and document canvases.
-- **Shape and elevation** — restrained radii, borders, and shadows that preserve information density.
-- **Motion** — short, purposeful transitions with reduced-motion support.
-- **Accessibility** — semantic elements, explicit ARIA state, keyboard interactions, RTL-aware layout, and light/dark themes.
+- **Color** �?white and near-black product surfaces with scarce iris focus, A3S brand blue, and reserved semantic states.
+- **Typography** �?application-first hierarchy with dense labels and readable long-form documentation.
+- **Spacing** �?a consistent rhythm for controls, panels, toolbars, and document canvases.
+- **Shape and elevation** �?restrained radii, borders, and shadows that preserve information density.
+- **Motion** �?short, purposeful transitions with reduced-motion support.
+- **Accessibility** �?semantic elements, explicit ARIA state, keyboard interactions, RTL-aware layout, and light/dark themes.
 
 ## Application-scale patterns and Harness
 
@@ -115,8 +116,8 @@ App Shell
 ├── Activity Bar
 ├── Workspace Header
 ├── App Page
-│   ├── Catalog
-│   └── Settings Layout + Setting Row
+�?  ├── Catalog
+�?  └── Settings Layout + Setting Row
 ├── Resource Card + Split Pane + Task Pane
 └── Status Bar
 
@@ -135,7 +136,7 @@ Dockview integration
 └── Grid View + Split View + Pane View
 ```
 
-These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320–380-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
+These patterns are independently reusable, but their tokens and layout contracts are designed to compose into document editors, task workspaces, and observability consoles. The default task geometry uses a 248-pixel navigation region, a 760-pixel reading column, a 320�?80-pixel optional inspector, 36-pixel controls, and 44-pixel coarse-pointer targets. Responsive navigation becomes a contained drawer below 768 pixels; inspectors become overlays below 900 pixels and bottom drawers below 520 pixels.
 
 Device Simulator preserves exact iframe viewport dimensions inside scaled phone, tablet, and desktop hardware shells, then exposes a structured native-preview boundary for trusted `a3s-webview` hosts.
 
@@ -147,9 +148,10 @@ The standalone [Playground](https://a3s-lab.github.io/UI/playground.html) is a b
 
 The documentation site uses the same Rspress, React, and TypeScript stack as the A3S Code website. Simplified Chinese is the default language; every published version also provides English documentation. Every current component and Harness integration guide presents HTML, React, and Vue through one persistent tab set with framework-correct installation, required imports, highlighted copyable examples, and matching hooks or composables where the public contract has behavior.
 
-| Version  | 简体中文                                               | English                                                   |
+| Version  | 简体中�?                                              | English                                                   |
 | -------- | ------------------------------------------------------ | --------------------------------------------------------- |
 | `next`   | [Default documentation](https://a3s-lab.github.io/UI/) | [English documentation](https://a3s-lab.github.io/UI/en/) |
+| `v0.4.1` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.4.1/) | [Stable English](https://a3s-lab.github.io/UI/v0.4.1/en/) |
 | `v0.4.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.4.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.4.0/en/) |
 | `v0.3.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.3.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.3.0/en/) |
 | `v0.2.0` | [Stable Chinese](https://a3s-lab.github.io/UI/v0.2.0/) | [Stable English](https://a3s-lab.github.io/UI/v0.2.0/en/) |

@@ -10,9 +10,9 @@ const projectRoot = path.resolve(
   "..",
 );
 const checkOnly = process.argv.includes("--check");
-const docsVersions = ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"];
+const docsVersions = ["next", "v0.4.1", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"];
 const placeholderPattern =
-  /(?:Component content|Component summary|组件内容|组件摘要|>\s*(?:\.{3}|…)\s*<)/u;
+  /(?:Component content|Component summary|组件内容|组件摘要|>\s*(?:\.{3}|�?\s*<)/u;
 const structuralCommentPattern = /(?:\{\/\*[^*]+\*\/\}|<!--[^>]+-->)/u;
 const componentFrameworkFragments = Object.freeze({
   "agent-composer": {
@@ -126,8 +126,8 @@ function labels(locale) {
         current: "当前页面",
         details: "查看详情",
         field: "名称",
-        option: "已就绪",
-        status: "操作已完成",
+        option: "已就�?,
+        status: "操作已完�?,
         summary: "组件摘要",
       }
     : {
@@ -162,9 +162,9 @@ const examplePlaceholderFragments = Object.freeze({
       "<p>Workspace permissions verified.</p>",
     ],
     zh: [
-      "<p>检查发布验证结果。</p>",
-      "<p>全部检查已通过，可以发布。</p>",
-      "<p>工作区权限已验证。</p>",
+      "<p>检查发布验证结果�?/p>",
+      "<p>全部检查已通过，可以发布�?/p>",
+      "<p>工作区权限已验证�?/p>",
     ],
   },
   "agent-workbench": {
@@ -175,10 +175,10 @@ const examplePlaceholderFragments = Object.freeze({
       '<output aria-live="polite">Ready</output>',
     ],
     zh: [
-      '<nav aria-label="项目上下文"><a href="#files">文件</a></nav>',
-      "<h1>发布验证</h1><p>检查当前运行和证据。</p>",
+      '<nav aria-label="项目上下�?><a href="#files">文件</a></nav>',
+      "<h1>发布验证</h1><p>检查当前运行和证据�?/p>",
       "<h2>检查器</h2><p>3 个文件已更改</p>",
-      '<output aria-live="polite">已就绪</output>',
+      '<output aria-live="polite">已就�?/output>',
     ],
   },
   "app-page": {
@@ -188,7 +188,7 @@ const examplePlaceholderFragments = Object.freeze({
     ],
     zh: [
       '<button type="button" class="btn">新建项目</button>',
-      '<section aria-labelledby="recent-projects"><h2 id="recent-projects">最近项目</h2><p>今天更新了 2 个项目。</p></section>',
+      '<section aria-labelledby="recent-projects"><h2 id="recent-projects">最近项�?/h2><p>今天更新�?2 个项目�?/p></section>',
     ],
   },
   "app-shell": {
@@ -197,8 +197,8 @@ const examplePlaceholderFragments = Object.freeze({
       '<section aria-labelledby="workspace-title"><h1 id="workspace-title">Design system workspace</h1><p>Review the active task and files.</p></section>',
     ],
     zh: [
-      '<nav aria-label="工作区"><a href="/tasks" aria-current="page">任务</a></nav>',
-      '<section aria-labelledby="workspace-title"><h1 id="workspace-title">设计系统工作区</h1><p>检查当前任务和文件。</p></section>',
+      '<nav aria-label="工作�?><a href="/tasks" aria-current="page">任务</a></nav>',
+      '<section aria-labelledby="workspace-title"><h1 id="workspace-title">设计系统工作�?/h1><p>检查当前任务和文件�?/p></section>',
     ],
   },
   "approval-request": {
@@ -207,7 +207,7 @@ const examplePlaceholderFragments = Object.freeze({
       '<button type="button" data-approval="deny">Deny</button><button type="submit" data-approval="approve">Allow command</button>',
     ],
     zh: [
-      '<label><input type="radio" name="scope" value="once" checked />仅允许一次</label><label><input type="radio" name="scope" value="task" />本任务内允许</label>',
+      '<label><input type="radio" name="scope" value="once" checked />仅允许一�?/label><label><input type="radio" name="scope" value="task" />本任务内允许</label>',
       '<button type="button" data-approval="deny">拒绝</button><button type="submit" data-approval="approve">允许命令</button>',
     ],
   },
@@ -217,13 +217,13 @@ const examplePlaceholderFragments = Object.freeze({
       '<a href="/reports/release-readiness">Open report</a>',
     ],
     zh: [
-      "<p>所有必需的发布检查均已通过。</p>",
+      "<p>所有必需的发布检查均已通过�?/p>",
       '<a href="/reports/release-readiness">打开报告</a>',
     ],
   },
   checkpoint: {
     en: ["<p>3 files changed before the responsive layout update.</p>"],
-    zh: ["<p>响应式布局更新前共更改 3 个文件。</p>"],
+    zh: ["<p>响应式布局更新前共更改 3 个文件�?/p>"],
   },
   "execution-evidence": {
     en: ['<a href="/reports/component-semantics">Open test report</a>'],
@@ -239,7 +239,7 @@ const examplePlaceholderFragments = Object.freeze({
     zh: [
       '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10" /></svg>',
       '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3" /></svg>',
-      "<pre>15 项测试通过，用时 4.2 秒</pre>",
+      "<pre>15 项测试通过，用�?4.2 �?/pre>",
       '<button type="button">复制日志</button>',
     ],
   },
@@ -255,20 +255,20 @@ const examplePlaceholderFragments = Object.freeze({
   },
   "plan-step": {
     en: ["Verify the layout at 390 px and 1280 px."],
-    zh: ["在 390 px 和 1280 px 宽度下验证布局。"],
+    zh: ["�?390 px �?1280 px 宽度下验证布局�?],
   },
   "resource-card": {
-    en: ['<span aria-hidden="true">⌘</span>'],
-    zh: ['<span aria-hidden="true">⌘</span>'],
+    en: ['<span aria-hidden="true">�?/span>'],
+    zh: ['<span aria-hidden="true">�?/span>'],
   },
   "setting-row": {
     en: [
-      '<option value="en">English</option><option value="zh-CN">简体中文</option>',
+      '<option value="en">English</option><option value="zh-CN">简体中�?/option>',
       "Saved automatically.",
     ],
     zh: [
-      '<option value="zh-CN">简体中文</option><option value="en">English</option>',
-      "更改会自动保存。",
+      '<option value="zh-CN">简体中�?/option><option value="en">English</option>',
+      "更改会自动保存�?,
     ],
   },
   "settings-layout": {
@@ -278,7 +278,7 @@ const examplePlaceholderFragments = Object.freeze({
     ],
     zh: [
       '<a href="#general" aria-current="page">常规</a>',
-      "<h2>常规</h2><p>配置工作区默认值。</p>",
+      "<h2>常规</h2><p>配置工作区默认值�?/p>",
     ],
   },
   "status-bar": {
@@ -292,9 +292,9 @@ const examplePlaceholderFragments = Object.freeze({
       '<button type="button">Save properties</button>',
     ],
     zh: [
-      '<button type="button" aria-label="关闭属性面板">关闭</button>',
-      "<dl><div><dt>负责人</dt><dd>发布团队</dd></div></dl>",
-      '<button type="button">保存属性</button>',
+      '<button type="button" aria-label="关闭属性面�?>关闭</button>',
+      "<dl><div><dt>负责�?/dt><dd>发布团队</dd></div></dl>",
+      '<button type="button">保存属�?/button>',
     ],
   },
   "task-plan": {
@@ -305,15 +305,15 @@ const examplePlaceholderFragments = Object.freeze({
       '<button type="button">Pause plan</button>',
     ],
     zh: [
-      "<p>已完成 3 步中的 2 步</p>",
-      "<strong>构建软件包</strong><span>已完成</span>",
-      "<strong>验证响应式行为</strong><span>进行中</span>",
+      "<p>已完�?3 步中�?2 �?/p>",
+      "<strong>构建软件�?/strong><span>已完�?/span>",
+      "<strong>验证响应式行�?/strong><span>进行�?/span>",
       '<button type="button">暂停计划</button>',
     ],
   },
   "task-queue": {
     en: ["<strong>Run visual checks</strong><span>Queued</span>"],
-    zh: ["<strong>运行视觉检查</strong><span>等待中</span>"],
+    zh: ["<strong>运行视觉检�?/strong><span>等待�?/span>"],
   },
   "task-workspace": {
     en: [
@@ -322,8 +322,8 @@ const examplePlaceholderFragments = Object.freeze({
       '<h2>Files</h2><a href="/src/index.ts">src/index.ts</a>',
     ],
     zh: [
-      "<article><p>检查组件文档。</p></article>",
-      '<textarea aria-label="消息" placeholder="描述下一项任务"></textarea><button type="submit">发送</button>',
+      "<article><p>检查组件文档�?/p></article>",
+      '<textarea aria-label="消息" placeholder="描述下一项任�?></textarea><button type="submit">发�?/button>',
       '<h2>文件</h2><a href="/src/index.ts">src/index.ts</a>',
     ],
   },
@@ -343,8 +343,8 @@ const examplePlaceholderFragments = Object.freeze({
       "<h3>Visual checks</h3><p>Running desktop and mobile suites</p>",
     ],
     zh: [
-      "<h3>软件包构建完成</h3><p>完成于 10:24</p>",
-      "<h3>视觉检查</h3><p>正在运行桌面端和移动端套件</p>",
+      "<h3>软件包构建完�?/h3><p>完成�?10:24</p>",
+      "<h3>视觉检�?/h3><p>正在运行桌面端和移动端套�?/p>",
     ],
   },
   "task-start": {
@@ -353,8 +353,8 @@ const examplePlaceholderFragments = Object.freeze({
       '<textarea aria-label="Task" placeholder="Describe the outcome"></textarea><button type="submit">Start</button>',
     ],
     zh: [
-      '<button type="button">检查发布</button><button type="button">修复失败测试</button>',
-      '<textarea aria-label="任务" placeholder="描述预期结果"></textarea><button type="submit">开始</button>',
+      '<button type="button">检查发�?/button><button type="button">修复失败测试</button>',
+      '<textarea aria-label="任务" placeholder="描述预期结果"></textarea><button type="submit">开�?/button>',
     ],
   },
   toolbar: {
@@ -373,7 +373,7 @@ const examplePlaceholderFragments = Object.freeze({
       '<button type="button">Paste</button><button type="button">Copy</button>',
     ],
     zh: [
-      '<button type="button" role="tab" aria-selected="true">开始</button>',
+      '<button type="button" role="tab" aria-selected="true">开�?/button>',
       '<button type="button">粘贴</button><button type="button">复制</button>',
     ],
   },
@@ -398,8 +398,8 @@ const examplePlaceholderFragments = Object.freeze({
 });
 
 function placeholderFallback(parent, locale) {
-  const ready = locale === "zh" ? "已就绪" : "Ready";
-  const status = locale === "zh" ? "状态" : "Status";
+  const ready = locale === "zh" ? "已就�? : "Ready";
+  const status = locale === "zh" ? "状�? : "Status";
 
   switch (parent.tagName) {
     case "dl":
@@ -438,7 +438,7 @@ function replaceExamplePlaceholders(
       const child = children[index];
       if (
         child.nodeName === "#text" &&
-        /^(?:\.{3}|…)$/u.test((child.value ?? "").trim())
+        /^(?:\.{3}|�?$/u.test((child.value ?? "").trim())
       ) {
         const replacement =
           replacements[replacementIndex] ??
@@ -998,10 +998,10 @@ ${hook ? `\nconst control = ${hookName}();\nconst componentRef = control.compone
         ? `\`${hookName}\` 订阅清单中声明的 DOM 事件，并且只调用清单中公开的方法。适配器不创建另一套框架专属状态。`
         : `\`${hookName}\` subscribes to manifest-declared DOM events and calls only public manifest methods. The adapter creates no second, framework-only state model.`
       : zh
-        ? "适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约。"
+        ? "适配器只替换指南中已记录的语义根元素，不增加包装层；内部标记继续使用上方 HTML 契约�?
         : "The adapter replaces only the documented semantic root and adds no wrapper; its children keep the HTML contract shown above."
     : zh
-      ? "该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互。"
+      ? "该发布版本尚未提供框架适配器；示例直接渲染同一语义 DOM，并由该版本的浏览器运行时增强交互�?
       : "This published version predates framework adapters. The example renders the same semantic DOM and lets that version's browser runtime enhance its interactions.";
 
   return `
@@ -1044,7 +1044,7 @@ function isUnavailableGuide(source) {
     /not part of this\s+published\s+package contract/u.test(source) ||
     /not part of this stable documentation snapshot/u.test(source) ||
     /不属于该历史版本的公开契约/u.test(source) ||
-    /不属于此稳定版文档快照/u.test(source)
+    /不属于此稳定版文档快�?u.test(source)
   );
 }
 

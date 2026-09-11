@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="input"]` |
 | Interaction scenario | `components-actions-forms.acl#input` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-input` |
-| Deep review source | `product-requirements/component-details/input.md` |
+| Deep review source | `product-requirements\component-details\input.md` |
 
 ## User problem
 

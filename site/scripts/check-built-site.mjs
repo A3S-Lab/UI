@@ -219,12 +219,12 @@ const homepageExpectations = [
     file: "index.html",
     markers: [
       'lang="zh"',
-      "复杂界面，",
-      "也该有清晰语法。",
+      "复杂界面�?,
+      "也该有清晰语法�?,
       "复制安装命令",
       "npm install @a3s-lab/ui",
-      "从一个控件，到整个工作台。",
-      "结构化表单",
+      "从一个控件，到整个工作台�?,
+      "结构化表�?,
       'href="/UI/harness/index.html"',
       "公开组件组合",
       "data-a3s-customizer",
@@ -258,7 +258,7 @@ const homepageExpectations = [
     file: "v0.2.0/index.html",
     markers: [
       'lang="zh"',
-      "复杂界面，",
+      "复杂界面�?,
       "npm install @a3s-lab/ui@0.2.0",
       "<dt>64</dt>",
       "v0.2.0",
@@ -278,7 +278,7 @@ const homepageExpectations = [
     file: "v0.1.0/index.html",
     markers: [
       'lang="zh"',
-      "复杂界面，",
+      "复杂界面�?,
       "npm install @a3s-lab/ui@0.1.0",
       "<dt>64</dt>",
       "v0.1.0",
@@ -308,9 +308,9 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
               'data-preview-component="field"',
               'data-preview-integration="complete"',
               'data-component-integration="field"',
-              "工作区显示名称",
+              "工作区显示名�?,
               "填写要求",
-              "禁用和只读",
+              "禁用和只�?,
               "发布窗口",
               'data-orientation="responsive"',
               'dir="rtl"',
@@ -321,11 +321,11 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
               "价格范围",
               "最高预算：",
               'aria-valuetext="US$800"',
-              "单选按钮",
+              "单选按�?,
               "订阅方案",
-              "字段组",
+              "字段�?,
               "卡片式选项",
-              "交互式组件预览",
+              "交互式组件预�?,
               "实时预览",
             ],
     },
@@ -415,9 +415,9 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
             ]
           : [
               'lang="zh"',
-              "按钮组负责连接子控件的边界与交互状态",
+              "按钮组负责连接子控件的边界与交互状�?,
               'aria-label="搜索"',
-              'placeholder="搜索…"',
+              'placeholder="搜索�?',
               "拆分按钮",
             ],
     },
@@ -449,13 +449,13 @@ const componentExpectations = ["", "v0.2.0/", "v0.1.0/"].flatMap(
               'data-preview-integration="complete"',
               'data-component-integration="input-group"',
               'id="input-group-project-search-zh"',
-              "校验与恢复",
-              "禁用与只读",
+              "校验与恢�?,
+              "禁用与只�?,
               "有界多行输入",
             ]
           : [
               'lang="zh"',
-              "12 条结果",
+              "12 条结�?,
               "行内起始",
               "块级末端",
               'placeholder="输入密码"',
@@ -513,8 +513,8 @@ const nextCatalogExpectations = [
     file: "components/index.html",
     markers: [
       "data-component-catalog",
-      'placeholder="按名称、英文名或分组搜索…"',
-      "9 个职责分组，可搜索 116 个组件",
+      'placeholder="按名称、英文名或分组搜索�?',
+      "9 个职责分组，可搜�?116 个组�?,
       'data-component-group="harness"',
       'href="/UI/components/scroll-area.html"',
       'href="/UI/components/theme-switcher.html"',
@@ -524,7 +524,7 @@ const nextCatalogExpectations = [
     file: "en/components/index.html",
     markers: [
       "data-component-catalog",
-      'placeholder="Search by name, slug, or group…"',
+      'placeholder="Search by name, slug, or group�?',
       "9 task groups across 116 searchable components",
       'data-component-group="harness"',
       'href="/UI/en/components/scroll-area.html"',
@@ -539,9 +539,9 @@ const nextHarnessExpectations = [
     markers: [
       'lang="zh"',
       ">Harness<",
-      "会话与消息",
-      "执行与授权",
-      "审阅与证据",
+      "会话与消�?,
+      "执行与授�?,
+      "审阅与证�?,
       'href="/UI/components/device-simulator.html"',
     ],
   },
@@ -636,11 +636,11 @@ const nextCodeEditorExpectations = [
     file: "components/code-editor.html",
     markers: [
       'lang="zh"',
-      "代码编辑器",
+      "代码编辑�?,
       'data-workbench-locale="zh"',
       "data-monaco-host",
       "data-workbench-command-trigger",
-      "示例工作区",
+      "示例工作�?,
       'class="code-editor"',
       "data-code-editor-lines",
       "data-code-editor-position",
@@ -696,7 +696,7 @@ const nextExtractedComponentExpectations = [
     markers: [
       'lang="zh"',
       'class="agent-composer"',
-      'aria-label="已附加资源"',
+      'aria-label="已附加资�?',
       "data-composer-queue",
     ],
   },
@@ -970,8 +970,8 @@ const productApplicationExpectations = [
     markers: [
       'data-view="automation"',
       'data-product-surface="automation"',
-      'aria-label="自动化视图"',
-      ">从模板开始<",
+      'aria-label="自动化视�?',
+      ">从模板开�?",
       "data-automation-runtime",
     ],
   },
@@ -991,7 +991,7 @@ const productApplicationExpectations = [
       'data-view="project"',
       'data-product-surface="project"',
       'aria-label="项目路径"',
-      'aria-label="项目工作区"',
+      'aria-label="项目工作�?',
       'aria-label="项目配置"',
       ">AnyBuddy<",
       'href="/UI/playground/projects/a3s-ui-experience/sessions/release-readiness.html"',
@@ -1014,7 +1014,7 @@ const productApplicationExpectations = [
     markers: [
       'data-view="project-session"',
       'data-product-surface="project-session"',
-      ">发布就绪检查<",
+      ">发布就绪检�?",
       'aria-label="打开项目详情"',
       'aria-label="项目会话记录"',
     ],
@@ -1571,15 +1571,15 @@ const removedFormSurfaceLeaks = [];
 const chineseTerminologyLeaks = [];
 const invalidHtmlNesting = [];
 const disallowedChineseTerms = [
-  "收音机",
+  "收音�?,
   "无线电组",
-  "无线电图标",
-  "无线电输入",
-  "现场组",
+  "无线电图�?,
+  "无线电输�?,
+  "现场�?,
   "间歇范围输入",
-  "微调器",
-  "旋转器",
-  "选择卡",
+  "微调�?,
+  "旋转�?,
+  "选择�?,
 ];
 const htmlFiles = await collectHtmlFiles(outputRoot);
 const mdxFiles = await collectMdxFiles(docsRoot);
@@ -1633,7 +1633,7 @@ for (const mdxFile of mdxFiles) {
     sourceParts[2] === "components" &&
     sourceParts[3] === "form-system";
   const isVersionedComponentGuide =
-    ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
+    ["next", "v0.4.1", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"].includes(sourceParts[0]) &&
     ["en", "zh"].includes(sourceParts[1]) &&
     sourceParts[2] === "components" &&
     sourceParts[3] !== "index.mdx" &&
@@ -1652,7 +1652,7 @@ for (const mdxFile of mdxFiles) {
     /not part of this\s+published\s+package contract/u.test(source) ||
     /not part of this stable documentation snapshot/u.test(source) ||
     /不属于该历史版本的公开契约/u.test(source) ||
-    /不属于此稳定版文档快照/u.test(source);
+    /不属于此稳定版文档快�?u.test(source);
   let html;
 
   try {

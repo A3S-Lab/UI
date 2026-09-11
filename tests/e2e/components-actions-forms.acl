@@ -30,10 +30,10 @@ suite "a3s-ui-actions-and-forms" {
         focus "focus-primary-action" { target = css("[data-button-primary-demo=en] [data-button-save]") }
         press "activate-primary-with-enter" { key = "Enter" }
         wait "loading-ready" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
-        expect "loading-is-visible-and-native" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
-        # Native disabled removes focus; target the busy control explicitly instead of pressing Enter on whatever inherited focus.
+        # Native disabled removes focus; click the busy control immediately while the async timer is still open.
         click "repeat-while-disabled" { target = css("[data-button-primary-demo=en] [data-button-save][disabled][aria-busy=true]") }
         expect "rapid-repeat-is-rejected" { visible = css("[data-button-primary-demo=en][data-button-submissions='1'][data-button-save-state=loading] [data-button-save][disabled][aria-busy=true]") }
+        expect "loading-is-visible-and-native" { visible = css("[data-button-primary-demo=en][data-button-save-state=loading][data-button-submissions='1']:has([data-button-status]):has([data-button-save][disabled][aria-busy=true] [data-button-progress]:not(.invisible)[aria-hidden=false] .animate-spin)") }
         screenshot "button-loading" { path = "components/button-loading.png" }
         wait "first-save-completes" { text = "Permission changes saved." }
         expect "ready-state-restored" { visible = css("[data-button-primary-demo=en][data-button-save-state=saved][data-button-submissions='1']:has([data-button-status]) [data-button-save]:not([disabled]):not([aria-busy]) [data-button-idle]:not(.invisible)[aria-hidden=false]") }
@@ -341,13 +341,15 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "code-editor" {
-        name = "Code Editor preview exercises Monaco workbench and native fallback states"
+        name = "Code Editor exercises Monaco and native dirty state, covers ready through readonly matrix, and confirms Chinese dirty status"
         surface = "web"
-        timeout_ms = 60000
+        timeout_ms = 120000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/code-editor.html" }
         # Monaco workers keep the network active; wait on DOM + workbench readiness instead of networkidle.
         wait "loaded" { load = "domcontentloaded" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete][data-preview-source=ready]") }
         wait "monaco-ready" { visible = css(".monaco-workbench[data-monaco-ready=true] .monaco-editor") }
         click "open-command-palette" { target = css(".monaco-workbench [data-workbench-command-trigger]") }
         wait "command-dialog-ready" { visible = css("[data-workbench-command-dialog][open]") }
@@ -363,13 +365,41 @@ suite "a3s-ui-actions-and-forms" {
         focus "runtime-model-tab-in-view" { target = css(".monaco-workbench [data-workbench-tab='config/runtime.json']") }
         press "open-runtime-model" { key = "Enter" }
         expect "runtime-model-active" { visible = css(".monaco-workbench[data-active-file='config/runtime.json']") }
-        screenshot "monaco-workbench" { path = "components/code-editor-monaco.png" }
-        wait "interactive-ready" { visible = css("#code-editor-demo[data-code-editor-initialized=true]") }
-        fill "edit-code" { target = css("#code-editor-demo textarea") value = "const value = 1;\nreturn value;" }
-        expect "dirty-status" { visible = css("#code-editor-demo[data-dirty=true]") }
+        wait "interactive-ready" { visible = css("[data-code-editor-primary-demo=en]#code-editor-demo[data-code-editor-initialized=true]") }
+        expect "primary-demo" { visible = css("[data-code-editor-primary-demo=en].code-editor") }
+        expect "title-copy" { text = "workflow.ts" }
+        fill "edit-code" { target = css("[data-code-editor-primary-demo=en] textarea") value = "const value = 1;\nreturn value;" }
+        expect "dirty-status" { visible = css("[data-code-editor-primary-demo=en][data-dirty=true]") }
         expect "line-count" { text = "2 lines" }
         fill "break-json" { target = css("#code-editor-json textarea") value = "{\"enabled\": }" }
         expect "json-invalid" { visible = css("#code-editor-json[data-validation-state=invalid] textarea[aria-invalid=true]") }
+        screenshot "code-editor-desktop" { path = "components/code-editor-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=code-editor]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=code-editor] [data-state-specimen=ready]") }
+        expect "state-specimen-dirty" { visible = css(".a3s-component-state-matrix[open][data-component=code-editor] [data-state-specimen=dirty]") }
+        expect "state-specimen-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=code-editor] [data-state-specimen=invalid]") }
+        expect "state-specimen-readonly" { visible = css(".a3s-component-state-matrix[open][data-component=code-editor] [data-state-specimen=readonly]") }
+        screenshot "code-editor-states" { path = "components/code-editor-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=code-editor][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/code-editor.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-code-editor-primary-demo=zh] [data-code-editor-title]") }
+        expect "chinese-title" { text = "workflow.ts" }
+        wait "chinese-editor-ready" { visible = css("[data-code-editor-primary-demo=zh]#code-editor-demo[data-code-editor-initialized=true]") }
+        fill "edit-chinese-code" { target = css("[data-code-editor-primary-demo=zh] textarea") value = "const value = 1;\nreturn value;" }
+        expect "chinese-dirty" { visible = css("[data-code-editor-primary-demo=zh][data-dirty=true]") }
+        expect "chinese-dirty-status" { text = "有未保存修改" }
+        screenshot "code-editor-chinese-phone" { path = "components/code-editor-chinese-phone.png" }
+        accessibility "code-editor-accessibility" { path = "components/code-editor-accessibility.json" interactive = true }
+        console "code-editor-console" { path = "components/code-editor-console.json" clear = false }
+        page_errors "code-editor-errors" { path = "components/code-editor-errors.json" clear = false }
     }
 
     scenario "native-select" {
@@ -400,13 +430,15 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "select" {
-        name = "Select exposes a named trigger and predictable keyboard and disabled-option behavior"
+        name = "Select preserves named trigger keyboard selection, typeahead cancel, disabled-option skipping, invalid presentation, and Chinese confirmation"
         surface = "web"
-        timeout_ms = 75000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/select.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "trigger-is-named" { visible = css("#select-demo-trigger[aria-label='Fruit'][role=combobox]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "trigger-is-named" { visible = css("[data-select-primary-demo=en] #select-demo-trigger[aria-label='Fruit'][role=combobox]") }
 
         focus "focus-trigger" { target = css("#select-demo-trigger") }
         press "open-at-end" { key = "End" }
@@ -415,6 +447,9 @@ suite "a3s-ui-actions-and-forms" {
         press "choose-last-option" { key = "Enter" }
         wait "pineapple-ready" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus") }
         expect "pineapple-selected" { visible = css("#select-demo:has([role=option][data-value=pineapple][aria-selected=true]) #select-demo-trigger[aria-expanded=false]:focus") }
+        wait "pineapple-status" { text = "Selected Pineapple" }
+        expect "pineapple-recorded" { visible = css("[data-select-primary-demo=en][data-select-value=pineapple]") }
+        screenshot "select-pineapple" { path = "components/select-pineapple.png" }
 
         press "typeahead-banana" { key = "b" }
         wait "banana-ready" { visible = css("#select-demo-trigger[aria-expanded=true][aria-activedescendant=select-demo-option-2]") }
@@ -438,19 +473,97 @@ suite "a3s-ui-actions-and-forms" {
         press "commit-enabled-option" { key = "Enter" }
         expect "enabled-option-selected" { visible = css("#select-disabled-option:has([role=option][data-value=pineapple][aria-selected=true]) #select-disabled-option-trigger[aria-expanded=false]:focus") }
         screenshot "select-keyboard-and-disabled-option" { path = "components/select-keyboard-and-disabled-option.png" }
+
+        expect "disabled-trigger-locked" { visible = css("#select-disabled-trigger[disabled][aria-expanded=false]") }
+        expect "invalid-field-presentation" { visible = css(".field[data-invalid=true]:has(#select-invalid-trigger[aria-invalid=true])") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=select]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=disabled] .select[data-state-specimen-root=disabled]") }
+        expect "state-specimen-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=expanded] .select[data-state-specimen-root=expanded]") }
+        expect "state-specimen-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=select] [data-state-specimen=invalid] .select[data-state-specimen-root=invalid]") }
+        screenshot "select-states" { path = "components/select-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=select][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/select.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-select-primary-demo=zh] #select-demo-trigger[aria-label='水果']") }
+        focus "focus-chinese-trigger" { target = css("[data-select-primary-demo=zh] #select-demo-trigger") }
+        press "open-chinese" { key = "Enter" }
+        wait "chinese-open" { visible = css("[data-select-primary-demo=zh] #select-demo-trigger[aria-expanded=true]") }
+        click "choose-chinese-pineapple" { target = css("[data-select-primary-demo=zh] [role=option][data-value=pineapple]") }
+        wait "chinese-status" { text = "已选择 菠萝" }
+        expect "chinese-recorded" { visible = css("[data-select-primary-demo=zh][data-select-value=pineapple]") }
+        screenshot "select-chinese-phone" { path = "components/select-chinese-phone.png" }
+        accessibility "select-accessibility" { path = "components/select-accessibility.json" interactive = true }
+        console "select-console" { path = "components/select-console.json" clear = false }
+        page_errors "select-errors" { path = "components/select-errors.json" clear = false }
     }
 
     scenario "checkbox" {
-        name = "Checkbox preview toggles unchecked and prechecked options"
+        name = "Checkbox toggles channels, keeps disabled locked, drives indeterminate select-all, validates confirmation, and confirms Chinese selection"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/checkbox.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-primary" { visible = css("[data-checkbox-primary-demo=en] #release-email-en:checked") }
+        expect "sms-disabled" { visible = css("[data-checkbox-primary-demo=en] .field[data-disabled] #release-sms-en[disabled]") }
         check "enable-desktop-notifications" { target = css("#release-desktop-en") }
         expect "desktop-notifications-checked" { visible = css("#release-desktop-en:checked") }
         click "disable-email-notifications" { target = css("#release-email-en") }
         expect "email-notifications-cleared" { visible = css("#release-email-en:not(:checked)") }
+        screenshot "checkbox-channels" { path = "components/checkbox-channels.png" }
+
+        expect "select-all-partial" { visible = css("[data-checkbox-select-all-demo=en] #export-all-en[data-indeterminate=true]") }
+        expect "select-all-status-partial" { text = "Some scopes are selected." }
+        check "select-notes" { target = css("#export-notes-en") }
+        wait "select-all-complete" { visible = css("[data-checkbox-select-all-demo=en] #export-all-en:checked:not([data-indeterminate])") }
+        expect "select-all-status-complete" { text = "All scopes selected." }
+        click "clear-docs" { target = css("#export-docs-en") }
+        wait "select-all-partial-again" { visible = css("[data-checkbox-select-all-demo=en] #export-all-en[data-indeterminate=true]") }
+        screenshot "checkbox-select-all" { path = "components/checkbox-select-all.png" }
+
+        click "submit-unconfirmed" { target = role("button", "Export archive") }
+        wait "confirm-invalid" { visible = css("form[data-checkbox-validation-demo=en] .field[data-invalid=true]:has(#export-confirm-en[aria-invalid=true])") }
+        expect "confirm-error" { text = "Confirmation is required before export." }
+        check "confirm-export" { target = css("#export-confirm-en") }
+        click "submit-confirmed" { target = role("button", "Export archive") }
+        wait "confirm-success" { text = "Export confirmed." }
+        expect "confirm-recorded" { visible = css("form[data-checkbox-validation-demo=en][data-export-state=confirmed]") }
+        click "reset-confirm" { target = role("button", "Reset") }
+        wait "confirm-reset" { text = "Ready to confirm export." }
+        screenshot "checkbox-validation" { path = "components/checkbox-validation.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=checkbox]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=disabled] input[type=checkbox][disabled]") }
+        expect "state-specimen-indeterminate" { visible = css(".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=indeterminate] input[type=checkbox]") }
+        expect "state-specimen-checked" { visible = css(".a3s-component-state-matrix[open][data-component=checkbox] [data-state-specimen=checked] input[type=checkbox]") }
+        screenshot "checkbox-states" { path = "components/checkbox-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=checkbox][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/checkbox.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-checkbox-primary-demo=zh] #release-desktop-zh") }
+        check "enable-chinese-desktop" { target = css("#release-desktop-zh") }
+        expect "chinese-desktop-checked" { visible = css("#release-desktop-zh:checked") }
+        expect "chinese-sms-disabled" { visible = css("[data-checkbox-primary-demo=zh] #release-sms-zh[disabled]") }
+        screenshot "checkbox-chinese-phone" { path = "components/checkbox-chinese-phone.png" }
+        accessibility "checkbox-accessibility" { path = "components/checkbox-accessibility.json" interactive = true }
+        console "checkbox-console" { path = "components/checkbox-console.json" clear = false }
+        page_errors "checkbox-errors" { path = "components/checkbox-errors.json" clear = false }
     }
 
     scenario "radio-group" {
@@ -549,88 +662,100 @@ suite "a3s-ui-actions-and-forms" {
     }
 
     scenario "switch" {
-        name = "Switch preserves geometry, state, focus, themes, sizes, direction, and touch behavior"
+        name = "Switch announces immediate toggles, restores rejected remote updates, keeps disabled locked, and confirms Chinese phone activation"
         surface = "web"
-        timeout_ms = 60000
-        viewport "desktop" { width = 1280 height = 900 }
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete][data-preview-source=ready]") }
 
-        focus "focus-default-switch" { target = css("#airplane-mode") }
+        expect "primary-demo" { visible = css("[data-switch-primary-demo=en]:has(#airplane-mode)") }
+        focus "focus-default-switch" { target = css("[data-switch-primary-demo=en] #airplane-mode") }
         press "enable-default-with-keyboard" { key = "Space" }
-        expect "default-switch-checked" { visible = css("#airplane-mode:checked") }
-        screenshot "switch-keyboard-focus-desktop" { path = "components/switch-keyboard-focus-desktop.png" }
+        wait "default-on-status" { text = "Airplane Mode is on." }
+        expect "default-switch-checked" { visible = css("[data-switch-primary-demo=en][data-switch-value=on] #airplane-mode:checked") }
+        screenshot "switch-keyboard-on" { path = "components/switch-keyboard-on.png" }
 
         click "use-dark-preview" { target = css(".a3s-preview[data-preview-component=switch] button[aria-label='Preview in dark mode']") }
         expect "dark-preview-active" { visible = css(".a3s-preview[data-preview-component=switch][data-preview-scheme=dark]") }
-        focus "refocus-dark-switch" { target = css("#airplane-mode") }
+        focus "refocus-dark-switch" { target = css("[data-switch-primary-demo=en] #airplane-mode") }
         press "disable-dark-switch" { key = "Space" }
-        press "restore-dark-switch" { key = "Space" }
-        expect "dark-switch-checked" { visible = css("#airplane-mode:checked") }
-        screenshot "switch-dark-checked-desktop" { path = "components/switch-dark-checked-desktop.png" }
+        wait "default-off-status" { text = "Airplane Mode is off." }
+        expect "dark-switch-off" { visible = css("[data-switch-primary-demo=en][data-switch-value=off] #airplane-mode:not(:checked)") }
+        screenshot "switch-dark-off" { path = "components/switch-dark-off.png" }
 
-        navigate "disabled-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#disabled" }
-        wait "disabled-state-ready" { visible = css("#switch-disabled-unchecked:disabled") }
-        screenshot "switch-disabled-desktop" { path = "components/switch-disabled-desktop.png" }
+        wait "remote-reject-ready" { visible = css("[data-switch-remote-demo=en][data-switch-remote-outcome=reject] #switch-remote-reject-en") }
+        focus "focus-remote-reject" { target = css("#switch-remote-reject-en") }
+        press "attempt-remote-reject" { key = "Space" }
+        wait "reject-status" { text = "Sync rejected. Previous setting restored." }
+        expect "remote-rejected" { visible = css("[data-switch-remote-demo=en][data-switch-remote-outcome=reject][data-switch-remote-result=rejected][data-switch-value=off] #switch-remote-reject-en:not(:checked)") }
+        focus "focus-remote-accept" { target = css("#switch-remote-accept-en") }
+        press "accept-remote-on" { key = "Space" }
+        wait "accept-status" { text = "Sync accepted. Setting is on." }
+        expect "remote-accepted" { visible = css("[data-switch-remote-demo=en][data-switch-remote-outcome=accept][data-switch-remote-result=accepted][data-switch-value=on] #switch-remote-accept-en:checked") }
+        screenshot "switch-remote-accept-reject" { path = "components/switch-remote-accept-reject.png" }
 
-        navigate "invalid-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#invalid" }
-        wait "invalid-state-ready" { visible = css("#switch-invalid[aria-invalid=true]") }
+        expect "disabled-locked" { visible = css("#switch-disabled-unchecked:disabled") }
+        expect "invalid-presentation" { visible = css(".field[data-invalid=true]:has(#switch-invalid[aria-invalid=true])") }
         focus "focus-invalid-switch" { target = css("#switch-invalid") }
         press "exercise-invalid-switch" { key = "Space" }
         press "restore-invalid-switch" { key = "Space" }
         expect "invalid-switch-restored" { visible = css("#switch-invalid[aria-invalid=true]:not(:checked)") }
-        screenshot "switch-invalid-focus-desktop" { path = "components/switch-invalid-focus-desktop.png" }
 
-        navigate "size-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#size" }
-        wait "size-state-ready" { visible = css("#switch-size-sm[data-size=sm]") }
         focus "focus-small-switch" { target = css("#switch-size-sm") }
         press "enable-small-switch" { key = "Space" }
         expect "small-switch-checked" { visible = css("#switch-size-sm:checked") }
-        screenshot "switch-small-focus-desktop" { path = "components/switch-small-focus-desktop.png" }
 
-        navigate "rtl-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html#rtl" }
-        wait "rtl-state-ready" { visible = css("#switch-rtl:checked:dir(rtl)") }
         focus "focus-rtl-switch" { target = css("#switch-rtl") }
         press "disable-rtl-switch" { key = "Space" }
         expect "rtl-switch-unchecked" { visible = css("#switch-rtl:not(:checked):dir(rtl)") }
-        screenshot "switch-rtl-unchecked-focus-desktop" { path = "components/switch-rtl-unchecked-focus-desktop.png" }
         press "restore-rtl-switch" { key = "Space" }
         expect "rtl-switch-restored" { visible = css("#switch-rtl:checked:dir(rtl)") }
-        screenshot "switch-rtl-checked-focus-desktop" { path = "components/switch-rtl-checked-focus-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=switch]") }
+        expect "state-specimen-checked" { visible = css(".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=checked]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=switch] [data-state-specimen=disabled]") }
+        screenshot "switch-states" { path = "components/switch-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=switch][data-preview-integration=complete] [data-preview-control=states]:focus") }
 
         viewport "phone" { width = 390 height = 844 }
-        navigate "phone-state" { url = "http://127.0.0.1:4178/UI/en/components/switch.html" }
-        wait "phone-state-ready" { visible = css("#airplane-mode:not(:checked)") }
-        check "enable-airplane-mode" { target = label("Airplane Mode") }
-        expect "switch-checked" { visible = css("#airplane-mode:checked") }
-        screenshot "switch-checked-phone" { path = "components/switch-checked-phone.png" }
-        click "disable-airplane-mode" { target = label("Airplane Mode") }
-        expect "switch-unchecked" { visible = css("#airplane-mode:not(:checked)") }
-        screenshot "switch-unchecked-phone" { path = "components/switch-unchecked-phone.png" }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/switch.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-switch-primary-demo=zh] #airplane-mode:not(:checked)") }
+        check "enable-chinese-airplane" { target = label("飞行模式") }
+        wait "chinese-on-status" { text = "飞行模式已开启。" }
+        expect "chinese-switch-on" { visible = css("[data-switch-primary-demo=zh][data-switch-value=on] #airplane-mode:checked") }
+        screenshot "switch-chinese-phone" { path = "components/switch-chinese-phone.png" }
         accessibility "switch-accessibility" { path = "components/switch-accessibility.json" interactive = true }
         console "switch-console" { path = "components/switch-console.json" clear = false }
         page_errors "switch-page-errors" { path = "components/switch-page-errors.json" clear = false }
     }
 
     scenario "slider" {
-        name = "Slider preserves value, units, keyboard direction, disabled guidance, focus, themes, and responsive layouts"
+        name = "Slider preserves unit-aware keyboard endpoints, disabled guidance, RTL direction, state matrix, and Chinese phone confirmation"
         surface = "web"
-        timeout_ms = 60000
-        viewport "desktop" { width = 1280 height = 900 }
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "primary-slider-is-named-and-unit-aware" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-slider-is-named-and-unit-aware" { visible = css("[data-slider-primary-demo=en] #slider-primary[aria-valuetext='50 degrees Celsius']") }
         focus "focus-primary-slider" { target = css("#slider-primary") }
         press "move-to-start" { key = "Home" }
         expect "start-value-is-visible" { text = "0 °C" }
-        expect "start-value-remains-focused" { visible = css("#slider-primary:focus") }
+        expect "start-valuetext" { visible = css("#slider-primary:focus[aria-valuetext='0 degrees Celsius']") }
         press "move-one-step" { key = "ArrowRight" }
         expect "intermediate-value-is-visible" { text = "1 °C" }
         press "move-to-end" { key = "End" }
         expect "end-value-is-visible" { text = "100 °C" }
-        expect "end-value-remains-focused" { visible = css("#slider-primary:focus") }
+        expect "end-valuetext" { visible = css("#slider-primary:focus[aria-valuetext='100 degrees Celsius']") }
         screenshot "slider-end-focused-desktop" { path = "components/slider-end-focused-desktop.png" }
 
         click "use-dark-preview" { target = css(".a3s-preview:has(#slider-primary) [data-preview-control=appearance]") }
@@ -648,60 +773,214 @@ suite "a3s-ui-actions-and-forms" {
         expect "rtl-restored-value" { visible = css("#slider-rtl:focus[aria-valuetext='50 بالمائة']") }
         screenshot "slider-rtl-focused-desktop" { path = "components/slider-rtl-focused-desktop.png" }
 
-        viewport "phone" { width = 390 height = 844 }
-        navigate "reset-for-phone" { url = "http://127.0.0.1:4178/UI/en/components/slider.html" }
-        wait "phone-ready" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
-        focus "focus-slider-on-phone" { target = css("#slider-primary") }
-        screenshot "slider-focused-phone" { path = "components/slider-focused-phone.png" }
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=slider]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=slider] [data-state-specimen=disabled]") }
+        screenshot "slider-states" { path = "components/slider-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=slider][data-preview-integration=complete] [data-preview-control=states]:focus") }
 
-        viewport "zoom-equivalent" { width = 640 height = 900 }
-        expect "slider-survives-zoom-equivalent-layout" { visible = css("#slider-primary[aria-valuetext='50 degrees Celsius']") }
-        screenshot "slider-zoom-equivalent" { path = "components/slider-zoom-equivalent.png" }
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/slider.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-slider-primary-demo=zh] #slider-primary[aria-valuetext='50 摄氏度']") }
+        focus "focus-chinese-slider" { target = css("[data-slider-primary-demo=zh] #slider-primary") }
+        press "chinese-move-to-end" { key = "End" }
+        expect "chinese-end-value" { text = "100 °C" }
+        expect "chinese-end-valuetext" { visible = css("[data-slider-primary-demo=zh] #slider-primary:focus[aria-valuetext='100 摄氏度']") }
+        screenshot "slider-chinese-phone" { path = "components/slider-chinese-phone.png" }
         accessibility "slider-accessibility" { path = "components/slider-accessibility.json" interactive = true }
         console "slider-console" { path = "components/slider-console.json" clear = false }
         page_errors "slider-page-errors" { path = "components/slider-page-errors.json" clear = false }
     }
 
     scenario "label" {
-        name = "Label preview activates its wrapped checkbox"
+        name = "Label activates wrapped controls, associates for/id targets, keeps disabled readable, and confirms Chinese wrap activation"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/label.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-wrap" { visible = css("[data-label-primary-demo=en]:has(#label-terms-en)") }
         check "accept-terms" { target = label("Accept terms and conditions") }
-        expect "wrapped-control-checked" { visible = css(".a3s-preview[data-preview-component=label] input:checked") }
+        expect "wrapped-control-checked" { visible = css("[data-label-primary-demo=en] #label-terms-en:checked") }
+        screenshot "label-wrap" { path = "components/label-wrap.png" }
+
+        click "focus-via-associated-label" { target = css("[data-label-association-demo=en] label[for=label-workspace-en]") }
+        expect "associated-control-focused" { visible = css("#label-workspace-en:focus") }
+        expect "required-control" { visible = css("#label-workspace-en[required]") }
+        expect "disabled-keeps-label" { visible = css("[data-label-association-demo=en] [data-disabled=true]:has(label[for=label-locked-en]):has(#label-locked-en[disabled])") }
+        screenshot "label-association" { path = "components/label-association.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=label]") }
+        expect "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=label] [data-state-specimen=ready]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=label] [data-state-specimen=disabled]") }
+        screenshot "label-states" { path = "components/label-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=label][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/label.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-label-primary-demo=zh] #label-terms-zh") }
+        check "accept-chinese-terms" { target = label("我已阅读并同意条款") }
+        expect "chinese-wrapped-checked" { visible = css("[data-label-primary-demo=zh] #label-terms-zh:checked") }
+        screenshot "label-chinese-phone" { path = "components/label-chinese-phone.png" }
+        accessibility "label-accessibility" { path = "components/label-accessibility.json" interactive = true }
+        console "label-console" { path = "components/label-console.json" clear = false }
+        page_errors "label-errors" { path = "components/label-errors.json" clear = false }
     }
 
     scenario "combobox" {
-        name = "Combobox preview opens and filters framework options"
+        name = "Combobox filters and selects, recovers from empty search, keeps disabled locked, and confirms Chinese selection"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/combobox.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-root" { visible = css("#framework-combobox > input[role=combobox][aria-label='Framework']") }
         focus "focus-frameworks" { target = css("#framework-combobox > input[role=combobox]") }
         press "open-frameworks" { key = "ArrowDown" }
         wait "options-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
         fill "filter-frameworks" { target = css("#framework-combobox > input[role=combobox]") value = "Astro" }
-        wait "options-visible" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
         wait "astro-ready" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
         expect "astro-visible" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
-        screenshot "filtered-combobox" { path = "components/combobox.png" }
+        click "choose-astro" { target = css("#framework-combobox [role=option][data-value='Astro']") }
+        wait "astro-selected" { visible = css("#framework-combobox:has(input[type=hidden][value='Astro'])") }
+        screenshot "combobox-astro" { path = "components/combobox-astro.png" }
+
+        fill "filter-empty" { target = css("#framework-combobox > input[role=combobox]") value = "zzzz" }
+        wait "empty-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
+        expect "empty-message" { text = "No items found." }
+        press "escape-empty" { key = "Escape" }
+        wait "empty-closed" { visible = css("#framework-combobox > input[role=combobox][aria-expanded=false]") }
+        screenshot "combobox-empty" { path = "components/combobox-empty.png" }
+
+        expect "disabled-locked" { visible = css("#disabled-combobox > input[role=combobox][disabled]") }
+        expect "invalid-presentation" { visible = css(".field[data-invalid=true]:has(#invalid-combobox-input[aria-invalid=true])") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=combobox]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=disabled]") }
+        expect "state-specimen-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=combobox] [data-state-specimen=invalid]") }
+        screenshot "combobox-states" { path = "components/combobox-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=combobox][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/combobox.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("#framework-combobox > input[role=combobox]") }
+        focus "focus-chinese" { target = css("#framework-combobox > input[role=combobox]") }
+        press "open-chinese" { key = "ArrowDown" }
+        wait "chinese-open" { visible = css("#framework-combobox [data-popover][aria-hidden=false]") }
+        fill "filter-chinese-astro" { target = css("#framework-combobox > input[role=combobox]") value = "Astro" }
+        wait "chinese-astro-ready" { visible = css("#framework-combobox [role=option][data-value='Astro']:not([aria-hidden=true])") }
+        click "choose-chinese-astro" { target = css("#framework-combobox [role=option][data-value='Astro']") }
+        wait "chinese-selected" { visible = css("#framework-combobox:has(input[type=hidden][value='Astro'])") }
+        screenshot "combobox-chinese-phone" { path = "components/combobox-chinese-phone.png" }
+        accessibility "combobox-accessibility" { path = "components/combobox-accessibility.json" interactive = true }
+        console "combobox-console" { path = "components/combobox-console.json" clear = false }
+        page_errors "combobox-errors" { path = "components/combobox-errors.json" clear = false }
+    }
+
+    scenario "form" {
+        name = "Form preserves summary validation, duplicate-submit protection, reset recovery, and read-only presentation"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/form.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete][data-preview-source=ready]") }
+
+        expect "canonical-form-root" { visible = css("form.form[data-form-primary-demo=en][data-form-submissions='0']:has([data-form-summary][hidden]):has(#form-workspace-name-en[value=Research]):has(#form-workspace-owner-en[value='owner@example.com']):has(footer button[type=submit]):has(footer button[type=reset])") }
+
+        fill "shorten-workspace-name" { target = css("#form-workspace-name-en") value = "A" }
+        fill "break-owner-email" { target = css("#form-workspace-owner-en") value = "owner@" }
+        click "submit-invalid-form" { target = css("form[data-form-primary-demo=en] button[type=submit]") }
+        wait "invalid-state-ready" { visible = css("form[data-form-primary-demo=en][data-state=invalid]") }
+        expect "form-is-invalid" { visible = css("form[data-form-primary-demo=en][data-state=invalid][aria-invalid=true]") }
+        expect "summary-is-revealed" { visible = css("#form-summary-en[data-form-summary]:not([hidden])") }
+        expect "summary-lists-name-error" { visible = css("#form-summary-en [data-form-summary-item=form-workspace-name-en]") }
+        expect "summary-lists-owner-error" { visible = css("#form-summary-en [data-form-summary-item=form-workspace-owner-en]") }
+        expect "name-field-invalid" { visible = css("form[data-form-primary-demo=en] .field[data-invalid=true]:has(#form-workspace-name-en[aria-invalid=true])") }
+        expect "owner-field-invalid" { visible = css("form[data-form-primary-demo=en] .field[data-invalid=true]:has(#form-workspace-owner-en[aria-invalid=true])") }
+        expect "first-invalid-field-owns-focus" { visible = css("#form-workspace-name-en:focus") }
+        expect "invalid-values-are-preserved" { visible = css("form[data-form-primary-demo=en]:has(#form-workspace-name-en[aria-invalid=true]):has(#form-workspace-owner-en[aria-invalid=true])") }
+        screenshot "form-invalid-summary" { path = "components/form-invalid-summary.png" }
+
+        fill "recover-workspace-name" { target = css("#form-workspace-name-en") value = "Evaluation Lab" }
+        fill "recover-owner-email" { target = css("#form-workspace-owner-en") value = "owner@example.com" }
+        focus "focus-save-valid" { target = css("form[data-form-primary-demo=en] button[type=submit]") }
+        press "submit-valid-form" { key = "Enter" }
+        wait "submitting-state" { visible = css("form[data-form-primary-demo=en][data-state=submitting][aria-busy=true][data-form-submissions='1']:has(button[type=submit][disabled])") }
+        expect "duplicate-submit-blocked-while-busy" { visible = css("form[data-form-primary-demo=en][aria-busy=true][data-form-submissions='1']:has(button[type=submit][disabled])") }
+        click "repeat-while-busy" { target = css("form[data-form-primary-demo=en] button[type=submit][disabled]") }
+        expect "submission-count-unchanged" { visible = css("form[data-form-primary-demo=en][data-form-submissions='1'][aria-busy=true]:has(button[type=submit][disabled])") }
+        wait "success-state" { visible = css("form[data-form-primary-demo=en][data-state=success]:not([aria-busy]):not([aria-invalid])") }
+        expect "success-preserves-values" { visible = css("form[data-form-primary-demo=en][data-state=success][data-form-submissions='1']:has(#form-workspace-name-en:not([aria-invalid])):has(#form-workspace-owner-en:not([aria-invalid])):has(#form-summary-en[hidden])") }
+        screenshot "form-success" { path = "components/form-success.png" }
+
+        focus "focus-reset" { target = css("form[data-form-primary-demo=en] button[type=reset]") }
+        press "reset-form" { key = "Enter" }
+        expect "reset-restores-authored-draft" { visible = css("form[data-form-primary-demo=en][data-state=ready]:not([aria-invalid]):has(#form-summary-en[hidden]):has(#form-workspace-name-en[value=Research]:not([aria-invalid])):has(#form-workspace-owner-en[value='owner@example.com']:not([aria-invalid]))") }
+
+        expect "readonly-demo-blocks-editing" { visible = css("form.form[data-form-readonly-demo=en][data-readonly][data-state='read-only']:has(#form-readonly-name-en[readonly][value='Runtime Core']):has(#form-readonly-owner-en[readonly][value='release-owner@example.com']):has(button[type=submit][disabled])") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=form]") }
+        expect "state-specimen-submitting" { visible = css(".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=submitting] form.form[data-state-specimen-root=submitting][data-state=submitting][aria-busy=true]") }
+        expect "state-specimen-invalid" { visible = css(".a3s-component-state-matrix[open][data-component=form] [data-state-specimen=invalid] form.form[data-state-specimen-root=invalid][data-state=invalid][aria-invalid=true]") }
+        screenshot "form-states" { path = "components/form-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=form][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/form.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("form[data-form-primary-demo=zh] #form-workspace-name-zh") }
+        fill "shorten-chinese-name" { target = css("#form-workspace-name-zh") value = "A" }
+        focus "focus-chinese-save" { target = css("form[data-form-primary-demo=zh] button[type=submit]") }
+        press "submit-chinese-invalid" { key = "Enter" }
+        expect "chinese-summary-visible" { visible = css("form[data-form-primary-demo=zh][data-state=invalid]:has(#form-summary-zh[data-form-summary]:not([hidden]))") }
+        expect "chinese-first-invalid-focused" { visible = css("#form-workspace-name-zh:focus") }
+        screenshot "form-chinese-phone" { path = "components/form-chinese-phone.png" }
+        accessibility "form-accessibility" { path = "components/form-accessibility.json" interactive = true }
+        console "form-console" { path = "components/form-console.json" clear = false }
+        page_errors "form-errors" { path = "components/form-errors.json" clear = false }
     }
 
     scenario "filter-bar" {
-        name = "Filter Bar restores required selection after removal and clears the complete query"
+        name = "Filter Bar restores required selection after chip removal, clears compound queries, and confirms Chinese phone reset"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/filter-bar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "filter-ready" { visible = css("#filter-bar-demo-en[data-filter-bar-initialized=true]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "filter-ready" { visible = css("[data-filter-bar-primary-demo=en]#filter-bar-demo-en[data-filter-bar-initialized=true]") }
         focus "focus-active-chip-remove" { target = css("#filter-bar-demo-en [data-filter-chip][data-filter-value=active] [data-filter-remove]") }
         press "remove-active-state" { key = "Enter" }
         wait "required-fallback-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
         expect "required-fallback-selected" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        screenshot "filter-bar-required-fallback" { path = "components/filter-bar-required-fallback.png" }
         focus "focus-paused" { target = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=paused]") }
         press "choose-paused" { key = "Enter" }
         wait "paused-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=paused][aria-pressed=true]") }
@@ -709,11 +988,41 @@ suite "a3s-ui-actions-and-forms" {
         fill "search-projects" { target = css("#filter-bar-demo-en input[type=search]") value = "release" }
         wait "compound-query-ready" { visible = css("#filter-bar-demo-en[data-filters=active] input[type=search]:not(:placeholder-shown)") }
         expect "compound-query-active" { visible = css("#filter-bar-demo-en[data-filters=active] input[type=search]:not(:placeholder-shown)") }
+        screenshot "filter-bar-compound-query" { path = "components/filter-bar-compound-query.png" }
         focus "focus-clear-filters" { target = css("#filter-bar-demo-en [data-filter-clear]") }
         press "clear-filters" { key = "Enter" }
         wait "required-default-ready" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
         expect "required-default-restored" { visible = css("#filter-bar-demo-en [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
         wait "search-clear-ready" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }
         expect "search-cleared" { visible = css("#filter-bar-demo-en input[type=search]:placeholder-shown") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=filter-bar]") }
+        expect "state-specimen-active" { visible = css(".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=active]") }
+        expect "state-specimen-empty" { visible = css(".a3s-component-state-matrix[open][data-component=filter-bar] [data-state-specimen=empty]") }
+        screenshot "filter-bar-states" { path = "components/filter-bar-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=filter-bar][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/filter-bar.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-filter-bar-primary-demo=zh]#filter-bar-demo-zh[data-filter-bar-initialized=true]") }
+        focus "focus-chinese-paused" { target = css("#filter-bar-demo-zh [data-filter-toggle][data-filter-value=paused]") }
+        press "choose-chinese-paused" { key = "Enter" }
+        wait "chinese-paused-ready" { visible = css("#filter-bar-demo-zh [data-filter-toggle][data-filter-value=paused][aria-pressed=true]") }
+        fill "chinese-search" { target = css("#filter-bar-demo-zh input[type=search]") value = "发布" }
+        wait "chinese-compound-ready" { visible = css("#filter-bar-demo-zh[data-filters=active] input[type=search]:not(:placeholder-shown)") }
+        focus "focus-chinese-clear" { target = css("#filter-bar-demo-zh [data-filter-clear]") }
+        press "clear-chinese-filters" { key = "Enter" }
+        wait "chinese-default-ready" { visible = css("#filter-bar-demo-zh [data-filter-toggle][data-filter-value=all][aria-pressed=true]") }
+        expect "chinese-search-cleared" { visible = css("#filter-bar-demo-zh input[type=search]:placeholder-shown") }
+        screenshot "filter-bar-chinese-phone" { path = "components/filter-bar-chinese-phone.png" }
+        accessibility "filter-bar-accessibility" { path = "components/filter-bar-accessibility.json" interactive = true }
+        console "filter-bar-console" { path = "components/filter-bar-console.json" clear = false }
+        page_errors "filter-bar-errors" { path = "components/filter-bar-errors.json" clear = false }
     }
 }
+

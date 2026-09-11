@@ -53,7 +53,8 @@
   const setState = (root, state, value, message) => {
     state.value = value;
     root.dataset.state = value;
-    root.setAttribute("aria-busy", value === "copying" ? "true" : "false");
+    if (value === "copying") root.setAttribute("aria-busy", "true");
+    else root.removeAttribute("aria-busy");
     if (state.feedback) {
       const label =
         message ??
@@ -100,7 +101,22 @@
       if (root.disabled || root.getAttribute("aria-disabled") === "true") {
         return false;
       }
+      if (state.value === "copying") return false;
       const value = resolveSource(root, source ?? state.source);
+      if (String(value).length === 0) {
+        setState(root, state, "error", options.errorMessage);
+        root.dispatchEvent(
+          new CustomEvent("a3s:copy-error", {
+            bubbles: true,
+            detail: {
+              error: new Error("Nothing to copy."),
+              source: options.source || "api",
+              value,
+            },
+          }),
+        );
+        return false;
+      }
       const before = new CustomEvent("a3s:copy-before", {
         bubbles: true,
         cancelable: true,

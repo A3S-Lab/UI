@@ -2,229 +2,722 @@ suite "a3s-ui-navigation-and-overlays" {
     version = 1
 
     scenario "activity-bar" {
-        name = "Activity Bar preview updates its current workspace destination"
+        name = "Activity Bar updates current destination, keeps compact labels accessible, and confirms Chinese phone selection"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/activity-bar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "navigation-visible" { visible = css(".a3s-preview[data-preview-component=activity-bar] .activity-bar nav") }
-        focus "focus-traces" { target = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces']") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-activity-bar-primary-demo=en] [data-activity-item=overview][aria-current=page]") }
+        expect "status-overview" { text = "Overview" }
+        focus "focus-traces" { target = css("[data-activity-bar-primary-demo=en] [data-activity-item=traces]") }
         press "open-traces" { key = "Enter" }
-        expect "traces-current" { visible = css(".a3s-preview[data-preview-component=activity-bar] a[href='#activity-traces'][aria-current=page]") }
+        expect "traces-current" { visible = css("[data-activity-bar-primary-demo=en] [data-activity-item=traces][aria-current=page]") }
+        expect "overview-cleared" { visible = css("[data-activity-bar-primary-demo=en]:has([data-activity-item=overview]:not([aria-current]))") }
+        expect "status-traces" { text = "Traces" }
+        expect "compact-labels-hidden" { visible = css("[data-activity-bar-primary-demo=en] [data-activity-compact][data-labels=hidden] [data-activity-item=compact-overview][aria-label=Overview]") }
         screenshot "activity-bar-current" { path = "components/activity-bar-current.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=activity-bar]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=activity-bar] [data-state-specimen=ready]") }
+        screenshot "activity-bar-states" { path = "components/activity-bar-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=activity-bar][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/activity-bar.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-activity-bar-primary-demo=zh] [data-activity-item=overview][aria-current=page]") }
+        focus "focus-chinese-settings" { target = css("[data-activity-bar-primary-demo=zh] [data-activity-item=settings]") }
+        press "activate-chinese-settings" { key = "Enter" }
+        expect "chinese-settings-current" { visible = css("[data-activity-bar-primary-demo=zh] [data-activity-item=settings][aria-current=page]") }
+        expect "chinese-status" { text = "设置" }
+        screenshot "activity-bar-chinese-phone" { path = "components/activity-bar-chinese-phone.png" }
+        accessibility "activity-bar-accessibility" { path = "components/activity-bar-accessibility.json" interactive = true }
+        console "activity-bar-console" { path = "components/activity-bar-console.json" clear = false }
+        page_errors "activity-bar-errors" { path = "components/activity-bar-errors.json" clear = false }
     }
 
     scenario "breadcrumb" {
-        name = "Breadcrumb preview stays reachable as a compact navigation row"
+        name = "Breadcrumb exposes current page, keeps ancestors keyboard-reachable, and confirms Chinese compact path"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/breadcrumb.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "breadcrumb-visible" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb[aria-label=Breadcrumb]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-breadcrumb-primary-demo=en][aria-label=Breadcrumb]") }
+        expect "current-page" { visible = css("[data-breadcrumb-primary-demo=en] [data-breadcrumb-current][aria-current=page]") }
+        expect "current-copy" { text = "Breadcrumb" }
+        focus "focus-home" { target = css("[data-breadcrumb-primary-demo=en] [data-breadcrumb-link=home]") }
+        expect "home-focused" { visible = css("[data-breadcrumb-primary-demo=en] [data-breadcrumb-link=home]:focus") }
+        focus "focus-components" { target = css("[data-breadcrumb-primary-demo=en] [data-breadcrumb-link=components]") }
+        expect "components-focused" { visible = css("[data-breadcrumb-primary-demo=en] [data-breadcrumb-link=components]:focus") }
+        screenshot "breadcrumb-desktop" { path = "components/breadcrumb-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=breadcrumb]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=breadcrumb] [data-state-specimen=ready]") }
+        screenshot "breadcrumb-states" { path = "components/breadcrumb-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=breadcrumb][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
         viewport "phone" { width = 390 height = 844 }
-        focus "focus-last-ancestor" { target = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type") }
-        expect "last-ancestor-reachable" { visible = css(".a3s-preview[data-preview-component=breadcrumb] nav.breadcrumb a:last-of-type:focus") }
-        screenshot "breadcrumb-phone" { path = "components/breadcrumb-phone.png" }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/breadcrumb.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-breadcrumb-primary-demo=zh][aria-label=面包屑] [data-breadcrumb-current][aria-current=page]") }
+        expect "chinese-current-copy" { text = "面包屑" }
+        focus "focus-chinese-components" { target = css("[data-breadcrumb-primary-demo=zh] [data-breadcrumb-link=components]") }
+        expect "chinese-components-focused" { visible = css("[data-breadcrumb-primary-demo=zh] [data-breadcrumb-link=components]:focus") }
+        screenshot "breadcrumb-chinese-phone" { path = "components/breadcrumb-chinese-phone.png" }
+        accessibility "breadcrumb-accessibility" { path = "components/breadcrumb-accessibility.json" interactive = true }
+        console "breadcrumb-console" { path = "components/breadcrumb-console.json" clear = false }
+        page_errors "breadcrumb-errors" { path = "components/breadcrumb-errors.json" clear = false }
     }
 
     scenario "tabs" {
-        name = "Tabs preview switches the active panel"
+        name = "Tabs switches panels with Home/End, skips disabled tabs, preserves RTL arrows, and confirms Chinese phone activation"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        focus "focus-second-tab" { target = css("#demo-tabs-with-panels-tab-2") }
-        press "activate-second-tab" { key = "Enter" }
-        expect "second-tab-active" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-tabs-primary-demo=en]#demo-tabs-with-panels") }
+        focus "focus-first-tab" { target = css("#demo-tabs-with-panels-tab-1") }
+        press "move-to-end-tab" { key = "End" }
+        wait "second-tab-selected" { visible = css("#demo-tabs-with-panels-tab-2[aria-selected=true]:focus") }
         expect "second-panel-visible" { visible = css("#demo-tabs-with-panels-panel-2:not([hidden])") }
-        viewport "compact-rtl" { width = 390 height = 844 }
+        press "move-to-start-tab" { key = "Home" }
+        wait "first-tab-selected" { visible = css("#demo-tabs-with-panels-tab-1[aria-selected=true]:focus") }
+        expect "first-panel-visible" { visible = css("#demo-tabs-with-panels-panel-1:not([hidden])") }
+        screenshot "tabs-home-end" { path = "components/tabs-home-end.png" }
+
+        focus "focus-disabled-home" { target = css("#tabs-disabled-tab-home") }
+        press "skip-disabled-tab" { key = "ArrowRight" }
+        expect "disabled-tab-skipped" { visible = css("#tabs-disabled-tab-home[aria-selected=true]:focus") }
+        expect "disabled-tab-locked" { visible = css("#tabs-disabled-tab-settings[disabled]") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=tabs]") }
+        expect "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=tabs] [data-state-specimen=ready]") }
+        screenshot "tabs-states" { path = "components/tabs-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=tabs][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/tabs.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-tabs-primary-demo=zh]#demo-tabs-with-panels #demo-tabs-with-panels-tab-1[aria-selected=true]") }
+        focus "focus-chinese-second-tab" { target = css("[data-tabs-primary-demo=zh] #demo-tabs-with-panels-tab-2") }
+        press "activate-chinese-second-tab" { key = "Enter" }
+        wait "chinese-second-active" { visible = css("[data-tabs-primary-demo=zh] #demo-tabs-with-panels-tab-2[aria-selected=true]") }
+        expect "chinese-second-panel" { visible = css("[data-tabs-primary-demo=zh] #demo-tabs-with-panels-panel-2:not([hidden])") }
+        expect "chinese-password-heading" { text = "密码" }
+        screenshot "tabs-chinese-phone" { path = "components/tabs-chinese-phone.png" }
+
+        navigate "open-rtl-phone" { url = "http://127.0.0.1:4178/UI/en/components/tabs.html" }
+        wait "rtl-phone-loaded" { load = "domcontentloaded" }
+        wait "rtl-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
         focus "focus-first-rtl-tab" { target = css("#tabs-rtl-tab-overview") }
         press "move-right-in-rtl" { key = "ArrowRight" }
         expect "rtl-last-tab-active" { visible = css("#tabs-rtl-tab-settings[aria-selected=true]:focus") }
         expect "rtl-last-panel-visible" { visible = css("#tabs-rtl-panel-settings:not([hidden])") }
         screenshot "tabs-compact-rtl" { path = "components/tabs-compact-rtl.png" }
+        accessibility "tabs-accessibility" { path = "components/tabs-accessibility.json" interactive = true }
+        console "tabs-console" { path = "components/tabs-console.json" clear = false }
+        page_errors "tabs-errors" { path = "components/tabs-errors.json" clear = false }
     }
 
     scenario "pagination" {
-        name = "Pagination preview updates its current page without compact overflow"
+        name = "Pagination moves current page with keyboard, previous/next, outline sync, and Chinese phone confirmation"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/pagination.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
-        expect "component-visible" { visible = css(".a3s-preview[data-preview-component=pagination] nav.pagination") }
-        focus "focus-page-three" { target = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][data-size=icon]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-pagination-primary-demo=en] [data-pagination-page='2'][aria-current=page][data-variant=outline]") }
+        expect "status-page-two" { text = "Page 2" }
+        focus "focus-page-three" { target = css("[data-pagination-primary-demo=en] [data-pagination-page='3']") }
         press "select-page-three" { key = "Enter" }
-        expect "page-three-current" { visible = css(".a3s-preview[data-preview-component=pagination] [data-pagination-page='3'][aria-current=page]") }
-        screenshot "pagination-phone" { path = "components/pagination-phone.png" }
+        expect "page-three-current" { visible = css("[data-pagination-primary-demo=en] [data-pagination-page='3'][aria-current=page][data-variant=outline]") }
+        expect "page-two-cleared" { visible = css("[data-pagination-primary-demo=en] [data-pagination-page='2'][data-variant=ghost]:not([aria-current])") }
+        expect "status-page-three" { text = "Page 3" }
+        click "go-previous" { target = css("[data-pagination-primary-demo=en] [data-pagination-direction=previous]") }
+        expect "page-two-restored" { visible = css("[data-pagination-primary-demo=en] [data-pagination-page='2'][aria-current=page][data-variant=outline]") }
+        click "go-next" { target = css("[data-pagination-primary-demo=en] [data-pagination-direction=next]") }
+        expect "page-three-from-next" { visible = css("[data-pagination-primary-demo=en] [data-pagination-page='3'][aria-current=page]") }
+        expect "ellipsis-present" { visible = css("[data-pagination-primary-demo=en] [data-pagination-ellipsis][aria-hidden=true]") }
+        screenshot "pagination-desktop" { path = "components/pagination-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=pagination]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=pagination] [data-state-specimen=ready]") }
+        screenshot "pagination-states" { path = "components/pagination-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=pagination][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/pagination.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-pagination-primary-demo=zh] [data-pagination-page='2'][aria-current=page]") }
+        focus "focus-chinese-page-one" { target = css("[data-pagination-primary-demo=zh] [data-pagination-page='1']") }
+        press "select-chinese-page-one" { key = "Enter" }
+        expect "chinese-page-one-current" { visible = css("[data-pagination-primary-demo=zh] [data-pagination-page='1'][aria-current=page][data-variant=outline]") }
+        expect "chinese-status" { text = "第 1 页" }
+        expect "chinese-next-label" { text = "下一页" }
+        screenshot "pagination-chinese-phone" { path = "components/pagination-chinese-phone.png" }
+        accessibility "pagination-accessibility" { path = "components/pagination-accessibility.json" interactive = true }
+        console "pagination-console" { path = "components/pagination-console.json" clear = false }
+        page_errors "pagination-errors" { path = "components/pagination-errors.json" clear = false }
     }
 
     scenario "sidebar" {
-        name = "Sidebar preview stays contained and toggles its navigation"
+        name = "Sidebar stays contained, toggles desktop navigation, restores mobile Escape focus, and confirms Chinese phone open"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/sidebar.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "contained-navigation" { visible = css(".a3s-sidebar-demo #demo-sidebar nav") }
-        focus "focus-toggle-sidebar" { target = css(".a3s-sidebar-demo > main button") }
-        press "toggle-sidebar" { key = "Enter" }
-        expect "sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true] + main") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-sidebar-primary-demo=en] #demo-sidebar nav") }
+        expect "current-page" { visible = css("[data-sidebar-primary-demo=en] #demo-sidebar a[aria-current=page]") }
+        click "toggle-sidebar" { target = css("[data-sidebar-primary-demo=en] [data-sidebar-toggle]") }
+        wait "sidebar-closed" { visible = css("[data-sidebar-primary-demo=en]:has(#demo-sidebar[aria-hidden=true]) main h2") }
+        expect "sidebar-closed-copy" { text = "Contained product navigation" }
+        screenshot "sidebar-desktop-closed" { path = "components/sidebar-desktop-closed.png" }
+        click "reopen-sidebar" { target = css("[data-sidebar-primary-demo=en] [data-sidebar-toggle]") }
+        wait "sidebar-reopened" { visible = css("[data-sidebar-primary-demo=en] #demo-sidebar[aria-hidden=false] nav") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar]") }
+        expect "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=sidebar] [data-state-specimen=ready]") }
+        screenshot "sidebar-states" { path = "components/sidebar-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=sidebar][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
         viewport "phone" { width = 390 height = 844 }
-        wait "mobile-toggle-ready" { visible = css(".a3s-sidebar-demo > main button") }
-        focus "focus-open-mobile-sidebar" { target = css(".a3s-sidebar-demo > main button") }
-        press "open-mobile-sidebar" { key = "Enter" }
-        wait "mobile-sidebar-open-wait" { visible = css("#demo-sidebar[aria-hidden=false]") }
-        expect "mobile-sidebar-open" { visible = css("#demo-sidebar[aria-hidden=false]") }
-        wait "mobile-navigation-focus-wait" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
-        expect "mobile-navigation-focused" { visible = css("#demo-sidebar nav a:first-of-type:focus") }
-        screenshot "sidebar-phone" { path = "components/sidebar-phone.png" }
-        press "close-mobile-sidebar" { key = "Escape" }
-        expect "mobile-sidebar-closed" { visible = css("#demo-sidebar[aria-hidden=true]") }
-        expect "mobile-toggle-restored" { visible = css("#demo-sidebar + main button:focus") }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/sidebar.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-sidebar-primary-demo=zh] [data-sidebar-toggle]") }
+        click "open-chinese-sidebar" { target = css("[data-sidebar-primary-demo=zh] [data-sidebar-toggle]") }
+        wait "chinese-sidebar-open" { visible = css("[data-sidebar-primary-demo=zh] #demo-sidebar[aria-hidden=false] nav a") }
+        wait "chinese-nav-focus" { visible = css("[data-sidebar-primary-demo=zh] #demo-sidebar nav a:first-of-type:focus") }
+        expect "chinese-overview" { text = "概览" }
+        screenshot "sidebar-chinese-phone" { path = "components/sidebar-chinese-phone.png" }
+        press "close-chinese-sidebar" { key = "Escape" }
+        wait "chinese-sidebar-closed" { visible = css("[data-sidebar-primary-demo=zh]:has(#demo-sidebar[aria-hidden=true]) [data-sidebar-toggle]") }
+        expect "chinese-toggle-restored" { visible = css("[data-sidebar-primary-demo=zh] [data-sidebar-toggle]:focus") }
+        accessibility "sidebar-accessibility" { path = "components/sidebar-accessibility.json" interactive = true }
+        console "sidebar-console" { path = "components/sidebar-console.json" clear = false }
+        page_errors "sidebar-errors" { path = "components/sidebar-errors.json" clear = false }
     }
 
     scenario "alert-dialog" {
-        name = "Alert Dialog preserves semantics, action focus, and trigger return"
+        name = "Alert Dialog focuses cancel safely, restores the trigger, and confirms Chinese destructive copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/alert-dialog.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
-        focus "focus-open-dialog" { target = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-alert-dialog-primary-demo=en] #demo-alert-dialog[role=alertdialog]") }
+        expect "consequence-named" { text = "This action cannot be undone." }
+        focus "focus-open-dialog" { target = css("[data-alert-dialog-primary-demo=en] [data-alert-dialog-trigger]") }
         press "open-dialog" { key = "Enter" }
-        wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=alert-dialog] [data-a3s-components~='alert-dialog'][role='alertdialog'][open] > div") }
-        expect "cancel-focused" { visible = css("#demo-alert-dialog footer button:first-of-type:focus") }
-        screenshot "alert-dialog-phone" { path = "components/alert-dialog-phone.png" }
-        focus "focus-cancel-dialog" { target = css("#demo-alert-dialog footer button:first-of-type") }
+        wait "dialog-open" { visible = css("[data-alert-dialog-primary-demo=en] #demo-alert-dialog[open] > div") }
+        expect "cancel-focused" { visible = css("[data-alert-dialog-primary-demo=en] [data-alert-dialog-cancel]:focus") }
+        expect "confirm-destructive" { visible = css("[data-alert-dialog-primary-demo=en] [data-alert-dialog-confirm][data-variant=destructive]") }
+        screenshot "alert-dialog-desktop" { path = "components/alert-dialog-desktop.png" }
         press "cancel-dialog" { key = "Enter" }
-        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog] button[data-preview-onclick*='demo-alert-dialog']:focus") }
+        expect "dialog-trigger-restored" { visible = css("[data-alert-dialog-primary-demo=en] [data-alert-dialog-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=alert-dialog]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=open] dialog.alert-dialog[open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=alert-dialog] [data-state-specimen=closed]:has(dialog.alert-dialog:not([open]))") }
+        screenshot "alert-dialog-states" { path = "components/alert-dialog-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=alert-dialog][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/alert-dialog.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-alert-dialog-primary-demo=zh] [data-alert-dialog-trigger]") }
+        focus "focus-open-chinese" { target = css("[data-alert-dialog-primary-demo=zh] [data-alert-dialog-trigger]") }
+        press "open-chinese" { key = "Enter" }
+        wait "chinese-dialog-open" { visible = css("[data-alert-dialog-primary-demo=zh] #demo-alert-dialog[open] > div") }
+        expect "chinese-title" { text = "删除账户？" }
+        expect "chinese-cancel-focused" { visible = css("[data-alert-dialog-primary-demo=zh] [data-alert-dialog-cancel]:focus") }
+        screenshot "alert-dialog-chinese-phone" { path = "components/alert-dialog-chinese-phone.png" }
+        press "cancel-chinese" { key = "Enter" }
+        expect "chinese-trigger-restored" { visible = css("[data-alert-dialog-primary-demo=zh] [data-alert-dialog-trigger]:focus") }
+        accessibility "alert-dialog-accessibility" { path = "components/alert-dialog-accessibility.json" interactive = true }
+        console "alert-dialog-console" { path = "components/alert-dialog-console.json" clear = false }
+        page_errors "alert-dialog-errors" { path = "components/alert-dialog-errors.json" clear = false }
     }
 
     scenario "dialog" {
-        name = "Dialog accepts edits and restores trigger focus after Escape"
+        name = "Dialog accepts edits, restores Escape focus, and confirms Chinese profile editing"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dialog.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
-        focus "focus-open-dialog" { target = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-dialog-primary-demo=en] [data-dialog-trigger]") }
+        focus "focus-open-dialog" { target = css("[data-dialog-primary-demo=en] [data-dialog-trigger]") }
         press "open-dialog" { key = "Enter" }
-        wait "dialog-open" { visible = css(".a3s-preview[data-preview-component=dialog] [data-a3s-components~='dialog'][open] > div") }
+        wait "dialog-open" { visible = css("[data-dialog-primary-demo=en] #demo-dialog-edit-profile[open] > div") }
         fill "edit-profile-name" { target = css("#demo-dialog-edit-profile-name") value = "A3S Operator" }
-        screenshot "dialog-phone" { path = "components/dialog-phone.png" }
+        expect "name-edited" { visible = css("#demo-dialog-edit-profile-name") }
+        screenshot "dialog-desktop-edit" { path = "components/dialog-desktop-edit.png" }
         press "close-dialog" { key = "Escape" }
-        expect "dialog-trigger-restored" { visible = css(".a3s-preview[data-preview-component=dialog] .a3s-preview__canvas > button:focus") }
+        expect "dialog-trigger-restored" { visible = css("[data-dialog-primary-demo=en] [data-dialog-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=dialog]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=open] dialog.dialog[open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=dialog] [data-state-specimen=closed]:has(dialog.dialog:not([open]))") }
+        screenshot "dialog-states" { path = "components/dialog-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=dialog][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/dialog.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-dialog-primary-demo=zh] [data-dialog-trigger]") }
+        focus "focus-open-chinese" { target = css("[data-dialog-primary-demo=zh] [data-dialog-trigger]") }
+        press "open-chinese" { key = "Enter" }
+        wait "chinese-dialog-open" { visible = css("[data-dialog-primary-demo=zh] #demo-dialog-edit-profile[open] > div") }
+        expect "chinese-title" { text = "编辑个人资料" }
+        fill "edit-chinese-name" { target = css("[data-dialog-primary-demo=zh] #demo-dialog-edit-profile-name") value = "林安" }
+        screenshot "dialog-chinese-phone" { path = "components/dialog-chinese-phone.png" }
+        press "close-chinese" { key = "Escape" }
+        expect "chinese-trigger-restored" { visible = css("[data-dialog-primary-demo=zh] [data-dialog-trigger]:focus") }
+        accessibility "dialog-accessibility" { path = "components/dialog-accessibility.json" interactive = true }
+        console "dialog-console" { path = "components/dialog-console.json" clear = false }
+        page_errors "dialog-errors" { path = "components/dialog-errors.json" clear = false }
     }
 
     scenario "drawer" {
-        name = "Drawer stays bounded on mobile and restores trigger focus"
+        name = "Drawer opens from the edge, restores Escape focus, and confirms Chinese phone cancel"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/drawer.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-drawer-primary-demo=en] [data-drawer-trigger]") }
+        click "open-drawer" { target = css("[data-drawer-primary-demo=en] [data-drawer-trigger]") }
+        wait "drawer-open" { visible = css("[data-drawer-primary-demo=en] #demo-drawer[open] > article") }
+        expect "goal-title" { text = "Adjust daily goal" }
+        expect "goal-value" { visible = css("[data-drawer-primary-demo=en] [data-drawer-goal-value]") }
+        screenshot "drawer-desktop" { path = "components/drawer-desktop.png" }
+        press "close-drawer" { key = "Escape" }
+        wait "drawer-closed" { visible = css("[data-drawer-primary-demo=en] [data-drawer-trigger]:focus") }
+        expect "drawer-trigger-restored" { visible = css("[data-drawer-primary-demo=en] [data-drawer-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=drawer]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=open] dialog.drawer[open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=drawer] [data-state-specimen=closed]:has(dialog.drawer:not([open]))") }
+        screenshot "drawer-states" { path = "components/drawer-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=drawer][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
         viewport "phone" { width = 390 height = 844 }
-        wait "drawer-trigger" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button[data-preview-onclick*='demo-drawer']") }
-        focus "focus-open-drawer" { target = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button[data-preview-onclick*='demo-drawer']") }
-        press "open-drawer" { key = "Enter" }
-        wait "drawer-open-wait" { visible = css("#demo-drawer[open]") }
-        expect "drawer-open" { visible = css("#demo-drawer[open]") }
-        screenshot "drawer-phone" { path = "components/drawer-phone.png" }
-        focus "focus-cancel-drawer" { target = css("#demo-drawer button[data-preview-onclick*='close']") }
-        press "cancel-drawer" { key = "Enter" }
-        wait "drawer-close-animation" { load = "networkidle" }
-        expect "drawer-trigger-restored" { visible = css(".a3s-preview[data-preview-component=drawer] .a3s-preview__canvas > button:focus") }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/drawer.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-drawer-primary-demo=zh] [data-drawer-trigger]") }
+        click "open-chinese-drawer" { target = css("[data-drawer-primary-demo=zh] [data-drawer-trigger]") }
+        wait "chinese-drawer-open" { visible = css("[data-drawer-primary-demo=zh] #demo-drawer[open] > article") }
+        expect "chinese-title" { text = "调整每日目标" }
+        click "cancel-chinese-drawer" { target = css("[data-drawer-primary-demo=zh] [data-drawer-cancel]") }
+        wait "chinese-trigger-restored" { visible = css("[data-drawer-primary-demo=zh] [data-drawer-trigger]:focus") }
+        screenshot "drawer-chinese-phone" { path = "components/drawer-chinese-phone.png" }
+        accessibility "drawer-accessibility" { path = "components/drawer-accessibility.json" interactive = true }
+        console "drawer-console" { path = "components/drawer-console.json" clear = false }
+        page_errors "drawer-errors" { path = "components/drawer-errors.json" clear = false }
     }
 
     scenario "dropdown-menu" {
-        name = "Dropdown Menu preview opens above the following documentation"
+        name = "Dropdown Menu selects Profile, skips disabled API, restores Escape focus, and confirms Chinese logout"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/dropdown-menu.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        wait "trigger-ready" { visible = css("#demo-dropdown-menu-trigger") }
-        focus "focus-trigger" { target = css("#demo-dropdown-menu-trigger") }
-        press "open-menu" { key = "Enter" }
-        expect "menu-visible" { visible = css("#demo-dropdown-menu [data-popover][aria-hidden=false]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger]") }
+        click "open-menu" { target = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger]") }
+        wait "menu-visible" { visible = css("[data-dropdown-primary-demo=en] [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-overlay-open]") }
-        screenshot "dropdown" { path = "components/dropdown-menu.png" }
+        expect "disabled-api" { visible = css("[data-dropdown-primary-demo=en] [data-dropdown-item=api][aria-disabled=true]") }
+        click "select-profile" { target = css("[data-dropdown-primary-demo=en] [data-dropdown-item=profile]") }
+        wait "menu-closed" { visible = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger][aria-expanded=false]") }
+        expect "trigger-restored-after-select" { visible = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger]:focus") }
+        click "reopen-menu" { target = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger]") }
+        wait "menu-reopened" { visible = css("[data-dropdown-primary-demo=en] [data-popover][aria-hidden=false]") }
+        screenshot "dropdown-desktop" { path = "components/dropdown-menu-desktop.png" }
+        press "escape-menu" { key = "Escape" }
+        expect "trigger-restored-after-escape" { visible = css("[data-dropdown-primary-demo=en] [data-dropdown-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu]") }
+        wait "state-specimen-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=expanded] button[aria-haspopup=menu][aria-expanded=true]") }
+        expect "state-specimen-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=collapsed] button[aria-haspopup=menu][aria-expanded=false]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=dropdown-menu] [data-state-specimen=disabled]:has(button:disabled, [aria-disabled=true])") }
+        screenshot "dropdown-states" { path = "components/dropdown-menu-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=dropdown-menu][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/dropdown-menu.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-dropdown-primary-demo=zh] [data-dropdown-trigger]") }
+        click "open-chinese-menu" { target = css("[data-dropdown-primary-demo=zh] [data-dropdown-trigger]") }
+        wait "chinese-menu-visible" { visible = css("[data-dropdown-primary-demo=zh] [data-popover][aria-hidden=false]") }
+        expect "chinese-logout" { text = "退出登录" }
+        screenshot "dropdown-chinese-phone" { path = "components/dropdown-menu-chinese-phone.png" }
+        press "close-chinese-menu" { key = "Escape" }
+        expect "chinese-trigger-restored" { visible = css("[data-dropdown-primary-demo=zh] [data-dropdown-trigger]:focus") }
+        accessibility "dropdown-menu-accessibility" { path = "components/dropdown-menu-accessibility.json" interactive = true }
+        console "dropdown-menu-console" { path = "components/dropdown-menu-console.json" clear = false }
+        page_errors "dropdown-menu-errors" { path = "components/dropdown-menu-errors.json" clear = false }
     }
 
     scenario "popover" {
-        name = "Popover focuses editable content and restores its trigger"
+        name = "Popover autofocuses width, accepts edits, restores Escape focus, and confirms Chinese dimensions"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/popover.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        viewport "phone" { width = 390 height = 844 }
-        focus "focus-open-popover" { target = css("#demo-popover-trigger") }
-        press "open-popover" { key = "Enter" }
-        wait "wait-popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
-        expect "popover-visible" { visible = css("#demo-popover [data-popover][aria-hidden=false]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-popover-primary-demo=en] [data-popover-trigger]") }
+        click "open-popover" { target = css("[data-popover-primary-demo=en] [data-popover-trigger]") }
+        wait "popover-visible" { visible = css("[data-popover-primary-demo=en] [data-popover][aria-hidden=false]") }
         expect "preview-promoted" { visible = css(".a3s-preview[data-preview-component=popover][data-overlay-open]") }
-        wait "wait-popover-input-focused" { visible = css("#demo-popover-width:focus") }
-        expect "popover-input-focused" { visible = css("#demo-popover-width:focus") }
-        fill "edit-popover-width" { target = css("#demo-popover-width") value = "72%" }
-        screenshot "popover-phone" { path = "components/popover-phone.png" }
+        wait "width-focused" { visible = css("[data-popover-primary-demo=en] [data-popover-field=width]:focus") }
+        fill "edit-width" { target = css("[data-popover-primary-demo=en] [data-popover-field=width]") value = "72%" }
+        screenshot "popover-desktop" { path = "components/popover-desktop.png" }
         press "close-popover" { key = "Escape" }
-        expect "popover-trigger-restored" { visible = css("#demo-popover-trigger:focus") }
+        expect "trigger-restored" { visible = css("[data-popover-primary-demo=en] [data-popover-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=popover]") }
+        wait "state-specimen-expanded" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=expanded] button[aria-expanded=true]") }
+        expect "state-specimen-collapsed" { visible = css(".a3s-component-state-matrix[open][data-component=popover] [data-state-specimen=collapsed] button[aria-expanded=false]") }
+        screenshot "popover-states" { path = "components/popover-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=popover][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/popover.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-popover-primary-demo=zh] [data-popover-trigger]") }
+        click "open-chinese-popover" { target = css("[data-popover-primary-demo=zh] [data-popover-trigger]") }
+        wait "chinese-popover-visible" { visible = css("[data-popover-primary-demo=zh] [data-popover][aria-hidden=false]") }
+        expect "chinese-title" { text = "尺寸" }
+        fill "edit-chinese-width" { target = css("[data-popover-primary-demo=zh] [data-popover-field=width]") value = "80%" }
+        screenshot "popover-chinese-phone" { path = "components/popover-chinese-phone.png" }
+        press "close-chinese-popover" { key = "Escape" }
+        expect "chinese-trigger-restored" { visible = css("[data-popover-primary-demo=zh] [data-popover-trigger]:focus") }
+        accessibility "popover-accessibility" { path = "components/popover-accessibility.json" interactive = true }
+        console "popover-console" { path = "components/popover-console.json" clear = false }
+        page_errors "popover-errors" { path = "components/popover-errors.json" clear = false }
     }
 
     scenario "command" {
-        name = "Command preview filters its menu items"
+        name = "Command filters Calendar, recovers from empty search, skips disabled Calculator, and confirms Chinese settings"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/command.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        fill "filter-commands" { target = placeholder("Type a command or search...") value = "Calendar" }
-        expect "calendar-visible" { visible = css("#demo-command-standalone [role=menuitem][data-filter=Calendar]:not([aria-hidden=true])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-command-primary-demo=en] [data-command-input]") }
+        expect "disabled-calculator" { visible = css("[data-command-primary-demo=en] [data-command-item=calculator][aria-disabled=true]:not([aria-hidden=true])") }
+        fill "filter-calendar" { target = css("[data-command-primary-demo=en] [data-command-input]") value = "Calendar" }
+        expect "calendar-visible" { visible = css("[data-command-primary-demo=en] [data-command-item=calendar]:not([aria-hidden=true])") }
+        expect "calculator-filtered-out" { visible = css("[data-command-primary-demo=en]:has([data-command-item=calculator][aria-hidden=true])") }
+        fill "filter-empty" { target = css("[data-command-primary-demo=en] [data-command-input]") value = "zzzz" }
+        expect "empty-message" { text = "No results found." }
+        screenshot "command-desktop-empty" { path = "components/command-desktop-empty.png" }
+        fill "clear-filter" { target = css("[data-command-primary-demo=en] [data-command-input]") value = "" }
+        expect "suggestions-restored" { visible = css("[data-command-primary-demo=en] [data-command-item=calendar]:not([aria-hidden=true])") }
+        expect "disabled-calculator-restored" { visible = css("[data-command-primary-demo=en] [data-command-item=calculator][aria-disabled=true]:not([aria-hidden=true])") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=command]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=ready]") }
+        expect "state-specimen-empty" { visible = css(".a3s-component-state-matrix[open][data-component=command] [data-state-specimen=empty]") }
+        screenshot "command-states" { path = "components/command-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=command][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/command.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-command-primary-demo=zh] [data-command-input]") }
+        fill "filter-chinese-settings" { target = css("[data-command-primary-demo=zh] [data-command-input]") value = "设置" }
+        expect "chinese-settings-visible" { visible = css("[data-command-primary-demo=zh] [data-command-item=settings]:not([aria-hidden=true])") }
+        expect "chinese-settings-copy" { text = "打开设置" }
+        screenshot "command-chinese-phone" { path = "components/command-chinese-phone.png" }
+        accessibility "command-accessibility" { path = "components/command-accessibility.json" interactive = true }
+        console "command-console" { path = "components/command-console.json" clear = false }
+        page_errors "command-errors" { path = "components/command-errors.json" clear = false }
     }
 
     scenario "tooltip" {
-        name = "Tooltip preview supports pointer hover"
+        name = "Tooltip shows on hover and focus, covers state matrix, and confirms Chinese copy"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/tooltip.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        hover "show-tooltip" { target = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip]") }
-        expect "tooltip-trigger-visible" { visible = css(".a3s-preview[data-preview-component=tooltip] [data-tooltip='Add to library']") }
-        screenshot "tooltip" { path = "components/tooltip.png" }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-tooltip-primary-demo=en] [data-tooltip-trigger][data-tooltip='Add to library']") }
+        hover "show-tooltip" { target = css("[data-tooltip-primary-demo=en] [data-tooltip-trigger]") }
+        expect "tooltip-trigger-visible" { visible = css("[data-tooltip-primary-demo=en] [data-tooltip-trigger][data-tooltip='Add to library']") }
+        screenshot "tooltip-desktop-hover" { path = "components/tooltip-desktop-hover.png" }
+        focus "focus-tooltip" { target = css("[data-tooltip-primary-demo=en] [data-tooltip-trigger]") }
+        expect "tooltip-focused" { visible = css("[data-tooltip-primary-demo=en] [data-tooltip-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=tooltip]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=tooltip] [data-state-specimen=ready]") }
+        expect "state-specimen-disabled" { visible = css(".a3s-component-state-matrix[open][data-component=tooltip] [data-state-specimen=disabled]") }
+        screenshot "tooltip-states" { path = "components/tooltip-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=tooltip][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/tooltip.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-tooltip-primary-demo=zh] [data-tooltip-trigger][data-tooltip='添加到资源库']") }
+        focus "focus-chinese-tooltip" { target = css("[data-tooltip-primary-demo=zh] [data-tooltip-trigger]") }
+        expect "chinese-tooltip-copy" { visible = css("[data-tooltip-primary-demo=zh] [data-tooltip='添加到资源库']:focus") }
+        screenshot "tooltip-chinese-phone" { path = "components/tooltip-chinese-phone.png" }
+        accessibility "tooltip-accessibility" { path = "components/tooltip-accessibility.json" interactive = true }
+        console "tooltip-console" { path = "components/tooltip-console.json" clear = false }
+        page_errors "tooltip-errors" { path = "components/tooltip-errors.json" clear = false }
     }
 
     scenario "context-menu" {
-        name = "Context Menu completes keyboard invocation, nested selection, checked state, and focus return"
+        name = "Context Menu completes nested selection, preserves watch state, covers matrix, and confirms Chinese open"
         surface = "web"
-        timeout_ms = 45000
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
         navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/context-menu.html" }
         wait "loaded" { load = "networkidle" }
         wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
-        expect "context-ready" { visible = css("#context-menu-demo-en[data-context-menu-initialized=true]") }
-        focus "focus-trigger" { target = css("#context-menu-demo-en [data-context-trigger]") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "context-ready" { visible = css("[data-context-primary-demo=en]#context-menu-demo-en[data-context-menu-initialized=true]") }
+        focus "focus-trigger" { target = css("[data-context-primary-demo=en] [data-context-trigger]") }
         press "open-context-menu" { key = "Shift+F10" }
-        expect "menu-open" { visible = css("#context-menu-demo-en[data-state=open] > [data-context-content][aria-hidden=false]") }
+        expect "menu-open" { visible = css("[data-context-primary-demo=en][data-state=open] > [data-context-content][aria-hidden=false]") }
         press "move-to-rename" { key = "ArrowDown" }
         press "move-to-open-with" { key = "ArrowDown" }
         press "open-submenu" { key = "ArrowRight" }
-        expect "submenu-open" { visible = css("#context-menu-demo-en [data-context-submenu-content][aria-hidden=false]") }
-        click "choose-diff-view" { target = css("#context-menu-demo-en [data-context-submenu-content] [data-value=diff]") }
-        expect "diff-selection-closed-menu" { visible = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]:focus") }
+        expect "submenu-open" { visible = css("[data-context-primary-demo=en] [data-context-submenu-content][aria-hidden=false]") }
+        click "choose-diff-view" { target = css("[data-context-primary-demo=en] [data-context-submenu-content] [data-value=diff]") }
+        expect "diff-selection-closed-menu" { visible = css("[data-context-primary-demo=en][data-state=closed] [data-context-trigger]:focus") }
         press "reopen-context-menu" { key = "Shift+F10" }
-        click "disable-watch" { target = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch]") }
-        expect "watch-selection-closed-menu" { visible = css("#context-menu-demo-en[data-state=closed] [data-context-trigger]:focus") }
+        click "disable-watch" { target = css("[data-context-primary-demo=en] [role=menuitemcheckbox][data-value=watch]") }
+        expect "watch-selection-closed-menu" { visible = css("[data-context-primary-demo=en][data-state=closed] [data-context-trigger]:focus") }
         press "reopen-to-check-state" { key = "Shift+F10" }
-        expect "watch-state-preserved" { visible = css("#context-menu-demo-en [role=menuitemcheckbox][data-value=watch][aria-checked=false]") }
+        expect "watch-state-preserved" { visible = css("[data-context-primary-demo=en] [role=menuitemcheckbox][data-value=watch][aria-checked=false]") }
+        screenshot "context-menu-desktop" { path = "components/context-menu-desktop.png" }
         press "close-context-menu" { key = "Escape" }
-        expect "trigger-restored" { visible = css("#context-menu-demo-en [data-context-trigger]:focus") }
+        expect "trigger-restored" { visible = css("[data-context-primary-demo=en] [data-context-trigger]:focus") }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu]") }
+        wait "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=context-menu] [data-state-specimen=closed]") }
+        screenshot "context-menu-states" { path = "components/context-menu-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=context-menu][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/context-menu.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-context-primary-demo=zh][data-context-menu-initialized=true] [data-context-trigger]") }
+        focus "focus-chinese-trigger" { target = css("[data-context-primary-demo=zh] [data-context-trigger]") }
+        press "open-chinese-menu" { key = "Shift+F10" }
+        expect "chinese-menu-open" { visible = css("[data-context-primary-demo=zh][data-state=open] > [data-context-content][aria-hidden=false]") }
+        expect "chinese-help" { text = "右键单击，或聚焦后按 Shift + F10。" }
+        screenshot "context-menu-chinese-phone" { path = "components/context-menu-chinese-phone.png" }
+        press "close-chinese-menu" { key = "Escape" }
+        expect "chinese-trigger-restored" { visible = css("[data-context-primary-demo=zh] [data-context-trigger]:focus") }
+        accessibility "context-menu-accessibility" { path = "components/context-menu-accessibility.json" interactive = true }
+        console "context-menu-console" { path = "components/context-menu-console.json" clear = false }
+        page_errors "context-menu-errors" { path = "components/context-menu-errors.json" clear = false }
+    }
+
+    scenario "back-to-bottom" {
+        name = "Back to Bottom clears unread on activate, keeps always-visible demo, and confirms Chinese copy"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/back-to-bottom.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-back-to-bottom-primary-demo=en] .back-to-bottom[data-always-visible][data-unread='3']:not([hidden])") }
+        expect "unread-badge" { visible = css("[data-back-to-bottom-primary-demo=en] [data-unread-count]:not([hidden])") }
+        expect "status-unread" { text = "3 unread updates waiting" }
+        click "activate-back-to-bottom" { target = css("[data-back-to-bottom-primary-demo=en] [data-back-to-bottom-trigger]") }
+        expect "unread-cleared" { visible = css("[data-back-to-bottom-primary-demo=en] .back-to-bottom[data-unread='0']:not([hidden])") }
+        expect "status-returned" { text = "Returned to latest output" }
+        screenshot "back-to-bottom-desktop" { path = "components/back-to-bottom-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=back-to-bottom]") }
+        expect "state-specimen-visible" { visible = css(".a3s-component-state-matrix[open][data-component=back-to-bottom] [data-state-specimen=visible]") }
+        expect "state-specimen-unread" { visible = css(".a3s-component-state-matrix[open][data-component=back-to-bottom] [data-state-specimen=unread]") }
+        screenshot "back-to-bottom-states" { path = "components/back-to-bottom-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=back-to-bottom][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/back-to-bottom.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-back-to-bottom-primary-demo=zh] .back-to-bottom[data-unread='3']") }
+        expect "chinese-label" { text = "回到最新内容" }
+        click "activate-chinese" { target = css("[data-back-to-bottom-primary-demo=zh] [data-back-to-bottom-trigger]") }
+        expect "chinese-status" { text = "已回到最新内容" }
+        screenshot "back-to-bottom-chinese-phone" { path = "components/back-to-bottom-chinese-phone.png" }
+        accessibility "back-to-bottom-accessibility" { path = "components/back-to-bottom-accessibility.json" interactive = true }
+        console "back-to-bottom-console" { path = "components/back-to-bottom-console.json" clear = false }
+        page_errors "back-to-bottom-errors" { path = "components/back-to-bottom-errors.json" clear = false }
+    }
+
+    scenario "floating-panel" {
+        name = "Floating Panel closes with focus restore, reopens from trigger, and confirms Chinese close"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/floating-panel.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-floating-panel-primary-demo=en] .floating-panel[data-state=open]:not([hidden])") }
+        expect "status-open" { text = "Inspector open" }
+        focus "focus-close" { target = css("[data-floating-panel-primary-demo=en] [data-floating-panel-action=close]") }
+        press "close-panel" { key = "Enter" }
+        wait "panel-closed" { visible = css("[data-floating-panel-primary-demo=en]:has(.floating-panel[data-state=closed][hidden])") }
+        expect "status-closed" { text = "Inspector closed" }
+        click "reopen-panel" { target = css("[data-floating-panel-primary-demo=en] [data-floating-panel-reopen]") }
+        wait "panel-reopened" { visible = css("[data-floating-panel-primary-demo=en] .floating-panel[data-state=open]:not([hidden])") }
+        expect "status-reopened" { text = "Inspector open" }
+        screenshot "floating-panel-desktop" { path = "components/floating-panel-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=floating-panel]") }
+        expect "state-specimen-open" { visible = css(".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=open]") }
+        expect "state-specimen-closed" { visible = css(".a3s-component-state-matrix[open][data-component=floating-panel] [data-state-specimen=closed]") }
+        screenshot "floating-panel-states" { path = "components/floating-panel-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=floating-panel][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/floating-panel.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-floating-panel-primary-demo=zh] .floating-panel[data-state=open]") }
+        expect "chinese-title" { text = "检查器" }
+        click "close-chinese" { target = css("[data-floating-panel-primary-demo=zh] [data-floating-panel-action=close]") }
+        wait "chinese-closed" { visible = css("[data-floating-panel-primary-demo=zh]:has(.floating-panel[data-state=closed][hidden])") }
+        expect "chinese-status" { text = "检查器已关闭" }
+        screenshot "floating-panel-chinese-phone" { path = "components/floating-panel-chinese-phone.png" }
+        accessibility "floating-panel-accessibility" { path = "components/floating-panel-accessibility.json" interactive = true }
+        console "floating-panel-console" { path = "components/floating-panel-console.json" clear = false }
+        page_errors "floating-panel-errors" { path = "components/floating-panel-errors.json" clear = false }
+    }
+
+    scenario "table-of-contents" {
+        name = "Table of Contents updates current location from keyboard, covers state matrix, and confirms Chinese navigation"
+        surface = "web"
+        timeout_ms = 90000
+        viewport "desktop" { width = 1440 height = 1000 }
+        navigate "open" { url = "http://127.0.0.1:4178/UI/en/components/table-of-contents.html" }
+        wait "loaded" { load = "networkidle" }
+        wait "page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "preview-ready" { visible = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete][data-preview-source=ready]") }
+        expect "primary-demo" { visible = css("[data-toc-primary-demo=en] [data-toc-item=overview][aria-current=location]") }
+        focus "focus-contract" { target = css("[data-toc-primary-demo=en] [data-toc-item=contract]") }
+        press "activate-contract" { key = "Enter" }
+        expect "contract-current" { visible = css("[data-toc-primary-demo=en] [data-toc-item=contract][aria-current=location]") }
+        expect "overview-cleared" { visible = css("[data-toc-primary-demo=en]:has([data-toc-item=overview]:not([aria-current]))") }
+        screenshot "table-of-contents-desktop" { path = "components/table-of-contents-desktop.png" }
+
+        focus "focus-state-matrix" { target = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=states]") }
+        press "open-state-matrix" { key = "Enter" }
+        wait "state-matrix-open" { visible = css(".a3s-component-state-matrix[open][data-component=table-of-contents]") }
+        wait "state-specimen-ready" { visible = css(".a3s-component-state-matrix[open][data-component=table-of-contents] [data-state-specimen=ready]") }
+        screenshot "table-of-contents-states" { path = "components/table-of-contents-states.png" }
+        press "close-state-matrix" { key = "Escape" }
+        expect "state-trigger-restored" { visible = css(".a3s-preview[data-preview-component=table-of-contents][data-preview-integration=complete] [data-preview-control=states]:focus") }
+
+        viewport "phone" { width = 390 height = 844 }
+        navigate "open-chinese-phone" { url = "http://127.0.0.1:4178/UI/components/table-of-contents.html" }
+        wait "chinese-phone-loaded" { load = "domcontentloaded" }
+        wait "chinese-phone-page-ready" { visible = css("html:not([data-a3s-defer-init])") }
+        wait "chinese-phone-ready" { visible = css("[data-toc-primary-demo=zh][aria-label=本页目录] [data-toc-item=overview][aria-current=location]") }
+        focus "focus-chinese-a11y" { target = css("[data-toc-primary-demo=zh] [data-toc-item=accessibility]") }
+        press "activate-chinese-a11y" { key = "Enter" }
+        expect "chinese-a11y-current" { visible = css("[data-toc-primary-demo=zh] [data-toc-item=accessibility][aria-current=location]") }
+        expect "chinese-a11y-copy" { text = "无障碍" }
+        screenshot "table-of-contents-chinese-phone" { path = "components/table-of-contents-chinese-phone.png" }
+        accessibility "table-of-contents-accessibility" { path = "components/table-of-contents-accessibility.json" interactive = true }
+        console "table-of-contents-console" { path = "components/table-of-contents-console.json" clear = false }
+        page_errors "table-of-contents-errors" { path = "components/table-of-contents-errors.json" clear = false }
     }
 }

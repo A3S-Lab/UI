@@ -1,3 +1,7 @@
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { applyCssPageZoom } from "./page-zoom.js";
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openButtonGroup(page: Page, locale: "en" | "zh" = "en") {
@@ -317,6 +321,104 @@ test("Button Group contains localized long labels on a phone and preserves RTL o
   );
 });
 
+
+test("Button Group AT smoke keeps named group and Archive activation", async ({
+  page,
+}) => {
+  await openButtonGroup(page);
+  const group = primaryGroup(page);
+  const status = primaryPreview(page)
+    .locator("[data-button-group-primary-demo=en]")
+    .locator("[data-button-group-status]");
+  const archive = group.getByRole("button", { name: "Archive" });
+
+  await expect(group).toHaveAccessibleName("Message actions");
+  await expect(status).toHaveAttribute("aria-live", "polite");
+  await archive.focus();
+  const focusVisual = await archive.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      boxShadow: style.boxShadow,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  const hasOutline =
+    focusVisual.outlineStyle !== "none" &&
+    Number.parseFloat(focusVisual.outlineWidth) > 0;
+  const hasFocusShadow = focusVisual.boxShadow !== "none";
+  expect(hasOutline || hasFocusShadow).toBe(true);
+  await archive.click();
+  await expect(status).toHaveText("Message archived.");
+});
+
+test("Button Group remains usable at true 200% CSS page zoom", async ({
+  page,
+}) => {
+  await openButtonGroup(page);
+  await applyCssPageZoom(page, 2);
+  const group = primaryGroup(page);
+  const archive = group.getByRole("button", { name: "Archive" });
+  await expect(archive).toBeVisible();
+  await archive.scrollIntoViewIfNeeded();
+
+  const metrics = await page.evaluate(() => {
+    const control = document.querySelector<HTMLElement>(
+      "[data-button-group-primary-demo=en] [data-button-group-action=archive]",
+    )!;
+    const buttonBounds = control.getBoundingClientRect();
+    const html = document.documentElement;
+    return {
+      buttonHeight: buttonBounds.height,
+      buttonInViewport:
+        buttonBounds.left >= -1 &&
+        buttonBounds.top >= -1 &&
+        buttonBounds.right <= window.innerWidth + 1 &&
+        buttonBounds.bottom <= window.innerHeight + 1,
+      buttonWidth: buttonBounds.width,
+      documentOverflowX: html.scrollWidth > html.clientWidth + 1,
+      zoom: getComputedStyle(html).zoom,
+    };
+  });
+
+  expect(metrics.zoom === "2" || metrics.zoom === "200%").toBe(true);
+  expect(metrics.documentOverflowX).toBe(false);
+  expect(metrics.buttonInViewport).toBe(true);
+  expect(metrics.buttonWidth).toBeGreaterThanOrEqual(44);
+  expect(metrics.buttonHeight).toBeGreaterThanOrEqual(44);
+
+  const proofDir = join(process.cwd(), "temp/verified-proof/button-group");
+  mkdirSync(proofDir, { recursive: true });
+  await archive.screenshot({
+    animations: "disabled",
+    path: join(proofDir, "archive-en-200pct-zoom.png"),
+  });
+});
+
+test("Button Group exposes system focus under forced colors", async ({
+  page,
+}) => {
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await openButtonGroup(page);
+  const archive = primaryGroup(page).getByRole("button", { name: "Archive" });
+  await archive.focus();
+  const focus = await archive.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      boxShadow: style.boxShadow,
+      forcedColors: matchMedia("(forced-colors: active)").matches,
+      outlineOffset: style.outlineOffset,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  expect(focus.forcedColors).toBe(true);
+  expect(focus.outlineStyle).toBe("solid");
+  expect(focus.outlineWidth).toBe("2px");
+  expect(focus.outlineOffset).toBe("2px");
+  expectNoOuterRing(focus.boxShadow);
+});
+
 test("Button Group keeps containment and one focus boundary across compatibility styles", async ({
   page,
 }, testInfo) => {
@@ -344,8 +446,7 @@ test("Button Group keeps containment and one focus boundary across compatibility
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
       const group = page.locator("#compat-group");
       const first = page.locator("#compat-first");

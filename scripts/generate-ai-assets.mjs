@@ -54,10 +54,10 @@ function serializeManifest() {
 function createRuntimeBundle(source) {
   return source
     .replace(
-      /^import \{ componentMap, components \} from "\.\/manifest\/index\.js";\n/,
+      /^import \{ componentMap, components \} from "\.\/manifest\/index\.js";\r?\n/,
       `const components = ${JSON.stringify(components)};\nconst componentMap = Object.freeze(Object.fromEntries(components.map((component) => [component.slug, component])));\n`,
     )
-    .replace(/\nexport \{ componentMap, components \};\n?$/, "\n");
+    .replace(/\r?\nexport \{ componentMap, components \};\r?\n?$/, "\n");
 }
 
 function createControllerLoadersSource(controllerSlugs) {
@@ -1238,6 +1238,16 @@ await Promise.all([
   writeFile(path.join(outputRoot, "frameworks", "vue.js"), vueAdapter),
   writeFile(path.join(outputRoot, "frameworks", "vue.d.ts"), createVueTypes()),
 ]);
+
+const bundledRuntime = await readFile(path.join(outputRoot, "runtime.js"), "utf8");
+if (
+  bundledRuntime.includes('from "./manifest/index.js"') ||
+  !bundledRuntime.startsWith("const components = ")
+) {
+  throw new Error(
+    "generated/ai/runtime.js must be a self-contained browser bundle without ./manifest/index.js imports",
+  );
+}
 
 console.log(
   `Generated AI, A3S Test, React, and Vue assets for ${components.length} components.`,

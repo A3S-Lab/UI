@@ -1,0 +1,270 @@
+# 集成
+
+A3S UI 只有一套公共契约，即语义化 HTML、CSS，以及复合交互所需的小型控制器。原生标记、React 与 Vue 集成都渲染同一套契约。数据、路由、任务状态、传输、权限和持久化仍由宿主应用负责。
+
+## 原生 HTML
+
+完整样式包和交互控制器包各加载一次。
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui";
+```
+
+```js
+import "@a3s-lab/ui/all";
+```
+
+```html
+<section class="task-workspace" aria-label="发布任务">
+  <form class="agent-composer" aria-label="继续提问">
+    <textarea aria-label="指令"></textarea>
+    <footer>
+      <div data-composer-actions>
+        <button type="submit" class="btn">发送</button>
+      </div>
+    </footer>
+  </form>
+</section>
+```
+
+## 机器可读组件契约
+
+`@a3s-lab/ui/components.json` 与 `@a3s-lab/ui/manifest` 包含全部 116 个公开组件。每项定义都提供根选择器、语义部件、支持的操作、状态、框架根元素和稳定测试选择器。
+
+```js
+import { getComponent, listComponents } from "@a3s-lab/ui/manifest";
+
+const workspace = getComponent("task-workspace");
+console.log(workspace.selector); // .task-workspace
+console.log(workspace.test.parts.composer);
+console.log(workspace.test.actions.click);
+console.log(workspace.test.states.complete);
+console.log(listComponents("application").length); // 13
+console.log(listComponents("harness").length); // 28
+```
+
+可选语义运行时会标注匹配的根和部件，并观察相关状态属性，但不接管应用行为。
+
+```js
+import { a3sAI } from "@a3s-lab/ui/ai";
+
+a3sAI.scan(document);
+const composerInput = document.querySelector(
+  a3sAI.selector("agent-composer", "input"),
+);
+const snapshot = a3sAI.snapshot(document);
+```
+
+根元素获得 `data-a3s-components` 与 `data-a3s-state`；语义部件获得 `data-a3s-parts`，并在 `data-a3s-part-owners` 中记录精确的 `<component>.<part>` 所有权。这样嵌套组件中同名部件也不会产生歧义。这些生成标注是稳定的集成与测试钩子。应用样式仍应使用文档中的组件类和属性。
+
+## React
+
+在宿主应用中安装 React，然后导入轻量适配器。适配器合并公共根类、转发 ref 与属性、挂载后初始化交互控制器，并在需要其他语义根时支持 `as`。
+
+```tsx
+import { AgentComposer, Button, TaskWorkspace } from "@a3s-lab/ui/react";
+
+export function ReleaseTask() {
+  return (
+    <TaskWorkspace aria-label="发布任务">
+      <AgentComposer aria-label="继续提问">
+        <textarea aria-label="指令" />
+        <footer>
+          <div data-composer-actions>
+            <Button as="button" type="submit">
+              发送
+            </Button>
+          </div>
+        </footer>
+      </AgentComposer>
+    </TaskWorkspace>
+  );
+}
+```
+
+适配器不会自动生成组件内部结构。子元素继续使用各组件指南中的语义标记，因此 SSR 输出、原生 HTML 与水合后的输出保持一致。
+
+### Hooks 与控制器方法
+
+有事件或控制器方法的组件会导出 `use<Component>` hook。Hook 返回稳定 `ref`、根元素、就绪状态、组件定义和经过清单校验的 `call()`。事件监听通过 `events` 集中声明；不支持的事件或方法会立即抛出错误。
+
+```tsx
+import { Tabs, useTabs } from "@a3s-lab/ui/react";
+
+export function WorkspaceTabs() {
+  const tabs = useTabs({
+    onReady: () => console.log("tabs ready"),
+  });
+
+  const selectSettings = () => {
+    const settings = tabs.element?.querySelector<HTMLElement>(
+      '[aria-controls="settings-panel"]',
+    );
+    if (settings) tabs.call("select", settings, true);
+  };
+
+  return (
+    <>
+      <Tabs ref={tabs.ref} aria-label="工作区视图">
+        <div role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="overview-panel"
+          >
+            概览
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="settings-panel"
+          >
+            设置
+          </button>
+        </div>
+        <section id="overview-panel" role="tabpanel">
+          概览内容
+        </section>
+        <section id="settings-panel" role="tabpanel" hidden>
+          设置内容
+        </section>
+      </Tabs>
+      <button type="button" onClick={selectSettings} disabled={!tabs.ready}>
+        打开设置
+      </button>
+    </>
+  );
+}
+```
+
+`useTabs` 提供 `refresh` 与 `select`；`useDialog`、`useAlertDialog` 和 `useDrawer` 提供原生 `showModal` 与 `close`；`useDropdownMenu` 与 `usePopover` 提供 `open`、`close`、`toggle` 与 `refresh`。`useContextMenu` 还提供稳定值选择、选中状态和可取消的宿主授权事件。
+
+## Vue
+
+在宿主应用中安装 Vue，然后导入对应适配器。
+
+```vue
+<script setup>
+import { AgentComposer, Button, TaskWorkspace } from "@a3s-lab/ui/vue";
+</script>
+
+<template>
+  <TaskWorkspace aria-label="发布任务">
+    <AgentComposer aria-label="继续提问">
+      <textarea aria-label="指令" />
+      <footer>
+        <div data-composer-actions>
+          <Button as="button" type="submit">发送</Button>
+        </div>
+      </footer>
+    </AgentComposer>
+  </TaskWorkspace>
+</template>
+```
+
+Vue 导出同名 composable，并将模板引用放在 `componentRef` 中。`element` 与 `ready` 是只读 ref，`call()` 与 React 使用相同的方法清单。
+
+```vue
+<script setup lang="ts">
+import { Tabs, useTabs } from "@a3s-lab/ui/vue";
+
+const tabs = useTabs();
+const tabsRoot = tabs.componentRef;
+
+function selectSettings() {
+  const settings = tabs.element.value?.querySelector<HTMLElement>(
+    '[aria-controls="settings-panel"]',
+  );
+  if (settings) tabs.call("select", settings, true);
+}
+</script>
+
+<template>
+  <Tabs ref="tabsRoot" aria-label="工作区视图">
+    <div role="tablist">
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="overview-panel"
+      >
+        概览
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="settings-panel"
+      >
+        设置
+      </button>
+    </div>
+    <section id="overview-panel" role="tabpanel">概览内容</section>
+    <section id="settings-panel" role="tabpanel" hidden>设置内容</section>
+  </Tabs>
+  <button type="button" :disabled="!tabs.ready.value" @click="selectSettings">
+    打开设置
+  </button>
+</template>
+```
+
+## Dockview 工作区
+
+可停靠布局通过独立入口接入，避免只使用语义组件的应用下载布局引擎。原生、React 与 Vue 入口重导出上游 MIT API，并共享 `themeA3S` 与版本化持久化。
+
+```ts
+import {
+  DockviewReact,
+  themeA3S,
+  useDockviewLayout,
+} from "@a3s-lab/ui/dockview/react";
+import "@a3s-lab/ui/dockview/css";
+
+const layout = useDockviewLayout({
+  key: "product:workspace:v1",
+  initialize: createDefaultWorkspace,
+});
+```
+
+Grid、Split 与 Pane View 分别提供 `useGridview`、`useSplitview` 与 `usePaneview`；Vue 使用同名 composable。它们只暴露真实 API 与就绪状态，不复制宿主布局状态。完整示例、拖放、浮动、Popout、Edge Group、事件与许可边界见 [Dock 工作区](/harness/dock-workspace)。
+
+## 确定性测试
+
+面向用户的行为优先使用命名角色与标签，结构部件和机器状态则使用生成的选择器。包中通过 `@a3s-lab/ui/a3s-test` 提供一份精简的 A3S Test 示例，并通过 `@a3s-lab/ui/a3s-test/selectors` 提供可导入的选择器辅助函数。
+
+```js
+import {
+  actionSelector,
+  partSelector,
+  readySelector,
+  stateSelector,
+} from "@a3s-lab/ui/a3s-test/selectors";
+
+const input = actionSelector("agent-composer", "fill");
+const submit = partSelector("agent-composer", "submit");
+const ready = readySelector("task-workspace");
+const complete = stateSelector("task-workspace", "complete");
+```
+
+```text
+expect "workspace-ready" {
+    visible = css("[data-a3s-components~=task-workspace][data-a3s-state]")
+}
+
+fill "instruction" {
+    target = css("[data-a3s-components~=agent-composer] [data-a3s-part-owners~=agent-composer.input]")
+    value = "运行发布检查"
+}
+```
+
+仓库为每个公开组件指南提供一个确定性场景。场景默认串行运行，避免有状态预览竞争浏览器资源；具备隔离能力的环境可以显式启用有界并行。仓库还会隔离安装真实打包产物，验证全部 116 个 React 与 Vue 导出、SSR 根元素、TypeScript 消费、客户端 ref、只调用一次的就绪回调、语义标注、控制器初始化与真实交互。
+
+## 边界
+
+- 组件清单描述 UI 结构和支持的交互词汇，不是工作流引擎。
+- 语义运行时只发现和标注 DOM，不授予权限，也不执行操作。
+- 框架适配器渲染根元素并初始化公共控制器，不替代产品组件、状态仓库或路由。
+- CSS 类、文档化 ARIA 与文档化 `data-*` 属性仍是面向源码的 API。

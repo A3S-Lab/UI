@@ -19,7 +19,7 @@ Every field node uses `kind: "field"` and binds to its Schema through `schemaPat
 | `label` | `string` | No | Visible title and accessible name; falls back to `id` |
 | `description` | `string` | No | Supporting guidance between the title and control |
 | `placeholder` | `string` | No | Hint for text controls; never replaces `label` |
-| `width` | `1‚Äì12` | No | Columns occupied in the 12-column layout; defaults to `12` |
+| `width` | `1‚Ä?2` | No | Columns occupied in the 12-column layout; defaults to `12` |
 | `options` | `UiOption[]` | By component | Options for single choice, multiple choice, and selects; values must match the Schema |
 | `customProps` | `JsonObject` | By component | Component-specific settings for controls such as currency and slider |
 | `matrix` | `UiMatrixDefinition` | By component | Stable row and column configuration for single- and multiple-choice matrices |
@@ -34,7 +34,7 @@ When the Designer marks an array field as required, it adds the field to the par
 
 The Designer maintains a unified UX profile for 38 production nodes. When a node is selected, the panel header shows its component type, category, purpose, field binding, and current state. Content and common behavior remain visible, while component type, initial value, field contract, and canvas placement move into Advanced settings. Matrices, option collections, data grids, and host components automatically use a wider task pane.
 
-The configuration panel uses the semantic structure from `@a3s-lab/ui@0.4.0`; Form only adds node-level layout.
+The configuration panel uses the semantic structure from `@a3s-lab/ui@0.4.1`; Form only adds node-level layout.
 
 | Interface area | A3S UI contract |
 | --- | --- |
@@ -126,15 +126,15 @@ const node = {
 | `number` | `number \| null` | `type: "number"` | `minimum`, `maximum`, `multipleOf` |
 | `email` | `string` | `type: "string", format: "email"` | `placeholder` |
 | `password` | `string` | `type: "string"` | `minLength`, `maxLength` |
-| `date` | `string` | `type: "string", format: "date"` | ‚Äî |
+| `date` | `string` | `type: "string", format: "date"` | ‚Ä?|
 | `url` | `string` | `type: "string", format: "uri"` | `placeholder` |
 | `tel` | `string` | `type: "string"` | `pattern`, `placeholder` |
-| `date-time` | UTC `string` | `type: "string", format: "date-time"` | ‚Äî |
-| `time` | UTC `string` | `type: "string", format: "time"` | ‚Äî |
+| `date-time` | UTC `string` | `type: "string", format: "date-time"` | ‚Ä?|
+| `time` | UTC `string` | `type: "string", format: "time"` | ‚Ä?|
 | `select` | `JsonPrimitive` | `enum` aligned with `options` | `options`, `dataSource` |
 | `radio` | `JsonPrimitive` | `enum` aligned with `options` | `options` |
-| `checkbox` | `boolean` | `type: "boolean"` | ‚Äî |
-| `switch` | `boolean` | `type: "boolean"` | ‚Äî |
+| `checkbox` | `boolean` | `type: "boolean"` | ‚Ä?|
+| `switch` | `boolean` | `type: "boolean"` | ‚Ä?|
 | `multi-select` | `JsonPrimitive[]` | `type: "array"` | `options`, `minItems`, `maxItems` |
 | `matrix-single` | `Record<string, JsonPrimitive>` | Object with a per-row `enum` | `matrix.rows`, `matrix.columns` |
 | `matrix-multiple` | `Record<string, JsonPrimitive[]>` | Object with a per-row array Schema | `matrix.rows`, `matrix.columns` |
@@ -279,7 +279,7 @@ Use when only a UTC time of day matters, such as a schedule shared across region
 | Value type | For example, `09:15:00Z` |
 | Schema | `{ type: "string", format: "time" }` |
 | Input | Native `time` with one-second steps |
-| Note | ‚Äú9:00 AM local time every day‚Äù also requires an IANA time zone and cannot use this field alone |
+| Note | ‚Ä?:00 AM local time every day‚Ä?also requires an IANA time zone and cannot use this field alone |
 
 ## Choice and collections
 
@@ -403,7 +403,7 @@ The currency code appears as an input prefix, while the controlled value remains
 
 ### Rating `rating`
 
-The default scale starts at 1 and reads its maximum from the Schema, supporting 1‚Äì10. The component uses native radio inputs, so keyboard and screen-reader semantics match a standard radio group.
+The default scale starts at 1 and reads its maximum from the Schema, supporting 1‚Ä?0. The component uses native radio inputs, so keyboard and screen-reader semantics match a standard radio group.
 
 <FieldDemo widget="rating" />
 

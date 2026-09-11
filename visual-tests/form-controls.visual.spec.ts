@@ -1,3 +1,4 @@
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openComponent(page: Page, component: string) {
@@ -948,8 +949,7 @@ test("Radio choice cards remain complete across every compatibility style pack",
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
 
       const group = page.locator(".radio-group");

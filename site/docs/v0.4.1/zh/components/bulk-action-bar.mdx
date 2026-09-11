@@ -1,0 +1,306 @@
+# 批量操作栏
+
+批量操作栏只在集合存在选择时出现，把选择范围、可操作数量、批量命令和退出选择模式的方式放在同一个稳定区域。
+
+<Preview
+  class="w-full max-w-3xl"
+  title="环境操作"
+  hasController
+  frameworkHtmlInstall="npm install @a3s-lab/ui"
+  frameworkReactInstall="npm install @a3s-lab/ui react react-dom"
+  frameworkVueInstall="npm install @a3s-lab/ui vue"
+  frameworkHtml={`<section
+  class="bulk-action-bar"
+  data-state="selected"
+  data-bulk-focus-return="#bulk-action-bar-collection-zh"
+  role="region"
+  aria-label="已选环境操作"
+>
+  <div data-bulk-selection>
+    已选 <output data-selected-count>3</output> 项
+  </div>
+  <span data-bulk-summary aria-live="polite">
+    其中 2 项可以归档
+  </span>
+  <div data-bulk-actions>
+    <button type="button" class="btn" data-variant="outline" data-bulk-action="move">
+      移动
+    </button>
+    <button type="button" class="btn" data-variant="outline" data-bulk-action="archive">
+      归档 2 项
+    </button>
+    <button type="button" class="btn" data-variant="destructive" data-bulk-action="delete">
+      删除
+    </button>
+    <button type="button" class="btn" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
+      清除选择
+    </button>
+  </div>
+</section>`}
+  frameworkReact={`import { useEffect, useRef } from "react";
+import { Button, BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/react";
+import "@a3s-lab/ui/a3s.css";
+
+export function EnvironmentActions({
+  selectedIds,
+  performBulkAction,
+}: {
+  selectedIds: string[];
+  performBulkAction: (action: string, ids: string[]) => Promise<number>;
+}) {
+  const controlRef = useRef<ReturnType<typeof useBulkActionBar> | null>(null);
+  const onAction = (event: Event) => {
+    const control = controlRef.current;
+    if (!control) return;
+    const detail = (event as CustomEvent).detail as {
+      action: string;
+      selection: { values: string[] };
+    };
+    if (detail.action === "clear") return;
+    control.call("setPending", detail.action, {
+      message: "正在处理具备权限的环境…",
+    });
+    void performBulkAction(detail.action, detail.selection.values)
+      .then((processedCount) =>
+        control.call("complete", {
+          action: detail.action,
+          clearSelection: true,
+          processedCount,
+          status: "success",
+          message: \`\${processedCount} 个环境已处理\`,
+        }),
+      )
+      .catch((error) =>
+        control.call("complete", {
+          action: detail.action,
+          error,
+          status: "error",
+          message: "批量操作被拒绝，请检查权限后重试。",
+        }),
+      );
+  };
+  const control = useBulkActionBar({
+    events: { "a3s:bulk-action": onAction },
+  });
+  controlRef.current = control;
+
+  useEffect(() => {
+    if (control.ready) control.call("setSelection", selectedIds);
+  }, [control, control.ready, selectedIds]);
+
+  return (
+    <BulkActionBar
+      ref={control.ref}
+      role="region"
+      aria-label="已选环境操作"
+      data-bulk-focus-return="#bulk-action-bar-collection-zh"
+    >
+      <div data-bulk-selection>
+        已选 <output data-selected-count>{selectedIds.length}</output> 项
+      </div>
+      <span data-bulk-summary aria-live="polite" />
+      <div data-bulk-actions>
+        <Button type="button" data-bulk-action="move">移动</Button>
+        <Button type="button" data-bulk-action="archive">归档</Button>
+        <Button type="button" data-variant="destructive" data-bulk-action="delete">删除</Button>
+        <Button type="button" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
+          清除选择
+        </Button>
+      </div>
+    </BulkActionBar>
+  );
+}`}
+  frameworkVue={`<script setup lang="ts">
+import { watchEffect } from "vue";
+import { Button, BulkActionBar, useBulkActionBar } from "@a3s-lab/ui/vue";
+import "@a3s-lab/ui/a3s.css";
+
+const props = defineProps<{
+  selectedIds: string[];
+  performBulkAction: (action: string, ids: string[]) => Promise<number>;
+}>();
+const control = useBulkActionBar({
+  events: {
+    "a3s:bulk-action": (event) => {
+      const detail = (event as CustomEvent).detail as {
+        action: string;
+        selection: { values: string[] };
+      };
+      if (detail.action === "clear") return;
+      control.call("setPending", detail.action, {
+        message: "正在处理具备权限的环境…",
+      });
+      props.performBulkAction(detail.action, detail.selection.values)
+        .then((processedCount) =>
+          control.call("complete", {
+            action: detail.action,
+            clearSelection: true,
+            processedCount,
+            status: "success",
+            message: \`\${processedCount} 个环境已处理\`,
+          }),
+        )
+        .catch((error) =>
+          control.call("complete", {
+            action: detail.action,
+            error,
+            status: "error",
+            message: "批量操作被拒绝，请检查权限后重试。",
+          }),
+        );
+    },
+  },
+});
+const componentRef = control.componentRef;
+
+watchEffect(() => {
+  if (control.ready.value) control.call("setSelection", props.selectedIds);
+});
+
+</script>
+
+<template>
+  <BulkActionBar
+    ref="componentRef"
+    role="region"
+    aria-label="已选环境操作"
+    data-bulk-focus-return="#bulk-action-bar-collection-zh"
+  >
+    <div data-bulk-selection>
+      已选 <output data-selected-count>{{ props.selectedIds.length }}</output> 项
+    </div>
+    <span data-bulk-summary aria-live="polite" />
+    <div data-bulk-actions>
+      <Button type="button" data-bulk-action="move">移动</Button>
+      <Button type="button" data-bulk-action="archive">归档</Button>
+      <Button type="button" data-variant="destructive" data-bulk-action="delete">删除</Button>
+      <Button type="button" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
+        清除选择
+      </Button>
+    </div>
+  </BulkActionBar>
+</template>`}
+>
+  <section id="bulk-action-bar-demo-zh" class="grid w-full gap-4" data-bulk-demo="zh">
+    <header class="grid gap-1">
+      <h3 id="bulk-action-bar-collection-zh" tabindex="-1" class="text-base font-semibold">
+        生产环境
+      </h3>
+      <p class="m-0 text-sm text-muted-foreground">
+        已选中 3 个环境，其中 2 个具备归档权限。
+      </p>
+    </header>
+    <section
+      class="bulk-action-bar"
+      data-state="selected"
+      data-bulk-focus-return="#bulk-action-bar-collection-zh"
+      role="region"
+      aria-label="已选环境操作"
+    >
+      <div data-bulk-selection>
+        已选 <output data-selected-count>3</output> 项
+      </div>
+      <span data-bulk-summary aria-live="polite">其中 2 项可以归档</span>
+      <div data-bulk-actions>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="outline"
+          data-bulk-action="move"
+        >
+          移动
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="outline"
+          data-bulk-action="archive"
+          onclick="const bar = event.currentTarget.closest('[data-bulk-demo]').querySelector('.bulk-action-bar'); bar.setPending('archive', true, { message: '正在处理 2 个具备权限的环境…' }); setTimeout(() => bar.complete({ action: 'archive', status: 'error', message: '归档失败，请检查权限后重试。' }), 700)"
+        >
+          归档 2 项
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="destructive"
+          data-bulk-action="delete"
+        >
+          删除
+        </button>
+        <button
+          type="button"
+          class="btn"
+          data-size="sm"
+          data-variant="ghost"
+          data-bulk-action="clear"
+          data-bulk-clear
+        >
+          清除选择
+        </button>
+      </div>
+    </section>
+  </section>
+</Preview>
+
+## 用法
+
+把操作栏放在拥有选择状态的集合旁边。根元素要使用具体集合的可访问名称，始终显示准确的选中数量；选择部分可操作时，命令标签必须写出实际可处理数量。宿主负责权限、确认、请求、乐观更新、回滚和重试。
+
+可以加载完整运行时，也可以只加载拆分入口：
+
+```html
+<script src="/assets/js/runtime.min.js" defer></script>
+<script src="/assets/js/bulk-action-bar.min.js" defer></script>
+```
+
+上面的集成预览是 HTML、React 和 Vue 的唯一示例来源。打开预览工具栏中的源码面板，可以在同一个工作区切换安装命令、入口文件和示例文件，并复制当前代码。
+
+### 契约
+
+| 部件或 API | 用途 |
+| --- | --- |
+| `data-bulk-selection` / `data-selected-count` | 表达当前选择数量和范围。 |
+| `data-bulk-summary` | 用文字表达适用条件、进度或明确结果。 |
+| `data-bulk-actions` / `data-bulk-action` | 定义原生命令和稳定的集成值。 |
+| `data-bulk-clear` | 退出选择模式，并在组合 Data Grid 时同步父级选择。 |
+| `data-bulk-focus-return` | 操作栏隐藏后接收焦点的稳定集合控件选择器。 |
+| `getSelection()` / `setSelection()` / `clear()` | 读取或更新受控选择快照。 |
+| `setSummary()` | 更新适用性或结果说明，不拥有业务数据。 |
+| `setPending()` / `complete()` | 管理本地进行中几何并发布宿主生命周期。 |
+| `refresh()` | 宿主更新 DOM 后重新收集操作节点。 |
+
+`setPending(action, true, { message, allowClear })` 会禁用进行中的命令和所有冲突命令，同时保留原有的禁用状态。`allowClear` 默认是 `true`；如果退出选择模式会和宿主请求冲突，可以传入 `false`。进行中点击清除不会取消请求，操作栏会保留到宿主完成处理。
+
+## 状态与恢复
+
+实时预览工具栏中的状态验收矩阵会验证 `empty` 隐藏完整区域、`selected` 保留范围、`loading` 禁用冲突命令，以及 `disabled` 对每个命令使用原生禁用语义。
+
+<Preview class="w-full max-w-3xl" title="可恢复的批量结果">
+  <section class="bulk-action-bar" data-state="selected" data-result="error" role="region" aria-label="已选运行操作">
+    <div data-bulk-selection>
+      已选 <output data-selected-count>2</output> 项
+    </div>
+    <span data-bulk-summary role="status">
+      归档失败：缺少生产环境权限。获得权限后重试，或清除选择。
+    </span>
+    <div data-bulk-actions>
+      <button type="button" class="btn" data-size="sm" data-variant="outline" data-bulk-action="archive">
+        重试归档 2 项
+      </button>
+      <button type="button" class="btn" data-size="sm" data-variant="ghost" data-bulk-action="clear" data-bulk-clear>
+        清除选择
+      </button>
+    </div>
+  </section>
+</Preview>
+
+选择了 5 项但只有 3 项可重试时，命令应写成“重试 3 项”，不能写“重试 5 项”然后由服务端静默跳过 2 项。不可逆命令仍需通过[警报对话框](/components/alert-dialog)确认，并明确影响数量。
+
+## 可访问性与归属
+
+根区域必须说明它影响的集合，而且出现时不能自动抢走焦点。选择数量、可操作数量、进度和结果都要使用文字表达。进行中的命令保留原标签，根区域暴露 `aria-busy="true"`；只有 `allowClear` 允许时才保留清除入口。请求被拒绝后保留选择和焦点上下文，让恢复命令仍然可达。清除成功或完成后操作栏隐藏，应把焦点还给稳定的集合目标，而不是留在已经隐藏的按钮上。
+
+React 和 Vue 使用同一套控制器事件和方法，适配器不会创建第二份框架私有选择状态，也不会在组件内执行网络请求。

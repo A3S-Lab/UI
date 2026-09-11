@@ -12,7 +12,13 @@
     const editing = ["editing", "saving", "error"].includes(state.mode);
     state.display?.setAttribute("aria-hidden", editing ? "true" : "false");
     state.form?.setAttribute("aria-hidden", editing ? "false" : "true");
-    if (state.input) state.input.disabled = state.mode === "saving";
+    if (state.input) {
+      state.input.disabled = state.mode === "saving";
+      if (state.mode === "error") state.input.setAttribute("aria-invalid", "true");
+      else state.input.removeAttribute("aria-invalid");
+    }
+    if (state.mode === "saving") root.setAttribute("aria-busy", "true");
+    else root.removeAttribute("aria-busy");
   };
 
   const refreshEditableText = (root) => {
@@ -77,6 +83,7 @@
       return true;
     };
     root.cancel = (options = {}) => {
+      window.clearTimeout(state.saveTimer);
       state.input.value = state.initialValue;
       state.value = state.initialValue;
       state.mode = "display";
@@ -95,6 +102,15 @@
     };
     root.commit = (value = state.input.value, options = {}) => {
       const nextValue = String(value ?? "");
+      if (
+        root.hasAttribute("data-editable-required") &&
+        nextValue.trim().length === 0
+      ) {
+        state.mode = "error";
+        synchronize(root, state);
+        state.input?.focus({ preventScroll: true });
+        return false;
+      }
       const detail = {
         previousValue: state.initialValue,
         source: options.source || "api",
@@ -105,7 +121,12 @@
         cancelable: true,
         detail,
       });
-      if (!root.dispatchEvent(before)) return false;
+      if (!root.dispatchEvent(before)) {
+        state.mode = "error";
+        synchronize(root, state);
+        state.input?.focus({ preventScroll: true });
+        return false;
+      }
       root.setValue(nextValue);
       state.mode = options.saving ? "saving" : "display";
       synchronize(root, state);
@@ -123,16 +144,47 @@
     };
     root.refresh = () => refreshEditableText(root);
 
+    const finishSaving = () => {
+      if (state.mode !== "saving") return;
+      state.mode = "display";
+      synchronize(root, state);
+      state.display
+        ?.querySelector("[data-editable-action='edit']")
+        ?.focus({ preventScroll: true });
+    };
+
+    const commitFromUser = (source) => {
+      const delay = Number(root.dataset.editableSaveDelay || "0");
+      const saving = Number.isFinite(delay) && delay > 0;
+      if (
+        !root.commit(state.input.value, {
+          source,
+          saving,
+          focus: !saving,
+        })
+      ) {
+        return false;
+      }
+      if (!saving) return true;
+      window.clearTimeout(state.saveTimer);
+      state.saveTimer = window.setTimeout(finishSaving, delay);
+      return true;
+    };
+
     const handleClick = (event) => {
       const action = event.target.closest("[data-editable-action]");
       if (!action || !root.contains(action)) return;
       const value = action.dataset.editableAction;
       if (value === "edit") root.beginEdit({ source: "user" });
-      if (value === "save") root.commit(state.input.value, { source: "user" });
+      if (value === "save") commitFromUser("user");
       if (value === "cancel") root.cancel({ source: "user" });
     };
     const handleInput = () => {
       state.value = state.input.value;
+      if (state.mode === "error" && state.input.value.trim().length > 0) {
+        state.mode = "editing";
+        synchronize(root, state);
+      }
     };
     const handleKeydown = (event) => {
       if (event.target !== state.input) return;
@@ -146,19 +198,20 @@
         !event.isComposing
       ) {
         event.preventDefault();
-        root.commit(state.input.value, { source: "keyboard" });
+        commitFromUser("keyboard");
       }
     };
     const handleSubmit = (event) => {
       if (event.target !== state.form) return;
       event.preventDefault();
-      root.commit(state.input.value, { source: "submit" });
+      commitFromUser("submit");
     };
     root.addEventListener("click", handleClick);
     root.addEventListener("input", handleInput);
     root.addEventListener("keydown", handleKeydown);
     state.form?.addEventListener("submit", handleSubmit);
     root._destroy = () => {
+      window.clearTimeout(state.saveTimer);
       root.removeEventListener("click", handleClick);
       root.removeEventListener("input", handleInput);
       root.removeEventListener("keydown", handleKeydown);

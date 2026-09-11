@@ -67,7 +67,7 @@ function elementState(element) {
 
   if (
     element.matches(
-      '[data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]',
+      '.theme-switcher, [data-a3s-theme-toggle], button[onclick*=".theme.toggle"], button[data-preview-onclick*=".theme.toggle"]',
     )
   ) {
     states.add(document.documentElement.classList.contains("dark") ? "dark" : "light");

@@ -13,7 +13,7 @@
 
 ## User problem
 
-Spinner is a documented markup utility, not a controller-backed component. There is no `spinner.js` or `spinner.css`. A3S UI publishes a stable contract (`role="status"` + `animate-spin`) so HTML, React, and Vue examples share one selector for tests and adapters. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Spinner is a documented markup utility, not a controller-backed component. There is no `spinner.js` or `spinner.css`. A3S UI publishes a stable contract (`role="status"` + `animate-spin`) so HTML, React, and Vue examples share one selector. Framework `Spinner` exports are compatibility aliases until the next major migration removes the adapter surface. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Demote**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 

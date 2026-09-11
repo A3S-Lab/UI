@@ -1,3 +1,7 @@
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { applyCssPageZoom } from "./page-zoom.js";
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openField(page: Page, locale: "en" | "zh" = "en") {
@@ -575,6 +579,84 @@ test("Field stays contained with Chinese copy, long recovery text, dark RTL, and
   }
 });
 
+
+test("Field AT smoke keeps labeled control naming and description", async ({
+  page,
+}) => {
+  await openField(page);
+  const input = primaryField(page).locator("#field-workspace-name-en");
+  await expect(input).toHaveAccessibleName("Workspace display name");
+  await input.focus();
+  const focusVisual = await input.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      boxShadow: style.boxShadow,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  const hasOutline =
+    focusVisual.outlineStyle !== "none" &&
+    Number.parseFloat(focusVisual.outlineWidth) > 0;
+  const hasFocusShadow = focusVisual.boxShadow !== "none";
+  expect(hasOutline || hasFocusShadow).toBe(true);
+});
+
+test("Field remains usable at true 200% CSS page zoom", async ({ page }) => {
+  await openField(page);
+  await applyCssPageZoom(page, 2);
+  const input = primaryField(page).locator("#field-workspace-name-en");
+  await expect(input).toBeVisible();
+  await input.scrollIntoViewIfNeeded();
+  const metrics = await page.evaluate(() => {
+    const control = document.querySelector<HTMLElement>(
+      "#field-workspace-name-en",
+    )!;
+    const buttonBounds = control.getBoundingClientRect();
+    const html = document.documentElement;
+    return {
+      height: buttonBounds.height,
+      inViewport:
+        buttonBounds.left >= -1 &&
+        buttonBounds.top >= -1 &&
+        buttonBounds.right <= window.innerWidth + 1 &&
+        buttonBounds.bottom <= window.innerHeight + 1,
+      overflowX: html.scrollWidth > html.clientWidth + 1,
+      width: buttonBounds.width,
+      zoom: getComputedStyle(html).zoom,
+    };
+  });
+  expect(metrics.zoom === "2" || metrics.zoom === "200%").toBe(true);
+  expect(metrics.overflowX).toBe(false);
+  expect(metrics.inViewport).toBe(true);
+  expect(metrics.height).toBeGreaterThanOrEqual(44);
+  const proofDir = join(process.cwd(), "temp/verified-proof/field");
+  mkdirSync(proofDir, { recursive: true });
+  await input.screenshot({
+    animations: "disabled",
+    path: join(proofDir, "control-en-200pct-zoom.png"),
+  });
+});
+
+test("Field exposes system focus under forced colors", async ({ page }) => {
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await openField(page);
+  const input = primaryField(page).locator("#field-workspace-name-en");
+  await input.focus();
+  const focus = await input.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      forcedColors: matchMedia("(forced-colors: active)").matches,
+      outlineOffset: style.outlineOffset,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  expect(focus.forcedColors).toBe(true);
+  expect(focus.outlineStyle).toBe("solid");
+  expect(Number.parseFloat(focus.outlineWidth)).toBeGreaterThanOrEqual(2);
+});
+
 test("Field keeps local error emphasis and one control boundary across compatibility styles", async ({
   page,
 }, testInfo) => {
@@ -607,8 +689,7 @@ test("Field keeps local error emphasis and one control boundary across compatibi
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
 
       const invalidField = page.locator(".field").first();

@@ -13,7 +13,7 @@
 
 ## User problem
 
-Switch immediately toggles an independent setting on or off and is not intended for a choice that takes effect only after form submission. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
+Switch immediately toggles an independent setting on or off and is not intended for a choice that takes effect only after form submission. When a remote update can fail, keep the control interactive, announce the pending or rejected outcome, and restore the previous value on rejection. The component is justified only when this repeated job remains clearer and safer than raw native markup or an existing composition. Its product decision is **Keep**, so implementation must preserve that scope instead of expanding into a parallel product surface.
 
 ## Product boundary
 

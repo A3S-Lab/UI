@@ -1,0 +1,30 @@
+# Schema Profile 1
+
+`next` 编译器强制使用 `a3s.dev/form-schema-profile/1`。它是 JSON Schema 2020-12 的封闭子集：无头运行时、浏览器适配器、Compiler Worker、CLI 和固定 digest 的工作流校验都使用相同语义；未列入协议的行为会直接编译失败。
+
+## 支持范围
+
+| 范围 | 支持内容 |
+| --- | --- |
+| 基础 | `$schema`、`$id`、`type`、`title`、`description`、`default`、`enum`、`const` |
+| 对象 | `properties`、`required`、布尔或 Schema 形式的 `additionalProperties` |
+| 数组 | `items`、`minItems`、`maxItems`、结构化 `uniqueItems` |
+| 字符串 | `minLength`、`maxLength`、Unicode `pattern` 和批准的 `format` |
+| 数字 | `minimum`、`maximum`、大于零的 `multipleOf` |
+
+批准的格式包括 `email`、`uri`、`date`、`date-time`、`time`、`hostname`、`ipv4`、`ipv6` 和 `uuid`。
+
+`multipleOf` 同时控制数值校验和原生数字输入的步长。小数倍数使用容差比较，`multipleOf: 0.1` 可以正确接受 `0.3`。
+
+Profile 1 不接受 `$ref`、Schema 组合器、条件 Schema、元组 Schema 和 unevaluated-property 关键字。编译器不会静默忽略，而是用准确的 JSON Pointer 报告 `schema.keyword.unsupported`。
+
+每个编译成功的 `FormPlan` 都包含：
+
+```json
+{
+  "apiVersion": "a3s.dev/form-plan/v1alpha1",
+  "schemaProfile": "a3s.dev/form-schema-profile/1"
+}
+```
+
+值语义、排除项和完整示例见 [Profile 1 规范](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/schema-profile-1.md)。

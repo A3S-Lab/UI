@@ -1,0 +1,56 @@
+# 本地化与性能
+
+## 版本化运行时文案
+
+运行时文案协议为 `a3s.dev/form-locale-catalog/v1`。包内提供中文和英文；嵌入宿主可以替换单条文案，不需要修改表单 revision 或 digest。
+
+```tsx
+import {
+  FORM_LOCALE_CATALOG_API_VERSION,
+  type FormLocaleCatalogOverride,
+} from '@a3s-lab/ui/form/core';
+
+const localeCatalog: FormLocaleCatalogOverride = {
+  apiVersion: FORM_LOCALE_CATALOG_API_VERSION,
+  messages: {
+    selectPlaceholder: '选择工作流模型',
+    actionFailed: '节点没有保存，请检查工作流服务后重试。',
+  },
+};
+
+<FormRenderer
+  plan={plan}
+  value={value}
+  locale="zh-CN"
+  localeCatalog={localeCatalog}
+  onChange={setValue}
+/>;
+```
+
+React、Vue、Web Component 和 Designer 预览使用同一份目录。运行时控件、数据源状态、进度、校验摘要、Schema 错误和异步校验兜底错误都从目录读取。字段标题和文档中明确写入的文案仍由表单作者负责。
+
+## 字段订阅
+
+编译器为每个节点记录规则依赖和订阅列表。字段只订阅自身值、以它为目标的规则，以及它的数据源依赖。`routes.*.match` 这样的动态模板会先结合当前行索引解析，再进行比较，因此相邻行不会共享一条过宽的值订阅。React 可以跳过无关字段渲染，同时回调仍能读取宿主最新的完整值。
+
+自定义节点渲染器会收到整个表单值。在自定义节点协议提供依赖声明之前，这类节点会保守地保持正常渲染。
+
+## CI 性能预算
+
+`npm run form:test:performance` 测量编译、校验与计算、增量计算和服务端渲染。
+
+| 节点数 | 编译 | 校验与计算 | 增量计算 | 服务端渲染 |
+| ---: | ---: | ---: | ---: | ---: |
+| 100 | 100 ms | 50 ms | 15 ms | 150 ms |
+| 500 | 300 ms | 300 ms | 50 ms | 800 ms |
+| 1,000 | 700 ms | 1,200 ms | 120 ms | 1,800 ms |
+
+该基准在包构建后运行，也是 `npm run form:check` 的一部分。中位数超过预算时 CI 会失败。
+
+数据表格另有 1,000 行虚拟化门槛：
+
+| 场景 | 服务端渲染 | HTML | 已挂载数据行 |
+| --- | ---: | ---: | ---: |
+| 1,000 行对话框表格 | 100 ms | 120,000 字节 | 32 行 |
+
+基准使用 480px 视口和默认缓冲区。运行时仍构造完整受控数组与稳定行索引，但服务端 HTML 和浏览器 DOM 只保留当前窗口。任一指标超过门槛都会使 CI 失败。

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="A3S Form — form design, compilation, and runtime rendering through one versioned contract">
+  <img src="assets/readme/hero.svg" width="100%" alt="A3S Form �?form design, compilation, and runtime rendering through one versioned contract">
 </p>
 
 <p align="center">
@@ -166,7 +166,7 @@ function handleAction(event: { actionId: string }) {
 </template>
 ```
 
-`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.4.0 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` instead when an embedding host must remain fully isolated from document-level CSS. The scoped entries do not install a global preflight. All entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
+`@a3s-lab/ui/form/a3s-ui.css` loads the published A3S UI 0.4.1 bundle and the Form layout layer. Use `@a3s-lab/ui/form/styles.css` instead when an embedding host must remain fully isolated from document-level CSS. The scoped entries do not install a global preflight. All entries use the same A3S UI semantic markup for fields, buttons, tabs, accordions, tables, and range controls.
 
 <a id="architecture"></a>
 
@@ -178,23 +178,23 @@ function handleAction(event: { actionId: string }) {
 
 ```text
                  Human author                    Coding Agent
-                    │                       CLI / $a3s-form skill
-                    └────────────┬────────────────────┘
-                                 │ reviewed + validated FormPatch
-                                 ▼
-                     ┌────────────────────────┐
-          Designer ◄─┤ canonical FormDocument├─► revision + SHA-256
-                     └────────────┬───────────┘
-                                  │
-                                  ▼
+                    �?                      CLI / $a3s-form skill
+                    └────────────┬────────────────────�?
+                                 �?reviewed + validated FormPatch
+                                 �?
+                     ┌────────────────────────�?
+          Designer ◄─�?canonical FormDocument├─�?revision + SHA-256
+                     └────────────┬───────────�?
+                                  �?
+                                  �?
                  Portable Rust/WASM Form Core / Worker
-                                  │ immutable FormPlan
-                   ┌──────────────┼──────────────┐
-                   ▼              ▼              ▼
+                                  �?immutable FormPlan
+                   ┌──────────────┼──────────────�?
+                   �?             �?             �?
                 React          Vue 3       Web Component
-                   └──────────────┼──────────────┘
-                                  │ controlled value / action
-                                  ▼
+                   └──────────────┼──────────────�?
+                                  �?controlled value / action
+                                  �?
                    Host application (identity / policy / data / actions)
 ```
 
@@ -311,7 +311,7 @@ A3S Form is planned as five coordinated product layers: deterministic Form Core,
 | **v0.2 · runtime integrity** | Lock down host-neutral embedding, schema and computed semantics, async validation, data sources, localization, and incremental performance. |
 | **v0.3 · complex forms** | Nested object repeaters, stable row reordering, row-scoped rules, row-bound data sources, controlled multi-page wizards, sortable, filterable, virtualized dialog-edit data grids with bulk selection, bounded TSV append and fill-down, single- and multiple-choice matrices, a 23-widget built-in field kit, and host-owned file-upload and signature extensions are implemented; remaining official extensions and visual rule/integration editors follow. |
 | **v0.4 · governance** | Add draft/release history, diff and rollback, approvals, collaboration contracts, offline sync, audit, policy, and migration tools. |
-| **v1.0 · AI-native production** | Stabilize contracts and deliver inspect → patch → simulate → test → approve → publish workflows across people, agents, Cloud, and Workflow. |
+| **v1.0 · AI-native production** | Stabilize contracts and deliver inspect �?patch �?simulate �?test �?approve �?publish workflows across people, agents, Cloud, and Workflow. |
 
 The complete scope, non-goals, and acceptance criteria live in [ROADMAP.md](ROADMAP.md). Planned work is not described as implemented until its release gates pass.
 
@@ -323,10 +323,10 @@ Current full runtime coverage:
 
 | Metric | Coverage |
 | --- | ---: |
-| Statements | **≥ 95% CI gate** |
-| Branches | **≥ 95% CI gate** |
-| Functions | **≥ 95% CI gate** |
-| Lines | **≥ 95% CI gate** |
+| Statements | **�?95% CI gate** |
+| Branches | **�?95% CI gate** |
+| Functions | **�?95% CI gate** |
+| Lines | **�?95% CI gate** |
 
 - The complete unit, contract-conformance, and cross-framework integration suite passes in CI.
 - The unified A3S UI browser suites cover the published component documentation and retain bounded local evidence.

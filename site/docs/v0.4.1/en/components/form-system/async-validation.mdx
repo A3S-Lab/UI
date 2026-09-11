@@ -1,0 +1,29 @@
+# Host-managed asynchronous validation
+
+The `next` runtime can call host validation after field blur, before wizard navigation, and before final submission. Endpoints and credentials stay in the host and are not written to `FormDocument`.
+
+```ts
+const hostAdapter = {
+  async validateValue(request, signal) {
+    const response = await fetch('/api/forms/validate', {
+      method: 'POST',
+      signal,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        formDigest: request.plan.sourceDigest,
+        scope: request.scope,
+        value: request.value,
+      }),
+    });
+    return response.json();
+  },
+};
+```
+
+Synchronous validation runs first. Field requests use `{ kind: "field", nodeId, path }`, wizard navigation uses `{ kind: "page", nodeId }`, and final submission uses `{ kind: "form" }`. A page-level response may report fields on that page or one page-level error.
+
+An in-flight request is cancelled when the controlled value changes. A late response from an older request cannot replace current form state.
+
+Host error codes are normalized to `async.<code>`. Invalid response shapes, unavailable services, and illegal validation scopes close the current operation with stable errors without exposing upstream exception details. React, Vue, Web Component, and the A3S Cloud adapter use the same protocol.
+
+See the [complete asynchronous-validation protocol](https://github.com/A3S-Lab/UI/blob/main/modules/form/docs/async-validation.md) for cancellation, headless validation, and server-side enforcement.

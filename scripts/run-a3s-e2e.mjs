@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
-import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { access, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { constants as fsConstants } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -105,8 +106,24 @@ const options = parseArguments(process.argv.slice(2));
 const a3sTest = options.a3sTest ?? process.env.A3S_TEST_BIN ?? 'a3s-test';
 const browserDriver =
   options.browserDriver ?? process.env.A3S_TEST_BROWSER_DRIVER ?? 'a3s';
-const browserExecutable =
-  options.browserExecutable ?? process.env.A3S_TEST_BROWSER_EXECUTABLE;
+const windowsLauncher = path.join(projectRoot, 'temp', 'a3s-launcher.exe');
+async function resolveBrowserExecutable() {
+  if (options.browserExecutable ?? process.env.A3S_TEST_BROWSER_EXECUTABLE) {
+    return options.browserExecutable ?? process.env.A3S_TEST_BROWSER_EXECUTABLE;
+  }
+  // Windows `.cmd` shims mangle CreateProcess argument quoting for role/css
+  // targets. Prefer the compiled PE launcher when present.
+  if (process.platform === 'win32') {
+    try {
+      await access(windowsLauncher, fsConstants.F_OK);
+      return windowsLauncher;
+    } catch {
+      // Fall through to the driver default.
+    }
+  }
+  return undefined;
+}
+const browserExecutable = await resolveBrowserExecutable();
 const maxParallel =
   options.maxParallel ?? process.env.A3S_TEST_MAX_PARALLEL ?? '1';
 await run(process.execPath, [

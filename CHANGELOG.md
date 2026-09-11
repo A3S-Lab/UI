@@ -2,6 +2,131 @@
 
 ## Unreleased
 
+## [0.4.1] - 2026-09-11
+
+### Added
+
+- Completed Windows **Verified** admission for all **116** public components with Playwright AT / forced-colors / true CSS zoom 200% coverage (`visual-tests/verified-gaps.visual.spec.ts`), focused A3S Test run evidence, and zoom proof PNGs.
+- Added shared Playwright CSS-zoom helpers (`visual-tests/page-zoom.ts`) and style-pack path resolution for Windows hosts.
+
+### Changed
+
+- Remaining harness/runtime components (Task Workspace, Agent Transcript/Workbench, Approval Request, Execution Item, Settings Layout, Task Pane/Plan, Plan Step, Message Status/Attachment/Citation, Artifact Card, Context Selector, Task Queue, Checkpoint, Follow-up Suggestions, Tool Call/Timeline/Result, Change Review, Terminal, Execution Evidence, File Explorer/Manager, Knowledge Library, Code Graph, Device Simulator) reached **Verified** via `visual-tests/verified-gaps.visual.spec.ts` plus existing focused A3S Test evidence.
+- Bulk Action Bar, Color Swatches, Image Select, and Data Grid reached **Verified** via `verified-gaps.visual.spec.ts` plus focused A3S Test runs `a3s-test-27492-1` / `a3s-test-30964-1` / `a3s-test-29472-1` / `a3s-test-10704-1`.
+- Markdown Surface, Scroll Area, Log Viewer, Code Editor, Hotkey Input, Brand Lockup, and Split Pane reached **Verified** after closing CSS-zoom proof capture (local demo `zoom` + document overflow check) via `verified-gaps.visual.spec.ts`, with focused A3S Test evidence including `a3s-test-2888-1` / `a3s-test-32424-1` / `a3s-test-4852-1`.
+- Icon, Image, File Type Icon, Highlighter, Snippet, Streaming Text, Theme Switcher, Sortable List, Code Diff, Image Viewer, Emoji Picker, Toolbar, Ribbon, Status Bar, Setting Row, Resource Card, and Workspace Header reached **Verified** via `visual-tests/verified-gaps.visual.spec.ts` plus focused A3S Test evidence (including `a3s-test-15868-1` / `a3s-test-15020-1`).
+- Accordion, Collapsible, Item, Alert Dialog, Dropdown Menu, Command, Back to Bottom, Table of Contents, Floating Panel, Context Menu, Form, Editable Text, Date Picker, Alert, Badge, Status Badge, Spinner, Skeleton, Table, Property List, Stepper, Timeline, Kbd, and Avatar reached **Verified** via `visual-tests/verified-gaps.visual.spec.ts` (72/72 wave-3) plus focused A3S Test evidence including `a3s-test-31668-1` / `a3s-test-24300-1` / `a3s-test-32048-1` and prior focused runs for the rest of the batch.
+- Tabs, Toast, Progress, Empty, Dialog, Drawer, Popover, Tooltip, Breadcrumb, Pagination, Sidebar, Card, Tree, and Activity Bar reached **Verified** via `visual-tests/verified-gaps.visual.spec.ts` (42/42 wave-2) plus focused A3S Test runs `a3s-test-29780-1` / `a3s-test-9156-1` / `a3s-test-20660-1` / `a3s-test-29892-1` / `a3s-test-12004-1` / `a3s-test-26480-1` / `a3s-test-31596-1` / `a3s-test-15064-1` / `a3s-test-30412-1` / `a3s-test-23208-1` / `a3s-test-30040-1` / `a3s-test-24024-1` / `a3s-test-32620-1` / `a3s-test-24664-1`. CSS zoom scroll now uses Playwright `scrollIntoViewIfNeeded`; Tree zoom proof targets the visible `[data-tree-row]`.
+- Label, Checkbox, Radio Group, Switch, Slider, Select, Native Select, Combobox, Copy Button, and Filter Bar reached **Verified** via `visual-tests/verified-gaps.visual.spec.ts` (30/30) plus focused A3S Test runs `a3s-test-16784-1` / `a3s-test-15772-1` / `a3s-test-22784-1` / `a3s-test-32084-1` / `a3s-test-14596-1` / `a3s-test-27400-1` / `a3s-test-4212-1` / `a3s-test-11620-1` / `a3s-test-15536-1` / `a3s-test-1012-1`.
+- Button (`IA-01`), Button Group (`IA-02`), Field (`IA-07`), Input (`IA-08`), Textarea (`IA-11`), and Input Group (`IA-09`) reached **Verified** on the Windows docs web surface with Playwright zoom/AT/forced-colors coverage, proof PNGs under `temp/verified-proof/`, and A3S Test runs `a3s-test-29028-1` / `a3s-test-19552-1` / `a3s-test-16564-1` / `a3s-test-32712-1` / `a3s-test-32092-1` / `a3s-test-5148-1`. Docs Button async save timer lengthened to 3500ms so disabled-repeat clicks are not raced.
+- Sidebar (`NV-06`) demos now use scoped primary markers and toggle controls; docs preview installs native-only `data-preview-onclick` / `data-preview-onchange` so toggle-style demos no longer double-fire. Deterministic A3S Test run `a3s-test-30636-1` captures desktop toggle, state matrix, and 390px Chinese Escape restore evidence.
+- Alert Dialog (`OV-01`) ACL now covers cancel-first focus, trigger restore, open/closed state matrix, and 390px Chinese destructive confirmation; deterministic A3S Test run `a3s-test-28932-1` captures the evidence bundle.
+- Dialog (`OV-02`) ACL now covers profile edit, Escape restore, open/closed state matrix, and 390px Chinese editing; deterministic A3S Test run `a3s-test-28892-1` captures the evidence bundle.
+- Drawer (`OV-03`) demos now use scoped primary markers plus trigger/cancel/submit controls; deterministic A3S Test run `a3s-test-16220-1` captures desktop Escape restore, state matrix, and 390px Chinese cancel evidence.
+- Dropdown Menu (`OV-04`) demos now use scoped item markers; deterministic A3S Test run `a3s-test-15260-1` captures Profile select, disabled API, Escape restore, state matrix, and 390px Chinese logout evidence.
+- Popover (`OV-06`) demos now use scoped primary/field markers with localized Chinese copy; deterministic A3S Test run `a3s-test-4768-1` captures autofocus edit, Escape restore, state matrix, and 390px Chinese evidence.
+- Command (`OV-09`) demos now use scoped primary/input/item markers; deterministic A3S Test run `a3s-test-20060-1` captures Calendar filter, disabled Calculator, empty recovery, state matrix, and 390px Chinese settings evidence.
+- Tooltip (`OV-10`) demos now use scoped primary/trigger markers with localized Chinese copy; deterministic A3S Test run `a3s-test-11076-1` captures hover/focus, state matrix, and 390px Chinese evidence.
+- Context Menu (`OV-05`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-25808-1` captures nested Diff View select, Watch preserve, Escape restore, state matrix, and 390px Chinese open evidence.
+- Activity Bar (`NV-01`) demos now use scoped primary/item markers, live status, and compact icon-only rail; docs preview updates current destination status on activation. Deterministic A3S Test run `a3s-test-14960-1` captures the evidence bundle.
+- Breadcrumb (`NV-02`) demos now use scoped primary/link/current markers; deterministic A3S Test run `a3s-test-4772-1` captures desktop ancestor focus, state matrix, and 390px Chinese path evidence.
+- Pagination (`NV-05`) demos now use scoped primary markers with live status; docs preview syncs `aria-current` with outline/ghost variants and previous/next. Deterministic A3S Test run `a3s-test-13824-1` captures the evidence bundle.
+- Back to Bottom (`NV-03`) demos now use scoped primary markers with live status; deterministic A3S Test run `a3s-test-9760-1` captures unread clear, state matrix, and 390px Chinese evidence.
+- Floating Panel (`OV-07`) demos now include reopen triggers and live status; deterministic A3S Test run `a3s-test-20844-1` captures close/reopen, state matrix, and 390px Chinese evidence.
+- Table of Contents (`NV-07`) demos now use scoped primary/item markers with localized Chinese labels; deterministic A3S Test run `a3s-test-24180-1` captures location updates, state matrix, and 390px Chinese evidence.
+- Toast (`FB-09`) demos now use scoped primary/toaster markers with live status; deterministic A3S Test run `a3s-test-11356-1` captures create/dismiss, state matrix, and 390px Chinese evidence.
+- Card (`DC-07`) demos now use scoped primary/field/action markers with live status; deterministic A3S Test run `a3s-test-20388-1` captures login readiness, state matrix, and 390px Chinese review evidence.
+- Tree (`DC-21`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-25180-1` captures hierarchy/selection, state matrix, and Chinese localization evidence.
+- Alert (`FB-01`) demos now use scoped primary/item markers; deterministic A3S Test run `a3s-test-2156-1` captures success/info variants, state matrix, and 390px Chinese evidence.
+- Accordion (`DC-01`) demos now use scoped primary/item markers; deterministic A3S Test run `a3s-test-26436-1` captures keyboard disclosure, state matrix, and 390px Chinese evidence.
+- Progress (`FB-05`) demos now include complete/reset controls with live status; deterministic A3S Test run `a3s-test-25064-1` captures value sync, state matrix, and 390px Chinese evidence.
+- Empty (`FB-04`) demos now use scoped primary/action markers with create status; deterministic A3S Test run `a3s-test-13516-1` captures recovery activate, state matrix, and 390px Chinese evidence.
+- Status Badge (`FB-03`) demos now use scoped primary/item markers for all five states; deterministic A3S Test run `a3s-test-25200-1` captures state matrix and 390px Chinese labels.
+- Item (`DC-08`) demos now use scoped primary/action markers with live status; deterministic A3S Test run `a3s-test-16976-1` captures action activate, state matrix, and 390px Chinese evidence.
+- Spinner (`FB-07`) demos now use scoped primary markers with localized Chinese loading copy; deterministic A3S Test run `a3s-test-7536-1` captures state matrix and 390px Chinese evidence.
+- Table (`DC-17`) demos now use scoped primary/caption markers; deterministic A3S Test run `a3s-test-23648-1` captures scroll readability, state matrix, and 390px Chinese evidence.
+- Collapsible (`DC-02`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24192-1` captures keyboard disclosure, state matrix, and 390px Chinese evidence.
+- Property List (`DC-15`) demos now use scoped primary/property markers; deterministic A3S Test run `a3s-test-24696-1` captures metadata pairs, state matrix, and 390px Chinese evidence.
+- Stepper (`DC-19`) demos now use scoped primary/step markers; deterministic A3S Test run `a3s-test-22608-1` captures stages, state matrix, and 390px Chinese evidence.
+- Timeline (`DC-20`) demos now use scoped primary/event markers; deterministic A3S Test run `a3s-test-29228-1` captures history stages, state matrix, and 390px Chinese evidence.
+- Badge (`FB-02`) demos now use scoped primary/item markers; deterministic A3S Test run `a3s-test-13284-1` captures variants, state matrix, and 390px Chinese evidence.
+- Skeleton (`FB-06`) demos now use scoped primary markers with busy labels; deterministic A3S Test run `a3s-test-29304-1` captures state matrix and 390px Chinese evidence.
+- Avatar (`DC-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-30064-1` captures imagery, state matrix, and 390px Chinese evidence.
+- Kbd (`DC-09`) demos now use scoped primary/chord markers; deterministic A3S Test run `a3s-test-21120-1` captures tokens, state matrix, and 390px Chinese evidence.
+- Icon (`DC-04`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24740-1` captures named graphic, state matrix, and 390px Chinese evidence.
+- Scroll Area (`UT-01`) demos now use scoped primary/viewport markers; deterministic A3S Test run `a3s-test-7344-1` captures keyboard scroll, state matrix, and 390px Chinese evidence.
+- Theme Switcher (`UT-02`) demos now use scoped primary markers with `data-preview-onclick`; deterministic A3S Test run `a3s-test-20048-1` captures site toggle, state matrix, and 390px Chinese evidence.
+- Image (`DC-06`) demos now use scoped primary/caption markers; deterministic A3S Test run `a3s-test-31480-1` captures alt/caption, state matrix, and 390px Chinese evidence.
+- Chart (`DC-14`) demos now mark primary Chart.js figures; deterministic A3S Test run `a3s-test-17996-1` captures canvas summary, state matrix, and 390px Chinese evidence.
+- Streaming Text (`FB-08`) demos now use scoped primary markers with localized Chinese stream copy; deterministic A3S Test run `a3s-test-30944-1` captures streaming/complete/paused/error matrix and 390px Chinese evidence.
+- Markdown Surface (`DC-10`) demos now use scoped heading/code/callout markers; deterministic A3S Test run `a3s-test-2888-1` captures focus path, state matrix, and 390px Chinese evidence.
+- Snippet (`DC-13`) demos now use scoped primary markers with localized Chinese copy label; deterministic A3S Test run `a3s-test-30492-1` captures copy action, state matrix, and 390px Chinese evidence.
+- Sortable List (`DC-18`) demos now use scoped primary markers with localized Chinese items; deterministic A3S Test run `a3s-test-30644-1` captures keyboard reorder, state matrix, and 390px Chinese evidence.
+- Code Diff (`DC-12`) demos now use scoped primary/scroller markers with localized Chinese caption; deterministic A3S Test run `a3s-test-11144-1` captures addition/removal focus, state matrix, and 390px Chinese evidence.
+- Highlighter (`DC-11`) demos now use scoped primary/mark markers with localized Chinese mark copy; deterministic A3S Test run `a3s-test-30852-1` captures focus path, state matrix, and 390px Chinese evidence.
+- File Type Icon (`DC-05`) demos now use scoped primary markers with localized Chinese accessible names; deterministic A3S Test run `a3s-test-27860-1` captures type cue, state matrix, and 390px Chinese evidence.
+- Image Viewer (`OV-08`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-30388-1` captures zoom-in, open/closed/loading matrix, and 390px Chinese evidence.
+- Brand Lockup (`LW-05`) demos now use scoped primary/home/compact markers; deterministic A3S Test run `a3s-test-26392-1` captures identity focus, ready matrix, and 390px Chinese evidence.
+- Setting Row (`LW-04`) demos now use scoped primary/row markers; deterministic A3S Test run `a3s-test-4488-1` captures language/theme controls, state matrix, and 390px Chinese evidence.
+- Resource Card (`LW-10`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-15680-1` captures document focus, state matrix, and 390px Chinese evidence.
+- Status Bar (`LW-13`) demos now use scoped primary/saved markers; deterministic A3S Test run `a3s-test-31668-1` captures zoom keyboard path, state matrix, and 390px Chinese evidence.
+- Message Status (`HR-07`) demos now use scoped primary/retry markers; deterministic A3S Test run `a3s-test-20592-1` captures streaming/sent/error, state matrix, and 390px Chinese evidence.
+- Workspace Header (`LW-06`) demos now use scoped primary/Deploy markers; deterministic A3S Test run `a3s-test-17744-1` captures identity focus, state matrix, and 390px Chinese evidence.
+- Toolbar (`LW-07`) demos now use scoped primary markers with `data-preview-onclick` Bold toggle; deterministic A3S Test run `a3s-test-31288-1` captures pressed state, state matrix, and 390px Chinese evidence.
+- Message Attachment (`HR-08`) demos now use scoped primary/remove markers; deterministic A3S Test run `a3s-test-2868-1` captures complete/upload actions, state matrix, and 390px Chinese evidence.
+- Message Citation (`HR-09`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-21088-1` captures prose focus, state matrix, and 390px Chinese evidence.
+- Ribbon (`LW-08`) demos now use scoped primary/tab markers; deterministic A3S Test run `a3s-test-23848-1` captures Insert→Review keyboard path, ready/disabled matrix, and 390px Chinese tabs.
+- Settings Layout (`LW-09`) demos now use scoped primary/nav markers with localized Chinese nav; deterministic A3S Test run `a3s-test-17840-1` captures nav focus, ready/loading/error matrix, and 390px Chinese evidence.
+- Split Pane (`LW-11`) demos now use scoped primary/separator markers; deterministic A3S Test run `a3s-test-4852-1` captures ArrowRight resize, ready/disabled matrix, and 390px Chinese separator label.
+- Task Pane (`LW-12`) demos now use scoped primary/paper markers; deterministic A3S Test run `a3s-test-23448-1` captures paper select, overlay + state matrix, and 390px Chinese 页面设置.
+- Task Plan (`HR-11`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29916-1` captures Pause �?paused, state matrix, and 390px Chinese 发布计划.
+- Plan Step (`HR-12`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12524-1` captures open checks, state matrix, and 390px Chinese evidence.
+- Artifact Card (`HR-20`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-3032-1` captures open action, state matrix, and 390px Chinese 发布就绪报告.
+- Checkpoint (`HR-16`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-27504-1` captures Restore �?restoring, state matrix, and 390px Chinese evidence.
+- Follow-up Suggestions (`HR-10`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-28188-1` captures selection, state matrix, and 390px Chinese evidence.
+- Tool Call (`HR-17`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8396-1` captures Stop �?interrupted, lifecycle matrix, and 390px Chinese evidence.
+- Tool Call Timeline (`HR-26`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-32468-1` captures expand/collapse, state matrix, and 390px Chinese evidence.
+- Tool Result (`HR-27`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-32508-1` captures Output/Metadata tabs, state matrix, and 390px Chinese evidence.
+- Context Selector (`HR-06`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29420-1` captures model select, state matrix, and 390px Chinese 运行时发�?
+- Approval Request (`HR-14`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-21920-1` captures session-scope approve, state matrix, and 390px Chinese evidence.
+- Execution Item (`HR-15`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24560-1` captures Stop �?cancelled, state matrix, and 390px Chinese evidence.
+- Task Queue (`HR-13`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-23056-1` captures queue interaction, state matrix, and 390px Chinese evidence.
+- Change Review (`HR-18`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-22604-1` captures review action, state matrix, and 390px Chinese evidence.
+- Execution Evidence (`HR-19`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-31088-1` captures open report, state matrix, and 390px Chinese evidence.
+- App Shell (`LW-01`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-15652-1` captures collapse/compact drawer, state matrix, and 390px Chinese open-nav.
+- App Page (`LW-02`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-30504-1` captures New project, state matrix, and 390px Chinese evidence.
+- Catalog (`LW-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-31272-1` captures Development filter, state matrix, and 390px Chinese evidence.
+- Task Start (`HR-01`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-24624-1` captures suggestion apply, state matrix, and 390px Chinese evidence.
+- Task Workspace (`HR-02`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-6780-1` captures Attach, state matrix, and 390px Chinese evidence.
+- Agent Composer (`HR-03`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-4948-1` captures Stop �?ready, state matrix, and 390px Chinese evidence.
+- Agent Transcript (`HR-04`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12060-1` captures jump-to-latest, state matrix, and 390px Chinese evidence.
+- Agent Workbench (`HR-05`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8248-1` captures build release, state matrix, and 390px Chinese evidence.
+- Terminal (`HR-23`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-16180-1` captures copy status, state matrix, and 390px Chinese evidence.
+- Log Viewer (`HR-24`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-30340-1` captures stderr filter, state matrix, and 390px Chinese evidence.
+- Code Editor (`HR-22`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-29436-1` captures edit path, state matrix, and 390px Chinese evidence.
+- File Explorer (`HR-21`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-26352-1` captures filter/rename, state matrix, and 390px Chinese evidence.
+- File Manager (`HR-28`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-8508-1` captures Quick Look, state matrix, and 390px Chinese grid metadata.
+- Knowledge Library (`HR-29`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12052-1` captures select/detail, state matrix, and 390px Chinese evidence.
+- Code Graph (`HR-30`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-12004-1` captures list fallback, state matrix, and 390px Chinese evidence.
+- Device Simulator (`HR-25`) demos now use scoped primary markers; deterministic A3S Test run `a3s-test-10788-1` captures shell/orientation, state matrix, and 390px Chinese evidence.
+- AI docs runtime (`a3s-ui.ai.js`) is now a self-contained Windows-safe bundle (CRLF-tolerant `createRuntimeBundle`); docs no longer request missing `/assets/manifest/index.js`.
+- Playwright visual style-pack fixtures use `fileURLToPath` via `visual-tests/style-pack-path.ts` so Windows hosts load `dist/basecoat-*.cdn.css` correctly. Button desktop-1280 suite is green (7/7), including forced-colors and compatibility packs.
+- Select (`SS-02`) demos now cover named trigger keyboard selection with live status, typeahead Escape cancel, disabled-option skipping, invalid/disabled presentation, and Chinese confirmation; docs preview binds Select `change` status on `[data-select-primary-demo]`. Deterministic A3S Test run `a3s-test-17856-1` captures the evidence bundle.
+- Label (`IA-12`) demos now cover wrap click-to-check, for/id association focus, required marker, and disabled presentation; deterministic A3S Test run `a3s-test-25248-1` captures desktop association/state-matrix and 390px Chinese wrap evidence.
+- Combobox (`SS-03`) ACL now covers Astro filter/select, empty-search Escape recovery, disabled/invalid presentation, state matrix, and 390px Chinese selection; deterministic A3S Test run `a3s-test-26772-1` captures the evidence bundle.
+- Switch (`SS-11`) demos now cover live toggle status, deterministic remote accept/reject restore, disabled reason, and Chinese phone activation; docs preview binds native `data-preview-onchange`. Deterministic A3S Test run `a3s-test-29968-1` captures the evidence bundle.
+- Slider (`SS-12`) demos wrap localized primary markers; deterministic A3S Test run `a3s-test-15600-1` captures Home/End unit-aware keyboard, RTL mapping, state matrix, and 390px Chinese evidence.
+- Filter Bar (`SS-04`) ACL now covers required chip-removal fallback, compound search clear, state matrix, and 390px Chinese reset; deterministic A3S Test run `a3s-test-27076-1` captures the evidence bundle.
+- Tabs (`NV-04`) ACL now covers Home/End panel switching, disabled-tab skip, state matrix, 390px Chinese activation, and RTL wrap; deterministic A3S Test run `a3s-test-9612-1` captures the evidence bundle.
+- Date Picker (`SS-05`) demos now cover min/max, leap day, empty/overflow recovery, disabled/readonly availability, and Chinese confirmation via locale-safe date fixtures; docs preview binds `data-preview-onsubmit` / `data-preview-onclick` natively. Deterministic A3S Test run `a3s-test-26824-1` captures the evidence bundle.
+- Emoji Picker (`SS-08`) demos now cover searchable selection with live status, empty recovery, and disabled availability; deterministic A3S Test run `a3s-test-16548-1` captures desktop filter/select/empty/state-matrix and 390px Chinese evidence.
+- Checkbox (`SS-09`) demos now cover channel toggling with disabled lock, live indeterminate select-all, and confirmation invalid/success/reset; deterministic A3S Test run `a3s-test-7696-1` captures the evidence bundle.
+- Form (`IA-06`) docs demos now exercise summary validation, duplicate-submit protection (`aria-busy` + disabled submit), success retention, reset, and read-only presentation; deterministic A3S Test run `a3s-test-25412-1` captures desktop invalid/success/state-matrix and 390px Chinese evidence.
+- Editable Text (`IA-05`) adds `data-editable-required` / `data-editable-save-delay`, `aria-busy` while saving, and EN/ZH primary demos; deterministic A3S Test run `a3s-test-4728-1` covers Escape cancel, empty rejection, async save, state matrix, and 390px Chinese commit.
+- Copy Button (`IA-04`) rejects empty sources, blocks repeat while copying, and ships EN/ZH primary/empty demos; deterministic A3S Test run `a3s-test-25524-1` covers keyboard copy, empty error, reset, state matrix, and 390px Chinese feedback.
+- Wave 0 Demote framing: README moves Spinner and Scroll Area into compatibility recipes; EN/ZH guides state React/Vue exports are aliases until the next major, and Scroll Area copy no longer calls utility classes a “component.�?
+- Theme Switcher publishes canonical `.theme-switcher` (with `[data-a3s-theme-toggle]` alias) in the manifest, runtime recognition, and next EN/ZH docs.
+
 ## [0.4.0] - 2026-09-10
 
 ### Added
@@ -69,7 +194,7 @@
 - Mobile project PDF page changes poll the page-number field after EmbedPDF finishes navigation (async), prove the selected thumbnail while the drawer is reopened, then restore page one through the page-number field because previous/next page steppers are intentionally hidden under the mobile overflow menu.
 - Memory evolution graph evidence keeps the wide desktop reading-pane inspector (no compact dismiss control), asserts selection copy, and leaves compact inspector dismiss coverage to the dedicated mobile/compact scenarios.
 - Code Graph React mounts no longer hardcode `data-view="graph"`, so the controller-owned list/graph view survives parent re-renders.
-- Code Editor compact framing evidence measures the visible phone preview shell after scroll-into-view, at a compact viewport height that can geometrically admit ≥75% coverage.
+- Code Editor compact framing evidence measures the visible phone preview shell after scroll-into-view, at a compact viewport height that can geometrically admit �?5% coverage.
 - Copy Button state-matrix specimens keep copy semantics and stamp `aria-busy` for copying; Toast live previews mount a durable `.toast` source for state acceptance.
 - Browser driver function keys (`F1`–`F24`) and `ContextMenu` now emit non-zero Windows VK codes, and non-printable presses use CDP `rawKeyDown`.
 
@@ -180,7 +305,7 @@
 ### Changed
 
 - Aligned Breadcrumb, Tabs, Pagination, and Sidebar with compact Office navigation geometry, bounded single-row overflow, 32-pixel pagination commands, and a 240-pixel mobile drawer specimen.
-- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320–380-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
+- Aligned Ribbon, Task Pane, Status Bar, and the homepage workbench specimen with the A3S Office geometry: 36-pixel tabs, a 74-pixel command panel, 320�?80-pixel task panes, responsive pane overlays, and a fixed 28-pixel status edge.
 - Aligned App Shell, Activity Bar, Workspace Header, and Toolbar geometry with A3S Office: a 46-pixel collapsed rail, 34-pixel navigation commands, a fixed 50-pixel title bar, and a 43-pixel toolbar with 29-pixel commands.
 - Replaced the flat component directory and page outline with localized, keyboard-operable disclosure groups that keep the active category and section immediately available.
 - Raised shared A3S secondary-text and semantic-status tokens to WCAG AA contrast in light and dark themes, established 12-pixel compact and 11-pixel micro type floors, and strengthened focus and validation states.

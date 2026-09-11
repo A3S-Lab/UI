@@ -1,0 +1,340 @@
+# 输入框
+
+输入框用于采集一个原生单行值。它保留浏览器的编辑、选择、校验、自动填充、密码管理器、输入法和表单行为，由 A3S UI 提供一致的视觉契约。
+
+<Preview class="w-full max-w-md" title="通知地址">
+  <div class="field w-full">
+    <label for="input-notification-email-zh">通知邮箱</label>
+    <input
+      id="input-notification-email-zh"
+      class="input"
+      type="email"
+      name="notificationEmail"
+      autocomplete="email"
+      inputmode="email"
+      enterkeyhint="next"
+      aria-describedby="input-notification-email-help-zh"
+      placeholder="name@example.com"
+      oninput="this.parentElement.querySelector('[data-input-current-value]').textContent = '当前值：' + (this.value || '尚未设置')"
+    />
+    <p id="input-notification-email-help-zh">用于接收发布通知和恢复账户。</p>
+    <output data-input-current-value aria-live="polite">
+      当前值：尚未设置
+    </output>
+  </div>
+</Preview>
+
+## 用法
+
+引入 Tailwind 和一套完整的 A3S UI 样式：
+
+```css
+@import "tailwindcss";
+@import "@a3s-lab/ui/a3s.css";
+```
+
+按组件加载时，依次引入基础样式、输入框结构、字段结构和一套视觉样式：
+
+```css
+@import "@a3s-lab/ui/base.css";
+@import "@a3s-lab/ui/components/input.css";
+@import "@a3s-lab/ui/components/field.css";
+@import "@a3s-lab/ui/styles/a3s.css";
+```
+
+在受支持的原生 `<input>` 上添加 `class="input"`。生产表单中应与字段组件组合，使可见标签和说明在编辑前后始终存在。
+
+```html
+<div class="field">
+  <label for="notification-email">通知邮箱</label>
+  <input
+    id="notification-email"
+    class="input"
+    type="email"
+    name="notificationEmail"
+    autocomplete="email"
+    aria-describedby="notification-email-help"
+  />
+  <p id="notification-email-help">用于接收发布通知和恢复账户。</p>
+</div>
+```
+
+输入框只处理一个原生单行值。前后缀、图标、单位或内嵌动作使用[输入框组](/components/input-group)；文件队列和进度使用[文件上传](/components/form-system/file-upload)；富文本指令、提及、附件和排队提交使用[任务输入器](/components/agent-composer)。
+
+### 参数
+
+| 参数                                                                  | 用途                                           |
+| --------------------------------------------------------------------- | ---------------------------------------------- |
+| `id`                                                                  | 将原生输入框连接到一个持久可见的标签           |
+| `name`                                                                | 提交字段键；禁用输入框不会进入 `FormData`      |
+| `type`                                                                | 选择原生编辑、校验、键盘、自动填充和浏览器控件 |
+| `autocomplete`                                                        | 让浏览器和密码管理器识别值的真实用途           |
+| `inputmode`                                                           | 当 `type` 无法完整表达时进一步指定虚拟键盘     |
+| `enterkeyhint`                                                        | 标注虚拟键盘动作，但不改变 Enter 的原生行为    |
+| `aria-describedby`                                                    | 关联普通说明，并在校验后关联当前错误           |
+| `required`、`min`、`max`、`step`、`minlength`、`maxlength`、`pattern` | 仅在符合真实数据契约时表达原生约束             |
+| `aria-invalid="true"`                                                 | 在校验已经执行后暴露失败状态                   |
+| `disabled`                                                            | 阻止聚焦、编辑、校验和表单提交，并应提供原因   |
+| `readonly`                                                            | 阻止编辑，但保留聚焦、选择、复制和表单提交     |
+
+## 框架用法
+
+<FrameworkTabs
+  html={`<div class="field">
+  <label for="input-notification-email-zh">通知邮箱</label>
+  <input id="input-notification-email-zh" class="input" type="email" name="notificationEmail" autocomplete="email" inputmode="email" enterkeyhint="next" aria-describedby="input-notification-email-help-zh" placeholder="name@example.com">
+  <p id="input-notification-email-help-zh">用于接收发布通知和恢复账户。</p>
+  <output data-input-current-value aria-live="polite">当前值：尚未设置</output>
+</div>
+<script type="module">
+const input = document.querySelector("#input-notification-email-zh");
+const output = document.querySelector("[data-input-current-value]");
+input.addEventListener("input", event => {
+  output.textContent = "当前值：" + (event.currentTarget.value || "尚未设置");
+});
+input.addEventListener("change", event => {
+  persistDraft(event.currentTarget.value);
+});
+</script>`}
+  react={`import { useState } from "react";
+import { Input, useInput } from "@a3s-lab/ui/react";
+
+export function NotificationEmail() {
+  const [value, setValue] = useState("");
+  const [committedValue, setCommittedValue] = useState("");
+  const control = useInput({
+    events: {
+      input: event => setValue((event.currentTarget as HTMLInputElement).value),
+      change: event => setCommittedValue((event.currentTarget as HTMLInputElement).value),
+    },
+  });
+
+return (
+<div className="field">
+<label htmlFor="input-notification-email-react">通知邮箱</label>
+<Input
+        id="input-notification-email-react"
+        ref={control.ref}
+        type="email"
+        name="notificationEmail"
+        autoComplete="email"
+        inputMode="email"
+        enterKeyHint="next"
+        aria-describedby="input-notification-email-help-react"
+        placeholder="name@example.com"
+      />
+<p id="input-notification-email-help-react">用于接收发布通知和恢复账户。</p>
+<output aria-live="polite">当前值：{value || "尚未设置"}</output>
+<input type="hidden" name="committedNotificationEmail" value={committedValue} />
+</div>
+);
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { Input, useInput } from "@a3s-lab/ui/vue";
+
+const value = ref("");
+const committedValue = ref("");
+const control = useInput({
+events: {
+input: event => value.value = (event.currentTarget as HTMLInputElement).value,
+change: event => committedValue.value = (event.currentTarget as HTMLInputElement).value,
+},
+});
+const componentRef = control.componentRef;
+
+</script>
+
+<template>
+  <div class="field">
+    <label for="input-notification-email-vue">通知邮箱</label>
+    <Input
+      id="input-notification-email-vue"
+      ref="componentRef"
+      type="email"
+      name="notificationEmail"
+      autocomplete="email"
+      inputmode="email"
+      enterkeyhint="next"
+      aria-describedby="input-notification-email-help-vue"
+      placeholder="name@example.com"
+    />
+    <p id="input-notification-email-help-vue">用于接收发布通知和恢复账户。</p>
+    <output aria-live="polite">当前值：{{ value || "尚未设置" }}</output>
+    <input type="hidden" name="committedNotificationEmail" :value="committedValue">
+  </div>
+</template>`}
+/>
+
+## 状态与变体
+
+空值和就绪是普通值状态。只有执行校验之后才进入无效状态。禁用与只读是不同的原生可用性契约，不能只当成两种相似样式。
+
+### 类型语义
+
+根据用户真正需要的数据、键盘、校验和自动填充行为选择类型，并保留浏览器自带控件，不用装饰性图标重新实现。
+
+<Preview class="w-full" title="原生输入用途">
+  <div class="grid w-full gap-4 sm:grid-cols-2">
+    <div class="field">
+      <label for="input-handle-zh">账户标识</label>
+      <input
+        id="input-handle-zh"
+        class="input"
+        type="text"
+        name="handle"
+        autocomplete="username"
+        placeholder="alex-chen"
+      />
+      <p>前导零或精确字符有意义时，标识符仍应使用文本。</p>
+    </div>
+    <div class="field">
+      <label for="input-work-email-zh">工作邮箱</label>
+      <input
+        id="input-work-email-zh"
+        class="input"
+        type="email"
+        name="workEmail"
+        autocomplete="section-work email"
+        inputmode="email"
+        placeholder="alex@example.com"
+      />
+      <p>浏览器提供邮箱校验和适合邮箱输入的键盘。</p>
+    </div>
+    <div class="field">
+      <label for="input-phone-zh">联系电话</label>
+      <input
+        id="input-phone-zh"
+        class="input"
+        type="tel"
+        name="telephone"
+        autocomplete="tel"
+        placeholder="+86 138 0000 0000"
+      />
+      <p>地区格式和业务校验仍由应用负责。</p>
+    </div>
+    <div class="field">
+      <label for="input-url-zh">操作手册地址</label>
+      <input
+        id="input-url-zh"
+        class="input"
+        type="url"
+        name="runbookUrl"
+        inputmode="url"
+        placeholder="https://example.com/runbook"
+      />
+      <p>校验前应说明是否必须包含协议。</p>
+    </div>
+    <div class="field">
+      <label for="input-password-zh">当前密码</label>
+      <input
+        id="input-password-zh"
+        class="input"
+        type="password"
+        name="currentPassword"
+        autocomplete="current-password"
+      />
+      <p>不要阻止粘贴、自动填充或密码管理器。</p>
+    </div>
+    <div class="field">
+      <label for="input-date-zh">评审日期</label>
+      <input id="input-date-zh" class="input" type="date" name="reviewDate" />
+      <p>只有本地日期就是完整值时才使用原生日期控件。</p>
+    </div>
+  </div>
+</Preview>
+
+只有当原生步进和数值约束符合任务时才使用 `type="number"`。账号、邮编、标识符、前导零值和高精度小数仍是文本。原生 `type="file"` 只作为兼容边界；生产级拖放、队列、进度、失败和重试流程属于文件上传组件。
+
+### 表单校验与恢复
+
+首次校验前保持必填字段中性。失败时保留用户值、说明具体问题、聚焦输入框，并把错误加入描述关系。值恢复有效或表单重置后，立即清除过期错误语义。
+
+<Preview class="w-full max-w-lg" title="必填工作区地址">
+  <form
+    class="grid w-full gap-4"
+    data-input-validation-demo="zh"
+    novalidate
+    onsubmit="event.preventDefault(); const input = this.querySelector('#input-validation-email-zh'); const field = input.closest('.field'); const error = this.querySelector('#input-validation-email-error-zh'); if (input.checkValidity()) return; field.dataset.invalid = 'true'; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', 'input-validation-email-hint-zh input-validation-email-error-zh'); error.hidden = false; input.focus()"
+    onreset="const input = this.querySelector('#input-validation-email-zh'); const field = input.closest('.field'); const error = this.querySelector('#input-validation-email-error-zh'); field.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); input.setAttribute('aria-describedby', 'input-validation-email-hint-zh'); error.hidden = true"
+  >
+    <div class="field">
+      <label for="input-validation-email-zh">工作区所有者邮箱</label>
+      <input
+        id="input-validation-email-zh"
+        class="input"
+        type="email"
+        name="workspaceOwnerEmail"
+        autocomplete="email"
+        inputmode="email"
+        aria-describedby="input-validation-email-hint-zh"
+        required
+        oninput="if (event.isComposing || !this.checkValidity()) return; const field = this.closest('.field'); field.removeAttribute('data-invalid'); this.removeAttribute('aria-invalid'); this.setAttribute('aria-describedby', 'input-validation-email-hint-zh'); field.querySelector('[role=alert]').hidden = true"
+      />
+      <p id="input-validation-email-hint-zh">
+        使用能够接收工作区恢复消息的地址。
+      </p>
+      <p id="input-validation-email-error-zh" role="alert" hidden>
+        请输入完整的邮箱地址，例如 owner@example.com。
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn" type="submit">
+        保存地址
+      </button>
+      <button class="btn" type="reset" data-variant="outline">
+        重置
+      </button>
+    </div>
+  </form>
+</Preview>
+
+客户端校验用于改善恢复过程，不能替代服务端校验、清理、授权和过期响应处理。
+
+### 禁用与只读
+
+禁用会把值移出聚焦、编辑、约束校验和表单提交。只读仍允许聚焦、选择、复制和提交。两者都需要可见原因。
+
+<Preview class="w-full max-w-lg" title="可用性语义">
+  <form class="grid w-full gap-5" data-input-availability="zh">
+    <div class="field" data-disabled="true">
+      <label for="input-disabled-zh">策略管理的地址</label>
+      <input
+        id="input-disabled-zh"
+        class="input"
+        type="email"
+        name="policyManagedAddress"
+        value="policy-managed@example.com"
+        aria-describedby="input-disabled-reason-zh"
+        disabled
+      />
+      <p id="input-disabled-reason-zh">工作区策略管理这个已归档的通知地址。</p>
+    </div>
+    <div class="field" data-readonly="true">
+      <label for="input-readonly-zh">发布负责人</label>
+      <input
+        id="input-readonly-zh"
+        class="input"
+        type="email"
+        name="releaseOwner"
+        value="release-owner@example.com"
+        aria-describedby="input-readonly-reason-zh"
+        readOnly
+      />
+      <p id="input-readonly-reason-zh">
+        只有组织所有者可以修改；该值仍可选择，并会包含在表单提交中。
+      </p>
+    </div>
+  </form>
+</Preview>
+
+## 无障碍
+
+- 始终提供一个持久可见的标签。占位文本可以说明格式，但不能是唯一名称。
+- 用 `aria-describedby` 关联普通说明。仅在校验后追加当前错误 ID，恢复后立即移除。
+- 保留原生键盘编辑、选择、撤销、粘贴、自动填充、密码管理器以及搜索和日期控件。
+- 输入法组合期间不要转换文本、执行业务校验或提交，等待 `compositionend`。
+- 在 RTL 布局中仍以从左到右的方向编辑邮箱、电话号码和 URL，避免标点与前缀被重排；标签和辅助说明继续遵循页面方向。
+- 使用一条连续的聚焦边界。强制色彩模式下改用系统 `Highlight` 轮廓。
+- 粗指针环境下，文本输入框至少 44px 高、字号至少 16px，避免移动端聚焦缩放。
+- 发布前在 200% 浏览器缩放、超长值、RTL 文本、中日韩输入法、真实移动键盘、自动填充、密码管理器和辅助技术中测试。

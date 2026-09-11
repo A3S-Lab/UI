@@ -8,7 +8,7 @@
 | Category | `forms` |
 | Public route | `/en/components/form.html` |
 | Stable selector | `[data-a3s-components~="form"]` |
-| Interaction scenario | `components-expanded-contracts.acl#form` |
+| Interaction scenario | `components-actions-forms.acl#form` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-form` |
 
 ## User problem
@@ -75,7 +75,7 @@ The canonical root uses `<form>` semantics and exposes 4 named parts. State must
 
 ## A3S Test mapping
 
-- Behavioral regression: `components-expanded-contracts.acl`, scenario `form`.
+- Behavioral regression: `components-actions-forms.acl`, scenario `form`.
 - Cross-framework, keyboard, responsive, theme, direction, and visual contract: `tests/e2e/component-contracts.acl`, scenario `component-contract-form`.
 - Route under test: `http://127.0.0.1:4178/UI/en/components/form.html`.
 - Stable root target: `[data-a3s-components~="form"]` inside `.a3s-preview[data-preview-component=form][data-preview-integration=complete]`.

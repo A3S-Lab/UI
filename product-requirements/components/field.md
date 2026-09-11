@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="field"]` |
 | Interaction scenario | `components-actions-forms.acl#field` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-field` |
-| Deep review source | `product-requirements/component-details/field.md` |
+| Deep review source | `product-requirements\component-details\field.md` |
 
 ## User problem
 

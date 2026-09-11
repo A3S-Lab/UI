@@ -32,7 +32,7 @@ const config: UserConfig = {
   },
   multiVersion: {
     default: "next",
-    versions: ["next", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"],
+    versions: ["next", "v0.4.1", "v0.4.0", "v0.3.0", "v0.2.0", "v0.1.0"],
   },
   plugins: [
     standalonePagesPlugin(__dirname),
@@ -41,10 +41,10 @@ const config: UserConfig = {
   locales: [
     {
       lang: "zh",
-      label: "简体中文",
+      label: "简体中�?,
       title: "A3S UI",
       description:
-        "面向 A3S 产品、任务工作区、运维控制台与文档工具的框架无关设计系统。",
+        "面向 A3S 产品、任务工作区、运维控制台与文档工具的框架无关设计系统�?,
     },
     {
       lang: "en",

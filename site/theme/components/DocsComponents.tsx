@@ -171,6 +171,13 @@ function normalizePreviewNode(node: ReactNode): ReactNode {
 
     const eventAlias = eventAliases[name];
     if (eventAlias && typeof value === "string") {
+      // Prefer the durable native data-preview-* listener installed by
+      // initializeDocumentationDemos. Pairing it with a React synthetic
+      // handler double-fires toggle-style demos (sidebar, switch remotes).
+      if (name === "onclick" || name === "onchange") {
+        normalizedProps[`data-preview-${name}`] = value;
+        continue;
+      }
       normalizedProps[eventAlias] = createInlineHandler(value);
       normalizedProps[`data-preview-${name}`] = value;
       continue;
@@ -237,6 +244,193 @@ function initializeDocumentationDemos(root: HTMLElement) {
       synchronize();
     });
 
+  // Native submit wiring for MDX demos. React onSubmit can miss when the
+  // preview canvas remounts or hydration skips synthetic listeners; the
+  // data-preview-* attribute is always present in the DOM.
+  root
+    .querySelectorAll<HTMLFormElement>("form[data-preview-onsubmit]")
+    .forEach((form) => {
+      if (form.dataset.demoSubmitInitialized === "true") return;
+      const source = form.getAttribute("data-preview-onsubmit");
+      if (!source?.trim()) return;
+      form.dataset.demoSubmitInitialized = "true";
+      const evaluate = Function("event", source) as (
+        this: HTMLFormElement,
+        event: Event,
+      ) => void;
+      form.addEventListener("submit", (event) => {
+        evaluate.call(form, event);
+      });
+    });
+
+  root
+    .querySelectorAll<HTMLFormElement>("form[data-preview-onreset]")
+    .forEach((form) => {
+      if (form.dataset.demoResetInitialized === "true") return;
+      const source = form.getAttribute("data-preview-onreset");
+      if (!source?.trim()) return;
+      form.dataset.demoResetInitialized = "true";
+      const evaluate = Function("event", source) as (
+        this: HTMLFormElement,
+        event: Event,
+      ) => void;
+      form.addEventListener("reset", (event) => {
+        evaluate.call(form, event);
+      });
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-preview-onclick]")
+    .forEach((element) => {
+      if (element.dataset.demoClickInitialized === "true") return;
+      const source = element.getAttribute("data-preview-onclick");
+      if (!source?.trim()) return;
+      element.dataset.demoClickInitialized = "true";
+      const evaluate = Function("event", source) as (
+        this: HTMLElement,
+        event: Event,
+      ) => void;
+      element.addEventListener("click", (event) => {
+        evaluate.call(element, event);
+      });
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-preview-onchange]")
+    .forEach((element) => {
+      if (element.dataset.demoChangeInitialized === "true") return;
+      const source = element.getAttribute("data-preview-onchange");
+      if (!source?.trim()) return;
+      element.dataset.demoChangeInitialized = "true";
+      const evaluate = Function("event", source) as (
+        this: HTMLElement,
+        event: Event,
+      ) => void;
+      element.addEventListener("change", (event) => {
+        evaluate.call(element, event);
+      });
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-emoji-picker-primary-demo]")
+    .forEach((demo) => {
+      if (demo.dataset.demoEmojiStatusInitialized === "true") return;
+      const picker = demo.querySelector<HTMLElement>(".emoji-picker");
+      const status = demo.querySelector<HTMLElement>("[data-emoji-status]");
+      if (!picker || !status) return;
+      demo.dataset.demoEmojiStatusInitialized = "true";
+      const locale = demo.getAttribute("data-emoji-picker-primary-demo");
+      picker.addEventListener("a3s:emoji-select", ((event: Event) => {
+        const detail = (event as CustomEvent<{ emoji?: string }>).detail;
+        const emoji = detail?.emoji ?? "";
+        status.textContent =
+          locale === "zh"
+            ? `已选择 ${emoji}`
+            : `Selected ${emoji}`;
+        demo.dataset.emojiValue = emoji;
+      }) as EventListener);
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-checkbox-select-all-demo]")
+    .forEach((demo) => {
+      if (demo.dataset.demoCheckboxSelectAllInitialized === "true") return;
+      const selectAll = demo.querySelector<HTMLInputElement>(
+        "[data-checkbox-select-all]",
+      );
+      const items = Array.from(
+        demo.querySelectorAll<HTMLInputElement>("[data-checkbox-select-item]"),
+      );
+      const status = demo.querySelector<HTMLElement>(
+        "[data-checkbox-select-all-status]",
+      );
+      if (!selectAll || items.length === 0) return;
+      demo.dataset.demoCheckboxSelectAllInitialized = "true";
+      const locale = demo.getAttribute("data-checkbox-select-all-demo");
+
+      const synchronize = () => {
+        const selected = items.filter((item) => item.checked).length;
+        selectAll.checked = selected === items.length;
+        selectAll.indeterminate = selected > 0 && selected < items.length;
+        if (selectAll.indeterminate) {
+          selectAll.dataset.indeterminate = "true";
+        } else {
+          delete selectAll.dataset.indeterminate;
+        }
+        if (!status) return;
+        if (selected === 0) {
+          status.textContent =
+            locale === "zh" ? "尚未选择范围。" : "No scopes selected.";
+        } else if (selected === items.length) {
+          status.textContent =
+            locale === "zh" ? "已选择全部范围。" : "All scopes selected.";
+        } else {
+          status.textContent =
+            locale === "zh" ? "已选择部分范围。" : "Some scopes are selected.";
+        }
+      };
+
+      selectAll.addEventListener("change", () => {
+        items.forEach((item) => {
+          item.checked = Boolean(selectAll.checked);
+        });
+        synchronize();
+      });
+      items.forEach((item) => item.addEventListener("change", synchronize));
+      synchronize();
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-select-primary-demo]")
+    .forEach((demo) => {
+      if (demo.dataset.demoSelectStatusInitialized === "true") return;
+      const select = demo.querySelector<HTMLElement>(".select");
+      const status = demo.querySelector<HTMLElement>("[data-select-status]");
+      if (!select || !status) return;
+      demo.dataset.demoSelectStatusInitialized = "true";
+      const locale = demo.getAttribute("data-select-primary-demo");
+      select.addEventListener("change", ((event: Event) => {
+        const detail = (
+          event as CustomEvent<{
+            value?: string;
+            selected?: { label?: string; value?: string };
+          }>
+        ).detail;
+        const value = detail?.value ?? detail?.selected?.value ?? "";
+        const label = detail?.selected?.label ?? value;
+        status.textContent =
+          locale === "zh" ? `已选择 ${label}` : `Selected ${label}`;
+        demo.dataset.selectValue = String(value);
+      }) as EventListener);
+    });
+
+  root
+    .querySelectorAll<HTMLElement>("[data-switch-primary-demo]")
+    .forEach((demo) => {
+      if (demo.dataset.demoSwitchPrimaryInitialized === "true") return;
+      const control = demo.querySelector<HTMLInputElement>(
+        "input[role=switch]",
+      );
+      const status = demo.querySelector<HTMLElement>("[data-switch-status]");
+      if (!control || !status) return;
+      demo.dataset.demoSwitchPrimaryInitialized = "true";
+      const locale = demo.getAttribute("data-switch-primary-demo");
+      const announce = () => {
+        const on = control.checked;
+        status.textContent =
+          locale === "zh"
+            ? on
+              ? "飞行模式已开启。"
+              : "飞行模式已关闭。"
+            : on
+              ? "Airplane Mode is on."
+              : "Airplane Mode is off.";
+        demo.dataset.switchValue = on ? "on" : "off";
+      };
+      control.addEventListener("change", announce);
+      announce();
+    });
+
   window.a3sUI?.start();
   window.a3sUI?.initAll();
 }
@@ -252,16 +446,51 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
     return;
   }
 
-  const paginationControl = target.closest<HTMLElement>(
+  const paginationRoot = target.closest<HTMLElement>(".pagination");
+  const paginationPage = target.closest<HTMLElement>(
     ".pagination [data-pagination-page]",
   );
-  if (paginationControl) {
+  const paginationDirection = target.closest<HTMLElement>(
+    ".pagination [data-pagination-direction]",
+  );
+  if (paginationRoot && (paginationPage || paginationDirection)) {
     event.preventDefault();
-    const pagination = paginationControl.closest<HTMLElement>(".pagination");
-    pagination
-      ?.querySelectorAll<HTMLElement>('[aria-current="page"]')
-      .forEach((control) => control.removeAttribute("aria-current"));
-    paginationControl.setAttribute("aria-current", "page");
+    const pages = Array.from(
+      paginationRoot.querySelectorAll<HTMLElement>("[data-pagination-page]"),
+    );
+    const currentIndex = pages.findIndex(
+      (page) => page.getAttribute("aria-current") === "page",
+    );
+    let nextIndex = currentIndex;
+    if (paginationPage) {
+      nextIndex = pages.indexOf(paginationPage);
+    } else if (paginationDirection) {
+      const direction = paginationDirection.getAttribute(
+        "data-pagination-direction",
+      );
+      nextIndex =
+        direction === "next"
+          ? Math.min(pages.length - 1, Math.max(0, currentIndex) + 1)
+          : Math.max(0, currentIndex - 1);
+    }
+    const nextPage = pages[nextIndex];
+    if (!nextPage) return;
+    pages.forEach((page) => {
+      page.removeAttribute("aria-current");
+      page.setAttribute("data-variant", "ghost");
+    });
+    nextPage.setAttribute("aria-current", "page");
+    nextPage.setAttribute("data-variant", "outline");
+    const status = paginationRoot
+      .closest("[data-pagination-primary-demo]")
+      ?.querySelector<HTMLElement>("[data-pagination-status]");
+    if (status) {
+      const label =
+        nextPage.getAttribute("aria-label") ||
+        nextPage.textContent?.trim() ||
+        "";
+      status.textContent = label;
+    }
     return;
   }
 
@@ -275,7 +504,78 @@ function handleDocumentationDemoClick(event: ReactMouseEvent<HTMLDivElement>) {
       ?.querySelectorAll<HTMLAnchorElement>('a[aria-current="page"]')
       .forEach((link) => link.removeAttribute("aria-current"));
     activityLink.setAttribute("aria-current", "page");
+    const status = activityBar
+      ?.closest("[data-activity-bar-primary-demo]")
+      ?.querySelector<HTMLElement>("[data-activity-status]");
+    if (status) {
+      const label =
+        activityLink.querySelector("[data-navigation-label]")?.textContent?.trim() ||
+        activityLink.getAttribute("aria-label") ||
+        "";
+      status.textContent = label;
+    }
     return;
+  }
+
+  const backToBottom = target.closest<HTMLElement>(".back-to-bottom");
+  if (backToBottom?.closest("[data-back-to-bottom-primary-demo]")) {
+    const demo = backToBottom.closest<HTMLElement>(
+      "[data-back-to-bottom-primary-demo]",
+    );
+    const status = demo?.querySelector<HTMLElement>(
+      "[data-back-to-bottom-status]",
+    );
+    if (status) {
+      status.textContent =
+        demo?.getAttribute("data-back-to-bottom-primary-demo") === "zh"
+          ? "已回到最新内容"
+          : "Returned to latest output";
+    }
+    return;
+  }
+
+  const floatingReopen = target.closest<HTMLElement>(
+    "[data-floating-panel-reopen]",
+  );
+  if (floatingReopen) {
+    event.preventDefault();
+    const demo = floatingReopen.closest<HTMLElement>(
+      "[data-floating-panel-primary-demo]",
+    );
+    const panel = demo?.querySelector<
+      HTMLElement & { open?: (options?: Record<string, unknown>) => boolean }
+    >(".floating-panel");
+    panel?.open?.({ source: "user", trigger: floatingReopen });
+    const status = demo?.querySelector<HTMLElement>(
+      "[data-floating-panel-status]",
+    );
+    if (status) {
+      status.textContent =
+        demo?.getAttribute("data-floating-panel-primary-demo") === "zh"
+          ? "检查器已打开"
+          : "Inspector open";
+    }
+    return;
+  }
+
+  const floatingClose = target.closest<HTMLElement>(
+    "[data-floating-panel-action=close]",
+  );
+  if (floatingClose?.closest("[data-floating-panel-primary-demo]")) {
+    const demo = floatingClose.closest<HTMLElement>(
+      "[data-floating-panel-primary-demo]",
+    );
+    const status = demo?.querySelector<HTMLElement>(
+      "[data-floating-panel-status]",
+    );
+    queueMicrotask(() => {
+      if (status) {
+        status.textContent =
+          demo?.getAttribute("data-floating-panel-primary-demo") === "zh"
+            ? "检查器已关闭"
+            : "Inspector closed";
+      }
+    });
   }
 }
 

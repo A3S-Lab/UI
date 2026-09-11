@@ -1,0 +1,44 @@
+# Component overview
+
+A3S UI provides 116 public component contracts. Search by display name, localized name, route slug, or interface responsibility; results preserve the current language and documentation version.
+
+<ComponentCatalog />
+
+## Choosing a component
+
+- Prefer native elements for actions, input, and selection so the browser owns focus, form state, and accessibility.
+- Add a component runtime only when the platform does not provide the complete behavior, such as composite selection, resizable panes, or device previews.
+- Page shells, toolbars, and resource layouts provide workspace structure. They do not replace smaller input or feedback components.
+- Task, execution, review, and developer-tool components live in [Harness](/harness/); each one keeps its stable `/components/*` page URL.
+
+## Structured forms
+
+The [Form system](/components/form-system/) brings the deterministic Form Core, visual Designer, controlled Renderer, 23 built-in fields, complex collection fields, and durable interaction contracts into the same component information architecture. React Hook Form bindings and Vue composables use the same schema, validation, and submitted-value semantics, with interactive examples embedded directly in the component guides.
+
+## API model
+
+| API surface           | Purpose                                      | Example                                                                 |
+| --------------------- | -------------------------------------------- | ----------------------------------------------------------------------- |
+| Root class            | Selects the component                        | `class="resource-card"`                                                 |
+| Native attributes     | Behavior and accessibility                   | `disabled`, `checked`, `aria-current="page"`                            |
+| `data-*` attributes   | Finite visual or behavioral variants         | `data-size="sm"`, `data-orientation="vertical"`                         |
+| CSS custom properties | Continuous layout values and theme decisions | `--split-position: 40%`                                                 |
+| JavaScript            | Behavior the browser does not provide        | Split-pane resizing, device preview, and composite keyboard interaction |
+
+Native elements remain the source of truth. A disabled button uses `disabled`; it does not require a second library-owned state value.
+
+## Framework integration
+
+HTML is the public contract for every component. The React and Vue adapters reuse the same semantic root without adding wrappers. A component gets a dedicated hook or composable only when it exposes events or methods. Each component page lists the interfaces that actually exist instead of placeholder APIs.
+
+| Capability            | General components       | Application structure    | Harness                  |
+| --------------------- | ------------------------ | ------------------------ | ------------------------ |
+| Semantic HTML         | Required                 | Required                 | Required                 |
+| React and Vue         | Semantic-root adapter    | Semantic-root adapter    | Semantic-root adapter    |
+| Hook or composable    | When behavior APIs exist | When behavior APIs exist | When behavior APIs exist |
+| Light and dark themes | Supported                | Supported                | Supported                |
+| RTL logical layout    | Supported                | Supported                | Supported                |
+| Responsive layout     | Component-specific       | Built in                 | Workflow-specific        |
+| Nunjucks and Jinja    | Existing templates       | HTML composition         | HTML composition         |
+
+Choose the A3S style pack for new products. Vega, Nova, Maia, Lyra, Mira, Luma, Sera, and Rhea are reserved for applications that must preserve an established appearance.

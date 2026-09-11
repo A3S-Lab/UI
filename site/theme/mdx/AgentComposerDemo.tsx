@@ -132,6 +132,7 @@ export default function AgentComposerDemo() {
     <form
       className="agent-composer"
       aria-label={zh ? "任务输入器" : "Task composer"}
+      data-agent-composer-primary-demo={zh ? "zh" : "en"}
       data-state={state}
       onSubmit={submit}
       onDragOver={(event) => event.preventDefault()}
@@ -290,9 +291,12 @@ export default function AgentComposerDemo() {
               data-variant="outline"
               data-composer-action="stop"
               aria-label={zh ? "停止当前任务" : "Stop the current task"}
-              onClick={() => {
+              onClick={(event) => {
                 setState("ready");
                 setStatus(zh ? "任务已停止，可以发送下一条指令。" : "Task stopped. The next instruction can be sent.");
+                event.currentTarget
+                  .closest("[data-agent-composer-primary-demo]")
+                  ?.setAttribute("data-composer-stopped", "true");
               }}
             >
               <ComposerIcon name="stop" />

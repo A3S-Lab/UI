@@ -1,0 +1,203 @@
+# Task Composer
+
+Task Composer turns an instruction, file context, source selections, skills, run settings, and follow-up messages into one recoverable submission. The primary input is always backed by TipTap. A plain `textarea` cannot reliably support Markdown, structured triggers, composition input, selection, and controlled drafts, so it is not part of the production contract.
+
+<Preview class="w-full max-w-4xl" title="Production task composer">
+  <AgentComposerDemo />
+</Preview>
+
+## Product boundary
+
+The composer answers four questions: what should happen, which resources may be used, which run settings apply, and whether the instruction sends now or joins the queue. Uploads, model transport, authorization, and persistence remain host responsibilities.
+
+- Enter submits and Shift + Enter inserts a line break. Never intercept Enter during IME composition.
+- `@` opens the workspace tree, `$` opens skills, and `/` opens built-in commands. Suggestions use a listbox or tree while focus remains in the editor through `aria-activedescendant`.
+- Files and directories can arrive through a picker or drag and drop. Every resource keeps a stable identifier, visible type, and remove action.
+- Running states distinguish send, queue, stop, and unavailable actions with text, not an icon swap alone.
+- Failed submissions preserve Markdown, selection, resources, settings, and focus, then name a concrete recovery action.
+
+When the editor also needs a drop hint, validation message, or other host-owned
+content, wrap the input with `data-composer-editor`. Intermediate wrappers stay
+shrinkable, and long unbroken text scrolls inside the input instead of widening
+the workbench:
+
+```html
+<form class="agent-composer" aria-label="Message the coding agent">
+  <section class="agent-composer-editor" data-composer-editor>
+    <p data-composer-editor-message role="status">Drop a workspace file here</p>
+    <div>
+      <textarea
+        data-composer-input
+        name="prompt"
+        aria-label="Instruction"
+        placeholder="Describe the task to complete…"
+      ></textarea>
+    </div>
+  </section>
+</form>
+```
+
+## Public structure
+
+| API | Purpose |
+| --- | --- |
+| `.agent-composer` | The `<form>` boundary; use `<section>` only inside an existing form |
+| `data-composer-editor` | Host for the TipTap instance or other editor region; keeps nested input width and scroll bounds stable |
+| `data-composer-input` | ProseMirror root or native input marked as the actual task input |
+| `data-composer-resources` | Ordered files, directories, source ranges, images, URLs, and skills |
+| `data-composer-suggestions` | Listbox or tree opened by `@`, `$`, or `/` |
+| `data-composer-setting` | Mode, context, model, and reasoning controls owned by the host |
+| `data-composer-actions` | Send, queue, stop, and retry actions |
+| `data-composer-status` | One polite status region, never a token-by-token announcer |
+| `data-composer-queue` | Editable, removable, sortable, pausable follow-up messages |
+
+Root states are `ready`, `submitting`, `streaming`, `queued`, `stopping`, `offline`, `error`, and `disabled`. Individual controls continue to use native `disabled`.
+
+## Framework usage
+
+TipTap lives behind a separate package entry, so applications that only use CSS or ordinary components do not pay for the editor. HTML, React, and Vue share the same DOM, events, and Markdown value.
+
+<FrameworkTabs
+  html={`<form class="agent-composer" aria-label="Task composer" data-state="ready">
+  <section class="agent-composer-editor" data-composer-editor>
+    <div data-composer-input role="textbox" aria-label="Task instruction" aria-multiline="true"></div>
+  </section>
+  <ul data-composer-resources aria-label="Attached resources">
+    <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+  </ul>
+  <footer>
+    <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
+    <div data-composer-actions><button type="submit">Send</button></div>
+  </footer>
+</form>
+<script type="module">
+import { Editor } from "@tiptap/core";
+import Placeholder from "@tiptap/extension-placeholder";
+import { Markdown } from "@tiptap/markdown";
+import StarterKit from "@tiptap/starter-kit";
+import "@a3s-lab/ui";
+import "@a3s-lab/ui/agent-composer";
+
+const form = document.querySelector(".agent-composer");
+const editor = new Editor({
+  element: form.querySelector("[data-composer-input]"),
+  extensions: [
+    StarterKit.configure({ heading: false, codeBlock: false }),
+    Placeholder.configure({ placeholder: "Describe the task; use @, $, or /…" }),
+    Markdown,
+  ],
+  contentType: "markdown",
+  content: "Review the permission boundary.",
+  editorProps: {
+    attributes: {
+      role: "textbox",
+      "aria-label": "Task instruction",
+      "aria-multiline": "true",
+      "data-composer-input": "",
+    },
+    handleKeyDown: (_view, event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.isComposing) return false;
+      event.preventDefault();
+      form.requestSubmit();
+      return true;
+    },
+  },
+});
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  submitTask({ markdown: editor.getMarkdown() });
+});
+</script>`}
+  react={`import { useState } from "react";
+import { EditorContent } from "@tiptap/react";
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/react";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/react";
+
+export function TaskInput() {
+  const [draft, setDraft] = useState("");
+  const composer = useAgentComposer({
+    events: {
+      "a3s:composer-submit": event => saveTask(event.detail),
+      "a3s:composer-action": event => runComposerAction(event.detail),
+    },
+  });
+  const editor = useAgentComposerEditor({
+    value: draft,
+    onChange: setDraft,
+    onSubmit: markdown => submitTask({ markdown }),
+    onTriggerChange: trigger => openSuggestionSource(trigger),
+    placeholder: "Describe the task; use @, $, or /…",
+  });
+
+  return (
+    <AgentComposer ref={composer.ref} aria-label="Task composer" data-state="ready">
+      <section className="agent-composer-editor" data-composer-editor>
+        {editor.editor && <EditorContent editor={editor.editor} />}
+      </section>
+      <ul data-composer-resources aria-label="Attached resources">
+        <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+      </ul>
+      <footer>
+        <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
+        <div data-composer-actions><button type="submit">Send</button></div>
+      </footer>
+    </AgentComposer>
+  );
+}`}
+  vue={`<script setup lang="ts">
+import { ref } from "vue";
+import { EditorContent } from "@tiptap/vue-3";
+import { AgentComposer, useAgentComposer } from "@a3s-lab/ui/vue";
+import { useAgentComposerEditor } from "@a3s-lab/ui/tiptap/vue";
+
+const draft = ref("");
+const composer = useAgentComposer({
+  events: {
+    "a3s:composer-submit": event => saveTask(event.detail),
+    "a3s:composer-action": event => runComposerAction(event.detail),
+  },
+});
+const editor = useAgentComposerEditor({
+  value: draft,
+  onSubmit: markdown => submitTask({ markdown }),
+  onTriggerChange: trigger => openSuggestionSource(trigger),
+  placeholder: "Describe the task; use @, $, or /…",
+});
+const tiptap = editor.editor;
+</script>
+
+<template>
+  <AgentComposer :ref="composer.componentRef" aria-label="Task composer" data-state="ready">
+    <section class="agent-composer-editor" data-composer-editor>
+      <EditorContent v-if="tiptap" :editor="tiptap" />
+    </section>
+    <ul data-composer-resources aria-label="Attached resources">
+      <li data-kind="file" data-value="DESIGN.md"><span>DESIGN.md</span><button type="button" aria-label="Remove DESIGN.md">Remove</button></li>
+    </ul>
+    <footer>
+      <div data-composer-tools><button type="button" data-composer-setting="model">A3S Pro</button><button type="button" data-composer-setting="effort">High effort</button></div>
+      <div data-composer-actions><button type="submit">Send</button></div>
+    </footer>
+  </AgentComposer>
+</template>`}
+/>
+
+`useAgentComposer` controls root events and methods. `useAgentComposerEditor` owns the TipTap instance, Markdown value, focus, insertion, and trigger replacement. Do not create both hooks for the same editor instance; most applications render `AgentComposerEditor` directly and call the lower-level editor hook only for custom rendering.
+
+## Controller
+
+| Method | Result |
+| --- | --- |
+| `getDraft()` / `setDraft(markdown)` | Read or update controlled Markdown |
+| `focusInput()` | Restore focus to the ProseMirror surface |
+| `openSuggestions(trigger)` / `closeSuggestions()` | Manage suggestions without moving editor focus |
+| `setState(state, options)` | Update submitting, streaming, stopping, offline, or error state |
+| `setError(message)` | Preserve the draft while presenting a recoverable error |
+| `runAction(action, options)` | Run a host action after its cancelable authorization event |
+
+Important events include `a3s:composer-before-submit`, `a3s:composer-submit`, `a3s:composer-draft-change`, `a3s:composer-trigger-change`, `a3s:composer-before-action`, `a3s:composer-action`, and `a3s:composer-queue-action`.
+
+## Release acceptance
+
+Validate IME composition, undo and redo, long Markdown, empty drafts, focus restoration, keyboard suggestions, directory drops, resource deduplication, repeated stop attempts, offline recovery, queue editing, and 320px layouts. A test that proves only typing and submission is not enough for a production task workspace.

@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="bulk-action-bar"]` |
 | Interaction scenario | `components-feedback-data.acl#bulk-action-bar` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-bulk-action-bar` |
-| Deep review source | `product-requirements/component-details/bulk-action-bar.md` |
+| Deep review source | `product-requirements\component-details\bulk-action-bar.md` |
 
 ## User problem
 

@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="input-group"]` |
 | Interaction scenario | `components-actions-forms.acl#input-group` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-input-group` |
-| Deep review source | `product-requirements/component-details/input-group.md` |
+| Deep review source | `product-requirements\component-details\input-group.md` |
 
 ## User problem
 

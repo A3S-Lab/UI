@@ -10,7 +10,7 @@
 | Stable selector | `[data-a3s-components~="button"]` |
 | Interaction scenario | `components-actions-forms.acl#button` |
 | Evidence scenario | `tests/e2e/component-contracts.acl#component-contract-button` |
-| Deep review source | `product-requirements/component-details/button.md` |
+| Deep review source | `product-requirements\component-details\button.md` |
 
 ## User problem
 

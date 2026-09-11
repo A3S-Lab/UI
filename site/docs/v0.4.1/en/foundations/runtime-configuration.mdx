@@ -1,0 +1,101 @@
+# Runtime configuration
+
+Locale, reading direction, color mode, and motion preference belong to the application root. A3S UI does not require a framework provider or duplicate these values in component state; native HTML, React, and Vue all observe the same DOM contract.
+
+```html
+<html lang="en-US" dir="ltr" data-theme="system">
+```
+
+## Locale and direction
+
+`lang` selects the document language and `dir` controls bidirectional layout. Translation resources, number and date formatting, and route selection remain host-owned. Components use logical CSS properties and do not infer translated copy.
+
+Set both values when switching locale. Arabic, Persian, Hebrew, Pashto, and Urdu default to RTL when the direction argument is omitted; an explicit direction always wins.
+
+## Theme
+
+`data-theme` stores the preference: `light`, `dark`, or `system`. The resolved dark appearance is represented by the `dark` class, which keeps CSS usable without a framework runtime. The host may persist the preference, but it should apply the class before first paint to avoid a flash.
+
+```html
+<script>
+  const preference = localStorage.getItem("theme") || "system";
+  const dark =
+    preference === "dark" ||
+    (preference === "system" &&
+      matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = preference;
+  document.documentElement.classList.toggle("dark", dark);
+</script>
+```
+
+## Motion
+
+Motion remains a user preference, not an application toggle. Components respond to `prefers-reduced-motion: reduce`; loading, streaming, and progress keep readable static state when travel or looping animation is removed.
+
+## React hooks
+
+```tsx
+import {
+  useA3SLocale,
+  useA3SMotion,
+  useA3STheme,
+} from "@a3s-lab/ui/react";
+
+export function Preferences() {
+  const locale = useA3SLocale();
+  const motion = useA3SMotion();
+  const theme = useA3STheme();
+
+  return (
+    <form aria-label="Interface preferences">
+      <button type="button" onClick={() => locale.setLocale("ar-EG")}>
+        العربية
+      </button>
+      <button type="button" onClick={() => theme.setTheme("system")}>
+        Follow system theme
+      </button>
+      <output>
+        {locale.direction} · {theme.resolvedTheme} ·{" "}
+        {motion.reducedMotion ? "reduced motion" : "full motion"}
+      </output>
+    </form>
+  );
+}
+```
+
+The hooks observe external changes on `document.documentElement`, emit `a3s:locale-change` or `a3s:theme-change` after their own setters run, and clean up media-query and mutation listeners on unmount.
+
+## Vue composables
+
+```vue
+<script setup lang="ts">
+import {
+  useA3SLocale,
+  useA3SMotion,
+  useA3STheme,
+} from "@a3s-lab/ui/vue";
+
+const locale = useA3SLocale();
+const motion = useA3SMotion();
+const theme = useA3STheme();
+</script>
+
+<template>
+  <form aria-label="Interface preferences">
+    <button type="button" @click="locale.setLocale('ar-EG')">العربية</button>
+    <button type="button" @click="theme.setTheme('system')">
+      Follow system theme
+    </button>
+    <output>
+      {{ locale.direction.value }} · {{ theme.resolvedTheme.value }} ·
+      {{ motion.reducedMotion.value ? "reduced motion" : "full motion" }}
+    </output>
+  </form>
+</template>
+```
+
+Vue exposes readonly refs and the same setters and DOM events as React. Neither adapter owns translations, persistence, authorization, or server negotiation.
+
+## Server rendering
+
+Render the correct `lang` and `dir` on the server. Apply the stored or system color preference in a small pre-paint script, then let either framework observe that root. Do not render one locale and repair it after hydration; that changes reading order, accessible names, and layout after users begin interacting.

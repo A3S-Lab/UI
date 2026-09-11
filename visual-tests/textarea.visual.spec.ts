@@ -1,3 +1,7 @@
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { applyCssPageZoom } from "./page-zoom.js";
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Page } from "@playwright/test";
 
 async function openTextarea(page: Page, locale: "en" | "zh" = "en") {
@@ -522,6 +526,78 @@ test("Textarea exposes a system focus boundary in forced colors", async ({
   });
 });
 
+
+test("Textarea AT smoke keeps focus-visible on the primary control", async ({
+  page,
+}) => {
+  await openTextarea(page);
+  const control = primaryPreview(page).locator("#textarea-release-note-en");
+  await expect(control).toBeVisible();
+  await control.focus();
+  const focusVisual = await control.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      boxShadow: style.boxShadow,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  const hasOutline =
+    focusVisual.outlineStyle !== "none" &&
+    Number.parseFloat(focusVisual.outlineWidth) > 0;
+  const hasFocusShadow = focusVisual.boxShadow !== "none";
+  expect(hasOutline || hasFocusShadow).toBe(true);
+});
+
+test("Textarea remains usable at true 200% CSS page zoom", async ({ page }) => {
+  await openTextarea(page);
+  await applyCssPageZoom(page, 2);
+  const control = primaryPreview(page).locator("#textarea-release-note-en");
+  await expect(control).toBeVisible();
+  await control.scrollIntoViewIfNeeded();
+  const metrics = await control.evaluate((node) => {
+    const bounds = node.getBoundingClientRect();
+    const html = document.documentElement;
+    return {
+      height: bounds.height,
+      inViewport:
+        bounds.left >= -1 &&
+        bounds.top >= -1 &&
+        bounds.right <= window.innerWidth + 1 &&
+        bounds.bottom <= window.innerHeight + 1,
+      overflowX: html.scrollWidth > html.clientWidth + 1,
+      zoom: getComputedStyle(html).zoom,
+    };
+  });
+  expect(metrics.zoom === "2" || metrics.zoom === "200%").toBe(true);
+  expect(metrics.overflowX).toBe(false);
+  expect(metrics.inViewport).toBe(true);
+  const proofDir = join(process.cwd(), "temp/verified-proof/textarea");
+  mkdirSync(proofDir, { recursive: true });
+  await control.screenshot({
+    animations: "disabled",
+    path: join(proofDir, "control-en-200pct-zoom.png"),
+  });
+});
+
+test("Textarea exposes system focus under forced colors", async ({ page }) => {
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await openTextarea(page);
+  const control = primaryPreview(page).locator("#textarea-release-note-en");
+  await control.focus();
+  const focus = await control.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      forcedColors: matchMedia("(forced-colors: active)").matches,
+      outlineStyle: style.outlineStyle,
+      outlineWidth: style.outlineWidth,
+    };
+  });
+  expect(focus.forcedColors).toBe(true);
+  expect(focus.outlineStyle).toBe("solid");
+  expect(Number.parseFloat(focus.outlineWidth)).toBeGreaterThanOrEqual(2);
+});
+
 test("Textarea keeps one bounded focus boundary across compatibility style packs", async ({
   page,
 }, testInfo) => {
@@ -551,8 +627,7 @@ test("Textarea keeps one bounded focus boundary across compatibility style packs
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
 
       const textarea = page.locator("#compat-textarea");

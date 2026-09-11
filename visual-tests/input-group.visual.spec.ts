@@ -1,3 +1,7 @@
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
+import { applyCssPageZoom } from "./page-zoom.js";
+import { stylePackCssPath } from "./style-pack-path.js";
 import { expect, test, type Page } from "@playwright/test";
 
 async function openInputGroup(page: Page, locale: "en" | "zh" = "en") {
@@ -691,6 +695,68 @@ test("Input Group exposes a system focus boundary in forced colors", async ({
   });
 });
 
+
+test("Input Group AT smoke keeps named control and group focus boundary", async ({
+  page,
+}) => {
+  await openInputGroup(page);
+  const preview = primaryPreview(page);
+  const group = preview.locator(".input-group");
+  const input = group.locator("#input-group-project-search-en");
+  await expect(input).toHaveAccessibleName("Search projects");
+  await input.focus();
+  await expect(input).toBeFocused();
+  const focusVisual = await group.evaluate((element) => {
+    const control = element.querySelector<HTMLInputElement>("input")!;
+    const style = getComputedStyle(element);
+    const controlStyle = getComputedStyle(control);
+    return {
+      controlOutlineStyle: controlStyle.outlineStyle,
+      focusWithin: element.matches(":focus-within"),
+      groupBorderWidth: Number.parseFloat(style.borderWidth),
+      groupBoxShadow: style.boxShadow,
+    };
+  });
+  expect(focusVisual.focusWithin).toBe(true);
+  expect(focusVisual.groupBorderWidth).toBeGreaterThanOrEqual(1);
+  expect(focusVisual.controlOutlineStyle).toBe("none");
+  expectNoOuterRing(focusVisual.groupBoxShadow);
+});
+
+test("Input Group remains usable at true 200% CSS page zoom", async ({
+  page,
+}) => {
+  await openInputGroup(page);
+  await applyCssPageZoom(page, 2);
+  const input = primaryPreview(page).locator("#input-group-project-search-en");
+  await expect(input).toBeVisible();
+  await input.scrollIntoViewIfNeeded();
+  const metrics = await input.evaluate((control) => {
+    const bounds = control.getBoundingClientRect();
+    const html = document.documentElement;
+    return {
+      height: bounds.height,
+      inViewport:
+        bounds.left >= -1 &&
+        bounds.top >= -1 &&
+        bounds.right <= window.innerWidth + 1 &&
+        bounds.bottom <= window.innerHeight + 1,
+      overflowX: html.scrollWidth > html.clientWidth + 1,
+      zoom: getComputedStyle(html).zoom,
+    };
+  });
+  expect(metrics.zoom === "2" || metrics.zoom === "200%").toBe(true);
+  expect(metrics.overflowX).toBe(false);
+  expect(metrics.inViewport).toBe(true);
+  expect(metrics.height).toBeGreaterThanOrEqual(44);
+  const proofDir = join(process.cwd(), "temp/verified-proof/input-group");
+  mkdirSync(proofDir, { recursive: true });
+  await input.screenshot({
+    animations: "disabled",
+    path: join(proofDir, "control-en-200pct-zoom.png"),
+  });
+});
+
 test("Input Group keeps one continuous boundary across compatibility style packs", async ({
   page,
 }, testInfo) => {
@@ -722,8 +788,7 @@ test("Input Group keeps one continuous boundary across compatibility style packs
     await test.step(stylePack, async () => {
       await page.setContent(markup);
       await page.addStyleTag({
-        path: new URL(`../dist/basecoat-${stylePack}.cdn.css`, import.meta.url)
-          .pathname,
+        path: stylePackCssPath(stylePack),
       });
 
       const group = page.locator(".input-group");
