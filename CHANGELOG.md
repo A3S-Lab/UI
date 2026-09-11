@@ -6,6 +6,7 @@
 
 ### Added
 
+- Created GitHub release `v0.4.1` and deployed frozen `site/docs/v0.4.1` to GitHub Pages (https://a3s-lab.github.io/UI/v0.4.1/).
 - Completed Windows **Verified** admission for all **116** public components with Playwright AT / forced-colors / true CSS zoom 200% coverage (`visual-tests/verified-gaps.visual.spec.ts`), focused A3S Test run evidence, and zoom proof PNGs.
 - Added shared Playwright CSS-zoom helpers (`visual-tests/page-zoom.ts`) and style-pack path resolution for Windows hosts.
 

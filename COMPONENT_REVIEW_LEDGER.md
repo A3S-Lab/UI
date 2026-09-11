@@ -12,6 +12,12 @@ Recorded without promoting any component to **Verified**:
 - CUA attach refresh against locked trycua `e88e9d899ac5effaeae38619527ebaa46b26ce72` / driver **0.23.2** with embedded `source_sha`: `.gui-certification/records-local/semantic-attach.json` (passed, 113 semantic) and `window-vision-attach.json` (passed, 113 semantic, 1 visual). Daemon config: `cua-config-attach.json`.
 - Official `run-gui-certification-macos.sh` (bounded session policy) still fails fixture inventory / path capability admission on this host; attach evidence above uses the reviewed unrestricted embedded attach path preferred for local refresh.
 
+## Production release evidence (2026-09-11)
+
+- Created GitHub release `v0.4.1` at https://github.com/A3S-Lab/UI/releases/tag/v0.4.1 with a frozen `site/docs/v0.4.1` documentation snapshot.
+- GitHub Pages deploy on `main` succeeded; live docs respond at https://a3s-lab.github.io/UI/ and https://a3s-lab.github.io/UI/v0.4.1/ with pinned install commands for `@a3s-lab/ui@0.4.1`.
+- npm publication of `@a3s-lab/ui@0.4.1` remains pending registry authentication on this host (`npm publish` → `ENEEDAUTH`).
+
 ## Production release evidence (2026-09-10)
 
 Recorded without promoting any component to **Verified**:
